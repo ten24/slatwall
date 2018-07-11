@@ -96,33 +96,38 @@ class CollectionController{
 
 		$scope.getCollection = function(action){
 //			$scope.currentPage = $scope.pagination.getCurrentPage();
-			var collectionListingPromise = $hibachi.getEntity($scope.entityName, {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:$scope.paginator.getPageShow(), keywords:$scope.keywords});
-			collectionListingPromise.then(function(value){
-				$scope.collection = value;
-				$scope.paginator.setPageRecordsInfo($scope.collection);
-				$scope.collectionInitial = angular.copy($scope.collection);
-				if(angular.isUndefined($scope.collectionConfig)){
-
-                    var test = collectionConfigService.newCollectionConfig();
-					test.loadJson(value[$scope.propertyName]);
-                    $scope.collectionConfig = test.getCollectionConfig();
-				}
-
-				//check if we have any filter Groups
-				if(angular.isUndefined($scope.collectionConfig.filterGroups)){
-					$scope.collectionConfig.filterGroups = [
-						{
-							filterGroup:[
-
-							]
-						}
-					];
-				}
-				collectionService.setFilterCount(filterItemCounter());
-				$scope.loadingCollection = false;
-			},function(reason){
-			});
-            return collectionListingPromise;
+			if($scope.getCollectionPromise){
+				$timeout.cancel($scope.getCollectionPromise);
+			}
+			$scope.getCollectionPromise = $timeout(function(){
+				var collectionListingPromise = $hibachi.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:$scope.paginator.getPageShow(), keywords:$scope.keywords});
+				collectionListingPromise.then(function(value){
+					$scope.collection = value;
+					$scope.paginator.setPageRecordsInfo($scope.collection);
+					$scope.collectionInitial = angular.copy($scope.collection);
+					if(angular.isUndefined($scope.collectionConfig)){
+	
+	                    var test = collectionConfigService.newCollectionConfig();
+						test.loadJson($scope.propertyName);
+	                    $scope.collectionConfig = test.getCollectionConfig();
+					}
+	
+					//check if we have any filter Groups
+					if(angular.isUndefined($scope.collectionConfig.filterGroups)){
+						$scope.collectionConfig.filterGroups = [
+							{
+								filterGroup:[
+	
+								]
+							}
+						];
+					}
+					collectionService.setFilterCount(filterItemCounter());
+					$scope.loadingCollection = false;
+				},function(reason){
+				});
+			}, 1000);
+			return $scope.getCollectionPromise;
 		};
 		$scope.paginator.getCollection = $scope.getCollection;
 		$scope.getCollection();
@@ -191,7 +196,10 @@ class CollectionController{
 
 
 		$scope.saveCollection = function(){
-			$timeout(function(){
+			if($scope.saveCollectionPromise){
+				$timeout.cancel($scope.saveCollectionPromise);
+			}
+			$scope.saveCollectionPromise = $timeout(function(){
 				var entityName = $scope.entityName;
 				var collection = $scope.collection;
 				if(isFormValid($scope.collectionForm)){
@@ -231,7 +239,7 @@ class CollectionController{
 				}
 
 				collectionService.setFilterCount(filterItemCounter());
-			});
+			},1000);
 		};
 
 		var isFormValid = function (angularForm){

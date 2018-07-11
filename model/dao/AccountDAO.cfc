@@ -57,11 +57,25 @@ Notes:
 		<cfelse>
 			<cfset comparisonValue = "pea.emailAddress"/>
 		</cfif>
-
-		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
+		<cfset var params = {emailAddress=lcase(arguments.emailAddress)}/>
+		<cfset var hql = "SELECT COALESCE(count(aa),0) as primaryEmailAddressCount 
+			FROM #getApplicationKey()#AccountAuthentication aa 
+			INNER JOIN aa.account a 
+			INNER JOIN a.primaryEmailAddress pea 
+			WHERE #comparisonValue#=:emailAddress
+		"/>
+		<cfif structKeyExists(arguments,'accountID')>
+			<cfset hql &= " AND a.accountID != :accountID"/>
+			<cfset params['accountID'] = arguments.accountID/>
 		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
+		<!--- make sure that we enforce this only against other non guest accounts --->
+		<cfset var primaryInUseData = ormExecuteQuery(
+			hql
+			, params,
+			true
+			,{maxresults=1}
+		)/>
+		<cfreturn !primaryInUseData />
 	</cffunction>
 
 	<cffunction name="getAccountIDByPrimaryEmailAddress">

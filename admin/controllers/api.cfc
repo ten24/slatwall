@@ -51,6 +51,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="hibachiService" type="any";
 	
 	this.restController = true;
+	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'get');
+	this.secureMethods=listAppend(this.secureMethods, 'post');
 	
 	public void function get( required struct rc ) {
 		

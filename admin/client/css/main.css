@@ -6138,12 +6138,12 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-loading-icon-fullwidth {
   position: fixed;
   top: 40%;
-  left: calc(140%);
+  left: calc(50% + 90px);
   z-index: 3000;
 }
 @media (max-width: 1199px) {
   .s-loading-icon-fullwidth {
-    left: calc(15%);
+    left: calc(50% - 35px);
   }
 }
 .s-slide-panel .s-slide-panel-header .s-slide-panel-close::after,
@@ -6616,7 +6616,7 @@ sw-sku-thumbnail .thumbnail .caption {
 }
 .s-toggle-switch input:checked + div > label .s-toggle-switch-handle {
   left: 90%;
-  left: calc(80%);
+  left: calc(82% - 2px);
 }
 .s-toggle-switch-on,
 .s-toggle-switch-off {
