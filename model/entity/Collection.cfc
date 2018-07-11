@@ -1112,54 +1112,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	*/
 	public void function applyData(required any data=url, string excludesList=""){
-		var filterKeyList = "";
-		var hibachiBaseEntity = "";
-		hibachiBaseEntity = this.getCollectionObject();
-
-		if(!isStruct(data) && isSimpleValue(data)) {
-			data = getHibachiScope().getService('hibachiUtilityService').convertNVPStringToStruct(data);
-			filterKeyList = structKeyList(data);
-		}
-
-		//Simple Filters
-		if(!hasFilterDataApplied()){
-			for (var key in data){
-
-				applyDataForFilters(arguments.data,arguments.excludesList,key);
-				//OrderByList
-				var orderBys = data[key];
-				if (left(key,7)=='orderBy'){
-					//this is a list.
-					this.setOrderBy(data[key]);
-				}
-
-
-				//Handle pagination.
-				if(findNoCase('p:current', key)){
-					var currentPage = data[key];
-				}
-				if (!isNull(currentPage)){
-					data['currentPageDeclaration'] = currentPage;
-					this.setCurrentPageDeclaration(currentPage);
-				}
-
-				if(findNoCase('p:show', key)){
-					var pageShow = data[key];
-				}
-
-				if (!isNull(pageShow)){
-					if(pageShow >= 1)
-					{
-						this.setPageRecordsShow(pageShow);
-					}
-
-				}
-
-			}
-		}
+		getHibachiCollectionService().applyData(this,arguments.data,arguments.excludesList);
 	}
 
-	private boolean function getPropertyIdentifierIsPersistent(required string propertyIdentifier){
+	public boolean function getPropertyIdentifierIsPersistent(required string propertyIdentifier){
 		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
 	}
 
@@ -2008,7 +1964,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return groupByHQL;
 	}
 
-	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+	public boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
 		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
 		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
 	}
@@ -2021,7 +1977,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		);
 	}
 
-	private struct function getDefaultOrderBy(){
+	public struct function getDefaultOrderBy(){
 		var orderByStruct={};
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
 		//is default order by based on hb_defaultOrderProperty
