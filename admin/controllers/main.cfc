@@ -73,7 +73,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.publicMethods=listAppend(this.publicMethods, 'setupInitialAdmin');
 	this.publicMethods=listAppend(this.publicMethods, 'changeLanguage');
 	this.publicMethods=listAppend(this.publicMethods, 'updatePassword');
-	this.publicMethods=listAppend(this.publicMethods, 'collectionExport');
 
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'default');
@@ -90,6 +89,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'update');
 	this.secureMethods=listAppend(this.secureMethods, 'log');
 	this.secureMethods=listAppend(this.secureMethods, 'unlockAccount');
+	this.secureMethods=listAppend(this.secureMethods, 'collectionExport');
 
 	public void function before(required struct rc) {
 		rc.pagetitle = rc.$.slatwall.rbKey(replace(rc.slatAction, ':', '.', 'all'));
@@ -175,9 +175,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(rc.process) {
 			logHibachi("Update Called", true);
 			if(rc.branchType eq "custom"){
-				getUpdateService().update(branch=rc.customBranch);
+				getUpdateService().update(branch=rc.customBranch, branchType=rc.branchType);
 			}else{
-				getUpdateService().update(branch=rc.updateBranch);
+				getUpdateService().update(branch=rc.updateBranch, branchType=rc.branchType);
 			}
 			
 
@@ -234,11 +234,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="rc.passwordConfirm" default="";
 
 		rc.account = getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "setupInitialAdmin");
-
 		if(!rc.account.getProcessObject("setupInitialAdmin").hasErrors() && !rc.account.hasErrors()) {
 			getFW().redirect(action='admin:main.default', queryString="s=1");
 		}
-
+		
 		login( rc );
 	}
 

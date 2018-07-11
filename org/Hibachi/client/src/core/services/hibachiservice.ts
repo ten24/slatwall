@@ -32,16 +32,17 @@ export class HibachiService{
 		private $rootScope:ng.IRootScopeService,
 		private $location:ng.ILocationService,
 		private $anchorScroll:ng.IAnchorScrollService,
+		private $injector,
 		private requestService,
 		private utilityService,
 		private formService,
         private rbkeyService,
-
         private appConfig,
 		public _config?:any,
 		public _jsEntities?:any,
 		public _jsEntityInstances?:any
 	){
+		this.$injector = $injector;
         this.$window = $window;
         this.$q = $q;
         this.$http = $http;
@@ -59,6 +60,7 @@ export class HibachiService{
         this._config = appConfig;
         this._jsEntities = _jsEntities;
         this._jsEntityInstances = _jsEntityInstances;
+        
 	}
 
 
@@ -527,6 +529,7 @@ export class $Hibachi extends HibachiService {
             $rootScope,
             $location,
             $anchorScroll,
+            $injector,
             requestService,
             utilityService,
             formService,
@@ -1132,8 +1135,6 @@ export class $Hibachi extends HibachiService {
                 return '';
             };
 
-
-
             var _getPropertyFieldType = function(propertyName,metaData){
                 var propertyMetaData = metaData[propertyName];
                 if(angular.isDefined(propertyMetaData['hb_formfieldtype'])){
@@ -1437,10 +1438,7 @@ export class $Hibachi extends HibachiService {
             }
 
             return $delegate;
-
-        
-
-	}
+    }
 
 }
 

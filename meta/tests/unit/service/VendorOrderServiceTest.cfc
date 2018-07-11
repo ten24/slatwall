@@ -54,7 +54,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = createMock(object=request.slatwallScope.getBean("vendorOrderService"));
 	}
 	
-	public void function processVendorOrder_receiveTest(){
+	/*public void function processVendorOrder_receiveTest(){
 		
 		var productData={
 			productID="",
@@ -122,7 +122,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//make sure that a stockReceiverItem is created
 		assert(arrayLen(vendorOrder.getVendorOrderItems()[1].getStockReceiverItems()));
 		assertEquals(vendorOrder.getVendorOrderStatusType().getSystemCode(),'vostClosed');
-	}
+	}*/
 	
 	public void function processVendorOrder_receiveTest_partiallyRecieived(){
 		

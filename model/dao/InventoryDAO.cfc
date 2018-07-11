@@ -181,11 +181,32 @@ Notes:
 			var QDOO = getQDOO(productID=arguments.productID);
 			
 			var QDOOHashMap = {};
+			
+			//This variable will store the total QDOO and QOO by skuID
+			var skuTotalsHashMap = {};
+			
 			for(var i=1;i <= arrayLen(QDOO);i++){
-				QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+				
+				if ( structKeyExists(QDOO[i], 'stockID')){
+					QDOOHashMap["#QDOO[i]['stockID']#"] = QDOO[i]; 
+				} else {
+					QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+				}
+				
+				if ( !structKeyExists(skuTotalsHashMap, "#QDOO[i]['skuID']#") ){
+					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] = 0;
+					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQOO'] = 0;
+				}
+				
+				skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] += QDOO[i]['QDOO'];
+				
 			}
 			
 			var QOO = getQOO(productID=arguments.productID);
+			
+			for(var item in QOO){ 
+				skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
+			}
 			
 			for(var QOOData in QOO){
 				var record = {};
@@ -206,13 +227,18 @@ Notes:
 					record['locationIDPath'] = javacast('null','');
 				}
 				var quantityReceived = 0;
-				if(structKeyExists(QDOOHashMap,'#QOOData['skuID']#')){
-					quantityReceived = QDOOHashMap['#QOOData['skuID']#']['QDOO'];
+				
+				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap,"#QOOData['stockID']#")){
+					quantityReceived = QDOOHashMap['#QOOData['stockID']#']['QDOO'];
+						
+					record['QNDOO'] = QOOData['QOO'] - quantityReceived;
+				}else if( structKeyExists(skuTotalsHashMap,'#QOOData['skuID']#') ){
+					
+					record['QNDOO'] = skuTotalsHashMap["#QOOData['skuID']#"]['totalQOO'] - skuTotalsHashMap["#QOOData['skuID']#"]['totalQDOO'];
 				}
-				record['QNDOO'] = QOOData['QOO'] - quantityReceived;
+				
 				arrayAppend(QNDOO,record);
 			}
-			
 			
 			return QNDOO;	
 		}
@@ -756,6 +782,31 @@ Notes:
 		}
 
 	</cfscript>
+	
+	<cffunction name="getQOQ">
+		<cfargument type="string" required="true" name="skuID" />
+		<cfargument type="string" name="locationID" />
+		<cfset local.locationIDExists = structKeyExists(arguments,'locationID') AND NOT isNull(arguments.locationID) AND len(arguments.locationID) />
+		<cfquery name="local.query">
+			SELECT COALESCE( SUM(oi.quantity) ,0) as QOQ FROM swOrderItem oi
+			LEFT JOIN swOrder o 
+			ON oi.orderID = o.orderID
+			<cfif locationIDExists >
+				LEFT JOIN swStock st ON st.skuID = oi.skuID
+				LEFT JOIN swLocation l on st.locationID = l.locationID
+			</cfif>
+			WHERE
+				o.QuoteFlag = 1
+			AND
+				o.quotePriceExpiration > NOW()
+			AND
+				oi.skuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" />
+			<cfif locationIDExists>
+				AND l.locationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.locationID#" />
+			</cfif>
+		</cfquery>
+		
+		<cfreturn local.query.qoq />
+	</cffunction>
 
 </cfcomponent>
-

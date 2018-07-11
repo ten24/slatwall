@@ -16,6 +16,9 @@ import {SWFDirective} 		from "./components/swfdirective";
 import {SWShippingCostEstimator} from "./components/swshippingcostestimator";
 import {SWFCartItems} from "./components/swfcartitems";
 import {SWFPromoBox} from "./components/swfpromobox";
+import {SWFNavigation} from "./components/swfnavigation";
+import {SWFAddressForm} from "./components/swfaddressform";
+import {SWFSaveNotes} from "./components/swfsavenotes";
 
 @NgModule({
 	declarations : [],
@@ -68,6 +71,9 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 .directive('swfDirective', SWFDirective.Factory())
 .directive('swfCartItems', SWFCartItems.Factory())
 .directive('swfPromoBox',SWFPromoBox.Factory())
+.directive('swfNavigation',SWFNavigation.Factory())
+.directive('swfSaveNotes',SWFSaveNotes.Factory())
+.directive('swfAddressForm',SWFAddressForm.Factory())
 
 export{
 	frontendmodule

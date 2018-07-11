@@ -100,22 +100,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getShippingIntegration(){
-		if(
-			!isNull(getOrderFulfillment().getShippingMethodRate())
-			&& !isNull(getOrderFulfillment().getShippingMethodRate().getShippingIntegration())
-		){
-			variables.shippingIntegration = getOrderFulfillment().getShippingMethodRate().getShippingIntegration();
+		if(!isNull(getOrderFulfillment().getShippingIntegration())){
+			variables.shippingIntegration = getOrderFulfillment().getShippingIntegration();
 		} 
 		if(structKeyExists(variables,'shippingIntegration')){
 			return variables.shippingIntegration;
 		}
+		
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
 		return (
-			!isNull(getorderfulfillment().getSelectedShippingMethodOption())
-			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate())
-			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate().getShippingIntegration())
+			!isNull(getorderfulfillment().getShippingIntegration())
 			&& getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')
 		);
 	}

@@ -90,6 +90,12 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
  		return true; 
  	} 
  	
+ 	public any function getPriceGroupOptions(){
+		var options = getPropertyOptions("priceGroup");
+		arrayAppend(options, {"name"=rbKey('define.none'), "value"=''});
+		return options;
+ 	}
+ 	
  	public string function getSimpleRepresentation() {
 		if(
 			!isNull(getSku()) 
@@ -100,4 +106,18 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 			return '';
 		}
 	}
+	
+	// =================== START: ORM Event Hooks  =========================	
+	public void function preUpdate(struct oldData) {
+		
+		if (arguments.oldData.price NEQ getPrice() && getSku().hasStock()){
+			for (var stock in getSku().getStocks()){
+				getHibachiScope().addModifiedEntity(stock);
+			}
+		}
+		
+		super.preUpdate(arguments.oldData);
+	}
+    
+	// ===================  END:  ORM Event Hooks  =========================
 }

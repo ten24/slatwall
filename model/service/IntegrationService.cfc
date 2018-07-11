@@ -333,7 +333,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			isl.addFilter('installedFlag', 1);
 			
 			for(var integration in isl.getRecords()) {
-				if(integration.getEnabledFlag()) {
+				var integrationPath = expandPath("/Slatwall/integrationServices")&'/#integration.getIntegrationPackage()#';
+				if(integration.getEnabledFlag() && directoryExists(integrationPath)) {
 					additions &= integration.getIntegrationCFC().getJSObjectAdditions();
 				}
 			}
