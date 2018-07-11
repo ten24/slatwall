@@ -312,7 +312,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				}],
 				defaultValue=getLedgerAccountService().getAssetLedgerAccountIDList()
 			},
-			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="a54668fcc2ff2c8413c7b85b6927a850"},
+			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="54cae22ca5a553fe209cf183fac8f8dc"},
 
 			// Product
 			productDisplayTemplate = {fieldType="select"},
