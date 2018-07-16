@@ -1373,7 +1373,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 			if (paymentTransaction.getTransactionSuccessFlag() == false){
-				accountPayment.setActiveFlag(false);
+				arguments.accountPayment.setActiveFlag(false);
 			}
 		}
 
@@ -1552,12 +1552,15 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			arguments.accountPaymentMethod = this.processAccountPaymentMethod(arguments.accountPaymentMethod, transactionData, 'createTransaction');
 			if (arguments.accountPaymentMethod.hasErrors()){
-				arguments.accountPaymentMethod.errors = [];
+				var errors = arguments.accountPaymentMethod.getErrors();
+				arguments.accountPaymentMethod.getHibachiErrors().setErrors(structnew());
 				arguments.accountPaymentMethod.setActiveFlag(false);
 				this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
 			}
 		}
-
+		if(structKeyExists(local,'errors')){
+			arguments.accountPaymentMethod.addErrors(errors);
+		}
 		return arguments.accountPaymentMethod;
 
 	}

@@ -2947,7 +2947,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} else {
                 if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){
                     if(paymentTransaction.getAmountReceived() gt 0){
-                         arguments.orderPayment.setGiftCardPaymentProcessedFlag("True");
+                         arguments.orderPayment.setsoGiftCardPaymentProcessedFlag("True");
                          arguments.orderPayment.setAmount(paymentTransaction.getAmountReceived());
                     } else if(paymentTransaction.getAmountCredited() gt 0){
                          arguments.orderPayment.setGiftCardPaymentProcessedFlag("True");
