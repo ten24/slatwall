@@ -62,7 +62,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountgrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="locations" edit="#rc.edit#">
 			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="locationCollections" text="Location Collections" edit="#rc.edit#">
-			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="skuCollections" text="Sku Collections" edit="#rc.edit#">
+			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="skuCollection" text="Sku Collection" edit="#rc.edit#">
 			<swa:SlatwallAdminTabComments object="#rc.cyclecountgroup#" />
 		</hb:HibachiEntityDetailGroup>
 		

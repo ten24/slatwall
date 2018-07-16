@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,29 +45,34 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entities
+	property name="cycleCountBatch";
+	property name="cycleCountGroups" hb_rbKey="entity.CycleCountGroup_plural" cfc="CycleCountGroup";
 
-<cfparam name="rc.cycleCountBatchSmartList" type="any"/>
-
-<cfoutput>
+	// Data Properties
+	property name="cycleCountBatchDate" hb_formFieldType="datetime";
 	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.cycleCountBatchSmartList#" showCreate="false">
-		<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocesscyclecountbatch" entity="cyclecountbatch" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true"  text="#rc.$.slatwall.rbKey('admin.entity.preprocesscyclecountbatch')#" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiListingDisplay smartlist="#rc.cycleCountBatchSmartList#" 
-	                          recordeditaction="admin:entity.editcyclecountbatch"
-							  recorddetailaction="admin:entity.detailcyclecountbatch">
-	
-		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchDate" />
-		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchStatusType.typeName" title="Batch Status" />
-		<hb:HibachiListingColumn propertyidentifier="physical.physicalStatusType.typeName" title="Physical Status" />
-	</hb:HibachiListingDisplay>
+	// Cached Properties
 
-</cfoutput>
+	public any function getCycleCountGroupSmartList() {
+		if(!structKeyExists(variables, "cycleCountGroupSmartList")) {
+			variables.cycleCountGroupSmartList = getService('physicalService').getCycleCountGroupSmartList();
+			variables.cycleCountGroupSmartList.addFilter('activeFlag', 1);
+		}
+		return variables.cycleCountGroupSmartList;
+	}
+	
+	public any function hasCycleCountGroup(){
+		if(!structKeyExists(variables, "cycleCountGroups")) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+
+	
+}
