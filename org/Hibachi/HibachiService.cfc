@@ -1275,7 +1275,7 @@
 						break;
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
-				<!---filter out bad data--->
+				//filter out bad data
 				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'NULL','IS NOT');
 				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,' ','!=');
 				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'','!=');
@@ -1306,7 +1306,7 @@
 				entityCollectionList.setDisplayProperties(displayProperties);
 				entityCollectionList.setDistinct(true);
 				var excludesList = arguments.propertyIdentifier;
-				<!---filter out bad data--->
+				//filter out bad data
 				entityCollectionList.addFilter(arguments.propertyIdentifier,'NULL','IS NOT');
 				entityCollectionList.addFilter(arguments.propertyIdentifier,' ','!=');
 				entityCollectionList.addFilter(arguments.propertyIdentifier,'','!=');
