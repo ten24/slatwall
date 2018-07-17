@@ -159,7 +159,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						}
 						var index = findNoCase(filePath, checksumList);
 						if(index != 0){
-							var identifierToDelete = mid(checksumList, index, len(fileName) + 33); 
+							var identifierToDelete = mid(checksumList, index, len(filePath) + 33); 
 							var listIndexToDelete = listFindNoCase(checksumList, identifierToDelete);
 							checksumList = listDeleteAt(checksumList, listIndexToDelete); 	
 						}
