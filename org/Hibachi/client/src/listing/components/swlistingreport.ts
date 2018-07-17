@@ -192,10 +192,8 @@ class SWListingReportController {
         }
         
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
-        console.log('test',this.selectedPeriodColumn);
         //navigate propertyIdentifier to populate drop down
         var pidArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
-        console.log(pidArray)
         for(var i=1; i <= pidArray.length-1;i++){
             var propertyName = pidArray[i];
             for(var j in this.periodColumns){
@@ -205,7 +203,6 @@ class SWListingReportController {
                         this.selectPeriodColumn(periodColumn);
                         break;
                     }else{
-                        console.log(periodColumn);
                         this.selectPeriodColumn(periodColumn);
                         break;
                     }
@@ -410,12 +407,10 @@ class SWListingReportController {
     }
     
     public selectPeriodColumn=(column)=>{
-        console.log(column);
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
             (async ()=>await this.getPeriodColumns(column.cfc));
         }else if(column && column.name){
-            console.log('testhre');
             this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
             //update the option so it remains selected
             for(var i in this.periodColumns){

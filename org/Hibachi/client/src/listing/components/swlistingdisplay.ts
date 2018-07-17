@@ -126,7 +126,6 @@ class SWListingDisplayController{
             this.usingPersonalCollection=false;
         }
         
-        console.log('showReport',this.showReport);
         
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
@@ -166,7 +165,6 @@ class SWListingDisplayController{
                 if(data.pageRecords.length){
 
                     this.collectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
-                    console.log('collectionConfig',this.collectionConfig);
                     this.collectionObject = this.baseEntityName;
 
                     this.$timeout(()=>{

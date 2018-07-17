@@ -86242,7 +86242,6 @@ var SWListingDisplayController = /** @class */ (function () {
         if (angular.isUndefined(this.usingPersonalCollection)) {
             this.usingPersonalCollection = false;
         }
-        console.log('showReport', this.showReport);
         if (angular.isUndefined(this.showExport)) {
             this.showExport = true;
         }
@@ -86275,7 +86274,6 @@ var SWListingDisplayController = /** @class */ (function () {
             personalCollection.getEntity().then(function (data) {
                 if (data.pageRecords.length) {
                     _this.collectionConfig = _this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
-                    console.log('collectionConfig', _this.collectionConfig);
                     _this.collectionObject = _this.baseEntityName;
                     _this.$timeout(function () {
                         _this.collection = _this.collectionConfig;
@@ -87036,10 +87034,8 @@ var SWListingReportController = /** @class */ (function () {
                 }
             }
             _this.selectedPeriodColumn = _this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
-            console.log('test', _this.selectedPeriodColumn);
             //navigate propertyIdentifier to populate drop down
             var pidArray = _this.selectedPeriodColumn.propertyIdentifier.split('.');
-            console.log(pidArray);
             for (var i = 1; i <= pidArray.length - 1; i++) {
                 var propertyName = pidArray[i];
                 for (var j in _this.periodColumns) {
@@ -87050,7 +87046,6 @@ var SWListingReportController = /** @class */ (function () {
                             break;
                         }
                         else {
-                            console.log(periodColumn);
                             _this.selectPeriodColumn(periodColumn);
                             break;
                         }
@@ -87224,7 +87219,6 @@ var SWListingReportController = /** @class */ (function () {
             });
         };
         this.selectPeriodColumn = function (column) {
-            console.log(column);
             if (column && column.cfc) {
                 _this.selectedPeriodPropertyIdentifierArray.push(column.name);
                 (function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
@@ -87235,7 +87229,6 @@ var SWListingReportController = /** @class */ (function () {
                 }); }); });
             }
             else if (column && column.name) {
-                console.log('testhre');
                 _this.selectedPeriodPropertyIdentifier = _this.selectedPeriodPropertyIdentifierArray.join('.') + '.' + column.name;
                 //update the option so it remains selected
                 for (var i in _this.periodColumns) {
