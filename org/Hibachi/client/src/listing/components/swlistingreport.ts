@@ -196,23 +196,17 @@ class SWListingReportController {
         //navigate propertyIdentifier to populate drop down
         var pidArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
         console.log(pidArray)
-        /*for(var i=1; i <= pidArray.length-1;i++){
+        for(var i=1; i <= pidArray.length-1;i++){
             var propertyName = pidArray[i];
             for(var j in this.periodColumns){
                 var periodColumn = this.periodColumns[j];
                 if(periodColumn.name===propertyName){
                     if(periodColumn.cfc){
-                        
-                        setTimeout(()=>{
-                            console.log(periodColumn.cfc);
-                            this.getPeriodColumns(periodColumn.cfc,true);
-                            console.log(this.objectPath,'ss');
-                        },500);
+                        this.selectPeriodColumn(periodColumn);
                         break;
                     }else{
-                        setTimeout(()=>{
-                            this.selectPeriodColumn(periodColumn);
-                        },500);
+                        console.log(periodColumn);
+                        this.selectPeriodColumn(periodColumn);
                         break;
                     }
                     
@@ -221,7 +215,7 @@ class SWListingReportController {
                 
             }
             
-        }*/
+        }
         
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
@@ -416,9 +410,10 @@ class SWListingReportController {
     }
     
     public selectPeriodColumn=(column)=>{
+        console.log(column);
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
-            this.getPeriodColumns(column.cfc);
+            (async ()=>await this.getPeriodColumns(column.cfc));
         }else if(column && column.name){
             console.log('testhre');
             this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
