@@ -1424,15 +1424,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				return "<>";
 			break;
 			case ">":
+			case "&gt;":
 				return ">";
 			break;
 			case "<":
+			case "&lt;":
 				return "<";
 			break;
 			case "<=":
+			case "&lt;=":
 				return "<=";
 			break;
 			case ">=":
+			case "&gt;=":
 				return ">=";
 			break;
 			case "like":
@@ -2552,7 +2556,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
 							} else {
 								//Get the Records
-								
 								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 								
 								//If this is cacheable but we don't have a cached value yet, then set one.
@@ -3143,7 +3146,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return variables.periodColumn;
 		}
 	}
-
+	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 
 

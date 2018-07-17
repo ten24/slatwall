@@ -191,6 +191,7 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public boolean function loadDataFromXMLRaw(required string xmlRaw, boolean ignorePreviouslyInserted=true) {
 		var xmlRawEscaped = replace(xmlRaw,"&","&amp;","all");
+		
 		var xmlData = xmlParse(xmlRawEscaped);
 		var columns = {};
 		var idColumns = "";
@@ -223,6 +224,11 @@ component accessors="true" output="false" extends="HibachiService" {
 				// Check for a custom dataType for this column
 				if(structKeyExists(columns[ thisColumnName ], 'dataType')) {
 					columnRecord.dataType = columns[ thisColumnName ].dataType;
+				}
+				
+				//check if the column needs to be decoded
+				if(structKeyExists(columns[ thisColumnName ], 'decodeForHTML') && columns[ thisColumnName ].decodeForHTML) {
+					columnRecord.value = DecodeforHTML(columnRecord.value);
 				}
 
 				// Add this column record to the insert
