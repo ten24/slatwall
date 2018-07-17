@@ -1877,6 +1877,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
+		
 		return HQL;
 	}
 
@@ -1942,7 +1943,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		getGroupBys();
 		//use collectionConfig groupbys if they exist already as an override otherwise use the calculated ones
-		if(structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])){
+		if(structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys']) && !hasPeriodColumn()){
 			groupByList = getCollectionConfigStruct()['groupBys'];
 		}else if(structKeyExists(variables,'groupBys')){
 			groupByList = variables.groupBys;
@@ -1951,7 +1952,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!len(trim(groupByList)) && (!isReport() || !hasPeriodColumn())){
 			return '';
 		}
-
+		
 		groupByHQL = ' GROUP BY ' & groupByList;
 
 		if(isReport() && hasPeriodColumn()){
@@ -2616,8 +2617,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				
 				for(var k = 0; k < diff;k++){
-					var currentInterval = DateFormat(DateAdd(getPeriodIntervalDateDiffFormat(),k,formattedMinValue),getPeriodIntervalDateFormat());
-					
+					var dateValue = DateAdd(getPeriodIntervalDateDiffFormat(),k,formattedMinValue);
+					var currentInterval = dateTimeFormat(dateValue,getPeriodIntervalDateFormat());
 					if(structKeyExists(dateLookup,currentInterval)){
 						arrayAppend(reportRecords,variables.records[dateLookup[currentInterval]]);
 					}else{
