@@ -306,6 +306,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									});
 
 								}
+								
+								//Now add the order item to the modified entities to recalculate.
+								getHibachiScope().addModifiedEntity(orderItem);
 
 							}
 
