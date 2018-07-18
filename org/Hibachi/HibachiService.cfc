@@ -1287,12 +1287,13 @@
 						break;
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
+				var excludesList = arguments.propertyIdentifier&'.'&primaryIDName;
 				//filter out bad data
 				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'NULL','IS NOT');
 				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,' ','!=');
 				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'','!=');
 				
-				var excludesList = arguments.propertyIdentifier&'.'&primaryIDName;
+				
 				entityCollectionList.setDistinct(true);
 				
 				//entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);

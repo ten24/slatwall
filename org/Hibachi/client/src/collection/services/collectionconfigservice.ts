@@ -116,8 +116,7 @@ class CollectionConfig {
         private keywords:string = '',
         private allRecords:boolean = false,
         private dirtyRead:boolean = false,
-        private isDistinct:boolean = false,
-        
+        private isDistinct:boolean = false
 
     ){
         this.$hibachi = $hibachi;
@@ -158,6 +157,7 @@ class CollectionConfig {
         while(angular.isString(jsonCollection)){
             jsonCollection = angular.fromJson(jsonCollection);
         }
+        
 
         this.baseEntityAlias = jsonCollection.baseEntityAlias;
         this.baseEntityName = jsonCollection.baseEntityName;
@@ -181,7 +181,7 @@ class CollectionConfig {
         }
         this.isDistinct = jsonCollection.isDistinct;
         this.reportFlag = jsonCollection.reportFlag;
-        console.log(jsonCollection.reportFlag);
+
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
