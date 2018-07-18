@@ -240,6 +240,8 @@ class PublicService {
 
         let urlBase = url + param;
         let request = this.requestService.newPublicRequest(urlBase);
+        urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
+        urlBase += "context=GET";
 
         request.promise.then((result:any)=>{
             //don't need account and cart for anything other than account and cart calls.
@@ -330,6 +332,8 @@ class PublicService {
         }else{
             urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
             urlBase += "returnJsonObject=cart,account";
+            urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
+            urlBase += "context=GET";
         }
         if (method == "post"){
 
@@ -346,6 +350,8 @@ class PublicService {
             return request.promise;
         }else{
             //get
+            urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
+            urlBase += "context=GET";
             var url = urlBase;
             let request = this.requestService.newPublicRequest(url,data,method);
 

@@ -53,6 +53,14 @@ component output="false" accessors="true" extends="HibachiController" {
 
         getFW().setView("public:main.blank");
         arguments.rc.headers["Content-Type"] = "application/json";
+        
+        if(
+            structKeyExists(arguments.rc,getApplicationValue('action')) 
+            && len(arguments.rc[getApplicationValue('action')]) >= 3 
+            && left(arguments.rc[getApplicationValue('action')],3)=='get'
+        ){
+            arguments.rc.context = 'GET';
+        }
 
         if(isnull(arguments.rc.apiResponse.content)){
             arguments.rc.apiResponse.content = {};
@@ -74,6 +82,10 @@ component output="false" accessors="true" extends="HibachiController" {
             && isJSON(arguments.rc.serializedJSONData)
         ) {
             StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
+        }
+        
+        if(structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET'){
+            getHibachiScope().setPersistSessionFlag(false);
         }
 
         //could possibly check whether we want a different contentType other than json in the future example:xml
