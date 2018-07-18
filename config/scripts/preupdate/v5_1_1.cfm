@@ -8,7 +8,9 @@
   
 <cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwShipMethodRateIntegrationMethod" />
 
-<cfif currenttables.recordCount>
+<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="hasNewTable" pattern="SwShipMethRateIntegrationMeth" />
+
+<cfif currenttables.recordCount AND !hasNewTable.recordCount>
     <cfquery name="local.updateColumnForOracle" datasource="#this.datasource.name#">
          ALTER TABLE swshipmethodrateintegrationmethod CHANGE COLUMN shipMethodRateIntegrationMethodID shipMethRateIntegrationMethID VARCHAR(32) NOT NULL
     </cfquery>
@@ -20,9 +22,9 @@
 </cfif>
 <cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwOrderFulfillment" />
 <cfif currenttables.recordCount>
-    <cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" name="hascolumn" table="SwOrderFulfillment" pattern="thirdPartyShippingAccountIdentifier" />
-    
-    <cfif hascolumn.recordCount>
+    <cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" name="hasColumn" table="SwOrderFulfillment" pattern="thirdPartyShippingAccountIdentifier" />
+    <cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" name="hasNewColumn" table="SwOrderFulfillment" pattern="thirdPartyShipAccntIdentifier" />
+    <cfif hascolumn.recordCount AND !hasNewColumn.recordCount>
     	<cfquery name="local.updateColumnForOracle2" datasource="#this.datasource.name#">
     	    ALTER TABLE sworderfulfillment CHANGE COLUMN thirdPartyShippingAccountIdentifier thirdPartyShipAccntIdentifier VARCHAR(32)
     	</cfquery>
