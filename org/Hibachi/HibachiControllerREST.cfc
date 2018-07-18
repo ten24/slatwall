@@ -60,7 +60,6 @@ component output="false" accessors="true" extends="HibachiController" {
             && left(arguments.rc[getApplicationValue('action')],3)=='get'
         ){
             arguments.rc.context = 'GET';
-            writedump('test');abort;
         }
 
         if(isnull(arguments.rc.apiResponse.content)){
