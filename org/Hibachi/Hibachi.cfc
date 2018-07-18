@@ -925,10 +925,17 @@ component extends="framework.one" {
 		param name="arguments.rc.apiRequest" default="false";
 		param name="arguments.rc.apiResponse.content" default="#structNew()#";
 
+		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
+			getHibachiScope().setPersistSessionFlag(false);
+		}
+		
 		endHibachiLifecycle();
 		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
-
+		
+		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
+			abort;
+		}
 
 		// Check for an API Response
 		if(arguments.rc.apiRequest) {
