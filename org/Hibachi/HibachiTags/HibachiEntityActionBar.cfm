@@ -73,6 +73,11 @@
 										<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 									</cfif>
 								</cfif>
+							<!--- ================ Report listing ===================== --->
+							<cfelseif attributes.type eq "reportlisting">
+							
+								<cfparam name="request.context.keywords" default="" />
+								<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 								
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">

@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,21 +45,36 @@
 
 Notes:
 
-    This entity will allow manual shipping rates to still be associated with a shipping integration and
-    a shipping integration method. This way, users can set their own shipping rates manually, but still benefit from
-    shipping integration functionalities such as getting tracking numbers, etc..
+---> 
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-*/
-component entityname="SlatwallShippingMethodRateIntegrationMethod" table="SwShipMethRateIntegrationMeth" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="ShippingService" {
-    property name="shipMethodRateIntegrationMethodID" column="shipMethRateIntegrationMethID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-    property name="shippingIntegrationMethod" ormtype="string";
-    property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
-	property name="shippingMethodRate" cfc="ShippingMethodRate" fieldtype="many-to-one" fkcolumn="shippingMethodRateID";
+<cfparam name="rc['#rc.entityActionDetails.itemEntityName#SmartList']" type="any" />
 
-	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
-}
+<cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = $.slatwall.getService('HibachiCollectionService').getCollectionReportList('#rc.entityActionDetails.itemEntityName#')/>
+<cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setReportFlag(1)/>
+<cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setDistinct(1)/>
+<hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#">
+		
+	<!--- Create ---> 
+	<hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
+<hb:HibachiListingDisplay 
+	collectionList="#rc['#rc.entityActionDetails.itemEntityName#CollectionList']#"
+	usingPersonalCollection="true"
+	reportAction="admin:entity.reportlist#lcase(rc['#rc.entityActionDetails.itemEntityName#CollectionList'].getCollectionObject())#"
+	showReport="true"
+>
+</hb:HibachiListingDisplay>
+<!---
+<hb:HibachiListingDisplay smartList="#rc.workflowSmartList#"
+						   recordDetailAction="admin:entity.detailworkflow"
+						   recordEditAction="admin:entity.editworkflow"
+						   recordDeleteAction="admin:entity.deleteworkflow">
+	
+	<hb:HibachiListingColumn propertyIdentifier="workflowName" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="workflowObject" />
+</hb:HibachiListingDisplay>
+  --->

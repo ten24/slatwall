@@ -98,7 +98,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 				return authDetails;
 			}
-			
 			// Check to see if the controller is an entity, and then verify against the entity itself
 			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].entityController) {
 				if ( left(itemName, 6) == "create" ) {
@@ -111,6 +110,8 @@ component output="false" accessors="true" extends="HibachiService" {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 				} else if ( left(itemName, 4) == "list" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read", entityName=right(itemName, len(itemName)-4), account=arguments.account);
+				} else if ( left(itemName, 10) == "reportlist" ) {
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="report", entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 15) == "multiPreProcess" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-15), account=arguments.account);
 				} else if ( left(itemName, 12) == "multiProcess" ) {
