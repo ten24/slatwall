@@ -53,11 +53,10 @@ component output="false" accessors="true" extends="HibachiController" {
 
         getFW().setView("public:main.blank");
         arguments.rc.headers["Content-Type"] = "application/json";
-        
+        var functionName = getFW().getItem();
         if(
-            structKeyExists(arguments.rc,getApplicationValue('action')) 
-            && len(arguments.rc[getApplicationValue('action')]) >= 3 
-            && left(arguments.rc[getApplicationValue('action')],3)=='get'
+            len(functionName) >= 3 
+            && left(functionName,3)=='get'
         ){
             arguments.rc.context = 'GET';
         }

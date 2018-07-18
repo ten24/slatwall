@@ -17,6 +17,15 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         arguments.rc.requestHeaderData = getHTTPRequestData();
         arguments.rc['ajaxRequest'] = true;
         arguments.rc.headers["Content-Type"] = 'application/json';
+        
+        var functionName = getFW().getItem();
+        if(
+            len(functionName) >= 3 
+            && left(functionName,3)=='get'
+        ){
+            arguments.rc.context = 'GET';
+        }
+        
         //if we have a get request there is nothing to persist because nothing changed
         if(structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET'){
             getHibachiScope().setPersistSessionFlag(false);
