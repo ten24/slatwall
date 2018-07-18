@@ -77,6 +77,18 @@
 			return collection;
 		}
 		
+		public any function getCollectionReportList(string entityName, struct data={}){
+		
+			var collection = getService('hibachiCollectionService').newCollection(argumentcollection=arguments);
+			collection.setReportFlag(1);
+			var addDefaultColumns = true;
+			if(structKeyExists(arguments.data, 'defaultColumns')){
+				addDefaultColumns = arguments.data.defaultColumns;
+			}
+			collection.setCollectionObject(arguments.entityName,addDefaultColumns);
+			return collection;
+		}
+		
 		public any function list(required string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			return getHibachiDAO().list(argumentcollection=arguments);
 		}

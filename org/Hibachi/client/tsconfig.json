@@ -9,6 +9,6 @@
     "typings/tsd.d.ts",
     "typings/requirejs/require.d.ts",
     "typings/js-md5/md5.d.ts",
-    "typings/datejs/datejs.d.ts"
+    "typings/datejs/datejs.d.ts",
   ]
 }
