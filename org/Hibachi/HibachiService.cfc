@@ -1026,7 +1026,28 @@
 		
 		// @hint returns the primary id property name of a given entityName
 		public string function getPrimaryIDPropertyNameByEntityName( required string entityName ) {
+			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			var cacheKey = 'getPrimaryIDPropertyNameByEntityName'&arguments.entityName;
+			if(!structKeyExists(variables,cacheKey)){
+				var propertiesStruct = getPropertiesStructByEntityName(arguments.entityName);
+				for(var propertyKey in propertiesStruct){
+					if(
+						isStruct(propertiesStruct[propertyKey])
+						&& structKeyExists(propertiesStruct[propertyKey],'fieldtype') 
+						&& propertiesStruct[propertyKey].fieldtype=='id'
+						&& structKeyExists(propertiesStruct[propertyKey],'name')
+					){
+						variables[cacheKey]=propertiesStruct[propertyKey]['name'];
+						break;
+					}
+				}
+			}
+			return variables[cacheKey];
+		}
+		
+		// @hint returns the primary id property name of a given entityName
+		public string function getPrimaryIDColumnNameByEntityName( required string entityName ) {
+			var cacheKey = 'getPrimaryIDColumnNameByEntityName'&arguments.entityName;
 			
 			if(!structKeyExists(variables,cacheKey)){
 				var idColumnNames = getIdentifierColumnNamesByEntityName( arguments.entityName );
@@ -1039,6 +1060,7 @@
 			}
 			return variables[cacheKey];
 		}
+
 		
 		// @hint returns true or false based on an entityName, and checks if that property exists for that entity 
 		public boolean function getEntityHasPropertyByEntityName( required string entityName, required string propertyName ) {

@@ -326,7 +326,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				tables[ thisTableName ]["tableType"] = columnInfo["tableType"];
 
 			// get table primary key
-			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(thisEntityName);
+			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(thisEntityName);
 			//set table depth
 			tables[ thisTableName ]["depth"] = listLen(mapping["propertyIdentifier"], ".");
 
@@ -393,7 +393,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					initializeTableStruct(tables, newTableName);
 					tables[ newTableName ]["tableType"] = newColumnInfo["tableType"];
 					tables[ newTableName ]["depth"] = listLen(thisPropertyIdentifier, ".");
-					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(newEntityName);
+					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(newEntityName);
 
 					// many-to-many and one-to-many need to get added after the main object so, set a lower depth
 					if(newColumnInfo["fieldType"] == "many-to-many") {
