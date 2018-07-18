@@ -530,6 +530,9 @@ component accessors="true" output="false" extends="HibachiService" {
 
 				generatedIDStruct[ tableName ] = {};
 
+				if (isNull(thisTableData)){
+					continue;
+				}
 				// Loop over each record to insert or update
 				for(var r=1; r <= thisTableData.recordcount; r++) {
 					transaction {

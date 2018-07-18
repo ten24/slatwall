@@ -154,7 +154,14 @@ class SWListingDisplayController{
             this.multipleCollectionDeffered.reject();
         }
 
-         if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()] && (angular.isUndefined(this.personalCollectionIdentifier) || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))){
+         if(
+             this.usingPersonalCollection &&
+             this.localStorageService.hasItem('selectedPersonalCollection') &&
+             this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()] &&
+             (angular.isUndefined(this.personalCollectionIdentifier) ||
+             (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) &&
+             this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))
+        ){
             var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
             personalCollection.setDisplayProperties('collectionConfig');
             personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
@@ -165,6 +172,7 @@ class SWListingDisplayController{
                 if(data.pageRecords.length){
 
                     this.collectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
+                    this.collectionConfig.setCurrentPage(1); //even if the saved collection config has a current page, we want to be on page 1 here
                     this.collectionObject = this.baseEntityName;
 
                     this.$timeout(()=>{
