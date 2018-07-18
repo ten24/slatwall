@@ -6,3 +6,4 @@ metaDismiss.txt.cfm
 password.txt.cfm
 config.json
 resourceBundles/*.json
+dbDataChecksums.txt.cfm
