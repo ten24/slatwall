@@ -159,7 +159,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						}
 						var index = findNoCase(filePath, checksumList);
 						if(index != 0){
-							var identifierToDelete = mid(checksumList, index, len(fileName) + 33); 
+							var identifierToDelete = mid(checksumList, index, len(filePath) + 33); 
 							var listIndexToDelete = listFindNoCase(checksumList, identifierToDelete);
 							checksumList = listDeleteAt(checksumList, listIndexToDelete); 	
 						}
@@ -191,6 +191,7 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public boolean function loadDataFromXMLRaw(required string xmlRaw, boolean ignorePreviouslyInserted=true) {
 		var xmlRawEscaped = replace(xmlRaw,"&","&amp;","all");
+		
 		var xmlData = xmlParse(xmlRawEscaped);
 		var columns = {};
 		var idColumns = "";
@@ -223,6 +224,11 @@ component accessors="true" output="false" extends="HibachiService" {
 				// Check for a custom dataType for this column
 				if(structKeyExists(columns[ thisColumnName ], 'dataType')) {
 					columnRecord.dataType = columns[ thisColumnName ].dataType;
+				}
+				
+				//check if the column needs to be decoded
+				if(structKeyExists(columns[ thisColumnName ], 'decodeForHTML') && columns[ thisColumnName ].decodeForHTML) {
+					columnRecord.value = DecodeforHTML(columnRecord.value);
 				}
 
 				// Add this column record to the insert
@@ -524,6 +530,9 @@ component accessors="true" output="false" extends="HibachiService" {
 
 				generatedIDStruct[ tableName ] = {};
 
+				if (isNull(thisTableData)){
+					continue;
+				}
 				// Loop over each record to insert or update
 				for(var r=1; r <= thisTableData.recordcount; r++) {
 					transaction {

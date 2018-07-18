@@ -77,6 +77,18 @@
 			return collection;
 		}
 		
+		public any function getCollectionReportList(string entityName, struct data={}){
+		
+			var collection = getService('hibachiCollectionService').newCollection(argumentcollection=arguments);
+			collection.setReportFlag(1);
+			var addDefaultColumns = true;
+			if(structKeyExists(arguments.data, 'defaultColumns')){
+				addDefaultColumns = arguments.data.defaultColumns;
+			}
+			collection.setCollectionObject(arguments.entityName,addDefaultColumns);
+			return collection;
+		}
+		
 		public any function list(required string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			return getHibachiDAO().list(argumentcollection=arguments);
 		}
@@ -1298,6 +1310,12 @@
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
 				var excludesList = arguments.propertyIdentifier&'.'&primaryIDName;
+				//filter out bad data
+				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'NULL','IS NOT');
+				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,' ','!=');
+				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'','!=');
+				
+				
 				entityCollectionList.setDistinct(true);
 				
 				//entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);
@@ -1323,7 +1341,10 @@
 				entityCollectionList.setDisplayProperties(displayProperties);
 				entityCollectionList.setDistinct(true);
 				var excludesList = arguments.propertyIdentifier;
+				//filter out bad data
 				entityCollectionList.addFilter(arguments.propertyIdentifier,'NULL','IS NOT');
+				entityCollectionList.addFilter(arguments.propertyIdentifier,' ','!=');
+				entityCollectionList.addFilter(arguments.propertyIdentifier,'','!=');
 				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
 				
 			}

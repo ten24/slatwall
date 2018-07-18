@@ -63,6 +63,7 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 	property name="allowUpdateFlag" ormtype="boolean";
 	property name="allowDeleteFlag" ormtype="boolean";
 	property name="allowProcessFlag" ormtype="boolean";
+	property name="allowReportFlag" ormtype="boolean";
 	property name="entityClassName" ormtype="string";
 	property name="propertyName" ormtype="string";
 	property name="processContext" ormtype="string";
