@@ -75,6 +75,10 @@ component output="false" accessors="true" extends="HibachiController" {
         ) {
             StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
         }
+        
+        if(structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET'){
+            getHibachiScope().setPersistSessionFlag(false);
+        }
 
         //could possibly check whether we want a different contentType other than json in the future example:xml
 
