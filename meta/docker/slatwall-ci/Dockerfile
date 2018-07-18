@@ -1,6 +1,6 @@
 # Slatwall CI Build
-FROM lucee/lucee52:latest
-MAINTAINER Greg Moser, greg.moser@ten24web.com
+FROM 314297265345.dkr.ecr.us-east-1.amazonaws.com/lucee5:latest-dev
+MAINTAINER Sumit Verma, sumit.verma@ten24web.com
 
 RUN apt-get clean
 RUN apt-get update
