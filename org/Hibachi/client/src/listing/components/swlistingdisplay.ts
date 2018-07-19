@@ -155,12 +155,19 @@ class SWListingDisplayController{
         }
 
          if(
-             this.usingPersonalCollection &&
-             this.localStorageService.hasItem('selectedPersonalCollection') &&
-             this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()] &&
-             (angular.isUndefined(this.personalCollectionIdentifier) ||
-             (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) &&
-             this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))
+             (this.baseEntityName) 
+             && (
+                 this.usingPersonalCollection 
+                 && this.localStorageService.hasItem('selectedPersonalCollection') 
+                 && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]
+             )
+             && (
+                angular.isUndefined(this.personalCollectionIdentifier) 
+                || (
+                    angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) 
+                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier
+                )
+            )
         ){
             var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
             personalCollection.setDisplayProperties('collectionConfig');
@@ -191,7 +198,7 @@ class SWListingDisplayController{
             this.processCollection();
         }
         
-        if(!this.reportAction){
+        if(!this.reportAction && this.baseEntityName){
             this.reportAction = 'entity.reportlist'+this.baseEntityName.toLowerCase();
         }
 
