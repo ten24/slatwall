@@ -14,6 +14,7 @@ class SWListingControlsController {
     private filtersClosed:boolean=true;
     private personalCollectionsClosed:boolean=true;
     private showExport:boolean; 
+    private showReport:boolean;
     private showFilters:boolean;
     private showPersonalCollections:boolean;
     private showPrintOptions:boolean; 
@@ -41,6 +42,9 @@ class SWListingControlsController {
         }
         if(angular.isUndefined(this.showExport)){
             this.showExport = true; 
+        }
+        if(angular.isUndefined(this.showReport)){
+            this.showReport = true; 
         }
         
         if(angular.isUndefined(this.showToggleSearch)){
@@ -195,6 +199,7 @@ class SWListingControls  implements ng.IDirective{
         collectionConfig : "=",
         tableId : "=?",
         getCollection : "&",
+        showReport:"=?",
         showExport: "=?",
         showFilters : "=?",
         showPrintOptions: "=?",

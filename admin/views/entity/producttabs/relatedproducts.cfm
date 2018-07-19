@@ -52,9 +52,18 @@ Notes:
 
 <cfparam name="rc.product" type="any" />
 
+<cfset selectedRelatedProductsIDs = "" />
+<cfset relatedProductCollectionList = rc.product.getRelatedProductsCollectionList()/>
+<cfset relatedProductCollectionList.setDisplayProperties('relatedProduct.productID')/>
+<cfset relatedProductRecords = relatedProductCollectionList.getRecords()/> 
+<cfloop array="#relatedProductRecords#" index="local.rp">
+	<cfset selectedRelatedProductsIDs = listAppend(selectedRelatedProductsIDs, local.rp['relatedProduct_productID']) />
+</cfloop>
+
 <cfoutput>
     <sw-related-products data-product-id="#rc.product.getProductID()#"
                           data-edit="#rc.edit#"
+                          data-selected-related-product-ids="#selectedRelatedProductsIDs#"
                           data-product-sort-property="relatedProduct.productName"
                           data-product-sort-default-direction="asc"
                           >

@@ -1,4 +1,132 @@
-<sw-listing-display data-multi-slot="true"
+<sw-tab-group>
+    <sw-tab-content name="Related Products">
+        <sw-listing-display
+            data-multi-slot="true"
+            data-edit="swRelatedProducts.edit"
+            data-custom-listing-controls="true"
+            data-has-action-bar="false"
+            data-administrative-count="1"
+            data-base-entity-name="ProductRelationship"
+            data-name="addProductRelationships"
+            data-show-order-by="false"
+            data-administrative-count="1"
+            data-sortable-field-name="relatedProductSortOrder"
+            data-show-export="false"
+            data-show-report="false"
+        >
+            
+            <sw-listing-columns>
+                <sw-listing-column data-property-identifier="relatedProduct.productName"
+                                   data-fallback-property-identifiers="productName"
+                                   data-action="admin:entity.detailproduct"
+                                   data-query-string="productID=${relatedProduct.productID}">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="relatedProduct.productCode"
+                                   data-fallback-property-identifiers="productCode">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="relatedProduct.productType.productTypeName"
+                                   data-fallback-property-identifiers="productType_productTypeName">
+                </sw-listing-column>
+                <sw-collection-column data-property-identifier="relatedProduct.activeFlag"
+                                      data-fallback-property-identifiers="activeFlag"
+                                      >
+                </sw-collection-column>
+                <sw-collection-column data-property-identifier="relatedProduct.publishedFlag"
+                                      data-fallback-property-identifiers="publishedFlag"
+                                      >
+                </sw-collection-column>
+                <sw-collection-column data-property-identifier="relatedProduct.defaultSku.price"
+                                      data-fallback-property-identifiers="defaultSku.price"
+                                      data-is-visible="true">
+                </sw-collection-column>
+                <sw-collection-column data-property-identifier="product.productID"
+                                      data-is-visible="false">
+                </sw-collection-column>
+                <sw-collection-column data-property-identifier="relatedProduct.productID"
+                                      data-fallback-property-identifiers="productID"
+                                      data-is-visible="false" >
+                </sw-collection-column>
+                
+            </sw-listing-columns>
+
+            <sw-collection-configs>
+                <sw-collection-config data-entity-name="ProductRelationship"
+                                      data-in-listing-display="true"
+                                      data-all-records="false">
+                    <sw-collection-columns>
+                        <sw-listing-column data-property-identifier="relatedProduct.productCode"
+                                   data-fallback-property-identifiers="productCode">
+                        </sw-listing-column>
+                        <sw-listing-column data-property-identifier="relatedProduct.productType.productTypeName"
+                                           data-fallback-property-identifiers="productType_productTypeName">
+                        </sw-listing-column>
+                        <sw-collection-column data-property-identifier="relatedProduct.activeFlag"
+                                              data-fallback-property-identifiers="activeFlag"
+                                              data-is-visible="true">
+                        </sw-collection-column>
+                        <sw-collection-column data-property-identifier="relatedProduct.publishedFlag"
+                                              data-fallback-property-identifiers="publishedFlag"
+                                              data-is-visible="true">
+                        </sw-collection-column>
+                        <sw-collection-column data-property-identifier="relatedProduct.defaultSku.price"
+                                              data-fallback-property-identifiers="defaultSku.price"
+                                              data-is-visible="true">
+                        </sw-collection-column>
+                        <sw-collection-column data-property-identifier="product.productID"
+                                              data-is-visible="false">
+                        </sw-collection-column>
+                        <sw-collection-column data-property-identifier="relatedProduct.productID"
+                                              data-fallback-property-identifiers="productID"
+                                              data-is-visible="false" >
+                        </sw-collection-column>
+                    </sw-collection-columns>
+                    <sw-collection-filters>
+                        <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swRelatedProducts.productId}}"></sw-collection-filter>
+                    </sw-collection-filters>
+                </sw-collection-config>
+            </sw-collection-configs>
+
+            <sw-custom-listing-controls>
+                <div class="row s-table-inner-nav">
+                    <div class="col-md-9">
+                        <sw-typeahead-multiselect
+                                    data-placeholder-rb-key="define.searchandassignproducts"
+                                    data-collection-config="swRelatedProducts.collectionConfig"
+                                    data-selected-collection-config="swRelatedProducts.alreadySelectedProductsCollectionConfig"
+                                    data-in-listing-display="true"
+                                    data-typeahead-data-key="{{swRelatedProducts.typeaheadDataKey}}"
+                                    data-selection-field-name="relatedProductIDList"
+                                    data-fallback-properties-to-compare="relatedProduct_productID"
+                                    data-disabled="!swRelatedProducts.edit"
+                                    data-right-content-property-identifier="productType_productTypeNamePath"
+                                    >
+                            <sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
+                        </sw-typeahead-multiselect>
+                    </div>
+        
+                        <sw-order-by-controls
+                                    data-in-listing-display="true"
+                                    data-collection-config="swRelatedProducts.alreadySelectedProductsCollectionConfig"
+                                    data-sort-default-direction-field-name="productSortDefaultDirection"
+                                    data-sort-property-field-name="productSortProperty"
+                                    data-initial-sort-default-direction="{{swRelatedProducts.productSortDefaultDirection}}"
+                                    data-initial-sort-property="{{swRelatedProducts.productSortProperty}}"
+                                    data-edit="swRelatedProducts.edit"
+                                    >
+                        </sw-order-by-controls>
+        
+        
+                </div>
+            </sw-custom-listing-controls>
+
+             <sw-listing-delete-action>
+                <sw-typeahead-remove-selection data-disabled="!swRelatedProducts.edit" data-typeahead-data-key="{{swRelatedProducts.typeaheadDataKey}}"></sw-typeahead-remove-selection>
+            </sw-listing-delete-action>
+        </sw-listing-display>
+    </sw-tab-content>
+
+    <sw-tab-content name="Site View">
+        <!--data-multi-slot="true"
                     data-custom-listing-controls="true"
                     data-edit="swRelatedProducts.edit"
                     data-has-search="true"
@@ -7,97 +135,97 @@
                     data-has-action-bar="false"
                     data-show-order-by="false"
                     data-administrative-count="1"
-                    data-sortable-field-name="relatedProductSortOrder"
-                    >
-                    <sw-collection-configs>
-                        <sw-collection-config data-entity-name="ProductRelationship"
-                                              data-all-records="false"
-                                              data-in-listing-display="true">
-                            <sw-collection-columns>
-                                <sw-collection-column data-property-identifier="productRelationshipID"
-                                                      data-fallback-property-identifiers="productRelationshipID"
-                                                      data-is-visible="false">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="sortOrder"
-                                                      data-is-visible="false">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="relatedProduct.productName"
-                                                      data-fallback-property-identifiers="productName"
-                                                      data-is-visible="true" >
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="relatedProduct.productCode"
-                                                      data-fallback-property-identifiers="productCode"
-                                                      data-is-visible="true">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="relatedProduct.productType.productTypeName"
-                                                      data-fallback-property-identifiers="productType.productTypeName"
-                                                      data-is-visible="true">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="relatedProduct.activeFlag"
-                                                      data-fallback-property-identifiers="activeFlag"
-                                                      data-is-visible="true">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="relatedProduct.publishedFlag"
-                                                      data-fallback-property-identifiers="publishedFlag"
-                                                      data-is-visible="true">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="relatedProduct.defaultSku.price"
-                                                      data-fallback-property-identifiers="defaultSku.price"
-                                                      data-is-visible="true">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="product.productID"
-                                                      data-is-visible="false">
-                                </sw-collection-column>
-                                <sw-collection-column data-property-identifier="relatedProduct.productID"
-                                                      data-fallback-property-identifiers="productID"
-                                                      data-is-visible="false" >
-                                </sw-collection-column>
-                            </sw-collection-columns>
-                            <sw-collection-filters>
-                                <sw-collection-filter data-property-identifier="product.productID"
-                                                    data-comparison-operator="="
-                                                    data-comparison-value="{{swRelatedProducts.productId}}">
-                                </sw-collection-filter>
-                            </sw-collection-filters>
-                        </sw-collection-config>
-                    </sw-collection-configs>
-
-                    <sw-custom-listing-controls>
-                        <div class="row s-table-inner-nav">
-                            <div class="col-md-9">
-                                <sw-typeahead-multiselect
-                                            data-placeholder-rb-key="define.searchandassignproducts"
-                                            data-collection-config="swRelatedProducts.collectionConfig"
-                                            data-selected-collection-config="swRelatedProducts.alreadySelectedProductsCollectionConfig"
-                                            data-in-listing-display="true"
-                                            data-typeahead-data-key="{{swRelatedProducts.typeaheadDataKey}}"
-                                            data-selection-field-name="relatedProductIDList"
-                                            data-fallback-properties-to-compare="relatedProduct_productID"
-                                            data-disabled="!swRelatedProducts.edit"
-                                            data-right-content-property-identifier="productType_productTypeNamePath"
-                                            >
-                                    <sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
-                                </sw-typeahead-multiselect>
-                            </div>
-
-                                <sw-order-by-controls
-                                            data-in-listing-display="true"
-                                            data-collection-config="swRelatedProducts.alreadySelectedProductsCollectionConfig"
-                                            data-sort-default-direction-field-name="productSortDefaultDirection"
-                                            data-sort-property-field-name="productSortProperty"
-                                            data-initial-sort-default-direction="{{swRelatedProducts.productSortDefaultDirection}}"
-                                            data-initial-sort-property="{{swRelatedProducts.productSortProperty}}"
-                                            data-edit="swRelatedProducts.edit"
-                                            >
-                                </sw-order-by-controls>
-
-
-                        </div>
-                    </sw-custom-listing-controls>
-
-
-                    <sw-listing-delete-action>
-                        <sw-typeahead-remove-selection data-disabled="!swRelatedProducts.edit" data-typeahead-data-key="{{swRelatedProducts.typeaheadDataKey}}"></sw-typeahead-remove-selection>
-                    </sw-listing-delete-action>
-
-</sw-listing-display>
+                    data-sortable-field-name="relatedProductSortOrder"-->
+        <sw-listing-display
+            data-multiselect-field-name="relatedProductIDList"
+            data-multiselect-id-paths="{{swRelatedProducts.selectedRelatedProductIds}}"
+            data-edit="swRelatedProductsPages.edit"
+            data-has-search="true"
+            data-has-action-bar="false"
+            data-record-edit-action="admin:entity.editproduct"
+            data-custom-listing-controls="true"
+            data-is-angular-route="false"
+            data-get-child-count="true"
+            data-multi-slot="true"
+            data-base-entity-name="Product"
+            data-show-export="false"
+            data-show-report="false"
+        >
+            <sw-collection-configs>
+                <sw-collection-config data-entity-name="Product"
+                                      data-in-listing-display="true"
+                                      data-filter-flag="false"
+                                      data-all-records="false">
+                    <sw-collection-columns>
+                        <sw-collection-column data-property-identifier="productID"
+                                              data-is-visible="false"
+                                              data-is-searchable="false"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-tdclass="primary"
+                                              data-property-identifier="productName"
+                                              data-fallback-property-identifiers="productName"
+                                              data-is-visible="true"
+                                              data-is-searchable="true"
+                                              data-is-keyword-column="false"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="productType.productTypeName"
+                                              data-is-visible="true"
+                                              data-is-searchable="true"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="activeFlag"
+                                              data-is-visible="true"
+                                              data-is-searchable="false"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                    </sw-collection-columns>
+                </sw-collection-config>
+            </sw-collection-configs>
+            <sw-custom-listing-controls>
+                <div class="row s-table-inner-nav">
+                    <div class="col-md-7">
+                        <sw-typeahead-multiselect
+                                    data-placeholder-rb-key="define.searchandassignproducts"
+                                    data-collection-config="swRelatedProducts.collectionConfig"
+                                    data-selected-collection-config="swRelatedProducts.alreadySelectedProductsCollectionConfig"
+                                    data-in-listing-display="true"
+                                    data-typeahead-data-key="{{swRelatedProducts.typeaheadDataKey}}"
+                                    data-selection-field-name="relatedProductIDList"
+                                    data-fallback-properties-to-compare="relatedProduct_productID"
+                                    data-disabled="!swRelatedProducts.edit"
+                                    data-right-content-property-identifier="productType_productTypeNamePath"
+                                    >
+                            <sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
+                        </sw-typeahead-multiselect>
+                        
+                    </div>
+                    
+                    <div class="col-sm-2">
+                        <sw-site-selector data-filter-property-identifier="sites.siteID"
+                        ></sw-site-selector>
+                    </div>
+        
+                    <sw-order-by-controls
+                                data-in-listing-display="true"
+                                data-collection-config="swRelatedProducts.alreadySelectedProductsCollectionConfig"
+                                data-sort-default-direction-field-name="productSortDefaultDirection"
+                                data-sort-property-field-name="productSortProperty"
+                                data-initial-sort-default-direction="{{swRelatedProducts.productSortDefaultDirection}}"
+                                data-initial-sort-property="{{swRelatedProducts.productSortProperty}}"
+                                data-edit="swRelatedProducts.edit"
+                                >
+                    </sw-order-by-controls>
+        
+        
+                    
+                </div>
+            </sw-custom-listing-controls>
+        </sw-listing-display>
+    </sw-tab-content>
+</sw-tab-group>
+<!---
