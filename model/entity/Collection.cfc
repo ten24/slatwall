@@ -2935,18 +2935,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		var HQL = '';
 		var selectHQL = 'SELECT #isDistinctValue#';
-		var columnCount = 0;
-
-
-		if(arguments.forExport){
-			columnCount = getColumnCountByExportableColumns(arguments.columns);
-		}else{
-			columnCount = arraylen(arguments.columns);
-		}
-
-
+		var columnCount = arraylen(arguments.columns);
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
+		
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
 			if(isReport() && hasPeriodColumn()){
