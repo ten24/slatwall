@@ -85686,6 +85686,9 @@ var SWListingControlsController = /** @class */ (function () {
         if (angular.isUndefined(this.showExport)) {
             this.showExport = true;
         }
+        if (angular.isUndefined(this.showReport)) {
+            this.showReport = true;
+        }
         if (angular.isUndefined(this.showToggleSearch)) {
             this.showToggleSearch = true;
         }
@@ -85726,6 +85729,7 @@ var SWListingControls = /** @class */ (function () {
             collectionConfig: "=",
             tableId: "=?",
             getCollection: "&",
+            showReport: "=?",
             showExport: "=?",
             showFilters: "=?",
             showPrintOptions: "=?",
