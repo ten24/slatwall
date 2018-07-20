@@ -86,12 +86,25 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return placeholders;
 	}
 	
+	public boolean function isValidDeliveryQuantity(){
+		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
+			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
+				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
+				var thisQuantity = getOrderDeliveryItems()[i].quantity;
+				if( thisQuantity > orderItem.getQuantityUndelivered() ){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	public boolean function isValidQuantity(){
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
 			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
 				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
 				var thisQuantity = getOrderDeliveryItems()[i].quantity;
-				if(thisQuantity > orderItem.getQuantityUndelivered()) {
+				if( orderItem.getStock().getSku().setting('skuTrackInventoryFlag') && thisQuantity > orderItem.getStock().getQOH() ) {
 					return false;
 				}
 			}
