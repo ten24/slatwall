@@ -493,7 +493,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var shippingMethodRatesRequestBean in shippingMethodRatesRequestBeans){
 			arrayAppend(fulfillmentMethodOptionsCacheKey,shippingMethodRatesRequestBean.getJSON());
 		}
-		var fulfillmentMethodOptionsCacheKey = hash(serializeJson(fulfillmentMethodOptionsCacheKey)&orderfulfillmentaddress & arguments.orderFulfillment.getOrder().getSubtotalAfterItemDiscounts(),'md5');
+		var fulfillmentMethodOptionsCacheKey = hash(serializeJson(fulfillmentMethodOptionsCacheKey)&orderfulfillmentaddress & arguments.orderFulfillment.getOrder().getSubtotalAfterItemDiscounts() & arguments.orderFulfillment.getTotalShippingQuantity() & arguments.orderFulfillment.getSubtotalAfterDiscounts(),'md5');
 		
 		if(isNull(arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey()) || arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey() != fulfillmentMethodOptionsCacheKey){
 			
