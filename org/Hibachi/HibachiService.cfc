@@ -1161,7 +1161,11 @@
 				var properties = getPropertiesByEntityName(arguments.entityName);
 				for(var property in properties) {
 			        // Look for any that start with the calculatedXXX naming convention
-			        if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
+			         if (
+			        	( left(property.name, 10) == "calculated" && ( !structKeyExists(property, "persistent") || property.persistent == "true" ) ) 
+			        	||
+			        	( structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate ) 
+			        ) {
 			        	variables[cacheKey] = true;
 			        	break;
 			        }
