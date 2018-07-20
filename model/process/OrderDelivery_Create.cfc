@@ -104,7 +104,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
 				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
 				var thisQuantity = getOrderDeliveryItems()[i].quantity;
-				if( orderItem.getStock().getSku().setting('skuTrackInventoryFlag') && thisQuantity > orderItem.getStock().getQOH() ) {
+				var stock = getService('StockService').getStockBySkuAndLocation(
+					sku=orderItem.getSku(),
+					location=getLocation()
+				);
+				if( orderItem.getStock().getSku().setting('skuTrackInventoryFlag') && thisQuantity > stock.getQOH() ) {
 					return false;
 				}
 			}
