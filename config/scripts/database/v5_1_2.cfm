@@ -65,7 +65,7 @@ Notes:
 	</cfif>
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update workflowtask taskConditionsConfig">
-		<cfset local.scriptHasErrors = true />
+		<cfthrow detail="Part of Script v5_1.2 had errors when running">
 	</cfcatch>
 </cftry>
 

@@ -348,7 +348,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var locationID = '';
 		if(arguments.entity.getEntityName() eq "SlatwallStock") {
 			skuID = arguments.entity.getSku().getSkuID();
-			location = arguments.entit.getLocation().getLocationID();
+			location = arguments.entity.getLocation().getLocationID();
 		} else {
 			skuID = arguments.entity.getSkuID();
 		}

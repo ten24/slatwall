@@ -538,7 +538,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup");
 		var pageRecords = myProductCollection.getPageRecords();
-
+		debug(myProductCollection.getHQL());
+		debug(myProductCollection.getCollectionConfigStruct());
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
 
 		myProductCollection = variables.entityService.getProductCollectionList();
@@ -556,7 +557,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
 		var pageRecords = myProductCollection.getPageRecords();
-
+		
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
 
 	}
@@ -575,12 +576,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					skuID = '',
 					skuCode= createUUID(),
-					activeFlag = 'false'
+					activeFlag = false
 				},
 				{
 					skuID = '',
 					skuCode= createUUID(),
-					activeFlag = 'false'
+					activeFlag = false
 				}
 			]
 		};
@@ -594,23 +595,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			skus = [
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'aa'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ab'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ac'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ad'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID(),
+					skuCode= 'ae'&createUUID(),
 					activeFlag = 'false'
 				}
 			]
@@ -618,15 +619,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//By default Active flag is true.
 		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
 		
-		
-		
 		var myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription,activeFlag');
 		myProductCollection.addFilter('productName','ProductUnitTest');
-		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myProductCollection.addFilter('productDescription',trim(uniqueNumberForDescription));
 		myProductCollection.addFilter('skus.activeFlag','YES');
-		var pageRecords = myProductCollection.getPageRecords();
+	
+		assertEquals(myProductCollection.getRecordsCount(),1);
 		
+		var pageRecords = myProductCollection.getPageRecords();
+
+
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 	}
 
@@ -2035,7 +2038,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(column);
-		debug(aggregateHQL);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
 	}
@@ -2462,7 +2464,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productName');
 		myCollection.setOrderBy('productName|asc');
-
+		
 		var recordsCount = myCollection.getRecordsCount();
 
 		assertTrue(recordsCount == 1,  "Wrong amount of products returned! Expecting 1 record but returned #recordsCount#");
@@ -2494,7 +2496,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productID,productName');
 		myCollection.setOrderBy('productName|asc');
-
 		var recordsCount = myCollection.getRecordsCount();
 
 		assertTrue(recordsCount == 2,  "Wrong amount of products returned! Expecting 2 record but returned #recordsCount#");

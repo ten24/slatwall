@@ -52,6 +52,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="minQuantity" ormtype="integer" default="0";
 	property name="maxQuantity" ormtype="integer" default="0";
+	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 
 	// Related Object Properties (many-to-one)
 	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
@@ -67,8 +69,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedQNC" ormtype="float";
 	property name="calculatedQOQ" ormtype="float";
-	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
-	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
@@ -107,6 +107,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
 	property name="QNC" persistent="false";
+	property name="QOQ" persistent="false";
 
 	//Derived Properties
 	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
@@ -225,6 +226,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	public numeric function getAveragePriceSold(required string currencyCode="USD"){
 		return getDao('stockDao').getAveragePriceSold(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public any function getQOQ() {
+		return getQuantity("QOQ");
 	}
 
 	public any function getQATS() {

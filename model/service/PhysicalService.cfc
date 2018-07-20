@@ -147,7 +147,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getCountFile()) ) {
-			
+
+			getService('hibachiTagService').cfsetting(requesttimeout="600");			
 			// Get the temp directory
 			var tempDir = getHibachiTempDirectory();
 			
@@ -155,7 +156,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var documentData = fileUpload( tempDir,'countFile','','makeUnique' );
 			
 			//check uploaded file if its a valid text file
-			if( documentData.serverFileExt != "txt" ){
+			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv"  ){
 				
 				// Make sure that nothing is persisted
 				getHibachiScope().setORMHasErrors( true );
@@ -309,7 +310,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				cycleCountBatchItem.getStock().getSku().updateCalculatedProperties(true);
 			}
 		}
-		newPhysical = this.savePhysical(newPhysical);
+		
+		//Need to validate the physical in case there were no cycleCountBatchItem with a quantity
+		newPhysical.validate(context="cycleCountBatchPhysicalCount");
+		
 		if(newPhysical.hasErrors()) {
 			arguments.cycleCountBatch.addErrors(newPhysical.getErrors());
 		} else {
@@ -326,6 +330,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
+	
+	public any function exportPhysical(){
+		
+		return getService('hibachiService').export(getPhysicalDiscrepancyQuery(argumentCollection=arguments),'skuCode,locationName,productName,QOH,discrepancy');
+	}
 	
 	// ======================  END: Status Methods ============================
 	
@@ -346,29 +355,28 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.entity;
 	}
 
-	public any function saveCycleCountBatch(required any cycleCountBatch, required struct data) {
+	public any function processCycleCountBatch_create(required any cycleCountBatch, required any processObject, struct data={}) {
 		arguments.cycleCountBatch.setCycleCountBatchStatusType( getService('TypeService').getTypeBySystemCode('ccbstOpen'));
+			
+		var cycleCountGroupCollectionList = getService('physicalService').getCycleCountGroupCollectionList();
+		cycleCountGroupCollectionList.addFilter("cycleCountGroupID",arguments.processObject.getCycleCountGroups(), "IN");
 		
-		if(!arrayLen(arguments.cycleCountBatch.getCycleCountBatchItems())) {
-			var cycleCountGroupSmartList = getService('physicalService').getCycleCountGroupSmartList();
-			cycleCountGroupSmartList.addFilter('activeFlag',1);
-			for(var cycleCountGroup in cycleCountGroupSmartList.getRecords()) {
-				var skuList = cycleCountGroup.getCycleCountGroupsSkusCollection().getPageRecords();
-				for(var skuDetails in cyclecountgroup.getCycleCountGroupsSkusCollection().getPageRecords(formatRecords=false)) {
-					var sku = getHibachiScope().getEntity('Sku', skuDetails['skuID']);
-					for(var stock in sku.getStocks()) {
-						if(stock.hasInventory()) {
-							var newCycleCountBatchItem = getHibachiScope().newEntity('cycleCountBatchItem');
-							newCycleCountBatchItem.setCycleCountBatch(arguments.cycleCountBatch);
-							newCycleCountBatchItem.setStock(stock);
-							getHibachiScope().saveEntity(newCycleCountBatchItem);
-						}
-					}
-				}
-			}
+		for (var cycleCountGroupStruct in cycleCountGroupCollectionList.getRecords()){
+			var cycleCountGroup = getService("physicalService").getCycleCountGroup(cycleCountGroupStruct.cycleCountGroupID);
+			
+			arguments.cycleCountBatch.addCycleCountGroup(cycleCountGroup);
+			
+			for(var stockDetails in cyclecountgroup.getCycleCountGroupsStockCollection().getRecords(formatRecords=false)) {
+					var stock = getService('StockService').getStock( stockDetails['stockID'] );
+		
+					var newCycleCountBatchItem = getHibachiScope().newEntity('cycleCountBatchItem');
+					newCycleCountBatchItem.setCycleCountBatch(arguments.cycleCountBatch);
+					newCycleCountBatchItem.setStock(stock);
+					getHibachiScope().saveEntity(newCycleCountBatchItem);
+				}	
 		}
 		
-		return super.save(arguments.cycleCountBatch, arguments.data);
+		return save(arguments.cycleCountBatch, arguments.data);
 	}
 	
 	// ======================  END: Save Overrides ============================

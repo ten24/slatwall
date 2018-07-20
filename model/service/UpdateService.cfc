@@ -201,38 +201,44 @@ Notes:
 	<cffunction name="runScripts">
 		<cfset var scripts = this.listUpdateScriptOrderByLoadOrder() />
 		<cfloop array="#scripts#" index="local.script">
-			<cfif isNull(script.getSuccessfulExecutionCount())>
-				<cfset script.setSuccessfulExecutionCount(0) />
-			</cfif>
-			<cfif isNull(script.getExecutionCount())>
-				<cfset script.setExecutionCount(0) />
-			</cfif>
-			<!--- Run the script if never ran successfully or success count < max count ---->
-			<cfif isNull(script.getMaxExecutionCount()) OR script.getSuccessfulExecutionCount() EQ 0 OR script.getSuccessfulExecutionCount() LT script.getMaxExecutionCount()>
-				<!---- try to run the script --->
-				<cftry>
-					<!--- if it's a database script look for db specific file --->
-					<cfif findNoCase("database/",script.getScriptPath())>
-						<cfset var dbSpecificFileName = replaceNoCase(script.getScriptPath(),".cfm",".#getApplicationValue("databaseType")#.cfm") />
-						<cfif fileExists(expandPath("/Slatwall/config/scripts/#dbSpecificFileName#"))>
-							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#dbSpecificFileName#" />
-						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
-							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
-						<cfelse>
-							<cfthrow message="update script file doesn't exist #getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
-						</cfif>
-					</cfif>
-					<cfset script.setSuccessfulExecutionCount(script.getSuccessfulExecutionCount()+1) />
-					<cfcatch>
-						<!--- failed, let's log this execution count --->
-						<cfset script.setExecutionCount(script.getExecutionCount()+1) />
-					</cfcatch>
-				</cftry>
-				<cfset script.setLastExecutedDateTime(now()) />
-				<cfset getDao('HibachiDao').save(script) />
-				<cfset getDao('HibachiDao').flushORMSession()/>
-			</cfif>
+			<cfset runScript(local.script)/>
 		</cfloop>
+	</cffunction>
+	
+	<cffunction name="runScript">
+		<cfargument name="script" type="any"/>
+		<cfif isNull(arguments.script.getSuccessfulExecutionCount())>
+			<cfset arguments.script.setSuccessfulExecutionCount(0) />
+		</cfif>
+		<cfif isNull(arguments.script.getExecutionCount())>
+			<cfset arguments.script.setExecutionCount(0) />
+		</cfif>
+		<!--- Run the script if never ran successfully or success count < max count ---->
+		<cfif isNull(arguments.script.getMaxExecutionCount()) OR arguments.script.getSuccessfulExecutionCount() EQ 0 OR arguments.script.getSuccessfulExecutionCount() LT arguments.script.getMaxExecutionCount()>
+			<!---- try to run the script --->
+			<cftry>
+				<!--- if it's a database script look for db specific file --->
+				<cfif findNoCase("database/",arguments.script.getScriptPath())>
+					<cfset var dbSpecificFileName = replaceNoCase(arguments.script.getScriptPath(),".cfm",".#getApplicationValue("databaseType")#.cfm") />
+					<cfif fileExists(expandPath("/Slatwall/config/scripts/#dbSpecificFileName#"))>
+						<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#dbSpecificFileName#" />
+					<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#arguments.script.getScriptPath()#"))>
+						<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#arguments.script.getScriptPath()#" />
+					<cfelse>
+						<cfthrow message="update script file doesn't exist #getHibachiScope().getBaseURL()#/config/scripts/#arguments.script.getScriptPath()#" />
+					</cfif>
+				</cfif>
+				<cfset arguments.script.setSuccessfulExecutionCount(arguments.script.getSuccessfulExecutionCount()+1) />
+				<cfcatch>
+					<!--- failed, let's log this execution count --->
+					<cfset arguments.script.setExecutionCount(arguments.script.getExecutionCount()+1) />
+					<cfset arguments.script.setUpdateScriptException(cfcatch)/>
+				</cfcatch>
+			</cftry>
+			<cfset arguments.script.setLastExecutedDateTime(now()) />
+			<cfset getDao('HibachiDao').save(arguments.script) />
+			<cfset getDao('HibachiDao').flushORMSession()/>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="getAvailableVersions">
@@ -274,7 +280,7 @@ Notes:
 		<cfargument name="overrideDataFlag" type="boolean" default="false" >
 		
 		<cfset var entityMetaData = getEntityMetaData(arguments.entityName)/>
-		<cfset var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName)/>
+		<cfset var primaryIDName = getPrimaryIDColumnNameByEntityName(arguments.entityName)/>
 		
 		<cfif getApplicationValue("databaseType") eq "MySQL">
 			
@@ -427,18 +433,23 @@ Notes:
 			//add properties
 
 			var propertyString = '';
-			if(!isNull(arguments.customEntityParser.getFilePath())){
+			if(
+				!isNull(arguments.customEntityParser.getFileContent())
+				|| !isNull(arguments.customEntityParser.getFilePath())
+			){
 				PropertyString = arguments.customEntityParser.getPropertyString();
 			}
 			if(!isNull(arguments.attributeDataQueryByEntity)){
 				propertyString = mergeAttributesIntoPropertyString(arguments.coreEntityParser,propertyString,entityName,arguments.attributeDataQueryByEntity);
 			}
 			if(len(PropertyString)){
+				
 				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
 					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
 				}
 				
 				if(arguments.coreEntityParser.hasCustomProperties()){
+				
 					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
 					
@@ -450,6 +461,7 @@ Notes:
 						arguments.coreEntityParser.setFileContent(customPropertyContent);	
 					}
 				}else{
+				
 					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString(PropertyString);
 					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount) 
 									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) & 
@@ -460,7 +472,10 @@ Notes:
 			}
 			//add functions
 			var functionString = '';
-			if(!isNull(arguments.customEntityParser.getFilePath())){
+			if(
+				!isNull(arguments.customEntityParser.getFileContent())
+				|| !isNull(arguments.customEntityParser.getFilePath())
+			){
 				functionString = arguments.customEntityParser.getFunctionString();
 			}
 			if(len(functionString)){

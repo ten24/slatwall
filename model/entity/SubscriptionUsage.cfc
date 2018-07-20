@@ -278,9 +278,10 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	public any function getMostRecentSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItem() ){
-			var subscriptionSmartList = this.getSubscriptionOrderItemsSmartList();
-			subscriptionSmartList.addOrder("createdDateTime|DESC");
-			return subscriptionSmartList.getFirstRecord();
+			var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
+			subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
+			subscriptionOrderItemSmartList.addOrder("createdDateTime|DESC");
+			return subscriptionOrderItemSmartList.getFirstRecord();
 		}
 	}
 

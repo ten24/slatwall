@@ -595,7 +595,14 @@ class SWOrderFulfillmentListController {
         //Redirect to the created fulfillmentBatch.
         this.addingBatch = false;
         if (result.data && result.data['fulfillmentBatchID']){
-            this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
+            //if url contains /Slatwall use that
+            var slatwall = "";
+            
+            slatwall = this.$hibachi.appConfig.baseURL;
+            
+            if (slatwall == "") slatwall = "/";
+            
+            this.$window.location.href = slatwall + "?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
         }
     }
 
@@ -663,7 +670,9 @@ class SWOrderFulfillmentListController {
                 }
                 else if (this.getProcessObject().data.orderItemIDList && this.getProcessObject().data.orderItemIDList.split(",").length > 0){
                     return this.getProcessObject().data.orderItemIDList.split(",").length;
-                }
+                }else{
+			return 0;
+		}
 
             } catch (error){
                 return 0; //default

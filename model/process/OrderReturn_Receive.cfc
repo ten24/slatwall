@@ -68,4 +68,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.locationIDOptions;
 	}
 	
+	public boolean function validReturnItemsQuantity(){
+		if ( isNull( this.getOrderReturnItems() ) ){
+			return false;
+		}
+		
+		for (var returnItem in this.getOrderReturnItems()){
+			if ( val(returnItem.quantity) > returnItem.unreceivedQuantity || val(returnItem.quantity) < 0 ){
+				return false;
+			}			
+		}
+		
+		return true;
+	}
+	
 }

@@ -189,6 +189,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="qoh" type="numeric" persistent="false";
+	property name="qoq" persistent="false";
 	property name="registeredUserCount" type="integer" persistent="false";
 	property name="registrantCount" type="integer" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
@@ -621,9 +622,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				if(!isNull(baseSkuPrice)){
 					variables[cacheKey] = baseSkuPrice.getPrice(); 
 				}
-				if(structKeyExists(variables,cacheKey)){
-					return variables[cacheKey];
-				}
+				
+			}
+			
+			if(structKeyExists(variables,cacheKey)){
+				return variables[cacheKey];
 			}
 			
 		}
@@ -1365,7 +1368,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				variables.lastCountedDateTime = "";
 			}
 		}
-		return variables.lastCountedDateTime;
+		if(structKeyExists(variables,'lastCountedDateTime')){
+			return variables.lastCountedDateTime;
+		}
 	}
 
 	public boolean function getTransactionExistsFlag() {

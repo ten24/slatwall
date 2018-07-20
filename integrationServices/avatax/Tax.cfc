@@ -272,10 +272,12 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					}
 				}
 			}
+		}if(structKeyExists(responseData,'ResponseHeader') && structKeyExists(responseData.responseHeader,'Explanation')){
+ 			responseBean.setData(responseData.Responseheader.Explanation);
 		}else{
-			responseBean.setData(responseData.Responseheader.Explanation);
-		}
-
+			responseBean.setData('An Error occured when attempting to retrieve tax information');
+ 		}
+		
 		return responseBean;
 	}
 	

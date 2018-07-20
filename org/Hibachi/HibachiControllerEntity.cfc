@@ -40,7 +40,9 @@ component output="false" accessors="true" extends="HibachiController" {
 		arguments.rc.entityActionDetails.saveAction = arguments.rc.entityActionDetails.thisAction;
 
 		// Setup EntityActionDetails with the correct itemEntityName
-		if(left(arguments.rc.entityActionDetails.itemName, 4) == "list") {
+		if(left(arguments.rc.entityActionDetails.itemName, 10) == "reportlist") {
+			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-10);
+		} else if(left(arguments.rc.entityActionDetails.itemName, 4) == "list") {
 			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 4) == "edit") {
 			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
@@ -127,6 +129,8 @@ component output="false" accessors="true" extends="HibachiController" {
 
 			if(left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 4) eq "list") {
 				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.list', replaceData);
+			} else if(left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 10) eq "reportlist"){
+				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.list', replaceData) & " " & getHibachiScope().rbKey('admin.define.report');
 			} else if (left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 4) eq "edit") {
 				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.edit', replaceData);
 			} else if (left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 6) eq "create") {
@@ -141,7 +145,13 @@ component output="false" accessors="true" extends="HibachiController" {
 	public void function onMissingMethod(string missingMethodName, struct missingMethodArguments) {
 
 		if(structKeyExists(arguments, "missingMethodName")) {
-			if( left(arguments.missingMethodName, 4) == "list" ) {
+		
+			if( left(arguments.missingMethodName, 10) == "reportlist" ) {
+				//use a configured version of listing
+				genericListMethod(entityName=arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName, rc=arguments.missingMethodArguments.rc);
+				//use generic view because updating all listings would be overkill
+				getFW().setView("#lcase(arguments.missingMethodArguments.rc.entityActionDetails.subsystemName)#:#lcase(arguments.missingMethodArguments.rc.entityActionDetails.sectionName)#.reportlist");
+			}else if( left(arguments.missingMethodName, 4) == "list" ) {
 				genericListMethod(entityName=arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName, rc=arguments.missingMethodArguments.rc);
 			} else if ( left(arguments.missingMethodName, 4) == "edit" ) {
 				genericEditMethod(entityName=arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName, rc=arguments.missingMethodArguments.rc);
@@ -589,7 +599,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.entityName );
 
-		entityService.invokeMethod("export#arguments.entityName#");
+		entityService.invokeMethod( "export#arguments.entityName#" , arguments.rc );
 	}
 
 	// ============================= PRIVATE HELPER METHODS

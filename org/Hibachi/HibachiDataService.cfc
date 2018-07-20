@@ -124,6 +124,14 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
 
+		var checksumFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#/') & 'custom/config/dbDataChecksums.txt.cfm';  
+	
+		if(!fileExists(checksumFilePath)){
+			fileWrite(checksumFilePath, '');	
+		} 
+
+		var checksumList = fileRead(checksumFilePath);
+
 		// Because some records might depend on other records already being in the DB (fk constraints) we catch errors and re-loop over records
 		var retryCount=0;
 		var runPopulation = true;
@@ -138,8 +146,15 @@ component accessors="true" output="false" extends="HibachiService" {
 
 			// Loop over files, read them, and send to loadData function
 			for(var i=1; i<= arrayLen(dirList); i++) {
-				if(len(dirList[i]) gt 7 && right(dirList[i],7) == "xml.cfm"){
-					var xmlRaw = FileRead(dirList[i]);
+				var filePath = dirList[i];
+				if(len(filePath) gt 7 && right(filePath,7) == "xml.cfm"){
+					var xmlRaw = FileRead(filePath);
+					var checksum = hash(xmlRaw); 
+					var identifier = filePath & ':' & checksum;
+					
+					if(listFindNoCase(checksumList, identifier) != 0){
+						continue; 
+					}	
 
 					try{
 						if(!arrayfind(request.successfulDBDataScripts,dirList[i])){
@@ -149,6 +164,14 @@ component accessors="true" output="false" extends="HibachiService" {
 								arrayAppend(request.successfulDBDataScripts,dirList[i]);
 							}
 						}
+						var index = findNoCase(filePath, checksumList);
+						if(index != 0){
+							var identifierToDelete = mid(checksumList, index, len(filePath) + 33); 
+							var listIndexToDelete = listFindNoCase(checksumList, identifierToDelete);
+							checksumList = listDeleteAt(checksumList, listIndexToDelete); 	
+						}
+						checksumList = listAppend(checksumList, identifier);
+	
 					} catch (any e) {
 						// If we haven't retried 6 times, then increment the retry counter and re-run the population
 						if(retryCount <= 6) {
@@ -163,7 +186,12 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		} while (runPopulation);
 		var insertDataFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/' & 'insertedData.txt.cfm';
-		FileWrite(insertDataFilePath, variables.insertedData);
+		
+		if(structKeyExists(variables, 'insertedData')){
+			FileWrite(insertDataFilePath, variables.insertedData);
+		}		
+
+		fileWrite(checksumFilePath, checksumList);		
 
 		return true;
 	}
@@ -215,6 +243,11 @@ component accessors="true" output="false" extends="HibachiService" {
 				// Check for a custom dataType for this column
 				if(structKeyExists(columns[ thisColumnName ], 'dataType')) {
 					columnRecord.dataType = columns[ thisColumnName ].dataType;
+				}
+				
+				//check if the column needs to be decoded
+				if(structKeyExists(columns[ thisColumnName ], 'decodeForHTML') && columns[ thisColumnName ].decodeForHTML) {
+					columnRecord.value = DecodeforHTML(columnRecord.value);
 				}
 
 				// Add this column record to the insert
@@ -315,7 +348,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				tables[ thisTableName ]["tableType"] = columnInfo["tableType"];
 
 			// get table primary key
-			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(thisEntityName);
+			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(thisEntityName);
 			//set table depth
 			tables[ thisTableName ]["depth"] = listLen(mapping["propertyIdentifier"], ".");
 
@@ -382,7 +415,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					initializeTableStruct(tables, newTableName);
 					tables[ newTableName ]["tableType"] = newColumnInfo["tableType"];
 					tables[ newTableName ]["depth"] = listLen(thisPropertyIdentifier, ".");
-					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(newEntityName);
+					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(newEntityName);
 
 					// many-to-many and one-to-many need to get added after the main object so, set a lower depth
 					if(newColumnInfo["fieldType"] == "many-to-many") {
@@ -519,6 +552,9 @@ component accessors="true" output="false" extends="HibachiService" {
 
 				generatedIDStruct[ tableName ] = {};
 
+				if (isNull(thisTableData)){
+					continue;
+				}
 				// Loop over each record to insert or update
 				for(var r=1; r <= thisTableData.recordcount; r++) {
 					transaction {

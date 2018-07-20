@@ -544,8 +544,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             }
 
                         } else {
-                        	
-                        	var orderPaymentProcessObject = arguments.paymentTransaction.getPayment().getOrder().getProcessObject('addOrderPayment');
+                        	if(arguments.paymentTransaction.getPayment().getClassName() == 'OrderPayment'){
+                        		var orderPaymentProcessObject = arguments.paymentTransaction.getPayment().getOrder().getProcessObject('addOrderPayment');
+                        	}
 		
                             // Setup amountReceived
                             if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
@@ -557,7 +558,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                 arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
                             }
                             
-                            if(orderPaymentProcessObject.hasErrors()) {
+                            if(arguments.paymentTransaction.getPayment().getClassName() == 'OrderPayment' && orderPaymentProcessObject.hasErrors()) {
 								// add errors to the paymentTransaction
 								arguments.paymentTransaction.addError('runTransaction', orderPaymentProcessObject.getErrors(), true);
 							}

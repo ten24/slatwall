@@ -356,15 +356,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return arr;
 	}
 
-	public numeric function getPaymentAmountDueAfterGiftCards(){
-		var paymentAmountDue = this.getPaymentAmountDue();
-		if(paymentAmountDue > 0 && this.hasGiftCardOrderPaymentAmount()){
-			paymentAmountDue = paymentAmountDue - this.getGiftCardOrderPaymentAmountNotReceived();
-		}
-		return paymentAmountDue;
-	}
-
-
 	public boolean function hasGiftCardOrderPaymentAmount(){
 		
 		var amount = getOrderDAO().getGiftCardOrderPaymentAmount(this.getOrderID());
@@ -795,10 +786,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getPaymentAmountDue(){
-		if(getStatusCode() == 'ostCanceled'){
-			return 0;
-		}
-		return getService('HibachiUtilityService').precisionCalculate(getService('HibachiUtilityService').precisionCalculate(getTotal() - getPaymentAmountReceivedTotal()) + getPaymentAmountCreditedTotal());
+	    if(getStatusCode() == 'ostCanceled'){
+	        return 0;
+	    }
+	    var paymentAmountDue = getService('HibachiUtilityService').precisionCalculate(getService('HibachiUtilityService').precisionCalculate(getTotal() - getPaymentAmountReceivedTotal()) + getPaymentAmountCreditedTotal());
+	    if(paymentAmountDue > 0 && this.hasGiftCardOrderPaymentAmount()){
+	        paymentAmountDue = paymentAmountDue - this.getGiftCardOrderPaymentAmountNotReceived();
+	    }
+	    return paymentAmountDue;
 	}
 	
 	//the payments have all been received

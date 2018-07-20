@@ -79,7 +79,7 @@ class SWColumnItem{
 						priority:0
 					};
 				}
-
+				
 				scope.toggleVisible = function(column){
 					if(angular.isUndefined(column.isVisible)){
 						column.isVisible = false;

@@ -587,14 +587,14 @@ Notes:
 	<cffunction name="getProductHasRelatedProduct" access="public">
 		<cfargument name="productID" type="string" required="true" />
 		<cfargument name="relatedProductID" type="string" required="true">
-		<cfreturn !isNull(ORMExecuteQuery('
-			select pr from SlatwallProductRelationship pr
+		<cfreturn ORMExecuteQuery('
+			select count(pr) from SlatwallProductRelationship pr
 			where product.productID = :productID
 			  and relatedProduct.productID = :relatedProductID
 			',
 			{productID=arguments.productID,relatedProductID=arguments.relatedProductID},
 			true
-			))>
+			)>
 	</cffunction>
 </cfcomponent>
 

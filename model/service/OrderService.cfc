@@ -835,10 +835,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
-            	if( arguments.order.getPaymentAmountDueAfterGiftCards() > giftCard.getBalanceAmount() ){
+            	if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
-					newOrderPayment.setAmount(arguments.order.getPaymentAmountDueAfterGiftCards());
+					newOrderPayment.setAmount(arguments.order.getPaymentAmountDue());
 				}
             } else {
             	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
@@ -2055,7 +2055,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
-			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		    	if(arguments.order.getPaymentAmountDue() > 0){
+					getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		    }
 
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
@@ -3324,6 +3326,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+		
+		// We need to get the thirdPartyShippingAccountIdentifier from the data struct and set it on the orderFulfillment
+		if(structKeyExists(arguments.data, 'thirdPartyShippingAccountIdentifier')){
+			var thirdPartyShippingAccountIdentifier = arguments.data.thirdPartyShippingAccountIdentifier;
+			arguments.orderfulfillment.setThirdPartyShippingAccountIdentifier(thirdPartyShippingAccountIdentifier);
+		}
 
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
@@ -3644,7 +3652,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var shippingMethodOption in arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) {
 
 			var thisOption = {};
-			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+			if(!isNull(arguments.orderFulfillment.getHandlingFee()) && arguments.orderFulfillment.getHandlingFee() > 0){
+				thisOption['name'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodName();
+			}else{
+				thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+			}
 			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
 			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
 			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();

@@ -118,6 +118,21 @@ Notes:
 		}
 
 	</cfscript>
+	
+	<cffunction name="arrayReverse">
+		<cfargument name="inArray">
+		<cfscript>
+			var outArray = ArrayNew(1);
+		    var i=0;
+		    var j = 1;
+		    for (i=ArrayLen(arguments.inArray);i GT 0;i=i-1){
+		        outArray[j] = arguments.inArray[i];
+		        j = j + 1;
+		    }
+		    return outArray;
+		</cfscript>
+	</cffunction>
+	
 	<!---
 	QueryTreeSort takes a query and efficiently (O(n)) resorts it hierarchically (parent-child), adding a Depth column that can then be used when displaying the data.
 
