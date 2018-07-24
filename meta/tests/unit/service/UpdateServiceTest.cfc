@@ -76,6 +76,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function allScriptsSucceededTest(){
+		//these scripts should have already run when the system boots and we are just checking them in the db to see that they succeeded
 		var updateScripts = variables.service.listUpdateScript();
 		for(var updateScript in updateScripts){
 			assert(updateScript.getSuccessfulExecutionCount() > 0,'script: #updateScript.getscriptPath()# failed');
@@ -94,7 +95,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var customEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); //request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
-
 		assert(len(coreEntityParser.getCustomPropertyContent()));
 		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));

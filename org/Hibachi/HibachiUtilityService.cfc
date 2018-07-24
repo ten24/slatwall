@@ -1504,6 +1504,10 @@
 		
 		<cfset signature = createS3Signature(cs,awsSecretAccessKey)>
 		 
+		<cfif right(arguments.uploadDir, 1) NEQ '/'>
+			<cfset arguments.uploadDir &= '/' />
+		</cfif>
+
 		<cffile action="readBinary" file="#arguments.uploadDir##arguments.fileName#" variable="binaryFileData">
 		
 		<cfhttp method="PUT" url="http://s3.amazonaws.com/#arguments.bucketName#/#arguments.keyName#" timeout="#arguments.HTTPtimeout#">
@@ -1553,5 +1557,30 @@
 	    </cfif>
 
 	    <cfreturn "" />
+	</cffunction>
+
+	<cffunction name="formatS3Path" returntype="string">
+		<cfargument name="filePath" required="true" type="string" />
+		<cfif find('@', arguments.filePath)>
+			<cfreturn arguments.filePath />
+		<cfelse>
+			<cfreturn replace(arguments.filePath, 's3://', 's3://#getHibachiScope().setting("globalS3AccessKey")#:#getHibachiScope().setting("globalS3SecretAccessKey")#@') />
+		</cfif>
+
+	</cffunction>
+
+	<cffunction name="isS3Path" returntype="boolean">
+		<cfargument name="filePath" required="true" type="string" />
+		<cfreturn left(arguments.filePath, 5) EQ 's3://' />
+	</cffunction>
+
+
+	<cffunction name="hibachiExpandPath" returntype="string">
+		<cfargument name="filePath" required="true" type="string" />
+		<cfif isS3Path(arguments.filePath) >
+			<cfreturn formatS3Path(arguments.filePath) />
+		<cfelse>
+			<cfreturn expandPath(arguments.filePath) />
+		</cfif>
 	</cffunction>
 </cfcomponent>

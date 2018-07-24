@@ -36,18 +36,6 @@ export function httpFactory(i:any) {
     return i.get("$http");    
 }
 
-export function appConfigFactory(i:any){
-    return i.get("appConfig");    
-}
-
-export function resourceBundlesFactory(i:any) {
-    return i.get("resourceBundles");    
-}
-
-export function attributeMetaDataFactory(i:any) {
-    return i.get("attributeMetaData");    
-}
-
 export function injectorFactory(i:any) {
     return i.get('$injector');    
 }
@@ -67,6 +55,7 @@ export function locationFactory(i:any){
 export function anchorScrollFactory(i:any) {
     return i.get('$anchorScroll');
 }
+
 
 // define angular factory provider 
 export const parseProvider = {
@@ -103,24 +92,6 @@ export const httpProvider = {
     provide    : '$http',
     useFactory : httpFactory,
     deps       : ["$injector"]  
-};
-
-export const appConfigProvider = {
-    provide    : 'appConfig',
-    useFactory : appConfigFactory,
-    deps       : ["$injector"]    
-};
-
-export const resourceBundlesProvider = {
-    provide    : "resourceBundles",
-    useFactory : resourceBundlesFactory,
-    deps       : ["$injector"]    
-};
-
-export const attributeMetaDataProvider = {
-    provide    : "attributeMetaData",
-    useFactory : attributeMetaDataFactory,
-    deps       : ["$injector"]    
 };
 
 export const injectorProvider ={

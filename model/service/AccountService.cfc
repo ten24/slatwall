@@ -218,9 +218,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
-				
 				if(structKeyExists(appliedOrderPayment,'amount') && IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
-					var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+					var orderPayment = getOrderService().getOrderPayment( 
+						appliedOrderPayment.orderPaymentID 
+					);
 					
 					var newAccountPaymentApplied = this.newAccountPaymentApplied();
 					newAccountPaymentApplied.setAccountPayment( newAccountPayment );
@@ -1401,9 +1402,83 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If the paymentTransaction has errors, then add those errors to the accountPayment itself
 		if(paymentTransaction.hasError('runTransaction')) {
 			arguments.accountPaymentMethod.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+		}else if(paymentTransaction.hasErrors()){
+			arguments.accountPaymentMethod.addErrors(paymentTransaction.getErrors());
 		}
 
 		return arguments.accountPaymentMethod;
+	}
+	
+	public any function processAccount_mergeAccount(required any account, struct data={}){ 
+		getService("hibachiTagService").cfsetting(requesttimeout=1200);	
+	
+		if(structKeyExists(arguments.data, "toAccountID") && structKeyExists(arguments.data, "fromAccountID")){
+			var toAccount = this.getAccount(arguments.data.toAccountID);
+			var fromAccount = this.getAccount(arguments.data.fromAccountID);  
+			
+			ormExecuteQuery("Update SlatwallAccountPhoneNumber set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccountAddress set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccountEmailAddress set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallOrder set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccount set ownerAccount.accountID=:toAccountID where ownerAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccountRelationship set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
+			ormExecuteQuery("Update SlatwallAccountRelationship set parentAccount.accountID=:toAccountID where parentAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
+			ormExecuteQuery("Update SlatwallAccountRelationship set childAccount.accountID=:toAccountID where childAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
+	
+			var success = this.deleteAccount(fromAccount);
+			
+			// Dedupe the toAccount.
+			var phoneNumberList = "";
+			var accountPhoneNumbers = toAccount.getAccountPhoneNumbers();
+			for (var i = arrayLen(accountPhoneNumbers); i >= 1; i--){
+				if (listFind(phoneNumberList, accountPhoneNumbers[i].getPhoneNumber())){
+					//So add to list and delete it.
+					ormExecuteQuery("Update SlatwallAccountPhoneNumber set account.accountID=null where accountPhoneNumberID = :accountPhoneNumberID",{accountPhoneNumberID=accountPhoneNumbers[i].getAccountPhoneNumberID()});	
+			
+				}else{
+					phoneNumberList = listAppend(phoneNumberList,  accountPhoneNumbers[i].getPhoneNumber());
+				}
+			}
+			
+			// Dedupe the email addresses
+			var emailAddressList = "";
+			var accountEmailAddresses = toAccount.getAccountEmailAddresses();
+			for (var i = arrayLen(accountEmailAddresses); i >= 1; i--){
+				if (listFind(emailAddressList, accountEmailAddresses[i].getEmailAddress())){
+					//So add to list and delete it.
+					ormExecuteQuery("Update SlatwallAccountEmailAddress set account.accountID=null where accountEmailAddressID = :accountEmailAddressID",{accountEmailAddressID=accountEmailAddresses[i].getAccountEmailAddressID()});	
+			
+				}else{
+					//Have not seen it so add it to the list.
+					emailAddressList = listAppend(emailAddressList, accountEmailAddresses[i].getEmailAddress());
+				}
+			}
+			
+			// Dedupe the account addresses when they have the same name
+			var accountAddressList = "";
+			var accountAddresses = toAccount.getAccountAddresses();
+			for (var i = arrayLen(accountAddresses); i >= 1; i--){
+				if (listFind(accountAddressList, accountAddresses[i].getAccountAddressName())){
+					//So add to list and delete it.
+					ormExecuteQuery("Update SlatwallAccountAddress set account.accountID=null where accountAddressID = :accountAddressID",{accountAddressID=accountAddresses[i].getAccountAddressID()});	
+				}else{
+					//Have not seen it so add it to the list.
+					accountAddressList = listAppend(accountAddressList, accountAddresses[i].getAccountAddressName());
+				}
+			}
+			
+			
+			if(success){
+				return toAccount; 
+			} else {
+				arguments.account.addError("accountID", "Unable to complete the merge and delete the to Account.");
+				return arguments.account; 
+			}
+		} else {
+			arguments.account.addError("accountID","Cannot merge account please specify destination.");
+		} 
+
+		return arguments.account;  
 	}
 
 	public any function processPermission_addPermissionRecordRestriction(required any permission, required any processObject){
@@ -1769,6 +1844,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//Save the new password
 		var accountAuthentication = this.newAccountAuthentication();
 		accountAuthentication.setAccount( arguments.account );
+		accountAuthentication.setActiveFlag( true );
 
 		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
 		getHibachiDAO().save(accountAuthentication);

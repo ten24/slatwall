@@ -1201,10 +1201,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return defaultProperties;
 	}
 
+	public void function preDelete(any entity){
+		// Loop over all properties
+        for(var property in getProperties()) {
+            if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+                getHibachiScope().addModifiedEntity(variables[ property.name ]);
+            }
+        }
+	}
 
 	/*
-	public void function preDelete(any entity){
-	}
 
 	public void function preLoad(any entity){
 	}

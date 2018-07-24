@@ -10,6 +10,7 @@ import { FormService } from "./formservice";
 import { RbKeyService } from "./rbkeyservice";
 import { ObserverService } from "./observerservice";
 import { HibachiValidationService } from "./hibachivalidationservice";
+import {AppConfig, AttributeMetaData} from "../../../../../../admin/client/src/app.provider";
 
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
@@ -31,16 +32,17 @@ export class HibachiService{
 		private $rootScope:ng.IRootScopeService,
 		private $location:ng.ILocationService,
 		private $anchorScroll:ng.IAnchorScrollService,
+		private $injector,
 		private requestService,
 		private utilityService,
 		private formService,
         private rbkeyService,
-
         private appConfig,
 		public _config?:any,
 		public _jsEntities?:any,
 		public _jsEntityInstances?:any
 	){
+		this.$injector = $injector;
         this.$window = $window;
         this.$q = $q;
         this.$http = $http;
@@ -58,6 +60,7 @@ export class HibachiService{
         this._config = appConfig;
         this._jsEntities = _jsEntities;
         this._jsEntityInstances = _jsEntityInstances;
+        
 	}
 
 
@@ -513,8 +516,8 @@ export class $Hibachi extends HibachiService {
                 observerService : ObserverService,
                 hibachiValidationService:HibachiValidationService,
                 
-                @Inject("appConfig") appConfig:any,
-                @Inject("attributeMetaData") attributeMetaData:any
+                appConfig : AppConfig,
+                attributeMetaData : AttributeMetaData
                  ){
 
         super(          
@@ -526,6 +529,7 @@ export class $Hibachi extends HibachiService {
             $rootScope,
             $location,
             $anchorScroll,
+            $injector,
             requestService,
             utilityService,
             formService,
@@ -1131,8 +1135,6 @@ export class $Hibachi extends HibachiService {
                 return '';
             };
 
-
-
             var _getPropertyFieldType = function(propertyName,metaData){
                 var propertyMetaData = metaData[propertyName];
                 if(angular.isDefined(propertyMetaData['hb_formfieldtype'])){
@@ -1436,10 +1438,7 @@ export class $Hibachi extends HibachiService {
             }
 
             return $delegate;
-
-        
-
-	}
+    }
 
 }
 

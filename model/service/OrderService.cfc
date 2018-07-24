@@ -238,7 +238,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Setup 'Shipping' Values
 					if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping") {
-
+						
+						
+						if(!isNull(arguments.processObject.getThirdPartyShippingAccountIdentifier()) && len(arguments.processObject.getThirdPartyShippingAccountIdentifier())){
+							orderFulfillment.setThirdPartyShippingAccountIdentifier(arguments.processObject.getThirdPartyShippingAccountIdentifier());
+						} 
 						// Check for an accountAddress
 						if(len(arguments.processObject.getShippingAccountAddressID())) {
 
@@ -757,10 +761,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
-            	if( arguments.order.getPaymentAmountDueAfterGiftCards() > giftCard.getBalanceAmount() ){
+            	if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
-					newOrderPayment.setAmount(arguments.order.getPaymentAmountDueAfterGiftCards());
+					newOrderPayment.setAmount(arguments.order.getPaymentAmountDue());
 				}
             } else {
             	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
@@ -862,7 +866,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'), true);
 		//If promo site does not match order site, display incorrect site message
-		} else if( !isNull(pc.getPromotion().getSite()) && pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() ) {
+		} else if( 
+			!isNull(pc.getPromotion().getSite())
+			&& !isNull(arguments.order.getOrderCreatedSite())
+			&& pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() 
+		) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
 		} else {
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
@@ -905,7 +913,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Change the status
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
-
+		arguments.order.setOrderCanceledDateTime(now());
+		
 		return arguments.order;
 	}
 
@@ -1589,7 +1598,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Flush again to really lock in that order status change
 								getHibachiDAO().flushORMSession();
 								
-								for(var orderItem in order.getOrderItems()){
+								for(var orderItem in arguments.order.getOrderItems()){
 									if(!isNull(orderItem.getStock())){
 										//via cascade calculate stock should update sku then product 
 										getHibachiScope().addModifiedEntity(orderItem.getStock());
@@ -1719,7 +1728,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							orderItem.setParentOrderItem( parentItem );
 
 							// Add an error to the order so that this process fails
-							argument.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
+							arguments.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
 						}
 					}
 
@@ -1947,7 +1956,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
-			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		    	if(arguments.order.getPaymentAmountDue() > 0){
+					getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		    }
 
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
@@ -3216,6 +3227,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+		
+		// We need to get the thirdPartyShippingAccountIdentifier from the data struct and set it on the orderFulfillment
+		if(structKeyExists(arguments.data, 'thirdPartyShippingAccountIdentifier')){
+			var thirdPartyShippingAccountIdentifier = arguments.data.thirdPartyShippingAccountIdentifier;
+			arguments.orderfulfillment.setThirdPartyShippingAccountIdentifier(thirdPartyShippingAccountIdentifier);
+		}
 
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
@@ -3536,7 +3553,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var shippingMethodOption in arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) {
 
 			var thisOption = {};
-			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+			if(!isNull(arguments.orderFulfillment.getHandlingFee()) && arguments.orderFulfillment.getHandlingFee() > 0){
+				thisOption['name'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodName();
+			}else{
+				thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+			}
 			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
 			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
 			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();

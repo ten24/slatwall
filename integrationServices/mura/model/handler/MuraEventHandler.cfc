@@ -183,7 +183,10 @@
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyCategory'), "/")) {
 					categoryKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyCategory'), "/");
 					if(categoryKeyLocation < listLen($.event('path'),"/")) {
-						$.slatwall.setRouteEntity("category", $.slatwall.getService("hibachiService").getCategoryByURLTitle(listGetAt($.event('path'), categoryKeyLocation + 1, "/"), true) );
+						var path = listSetAt($.event('path'),categoryKeyLocation,'|','/');
+						var urlTitlePath = RemoveChars(listLast(path,'|'),1,1);
+						urlTitlePath = left(urlTitlePath, len(urlTitlePath)-1);
+						$.slatwall.setRouteEntity("category", $.slatwall.getService("hibachiService").getCategoryByURLTitlePath(urlTitlePath, true) );
 					}
 				}
 				
@@ -192,6 +195,13 @@
 					attributeKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAttribute'), "/");
 					if(attributeKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setRouteEntity("attribute", $.slatwall.getService("attributeService").getAttributeByURLTitle(listGetAt($.event('path'), attributeKeyLocation + 1, "/"), true) );
+						if(len(listGetAt($.event('path'), attributeKeyLocation + 2, "/"))){
+							if(!isNull($.slatwall.getService("attributeService").getAttributeOptionByURLTitle(listGetAt($.event('path'), attributeKeyLocation + 2, "/")))){
+								$.slatwall.setRouteEntity("attributeOption", $.slatwall.getService("attributeService").getAttributeOptionByURLTitle(listGetAt($.event('path'), attributeKeyLocation + 2, "/"), true) );
+							} else {
+								$.slatwall.setRouteEntity("attributeOption", $.slatwall.getService("attributeService").getAttributeOptionByAttributeOptionValue(listGetAt($.event('path'), attributeKeyLocation + 2, "/"), true) );
+							}
+						}
 					}
 				}
 				

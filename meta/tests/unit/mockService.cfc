@@ -81,6 +81,7 @@ component extends="testbox.system.BaseSpec"{
 		//var giftCardService = this.getgiftCardServiceMock();
 		var hibachiAuditService = this.gethibachiAuditServiceMock();
 		var loyaltyService = createMock('Slatwall.model.service.LoyaltyService');//this.getloyaltyServiceMock();
+		
 		var paymentService = this.getpaymentServiceMock();
 
 		var priceGroupService = this.getpriceGroupServiceMock();
