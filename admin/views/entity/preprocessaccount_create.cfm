@@ -81,15 +81,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#">
 
 				<!--- Parent Account --->
-				<cfif structKeyExists(rc,'parentAccountID')>
-					<input type="hidden" name="parentAccountID" value="#rc.parentAccountID#" />
-					<input type="hidden" name="sRedirectAction" value="admin:entity.detailAccount" />
-					<input type="hidden" name="sRedirectQS" value="accountID=#rc.parentAccountID#" />
-				</cfif>
-				<!--- Child Account --->
-				<cfif structKeyExists(rc,'childAccountID')>
-					<input type="hidden" name="childAccountID" value="#rc.childAccountID#" />
-				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber" edit="true">
 				
 				<!--- Account Custom Attributes --->
 				<cfloop array="#rc.account.getAttributeSets()#" index="attributeSet">

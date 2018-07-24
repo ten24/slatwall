@@ -50,6 +50,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="account";
+	
+	// Lazy Load
+	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 
 	// Data Properties
 	property name="firstName" hb_rbKey="entity.account.firstName";
@@ -67,18 +70,38 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="childAccountID";
 	
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
-	property name="childAccount" cfc="Account" fieldtype="many-to-one";
+	property name="childAccount" cfc="account" fieldtype="many-to-one";
 	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
 	
-	public any function getParentAccount(){
-		if(!structKeyExists(variables,'parentAccount')){
+	property name="newAccountFlag";
+	
+	public boolean function getNewAccountFlag() {
+		if(!structKeyExists(variables, "newAccountFlag")) {
+			variables.newAccountFlag = 1;
+		}
+		return variables.newAccountFlag;
+	}
+	
+	public any function getAccount(){
+		if(!structKeyExists(variables, 'account') || variables.account.getNewFlag()){
 			if(!isNull(getAccountID())){
 				if(listLen(getAccountID()) > 1){
 					variables.accountID = listFirst(variables.accountID);
 				}
-				variables.parentAccount = getService('accountService').getAccount(getAccountID());	
-			}else{
-				return;
+				variables.account = getService('accountService').getAccount(variables.accountID);
+			}else if(!structKeyExists(variables,'account')){
+				return getService('accountService').newAccount();
+			}
+		}
+		return variables.account;
+	}
+	
+	public any function getParentAccount(){
+		if(!structKeyExists(variables,'parentAccount')){
+			if(!isNull(getParentAccountID())){
+				variables.parentAccount = getService('accountService').getAccount(getParentAccountID());	
+			}else if(!isNull(getChildAccount())){
+				variables.parentAccount = getAccount();
 			}
 		}
 		return variables.parentAccount;
@@ -88,8 +111,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables,'childAccount')){
 			if(!isNull(getChildAccountID())){
 				variables.childAccount = getService('accountService').getAccount(getChildAccountID());	
-			}else{
-				return;
+			}else if(!isNull(getParentAccount())){
+				variables.childAccount = getAccount();
 			}
 		}
 		return variables.childAccount;
