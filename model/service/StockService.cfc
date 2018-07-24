@@ -247,7 +247,32 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+	
+	public any function processStock_updateInventoryCalculationsForLocations(required any stock) {
+		
+		var sku = arguments.stock.getSku();
+		var locationIDs = listToArray(arguments.stock.getLocation().getLocationIDPath());
+		for(var locationID in locationIDS) {
 
+			// Attempt to load entity or create new entity if it did not previously exist
+			var skuLocationQuantity = getService('InventoryService').getSkuLocationQuantityBySkuIDANDLocationID(sku.getSkuID(),locationID);
+
+			// Sku and Location entity references should already be populated for existing entity
+			if (skuLocationQuantity.getNewFlag()) {
+				skuLocationQuantity.setSku(sku);
+				var location = getService('locationService').getLocation(locationID);
+				skuLocationQuantity.setLocation(location);
+			}
+			
+			// Populate with updated calculated values and sku/location relationships
+			skuLocationQuantity.updateCalculatedProperties(true);
+			this.saveSkuLocationQuantity(skuLocationQuantity);
+			
+		}
+
+		return arguments.stock;
+	}
+	
 	//Process: StockAdjustment Context: addItems
 	public any function processStockAdjustment_addItems(required any stockAdjustment, struct data={}, string processContext="process") {
 

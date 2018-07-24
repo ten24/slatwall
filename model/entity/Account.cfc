@@ -61,6 +61,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="taxExemptFlag" ormtype="boolean";
 	property name="organizationFlag" ormtype="boolean" default="false";
 	property name="testAccountFlag" ormtype="boolean";
+	property name="verifiedAccountFlag" ormtype="boolean" default="false";
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	//calucluated property
 	property name="calculatedFullName" ormtype="string";

@@ -146,6 +146,7 @@
                             ></sw-listing-column>
                             <sw-listing-column 
                                 data-property-identifier="calculatedSkuDefinition"
+                                data-fallback-property-identifiers="sku_calculatedSkuDefinition" 
                             ></sw-listing-column>
                             <sw-listing-column 
                                 data-property-identifier="minQuantity" 
@@ -165,6 +166,15 @@
                                 data-header-view="swSkuCurrencySelector"
                             >
                             </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="skuPrices.priceGroup.priceGroupCode" 
+                                data-fallback-property-identifiers="skuPrice_priceGroup.priceGroupCode,priceGroup.priceGroupCode" 
+                            ></sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="skuPrices.priceGroup.priceGroupID" 
+                                data-is-visible="false"
+                                data-fallback-property-identifiers="skuPrice_priceGroup.priceGroupID,priceGroup.priceGroupID" 
+                            ></sw-listing-column>
                         </sw-listing-columns>
                         
                         <sw-collection-configs>
@@ -212,6 +222,8 @@
                                             <sw-collection-column data-property-identifier="maxQuantity"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="price"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="currencyCode"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="priceGroup.priceGroupCode"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="priceGroup.priceGroupID" data-is-visible="false"></sw-collection-column>
                                         </sw-collection-columns>
                                         <sw-collection-filters>
                                             <sw-collection-filter data-property-identifier="sku.skuID" data-comparison-operator="=" data-comparison-value="${skuID}"></sw-collection-filter>
@@ -236,6 +248,11 @@
                         <sw-listing-delete-action>
                             <sw-delete-sku-price-modal-launcher>
                             </sw-delete-sku-price-modal-launcher>
+                            <sw-edit-sku-price-modal-launcher>
+                                <a href="#" title="Edit Price" class="btn btn-default btn-xs" data-target="#">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </sw-edit-sku-price-modal-launcher>
                         </sw-listing-delete-action>  
                 </sw-listing-display>
            </sw-tab-content>

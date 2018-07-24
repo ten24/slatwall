@@ -66,7 +66,7 @@
     "TransactionReference":"1111",
     "Shipment":{
       "Service":{
-        "Code":"03"
+        "Code":"#arguments.requestBean.getShippingIntegrationMethod()#"
       },
       "Shipper":{
     	"Name":"#setting('shipFromName')#",
@@ -92,6 +92,7 @@
   	  },
       "ShipTo":{
         "Name":"#arguments.requestBean.getShipToName()#",
+        "AttentionName":"#arguments.requestBean.getShipToName()#",
         <cfif len(arguments.requestBean.getShipToCompany())>
     		"CompanyDisplayableName":"#arguments.requestBean.getShipToCompany()#",
         </cfif>
@@ -136,70 +137,58 @@
   	  "PaymentInformation":{
         "ShipmentCharge":{
           "Type":"01",
+        <cfif NOT isNull(arguments.requestBean.getThirdPartyShippingAccountIdentifier()) AND len(arguments.requestBean.getThirdPartyShippingAccountIdentifier())>
+          "BillThirdParty":{
+            "AccountNumber":"#arguments.requestBean.getThirdPartyShippingAccountIdentifier()#",
+            "Address":{
+            "AddressLine":"#arguments.requestBean.getShipToStreetAddress()#",
+            "City":"#arguments.requestBean.getShipToCity()#",
+            "StateProvinceCode":"#arguments.requestBean.getShipToStateCode()#",
+            "PostalCode":"#arguments.requestBean.getShipToPostalCode()#",
+            "CountryCode":"#arguments.requestBean.getShipToCountryCode()#",
+            "ResidentialAddressIndicator":"1"
+            }
+          }
+        <cfelse>
           "BillShipper":{
             "AccountNumber":"#setting('shipperNumber')#"
           }
+        </cfif>
         }
       },
-        <cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' )>
-		<cfif local.totalWeight gt 150>
-			<cfset local.finalWeight = local.totalWeight MOD 150>
-			<cfloop index="count" from="1" to="#round(abs(local.totalWeight / 150))#">
-				
-			  "Package": {
-			    "PackagingType": { "Code": "02" },
-			    "PackageWeight": {
-			      "Weight": "150",
-			      "UnitOfMeasurement": { "Code": "LBS" }
-			    }
-			  }
-					
-			</cfloop>
-			<cfif local.finalWeight gt 0>
-				
-			  "Package": {
-			    "PackagingType": { "Code": "02" },
-				"PackageWeight": {
-					<cfif local.finalWeight lt 1>
-						"Weight":"1",
-					<cfelse>
-						"Weight":"#local.finalWeight#",
-					</cfif>
-					"UnitOfMeasurement": { "Code": "LBS" }
-				}
-							
-			</cfif>
-		<cfelse>
-			
-		  "Package": {
-		    "PackagingType": { "Code": "02" },
-			"PackageWeight":{
-				<cfif arguments.requestBean.getTotalWeight( unitCode='lb' ) lt 1>
-					"Weight":"1",
-				<cfelse>
-					"Weight":"#arguments.requestBean.getTotalWeight( unitCode='lb' )#",	
-				</cfif>
-				"UnitOfMeasurement": { "Code": "LBS" }
-			},
-			"Packaging":{
-	          "Code":"02"
-	          <!--- TODO:implement containers with dimensions
-	          	"Dimensions":{
-	            "UnitOfMeasurement":{
-	              "Code":"01"
-	            },
-	            "Length":"1",
-	            "Width":"1",
-	            "Height":"1"
-	            
-	          }--->
-	        }
-		  }
-			
-		</cfif>
+     <cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' )>
+    		"Package":[
+    		<cfif local.totalWeight gt 150>
+    			<cfset local.finalWeight = local.totalWeight MOD 150>
+    			<cfloop index="count" from="1" to="#round(abs(local.totalWeight / 150))#">
+    				
+    			  {
+    			    "PackagingType": { "Code": "02" },
+    			    "PackageWeight": {
+    			      "Weight": "150",
+    			      "UnitOfMeasurement": { "Code": "LBS" }
+    			    }
+    			  }<cfif count LT round(abs(local.totalWeight / 150))>,</cfif>
+    					
+    			</cfloop>
+    			]
+    		<cfelse>
+    			
+    		  {
+    		    "Packaging": { "Code": "02" },
+      			"PackageWeight":{
+      				<cfif arguments.requestBean.getTotalWeight( unitCode='lb' ) lt 1>
+      					"Weight":"1",
+      				<cfelse>
+      					"Weight":"#arguments.requestBean.getTotalWeight( unitCode='lb' )#",	
+      				</cfif>
+      				"UnitOfMeasurement": { "Code": "LBS" }
+      			  }
+    		  }
+    		]
+    		</cfif>
     }
   }
   
 }
 </cfoutput>
-

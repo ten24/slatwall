@@ -343,6 +343,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.entity.getQuantity('QOH') - arguments.entity.getQuantity('QC');
 	}
 	
+	public numeric function getQOQ(required any entity){
+		var skuID = '';
+		var locationID = '';
+		if(arguments.entity.getEntityName() eq "SlatwallStock") {
+			skuID = arguments.entity.getSku().getSkuID();
+			location = arguments.entity.getLocation().getLocationID();
+		} else {
+			skuID = arguments.entity.getSkuID();
+		}
+		return getInventoryDAO().getQOQ(skuID,locationID);
+	}
+	
 	public numeric function getQATS(required any entity) {
 		
 		if(arguments.entity.getEntityName() eq "SlatwallStock") {

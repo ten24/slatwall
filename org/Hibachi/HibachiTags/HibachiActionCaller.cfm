@@ -48,6 +48,8 @@
 		<cfset actionItemEntityName = right( actionItem, len(actionItem)-6) />
 	<cfelseif left(actionItem, 6) eq "delete" and len(actionItem) gt 6>
 		<cfset actionItemEntityName = right( actionItem, len(actionItem)-6) />
+	<cfelseif left(actionItem, 6) eq "export" and len(actionItem) gt 6>
+		<cfset actionItemEntityName = right( actionItem, len(actionItem)-6) />
 	</cfif>
 	
 	<cfif attributes.text eq "" and not attributes.iconOnly>

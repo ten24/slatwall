@@ -50,6 +50,7 @@ import {AggregateFilter} from "./filters/aggregatefilter";
 	declarations : [],
 	providers : [
 		CollectionConfig,
+        CollectionService
 	],
 	imports : [
 		CoreModule,
@@ -79,7 +80,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .controller('entity_createcollection',CollectionCreateController)
 //services
 .factory('collectionConfigService', downgradeInjectable(CollectionConfig))
-.service('collectionService', CollectionService)
+.service('collectionService', downgradeInjectable(CollectionService))
 //directives
 .directive('swRestrictionConfig',SWRestrictionConfig.Factory())
 .directive('swCollection',SWCollection.Factory())

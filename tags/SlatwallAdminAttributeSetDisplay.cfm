@@ -103,6 +103,9 @@ Notes:
 		<cfif attribute.getAttributeInputType() EQ "date">
 			<cfset fdAttributes.value = DateFormat(fdAttributes.value,"mmm dd, yyyy")>
 		</cfif>
+		<cfif attribute.getAttributeInputType() EQ "dateTime">
+			<cfset fdAttributes.value = DateTimeFormat(fdAttributes.value,"mmm dd, yyyy hh:nn tt")>
+		</cfif>
 		<!---Setup Value Options --->
 		<cfif attributes.edit>
 			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
@@ -133,7 +136,7 @@ Notes:
 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 			</cfif>
 			<cfif structKeyExists(fdAttributes, 'valueLink') AND left(fdAttributes.valueLink, 5) EQ 's3://'>
-				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromS3(fdAttributes.valueLink)#" />
+ 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getSignedS3URL(fdAttributes.valueLink)#" />
 			</cfif>
 
 

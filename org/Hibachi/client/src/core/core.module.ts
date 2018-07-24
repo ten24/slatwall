@@ -9,6 +9,7 @@ import { HibachiPathBuilder } from "./services/hibachipathbuilder";
 import { CacheService } from "./services/cacheservice";
 import { PublicService } from "./services/publicservice";
 import { AccountService } from "./services/accountservice";
+import { AccountAddressService } from "./services/accountaddressservice";
 import { CartService } from "./services/cartservice";
 import { DraggableService } from "./services/draggableservice";
 import { UtilityService } from "./services/utilityservice";
@@ -19,7 +20,6 @@ import { OrderPaymentService } from "./services/orderpaymentservice";
 import { FormService } from "./services/formservice";
 import { FilterService } from "./services/filterservice";
 import { ExpandableService } from "./services/expandableservice";
-
 import { MetaDataService } from "./services/metadataservice";
 import { RbKeyService } from "./services/rbkeyservice";
 import { TypeaheadService } from "./services/typeaheadservice";
@@ -100,7 +100,7 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
 
 export function startupServiceFactory(appProvider: AppProvider, appConfig: AppConfig, resourceBundles: ResourceBundles, attributeMetaData: AttributeMetaData): Function {
     return () => {
-    
+
         appProvider.fetchData().then(() => {
             for (var key in appProvider.appConfig) {
 
@@ -114,14 +114,11 @@ export function startupServiceFactory(appProvider: AppProvider, appConfig: AppCo
             for (var key in appProvider._resourceBundle) {
                 console.log(appProvider._resourceBundle);
                 resourceBundles[key] = appProvider._resourceBundle[key];
-            } 
+            }
             console.log(appProvider);
             appProvider.hasData = true;
 
         });
-
-
-
     };
 }
 
@@ -153,7 +150,7 @@ export function startupServiceFactory(appProvider: AppProvider, appConfig: AppCo
         TypeaheadService,
         EntityService,
         CartService,
-        OrderService,
+        AccountAddressService,
         AccountService,
         SkuService,
         HibachiPathBuilder,
@@ -161,7 +158,7 @@ export function startupServiceFactory(appProvider: AppProvider, appConfig: AppCo
         { provide: Number, useValue: 0 },
         { provide: Boolean, useValue: false },
         { provide: String, useValue: "stringValue" },
-        OrderPaymentService,
+        OrderService,
         OrderPaymentService,
         PublicService,
         HibachiInterceptor
@@ -268,7 +265,6 @@ var coremodule = angular.module('hibachi.core', [
 
         //Pulls seperate http requests into a single digest cycle.
         $httpProvider.useApplyAsync(true);
-
     }])
     .run(['$rootScope', '$hibachi', '$route', '$location', 'rbkeyService', ($rootScope, $hibachi, $route, $location, rbkeyService) => {
         $rootScope.buildUrl = $hibachi.buildUrl;
@@ -309,12 +305,14 @@ var coremodule = angular.module('hibachi.core', [
     .service('skuService', downgradeInjectable(SkuService))
     .service('localStorageService', downgradeInjectable(LocalStorageService))
     .service('requestService', downgradeInjectable(RequestService))
-    .service('orderService', downgradeInjectable(OrderService))
+    .service('accountAddressService', downgradeInjectable(AccountAddressService))
     .service('accountService', downgradeInjectable(AccountService))
+    .service('orderService', downgradeInjectable(OrderService))
     .service('orderPaymentService', downgradeInjectable(OrderPaymentService))
     .service('cartService', downgradeInjectable(CartService))
     .service('hibachiValidationService', downgradeInjectable(HibachiValidationService))
     .service('entityService', downgradeInjectable(EntityService))
+
     //controllers
     .controller('globalSearch', GlobalSearchController)
     //filters
@@ -363,10 +361,8 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swHref', SWHref.Factory())
     .directive('swProcessCaller', SWProcessCaller.Factory())
     .directive('sw:sortable', SWSortable.Factory())
-    .directive('swOrderByControls', SWOrderByControls.Factory())
+    .directive('swOrderByControls', SWOrderByControls.Factory());
 
-
-    ;
 export {
     coremodule
 }

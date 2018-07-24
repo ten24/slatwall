@@ -53,6 +53,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		//variables.service = request.slatwallScope.getBean("imageService");
 		variables.service = variables.mockService.getImageServiceMock();
+		variables.service.setSiteService(variables.mockservice.getSiteServiceMock());
+		
 	}
 
 	/**

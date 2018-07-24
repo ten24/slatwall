@@ -177,7 +177,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// @hint Public populate method to utilize a struct of data that follows the standard property form format
-	public any function populate( required struct data={} ) {
+	public any function populate( required struct data={}, formUploadDottedPath="" ) {
 
 		// Call beforePopulate
 		beforePopulate(data=arguments.data);
@@ -265,7 +265,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							_setProperty(currentProperty.name, thisEntity );
 
 							// Populate the sub property
-							thisEntity.populate(manyToOneStructData);
+							thisEntity.populate(manyToOneStructData, '#arguments.formUploadDottedPath##currentProperty.name#.');
 
 							// Tell the variables scope that we populated this sub-property
 							addPopulatedSubProperty(currentProperty.name, thisEntity);
@@ -324,7 +324,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							if(structCount(oneToManyArrayData[a]) gt 1) {
 
 								// Populate the sub property
-								thisEntity.populate(oneToManyArrayData[a]);
+								thisEntity.populate(oneToManyArrayData[a], '#arguments.formUploadDottedPath##currentProperty.name#[#a#].');
 
 								addPopulatedSubProperty(currentProperty.name, thisEntity);
 							}
@@ -393,6 +393,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			
 			
 			// Check to see if we should upload this property
+			// Prepend the provided formUploadDottedPath if this file is being uploaded as a subpopulated property to determine absolute path reference for form scope retrieval
 			if( 
 				structKeyExists(arguments.data, currentProperty.name) 
 				&& (
@@ -403,8 +404,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				&& currentProperty.hb_fileUpload 
 				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
 				&& len(arguments.data[ currentProperty.name ]) 
-				&& structKeyExists(form, currentProperty.name) 
-				&& len(form[currentProperty.name])
+				&& structKeyExists(form, "#arguments.formUploadDottedPath##currentProperty.name#") 
+				&& len(form["#arguments.formUploadDottedPath##currentProperty.name#"])
 			) {
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {
@@ -412,35 +413,55 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					// Get the upload directory for the current property
 					var uploadDirectory = this.invokeMethod("get#currentProperty.name#UploadDirectory");
 
-					// If the directory where this file is going doesn't exists, then create it
+					// Handle s3 upload
 					if(left(uploadDirectory, 5) == 's3://'){
 
-						var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+						var uploadData = fileUpload(getVirtualFileSystemPath(), '#arguments.formUploadDottedPath##currentProperty.name#', currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
 
 						uploadDirectory = replace(uploadDirectory,'s3://','');
-						var bucket = listLast(uploadDirectory, '@');
-						var loginPart = listFirst(uploadDirectory, '@');
 
-						getService("hibachiUtilityService").uploadToS3(
-							bucketName=bucket,
+						var newFileName = createUUID() & '.' & uploadData.clientFileExt;
+
+						var uploadResult = getService("hibachiUtilityService").uploadToS3(
+ 							bucketName=uploadDirectory,
 							fileName=uploadData.serverfile,
-							contentType='application/octet-stream',
-							awsAccessKeyId=listFirst(loginPart, ':'),
-							awsSecretAccessKey=listLast(loginPart, ':'),
+							keyName=newFileName,
+ 							contentType='#uploadData.contentType#/#uploadData.contentSubType#',
+ 							awsAccessKeyId=getHibachiScope().setting("globalS3AccessKey"),
+ 							awsSecretAccessKey=getHibachiScope().setting("globalS3SecretAccessKey"),
 							uploadDir=uploadData.serverdirectory
 						);
 
-						_setProperty(currentProperty.name, uploadData.serverfile);
+						if(!uploadResult){
+ 							throw;
+ 						}
+
+						_setProperty(currentProperty.name, newFileName);
 					}else{
+						// If the directory where this file is going doesn't exists, then create it
 						if(!directoryExists(uploadDirectory)) {
 							directoryCreate(uploadDirectory);
 						}
 
 						// Do the upload
-						var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+						var uploadData = fileUpload( uploadDirectory, '#arguments.formUploadDottedPath##currentProperty.name#', currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
 
 						// Update the property with the serverFile name
 						_setProperty(currentProperty.name, uploadData.serverFile);
+
+						// Attempt to invoke setXXXUploadStatus() method naming convention if exists to store reference to the file upload status data
+						// If file upload property name already has xxxUpload suffix, only add 'Status' so we can reference 'setXXXUploadStatus' instead of 'setXXXUploadUploadStatus'
+						var uploadStatusMethodName = 'set#currentProperty.name#';
+						if (right(currentProperty.name, len('upload')) == 'upload') {
+							uploadStatusMethodName &= 'Status';
+						} else {
+							uploadStatusMethodName &= 'UploadStatus';
+						}
+						
+						// Invoke if a method matches the appropriate naming convention
+						if (structKeyExists(this, uploadStatusMethodName)) {
+							invokeMethod(uploadStatusMethodName, {1=uploadData});
+						}
 					}
 
 				} catch(any e) {

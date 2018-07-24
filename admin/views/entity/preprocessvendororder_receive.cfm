@@ -71,7 +71,9 @@ Notes:
 		</hb:HibachiPropertyRow>
 		
 		<hr />
-				
+		<div class="alert alert-warning">
+			<i class="fa fa-info-circle"></i> Once received, Vendor Order Items are finalized. Please verify that all information is accurate before continuing.
+		</div>		
 		<!--- Items Selector --->
 		<table class="table table-bordered table-hover">
 			<tr>
