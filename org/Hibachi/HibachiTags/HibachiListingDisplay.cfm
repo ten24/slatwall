@@ -94,8 +94,13 @@
 			<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
 			<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
 
+			<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
+			<!---escape apostraphe boi--->
+			<cfset JSON = rereplace(JSON,"'","\'",'all')/>
+			<!---convert double quotes to single--->
+			<cfset JSON = rereplace(JSON,'"',"'",'all')/>
 			<span ng-init="
-				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(serializeJson(attributes.collectionList.getCollectionConfigStruct()),'"',"'",'all')#);
+				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#JSON#);
 			"></span>
 			
 			<cfif !attributes.collectionList.getNewFlag()>
