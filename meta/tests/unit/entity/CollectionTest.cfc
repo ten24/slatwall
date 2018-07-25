@@ -908,6 +908,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPrimaryIDs();
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 	}
+	
+	/**
+	* @test
+	*/
+
+	public void function getPrimaryIDsTest_workflowCollection(){
+		//default data collection
+		var myCollection = variables.entityService.getCollection('2c92808362e398b10162e4c489b5000x');
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
+		var pageRecords = myCollection.getPrimaryIDs(2);
+		
+		debug(pageRecords);
+
+	}
 
 
 	public void function addOrderByAliasTest(){

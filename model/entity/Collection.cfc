@@ -237,6 +237,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function getDirtyReadFlag(){
+		if(!structKeyExists(variables,'dirtyReadFlag')){
+			variables.dirtyReadFlag = false;
+		}
+	
 		if(!hasApplicationValue('databaseType') || getApplicationValue('databaseType') == "Oracle10g"){
 			return false;
 		}
@@ -262,6 +266,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var duplicateCollection = getService('hibachiService').getCollectionList(getCollectionObject());
 		duplicateCollection.setCollectionConfig(getCollectionConfig());
 		duplicateCollection.setCollectionConfigStruct(getCollectionConfigStruct());
+		duplicateCollection.clearVariablesKey('groupbys');
+		structDelete(duplicateCollection.getCollectionConfigStruct(),'groupBys');
 		return duplicateCollection;
 	}
 
@@ -2496,11 +2502,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getPrimaryIDs(numeric recordCount=0){
-
+		var primaryIDCollectionList = this.duplicateCollection();
 		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
-
-		return getPropertyNameValues(primaryIDName, arguments.recordCount);
+		primaryIDCollectionList.setDisplayProperties(primaryIDName);
+		primaryIDCollectionList.setPageRecordsShow(arguments.recordCount);
+		
+		return primaryIDCollectionList.getPageRecords(formatRecords=false);
 	}
+	
 
 	public string function getPrimaryIDList(){
 		var primaryIDList = "";
