@@ -101,7 +101,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public boolean function isValidQuantity(){
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
-			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
+			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0 && !isNull(getLocation() ) {
 				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
 				var thisQuantity = getOrderDeliveryItems()[i].quantity;
 				var stock = getService('StockService').getStockBySkuAndLocation(
