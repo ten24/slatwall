@@ -921,7 +921,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getPrimaryIDs(2);
 		
-		debug(pageRecords);
+		if(arraylen(pageRecords)){
+			assert(!structKeyExists(pageRecords[1],'failedCollection'));
+		}
 
 	}
 
