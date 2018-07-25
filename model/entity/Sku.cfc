@@ -1366,7 +1366,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				variables.lastCountedDateTime = "";
 			}
 		}
-		return variables.lastCountedDateTime;
+		if(structKeyExists(variables,'lastCountedDateTime')){
+			return variables.lastCountedDateTime;
+		}
 	}
 
 	public boolean function getTransactionExistsFlag() {

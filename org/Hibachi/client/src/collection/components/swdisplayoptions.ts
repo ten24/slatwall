@@ -156,6 +156,7 @@ class SWDisplayOptions{
                                 column['type'] = 'none';
                             }
                             if(angular.isDefined(selectedProperty.aggregate)){
+                                
                                 column['ormtype'] = 'string';
                                 column['aggregate']={
                                     aggregateFunction : selectedProperty.aggregate.toUpperCase(),

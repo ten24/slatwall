@@ -280,7 +280,7 @@ Notes:
 		<cfargument name="overrideDataFlag" type="boolean" default="false" >
 		
 		<cfset var entityMetaData = getEntityMetaData(arguments.entityName)/>
-		<cfset var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName)/>
+		<cfset var primaryIDName = getPrimaryIDColumnNameByEntityName(arguments.entityName)/>
 		
 		<cfif getApplicationValue("databaseType") eq "MySQL">
 			

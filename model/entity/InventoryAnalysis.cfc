@@ -84,7 +84,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
     public string function getSkuCollectionConfig(){
     	if(isNull(variables.skuCollectionConfig)){
     		var defaultSkuCollectionList = getService('skuService').getSkuCollectionList();
-    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,skuDescription,skuCode,listPrice,price,renewalPrice',{isVisible=true});
+    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,skuDescription,skuCode,listPrice,price,renewalPrice',{isVisible=true,isSearchable=true});
     		defaultSkuCollectionList.addDisplayProperty(displayProperty='skuID',columnconfig={isVisible=false});
     		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionList.getCollectionConfigStruct());
     		
@@ -93,12 +93,10 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
     }
     
     public any function getSkuCollection(){
-    	if(!structKeyExists(variables,'skuColletiton')){
-    		var skuCollectionList = getService('skuService').getSkuCollectionList();
-    		skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
-    		variables.skuCollection = skuCollectionList;
-    	}
-    	return variables.skuCollection;
+	var skuCollectionList = getService('skuService').getSkuCollectionList();
+	skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
+	skuCollection = skuCollectionList;
+    	return skuCollection;
     }
 
 	// ============  END:  Non-Persistent Property Methods =================

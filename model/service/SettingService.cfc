@@ -312,7 +312,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				}],
 				defaultValue=getLedgerAccountService().getAssetLedgerAccountIDList()
 			},
-			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="a54668fcc2ff2c8413c7b85b6927a850"},
+			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="54cae22ca5a553fe209cf183fac8f8dc"},
 
 			// Product
 			productDisplayTemplate = {fieldType="select"},
@@ -1160,6 +1160,15 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		return settingDetails;
 	}
+	
+	private void function updateBaseEntityCalculations(required any setting ){
+		if( !isNull(arguments.setting.getBaseObject()) ){
+			var entityService = getServiceByEntityName(entityName=arguments.setting.getBaseObject());
+			var primaryIDProperty = getPrimaryIDPropertyNameByEntityName(arguments.setting.getBaseObject());
+			var updateEntity = entityService.invokeMethod( "get#arguments.setting.getBaseObject()#", {1=arguments.setting.invokeMethod("get#primaryIDProperty#")} );
+			getHibachiScope().addModifiedEntity(updateEntity); 
+		}
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -1183,7 +1192,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	public boolean function deleteSetting(required any entity) {
 
-		getHibachiScope().addModifiedEntity(arguments.entity); 
+		updateBaseEntityCalculations(arguments.entity);
 
 		// Check to see if we are going to need to update the
 		var calculateStockNeeded = false;
@@ -1215,10 +1224,17 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveSetting(required any entity, struct data={}) {
+		
+		//On save we're setting a base object string so we can find this 
+		if( isNull(arguments.entity.getBaseObject()) 
+			&& structKeyExists(arguments.data, 'formCollectionsList')
+			&& len(arguments.data.formCollectionsList)
+		){
+			arguments.entity.setBaseObject(arguments.data.formCollectionsList);
+		}
+		
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
-
-		getHibachiScope().addModifiedEntity(arguments.entity); 
 
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {

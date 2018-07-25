@@ -62,6 +62,7 @@ component entityname="SlatwallCycleCountBatch" table="SwCycleCountBatch" output=
 	property name="physical" cfc="Physical"fieldtype="one-to-one" fkcolumn="physicalID";
 
 	// Related Object Properties (many-to-many - owner)
+	property name="cycleCountGroups" singularname="cycleCountGroup" cfc="CycleCountGroup" type="array" fieldtype="many-to-many" linktable="SwCycleCountBatchCountGroup" fkcolumn="cycleCountBatchID"  inversejoincolumn="cycleCountGroupID" hint="this is for reference in case we need to look up which groups were selected";
 	
 	// Related Object Properties (many-to-many - inverse)
 	
@@ -88,23 +89,24 @@ component entityname="SlatwallCycleCountBatch" table="SwCycleCountBatch" output=
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Skus (many-to-many - owner)
-	public void function addSku(required any sku) {
-		if(arguments.sku.isNew() or !hassku(arguments.sku)) {
-			arrayAppend(variables.skus, arguments.sku);
+	// Cycle Count Groups (many-to-many - owner)
+	public void function addCycleCountGroup(required any cycleCountGroup) {
+		if(arguments.cycleCountGroup.isNew() or !hasCycleCountGroup(arguments.cycleCountGroup)) {
+			arrayAppend(variables.cycleCountGroups, arguments.cycleCountGroup);
 		}
-		if(isNew() or !arguments.sku.hasCycleCountBatch( this )) {
-			arrayAppend(arguments.sku.getCycleCountBatchs(), this);
+		if(isNew() or !arguments.cycleCountGroup.hasCycleCountBatch( this )) {
+			arrayAppend(arguments.cycleCountGroup.getCycleCountBatchs(), this);
 		}
 	}
-	public void function removeSku(required any sku) {
-		var thisIndex = arrayFind(variables.skus, arguments.sku);
+	
+	public void function removeCycleCountGroup(required any cycleCountGroup) {
+		var thisIndex = arrayFind(variables.cycleCountGroups, arguments.cycleCountGroup);
 		if(thisIndex > 0) {
-			arrayDeleteAt(variables.skus, thisIndex);
+			arrayDeleteAt(variables.cycleCountGroups, thisIndex);
 		}
-		var thatIndex = arrayFind(arguments.sku.getCycleCountBatchs(), this);
+		var thatIndex = arrayFind(arguments.cycleCountGroup.getCycleCountBatchs(), this);
 		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.sku.getCycleCountBatchs(), thatIndex);
+			arrayDeleteAt(arguments.cycleCountGroup.getCycleCountBatchs(), thatIndex);
 		}
 	}
 	
