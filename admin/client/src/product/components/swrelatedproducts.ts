@@ -35,7 +35,8 @@ class SWRelatedProducts implements ng.IDirective{
         productId:"@?",
         edit:"=?",
         productSortProperty:"@?",
-        productSortDefaultDirection:"@?"
+        productSortDefaultDirection:"@?",
+        selectedRelatedProductIds:"@?"
     };
 
     public controller=SWRelatedProductsController;

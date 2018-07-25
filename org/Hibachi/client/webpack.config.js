@@ -12,8 +12,7 @@ var appConfig = {
     context:PATHS.app,
     entry: {
          vendor: ["shim.min.js","zone.js","date", "angular", 'reflect-metadata', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
-         'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch','jquery-timepicker'],
-
+         'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch','jquery-timepicker','Chart']
     },
     watch:false,
     output: {
@@ -40,7 +39,8 @@ var appConfig = {
             'angularjs-datetime-picker':'../lib/angularjs-datetime-picker/angularjs-datetime-picker.js',
             'jquery-typewatch':'../../HibachiAssets/js/jquery-typewatch-2.0.js',
             'jquery-timepicker':'../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js',
-            "@angular/upgrade/static": "@angular/upgrade/bundles/upgrade-static.umd.js"
+            "@angular/upgrade/static": "@angular/upgrade/bundles/upgrade-static.umd.js",
+            'Chart':'../lib/chart.js/Chart.min.js'
         },
     },
     module: {

@@ -14,6 +14,7 @@ import {ListingService} from "./services/listingservice";
 
 //directives
 import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingReport} from "./components/swlistingreport";
 import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
 import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
@@ -54,6 +55,7 @@ var listingmodule = angular.module('hibachi.listing', [collectionmodule.name])
 .service('listingService',downgradeInjectable(ListingService))
 //directives
 .directive('swListingDisplay',SWListingDisplay.Factory())
+.directive('swListingReport',SWListingReport.Factory())
 .directive('swListingControls',SWListingControls.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())

@@ -57,7 +57,7 @@ Notes:
 	<hb:HibachiEntityActionBar type="listing" object="#rc.cycleCountBatchSmartList#" showCreate="false">
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createcyclecountbatch" entity="cyclecountbatch" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocesscyclecountbatch" entity="cyclecountbatch" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true"  text="#rc.$.slatwall.rbKey('admin.entity.preprocesscyclecountbatch')#" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	

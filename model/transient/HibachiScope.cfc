@@ -331,7 +331,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			){
 				productCollectionList.addFilter('listingPages.content.contentIDPath',getContent().getContentIDPath()&"%",'like');
 			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
-				productCollectionList.addFilter('listingPages.content.contentID',getContent.getContentID());
+				productCollectionList.addFilter('listingPages.content.contentID',getContent().getContentID());
 			}
 			variables.productCollectionList = productCollectionList;
 		}

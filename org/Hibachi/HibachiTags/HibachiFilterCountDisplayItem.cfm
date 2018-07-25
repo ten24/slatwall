@@ -213,7 +213,9 @@
 						
 						<cfset newOptionData = []/>
 						<cfset newOptionStruct = {}/>
-						<cfset attributes.comparisonOperator = 'like'/>
+						<cfif attributes.comparisonOperator NEQ 'likeAll'>
+							<cfset attributes.comparisonOperator = 'like'/>
+						</cfif>
 						<cfloop array="#attributes.optionData#" index="option">
 							
 							<cfloop list="#option['value']#" index="listItem">
@@ -273,7 +275,9 @@
 			<cfif attributes.propertyIdentifier eq 'appellation'>
 				<cfset attributes.filterType="f"/>
 				<cfset filterIdentifier="appellation.categoryIDPath"/>
-				<cfset attributes.comparisonOperator="LIKE"/>
+				<cfif attributes.comparisonOperator NEQ 'likeAll'>
+					<cfset attributes.comparisonOperator = 'like'/>
+				</cfif>
 			</cfif>
 			
 			<cfset attributes.baseBuildUrl = "#attributes.filterType#:#filterIdentifier#"/>
