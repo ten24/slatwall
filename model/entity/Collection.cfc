@@ -405,8 +405,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 			var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
 
-
-
 			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
 				if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
 					if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
@@ -646,6 +644,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}else{
 				column['title'] = getCollectionEntityObject().getTitleByPropertyIdentifier(arguments.displayProperty);
 			}
+
+			column["propertyIdentifier"] =  getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),column["propertyIdentifier"]);
+
 			setCollectionCacheValue(cacheKey,column);
 		}
 
@@ -1851,7 +1852,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
 	 			arguments.propertyIdentifierWithAlias = listRest(right(arguments.propertyIdentifierWithAlias,len(arguments.propertyIdentifierWithAlias)-1),'.');
 	 		}
-	 		convertedAlias = arguments.propertyIdentifierWithAlias;
+	 		convertedAlias = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifierWithAlias);
 	 		setCollectionCacheValue(cacheKey,convertedAlias);
 		}
 
@@ -1860,11 +1861,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  	}
 
 	public string function convertPropertyIdentifierToAlias(required string propertyIdentifier){
-		arguments.propertyIdentifier = Replace(arguments.propertyIdentifier,'.','_','all');
-		if(left(arguments.propertyIdentifier,len(getBaseEntityAlias())) == getBaseEntityAlias()){
-			arguments.propertyIdentifier = right(arguments.propertyIdentifier,len(arguments.propertyIdentifier)-len(getBaseEntityAlias())-1);
+		var cacheKey = 'convertPropertyIdentifierToAlias'&arguments.propertyIdentifier;
+
+		var convertedPropertyIdentifier = getCollectionCacheValue(cacheKey);
+		if(isNull(convertedPropertyIdentifier)) {
+
+			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
+			if (left(convertedPropertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
+				convertedPropertyIdentifier = right(convertedPropertyIdentifier, len(convertedPropertyIdentifier) - len(getBaseEntityAlias()) - 1);
+			}
+			convertedPropertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),convertedPropertyIdentifier);
 		}
-		return arguments.propertyIdentifier;
+		return convertedPropertyIdentifier;
 	}
 	// Used to apply filter based on record level permissions of the user
 	public void function applyPermissions(){
@@ -3188,11 +3196,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
 					for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
 						var column = collectionConfig.columns[i];
-						var propertyIdentifier = rereplace(column.propertyIdentifier,'_','.','all');
-						var aliasLength = 1+len(lcase(getCollectionObject()));
-						if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
-							propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
-						}
+						var propertyIdentifier = getBaseEntityAlias()&convertPropertyIdentifierToAlias(column.propertyIdentifier);
 
 						if (structKeyExists(column, 'aggregate')
 							|| structKeyExists(column, 'attributeID')
@@ -3204,7 +3208,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
 							groupByList = listprepend(groupByList, column.propertyIdentifier);
 						}else{
-							groupByList = listAppend(groupByList, column.propertyIdentifier);
+							groupByList = listAppend(groupByList, propertyIdentifier);
 						}
 					}
 				}
@@ -3226,7 +3230,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				variables.groupBys = groupByList;
 			}
-		} 
+		}
 		if(structKeyExists(variables,'groupBys')){
 			return variables.groupBys;
 		}

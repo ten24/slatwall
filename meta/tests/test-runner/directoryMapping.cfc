@@ -26,7 +26,7 @@ component accessors=true output=false persistent=false {
 		var arrayFiles =[];
 		for (var item in metaData){
 			if(findNoCase(".cfc",item,0) > 0 ){ // condition to add only the files that have .cfc extension in the testFiles array
-					arrayAppend(arrayFiles, item.left(len(item)-4));
+					arrayAppend(arrayFiles, left(item, len(item)-4));
 				}
 			}
 		var objResponse='{"TestFiles":'&SerializeJSON(arrayFiles)&'}';

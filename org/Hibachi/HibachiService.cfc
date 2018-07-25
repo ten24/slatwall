@@ -816,6 +816,32 @@
 		public string function getProperlyCasedFullClassNameByEntityName( required string entityName ) {
 			return "#getApplicationValue('applicationKey')#.model.entity.#getProperlyCasedShortEntityName( arguments.entityName )#";
 		}
+
+		public string function getProperlyCasedPropertyIdentifier( required string baseEntityName, required string propertyIdentifier ) {
+			var currentPropertiesStruct = getPropertiesStructByEntityName(arguments.baseEntityName);
+			var currentStructKeys = StructKeyList(currentPropertiesStruct);
+			var _propertyIdentifier = '';
+			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
+
+			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+				if(i == 1 && propertyIdentifierParts[i] == '_'&lcase(arguments.baseEntityName)){
+					_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
+					continue;
+				}
+				if(structKeyExists(currentPropertiesStruct, propertyIdentifierParts[i])){
+					propertyIdentifierParts[i] = listGetAt(currentStructKeys, listFindNoCase(currentStructKeys, propertyIdentifierParts[i]));
+					if(structKeyExists(currentPropertiesStruct[propertyIdentifierParts[i]], 'cfc')){
+						arguments.baseEntityName = currentPropertiesStruct[propertyIdentifierParts[i]]['cfc'];
+						currentPropertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(arguments.baseEntityName);
+						currentStructKeys = StructKeyList(currentPropertiesStruct);
+					}
+				}else{
+					logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#", true);
+				}
+				_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
+			}
+			return _propertyIdentifier;
+		}
 		
 		// =======================  END: Entity Name Helper Methods ===============================
 		
