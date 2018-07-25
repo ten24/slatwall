@@ -2696,7 +2696,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"_account_orders"
+							"propertyIdentifier":"_account_orders",
+							"aggregate":{
+								"aggregateFunction":"COUNT",
+								"aggregateAlias":"ordersCount"
+							}
 						},
 						{
 							"propertyIdentifier":"_account.firstName"

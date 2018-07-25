@@ -428,8 +428,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			setCollectionCacheValue(cacheKey,propertyIdentifierAliasData);
  		}
 
-
- 		setHasManyRelationFilter(propertyIdentifierAliasData.hasManyRelationFilter);
+	    if(isNull(getHasManyRelationFilter()) || !getHasManyRelationFilter()) {
+		    setHasManyRelationFilter(propertyIdentifierAliasData.hasManyRelationFilter);
+	    }
 		for(var join in propertyIdentifierAliasData.joins){
 			addJoin(join);
 		}
@@ -1347,7 +1348,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		any value,
 		string comparisonOperator,
 		string logicalOperator,
-		array filterGroup
+		array filterGroup,
 		numeric filterGroupIndex=1
 	) {
 		//first do we have filters?
@@ -2837,11 +2838,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getTotalAvgAggregates(){
-		variables.totalAvgAggregates;
+		return variables.totalAvgAggregates;
 	}
 
 	public array function getTotalSumAggregates(){
-		variables.totalSumAggregates;
+		return variables.totalSumAggregates;
 	}
 	
 	private numeric function getPeriodIntervalDateDiff(required minValue, required maxValue){
@@ -3194,9 +3195,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var groupByList = "";
 				var collectionConfig = getCollectionConfigStruct();
 				if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
+
 					for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
 						var column = collectionConfig.columns[i];
-						var propertyIdentifier = getBaseEntityAlias()&convertPropertyIdentifierToAlias(column.propertyIdentifier);
+						var propertyIdentifier = convertPropertyIdentifierToAlias(column.propertyIdentifier);
+
 
 						if (structKeyExists(column, 'aggregate')
 							|| structKeyExists(column, 'attributeID')
@@ -3208,6 +3211,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
 							groupByList = listprepend(groupByList, column.propertyIdentifier);
 						}else{
+							if(find('.', propertyIdentifier)){
+								propertyIdentifier = '#getBaseEntityAlias()#_#propertyIdentifier#';
+							}else{
+								propertyIdentifier = '#getBaseEntityAlias()#.#propertyIdentifier#';
+							}
 							groupByList = listAppend(groupByList, propertyIdentifier);
 						}
 					}
@@ -3337,17 +3345,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 
 
-			var aggregateFilters = getAggregateFilterHQL();
 
-			if(len(aggregateFilters) > 0){
-				aggregateFilters =  ' HAVING #aggregateFilters#';
-
-				if(!arguments.excludeGroupBy){
-
-					groupByHQL = "GROUP BY _#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.id";
-
-				}
-			}
 
 
 			addPostFiltersFromKeywords(collectionConfig);
@@ -3367,6 +3365,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!arguments.excludeGroupBy){
 				groupByHQL = getGroupByHQL();
 			}
+
+			var aggregateFilters = getAggregateFilterHQL();
+
+			if(len(aggregateFilters) > 0){
+				if(!len(groupByHQL)){
+					throw('You cannot have aggregate filters without group by');
+				}
+				aggregateFilters =  ' HAVING #aggregateFilters#';
+
+			}
+
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
