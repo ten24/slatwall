@@ -819,7 +819,7 @@
 
 		public string function getProperlyCasedPropertyIdentifier( required string baseEntityName, required string propertyIdentifier ) {
 			var currentPropertiesStruct = getPropertiesStructByEntityName(arguments.baseEntityName);
-			var currentStructKeys = StructKeyList(currentPropertiesStruct);
+			var currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
 			var _propertyIdentifier = '';
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 
@@ -829,11 +829,11 @@
 					continue;
 				}
 				if(structKeyExists(currentPropertiesStruct, propertyIdentifierParts[i])){
-					propertyIdentifierParts[i] = listGetAt(currentStructKeys, listFindNoCase(currentStructKeys, propertyIdentifierParts[i]));
+					propertyIdentifierParts[i] = currentStructKeys[arrayFindNoCase(currentStructKeys, propertyIdentifierParts[i])];
 					if(structKeyExists(currentPropertiesStruct[propertyIdentifierParts[i]], 'cfc')){
 						arguments.baseEntityName = currentPropertiesStruct[propertyIdentifierParts[i]]['cfc'];
 						currentPropertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(arguments.baseEntityName);
-						currentStructKeys = StructKeyList(currentPropertiesStruct);
+						currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
 					}
 				}else{
 					logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#", true);
