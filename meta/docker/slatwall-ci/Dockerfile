@@ -1,5 +1,5 @@
 # Slatwall CI Build
-FROM lucee/lucee4:latest
+FROM lucee/lucee5:latest
 MAINTAINER Greg Moser, greg.moser@ten24web.com
 
 RUN apt-get clean
