@@ -386,7 +386,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		    		&& 
 		    		(
 		    			getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
-						|| getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+						|| getService('hibachiService').hasPropertyByEntityNameAndSingularName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
 					)
 				){
 	    			 functionItem['isImplicit'] = true;
@@ -396,7 +396,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						|| firstThreeChars == 'has'
 					)
 					&& (
-						getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+						getService('hibachiService').hasPropertyByEntityNameAndSingularName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
 						|| getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
 					)
 				){
@@ -406,7 +406,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	    				firstSixChars == 'remove'
 		    		) 
 		    		&& (
-		    			getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
+		    			getService('hibachiService').hasPropertyByEntityNameAndSingularName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
 		    			|| getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
 		    		)
 	    		){
