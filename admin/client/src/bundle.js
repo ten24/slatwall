@@ -70000,7 +70000,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCriteriaNumber = /** @class */ (function () {
-    function SWCriteriaNumber($log, collectionPartialsPath, hibachiPathBuilder) {
+    function SWCriteriaNumber(collectionPartialsPath, hibachiPathBuilder) {
         return {
             restrict: 'E',
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criterianumber.html',
@@ -70106,16 +70106,17 @@ var SWCriteriaNumber = /** @class */ (function () {
                     }
                     return numberOptions;
                 };
+                //initialize values
                 scope.conditionOptions = getNumberOptions(scope.comparisonType);
                 scope.inListArray = [];
                 if (angular.isDefined(scope.filterItem.value)) {
-                    scope.inListArray = scope.filterItem.value.toString().split(',');
+                    scope.inListArray = scope.filterItem.value.split(',');
                 }
                 scope.newListItem = '';
                 //declare functions
                 scope.addToValueInListFormat = function (inListItem) {
                     // Adds item into array
-                    scope.inListArray.push(inListItem.toString());
+                    scope.inListArray.push(inListItem);
                     //set value field to the user generated list
                     scope.filterItem.value = scope.inListArray.toString();
                     scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
@@ -70167,9 +70168,8 @@ var SWCriteriaNumber = /** @class */ (function () {
         };
     }
     SWCriteriaNumber.Factory = function () {
-        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaNumber($log, collectionPartialsPath, hibachiPathBuilder); };
+        var directive = function (collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaNumber(collectionPartialsPath, hibachiPathBuilder); };
         directive.$inject = [
-            '$log',
             'collectionPartialsPath',
             'hibachiPathBuilder'
         ];
@@ -71236,6 +71236,9 @@ var SWEditFilterItem = /** @class */ (function () {
                                 filterItem.displayValue = filterItem.value;
                                 break;
                             case 'string':
+                            case 'big_decimal':
+                            case 'integer':
+                            case 'float':
                                 if (angular.isDefined(selectedFilterProperty.attributeID)) {
                                     filterItem.attributeID = selectedFilterProperty.attributeID;
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
@@ -71307,28 +71310,6 @@ var SWEditFilterItem = /** @class */ (function () {
                                         }
                                     }
                                 }
-                                break;
-                            case 'big_decimal':
-                            case 'integer':
-                            case 'float':
-                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-                                //is null, is not null
-                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-                                }
-                                else {
-                                    if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)) {
-                                        filterItem.value = selectedFilterProperty.criteriaValue;
-                                    }
-                                    else {
-                                        var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                        filterItem.value = decimalValueString;
-                                    }
-                                }
-                                if (angular.isDefined(selectedFilterProperty.aggregate)) {
-                                    filterItem.aggregate = selectedFilterProperty.aggregate;
-                                }
-                                filterItem.displayValue = filterItem.value;
                                 break;
                         }
                         switch (selectedFilterProperty.fieldtype) {

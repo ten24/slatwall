@@ -3,23 +3,19 @@
 class SWCriteriaNumber{
 	public static Factory(){
 		var directive = (
-			$log,
 			collectionPartialsPath,
 			hibachiPathBuilder
-		)=>new SWCriteriaNumber(
-			$log,
+		)=> new SWCriteriaNumber(
 			collectionPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log',
 			'collectionPartialsPath',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
-		$log,
 		collectionPartialsPath,
 		hibachiPathBuilder
 	){
@@ -27,9 +23,6 @@ class SWCriteriaNumber{
 			restrict: 'E',
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criterianumber.html',
 			link: function(scope, element, attrs){
-				
-				
-				
 				var getNumberOptions = function(type){
 					if(angular.isUndefined(type)){
 				 		type = 'filter'
@@ -130,11 +123,13 @@ class SWCriteriaNumber{
 				 	}
 			    	return numberOptions;
 			    };
-				scope.conditionOptions = getNumberOptions(scope.comparisonType);
+			    //initialize values
 
-				scope.inListArray = [];
+			    scope.conditionOptions = getNumberOptions(scope.comparisonType);
+
+			    scope.inListArray = [];
     			if(angular.isDefined(scope.filterItem.value)){
-    				scope.inListArray = scope.filterItem.value.toString().split(',');
+    				scope.inListArray = scope.filterItem.value.split(',');
     			}
 
     			scope.newListItem = '';
@@ -142,7 +137,7 @@ class SWCriteriaNumber{
 			    //declare functions
 			    scope.addToValueInListFormat = function(inListItem){
 					// Adds item into array
-					scope.inListArray.push(inListItem.toString());
+					scope.inListArray.push(inListItem);
 
 					//set value field to the user generated list
 					scope.filterItem.value = scope.inListArray.toString();
@@ -206,3 +201,4 @@ class SWCriteriaNumber{
 export{
 	SWCriteriaNumber
 }
+
