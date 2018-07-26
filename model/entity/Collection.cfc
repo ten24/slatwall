@@ -2504,13 +2504,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.recordsCount;
 	}
 
-	public array function getPrimaryIDs(numeric recordCount=0){
+	public array function getPrimaryIDs(numeric recordCount){
 		var primaryIDCollectionList = this.duplicateCollection();
 		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
 		primaryIDCollectionList.setDisplayProperties(primaryIDName);
-		primaryIDCollectionList.setPageRecordsShow(arguments.recordCount);
-		
-		return primaryIDCollectionList.getPageRecords(formatRecords=false);
+		if(structKeyExists(arguments,'recordCount')){
+			primaryIDCollectionList.setPageRecordsShow(arguments.recordCount);
+			return primaryIDCollectionList.getPageRecords(formatRecords=false);
+		}else{
+			return primaryIDCollectionList.getRecords(formatRecords=false);
+		}
 	}
 	
 
