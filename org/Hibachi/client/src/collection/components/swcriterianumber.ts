@@ -129,7 +129,7 @@ class SWCriteriaNumber{
 
 			    scope.inListArray = [];
     			if(angular.isDefined(scope.filterItem.value)){
-    				scope.inListArray = scope.filterItem.value.split(',');
+    				scope.inListArray = scope.filterItem.value.toString().split(',');
     			}
 
     			scope.newListItem = '';

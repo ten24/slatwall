@@ -70110,7 +70110,7 @@ var SWCriteriaNumber = /** @class */ (function () {
                 scope.conditionOptions = getNumberOptions(scope.comparisonType);
                 scope.inListArray = [];
                 if (angular.isDefined(scope.filterItem.value)) {
-                    scope.inListArray = scope.filterItem.value.split(',');
+                    scope.inListArray = scope.filterItem.value.toString().split(',');
                 }
                 scope.newListItem = '';
                 //declare functions
@@ -70533,7 +70533,7 @@ var SWCriteriaString = /** @class */ (function () {
                 scope.conditionOptions = getStringOptions(scope.comparisonType);
                 scope.inListArray = [];
                 if (angular.isDefined(scope.filterItem.value)) {
-                    scope.inListArray = scope.filterItem.value.split(',');
+                    scope.inListArray = scope.filterItem.value.toString().split(',');
                 }
                 scope.newListItem = '';
                 //declare functions
