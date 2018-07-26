@@ -189,6 +189,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function isReport(){
+		if (isNull(getReportFlag())){
+			return false;
+		}
 		return getReportFlag();
 	}
 	
