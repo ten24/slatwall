@@ -1428,7 +1428,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 
 				//Handle pagination.
-				if(findNoCase('p:current', key)){
+				if(findNoCase('p:current', key) && isNumeric(data[key]) ){
 					var currentPage = data[key];
 				}
 				if (!isNull(currentPage)){
@@ -1436,7 +1436,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					arguments.collection.setCurrentPageDeclaration(currentPage);
 				}
 
-				if(findNoCase('p:show', key)){
+				if(findNoCase('p:show', key) && isNumeric(data[key])){
 					var pageShow = data[key];
 				}
 
