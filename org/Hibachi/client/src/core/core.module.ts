@@ -33,6 +33,9 @@ import { ScopeService } from "./services/scopeservice";
 import { SkuService } from "./services/skuservice";
 import { HibachiValidationService } from "./services/hibachivalidationservice";
 import { EntityService } from "./services/entityservice";
+import {HttpInterceptor} from "./services/httpinterceptor";
+import { HttpModule } from '@angular/http';
+
 //controllers
 import { GlobalSearchController } from "./controllers/globalsearch";
 
@@ -164,13 +167,15 @@ export function startupServiceFactory(appProvider: AppProvider, appConfig: AppCo
         OrderService,
         OrderPaymentService,
         PublicService,
-        HibachiInterceptor
+        HibachiInterceptor,
+        HttpInterceptor
     ],
     imports: [
         AlertModule,
         DialogModule,
         CommonModule,
-        UpgradeModule
+        UpgradeModule,
+        HttpModule
 
     ]
 })
