@@ -1170,7 +1170,7 @@ component extends="framework.one" {
 		var response = context.getResponse();
 		
 		//this will only run if we are updating from fw/1 2.2 to fw/1 4.x
-		if(exception.cause.message == "Element CACHE.ROUTES.REGEX is undefined in a CFML structure referenced as part of an expression."){
+		if(structKeyExists(exception,'cause') && structKeyExists(exception.cause,'message') && exception.cause.message == "Element CACHE.ROUTES.REGEX is undefined in a CFML structure referenced as part of an expression."){
 			structDelete(application,variables.framework.applicationKey);
 			applicationStop();
 			location('?reload=true&update=true',false);
