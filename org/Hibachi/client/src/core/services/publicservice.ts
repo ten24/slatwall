@@ -13,6 +13,7 @@ import {OrderService} from "./orderservice";
 import {ObserverService} from "./observerservice";
 import {AccountAddressService} from "./accountaddressservice";
 import {AppConfig} from "../../../../../../admin/client/src/app.provider";
+import {HttpInterceptor} from "./httpinterceptor";
 
 @Injectable()
 export class PublicService {
@@ -33,7 +34,6 @@ export class PublicService {
     public stateDataPromise:any;
     public addressZoneStateDataPromise:any;
     public lastSelectedShippingMethod:any;
-    public http:ng.IHttpService;
     public confirmationUrl:string;
     public checkoutUrl:string;
     public header:any;
@@ -79,7 +79,7 @@ export class PublicService {
 
     //@ngInject
     constructor(
-        @Inject("$http") public $http:ng.IHttpService,
+        public http:HttpInterceptor,
         @Inject("$q") public $q:ng.IQService,
         @Inject("$window") public $window:any,
         @Inject("$location") public $location:ng.ILocationService,
@@ -103,7 +103,7 @@ export class PublicService {
         this.baseActionPath = this.appConfig.baseURL+"/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
-        this.$http = $http;
+        this.http = http;
         this.$location = $location;
         this.$q = $q;
         this.$injector=$injector;
