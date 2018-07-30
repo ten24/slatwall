@@ -550,8 +550,11 @@ component extends="framework.one" {
 	}
 
 	public boolean function hasReloadKey(){
-		return structKeyExists(url, variables.framework.reload)
-		&& url[variables.framework.reload] == variables.framework.password;
+
+		return (
+			structKeyExists(url, variables.framework.reload)
+			&& url[variables.framework.reload] == variables.framework.password
+		) || !hasBeanFactory();
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
