@@ -139,7 +139,7 @@ Notes:
 					<!--- Billing Address --->
 					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
 						<h5>#$.slatwall.rbKey('entity.orderPayment.billingAddress')#</h5>
-						<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getNewOrderPayment().getBillingAddress()#" fieldNamePrefix="newOrderPayment.billingAddress." edit="#rc.edit#" />
+						<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getNewOrderPayment().getBillingAddress()#" fieldNamePrefix="newOrderPayment.billingAddress" edit="#rc.edit#" />
 					</hb:HibachiDisplayToggle>
 					
 					<!--- Save Order Payment as Account Payment Method --->
