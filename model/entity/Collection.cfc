@@ -1662,7 +1662,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
-		
 		return HQL;
 	}
 
@@ -1725,7 +1724,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getGroupByHQL(){
 		var groupByHQL = "";
 		var groupByList = '';
-
+		
 		getGroupBys();
 		//use collectionConfig groupbys if they exist already as an override otherwise use the calculated ones
 		if(structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys']) && !hasPeriodColumn()){
@@ -1733,10 +1732,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(structKeyExists(variables,'groupBys')){
 			groupByList = variables.groupBys;
 		}
+		
 
 		if(!len(trim(groupByList)) && (!isReport() || !hasPeriodColumn())){
 			return '';
 		}
+		
+		var groupByArray = listToArray(groupByList);
+		
+		for(var i=1;i < arraylen(groupByArray);i++){
+			groupByArray[i] = getPropertyIdentifierAlias(groupByArray[i]);
+		}
+		
+		groupByList = arrayToList(groupByArray);
 		
 		groupByHQL = ' GROUP BY ' & groupByList;
 
@@ -3236,9 +3244,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 				}
+				
 				variables.groupBys = groupByList;
 			}
 		}
+		
 		if(structKeyExists(variables,'groupBys')){
 			return variables.groupBys;
 		}
