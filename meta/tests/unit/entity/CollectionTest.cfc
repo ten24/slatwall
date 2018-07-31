@@ -873,7 +873,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-
 	public void function getPrimaryIDsTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -2728,7 +2727,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"_account_orders"
+							"propertyIdentifier":"_account_orders",
+							"aggregate":{
+								"aggregateFunction":"COUNT",
+								"aggregateAlias":"ordersCount"
+							}
 						},
 						{
 							"propertyIdentifier":"_account.firstName"
@@ -4897,6 +4900,79 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getRecords();
 		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function propertyIdentifierBadCasingCollectionTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithoutActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				skuCode= createUUID(),
+				activeFlag = false
+			},
+			{
+				skuID = '',
+				skuCode= createUUID(),
+				activeFlag = false
+			}
+				]
+		};
+		var productWithoutActiveSkus = createPersistedTestEntity('product', productWithoutActiveSkusData);
+
+		//skus will default as active
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				skuCode= 'aa'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ab'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ac'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ad'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ae'&createUUID(),
+				activeFlag = 'false'
+			}
+				]
+		};
+		//By default Active flag is true.
+		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productname,productdescription,AcTiVeFlAg');
+		myProductCollection.addFilter('productname','ProductUnitTest');
+		myProductCollection.addFilter('productdescription',trim(uniqueNumberForDescription));
+		myProductCollection.addFilter('skus.activeflag','YES');
+
+		assertEquals(myProductCollection.getRecordsCount(),1);
+
+		var pageRecords = myProductCollection.getPageRecords();
+
+
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
 
