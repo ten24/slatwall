@@ -142,7 +142,7 @@ export class HttpInterceptor extends Http {
             .do((res:Response)=>{
                 this.onSuccess(res);
             },(error:any) => {
-                this.onError(error);
+                this.onError(error,RequestMethod.Get);
             });
     }
     
@@ -152,7 +152,7 @@ export class HttpInterceptor extends Http {
             .do((res:Response)=>{
                 this.onSuccess(res);
             },(error:any) => {
-                this.onError(error);
+                this.onError(error,RequestMethod.Post);
             });
     }
     
@@ -162,7 +162,7 @@ export class HttpInterceptor extends Http {
             .do((res:Response)=>{
                 this.onSuccess(res);
             },(error:any) => {
-                this.onError(error);
+                this.onError(error,RequestMethod.Delete);
             });
     }
     
@@ -172,7 +172,7 @@ export class HttpInterceptor extends Http {
             .do((res:Response)=>{
                 this.onSuccess(res);
             },(error:any) => {
-                this.onError(error);
+                this.onError(error, RequestMethod.Put);
             });
     }
     
@@ -186,7 +186,7 @@ export class HttpInterceptor extends Http {
         }
     }
     
-    private onError(rejection: any): any {
+    private onError(rejection: any,requestMethod:RequestMethod): any {
         if(rejection.status !== undefined && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
             if(rejection["_body"] && rejection["_body"].messages){
                 var alerts = this.alertService.formatMessagesToAlerts(rejection["_body"].messages);
@@ -203,6 +203,7 @@ export class HttpInterceptor extends Http {
             this.observerService.notify('Unauthorized');
         }
         if (rejection.status === 499) {
+            rejection["_body"] = JSON.parse(rejection["_body"]);
             // handle the case where the user is not authenticated
             if(rejection["_body"] && rejection["_body"].messages){
                 //var deferred = $q.defer();
@@ -212,12 +213,14 @@ export class HttpInterceptor extends Http {
                 }else if(rejection["_body"].messages[0].message === 'invalid_token'){
                     return this.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').subscribe((loginResponse)=>{
                         if(loginResponse.status === 200){
+                            loginResponse["_body"] = JSON.parse(loginResponse["_body"]);
                             this.localStorageService.setItem('token',loginResponse["_body"].token);
-                            rejection.config.headers = rejection.config.headers || {};
-                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse["_body"].token;
+                            var request_new = new Request({url:rejection.url,method:requestMethod});
+                            request_new.headers.set('Auth-Token', 'Bearer ' + loginResponse["_body"].token);
                             this.getJWTDataFromToken(loginResponse["_body"].token);
-                                
-                            return this.request(rejection.config).subscribe(function(response) {
+                            request_new["_body"] = rejection["_body"];
+                            
+                            return this.request(request_new).subscribe(function(response) {
                                 return response;
                             });
                         }
