@@ -616,10 +616,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			orderByConfig = arguments.data['orderByConfig'];
 		}
 
-		var groupBysConfig = "";
-		if(structKeyExists(arguments.data,'groupBysConfig')){
-			groupBysConfig = arguments.data['groupBysConfig'];
-		}
 
 		var propertyIdentifiersList = "";
 		if(structKeyExists(arguments.data,"propertyIdentifiersList")){
@@ -686,7 +682,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			isDistinct=isDistinct,
 			columnsConfig=columnsConfig,
 			orderByConfig=orderByConfig,
-			groupBysConfig=groupBysConfig,
 			allRecords=allRecords,
 			dirtyRead=dirtyRead,
 			useElasticSearch=useElasticSearch,
