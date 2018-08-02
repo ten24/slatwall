@@ -530,7 +530,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var ormtype = getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
 
 		//create filter Group
-		filter = {
+		var filter = {
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
@@ -2314,7 +2314,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 		}else{
-			//try{
+			try{
 				//If we are returning only the exportable records, then check and pass through.
 				if( !structKeyExists(variables, "records")) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
@@ -2378,12 +2378,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 				}
-			/*}
+			}
 			catch(any e){
 				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
-			}*/
+			}
 		}
 		//backfill missing data intervals
 		if(isReport() && hasPeriodColumn()){
