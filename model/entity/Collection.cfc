@@ -3612,6 +3612,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfig = trim(arguments.collectionConfig);
 		//reinflate collectionConfigStruct if the collectionConfig is modified directly
 		variables.collectionConfigStruct = deserializeCollectionConfig();
+		if(!isReport()){
+			structDelete(variables.collectionConfigStruct,'groupBys');
+		}
 	}
 
 	public string function getCollectionConfig(){
@@ -3621,6 +3624,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getCollectionConfigStruct(){
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = deserializeCollectionConfig();
+			if(!isReport()){
+				structDelete(variables.collectionConfigStruct,'groupBys');
+			}
 		}
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = {};
@@ -3632,9 +3638,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setCollectionConfigStruct(required struct collectionConfigStruct){
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
+		if(!isReport()){
+			structDelete(variables.collectionConfigStruct,'groupBys');
+		}
 		if(structKeyExists(variables.collectionConfigStruct,'filterGroups')){
 			prepareAliasForFilterGroups(variables.collectionConfigStruct['filterGroups']);
 		}
+		
 	}
 	
 	public void function prepareAliasForFilterGroups(required array filterGroup){
