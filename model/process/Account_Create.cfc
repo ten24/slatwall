@@ -63,6 +63,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="passwordConfirm";
 	property name="accessID";
 	property name="organizationFlag" hb_formFieldType="yesno" default=0;
+	property name="accountID" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="parentAccountID";
 	property name="childAccountID";
 	
