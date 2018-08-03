@@ -67,6 +67,7 @@ class SWListingDisplayController{
     public recordEditAction:string;
     public recordDeleteAction:string;
     public recordProcessButtonDisplayFlag:boolean;
+    public reportAction:string;
     public searching:boolean = false;
     public searchText;
 
@@ -76,6 +77,7 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
+    public showReport:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
@@ -124,10 +126,10 @@ class SWListingDisplayController{
             this.usingPersonalCollection=false;
         }
         
+        
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
         }
-        
         
         if(angular.isUndefined(this.showFilters)){
            this.showFilters = true;
@@ -152,7 +154,21 @@ class SWListingDisplayController{
             this.multipleCollectionDeffered.reject();
         }
 
-         if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()] && (angular.isUndefined(this.personalCollectionIdentifier) || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))){
+         if(
+             (this.baseEntityName) 
+             && (
+                 this.usingPersonalCollection 
+                 && this.localStorageService.hasItem('selectedPersonalCollection') 
+                 && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]
+             )
+             && (
+                angular.isUndefined(this.personalCollectionIdentifier) 
+                || (
+                    angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) 
+                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier
+                )
+            )
+        ){
             var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
             personalCollection.setDisplayProperties('collectionConfig');
             personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
@@ -163,7 +179,7 @@ class SWListingDisplayController{
                 if(data.pageRecords.length){
 
                     this.collectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
-                    console.log('collectionConfig',this.collectionConfig);
+                    this.collectionConfig.setCurrentPage(1); //even if the saved collection config has a current page, we want to be on page 1 here
                     this.collectionObject = this.baseEntityName;
 
                     this.$timeout(()=>{
@@ -181,9 +197,13 @@ class SWListingDisplayController{
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
             this.processCollection();
         }
-
+        
+        if(!this.reportAction && this.baseEntityName){
+            this.reportAction = 'entity.reportlist'+this.baseEntityName.toLowerCase();
+        }
 
     }
+    
 
     public processCollection = () =>{
 
@@ -204,7 +224,6 @@ class SWListingDisplayController{
         this.$transclude(this.$scope,()=>{});
 
         this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-
         if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
@@ -227,9 +246,8 @@ class SWListingDisplayController{
                     }
 
                     this.paginator.getCollection = this.getCollection;
-
                     this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
-
+                    
                 }
             );
         }else if(this.multiSlot == false){
@@ -249,7 +267,7 @@ class SWListingDisplayController{
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
     }
-
+    
     public getCollectionByPagination = (state) =>{
         if(state.type){
             switch(state.type){
@@ -292,7 +310,12 @@ class SWListingDisplayController{
     }
 
     private getCollectionObserver=(param)=> {
-        this.collectionConfig.loadJson(param.collectionConfig);
+        if(angular.isString(param.collectionConfig)){
+            this.collectionConfig.loadJson(param.collectionConfig);
+        }else{
+            this.collectionConfig = param.collectionConfig;
+        }
+        
         this.collectionData = undefined;
         this.$timeout(
             ()=>{
@@ -367,6 +390,9 @@ class SWListingDisplayController{
         }
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
+        }
+        if(angular.isUndefined(this.showReport)){
+            this.showReport = false;
         }
         if(angular.isUndefined(this.showPrintOptions)){
             this.showPrintOptions = false; 
@@ -484,12 +510,14 @@ class SWListingDisplayController{
     public hasNumerical=()=>{
         
         // Iterate over columns, find out if we have any numericals and return
-        if (!Array.isArray(this.columns) || this.columns.length == 0){
+        if(this.columns.length){
+            return this.columns.reduce((totalNumericalCols, col) => {
+                return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+            });    
+        }else{
             return false;
         }
-        return this.columns.reduce((totalNumericalCols, col) => {
-            return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-        });
+        
     }
 
     public columnOrderByIndex = (column) =>{
@@ -682,6 +710,7 @@ class SWListingDisplay implements ng.IDirective{
             recordAddDisabled:"<?",
 
             recordProcessesConfig:"<?",
+            reportAction:"@?",
             /* record processes config is an array of actions. Example:
             [
             {
@@ -741,6 +770,7 @@ class SWListingDisplay implements ng.IDirective{
             showFilters:"<?",
             showSimpleListingControls:"<?",
             showPrintOptions:"<?",
+            showReport:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",

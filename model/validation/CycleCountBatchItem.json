@@ -1,5 +1,6 @@
 {
 	"properties":{
-		"batchStatusCode":		[{"contexts":"edit,delete","neq":"ccbstClosed"}]
+		"batchStatusCode":		[{"contexts":"edit,delete","neq":"ccbstClosed"}],
+		"quantity":				[{"contexts":"save","dataType":"numeric"}]
 	}
 } 

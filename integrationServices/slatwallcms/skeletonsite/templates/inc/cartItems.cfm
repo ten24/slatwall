@@ -24,19 +24,25 @@
        ------>
 
     <div class="col-12 col-sm-12 col-md-2 text-center">
-        <img class="img-fluid" ng-src="{{orderItem.sku.imagePath}}" alt="preview">
+        <img class="img-fluid" ng-src="{{orderItem.sku.smallImagePath}}" ng-show="orderItem.sku.smallImagePath" alt="preview">
     </div>
     
     <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4">
         <small class="text-secondary" ng-bind="orderItem.sku.product.productType.productTypeName"></small>
-        <h4><a href="##" ng-bind="orderItem.sku.product.productName"></a></h4>
+        <h4><a href="/{{slatwall.globalURLKeyProduct}}/{{orderItem.sku.product.urlTitle}}/" ng-bind="orderItem.sku.product.productName"></a></h4>
         <small ng-if="orderItem.sku.skuCode"><strong>Sku Code: </strong>{{orderItem.sku.skuCode}}</small>
         <p ng-if="orderItem.sku.skuDefinition" class="mb-3"><small><strong>SKU Defintion Label: </strong>{{orderItem.sku.skuDefinition}}</small></p>
+        <p ng-if="swfCartItems.getProductDescriptionAndTruncate(120)" class="mb-3"><small><strong>Description: </strong>{{swfCartItems.getProductDescriptionAndTruncate(120)}}</small></p>
     </div>
     
     <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
         <div class="col-3 col-sm-3 col-md-4 text-md-right pt-2">
-            <h6>{{orderItem.extendedUnitPriceAfterDiscount | currency}} <small class="text-muted" ng-if="orderItem.extendedUnitPriceAfterDiscount < orderItem.extendedUnitPrice"><s ng-bind="orderItem.extendedUnitPrice | currency"></s></small></h6>
+            <h6>{{orderItem.extendedUnitPriceAfterDiscount | currency}} 
+                <small class="text-muted" ng-if="orderItem.extendedUnitPriceAfterDiscount < orderItem.sku.listPrice">
+                    <s ng-bind="orderItem.sku.listPrice | currency"></s>
+                </small>
+            </h6>
+            <!--- if you ever need this value, here you go: <h6>{{orderItem.extendedUnitPrice| currency}} </h6> --->
         </div>
         <div class="col-3 col-sm-3">
             <input
@@ -50,7 +56,9 @@
         </div>
         <div class="col-4 col-sm-3 text-md-right pt-2">
             <i ng-show="swfCartItems.updateOrderItemQuantityIsLoading" class="fa fa-refresh fa-spin fa-fw float-left mb-2 mr-1"></i>
-            <h6><strong ng-bind="orderItem.extendedPriceAfterDiscount | currency"></strong></h6>
+            <h6>
+                <strong ng-bind="orderItem.extendedPriceAfterDiscount | currency"></strong>
+            </h6>
         </div>
         <div class="col-2 col-sm-2 text-right">
             <button 
@@ -70,14 +78,14 @@
     
     <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4 offset-lg-2">
         <small class="text-secondary" ng-bind="child.sku.product.productType.productTypeName"></small>
-        <h6><a href="##" ng-bind="child.sku.product.productName"></a></h6>
+        <h6><a href="/{{slatwall.globalURLKeyProduct}}/{{child.sku.product.urlTitle}}/" ng-bind="child.sku.product.productName"></a></h6>
         <small ng-if="child.sku.skuCode"><strong>Sku Code: </strong>{{child.sku.skuCode}}</small>
         <p ng-if="child.sku.skuDefinition" class="mb-3"><small><strong>SKU Defintion Label: </strong>{{child.sku.skuDefinition}}</small></p>
     </div>
     
     <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
         <div class="col-3 col-sm-3 col-md-4 text-md-right pt-1">
-            <small>{{child.extendedUnitPriceAfterDiscount | currency}} <span class="text-muted" ng-if="child.extendedPriceAfterDiscount < child.extendedPrice"><s ng-bind="child.extendedUnitPrice | currency"></s></span></small>
+            <small>{{child.extendedUnitPriceAfterDiscount | currency}} <span class="text-muted" ng-if="child.extendedPriceAfterDiscount < child.sku.listPrice"><s ng-bind="child.sku.listPrice | currency"></s></span></small>
         </div>
         <div class="col-3 col-sm-3">
             <input 

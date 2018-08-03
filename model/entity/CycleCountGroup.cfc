@@ -54,7 +54,8 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	property name="activeFlag" ormtype="boolean" default="1";
 	property name="frequencyToCount" ormtype="integer";
 	property name="daysInCycle" ormtype="integer";
-
+	property name="skuCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
+		
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
@@ -62,9 +63,9 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	// Related Object Properties (many-to-many - owner)
 	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocation" fkcolumn="cycleCountGroupID" inversejoincolumn="locationID";
 	property name="locationCollections" singularname="locationCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCntGroupLocCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
-	property name="skuCollections" singularname="skuCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupSkuCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
 	
 	// Related Object Properties (many-to-many - inverse)
+	property name="cycleCountBatchs" singularname="cycleCountBatch" cfc="CycleCountBatch" fieldtype="many-to-many" linktable="SwCycleCountBatchCountGroup" fkcolumn="cycleCountGroupID" inversejoincolumn="cycleCountBatchID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -76,54 +77,60 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
+	property name="skuCollection" persistent="false";
 
 	
 	// ============ START: Non-Persistent Property Methods =================
-	
-	public any function getSkuSmartList(){
-		var skuSmartList = getService("SkuService").getSkuSmartList();
-		return skuSmartList;
-	}
-
-	public any function getStockSmartList(struct data={}, currentURL="") {
-		var stockSmartList = getService("StockService").getStockSmartList();
-		return stockSmartList;
-	}
-
-	public any function getCycleCountGroupsSkusCollection() {
-		var stockSmartList = getService("StockService").getStockSmartList();
-		var cycleCountGroupCollection = getService('HibachiCollectionService').newCollection();
+	 public string function getSkuCollectionConfig(){
+    	if(isNull(variables.skuCollectionConfig)){
+    		var defaultSkuCollectionList = getService('skuService').getSkuCollectionList();
+    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,skuDescription,skuCode,listPrice,price,renewalPrice',{isVisible=true,isSearchabl=true});
+    		defaultSkuCollectionList.addDisplayProperty(displayProperty='skuID',columnconfig={isVisible=false});
+    		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionList.getCollectionConfigStruct());
+    		
+    	}
+    	return variables.skuCollectionConfig;
+    }
+    
+    public any function getSkuCollection(){
+	var skuCollectionList = getService('skuService').getSkuCollectionList();
+	skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
+	skuCollection = skuCollectionList;
+    	return skuCollection;
+    }
+    
+	public any function getCycleCountGroupsStockCollection() {
+		var cycleCountGroupCollection = getService('StockService').getStockCollectionList();
 		
 		// Create base collection to select active skus what have inventory transactions
-		cycleCountGroupCollection.setCollectionObject('Sku');
-		cycleCountGroupCollection.setDisplayProperties('skuCode,calculatedLastCountedDateTime,calculatedQOH,calculatedQATS,activeFlag,skuID');
-		cycleCountGroupCollection.addOrderBy('calculatedLastCountedDateTime|DESC,skuCode|ASC');
-		cycleCountGroupCollection.addFilter('activeFlag', 'True', '=');
-		cycleCountGroupCollection.addFilter('stocks.inventory', 'NULL', 'IS NOT');
-
+		cycleCountGroupCollection.addFilter('sku.activeFlag', 1);
+		cycleCountGroupCollection.addFilter('inventory', 'NULL', 'IS NOT');
+		cycleCountGroupCollection.setDistinct(true);
+		
 		// Add selected locations filters
 		for(var locationEntity in this.getLocations()) {
-			cycleCountGroupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+			cycleCountGroupCollection.addFilter(propertyIdentifier='location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='AND', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
 		}
 
+		var inlist="";
 		// Add selected skuCollections filters
-		for(var skuCollection in this.getSkuCollections()) {
-			var inList = '';
-			for(var sku in skuCollection.getRecords()) {
-				inList = listAppend(inList, sku.skuID);
-			}
-			cycleCountGroupCollection.addFilter(propertyIdentifier='skuID', value='#inList#', comparisonOperator='IN', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+		for(var sku in this.getSkuCollection().getRecords()) {
+			inList = listAppend(inList, sku.skuID);
 		}
+			cycleCountGroupCollection.addFilter(propertyIdentifier='sku.skuID', value='#inList#', comparisonOperator='IN', logicalOperator='AND', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
 
-		// Add selected skuCollections filters
+		// Add selected location Collections filters
 		for(var locationCollection in this.getLocationCollections()) {
 			for(var locationEntity in locationCollection.getRecords()) {
-				cycleCountGroupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+				cycleCountGroupCollection.addFilter(propertyIdentifier='location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='AND', aggregate= '', filterGroupAlias='locationCollectionFilters', filterGroupLogicalOperator='AND');
 			}
 		}
 		
 		// set page records to show required number of Skus based on count and frequency
-		cycleCountGroupCollection.setPageRecordsShow((ceiling(arrayLen(cycleCountGroupCollection.getRecords()) * this.getFrequencyToCount()) / this.getDaysInCycle()));
+		if ( cycleCountGroupCollection.getRecordsCount() ) {
+			cycleCountGroupCollection.setPageRecordsShow((ceiling( cycleCountGroupCollection.getRecordsCount() * this.getFrequencyToCount()) / this.getDaysInCycle()));
+		}
+		
 		return cycleCountGroupCollection;
 	}
 

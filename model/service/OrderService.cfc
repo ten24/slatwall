@@ -907,8 +907,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 				
 		for(var orderItem in arguments.order.getOrderItems()){
-			getHibachiScope().addModifiedEntity(orderItem.getStock());
-			getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
+			if(!isNull(orderItem.getStock())){
+				getHibachiScope().addModifiedEntity(orderItem.getStock());
+				getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
+			}
 		}
 
 		// Change the status
@@ -3226,6 +3228,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					structDelete(arguments.data,key);
 				}
 			}
+		}
+		
+		// We need to get the thirdPartyShippingAccountIdentifier from the data struct and set it on the orderFulfillment
+		if(structKeyExists(arguments.data, 'thirdPartyShippingAccountIdentifier')){
+			var thirdPartyShippingAccountIdentifier = arguments.data.thirdPartyShippingAccountIdentifier;
+			arguments.orderfulfillment.setThirdPartyShippingAccountIdentifier(thirdPartyShippingAccountIdentifier);
 		}
 
 		// Call the generic save method to populate and validate

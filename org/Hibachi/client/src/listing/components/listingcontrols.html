@@ -4,6 +4,7 @@
               data-paginator="swListingControls.paginator"
               data-listing-id="{{ swListingControls.tableId }}"
          ></span>
+        
         <!-- PERSONAL COLLECTIONS -->
         <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.personalCollectionsClosed" id="j-personal-collections">
             personal collections
@@ -87,6 +88,7 @@
                  data-ng-if="filter.hasOwnProperty('filterGroup') == false && filter.propertyIdentifier && !filter.hidden">
 
                 <button
+                        type="button"
                         class="btn btn-primary btn-sm"
                         data-ng-click="swListingControls.selectFilterItem(filter)"
                         data-ng-disabled="!filter.conditionDisplay"

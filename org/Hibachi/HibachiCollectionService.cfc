@@ -364,7 +364,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	private void function addOrderBysToCollectionConfigStructByOrderBysList(required any collectionEntity, required string orderBysList){
 		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
 		if(structKeyExists(collectionConfigStruct,'orderBy')){
-			var orderByArray = collectionConfigStruct.orderBy;
+			var orderByArray = collectionConfigStruct['orderBy'];
 		}else{
 			var orderByArray = [];
 		}
@@ -411,13 +411,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isnull(arguments.data.filterConfig)){
 			collectionConfigStruct['filterGroups'] = deserializeJson(arguments.data.filterConfig);
 		}
-
+		
 		if(!isNull(arguments.data.joinsConfig)){
 			collectionConfigStruct.joins = deserializeJson(arguments.data.joinsConfig);
 		}
 
 		if(!isNull(arguments.data.orderByConfig)){
-			collectionConfigStruct.orderBy = deserializeJson(arguments.data.orderByConfig);
+			collectionConfigStruct['orderBy'] = deserializeJson(arguments.data.orderByConfig);
 		}
 
 		if(!isNull(arguments.data.columnsConfig)){
@@ -436,7 +436,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		//this should handle sorting
 		//&orderBy=propertyIdentifier|direction
 		/*if(!isNull(arguments.data.orderBy)){
-			collectionConfig.orderBy = getOrderByArrayByURLParams(arguments.data.orderBy);
+			collectionConfig['orderBy'] = getOrderByArrayByURLParams(arguments.data.orderBy);
 		}*/
 
 		//this should be how we handle filterGroups
@@ -581,10 +581,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		return getHibachiUtilityService().hibachiHTMLEditFormat(modifiedURL);
 	}
 
-	public any function applyData(required any collection){
-		arguments.collection.applyData();
-	}
-
 	public any function getCollectionOptionsFromData(required struct data){
 		//get entity service by entity name
 		var currentPage = "";
@@ -610,7 +606,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			filterGroupsConfig = arguments.data['filterGroupsConfig'];
 		}
 		var joinsConfig = "";
-		if(structKeyExists(arguments.data,'joinsConfig')){
+		//by default don't use any generated joinsConfigs unless explicitly defined. 90% of joins should be handled on the backend
+		if((structKeyExists(arguments.data,'useJoinsConfig') && arguments.data.useJoinsConfig) && structKeyExists(arguments.data,'joinsConfig')){
 			joinsConfig = arguments.data['joinsConfig'];
 		}
 
@@ -619,10 +616,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			orderByConfig = arguments.data['orderByConfig'];
 		}
 
-		var groupBysConfig = "";
-		if(structKeyExists(arguments.data,'groupBysConfig')){
-			groupBysConfig = arguments.data['groupBysConfig'];
-		}
 
 		var propertyIdentifiersList = "";
 		if(structKeyExists(arguments.data,"propertyIdentifiersList")){
@@ -689,7 +682,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			isDistinct=isDistinct,
 			columnsConfig=columnsConfig,
 			orderByConfig=orderByConfig,
-			groupBysConfig=groupBysConfig,
 			allRecords=allRecords,
 			dirtyRead=dirtyRead,
 			useElasticSearch=useElasticSearch,
@@ -809,7 +801,6 @@ component output="false" accessors="true" extends="HibachiService" {
 					}
 				}
 			}
-
 			if(structKeyExists(collectionOptions,'joinsConfig') && len(collectionOptions.joinsConfig)){
 				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(collectionOptions.joinsConfig);
 
@@ -834,7 +825,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			if(structKeyExists(collectionOptions,'orderByConfig') && len(collectionOptions.orderByConfig)){
-				collectionEntity.getCollectionConfigStruct().orderBy = deserializeJson(collectionOptions.orderByConfig);
+				collectionEntity.getCollectionConfigStruct()['orderBy'] = deserializeJson(collectionOptions.orderByConfig);
 			}
 			if(structKeyExists(collectionOptions,'groupBysConfig') && len(collectionOptions.groupBysConfig)){
 				collectionEntity.getCollectionConfigStruct().groupBys = deserializeJson(collectionOptions.groupBysConfig);
@@ -859,7 +850,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setReportFlag(collectionOptions.isReport);
 			}
 			if(structKeyExists(collectionOptions,'periodInterval')){
-				collectionEntity.getCollectionConfigStruct().periodInterval = collectionOptions.periodInterval;
+				collectionEntity.getCollectionConfigStruct()['periodInterval'] = collectionOptions['periodInterval'];
 			}
 			
 
@@ -982,7 +973,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; //<--The fileName of the report to export.
 		param name="data.collectionExportID" default="" type="string";      //<--The collection to export ID
 
+<<<<<<< HEAD
 		//short circuit to prevent non admin use
+=======
+>>>>>>> 51375eaabfaec83711c4ec3e560d393b702103e8
 		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
 			return;
 		}
@@ -1191,6 +1185,276 @@ component output="false" accessors="true" extends="HibachiService" {
 		arguments.collectionEntity.setCollectionConfig( serializeJson(arguments.collectionEntity.getCollectionConfigStruct()) );
 		
 		return arguments.collectionEntity;
+	}
+	
+	public void function applyDataForStandardFilter(required any collection, required any data, string excludesList="", string key){
+		var prop = listToArray(arguments.key,':')[2];
+		if(
+			arguments.collection.hasPropertyByPropertyIdentifier(prop) 
+			&& arguments.collection.getPropertyIdentifierIsPersistent(prop) 
+			&& listFind(trim(arguments.excludesList),trim(prop)) == 0 
+		){
+			var dataToFilterOn = data[arguments.key]; //value of the filter.
+
+			var comparison = "=";
+			try{
+				comparison = listToArray(arguments.key,':')[3];
+			}catch(any e){
+				comparison = "=";
+			}
+			if (!isNull(comparison)){
+				if (comparison == 'eq'){
+					if(listLen(dataToFilterOn) == 1){
+						comparison = "=";
+					}else{
+						comparison = "in";
+					}
+				}
+				if (comparison == 'gte'){
+					comparison = ">=";
+				}
+				if (comparison == 'lte'){
+					comparison = "<=";
+				}
+				if (comparison == 'gt'){
+					comparison = ">";
+				}
+				if (comparison == 'lt'){
+					comparison = "<";
+				}
+				if (comparison == 'neq'){
+					comparison = "!=";
+				}
+			}
+
+			if (comparison == 'like'){
+				var dataToFilterOnArray = listToArray(dataToFilterOn,'|');
+
+				for(var i=1; i <= arraylen(dataToFilterOnArray);i++){
+					var item = dataToFilterOnArray[i];
+					var filterData = {
+						propertyIdentifier=prop,
+						value='#item#%',
+						comparisonOperator=comparison
+					};
+
+					if(i > 1){
+						filterData.logicalOperator = 'OR';
+					}
+
+					if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+						arguments.collection.getCollectionConfigStruct()['filterGroups'] = [{"filterGroup"=[]}];
+					}
+
+					filterData['filterGroupAlias'] = "like#prop#";
+					filterData['filterGroupLogicalOperator'] = "AND";
+
+					if(!arguments.collection.hasFilterByFilterGroup(filterData,arguments.collection.getCollectionConfigStruct()['filterGroups'][arguments.collection.getFilterGroupIndexByFilterGroupAlias(filterData['filterGroupAlias'])]['filterGroup'])){
+						arguments.collection.addFilter(argumentCollection=filterData);
+				}
+					arguments.collection.setFilterDataApplied(true);
+
+			}
+
+			}else{
+				var filter = {
+					propertyIdentifier=prop,
+					value=dataToFilterOn,
+					comparisonOperator=comparison
+				};
+
+				if(
+					!structKeyExists(arguments.collection.getCollectionConfigStruct(),'filterGroups')
+					|| !arrayLen(arguments.collection.getCollectionConfigStruct()['filterGroups'])
+					|| !arguments.collection.hasFilterByFilterGroup(filter,arguments.collection.getCollectionConfigStruct()['filterGroups'][1]['filterGroup'])
+				){
+					if(listFind(trim(arguments.excludesList),trim(prop)) > 0 ){
+						arguments.collection.removeFilter(prop, dataToFilterOn, comparison);
+					}else{
+						arguments.collection.addFilter(prop, dataToFilterOn, comparison);
+					}
+				}
+
+				arguments.collection.setFilterDataApplied(true);
+			}
+
+		}
+	}
+	
+	public void function applyDataForFilters(required any collection, required any data, string excludesList="", string key){
+		//handle filters.
+		
+		if(isValid('string',arguments.data[arguments.key])){
+			if (left(arguments.key, 3) == "fr:"){
+
+				var prop = listToArray(arguments.key,':')[2];
+
+				if(arguments.collection.hasPropertyByPropertyIdentifier(prop) && arguments.collection.getPropertyIdentifierIsPersistent(prop)){
+					var dataToFilterOn = arguments.data[arguments.key]; //value of the filter.
+
+					var comparison = "=";
+					try{
+						comparison = listToArray(arguments.key,':')[3];
+					}catch(any e){
+						comparison = "=";
+					}
+					if (!isNull(comparison)){
+						if (comparison == 'eq'){
+							if(listLen(dataToFilterOn) == 1){
+								comparison = "=";
+							}else{
+								comparison = "in";
+							}
+						}
+						if (comparison == 'gte'){
+							comparison = ">=";
+						}
+						if (comparison == 'lte'){
+							comparison = "<=";
+						}
+						if (comparison == 'gt'){
+							comparison = ">";
+						}
+						if (comparison == 'lt'){
+							comparison = "<";
+						}
+						if (comparison == 'neq'){
+							comparison = "!=";
+						}
+						if (comparison == 'like'){
+							dataToFilterOn = "%#dataToFilterOn#%";
+						}
+					}
+					arguments.collection.removeFilter(prop,dataToFilterOn,comparison);
+				}
+			}
+			//handle filters.
+			if (left(arguments.key, 2) == "f:"){
+				applyDataForStandardFilter(argumentCollection=arguments);
+			}
+
+			//Handle Range
+			if (left(arguments.key, 2) == "r:"){
+				var value = arguments.data[arguments.key];
+				var ranges = listToArray(value);
+				var filterParts = "#listToArray(arguments.key, ':')#";
+				var prop = filterParts[2];//property
+				if(
+					arguments.collection.hasPropertyByPropertyIdentifier(prop) 
+					&& arguments.collection.getPropertyIdentifierIsPersistent(prop) 
+					&& listFind(trim(arguments.excludesList),trim(prop)) == 0
+				){
+					var ormtype = arguments.collection.getOrmTypeByPropertyIdentifier(prop);
+					var rangeValues = listToArray(data[arguments.key]);//value 20^40,100^ for example.
+
+					for(var i=1; i <= arraylen(rangeValues);i++){
+						var rangeValue = rangeValues[i];
+						var rangeArray = listToArray(rangeValue,'^');
+						var rangeLen = 0;
+						if (isArray(rangeArray)){
+							rangeLen = arrayLen(rangeArray);
+						}
+
+						if (rangeLen > 1){
+							var filterData = {
+								propertyIdentifier=prop,
+								value=replace(rangeValue,'^','-'),
+								comparisonOperator='BETWEEN',
+								ormtype=ormtype
+							};
+						}else if (rangeLen == 1 && left(rangeValue, 1) == "^"){
+							var filterData = {
+								propertyIdentifier=prop,
+								value=replace(rangeValue,'^',''),
+								comparisonOperator='<=',
+								ormtype=ormtype
+							};
+						}else if (rangeLen == 1 && right(rangeValue, 1) == "^"){
+							var filterData = {
+								propertyIdentifier=prop,
+								value=replace(rangeValue,'^',''),
+								comparisonOperator='>=',
+								ormtype=ormtype
+							};
+						}else{
+							//can't build because there is not enough range information.
+							return;
+						}
+
+
+						if(i > 1){
+							filterData.logicalOperator = 'OR';
+						}
+
+						if(!structKeyExists(arguments.collection.getCollectionConfigStruct(),'filterGroups')){
+							arguments.collection.getCollectionConfigStruct()['filterGroups'] = [{'filterGroup'=[]}];
+						}
+
+						filterData['filterGroupAlias'] = "range#prop#";
+						filterData['filterGroupLogicalOperator'] = "AND";
+
+
+
+						if(!arguments.collection.hasFilterByFilterGroup(
+							filterData,arguments.collection.getCollectionConfigStruct()['filterGroups'][arguments.collection.getFilterGroupIndexByFilterGroupAlias(filterData['filterGroupAlias'])]['filterGroup'])){
+							arguments.collection.addFilter(argumentCollection=filterData);
+						}
+						arguments.collection.setFilterDataApplied(true);
+						//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
+
+						//;
+					}
+				}
+			}
+		}
+	}
+	
+	public void function applyData(required any collection, required any data=url, string excludesList=""){
+		var filterKeyList = "";
+		var hibachiBaseEntity = "";
+		hibachiBaseEntity = arguments.collection.getCollectionObject();
+
+		if(!isStruct(data) && isSimpleValue(data)) {
+			arguments.data = getHibachiUtilityService().convertNVPStringToStruct(arguments.data);
+			filterKeyList = structKeyList(arguments.data);
+		}
+
+		//Simple Filters
+		if(!arguments.collection.hasFilterDataApplied()){
+			for (var key in arguments.data){
+
+				applyDataForFilters(arguments.collection,arguments.data,arguments.excludesList,key);
+				//OrderByList
+				var orderBys = data[key];
+				if (left(key,7)=='orderBy'){
+					//this is a list.
+					arguments.collection.setOrderBy(data[key]);
+				}
+
+
+				//Handle pagination.
+				if(findNoCase('p:current', key) && isNumeric(data[key]) ){
+					var currentPage = data[key];
+				}
+				if (!isNull(currentPage)){
+					data['currentPageDeclaration'] = currentPage;
+					arguments.collection.setCurrentPageDeclaration(currentPage);
+				}
+
+				if(findNoCase('p:show', key) && isNumeric(data[key])){
+					var pageShow = data[key];
+				}
+
+				if (!isNull(pageShow)){
+					if(pageShow >= 1)
+					{
+						arguments.collection.setPageRecordsShow(pageShow);
+					}
+
+				}
+
+			}
+		}
 	}
 
 

@@ -550,8 +550,11 @@ component extends="framework.one" {
 	}
 
 	public boolean function hasReloadKey(){
-		return structKeyExists(url, variables.framework.reload)
-		&& url[variables.framework.reload] == variables.framework.password;
+
+		return (
+			structKeyExists(url, variables.framework.reload)
+			&& url[variables.framework.reload] == variables.framework.password
+		) || !hasBeanFactory();
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
@@ -925,10 +928,17 @@ component extends="framework.one" {
 		param name="arguments.rc.apiRequest" default="false";
 		param name="arguments.rc.apiResponse.content" default="#structNew()#";
 
+		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
+			getHibachiScope().setPersistSessionFlag(false);
+		}
+		
 		endHibachiLifecycle();
 		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
-
+		
+		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
+			abort;
+		}
 
 		// Check for an API Response
 		if(arguments.rc.apiRequest) {
@@ -1163,7 +1173,7 @@ component extends="framework.one" {
 		var response = context.getResponse();
 		
 		//this will only run if we are updating from fw/1 2.2 to fw/1 4.x
-		if(exception.cause.message == "Element CACHE.ROUTES.REGEX is undefined in a CFML structure referenced as part of an expression."){
+		if(structKeyExists(exception,'cause') && structKeyExists(exception.cause,'message') && exception.cause.message == "Element CACHE.ROUTES.REGEX is undefined in a CFML structure referenced as part of an expression."){
 			structDelete(application,variables.framework.applicationKey);
 			applicationStop();
 			location('?reload=true&update=true',false);

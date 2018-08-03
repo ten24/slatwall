@@ -52,6 +52,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="minQuantity" ormtype="integer" default="0";
 	property name="maxQuantity" ormtype="integer" default="0";
+	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 
 	// Related Object Properties (many-to-one)
 	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
@@ -67,8 +69,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedQNC" ormtype="float";
 	property name="calculatedQOQ" ormtype="float";
-	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
-	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
@@ -114,15 +114,25 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	//Simple
 	
 	public string function getSimpleRepresentation() {
-		if(!isNull(getSku().getSkuCode()) && len(getLocation().getLocationName())) {
-			var representation = getSku().getSkuCode() & " - " & getLocation().getLocationName();
+		var representation = "";
+	
+		if(!isNull(getSku().getSkuCode())) {
+			representation = getSku().getSkuCode();
 		} 
-
+ 		
+		if(!isnull(getLocation()) && len(getLocation().getLocationName())) {
+			representation &= " - " & getLocation().getLocationName();
+		}
+		
 		return representation;
 	}
 	
 	public any function getSkuLocationQuantity(){
-		return getService('InventoryService').getSkuLocationQuantityBySkuIDANDLocationID(this.getSku().getSkuID(),this.getLocation().getLocationID());
+		if( !isNull(getLocation()) ) {
+			return getService('InventoryService').getSkuLocationQuantityBySkuIDANDLocationID(getSku().getSkuID(), getLocation().getLocationID());
+		} else {
+			return new('SkuLocationQuantity');
+		}
 	}
 	
 	// Quantity
