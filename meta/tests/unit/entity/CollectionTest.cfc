@@ -324,12 +324,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function applyDataTest_pageShowTest_queryString(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
-        var queryString = '?p:show=2&p:current=3';
+		var queryString = '?p:show=2&p:current=3';
 
 		collectionEntity.applyData(queryString);
 
-		assertEquals(collectionEntity.getPageRecordsShow(),1);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
+		assertEquals(collectionEntity.getPageRecordsShow(),2);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
 	}
 	/**
 	* @test
