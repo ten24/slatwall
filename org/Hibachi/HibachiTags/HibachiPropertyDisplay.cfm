@@ -38,6 +38,7 @@
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />				<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
 	
 	<cfparam name="attributes.autocompletePropertyIdentifiers" type="string" default="" />	<!--- hint: This describes the list of properties that we want to get from an entity --->
+	<cfparam name="attributes.autocompleteFilters" type="string" default="" />
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />			<!--- hint: This is the value property that will get assigned to the hidden field when selected --->
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" /> 		<!--- hint: This is the single name property that shows once an option is selected --->
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
@@ -121,6 +122,7 @@
 			<cfif attributes.fieldType eq "textautocomplete" OR attributes.fieldType eq "typeahead">
 				<cfset attributes.autocompleteDataEntity = attributes.object.getPropertyMetaData(attributes.property)['cfc'] />
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acpropertyidentifiers="#attributes.autocompletePropertyIdentifiers#"', ' ') />
+				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acfilters="#attributes.autocompleteFilters#"', ' ') />
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-entityName="#listLast(attributes.object.getPropertyMetaData(attributes.property).cfc,'.')#"', ' ') />
 				<cfif not len(attributes.autocompleteValueProperty)>
 					<cfset attributes.autocompleteValueProperty = listLast(attributes.fieldName, '.') />

@@ -54,6 +54,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
+		
+		//only flush on after
+		if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
+			getHibachiScope().flushORMSession();
+		}
+		
 		var successFlag = false;
 		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
 			continue;

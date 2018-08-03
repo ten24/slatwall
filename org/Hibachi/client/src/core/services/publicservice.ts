@@ -408,6 +408,7 @@ export class PublicService {
         if (request && request.hasSuccessfulAction()){
             this.successfulActions = [];
             for (var action in request.successfulActions){
+                this.successfulActions.push(request.successfulActions[action].split('.')[1]);
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                     this.$window.location.href = this.confirmationUrl;
                     return;
@@ -417,7 +418,6 @@ export class PublicService {
                 }else if(request.successfulActions[action].indexOf('public:account.logout') !== -1){
                     this.account = this.$hibachi['newAccount']();
                 }
-                this.successfulActions.push(request.successfulActions[action].split('.')[1]);
             }
         }
 

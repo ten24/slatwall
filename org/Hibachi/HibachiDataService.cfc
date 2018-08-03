@@ -228,7 +228,11 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 				//check if the column needs to be decoded
 				if(structKeyExists(columns[ thisColumnName ], 'decodeForHTML') && columns[ thisColumnName ].decodeForHTML) {
-					columnRecord.value = DecodeforHTML(columnRecord.value);
+					if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
+						columnRecord.value = columnRecord.value.DecodeforHTML();
+					}else{
+						columnRecord.value = DecodeforHTML(columnRecord.value);
+					}
 				}
 
 				// Add this column record to the insert
