@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="HibachiService"  accessors="true" output="false" 
+component  accessors="true" output="false" 
 {
     property name="accountService" type="any";
     property name="addressService" type="any";
@@ -61,11 +61,34 @@ component extends="HibachiService"  accessors="true" output="false"
     property name="productService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
+    property name="hibachiService" type="any";
+    property name="paymentService" type="any";
     
 
     variables.publicContexts = [];
     variables.responseType = "json";
     
+    public any function getHibachiScope(){
+        return getHibachiService().getHibachiScope();
+    }
+    
+    public any function getDAO(required string daoName){
+        return getHibachiService().getDAO(arguments.daoName);
+    }
+    
+    public any function getService(required string serviceName){
+        return getHibachiService().getService(arguments.serviceName);
+    }
+    
+    public any function invokeMethod(required string methodName, struct methodArguments={}) {
+        
+		if(structKeyExists(this, arguments.methodName)) {
+			var theMethod = this[ arguments.methodName ];
+			return theMethod(argumentCollection = methodArguments);
+		}
+		
+		throw("You have attempted to call the method #arguments.methodName# which does not exist in #getClassFullName()#");
+	}
     
     /**
      * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
@@ -137,31 +160,6 @@ component extends="HibachiService"  accessors="true" output="false"
         return accountProcess;
     }
     
-    /** returns meta data as well as validation information for a process object. This is
-        the default behavior for a GET request to process context /api/scope/process/ 
-     
-     */ 
-    public any function getProcessObjectDefinition(required struct data){
-        
-        try{
-            if (structKeyExists(data, entityName) && lCase(data.entityName) == "account"){
-                var processObject = evaluate("getHibachiScope().getAccount().getProcessObject('#data.processObject#')");
-            }else if(structKeyExists(data, entityName) && (lCase(data.entityName) == "order" || lCase(data.entityName) == "cart")){
-                var processObject = evaluate("getHibachiScope().cart().getProcessObject('#data.processObject#')");
-            }else{
-                var processObject = evaluate("getHibachiScope().#data.entityName#().getProcessObject('#data.processObject#')");
-            }
-            
-            arguments.data.ajaxResponse['processObject'] = processObject.getThisMetaData();
-            arguments.data.ajaxResponse['processObject']['validations'] = processObject.getValidations();
-            arguments.data.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
-            arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
-        }catch(any e){}
-        
-        var entity = evaluate('getHibachiScope().get#data.entityName#()');
-        var entityMeta = entity.getThisMetaData();
-        arguments.data.ajaxResponse['processObject']["entityMeta"] = entityMeta.properties;
-    }
     
     /** returns the result of a processObject based action including error information. A form submit.
         This is the default behavior for a POST request to process context /api/scope/process/ */    
@@ -169,7 +167,7 @@ component extends="HibachiService"  accessors="true" output="false"
         
         if (structKeyExists(data, "processObject")){
             try{
-                var processObject = evaluate("this.#data.processObject#(data)");
+                var processObject = this.invokeMethod(data.processObject,{1=data});
                 
             }catch(any e){
                 arguments.data.ajaxResponse['processObject']['errors'] = "#e#";
@@ -1120,23 +1118,6 @@ component extends="HibachiService"  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
 
-    /** 
-     * @http-context finalizeCart
-     * @description Finalize Cart
-     * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
-     */
-    public void function finalizeCart(required any data) {
-        var cart = getHibachiScope().cart();
-        
-        if(structKeyExists(data, 'attributes') && !isNull(data.attributes)){
-          for(var attribute in data.attributes){
-            cart.setAttributeValue(attribute,data.attributes[attribute].attributeValue);
-            getService('orderService').saveOrder(cart);
-          }
-        }
-
-        getHibachiScope().addActionResult( "public:cart.finalizeCart", cart.hasErrors() );
-    }
     
     /** 
      * @http-context addPromotionCode
@@ -1210,7 +1191,7 @@ component extends="HibachiService"  accessors="true" output="false"
           if(!structKeyExists(data.newOrderPayment, 'billingAddress')){
 
             //Validate to get all errors
-            var orderPayment = this.newOrderPayment();
+            var orderPayment = getPaymentService().newOrderPayment();
             orderPayment.populate(data.newOrderPayment);
             orderPayment.setOrder(getHibachiScope().getCart());
             if(orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment'){

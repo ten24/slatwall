@@ -928,6 +928,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; //<--The fileName of the report to export.
 		param name="data.collectionExportID" default="" type="string";      //<--The collection to export ID
 
+		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
+			return;
+		}
+
 		var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");
 
 		if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined' && arguments.data.ids != ''){
@@ -977,6 +981,10 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public void function collectionConfigExport(required struct data) {
 		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
+		
+		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
+			return;
+		}
 		
 		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
 		
@@ -1072,6 +1080,10 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public struct function getCollectionConfigExportDataByCollection(required any collectionEntity){
+	
+		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
+			return;
+		}
 		
 		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
 		var headers = getHeadersListByCollection(arguments.collectionEntity);
