@@ -6,7 +6,13 @@
 	<cfscript>
 		cacheKey = 'HibachiScript_#keyHash#';
 		if(!attributes.hibachiScope.getService('hibachiCacheService').hasCachedValue(cacheKey)){
-			fileHash = hash(fileReadBinary(expandPath(attributes.src)),'md5');
+		
+			if(left(attributes.src,len('/Slatwall'))!='/Slatwall'){
+				filePath = expandPath('/Slatwall') & attributes.src;
+			}else{
+				filePath = expandPath(attributes.src);
+			}
+			fileHash = hash(fileReadBinary(filePath),'md5');
 			attributes.hibachiScope.getService('hibachiCacheService').setCachedValue(cacheKey,fileHash);
 		}
 		fileHash = attributes.hibachiScope.getService('hibachiCacheService').getCachedValue(cacheKey);
