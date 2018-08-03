@@ -973,10 +973,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; //<--The fileName of the report to export.
 		param name="data.collectionExportID" default="" type="string";      //<--The collection to export ID
 
-<<<<<<< HEAD
 		//short circuit to prevent non admin use
-=======
->>>>>>> 51375eaabfaec83711c4ec3e560d393b702103e8
 		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
 			return;
 		}
