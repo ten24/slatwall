@@ -60,6 +60,186 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public boolean function returnFalse(){
 		return false;
 	}
+
+
+/**
+* @test
+*/
+	public void function a_____________________________benchmark1Test(){
+
+		var uniqueNumberForDescription = createUUID();
+
+
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			}
+				]
+		};
+		createPersistedTestEntity('product', productWithSkusData1);
+
+
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '30',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '40',
+				skuCode= createUUID()
+			}
+				]
+		};
+
+		var productWithSkusData3 = {
+			productID = '',
+			productName = 'ProductUnitTest3',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			}
+				]
+		};
+
+		createPersistedTestEntity('product', productWithSkusData3);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','20', '=', 'AND', 'MAX');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+
+		var start = gettickcount();
+		var pageRecords = myProductCollection.getPageRecords();
+		var end = gettickcount();
+
+		writedump('getPageRecords() #start - end#');
+
+	}
+
+
+/**
+* @test
+*/
+	public void function b_____________________benchmark2Test(){
+
+		var uniqueNumberForDescription = createUUID();
+
+
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			}
+				]
+		};
+		createPersistedTestEntity('product', productWithSkusData1);
+
+
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '30',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '40',
+				skuCode= createUUID()
+			}
+				]
+		};
+
+		var productWithSkusData3 = {
+			productID = '',
+			productName = 'ProductUnitTest3',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			}
+				]
+		};
+
+		createPersistedTestEntity('product', productWithSkusData3);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','20', '=', 'AND', 'MAX');
+		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+
+		var start = gettickcount();
+		var pageRecords = myProductCollection.getPageRecords(formatRecords=false);
+		var end = gettickcount();
+
+		writedump('getPageRecords(formatRecords=false) #start - end#');
+
+	}
 	
 	/**
 	* @test
@@ -324,12 +504,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function applyDataTest_pageShowTest_queryString(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
-		var queryString = '?p:show=2&p:current=3';
+		var queryString = '?p:show=asdasdasddsadasdsa&p:current=aasdasd';
 
 		collectionEntity.applyData(queryString);
 
-		assertEquals(collectionEntity.getPageRecordsShow(),2);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
+		assertEquals(collectionEntity.getPageRecordsShow(),1);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
 	/**
 	* @test
@@ -3213,6 +3393,280 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTest(){
+
+        var uniqueSkuName = createUUID();
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, startDateTime));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533303982000-1533563182000",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+
+        assert(arraylen(collectionEntity.getRecords()) == 3);
+    }
+
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTimeTest(){
+
+
+
+        var uniqueSkuName = createUUID();
+
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, dateAdd('h', i, startDateTime)));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533254400000-1533513600000",
+				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+        assert(arrayLen(collectionEntity.getRecords()) == 2);
+    }
 
 	/**
 	* @test
