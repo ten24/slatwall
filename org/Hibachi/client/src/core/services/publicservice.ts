@@ -1290,7 +1290,7 @@ class PublicService {
     
     public getOrderAttributeValues = (allowedAttributeSets) =>{
         var attributeValues = {};
-        var orderAttributeModel = JSON.parse(localStorage.attributeMetaData)["Order"];
+        var orderAttributeModel = JSON.parse(localStorage.getItem('attributeMetaData'))["Order"];
         for(var attributeSetCode in orderAttributeModel){
             var attributeSet = orderAttributeModel[attributeSetCode];
             if(allowedAttributeSets.indexOf(attributeSetCode) !== -1){
