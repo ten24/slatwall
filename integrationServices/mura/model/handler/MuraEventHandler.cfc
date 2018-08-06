@@ -230,11 +230,6 @@
 						}
 						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaDescriptionString') ) );
 						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaKeywordsString') ) );
-						
-<<<<<<< HEAD
-=======
-						
->>>>>>> 8af827db655069caa8eb3a8192953d0585412d73
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
 							
@@ -473,10 +468,7 @@
 				}
 			}
 			
-<<<<<<< HEAD
 			
-=======
->>>>>>> 8af827db655069caa8eb3a8192953d0585412d73
 			//If this is a content node, then get content access details. 
 			var accessToContentDetails = $.slatwall.getService("accessService").getAccessToContentDetails( $.slatwall.getAccount(), $.slatwall.getContent() );
 			
