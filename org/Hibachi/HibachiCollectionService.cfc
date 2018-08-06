@@ -616,10 +616,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			orderByConfig = arguments.data['orderByConfig'];
 		}
 
-		var groupBysConfig = "";
-		if(structKeyExists(arguments.data,'groupBysConfig')){
-			groupBysConfig = arguments.data['groupBysConfig'];
-		}
 
 		var propertyIdentifiersList = "";
 		if(structKeyExists(arguments.data,"propertyIdentifiersList")){
@@ -686,7 +682,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			isDistinct=isDistinct,
 			columnsConfig=columnsConfig,
 			orderByConfig=orderByConfig,
-			groupBysConfig=groupBysConfig,
 			allRecords=allRecords,
 			dirtyRead=dirtyRead,
 			useElasticSearch=useElasticSearch,
@@ -1237,7 +1232,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						filterData.logicalOperator = 'OR';
 					}
 
-					if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+					if(!structKeyExists(arguments.collection.getCollectionConfigStruct(),'filterGroups')){
 						arguments.collection.getCollectionConfigStruct()['filterGroups'] = [{"filterGroup"=[]}];
 					}
 
@@ -1428,7 +1423,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 
 				//Handle pagination.
-				if(findNoCase('p:current', key)){
+				if(findNoCase('p:current', key) && isNumeric(data[key]) ){
 					var currentPage = data[key];
 				}
 				if (!isNull(currentPage)){
@@ -1436,7 +1431,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					arguments.collection.setCurrentPageDeclaration(currentPage);
 				}
 
-				if(findNoCase('p:show', key)){
+				if(findNoCase('p:show', key) && isNumeric(data[key])){
 					var pageShow = data[key];
 				}
 
