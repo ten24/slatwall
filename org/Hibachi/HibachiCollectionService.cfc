@@ -1239,7 +1239,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						filterData.logicalOperator = 'OR';
 					}
 
-					if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+					if(!structKeyExists(arguments.collection.getCollectionConfigStruct(),'filterGroups')){
 						arguments.collection.getCollectionConfigStruct()['filterGroups'] = [{"filterGroup"=[]}];
 					}
 
