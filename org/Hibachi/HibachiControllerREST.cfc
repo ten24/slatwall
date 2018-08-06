@@ -716,6 +716,12 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
             }
         }
+        
+        
+        if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+            logApiRequests(arguments.rc, "get");
+        } 
+        
     }
 
     public any function post( required struct rc ) {
@@ -819,8 +825,11 @@ component output="false" accessors="true" extends="HibachiController" {
 	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
+	        
+            if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+                logApiRequests(arguments.rc,  "post", structuredData);
+            } 
         }
-
 
     }
 
@@ -880,6 +889,65 @@ component output="false" accessors="true" extends="HibachiController" {
 			//throw the error so it will follow expected lifecycle
 			throw(type="ClientError", message="#message#");
 		}
+	}
+	
+	private any function logApiRequests(required struct rc,  required string requestType, any data = {} ){
+	    
+	    var content = arguments.rc.apiResponse.content;
+        
+        var apiRequestAudit = getService('hibachiService').newApiRequestAudit();
+        
+        if( structKeyExists(content, 'recordsCount') ){
+            apiRequestAudit.setResultsCount(content.recordsCount);
+        }else {
+            apiRequestAudit.setResultsCount(1);
+        }
+        
+        if( structKeyExists(content, 'collectionConfig')){
+            apiRequestAudit.setCollectionConfig(content.collectionConfig);
+        }
+        
+        if( structKeyExists(content, 'currentPage')){
+            apiRequestAudit.setCurrentPage(content.currentPage);
+        }
+       
+        if(structKeyExists(content, 'pageRecordsShow')){
+            apiRequestAudit.setPageShow(content.pageRecordsShow);
+	    }
+        
+        var clientIP = cgi.remote_addr;
+        var clientHeaders = GetHttpRequestData().headers;
+    	if(structKeyExists(clientHeaders,"X-Forwarded-For") ) {
+		    clientIP = clientHeaders["X-Forwarded-For"];
+        }
+        apiRequestAudit.setIpAddress(clientIP);
+        
+        if( len( CGI.PATH_INFO ) ){
+            apiRequestAudit.setUrlEndpoint( CGI.PATH_INFO );
+        }
+        
+        if ( !structIsEmpty(url) ){
+            apiRequestAudit.setUrlQueryString(serializeJson(url));
+        }
+        
+        if ( !structIsEmpty(form) ){
+             apiRequestAudit.setParams(form);
+        }
+        
+        var statusCode = '';
+        
+        if ( structKeyExists(server, "lucee") ){
+
+        }else if (structKeyExists(server, "coldfusion")){
+            statusCode = getPageContext().getResponse().getResponse().getStatus(); 
+        }
+        apiRequestAudit.setStatusCode(statusCode);
+        
+        apiRequestAudit.setRequestType( arguments.requestType);
+        apiRequestAudit.setAccount(getHibachiScope().getAccount());
+        
+        apiRequestAudit = getService("HibachiService").saveApiRequestAudit(apiRequestAudit);
+        
 	}
 
         /*
