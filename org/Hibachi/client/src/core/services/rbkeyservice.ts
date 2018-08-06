@@ -2,6 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 import { Injectable,Inject } from "@angular/core";
 import {AppConfig, ResourceBundles} from "../../../../../../admin/client/src/app.provider";
+import {HttpInterceptor} from "./httpinterceptor";
 
 @Injectable()
 export class RbKeyService{
@@ -10,17 +11,16 @@ export class RbKeyService{
 	public _resourceBundleLastModified = '';
 	public _loadingResourceBundle = false;
 	public _loadedResourceBundle = false;
-    private $http:any;
     private $q:any;
     
     constructor(
-        @Inject("$http") $http:any,
+        public http:HttpInterceptor,
         @Inject("$q") $q:any,
         public appConfig : AppConfig,
         public resourceBundles : ResourceBundles
     ){
         this.$q = $q;
-        this.$http = $http;
+        this.http = http;
         this.appConfig = appConfig;
         this.resourceBundles = resourceBundles;
     }
