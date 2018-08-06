@@ -62,7 +62,6 @@ component  accessors="true" output="false"
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
     property name="hibachiService" type="any";
-    property name="paymentService" type="any";
     
 
     variables.publicContexts = [];
