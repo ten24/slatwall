@@ -319,6 +319,13 @@
 	    {
 	        return "otpauth://totp/#getApplicationValue('applicationKey')#:#arguments.email#?secret=#arguments.secretKey#&issuer=#getApplicationValue('applicationKey')#";
 	    }
+	    
+	    //be careful with this. Not for general use. can pose security risk if not used properly.
+	    public string function hibachiDecodeForHTML(string stringValue){
+		
+			var encoder = createObject('java','org.owasp.esapi.ESAPI').encoder();
+			return encoder.decodeForHTML(arguments.stringValue);
+		}
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
