@@ -186,7 +186,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function getAttributeValue(required string attribute, returnEntity=false){
 		
 		//If custom property exists for this attribute, return the property value instead
-		if(len(arguments.attribute) eq 32) {
+		if(isValid("uuid",arguments.attribute)) {
 			//If the id is passed in, need to load the attribute in order to get the attribute code
 			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
 			
@@ -212,7 +212,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		var attributeValueEntity = "";
 		
 		// If an ID was passed, and that value exists in the ID struct then use it
-		if(len(arguments.attribute) eq 32 && structKeyExists(getAttributeValuesByAttributeIDStruct(), arguments.attribute) ) {
+		if(isValid("uuid",arguments.attribute) && structKeyExists(getAttributeValuesByAttributeIDStruct(), arguments.attribute) ) {
 			attributeValueEntity = getAttributeValuesByAttributeIDStruct()[arguments.attribute];
 
 		// If some other string was passed check the attributeCode struct for it's existance
@@ -238,7 +238,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			var newAttributeValue = getService("attributeService").newAttributeValue();
 			newAttributeValue.setAttributeValueType( getClassName() );
 			var thisAttribute = getService("attributeService").getAttributeByAttributeCode( arguments.attribute );
-			if(isNull(thisAttribute) && len(arguments.attribute) eq 32) {
+			if(isNull(thisAttribute) && isValid("uuid",arguments.attribute)) {
 				thisAttribute = getService("attributeService").getAttributeByAttributeID( arguments.attribute );
 			}
 			if(!isNull(thisAttribute)) {
@@ -249,7 +249,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		// If the attributeValueEntity wasn't found, then lets just go look at the actual attribute object by ID/CODE for a defaultValue
-		if(len(arguments.attribute) neq 32) {
+		if(!isValid("uuid",arguments.attribute)) {
 			var attributeEntity = getService("attributeService").getAttributeByAttributeCode(arguments.attribute);
 		}
 		if(!isNull(attributeEntity) && !isNull(attributeEntity.getDefaultValue()) && len(attributeEntity.getDefaultValue())) {
@@ -261,7 +261,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
 		//If custom property exists for this attribute, return the property value instead
-		if(len(arguments.attribute) eq 32) {
+		if(isValid("uuid",arguments.attribute)) {
 			//If the id is passed in, need to load the attribute in order to get the attribute code
 			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
 			
