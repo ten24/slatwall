@@ -607,7 +607,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	private void function loadEntitiesFromRCIDs(required struct rc) {
 		try{
 			for(var key in arguments.rc) {
-				if(!find('.',key) && right(key, 2) == "ID" && len(arguments.rc[key]) == "32") {
+				if(!find('.',key) && right(key, 2) == "ID" && getService('HibachiUtilityService').isHibachiUUID(arguments.rc[key])) {
 					var entityName = left(key, len(key)-2);
 					if( getHibachiService().getEntityNameIsValidFlag(entityName) && ( !structKeyExists(arguments.rc, entityName) || !isObject(arguments.rc[entityName]) ) ) {
 						var entityService = getHibachiService().getServiceByEntityName( entityName=entityName );
