@@ -108,7 +108,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					sku=orderItem.getSku(),
 					location=getLocation()
 				);
-				if( orderItem.getStock().getSku().setting('skuTrackInventoryFlag') && thisQuantity > stock.getQOH() ) {
+				if( 
+					orderItem.getSku().setting('skuTrackInventoryFlag') 
+					&& thisQuantity > stock.getQOH() 
+				) {
 					return false;
 				}
 			}
