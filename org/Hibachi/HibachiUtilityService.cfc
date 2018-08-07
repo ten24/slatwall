@@ -1069,7 +1069,7 @@
 			return toString(binaryDecode(base64String,'base64'));
 		}
 		
-		public any function logApiRequests(required struct rc,  required string requestType, any data = {} ){
+		public any function logApiRequest(required struct rc,  required string requestType, any data = {} ){
 	    
 		    var content = arguments.rc.apiResponse.content;
 	        

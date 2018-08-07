@@ -719,7 +719,7 @@ component output="false" accessors="true" extends="HibachiController" {
         
         
         if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
-            getService('HibachiUtilityService').logApiRequests(arguments.rc, "get");
+            getService('HibachiUtilityService').logApiRequest(arguments.rc, "get");
         } 
         
     }
@@ -827,7 +827,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	        }
 	        
             if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
-                getService('HibachiUtilityService').logApiRequests(arguments.rc,  "post", structuredData);
+                getService('HibachiUtilityService').logApiRequest(arguments.rc,  "post", structuredData);
             } 
         }
 
