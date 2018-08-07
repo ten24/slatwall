@@ -1068,6 +1068,57 @@
 
 			return toString(binaryDecode(base64String,'base64'));
 		}
+		
+		public any function logApiRequest(required struct rc,  required string requestType, any data = {} ){
+	    
+		    var content = arguments.rc.apiResponse.content;
+	        
+	        var apiRequestAudit = getService('hibachiService').newApiRequestAudit();
+	        
+	        if( structKeyExists(content, 'recordsCount') ){
+	            apiRequestAudit.setResultsCount(content.recordsCount);
+	        }else {
+	            apiRequestAudit.setResultsCount(1);
+	        }
+	        
+	        if( structKeyExists(content, 'collectionConfig')){
+	            apiRequestAudit.setCollectionConfig(content.collectionConfig);
+	        }
+	        
+	        if( structKeyExists(content, 'currentPage')){
+	            apiRequestAudit.setCurrentPage(content.currentPage);
+	        }
+	       
+	        if(structKeyExists(content, 'pageRecordsShow')){
+	            apiRequestAudit.setPageShow(content.pageRecordsShow);
+		    }
+	        
+	        var clientIP = cgi.remote_addr;
+	        var clientHeaders = GetHttpRequestData().headers;
+	    	if(structKeyExists(clientHeaders,"X-Forwarded-For") ) {
+			    clientIP = clientHeaders["X-Forwarded-For"];
+	        }
+	        apiRequestAudit.setIpAddress(clientIP);
+	        
+	        var urlEndpoint = cgi.http_host & '' & cgi.path_info;
+	        apiRequestAudit.setUrlEndpoint( urlEndpoint );
+	        
+	        if ( !structIsEmpty(url) ){
+	            apiRequestAudit.setUrlQueryString(serializeJson(url));
+	        }
+	        
+	        if ( !structIsEmpty(form) ){
+	             apiRequestAudit.setParams( serializeJson(form) );
+	        }
+	        
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        
+	        apiRequestAudit.setRequestType( arguments.requestType);
+	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
+	        
+	        apiRequestAudit = getService("HibachiService").saveApiRequestAudit(apiRequestAudit);
+	        
+		}
 
 	</cfscript>
 
