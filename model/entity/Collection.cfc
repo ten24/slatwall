@@ -83,6 +83,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
 
+	property name="recordsCountData" persistent="false"; 
+
 	property name="aggregations" type="struct" persistent="false";
 
 	property name="keywords" type="string" persistent="false";
@@ -2247,6 +2249,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				if(isNull(HQL)){ 
+					var HQL = '';
+				}
+
 				variables.pageRecords = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
