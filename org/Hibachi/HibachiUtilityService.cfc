@@ -1590,4 +1590,19 @@
 			<cfreturn expandPath(arguments.filePath) />
 		</cfif>
 	</cffunction>
+	<!---check if this is a 32 character id string--->
+	<cffunction name="isHibachiUUID" returntype="boolean">
+		<cfargument name="idString" type="any">
+		
+		<cfif !isValid("string",arguments.idString)>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfif len(arguments.idString) neq 32>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfset var uuid = left(arguments.idString,8) & '-' & mid(arguments.idString,9,4) & '-' & mid(arguments.idString,13,4) & '-' & right(arguments.idString,16)/>
+		<cfreturn isValid('uuid',uuid)/>
+	</cffunction>
 </cfcomponent>
