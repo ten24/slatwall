@@ -922,16 +922,15 @@ component output="false" accessors="true" extends="HibachiController" {
         }
         apiRequestAudit.setIpAddress(clientIP);
         
-        if( len( CGI.PATH_INFO ) ){
-            apiRequestAudit.setUrlEndpoint( CGI.PATH_INFO );
-        }
+        var urlEndpoint = cgi.http_host & '' & cgi.path_info;
+        apiRequestAudit.setUrlEndpoint( urlEndpoint );
         
         if ( !structIsEmpty(url) ){
             apiRequestAudit.setUrlQueryString(serializeJson(url));
         }
         
         if ( !structIsEmpty(form) ){
-             apiRequestAudit.setParams(form);
+             apiRequestAudit.setParams( serializeJson(form) );
         }
         
         apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
