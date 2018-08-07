@@ -934,14 +934,7 @@ component output="false" accessors="true" extends="HibachiController" {
              apiRequestAudit.setParams(form);
         }
         
-        var statusCode = '';
-        
-        if ( structKeyExists(server, "lucee") ){
-
-        }else if (structKeyExists(server, "coldfusion")){
-            statusCode = getPageContext().getResponse().getResponse().getStatus(); 
-        }
-        apiRequestAudit.setStatusCode(statusCode);
+        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
         
         apiRequestAudit.setRequestType( arguments.requestType);
         apiRequestAudit.setAccount(getHibachiScope().getAccount());
