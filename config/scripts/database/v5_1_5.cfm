@@ -40,16 +40,16 @@ Notes:
 
 <cftry>
 	<cfquery name="local.updateSWTypes">
-    UPDATE SWTYPE
-    SET typeIDPath = '444df2e8db2712fe6cf790d12afc9661'
-    WHERE typeID = '444df2e8db2712fe6cf790d12afc9661'
+		UPDATE SWTYPE
+		SET typeIDPath = '444df2e8db2712fe6cf790d12afc9661'
+		WHERE typeID = '444df2e8db2712fe6cf790d12afc9661'
 	</cfquery>
 	
-  <cfquery name="local.updateSWTypes">   
-    UPDATE SwType
-    SET typeIDPath = '5accbf53ad1b00392c1053e025e84f5e'
-    WHERE typeID = '5accbf53ad1b00392c1053e025e84f5e'
-	</cfquery>
+	<cfquery name="local.updateSWTypes">
+		UPDATE SwType
+		SET typeIDPath = '5accbf53ad1b00392c1053e025e84f5e'
+		WHERE typeID = '5accbf53ad1b00392c1053e025e84f5e'
+		</cfquery>
   
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Parent Type IDs with Commas">
