@@ -73,7 +73,14 @@ Notes:
 		
 		<!--- TODO: This needs to query DB and return an array of workflowTrigger objects with workflows and tasks fetched for performance
 		but it should only be unique workflows that have a workflowTrigger with the eventName passed in --->
-		<cfreturn ORMExecuteQuery('FROM SlatwallWorkflowTrigger where triggerEvent = :triggerEvent',{triggerEvent=arguments.eventName})/>
+		<cfreturn ORMExecuteQuery("
+			SELECT wt FROM SlatwallWorkflowTrigger wt 
+			LEFT JOIN wt.workflow w  
+			WHERE wt.triggerEvent = :triggerEvent
+			AND w.activeFlag = 1
+			GROUP BY wt"
+			,{triggerEvent=arguments.eventName}
+		)/>
 	</cffunction>
 
 	<cffunction name="getRunningWorkflows" access="public" returntype="array"> 
