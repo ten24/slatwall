@@ -1063,7 +1063,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		var elem = document.getElementById('ngApp');
 		if (typeof(elem) != 'undefined' && elem != null){
 			elem = angular.element(elem);
-			var injector = elem.injector();
+			var injector = angular.injector(['ng']);
 		    var $compile = injector.get('$compile');
 		    var $rootScope = injector.get('$rootScope');
 		    jQuery('#adminModal').html($compile(html)($rootScope));
