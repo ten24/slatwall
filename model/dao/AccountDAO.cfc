@@ -239,7 +239,21 @@ Notes:
 				accountPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="removeAccountPaymentMethodFromAccount">
+		<cfargument name="accountPaymentMethodID" type="string" required="true" >
 
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				swAccount
+			SET
+				primaryPaymentMethodID = null
+			WHERE
+				primaryPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" />
+		</cfquery>
+	</cffunction>
 	<cffunction name="removeAccountAuthenticationFromAllSessions" returntype="void" access="public">
 		<cfargument name="accountAuthenticationID" required="true"  />
 
