@@ -168,7 +168,9 @@ component extends="HibachiService" accessors="true" output="false" {
         getHibachiDAO().flushORMSession();
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		for(var workflowTrigger in workflowTriggers) {
-			runWorkflowsByScheduleTrigger(workflowTrigger);
+			if(workflowTrigger.getWorkflow().getActiveFlag()){
+				runWorkflowsByScheduleTrigger(workflowTrigger);
+			}
 		}
 	}
 
