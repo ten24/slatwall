@@ -72,11 +72,12 @@ Notes:
             <div class="card-header bg-dark text-light">
                 <div class="row">
                     <div class="col-sm-9">
-                        <h5 class="mb-0 pt-2 pb-2">Cart Items</h5>
+                        <h5 class="mb-0 pt-2 pb-2"><span ng-bind="slatwall.cart.orderItems.length"></span> cart item(s)</h5>
                     </div>
                     <div class="col-sm-3">
                         <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
-                        <a href="" class="btn-block btn btn-success float-right disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></a>
+                        <!----- loader can be used inside button if it's made into ajax call ------->
+                        <!--<i class="fa fa-refresh fa-spin fa-fw"></i>-->
                     </div>
                 </div>
             </div>
@@ -90,7 +91,8 @@ Notes:
                     </div>
                     <div class="col-sm-3">
                         <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
-                        <a href="" class="btn-block btn btn-success float-right disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></a>
+                        <!----- loader can be used inside button if it's made into ajax call ------->
+                        <!--<i class="fa fa-refresh fa-spin fa-fw"></i>-->
                     </div>
                 </div>
             </div>
@@ -107,12 +109,16 @@ Notes:
 
         <div class="text-center m-4">
             <a href="/checkout/" class="btn btn-lg btn-success">Continue to Checkout</a>
-            <a href="/checkout/" class="btn btn-lg btn-success disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></a>
+            <!----- loader can be used inside button if it's made into ajax call ------->
+            <!--<i class="fa fa-refresh fa-spin fa-fw"></i>-->
         </div>
-
     </div>
-    <div ng-if="slatwall.cart.orderItems && !slatwall.cart.orderItems.length" ng-cloak>
+    <div ng-if="!slatwall.getRequestByAction('getCart').loading && !slatwall.cart.orderItems.length">
         <div class="alert alert-danger">There are no items in your cart.</div>
+    </div>
+    <!----- div for custom loader ----->
+    <div ng-if="slatwall.getRequestByAction('getCart').loading">
+        <i class="center fa fa-refresh fa-spin fa-fw"></i>
     </div>
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />

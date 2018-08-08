@@ -345,7 +345,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getDiscountAmount() {
-		discountAmount = 0;
+		var discountAmount = 0;
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
 			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}

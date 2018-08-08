@@ -1,5 +1,6 @@
 //{
 /// <reference path="../src/test.ts" />
+/// <reference path="../src/content/content.module.ts" />
 /// <reference path="../src/formbuilder/formbuilder.module.ts" />
 /// <reference path="../src/fulfillmentbatch/fulfillmentbatchdetail.module.ts" />
 /// <reference path="../src/giftcard/giftcard.module.ts" />
@@ -11,7 +12,6 @@
 /// <reference path="../src/sku/sku.module.ts" />
 /// <reference path="../src/productbundle/productbundle.module.ts" />
 /// <reference path="../src/slatwall/slatwalladmin.module.ts" />
-/// <reference path="../src/formbuilder/components/swformresponselisting.ts" />
 /// <reference path="../src/content/components/swassignedproducts.ts" />
 /// <reference path="../src/content/components/swcontentbasic.ts" />
 /// <reference path="../src/content/components/swcontenteditor.ts" />

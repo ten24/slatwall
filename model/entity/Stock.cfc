@@ -114,15 +114,25 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	//Simple
 	
 	public string function getSimpleRepresentation() {
-		if(!isNull(getSku().getSkuCode()) && len(getLocation().getLocationName())) {
-			var representation = getSku().getSkuCode() & " - " & getLocation().getLocationName();
+		var representation = "";
+	
+		if(!isNull(getSku().getSkuCode())) {
+			representation = getSku().getSkuCode();
 		} 
-
+ 		
+		if(!isnull(getLocation()) && len(getLocation().getLocationName())) {
+			representation &= " - " & getLocation().getLocationName();
+		}
+		
 		return representation;
 	}
 	
 	public any function getSkuLocationQuantity(){
-		return getService('InventoryService').getSkuLocationQuantityBySkuIDANDLocationID(this.getSku().getSkuID(),this.getLocation().getLocationID());
+		if( !isNull(getLocation()) ) {
+			return getService('InventoryService').getSkuLocationQuantityBySkuIDANDLocationID(getSku().getSkuID(), getLocation().getLocationID());
+		} else {
+			return new('SkuLocationQuantity');
+		}
 	}
 	
 	// Quantity

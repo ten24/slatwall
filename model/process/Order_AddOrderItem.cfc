@@ -765,7 +765,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		
 		for(var attributeCollectionListRecord in attributeCollectionListRecords){
-			if(len(trim(attributeCollectionListRecord['attributeCode']))){
+			if(len(trim(attributeCollectionListRecord['attributeCode'])) && (structKeyExists(data, attributeCollectionListRecord['attributeCode']) && len(trim(data[ attributeCollectionListRecord['attributeCode'] ])))){
 				attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
 			}
 		}
