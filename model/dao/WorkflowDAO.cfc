@@ -53,11 +53,17 @@ Notes:
 		
 		<!--- TODO: This needs to query DB and return an array of ALL workflow events --->
 		<!--- ['onOrderSaveSuccess','onOrderProcess_placeOrderSuccess'] --->
-		<cfreturn ORMExecuteQuery('SELECT triggerEvent
+		<cfreturn ORMExecuteQuery("SELECT wt.triggerEvent
 									FROM
-										SlatwallWorkflowTrigger
+										SlatwallWorkflowTrigger wt
+										LEFT JOIN wt.workflow w
 									WHERE
-										triggerType = :triggerType'
+										wt.triggerType = :triggerType
+									AND
+										w.activeFlag = 1
+									GROUP BY 
+										wt.triggerEvent
+									"
 									,{triggerType="Event"}) 
 									/>
 	</cffunction>
