@@ -200,16 +200,14 @@ class SWAddOptionGroup implements ng.IDirective{
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-        public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-            // element used for when jquery is deleting DOM instead of angular such as a jQuery('#adminModal').html(html);
-            element.on('$destroy', ()=> {
-                this.observerService.detachByEvent('validateOptions');
-            });
-            scope.$on('$destroy', ()=> {
-                this.observerService.detachByEvent('validateOptions');
-            });
-        }
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+        // element used for when jquery is deleting DOM instead of angular such as a jQuery('#adminModal').html(html);
+        element.on('$destroy', ()=> {
+            this.observerService.detachByEvent('validateOptions');
+        });
+        scope.$on('$destroy', ()=> {
+            this.observerService.detachByEvent('validateOptions');
+        });
     }
 }
 
