@@ -55,7 +55,17 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		super.loginAccount(argumentCollection=arguments);
 		
-		if(request.context.fw.getSubsystem(request.context[request.context.fw.getAction()]) != 'admin'){
+		if(
+			(
+				structKeyExists(request,'context') 
+				&& structKeyExists(request.context,'fw')
+				&& request.context.fw.getSubsystem(request.context[request.context.fw.getAction()]) != 'admin'
+			)
+			||(
+				structKeyExists(request,'context') 
+				&& !structKeyExists(request.context,'fw')
+			)
+		){
 		
 			// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information
 			if( !isNull(getHibachiScope().getSession().getOrder().getAccount()) && getHibachiScope().getSession().getOrder().getAccount().getAccountID() != arguments.account.getAccountID()) {
