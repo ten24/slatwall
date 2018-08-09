@@ -1,4 +1,4 @@
-<cfimport prefix="sw" taglib="../../tags" />
+<cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
 	<!--- Close button for create/edit address - only should show if other addresses exists show address listing on close --->
     <button type="button" name="closeAddress" 

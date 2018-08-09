@@ -1,4 +1,4 @@
-<cfimport prefix="sw" taglib="../../tags" />
+<cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
 <div ng-repeat="orderFulfillment in slatwall.cart.orderFulfillments">
     <div ng-if="orderFulfillment.fulfillmentMethod.fulfillmentMethodType === 'shipping'">

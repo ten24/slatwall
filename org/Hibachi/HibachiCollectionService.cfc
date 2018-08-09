@@ -531,8 +531,8 @@ component output="false" accessors="true" extends="HibachiService" {
 					
 						for(var i=1; i<=listLen(newQueryKeys[key], delimiter); i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, delimiter);
-							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, delimiter);
-							if(findCount) {
+							//when comparing, let's make sure we decode the old value
+							var findCount = listFindNoCase(urlDecode(oldQueryKeys[key]), thisVal, delimiter);							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, delimiter);
 								if(arguments.toggleKeys) {
 									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, delimiter);

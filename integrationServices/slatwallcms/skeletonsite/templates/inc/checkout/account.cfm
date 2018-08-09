@@ -1,4 +1,4 @@
-<cfimport prefix="sw" taglib="../../tags" />
+<cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
 <!--- Account Login --->
 <div class="block pb-5" id="login" ng-show="slatwall.currentAccountPage == 'Login'">
