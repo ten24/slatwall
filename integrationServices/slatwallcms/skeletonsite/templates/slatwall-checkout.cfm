@@ -110,7 +110,7 @@ Notes:
                         <a id="account-tab" class="collapse_btn collapsed" ng-class="{disabled:swfNavigation.accountTabDisabled,completed:swfNavigation.accountTabCompleted}" role="button" data-toggle="collapse" href="##account" aria-expanded="true" aria-controls="account">Account</a>            
                         
                         <div id="account" class="collapse" data-parent="##checkout-main">
-                            <cfinclude template = "inc/checkout/account.cfm">
+                            <cfinclude template = "./inc/checkout/account.cfm">
                         </div>
                         <!--- //ACCOUNT END --->
                         
@@ -118,7 +118,7 @@ Notes:
             			<a id="fulfillment-tab" class="collapse_btn" ng-class="{disabled:swfNavigation.fulfillmentTabDisabled,completed:swfNavigation.fulfillmentTabCompleted}" role="button" data-toggle="collapse" href="##shipping" aria-expanded="false" aria-controls="shipping">Shipping</a>
             			
             			<div id="shipping" class="collapse" aria-labelledby="shipping" data-parent="##checkout-main">
-                            <cfinclude template = "inc/checkout/shipping.cfm">
+                            <cfinclude template = "./inc/checkout/shipping.cfm">
                         </div>
                         <!--- //SHIPPING END--->
             
@@ -128,7 +128,7 @@ Notes:
                         
                         <div id="payment" class="collapse" aria-labelledby="payment"data-parent="##checkout-main">
         					
-        					<cfinclude template = "inc/checkout/payment.cfm">
+        					<cfinclude template = "./inc/checkout/payment.cfm">
         
                         </div>
                         <!--- //Payment-tab 3  --->
@@ -137,7 +137,7 @@ Notes:
                         <a id="review-tab" class="collapse_btn collapsed" ng-class="{disabled:swfNavigation.reviewTabDisabled}" role="button" data-toggle="collapse" href="##review" aria-expanded="false" aria-controls="review">Order Review</a>
                         
                         <div class="collapse" id="review" aria-labelledby="review" data-parent="##checkout-main">
-                            <cfinclude template = "inc/checkout/revieworder.cfm">
+                            <cfinclude template = "./inc/checkout/revieworder.cfm">
                         </div>
                         <!--- //Review-tab 4  --->
                     </div>
@@ -147,11 +147,9 @@ Notes:
                 <div class="col-md-5 col-lg-4">
                     
                     <div class="order_sec">
-                        <cfinclude template="inc/checkout/cartSummary.cfm" />
+                        <cfinclude template="./inc/checkout/cartSummary.cfm" />
                     </div>
-                    <cfinclude template="inc/checkout/orderSummary.cfm" />
-                    
-                    #m.content('body')#
+                    <!---#m.content('body')#--->
                 </div>
             </div>
             <!--- //row --->
@@ -162,9 +160,6 @@ Notes:
     
         </div>
         <!--- //checkout-bar --->
-        
-        <!--- Cart Empty Message --->
-        <div class="alert alert-info my-2" ng-show="slatwall.cartDataPromise.$$state.status && slatwall.hasAccount() && !slatwall.cart.orderItems.length" ng-cloak>There are no items in your cart.</div>
     </div>
     <!--- //container --->
 </cfoutput>
