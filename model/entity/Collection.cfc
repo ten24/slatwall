@@ -270,7 +270,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function duplicateCollection(){
 		var duplicateCollection = getService('hibachiService').getCollectionList(getCollectionObject());
 		duplicateCollection.setCollectionConfig(getCollectionConfig());
-		duplicateCollection.setCollectionConfigStruct(getCollectionConfigStruct());
+		duplicateCollection.setCollectionConfigStruct(duplicate(getCollectionConfigStruct()));
 		duplicateCollection.clearVariablesKey('groupbys');
 		structDelete(duplicateCollection.getCollectionConfigStruct(),'groupBys');
 		return duplicateCollection;

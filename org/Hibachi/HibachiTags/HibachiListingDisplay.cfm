@@ -136,7 +136,7 @@
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
  				</cfif>
 			    <cfif len(attributes.multiselectFieldName)>
-				  data-multiselectable="#attributes.multiselectFieldName#"
+				  data-multiselectable="true"
 	 			  data-multiselect-field-name="#attributes.multiselectFieldName#"
 	 			  data-multiselect-values="#attributes.multiselectValues#"
 	 			  data-multi-slot="true"
