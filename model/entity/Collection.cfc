@@ -3624,6 +3624,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getCollectionConfigStruct(){
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = deserializeCollectionConfig();
+			if(!isnull(this.getParentCollection())){
+				mergeParentCollectionFilters();
+			}
 			if(!isReport()){
 				structDelete(variables.collectionConfigStruct,'groupBys');
 			}
