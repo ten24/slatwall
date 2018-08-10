@@ -1885,12 +1885,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var convertedPropertyIdentifier = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedPropertyIdentifier)) {
-
+			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
 			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
 			if (left(convertedPropertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
 				convertedPropertyIdentifier = right(convertedPropertyIdentifier, len(convertedPropertyIdentifier) - len(getBaseEntityAlias()) - 1);
 			}
-			convertedPropertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),convertedPropertyIdentifier);
 		}
 		return convertedPropertyIdentifier;
 	}
