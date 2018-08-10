@@ -497,7 +497,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							var amount = arguments.data.amount;
 
-                            if(arguments.data.transactionType == "charge"){
+                            if(arguments.data.transactionType == "charge" || arguments.data.transactionType == "receive"){
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
 
