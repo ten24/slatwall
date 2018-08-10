@@ -11,7 +11,10 @@ class SWListingDisplayController{
     public aggregates = [];
     public buttonGroup = [];
     public childCollectionConfigs = {};
+    //not binding
     public collectionID;
+    //binding
+    public collectionId;
     public collectionPromise;
     public collectionData:any;
     public collectionObject:any;
@@ -284,6 +287,11 @@ class SWListingDisplayController{
                     this.collectionConfig.currentPage = 1;
                     this.collectionConfig.setPageShow(state.payload);
                     break;
+            }
+            if(this.collectionId){
+            
+                this.collectionConfig.baseEntityNameType = 'Collection';
+                this.collectionConfig.id = this.collectionId;
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
@@ -584,31 +592,39 @@ class SWListingDisplayController{
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
-        if(this.collectionConfigs.length == 0){
-            var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
-            if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
-                && (this.selectionService.getSelections(this.tableID).length > 0)) {
-                exportCollectionConfig.filterGroups[0].filterGroup = [
-                    {
-                        "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
-                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
-                        "comparisonOperator": (this.allSelected) ? "not in":"in",
-                        "value": this.selectionService.getSelections(this.tableID).join(),
-                        "displayValue": this.selectionService.getSelections(this.tableID).join(),
-                        "ormtype": "string",
-                        "fieldtype": "id",
-                        "conditionDisplay": "In List"
-                    }
-                ];
+        if(this.collectionId){
+            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionExport" method="post" id="formExport"></form>');
+            $('#formExport')
+                .append("<input type='hidden' name='collectionExportID' value='" + this.collectionId + "' />")
+                .submit()
+                .remove();
+        }else{
+            if(this.collectionConfigs.length == 0){
+                var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+                if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
+                    && (this.selectionService.getSelections(this.tableID).length > 0)) {
+                    exportCollectionConfig.filterGroups[0].filterGroup = [
+                        {
+                            "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
+                            "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
+                            "comparisonOperator": (this.allSelected) ? "not in":"in",
+                            "value": this.selectionService.getSelections(this.tableID).join(),
+                            "displayValue": this.selectionService.getSelections(this.tableID).join(),
+                            "ormtype": "string",
+                            "fieldtype": "id",
+                            "conditionDisplay": "In List"
+                        }
+                    ];
+                }
+            } else {
+                //multiCollectionConfig logic
             }
-        } else {
-            //multiCollectionConfig logic
+            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
+            $('#formExport')
+                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+                .submit()
+                .remove();
         }
-        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
-        $('#formExport')
-            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
-            .submit()
-            .remove();
     };
 
     public printCurrentList =(printTemplateID)=>{
@@ -674,6 +690,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*required*/
             collection:"<?",
+            collectionId:"@?",
             collectionConfig:"<?",
             getCollection:"&?",
             collectionPromise:"<?",

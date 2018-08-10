@@ -794,7 +794,11 @@ class ListingService{
     public setupDefaultGetCollection = (listingID:string) =>{
 
         if(this.getListing(listingID).collectionConfigs.length == 0){
-
+            if(this.getListing(listingID).collectionId){
+            
+                this.getListing(listingID).collectionConfig.baseEntityNameType = 'Collection';
+                this.getListing(listingID).collectionConfig.id = this.getListing(listingID).collectionId;
+            }
             this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
 
             return () =>{
