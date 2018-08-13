@@ -931,26 +931,27 @@
 				};
 				
 				// Kick of a thread for the rest of all the syncing
-				thread action="run" name="slatwallMuraAppLoadSync_#cmsSiteID#" threadData=threadData {
-					
-					var $ = createObject("mura.event").init( {siteID=threadData.cmsSiteID} ).getValue('MuraScope');
-					
-					verifySlatwallRequest( $=$ );
-					
-					// Sync all missing content for the siteID
-					syncMuraContent( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID, lastUpdateOnlyFlag=false );
-					
-					// Sync all missing categories
-					syncMuraCategories( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID );
-					
-					// Sync all content category assignments
-					syncMuraContentCategoryAssignment( muraSiteID=threadData.cmsSiteID );
-					
-					// Sync all missing accounts
-					syncMuraAccounts( $=$, accountSyncType=threadData.accountSyncType, superUserSyncFlag=threadData.superUserSyncFlag );
+				if( isNull(cfthread) || !structKeyExists(cfthread,threadKey)){
+					thread action="run" name="slatwallMuraAppLoadSync_#cmsSiteID#" threadData=threadData {
 
+						var $ = createObject("mura.event").init( {siteID=threadData.cmsSiteID} ).getValue('MuraScope');
+
+						verifySlatwallRequest( $=$ );
+
+						// Sync all missing content for the siteID
+						syncMuraContent( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID, lastUpdateOnlyFlag=false );
+
+						// Sync all missing categories
+						syncMuraCategories( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID );
+
+						// Sync all content category assignments
+						syncMuraContentCategoryAssignment( muraSiteID=threadData.cmsSiteID );
+
+						// Sync all missing accounts
+						syncMuraAccounts( $=$, accountSyncType=threadData.accountSyncType, superUserSyncFlag=threadData.superUserSyncFlag );
+
+					}
 				}
-				
 				// If the plugin is set to create default pages, and this siteID has not been populated then we need to populate it with pages & templates
 				if(getMuraPluginConfig().getSetting("createDefaultPages") && !listFindNoCase(populatedSiteIDs, cmsSiteID)) {
 					
