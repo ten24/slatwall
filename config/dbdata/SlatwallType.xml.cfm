@@ -70,7 +70,7 @@
 		<Record typeID="444df2b8b98441f8e8fc6b5b4266548c" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b8b98441f8e8fc6b5b4266548c" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Closed" systemCode="ostClosed" sortOrder="5" />
 		<Record typeID="444df2b90f62f72711eb5b3c90848e7e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b90f62f72711eb5b3c90848e7e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Canceled" systemCode="ostCanceled" sortOrder="6" />
 
-		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661," parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661" parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e9a6622ad1614ea75cd5b982ce" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2e9a6622ad1614ea75cd5b982ce" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Sale" systemCode="oitSale" sortOrder="1" />
 		<Record typeID="444df2eac18fa589af0f054442e12733" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2eac18fa589af0f054442e12733" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Return" systemCode="oitReturn" sortOrder="2" />
 		<Record typeID="d98bbd66f5dfafd0eb8c727cc4053b46" typeIDPath="444df2e8db2712fe6cf790d12afc9661,d98bbd66f5dfafd0eb8c727cc4053b46" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Deposit" systemCode="oitDeposit" sortOrder="3" />
@@ -119,7 +119,7 @@
 		<Record typeID="444df2e2f66ddfaf9c60caf5c76349a6" typeIDPath="444df2e1afee04d4971094d467a2c619,444df2e2f66ddfaf9c60caf5c76349a6" parentTypeID="444df2e1afee04d4971094d467a2c619" typeName="New" systemCode="sastNew" sortOrder="1" />
 		<Record typeID="444df2e3cd41522453f5582a5950342e" typeIDPath="444df2e1afee04d4971094d467a2c619,444df2e3cd41522453f5582a5950342e" parentTypeID="444df2e1afee04d4971094d467a2c619" typeName="Closed" systemCode="sastClosed" sortOrder="2" />
 
-		<Record typeID="5accbf53ad1b00392c1053e025e84f5e" typeIDPath="5accbf53ad1b00392c1053e025e84f5e," parentTypeID="NULL" typeName="Vendor Order Item Types" systemCode="vendorOrderItemType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="5accbf53ad1b00392c1053e025e84f5e" typeIDPath="5accbf53ad1b00392c1053e025e84f5e" parentTypeID="NULL" typeName="Vendor Order Item Types" systemCode="vendorOrderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="5accbf5409572526d413fd7dc447b937" typeIDPath="5accbf53ad1b00392c1053e025e84f5e,5accbf5409572526d413fd7dc447b937" parentTypeID="5accbf53ad1b00392c1053e025e84f5e" typeName="Purchase" systemCode="voitPurchase" sortOrder="1" />
 		<Record typeID="5accbf55c4fbb1d5609bb03344974050" typeIDPath="5accbf53ad1b00392c1053e025e84f5e,5accbf55c4fbb1d5609bb03344974050" parentTypeID="5accbf53ad1b00392c1053e025e84f5e" typeName="Return" systemCode="voitReturn" sortOrder="2" />
 
