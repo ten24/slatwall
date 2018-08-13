@@ -334,6 +334,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function applyDataTest_pageNumericTest_queryString(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?p:show=2thisisnotanumber&p:current=3neitheristhis';
+
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
+	}
+	/**
+	* @test
+	*/
 	public void function applyDataTest_filterTest_queryString(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
@@ -576,12 +589,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					skuID = '',
 					skuCode= createUUID(),
-					activeFlag = 'false'
+					activeFlag = false
 				},
 				{
 					skuID = '',
 					skuCode= createUUID(),
-					activeFlag = 'false'
+					activeFlag = false
 				}
 			]
 		};
@@ -624,8 +637,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productName','ProductUnitTest');
 		myProductCollection.addFilter('productDescription',trim(uniqueNumberForDescription));
 		myProductCollection.addFilter('skus.activeFlag','YES');
-		var pageRecords = myProductCollection.getPageRecords();
+	
+		assertEquals(myProductCollection.getRecordsCount(),1);
 		
+		var pageRecords = myProductCollection.getPageRecords();
+
+
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 	}
 
@@ -856,7 +873,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-
 	public void function getPrimaryIDsTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -903,6 +919,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getPrimaryIDs();
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+	}
+	
+	/**
+	* @test
+	*/
+
+	public void function getPrimaryIDsTest_workflowCollection(){
+		//default data collection
+		var myCollection = variables.entityService.getCollection('2c92808362e398b10162e4c489b5000x');
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
+		var pageRecords = myCollection.getPrimaryIDs(2);
+		
+		if(arraylen(pageRecords)){
+			assert(!structKeyExists(pageRecords[1],'failedCollection'));
+		}
+
 	}
 
 
@@ -2034,7 +2068,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(column);
-		debug(aggregateHQL);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
 	}
@@ -2457,11 +2490,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		createPersistedTestEntity('product', productData2);
 
 		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setReportFlag(1);
 		myCollection.setDisplayProperties('productName');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productName');
 		myCollection.setOrderBy('productName|asc');
-
+		
 		var recordsCount = myCollection.getRecordsCount();
 
 		assertTrue(recordsCount == 1,  "Wrong amount of products returned! Expecting 1 record but returned #recordsCount#");
@@ -2493,7 +2527,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productID,productName');
 		myCollection.setOrderBy('productName|asc');
-
 		var recordsCount = myCollection.getRecordsCount();
 
 		assertTrue(recordsCount == 2,  "Wrong amount of products returned! Expecting 2 record but returned #recordsCount#");
@@ -2695,7 +2728,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"_account_orders"
+							"propertyIdentifier":"_account_orders",
+							"aggregate":{
+								"aggregateFunction":"COUNT",
+								"aggregateAlias":"ordersCount"
+							}
 						},
 						{
 							"propertyIdentifier":"_account.firstName"
@@ -3211,6 +3248,280 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTest(){
+
+        var uniqueSkuName = createUUID();
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, startDateTime));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533303982000-1533563182000",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+
+        assert(arraylen(collectionEntity.getRecords()) == 3);
+    }
+
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTimeTest(){
+
+
+
+        var uniqueSkuName = createUUID();
+
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, dateAdd('h', i, startDateTime)));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533254400000-1533513600000",
+				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+        assert(arrayLen(collectionEntity.getRecords()) == 2);
+    }
 
 	/**
 	* @test
@@ -4864,6 +5175,79 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getRecords();
 		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function propertyIdentifierBadCasingCollectionTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithoutActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				skuCode= createUUID(),
+				activeFlag = false
+			},
+			{
+				skuID = '',
+				skuCode= createUUID(),
+				activeFlag = false
+			}
+				]
+		};
+		var productWithoutActiveSkus = createPersistedTestEntity('product', productWithoutActiveSkusData);
+
+		//skus will default as active
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				skuCode= 'aa'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ab'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ac'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ad'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ae'&createUUID(),
+				activeFlag = 'false'
+			}
+				]
+		};
+		//By default Active flag is true.
+		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productname,productdescription,AcTiVeFlAg');
+		myProductCollection.addFilter('productname','ProductUnitTest');
+		myProductCollection.addFilter('productdescription',trim(uniqueNumberForDescription));
+		myProductCollection.addFilter('skus.activeflag','YES');
+
+		assertEquals(myProductCollection.getRecordsCount(),1);
+
+		var pageRecords = myProductCollection.getPageRecords();
+
+
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
 

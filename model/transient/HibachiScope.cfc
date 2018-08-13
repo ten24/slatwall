@@ -331,7 +331,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			){
 				productCollectionList.addFilter('listingPages.content.contentIDPath',getContent().getContentIDPath()&"%",'like');
 			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
-				productCollectionList.addFilter('listingPages.content.contentID',getContent.getContentID());
+				productCollectionList.addFilter('listingPages.content.contentID',getContent().getContentID());
 			}
 			variables.productCollectionList = productCollectionList;
 		}
@@ -419,9 +419,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.extendedUnitPrice,orderItems.extendedUnitPriceAfterDiscount, orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.childOrderItems,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,orderItems.sku.skuDefinition,
-			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,
+			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,orderItems.sku.listPrice,
 			orderItems.sku.product.brand.brandName,
 			orderItems.sku.product.productType.productTypeName,
+			orderItems.sku.product.productDescription,
 			orderFulfillments.accountAddress.accountAddressID,orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
 			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,orderFulfillments.orderFulfillmentItems.sku.skuName,orderFulfillments.orderFulfillmentItems.sku.product.productName,
 			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,

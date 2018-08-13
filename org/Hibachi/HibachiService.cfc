@@ -77,6 +77,18 @@
 			return collection;
 		}
 		
+		public any function getCollectionReportList(string entityName, struct data={}){
+		
+			var collection = getService('hibachiCollectionService').newCollection(argumentcollection=arguments);
+			collection.setReportFlag(1);
+			var addDefaultColumns = true;
+			if(structKeyExists(arguments.data, 'defaultColumns')){
+				addDefaultColumns = arguments.data.defaultColumns;
+			}
+			collection.setCollectionObject(arguments.entityName,addDefaultColumns);
+			return collection;
+		}
+		
 		public any function list(required string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			return getHibachiDAO().list(argumentcollection=arguments);
 		}
@@ -804,6 +816,32 @@
 		public string function getProperlyCasedFullClassNameByEntityName( required string entityName ) {
 			return "#getApplicationValue('applicationKey')#.model.entity.#getProperlyCasedShortEntityName( arguments.entityName )#";
 		}
+
+		public string function getProperlyCasedPropertyIdentifier( required string baseEntityName, required string propertyIdentifier ) {
+			var currentPropertiesStruct = getPropertiesStructByEntityName(arguments.baseEntityName);
+			var currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
+			var _propertyIdentifier = '';
+			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
+
+			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+				if(i == 1 && propertyIdentifierParts[i] == '_'&lcase(arguments.baseEntityName)){
+					_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
+					continue;
+				}
+				if(structKeyExists(currentPropertiesStruct, propertyIdentifierParts[i])){
+					propertyIdentifierParts[i] = currentStructKeys[arrayFindNoCase(currentStructKeys, propertyIdentifierParts[i])];
+					if(structKeyExists(currentPropertiesStruct[propertyIdentifierParts[i]], 'cfc')){
+						arguments.baseEntityName = currentPropertiesStruct[propertyIdentifierParts[i]]['cfc'];
+						currentPropertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(arguments.baseEntityName);
+						currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
+					}
+				}else{
+					logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#", true);
+				}
+				_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
+			}
+			return _propertyIdentifier;
+		}
 		
 		// =======================  END: Entity Name Helper Methods ===============================
 		
@@ -936,7 +974,7 @@
 			}
 		}
 		
-		public boolean function hasPropertyByEntityNameAndSinuglarName( required string entityName, required string singularName){
+		public boolean function hasPropertyByEntityNameAndSingularName( required string entityName, required string singularName){
 			return !isNull(getPropertyByEntityNameAndSingularName(arguments.entityName,arguments.singularName));
 		}
 		
@@ -1014,7 +1052,28 @@
 		
 		// @hint returns the primary id property name of a given entityName
 		public string function getPrimaryIDPropertyNameByEntityName( required string entityName ) {
+			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			var cacheKey = 'getPrimaryIDPropertyNameByEntityName'&arguments.entityName;
+			if(!structKeyExists(variables,cacheKey)){
+				var propertiesStruct = getPropertiesStructByEntityName(arguments.entityName);
+				for(var propertyKey in propertiesStruct){
+					if(
+						isStruct(propertiesStruct[propertyKey])
+						&& structKeyExists(propertiesStruct[propertyKey],'fieldtype') 
+						&& propertiesStruct[propertyKey].fieldtype=='id'
+						&& structKeyExists(propertiesStruct[propertyKey],'name')
+					){
+						variables[cacheKey]=propertiesStruct[propertyKey]['name'];
+						break;
+					}
+				}
+			}
+			return variables[cacheKey];
+		}
+		
+		// @hint returns the primary id property name of a given entityName
+		public string function getPrimaryIDColumnNameByEntityName( required string entityName ) {
+			var cacheKey = 'getPrimaryIDColumnNameByEntityName'&arguments.entityName;
 			
 			if(!structKeyExists(variables,cacheKey)){
 				var idColumnNames = getIdentifierColumnNamesByEntityName( arguments.entityName );
@@ -1027,6 +1086,7 @@
 			}
 			return variables[cacheKey];
 		}
+
 		
 		// @hint returns true or false based on an entityName, and checks if that property exists for that entity 
 		public boolean function getEntityHasPropertyByEntityName( required string entityName, required string propertyName ) {
@@ -1127,7 +1187,11 @@
 				var properties = getPropertiesByEntityName(arguments.entityName);
 				for(var property in properties) {
 			        // Look for any that start with the calculatedXXX naming convention
-			        if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
+			         if (
+			        	( left(property.name, 10) == "calculated" && ( !structKeyExists(property, "persistent") || property.persistent == "true" ) ) 
+			        	||
+			        	( structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate ) 
+			        ) {
 			        	variables[cacheKey] = true;
 			        	break;
 			        }
@@ -1276,6 +1340,12 @@
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
 				var excludesList = arguments.propertyIdentifier&'.'&primaryIDName;
+				//filter out bad data
+				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'NULL','IS NOT');
+				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,' ','!=');
+				entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'','!=');
+				
+				
 				entityCollectionList.setDistinct(true);
 				
 				//entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);
@@ -1301,7 +1371,10 @@
 				entityCollectionList.setDisplayProperties(displayProperties);
 				entityCollectionList.setDistinct(true);
 				var excludesList = arguments.propertyIdentifier;
+				//filter out bad data
 				entityCollectionList.addFilter(arguments.propertyIdentifier,'NULL','IS NOT');
+				entityCollectionList.addFilter(arguments.propertyIdentifier,' ','!=');
+				entityCollectionList.addFilter(arguments.propertyIdentifier,'','!=');
 				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
 				
 			}

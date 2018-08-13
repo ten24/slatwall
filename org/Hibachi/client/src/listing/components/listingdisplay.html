@@ -1,3 +1,12 @@
+<!-- Reporting Display Begin -->
+<span ng-if="swListingDisplay.showReport && swListingDisplay.tableID">
+    <sw-listing-report
+        collection-config="swListingDisplay.collectionConfig"
+        table-Id="{{swListingDisplay.tableID}}"
+    >
+    </sw-listing-report>
+</span>
+<!--Listing Display Begin-->
 <div class="row s-detail-content-wrapper">
 
     <!-- These will not contain any real markup -->
@@ -94,9 +103,12 @@
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" value="{{swListingDisplay.multiselectValues.length ? swListingDisplay.multiselectValues : ['']}}" />
-                            <input ng-if="!swListingDisplay.multiselectValues.length" type="hidden"
+                            
+                            <input ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0" type="hidden"
                     			data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}"
+                    			value="{{swListingDisplay.multiselectValues.join()}}"
                     		/>
+                    		
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
                                     <input type="checkbox"
@@ -176,7 +188,7 @@
                                         data-is-radio="swListingDisplay.isRadio"
                                         data-selectionid="{{swListingDisplay.tableID}}"
                                         data-selection="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
-                                        data-name="{{swListingDisplay.multiselectFieldName}}"
+                                        data-name="{{swListingDisplay.multiselectFieldName+'_selectable'}}"
                                         data-disabled="swListingDisplay.edit === false">
                                 </sw-selection>
                             </td>
@@ -328,25 +340,12 @@
                     <thead ng-show="swListingDisplay.hasNumerical() === false">
                         <tr>
                             <!-- Sortable -->
-                            <input data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" type="hidden" data-ng-attr-name="{{swListingDisplay.sortableFieldName}}" data-ng-value="swListingDisplay.pageRecordsWithManualSortOrder" />
                             <th data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">&nbsp;</th>
                             <!-- Selectable -->
-                            <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
-                            <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" value="{{swListingDisplay.multiselectValues.length ? swListingDisplay.multiselectValues : ['']}}" />
-                            <input ng-if="!swListingDisplay.multiselectValues.length" type="hidden"
-                    			data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}"
-                    		/>
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
-                            <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
-                                    <input type="checkbox"
-                                           id="exampleID"
-                                           data-ng-model="swListingDisplay.isCurrentPageRecordsSelected"
-                                           data-ng-click="swListingDisplay.selectCurrentPageRecords()"
-                                           data-ng-disabled="!swListingDisplay.edit">
-                                    <label for="exampleID"></label>
-                                </div>
+                            
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
 

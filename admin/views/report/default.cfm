@@ -90,6 +90,15 @@ Notes:
 							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 						</cfloop>
 					</cfif>
+					<li class="s-report-title-padder"><h5><strong>Collection Reports</strong></h5></li>
+					<cfset entityNames = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()))/>
+					<cfset ArraySort(entityNames,'textnocase','asc')/>
+					<cfloop array="#entityNames#" index="key">
+						<cfset entityName = $.slatwall.getService('HibachiService').getProperlyCasedShortEntityName(key)/>
+						<hb:HibachiActionCaller action="admin:entity.reportlist#lcase(entityname)#" text="#$.slatwall.rbKey('entity.#entityName#')# #$.slatwall.rbKey('entity.report')#" type="list" />
+					</cfloop>
+					
+					<!---<cfset $.slatwall.getService('HibachiService').get--->
 				</hb:HibachiDividerHider>
 			</ul>
 		</div>

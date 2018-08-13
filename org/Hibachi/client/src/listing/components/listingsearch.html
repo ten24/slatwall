@@ -28,7 +28,14 @@
     <div ng-show="!swListingSearch.swListingControls.showToggleSearch">
         <hr >
     </div>
+    <!-- REPORT COLLECTIONS -->
+    <span class="input-group-btn s-action"  ng-show="swListingSearch.swListingControls.showReport">
+        <a class="btn btn-sm btn-default s-action" aria-haspopup="true" aria-expanded="false" ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}">
+            <i class="fa fa-book"></i>
+        </a>
+    </span>
 
+    <!-- PERSONAL COLLECTIONS -->
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"

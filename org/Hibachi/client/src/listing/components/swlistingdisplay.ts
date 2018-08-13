@@ -11,7 +11,10 @@ class SWListingDisplayController{
     public aggregates = [];
     public buttonGroup = [];
     public childCollectionConfigs = {};
+    //not binding
     public collectionID;
+    //binding
+    public collectionId;
     public collectionPromise;
     public collectionData:any;
     public collectionObject:any;
@@ -67,6 +70,7 @@ class SWListingDisplayController{
     public recordEditAction:string;
     public recordDeleteAction:string;
     public recordProcessButtonDisplayFlag:boolean;
+    public reportAction:string;
     public searching:boolean = false;
     public searchText;
 
@@ -76,6 +80,7 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
+    public showReport:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
@@ -124,10 +129,10 @@ class SWListingDisplayController{
             this.usingPersonalCollection=false;
         }
         
+        
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
         }
-        
         
         if(angular.isUndefined(this.showFilters)){
            this.showFilters = true;
@@ -152,7 +157,21 @@ class SWListingDisplayController{
             this.multipleCollectionDeffered.reject();
         }
 
-         if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()] && (angular.isUndefined(this.personalCollectionIdentifier) || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))){
+         if(
+             (this.baseEntityName) 
+             && (
+                 this.usingPersonalCollection 
+                 && this.localStorageService.hasItem('selectedPersonalCollection') 
+                 && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]
+             )
+             && (
+                angular.isUndefined(this.personalCollectionIdentifier) 
+                || (
+                    angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) 
+                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier
+                )
+            )
+        ){
             var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
             personalCollection.setDisplayProperties('collectionConfig');
             personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
@@ -163,7 +182,7 @@ class SWListingDisplayController{
                 if(data.pageRecords.length){
 
                     this.collectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
-                    console.log('collectionConfig',this.collectionConfig);
+                    this.collectionConfig.setCurrentPage(1); //even if the saved collection config has a current page, we want to be on page 1 here
                     this.collectionObject = this.baseEntityName;
 
                     this.$timeout(()=>{
@@ -181,9 +200,13 @@ class SWListingDisplayController{
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
             this.processCollection();
         }
-
+        
+        if(!this.reportAction && this.baseEntityName){
+            this.reportAction = 'entity.reportlist'+this.baseEntityName.toLowerCase();
+        }
 
     }
+    
 
     public processCollection = () =>{
 
@@ -204,7 +227,6 @@ class SWListingDisplayController{
         this.$transclude(this.$scope,()=>{});
 
         this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-
         if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
@@ -227,9 +249,8 @@ class SWListingDisplayController{
                     }
 
                     this.paginator.getCollection = this.getCollection;
-
                     this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
-
+                    
                 }
             );
         }else if(this.multiSlot == false){
@@ -249,7 +270,7 @@ class SWListingDisplayController{
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
     }
-
+    
     public getCollectionByPagination = (state) =>{
         if(state.type){
             switch(state.type){
@@ -266,6 +287,11 @@ class SWListingDisplayController{
                     this.collectionConfig.currentPage = 1;
                     this.collectionConfig.setPageShow(state.payload);
                     break;
+            }
+            if(this.collectionId){
+            
+                this.collectionConfig.baseEntityNameType = 'Collection';
+                this.collectionConfig.id = this.collectionId;
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
@@ -292,7 +318,12 @@ class SWListingDisplayController{
     }
 
     private getCollectionObserver=(param)=> {
-        this.collectionConfig.loadJson(param.collectionConfig);
+        if(angular.isString(param.collectionConfig)){
+            this.collectionConfig.loadJson(param.collectionConfig);
+        }else{
+            this.collectionConfig = param.collectionConfig;
+        }
+        
         this.collectionData = undefined;
         this.$timeout(
             ()=>{
@@ -367,6 +398,9 @@ class SWListingDisplayController{
         }
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
+        }
+        if(angular.isUndefined(this.showReport)){
+            this.showReport = false;
         }
         if(angular.isUndefined(this.showPrintOptions)){
             this.showPrintOptions = false; 
@@ -484,12 +518,14 @@ class SWListingDisplayController{
     public hasNumerical=()=>{
         
         // Iterate over columns, find out if we have any numericals and return
-        if (!Array.isArray(this.columns) || this.columns.length == 0){
+        if(this.columns.length){
+            return this.columns.reduce((totalNumericalCols, col) => {
+                return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+            });    
+        }else{
             return false;
         }
-        return this.columns.reduce((totalNumericalCols, col) => {
-            return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-        });
+        
     }
 
     public columnOrderByIndex = (column) =>{
@@ -556,31 +592,39 @@ class SWListingDisplayController{
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
-        if(this.collectionConfigs.length == 0){
-            var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
-            if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
-                && (this.selectionService.getSelections(this.tableID).length > 0)) {
-                exportCollectionConfig.filterGroups[0].filterGroup = [
-                    {
-                        "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
-                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
-                        "comparisonOperator": (this.allSelected) ? "not in":"in",
-                        "value": this.selectionService.getSelections(this.tableID).join(),
-                        "displayValue": this.selectionService.getSelections(this.tableID).join(),
-                        "ormtype": "string",
-                        "fieldtype": "id",
-                        "conditionDisplay": "In List"
-                    }
-                ];
+        if(this.collectionId){
+            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionExport" method="post" id="formExport"></form>');
+            $('#formExport')
+                .append("<input type='hidden' name='collectionExportID' value='" + this.collectionId + "' />")
+                .submit()
+                .remove();
+        }else{
+            if(this.collectionConfigs.length == 0){
+                var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+                if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
+                    && (this.selectionService.getSelections(this.tableID).length > 0)) {
+                    exportCollectionConfig.filterGroups[0].filterGroup = [
+                        {
+                            "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
+                            "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
+                            "comparisonOperator": (this.allSelected) ? "not in":"in",
+                            "value": this.selectionService.getSelections(this.tableID).join(),
+                            "displayValue": this.selectionService.getSelections(this.tableID).join(),
+                            "ormtype": "string",
+                            "fieldtype": "id",
+                            "conditionDisplay": "In List"
+                        }
+                    ];
+                }
+            } else {
+                //multiCollectionConfig logic
             }
-        } else {
-            //multiCollectionConfig logic
+            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
+            $('#formExport')
+                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+                .submit()
+                .remove();
         }
-        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
-        $('#formExport')
-            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
-            .submit()
-            .remove();
     };
 
     public printCurrentList =(printTemplateID)=>{
@@ -646,6 +690,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*required*/
             collection:"<?",
+            collectionId:"@?",
             collectionConfig:"<?",
             getCollection:"&?",
             collectionPromise:"<?",
@@ -682,6 +727,7 @@ class SWListingDisplay implements ng.IDirective{
             recordAddDisabled:"<?",
 
             recordProcessesConfig:"<?",
+            reportAction:"@?",
             /* record processes config is an array of actions. Example:
             [
             {
@@ -741,6 +787,7 @@ class SWListingDisplay implements ng.IDirective{
             showFilters:"<?",
             showSimpleListingControls:"<?",
             showPrintOptions:"<?",
+            showReport:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",

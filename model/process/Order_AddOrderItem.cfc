@@ -167,7 +167,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "price")) {
 			variables.price = 0;
 			if(!isNull(getSku())) {
-				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode() );
+				
+				var account = getHibachiScope().getAccount();
+				if ( !isNull(getOrder().getAccount()) ){
+					account = getOrder().getAccount();
+				}
+				
+				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode(), account );
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
 				} else {
@@ -765,7 +771,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		
 		for(var attributeCollectionListRecord in attributeCollectionListRecords){
-			if(len(trim(attributeCollectionListRecord['attributeCode']))){
+			if(len(trim(attributeCollectionListRecord['attributeCode'])) && (structKeyExists(data, attributeCollectionListRecord['attributeCode']) && len(trim(data[ attributeCollectionListRecord['attributeCode'] ])))){
 				attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
 			}
 		}

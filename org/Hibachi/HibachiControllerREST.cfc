@@ -53,6 +53,13 @@ component output="false" accessors="true" extends="HibachiController" {
 
         getFW().setView("public:main.blank");
         arguments.rc.headers["Content-Type"] = "application/json";
+        var functionName = getFW().getItem();
+        if(
+            len(functionName) >= 3 
+            && left(functionName,3)=='get'
+        ){
+            arguments.rc.context = 'GET';
+        }
 
         if(isnull(arguments.rc.apiResponse.content)){
             arguments.rc.apiResponse.content = {};
@@ -74,6 +81,10 @@ component output="false" accessors="true" extends="HibachiController" {
             && isJSON(arguments.rc.serializedJSONData)
         ) {
             StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
+        }
+        
+        if(structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET'){
+            getHibachiScope().setPersistSessionFlag(false);
         }
 
         //could possibly check whether we want a different contentType other than json in the future example:xml
@@ -705,6 +716,12 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
             }
         }
+        
+        
+        if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+            getService('HibachiUtilityService').logApiRequest(arguments.rc, "get");
+        } 
+        
     }
 
     public any function post( required struct rc ) {
@@ -808,8 +825,11 @@ component output="false" accessors="true" extends="HibachiController" {
 	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
+	        
+            if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+                getService('HibachiUtilityService').logApiRequest(arguments.rc,  "post", structuredData);
+            } 
         }
-
 
     }
 
@@ -870,7 +890,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			throw(type="ClientError", message="#message#");
 		}
 	}
-
+	
         /*
 
         GET http://www.mysite.com/slatwall/api/product/ -> returns a collection of all products

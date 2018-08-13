@@ -57,7 +57,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="estimatedShippingDate" ormtype="timestamp";
-	property name="thirdPartyShippingAccountIdentifier" ormtype="string";
+	property name="thirdPartyShippingAccountIdentifier" column="thirdPartyShipAccntIdentifier" ormtype="string";
 	property name="handlingFee" ormtype="big_decimal" hb_formatType="currency";
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
@@ -345,7 +345,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getDiscountAmount() {
-		discountAmount = 0;
+		var discountAmount = 0;
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
 			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
@@ -716,7 +716,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
 	public void function setShippingMethod( any shippingMethod ) {
 		if(structKeyExists(arguments, "shippingMethod")) {
-			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
+			if(!arrayLen(getFulfillmentShippingMethodOptions())){
+				getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
+			}
 			// make sure that the shippingMethod exists in the fulfillmentShippingMethodOptions
 			for(var i=1; i<=arrayLen(getFulfillmentShippingMethodOptions()); i++) {
 				if(arguments.shippingMethod.getShippingMethodID() == getFulfillmentShippingMethodOptions()[i].getShippingMethodRate().getShippingMethod().getShippingMethodID()) {

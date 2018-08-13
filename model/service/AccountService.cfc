@@ -340,6 +340,24 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccountRelationship_Approval(required accountRelationship){
 		
 	}
+	
+	public any function processAccount_addAccountRelationship(required any account, required any processObject, struct data={}){
+		arguments.account = arguments.processObject.getAccount();
+		if(arguments.account.getNewFlag()){
+			arguments.data.skipAccountRelationship = true;
+			arguments.account = this.processAccount_create(argumentCollection=arguments);
+		}
+		
+		var accountRelationship = this.newAccountRelationship();
+		accountRelationship.setChildAccount(arguments.processObject.getChildAccount());
+		accountRelationship.setParentAccount(arguments.processObject.getParentAccount());
+		this.saveAccountRelationship(accountRelationship);
+		if(accountRelationship.hasErrors()){
+			arguments.account.addErrors(accountRelationship.getErrors());
+		}
+		
+		return arguments.account;
+	}
 
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
@@ -352,34 +370,34 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(!isNull(arguments.processObject.getOrganizationFlag())){
 				arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
 			}
-			if(!isNull(arguments.processObject.getParentAccount())){
+			if(!structKeyExists(arguments.data,'skipAccountRelationship')){
+				if(!isNull(arguments.processObject.getParentAccount())){
 				
-				var parentAccountRelationship = this.newAccountRelationship();
-				parentAccountRelationship.setChildAccount(arguments.account);
-				parentAccountRelationship.setParentAccount(arguments.processObject.getParentAccount());
-				arguments.account.addParentAccountRelationship(parentAccountRelationship);	
-				parentAccountRelationship.getParentAccount().addChildAccountRelationship(parentAccountRelationship);
+					var parentAccountRelationship = this.newAccountRelationship();
+					parentAccountRelationship.setChildAccount(arguments.account);
+					parentAccountRelationship.setParentAccount(arguments.processObject.getParentAccount());
+					
+					arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
+					this.saveAccount(arguments.processObject.getParentAccount());
+					this.saveAccountRelationship(parentAccountRelationship);
+				}
 				
-				arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
-				this.saveAccount(arguments.processObject.getParentAccount());
-				this.saveAccountRelationship(parentAccountRelationship);
+				//if we went through the ui of the parent account tab it will submit a childAccount as we are adding a parent to the existing account
+				if(!isNull(arguments.processObject.getChildAccount())){
+					//make relationship for new account that will have a child
+					var childAccountRelationship = this.newAccountRelationship();
+					childAccountRelationship.setParentAccount(arguments.account);
+					if(!isNull(childAccountRelationship.getChildAccount())){
+						childAccountRelationship.getChildAccount().setOwnerAccount(arguments.account);
+					}
+					this.saveAccount(arguments.processObject.getChildAccount());
+					this.saveAccountRelationship(childAccountRelationship);
+				}
 			}
 			if(isNull(arguments.account.getOwnerAccount())){
 				arguments.account.setOwnerAccount(getHibachiScope().getAccount());
 			}
 			
-			if(!isNull(arguments.processObject.getChildAccount())){
-				var childAccountRelationship = this.newAccountRelationship();
-				childAccountRelationship.setParentAccount(arguments.account);
-				childAccountRelationship.setChildAccount(arguments.processObject.getChildAccount());
-				arguments.account.addChildAccountRelationship(childAccountRelationship);
-				childAccountRelationship.getChildAccount().addParentAccountRelationship(childAccountRelationship);
-				
-				childAccountRelationship.getChildAccount().setOwnerAccount(arguments.account);
-				this.saveAccount(arguments.processObject.getChildAccount());
-				this.saveAccountRelationship(childAccountRelationship);
-			}
-	
 			// If company was passed in then set that up
 			if(!isNull(processObject.getCompany())) {
 				arguments.account.setCompany( processObject.getCompany() );
@@ -1784,12 +1802,14 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			arguments.accountPaymentMethod.removeAccount();
 
-			// If the primary payment method is this payment method then set the primary to null
-			if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
-				account.setPrimaryPaymentMethod(javaCast("null",""));
-			}
+			// // If the primary payment method is this payment method then set the primary to null
+			// if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
+			// 	account.setPrimaryPaymentMethod(javaCast("null",""));
+			// }
 
 			getAccountDAO().removeAccountPaymentMethodFromOrderPayments( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+			getAccountDAO().removeAccountPaymentMethodFromAccount( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+			
 		}
 
 		return delete(arguments.accountPaymentMethod);
