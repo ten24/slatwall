@@ -1174,7 +1174,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.collectionEntity.getCollectionObject());
 		
 		for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
-			if (column.ormtype == 'id' && column.key == primaryIDPropertyName){
+			if (
+				column.ormtype == 'id' 
+				&& structKeyExists(column,'key')
+				&& column.key == primaryIDPropertyName
+			){
 				column.isExportable = true;
 				break;
 			}

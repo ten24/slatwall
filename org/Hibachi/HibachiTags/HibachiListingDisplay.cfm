@@ -115,6 +115,9 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
+			    <cfif !isNull(attributes.collectionList.getCollectionID())>
+			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
+				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
 			    data-name="#scopeVariableID#"

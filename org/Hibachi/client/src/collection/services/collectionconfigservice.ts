@@ -86,6 +86,7 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
+    public baseEntityNameType:string;
     private eventID:string;
     public filterGroupAliasMap:any = {};
     public reportFlag:boolean=false;
@@ -916,7 +917,11 @@ class CollectionConfig {
         if (angular.isDefined(id)){
             this.setId(id);
         }
-        return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
+        if(this.baseEntityNameType){
+            return this.$hibachi.getEntity(this.baseEntityNameType, this.getOptions());
+        }else{
+            return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
+        }
     };
 
     private validateFilter = (filter, currentGroup?)=>{
