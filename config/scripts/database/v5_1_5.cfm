@@ -40,7 +40,7 @@ Notes:
 
 <cftry>
 	<cfquery name="local.updateSWTypes">
-		UPDATE SWTYPE
+		UPDATE SwType
 		SET typeIDPath = '444df2e8db2712fe6cf790d12afc9661'
 		WHERE typeID = '444df2e8db2712fe6cf790d12afc9661'
 	</cfquery>
