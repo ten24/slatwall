@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"? dependencies="/config/dbdata/SlatwallCountry.xml.cfm" />
+<?xml version="1.0" encoding="UTF-8"? dependencies="/config/dbdata/SlatwallCountry.xml.cfm" >
 <Table tableName="SwState">
 	<Columns>
 		<column name="stateCode" fieldtype="id" />

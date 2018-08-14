@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwWorkflowTaskAction" dependencies="/config/dbdata/SlatwallWorkflowTask.xml.cfm,/config/dbdata/SlatwallEmailTemplate.xml.cfm" />
+<Table tableName="SwWorkflowTaskAction" dependencies="/config/dbdata/SlatwallWorkflowTask.xml.cfm,/config/dbdata/SlatwallEmailTemplate.xml.cfm">
 	<Columns>
 		<column name="workflowTaskActionID" fieldtype="id" />
 		<column name="actionType" update="false" />
