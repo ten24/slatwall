@@ -280,7 +280,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			try{
 				getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
 			}catch(any e){
-				writedump(xmlData.table.xmlAttributes.tableName);
+				//writedump(xmlData.table.xmlAttributes.tableName);
 				writedump(e);abort;
 			}
 			if(!keyFound){
