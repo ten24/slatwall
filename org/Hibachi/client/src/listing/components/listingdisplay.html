@@ -123,7 +123,7 @@
 
                             <th data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
 
-                                <span data-ng-bind="column.title" style="cursor: pointer"></span>
+                                <span data-ng-bind="column.displayTitle ? column.displayTitle : column.title" style="cursor: pointer"></span>
                                 
                                 <a href data-ng-if="column.persistent.toString() != 'false' && !column.hasHeaderView && !column.hasCellView" data-ng-click="swListingDisplay.toggleOrderBy(column)" class="s-sort-arrows">
 
