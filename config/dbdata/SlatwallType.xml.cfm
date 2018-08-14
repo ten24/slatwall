@@ -149,7 +149,11 @@
 		<Record typeID="444df3100babdbe1086cf951809a60ca" typeIDPath="444df3100babdbe1086cf951809a60ca" parentTypeID="NULL" typeName="Subscription Order Item Types" systemCode="subscriptionOrderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df311d7615e7cf56b836f515aebd4" typeIDPath="444df3100babdbe1086cf951809a60ca,444df311d7615e7cf56b836f515aebd4" parentTypeID="444df3100babdbe1086cf951809a60ca" typeName="Initial" systemCode="soitInitial" sortOrder="1" />
 		<Record typeID="444df312935fa6b9866a813b3f4793a2" typeIDPath="444df3100babdbe1086cf951809a60ca,444df312935fa6b9866a813b3f4793a2" parentTypeID="444df3100babdbe1086cf951809a60ca" typeName="Renewal" systemCode="soitRenewal" sortOrder="2" />
-
+		
+		<Record typeID="f22a04abb2586c3cfe783173c4724db5" typeIDPath="f22a04abb2586c3cfe783173c4724db5" parentTypeID="NULL" typeName="Subscription Order Delivery Item Types" systemCode="subscriptionOrderDeliveryItemType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="f22e6a41d678334700a550bddec925d2" typeIDPath="f22a04abb2586c3cfe783173c4724db5,f22e6a41d678334700a550bddec925d2" parentTypeID="f22a04abb2586c3cfe783173c4724db5" typeName="Delivered" systemCode="soditDelivered" sortOrder="1" />
+		<Record typeID="f2303148d2c876dde58d2bb6e3fe8e90" typeIDPath="f22a04abb2586c3cfe783173c4724db5,f2303148d2c876dde58d2bb6e3fe8e90" parentTypeID="f22a04abb2586c3cfe783173c4724db5" typeName="Refunded" systemCode="soditRefunded" sortOrder="2" />
+		
 		<Record typeID="444df31eb4026852a7adabb6413778e4" typeIDPath="444df31eb4026852a7adabb6413778e4" parentTypeID="NULL" typeName="Subscription Status Types" systemCode="subscriptionStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df31fa8adde8d71c5ca279e42a00d" typeIDPath="444df31eb4026852a7adabb6413778e4,444df31fa8adde8d71c5ca279e42a00d" parentTypeID="444df31eb4026852a7adabb6413778e4" typeName="Active" systemCode="sstActive" sortOrder="1" />
 		<Record typeID="444df320e882d5db8c461f3d840c31a7" typeIDPath="444df31eb4026852a7adabb6413778e4,444df320e882d5db8c461f3d840c31a7" parentTypeID="444df31eb4026852a7adabb6413778e4" typeName="Cancelled" systemCode="sstCancelled" sortOrder="2" />

@@ -699,6 +699,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(structKeyExists(arguments.columnConfig,'isPeriod')){
 			arguments.column['isPeriod']=arguments.columnConfig['isPeriod'];
 		}
+		
+		if(structKeyExists(arguments.columnConfig,'isDistinct')){
+			arguments.column['isDistinct']=arguments.columnConfig['isDistinct'];
+		}
 
 		if(arguments.prepend){
 			arrayPrepend(collectionConfig.columns,arguments.column);
@@ -1126,6 +1130,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//GETTER FUNCTIONS
 	//limiting return values to prevent ORM injection
 	private string function getAggregateHQL(required any column){
+	
 		setHasAggregate(true);
 		var aggregateFunction = '';
 
@@ -1668,6 +1673,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
     }
 
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false){
+		
+		structDelete(variables,'groupBys');
+		
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
@@ -1768,6 +1776,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		return groupByHQL;
+	}
+	
+	public void function setPeriodInterval(required string periodInterval){
+		getCollectionConfigStruct().periodInterval = arguments.periodInterval;
 	}
 
 	public boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
@@ -2265,7 +2277,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function clearRecordsCount() {
 		structDelete(variables, "recordsCount");
 	}
-
+	
 	public void function clearRecordsCountData() {
 		structDelete(variables, "recordsCountData");
 	}
@@ -2296,7 +2308,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
-		isReportAndHasNonPersistent();
+		if(isReport()){
+			arguments.formatRecords=false;
+		}
 		
 		if(arguments.refresh){
 			clearRecordsCache();
@@ -2355,6 +2369,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}else{
 
 							HQL = getHQL(forExport=arguments.forExport);
+							
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
@@ -2457,7 +2472,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setRecordsCount(required numeric total){
 		variables.recordsCount = arguments.total;
 	}
-
+	
 	public any function getRecordsCountData(){
 		if(!structkeyExists(variables,'recordsCountData')){
 			getRecordsCount();
@@ -2987,7 +3002,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(
 					structKeyExists(column,'isMetric') && column.isMetric
 				){
-					columnsHQL &= ' #column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#) as #columnAlias#';
+					if(structKeyExists(column,'isDistinct') && column.isDistinct){
+						columnsHQL &= ' COALESCE(#column['aggregate']['aggregateFunction']#(DISTINCT #column.propertyIdentifier#),0) as #columnAlias#';
+					}else{
+						columnsHQL &= ' COALESCE(#column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#),0) as #columnAlias#';
+					}
 					addingColumn = true;
 				}else if(
 					structKeyExists(column,'isPeriod') && column.isPeriod
@@ -2998,12 +3017,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
 					addingColumn = true;
 					
-				} else if(
-					structKeyExists(column, 'isVisible') && column.isVisible
-				){ 
-					columnsHQL &= " #column.propertyIdentifier# as #columnAlias#";
-					addingColumn = true;
-				} 
+				}else if(structKeyExists(column,'isVisible') && column['isVisible']){
+					columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+				}
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
 					columnsHQL &= ',';
@@ -3018,6 +3034,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
 							getPropertyIdentifierAlias(column.propertyIdentifier);
 							//check if we have an aggregate
+							
 							if(!isNull(column.aggregate))
 							{
 								//if we have an aggregate then put wrap the identifier
@@ -3076,7 +3093,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return HQL;
 	}//<--end function
-
+	
 	public void function addTotalAvgAggregate(required struct column){
 		var found = false;
 		for(var item in variables.totalAvgAggregates){

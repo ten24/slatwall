@@ -1031,11 +1031,6 @@
 
 					var value = arguments.queryData[colArray[j]][i];
 
-					// Determine if formatting datetime stamp needed
-					if (isDate(value)) {
-						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
-					}
-
 					// create our row
 					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}

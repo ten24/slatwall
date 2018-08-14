@@ -50,6 +50,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>
+	
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>
 	<head>
@@ -99,6 +100,8 @@ Notes:
 			</script>
 		</cfif>
 		<script src='https://www.google.com/recaptcha/api.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
 	</head>
 
 	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
@@ -239,6 +242,8 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
+									<hb:HibachiActionCaller action="admin:report.deferredRevenueReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.earnedRevenueReport" type="list">
 									<hb:HibachiActionCaller action="admin:report" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">

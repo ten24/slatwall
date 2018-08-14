@@ -75,6 +75,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
 	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
+	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -110,6 +111,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
 	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="MinMaxStockTransferItem" inverse="true" lazy="extra";
 	property name="skuLocationQuantities" singularname="skuLocationQuantity" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuLocationQuantity" inverse="true" cascade="all-delete-orphan";
+	property name="deliveryScheduleDates" singularname="deliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";

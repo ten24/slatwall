@@ -30,7 +30,7 @@ class SWListingDisplayCellController{
         this.listingPartialPath = listingPartialPath;
         this.$scope = $scope;
         if(!this.value && this.pageRecord && this.column){
-        this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
+            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
         }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 

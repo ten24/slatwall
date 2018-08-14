@@ -522,10 +522,8 @@ class SWListingDisplayController{
             return this.columns.reduce((totalNumericalCols, col) => {
                 return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
             });    
-        }else{
-            return false;
         }
-        
+        return false;
     }
 
     public columnOrderByIndex = (column) =>{
@@ -836,7 +834,6 @@ class SWListingDisplay implements ng.IDirective{
             }
         };
     }
-
 }
 export{
     SWListingDisplay

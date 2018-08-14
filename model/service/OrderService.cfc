@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="orderDAO";
+	property name="productDAO";
 
 	property name="accountService";
 	property name="addressService";
@@ -131,6 +132,79 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		return orderRequirementsList;
+	}
+	
+	public string function getProductsScheduledForDelivery(required any currentDateTime){
+		
+		//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
+		var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(arguments.currentDateTime);
+		productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
+		
+		return productsScheduledForDeliveryCollectionList.getPrimaryIDList();
+	}
+	
+	public any function getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(required any currentDateTime, required string productsScheduledForDelivery){
+		//find all order items that require delivery based on the term
+		var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
+		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
+		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
+		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',arguments.productsScheduledForDelivery,'IN');
+		//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
+		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.effectiveDateTime',arguments.currentDateTime,'<=');
+		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive','=');
+		
+		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
+		
+		return subscriptionOrderItemCollectionList.getRecords();
+		
+	}
+	
+	public any function createSubscriptionOrderDeliveries(any currentDateTime=now()){
+	
+		transaction{
+			//list of productIDs based on the nextDeliveryScheduleDate
+			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
+			//subscription order item data for creating 
+			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(arguments.currentDateTime,productsScheduledForDelivery);
+			
+			//create a delivery for each subscription Order Item 
+			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
+				//insert a single subscriptionOrderDeliveryItem if we haven't completed delivering all the items in the subscription
+				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
+					getOrderDao().insertSubscriptionOrderDeliveryItem(
+						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],subscriptionOrderItemRecord['orderItem_calculatedTaxAmount']
+					);
+				}
+			}
+			//update NextDeliveryDate
+			var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(arguments.currentDateTime);
+			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
+			var productsScheduledForDeliveryRecords = productsScheduledForDeliveryCollectionList.getRecords(formatRecords=false);
+			
+			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
+				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
+				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
+				deliveryScheduleDateCollectionList.addFilter('product.productID',productsScheduledForDeliveryRecord['productID']);
+				
+				//if start in current period flag is set then get the closest previous date in the past otherwise closest in the future
+				if(structKeyExists(productsScheduledForDeliveryRecord,'startInCurrentPeriodFlag') && productsScheduledForDeliveryRecord['startInCurrentPeriodFlag']){
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',arguments.currentDateTime,'<');
+					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue|DESC');
+				}else{
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',arguments.currentDateTime,'>');
+					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue');
+				}
+				//make sure the date has not been completed
+				//deliveryScheduleDateCollectionList.addFilter('completedFlag',1,'!=');
+				
+				deliveryScheduleDateCollectionList.setPageRecordsShow(1);
+				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords(formatRecords=false);
+				
+				if(arrayLen(deliveryScheduleDateRecords)){
+					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']));
+				}
+			}
+		}
 	}
 
 
@@ -1165,19 +1239,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// 'placeOrder' process will handle logic for the order payment
 				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
 
-				// If the process object was set to automatically receive these items, then we will do that
-				if(!returnOrder.hasErrors() && (arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())) {
-					var receiveData = {};
-					receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
-					receiveData.orderReturnItems = [];
-					receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
-					for(var returnItem in orderReturn.getOrderReturnItems()) {
-						var thisData = {};
-						thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
-						thisData.quantity = returnItem.getQuantity();
-						arrayAppend(receiveData.orderReturnItems, thisData);
+				if(!returnOrder.hasErrors()) {
+					//if no errors and the order has a product with deferred revenue then check if we need to record a subscriptionOrderDeliveryItem
+					for(var orderItem in returnOrder.getOrderItems()){
+						if(orderItem.getSku().getProduct().getDeferredRevenueFlag()){
+							var subscriptionOrderItem = orderItem.getReferencedOrderItem().getSubscriptionOrderItem();
+							if(!isNull(subscriptionOrderItem)){
+								var refundBalance = orderItem.getPrice() - subscriptionOrderItem.getDeferredRevenue();
+								var refundTaxBalance = orderItem.getTaxAmount() - subscriptionOrderItem.getDeferredTaxAmount();
+								//if refundBalance is greater than the deferredRevenue then we are balanceing previous deliveries, prorating, 
+								//or providing a courteous refund greater than a single delivery
+								if(refundBalance != 0 || refundTaxBalance != 0){
+									var subscriptionOrderDeliveryItem = this.newSubscriptionOrderDeliveryItem();
+									var subscriptionOrderDeliveryItemType = getService('TypeService').getTypeBySystemCode('soditRefunded');
+									subscriptionOrderDeliveryItem.setSubscriptionOrderDeliveryItemType(subscriptionOrderDeliveryItemType);
+									subscriptionOrderDeliveryItem.setEarned(refundBalance);
+									subscriptionOrderDeliveryItem.setTaxAmount(refundTaxBalance);
+									subscriptionOrderDeliveryItem.setQuantity(1);
+									subscriptionOrderDeliveryItem.setSubscriptionOrderItem(subscriptionOrderItem);
+									subscriptionOrderDeliveryItem = getService('subscriptionService').saveSubscriptionOrderDeliveryItem(subscriptionOrderDeliveryItem);
+								}
+							}
+						}
 					}
-					orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
+					
+					// If the process object was set to automatically receive these items, then we will do that
+					if((arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())){
+						var receiveData = {};
+						receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
+						receiveData.orderReturnItems = [];
+						receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
+						for(var returnItem in orderReturn.getOrderReturnItems()) {
+							var thisData = {};
+							thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
+							thisData.quantity = returnItem.getQuantity();
+							arrayAppend(receiveData.orderReturnItems, thisData);
+						}
+						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
+					}
 				}
 			}
 			

@@ -537,6 +537,7 @@
 				</cfloop>
 			)
 		</cfquery>
+		
 	</cffunction>
 
 </cfcomponent>

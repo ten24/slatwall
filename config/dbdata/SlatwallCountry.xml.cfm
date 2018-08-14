@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwCountry">
+<Table tableName="SwCountry" dependencies="/config/dbdata/SlatwallCurrency.xml.cfm">
 	<Columns>
 		<column name="countryCode" fieldtype="id" />
 		<column name="countryCode3Digit" />

@@ -1145,8 +1145,13 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 		}
+		//clear delivery Schedule Dates before adding again, ideally this should be checking which items are in the db that are not in the array and removing thoses specifically	
+		if(structKeyExists(data,'deliveryScheduleDates')){
+			arrayClear(arguments.product.getDeliveryScheduleDates());
+		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
+		
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
@@ -1166,6 +1171,24 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 		return arguments.product;
+	}
+	
+	public void function createSubscriptionOrderDeliveries(){
+		getService('OrderService').createSubscriptionOrderDeliveries();
+	}
+	
+	
+	public any function getProductsScheduledForDeliveryCollectionList(required string dateTime){
+		var productCollectionList = getService('HibachiService').getProductCollectionList();
+		
+		productCollectionList.addFilter('deferredRevenueFlag',true);
+		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver',0,'>');
+		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
+		
+		productCollectionList.addFilter('nextDeliveryScheduleDate',arguments.dateTime,'<','OR','','nextDeliveryScheduleDateFilterGroup');
+		productCollectionList.addFilter('nextDeliveryScheduleDate','NULL','IS','OR','','nextDeliveryScheduleDateFilterGroup');
+		
+		return productCollectionList;
 	}
 
 	public any function saveProductType(required any productType, struct data={}) {

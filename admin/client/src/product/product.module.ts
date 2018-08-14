@@ -11,6 +11,7 @@ import {ProductCreateController} from "./controllers/preprocessproduct_create";
 //directives
 import {SWProductListingPages} from "./components/swproductlistingpages"; 
 import {SWRelatedProducts} from "./components/swrelatedproducts";
+import {SWProductDeliveryScheduleDates} from "./components/swproductdeliveryscheduledates";
 
 var productmodule = angular.module('hibachi.product',[coremodule.name]).config(()=>{
 
@@ -24,6 +25,8 @@ var productmodule = angular.module('hibachi.product',[coremodule.name]).config((
 
 //directives
 .directive('swProductListingPages', SWProductListingPages.Factory())
+.directive('swProductDeliveryScheduleDates',SWProductDeliveryScheduleDates.Factory())
+
 .directive('swRelatedProducts', SWRelatedProducts.Factory())
 ;
 export{

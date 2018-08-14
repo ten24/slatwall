@@ -19,3 +19,4 @@ slatwalldb:
   environment:
    MYSQL_ROOT_PASSWORD : CiPassword
    MYSQL_DATABASE : Slatwall
+  command: mysqld --lower_case_table_names=1 --skip-ssl

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwState">
+<Table tableName="SwState" dependencies="/config/dbdata/SlatwallCountry.xml.cfm">
 	<Columns>
 		<column name="stateCode" fieldtype="id" />
 		<column name="countryCode" fieldtype="id" />

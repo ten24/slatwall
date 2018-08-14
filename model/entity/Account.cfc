@@ -611,7 +611,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			structDelete(variables, "primaryBillingAddress");
 		}
 	}
-
+	
 	// Primary Email Address (many-to-one | circular)
 	public void function setPrimaryEmailAddress( any accountEmailAddress ) {
 		if(structKeyExists(arguments, "accountEmailAddress")) {
