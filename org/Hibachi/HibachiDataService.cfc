@@ -206,6 +206,10 @@ component accessors="true" output="false" extends="HibachiService" {
 		var idColumns = "";
 		var includesCircular = false;
 		
+		if(!structKeyExists(request,'successfulDBDataScripts')){
+			request.successfulDBDataScripts = [];
+		}
+		
 		if(structKeyExists(xmlData.Table.xmlAttributes,'dependencies')){
 			var dependencies = listToArray(xmlData.Table.xmlAttributes.dependencies);
 			for(var dependency in dependencies){
