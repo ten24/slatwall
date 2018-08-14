@@ -57,6 +57,10 @@ component displayname="DeliveryScheduleDate" entityname="SlatwallDeliverySchedul
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	
 	
 	// Product (many-to-one)
 	public void function setProduct(required any product) {

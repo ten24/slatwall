@@ -194,12 +194,12 @@ Notes:
 			<cfset var diff = DateDiff('m',arguments.minDate,arguments.maxDate)/>
 			<cfset var to = from + diff/>
 			<cfset var startYear = Year(arguments.minDate)/>
-			<cfloop from="#from#" to="#to#" index="i">
+			<cfloop from="#from#" to="#to#" index="local.i">
 				<cfif i % 12 eq 1>
 					<cfset startYear++/>
 				</cfif>
 				
-				<cfset monthTimeStamp = CreateDateTime(startYear,i%12+1,1,0,0,0)/>
+				<cfset var monthTimeStamp = CreateDateTime(startYear,i%12+1,1,0,0,0)/>
 				(
 					select count(distinct su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M') as thisMonth
 					FROM SwSubsUsage su 
