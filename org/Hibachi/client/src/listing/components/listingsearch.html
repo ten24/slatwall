@@ -8,7 +8,7 @@
             <li><a href data-ng-click="swListingSearch.selectSearchColumn({'title':'All'})">All</a></li>
             <li data-ng-repeat="column in swListingSearch.searchableOptions | orderBy:'title'"
                 data-ng-if="column.isSearchable && column.title.length && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
-                <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.title"></a>
+                <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.displayTitle ? column.displayTitle : column.title"></a>
             </li>
         </ul>
     </div>
