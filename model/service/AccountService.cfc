@@ -1801,16 +1801,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.accountPaymentMethod.setOrderPayments([]);
 
 			arguments.accountPaymentMethod.removeAccount();
-<<<<<<< HEAD
-			
-			// If the primary payment method is this payment method then set the primary to null
-			if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
-				account.setPrimaryPaymentMethod(javaCast("null",""));
-			}
-
-			getAccountDAO().removeAccountPaymentMethodFromOrderPayments( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
-			
-=======
 
 			// // If the primary payment method is this payment method then set the primary to null
 			// if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
@@ -1819,7 +1809,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			getAccountDAO().removeAccountPaymentMethodFromOrderPayments( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
 			getAccountDAO().removeAccountPaymentMethodFromAccount( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
->>>>>>> cf0ee7da9006e62268df0002f5fbf42ebc9db6fc
 			
 		}
 
