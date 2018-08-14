@@ -694,7 +694,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function getProductsScheduledForDeliveryTest(){
+	/*public void function getProductsScheduledForDeliveryTest(){
 		//create a product that is for deferredRevenue
 		var productData = {
 			productID="",
@@ -753,13 +753,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var productIDList = orderService.getProductsScheduledForDelivery("12/13/2018");
 		assert(listFind(productIDList,product.getProductID()));
 		
-	}
+	}*/
 	
 	/**
 	* @test
 	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
 	*/
-	public void function createSubscriptionOrderDeliveriestest(){
+	/*public void function createSubscriptionOrderDeliveriestest(){
 	
 		//MOCK DATA BEGIN
 	
@@ -928,7 +928,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(product.getNextDeliveryScheduleDate(),FinalDeliveryScheduleDate.getDeliveryScheduleDateValue());
 		assertEquals(2,subscriptionOrderItem.getSubscriptionOrderDeliveryItemsCount());
 		
-	}
+	}*/
 	
 	/**
 	* @test
