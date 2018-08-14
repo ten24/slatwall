@@ -111,7 +111,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
 	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="MinMaxStockTransferItem" inverse="true" lazy="extra";
 	property name="skuLocationQuantities" singularname="skuLocationQuantity" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuLocationQuantity" inverse="true" cascade="all-delete-orphan";
-	property name="deliveryScheduleDates" singularName="deliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan";
+	property name="deliveryScheduleDates" singularname="deliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
