@@ -1144,6 +1144,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				keywords: jQuery(autocompleteField).val(),
 				fieldName: jQuery(autocompleteField).prop('name')
 			};
+			var filters = jQuery( autocompleteField ).data('acfilters').split(',');
+			for(var i in filters){
+				var filter = filters[i];
+				console.log(filter);
+				var filterValues = filter.split('=');
+				var filterKey = filterValues[0];
+				var filterValue = filterValues[1];
+				thisData[filterKey] = filterValue;
+			}
 			thisData[ hibachiConfig.action ] = 'admin:ajax.updatelistingdisplay';
 			thisData["f:activeFlag"] = 1;
 			thisData["p:current"] = 1;

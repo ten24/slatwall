@@ -399,6 +399,7 @@ class PublicService {
         if (request && request.hasSuccessfulAction()){
             this.successfulActions = [];
             for (var action in request.successfulActions){
+                this.successfulActions.push(request.successfulActions[action].split('.')[1]);
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                     this.$window.location.href = this.confirmationUrl;
                     return;
@@ -408,7 +409,6 @@ class PublicService {
                 }else if(request.successfulActions[action].indexOf('public:account.logout') !== -1){
                     this.account = this.$hibachi.newAccount();
                 }
-                this.successfulActions.push(request.successfulActions[action].split('.')[1]);
             }
         }
 
@@ -1290,7 +1290,7 @@ class PublicService {
     
     public getOrderAttributeValues = (allowedAttributeSets) =>{
         var attributeValues = {};
-        var orderAttributeModel = JSON.parse(localStorage.attributeMetaData)["Order"];
+        var orderAttributeModel = JSON.parse(localStorage.getItem('attributeMetaData'))["Order"];
         for(var attributeSetCode in orderAttributeModel){
             var attributeSet = orderAttributeModel[attributeSetCode];
             if(allowedAttributeSets.indexOf(attributeSetCode) !== -1){

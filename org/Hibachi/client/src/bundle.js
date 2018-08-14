@@ -61302,7 +61302,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCriteriaNumber = /** @class */ (function () {
-    function SWCriteriaNumber($log, collectionPartialsPath, hibachiPathBuilder) {
+    function SWCriteriaNumber(collectionPartialsPath, hibachiPathBuilder) {
         return {
             restrict: 'E',
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criterianumber.html',
@@ -61408,58 +61408,70 @@ var SWCriteriaNumber = /** @class */ (function () {
                     }
                     return numberOptions;
                 };
-                scope.$watch('selectedFilterProperty.criteriaValue', function (criteriaValue) {
-                    if (angular.isDefined(criteriaValue)) {
-                        scope.selectedFilterProperty.criteriaValue = criteriaValue;
-                        $log.debug(scope.selectedFilterProperty);
-                    }
-                });
+                //initialize values
                 scope.conditionOptions = getNumberOptions(scope.comparisonType);
-                scope.criteriaRangeChanged = function (selectedFilterProperty) {
-                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+                scope.inListArray = [];
+                if (angular.isDefined(scope.filterItem.value)) {
+                    scope.inListArray = scope.filterItem.value.toString().split(',');
+                }
+                scope.newListItem = '';
+                //declare functions
+                scope.addToValueInListFormat = function (inListItem) {
+                    // Adds item into array
+                    scope.inListArray.push(inListItem);
+                    //set value field to the user generated list
+                    scope.filterItem.value = scope.inListArray.toString();
+                    scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+                    scope.newListItem = '';
+                };
+                scope.removelistItem = function (argListIndex) {
+                    scope.inListArray.splice(argListIndex, 1);
+                    scope.filterItem.value = scope.inListArray.toString();
+                    scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+                };
+                scope.clearField = function () {
+                    scope.newListItem = '';
                 };
                 scope.selectedConditionChanged = function (selectedFilterProperty) {
-                    selectedFilterProperty.showCriteriaValue = true;
-                    //check whether the type is a range
-                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)) {
-                        selectedFilterProperty.showCriteriaValue = false;
-                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
-                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
-                    }
-                    //is null or is not null
+                    //scope.selectedFilterProperty.criteriaValue = '';
                     if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
                         selectedFilterProperty.showCriteriaValue = false;
                     }
-                };
-                angular.forEach(scope.conditionOptions, function (conditionOption) {
-                    $log.debug('populate');
-                    if (conditionOption.display == scope.filterItem.conditionDisplay) {
-                        scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-                        $log.debug(scope.filterItem);
-                        if (scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between') {
-                            var criteriaRangeArray = scope.filterItem.value.split('-');
-                            $log.debug(criteriaRangeArray);
-                            scope.selectedFilterProperty.criteriaRangeStart = parseInt(criteriaRangeArray[0]);
-                            scope.selectedFilterProperty.criteriaRangeEnd = parseInt(criteriaRangeArray[1]);
+                    else {
+                        if (selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in') {
+                            selectedFilterProperty.showCriteriaValue = false;
+                            scope.comparisonOperatorInAndNotInFlag = true;
                         }
                         else {
-                            scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+                            selectedFilterProperty.showCriteriaValue = true;
                         }
-                        if (angular.isDefined(scope.filterItem.criteriaNumberOf)) {
-                            scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
-                        }
-                        if (angular.isDefined(scope.selectedConditionChanged)) {
-                            scope.selectedConditionChanged(scope.selectedFilterProperty);
-                        }
+                    }
+                };
+                scope.$watch('filterItem.value', function (criteriaValue) {
+                    //remove percents for like values
+                    if (angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)) {
+                        scope.filterItem.value = scope.filterItem.value.replace('%', '');
+                    }
+                });
+                scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+                    if (angular.isDefined(selectedFilterProperty)) {
+                        angular.forEach(scope.conditionOptions, function (conditionOption) {
+                            if (conditionOption.display == scope.filterItem.conditionDisplay) {
+                                scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+                                scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+                                if (angular.isDefined(scope.selectedConditionChanged)) {
+                                    scope.selectedConditionChanged(scope.selectedFilterProperty);
+                                }
+                            }
+                        });
                     }
                 });
             }
         };
     }
     SWCriteriaNumber.Factory = function () {
-        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaNumber($log, collectionPartialsPath, hibachiPathBuilder); };
+        var directive = function (collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaNumber(collectionPartialsPath, hibachiPathBuilder); };
         directive.$inject = [
-            '$log',
             'collectionPartialsPath',
             'hibachiPathBuilder'
         ];
@@ -61823,7 +61835,7 @@ var SWCriteriaString = /** @class */ (function () {
                 scope.conditionOptions = getStringOptions(scope.comparisonType);
                 scope.inListArray = [];
                 if (angular.isDefined(scope.filterItem.value)) {
-                    scope.inListArray = scope.filterItem.value.split(',');
+                    scope.inListArray = scope.filterItem.value.toString().split(',');
                 }
                 scope.newListItem = '';
                 //declare functions
@@ -62526,6 +62538,9 @@ var SWEditFilterItem = /** @class */ (function () {
                                 filterItem.displayValue = filterItem.value;
                                 break;
                             case 'string':
+                            case 'big_decimal':
+                            case 'integer':
+                            case 'float':
                                 if (angular.isDefined(selectedFilterProperty.attributeID)) {
                                     filterItem.attributeID = selectedFilterProperty.attributeID;
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
@@ -62597,28 +62612,6 @@ var SWEditFilterItem = /** @class */ (function () {
                                         }
                                     }
                                 }
-                                break;
-                            case 'big_decimal':
-                            case 'integer':
-                            case 'float':
-                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-                                //is null, is not null
-                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-                                }
-                                else {
-                                    if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)) {
-                                        filterItem.value = selectedFilterProperty.criteriaValue;
-                                    }
-                                    else {
-                                        var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                        filterItem.value = decimalValueString;
-                                    }
-                                }
-                                if (angular.isDefined(selectedFilterProperty.aggregate)) {
-                                    filterItem.aggregate = selectedFilterProperty.aggregate;
-                                }
-                                filterItem.displayValue = filterItem.value;
                                 break;
                         }
                         switch (selectedFilterProperty.fieldtype) {
@@ -63448,8 +63441,9 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
         if (keywordColumns === void 0) { keywordColumns = []; }
+        if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
         if (keywordFilterGroups === void 0) { keywordFilterGroups = [{ filterGroup: [] }]; }
         if (currentPage === void 0) { currentPage = 1; }
@@ -63467,6 +63461,7 @@ var CollectionConfig = /** @class */ (function () {
         this.baseEntityAlias = baseEntityAlias;
         this.columns = columns;
         this.keywordColumns = keywordColumns;
+        this.useElasticSearch = useElasticSearch;
         this.filterGroups = filterGroups;
         this.keywordFilterGroups = keywordFilterGroups;
         this.joins = joins;
@@ -63527,6 +63522,7 @@ var CollectionConfig = /** @class */ (function () {
             }
             _this.isDistinct = jsonCollection.isDistinct;
             _this.reportFlag = jsonCollection.reportFlag;
+            _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -63562,6 +63558,7 @@ var CollectionConfig = /** @class */ (function () {
                 pageShow: _this.pageShow,
                 keywords: _this.keywords,
                 defaultColumns: (!_this.columns || !_this.columns.length),
+                useElasticSearch: _this.useElasticSearch,
                 allRecords: _this.allRecords,
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
@@ -63591,6 +63588,7 @@ var CollectionConfig = /** @class */ (function () {
                 pageShow: _this.pageShow,
                 keywords: _this.keywords,
                 defaultColumns: (!_this.columns || !_this.columns.length),
+                useElasticSearch: _this.useElasticSearch,
                 allRecords: _this.allRecords,
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
@@ -63734,6 +63732,11 @@ var CollectionConfig = /** @class */ (function () {
                     _this.keywordColumns.push(columnObject);
                 }
             }
+            return _this;
+        };
+        this.setUseElasticSearch = function (flag) {
+            if (flag === void 0) { flag = false; }
+            _this.useElasticSearch = flag;
             return _this;
         };
         this.setDisplayProperties = function (propertyIdentifier, title, options) {
@@ -64113,7 +64116,12 @@ var CollectionConfig = /** @class */ (function () {
             if (angular.isDefined(id)) {
                 _this.setId(id);
             }
-            return _this.$hibachi.getEntity(_this.baseEntityName, _this.getOptions());
+            if (_this.baseEntityNameType) {
+                return _this.$hibachi.getEntity(_this.baseEntityNameType, _this.getOptions());
+            }
+            else {
+                return _this.$hibachi.getEntity(_this.baseEntityName, _this.getOptions());
+            }
         };
         this.validateFilter = function (filter, currentGroup) {
             if (angular.isUndefined(currentGroup)) {
@@ -71952,6 +71960,7 @@ var PublicService = /** @class */ (function () {
             if (request && request.hasSuccessfulAction()) {
                 _this.successfulActions = [];
                 for (var action in request.successfulActions) {
+                    _this.successfulActions.push(request.successfulActions[action].split('.')[1]);
                     if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
                         _this.$window.location.href = _this.confirmationUrl;
                         return;
@@ -71963,7 +71972,6 @@ var PublicService = /** @class */ (function () {
                     else if (request.successfulActions[action].indexOf('public:account.logout') !== -1) {
                         _this.account = _this.$hibachi.newAccount();
                     }
-                    _this.successfulActions.push(request.successfulActions[action].split('.')[1]);
                 }
             }
             if (request && request.hasFailureAction()) {
@@ -72733,7 +72741,7 @@ var PublicService = /** @class */ (function () {
         };
         this.getOrderAttributeValues = function (allowedAttributeSets) {
             var attributeValues = {};
-            var orderAttributeModel = JSON.parse(localStorage.attributeMetaData)["Order"];
+            var orderAttributeModel = JSON.parse(localStorage.getItem('attributeMetaData'))["Order"];
             for (var attributeSetCode in orderAttributeModel) {
                 var attributeSet = orderAttributeModel[attributeSetCode];
                 if (allowedAttributeSets.indexOf(attributeSetCode) !== -1) {
@@ -77314,6 +77322,10 @@ var SWListingDisplayController = /** @class */ (function () {
                         _this.collectionConfig.setPageShow(state.payload);
                         break;
                 }
+                if (_this.collectionId) {
+                    _this.collectionConfig.baseEntityNameType = 'Collection';
+                    _this.collectionConfig.id = _this.collectionId;
+                }
                 _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
                     _this.collectionData = data;
                     _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
@@ -77572,32 +77584,41 @@ var SWListingDisplayController = /** @class */ (function () {
         };
         this.exportCurrentList = function (selection) {
             if (selection === void 0) { selection = false; }
-            if (_this.collectionConfigs.length == 0) {
-                var exportCollectionConfig = angular.copy(_this.collectionConfig.getCollectionConfig());
-                if (selection && !angular.isUndefined(_this.selectionService.getSelections(_this.tableID))
-                    && (_this.selectionService.getSelections(_this.tableID).length > 0)) {
-                    exportCollectionConfig.filterGroups[0].filterGroup = [
-                        {
-                            "displayPropertyIdentifier": _this.rbkeyService.getRBKey("entity." + exportCollectionConfig.baseEntityName.toLowerCase() + "." + _this.exampleEntity.$$getIDName().toLowerCase()),
-                            "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "." + _this.exampleEntity.$$getIDName(),
-                            "comparisonOperator": (_this.allSelected) ? "not in" : "in",
-                            "value": _this.selectionService.getSelections(_this.tableID).join(),
-                            "displayValue": _this.selectionService.getSelections(_this.tableID).join(),
-                            "ormtype": "string",
-                            "fieldtype": "id",
-                            "conditionDisplay": "In List"
-                        }
-                    ];
-                }
+            if (_this.collectionId) {
+                $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=main.collectionExport" method="post" id="formExport"></form>');
+                $('#formExport')
+                    .append("<input type='hidden' name='collectionExportID' value='" + _this.collectionId + "' />")
+                    .submit()
+                    .remove();
             }
             else {
-                //multiCollectionConfig logic
+                if (_this.collectionConfigs.length == 0) {
+                    var exportCollectionConfig = angular.copy(_this.collectionConfig.getCollectionConfig());
+                    if (selection && !angular.isUndefined(_this.selectionService.getSelections(_this.tableID))
+                        && (_this.selectionService.getSelections(_this.tableID).length > 0)) {
+                        exportCollectionConfig.filterGroups[0].filterGroup = [
+                            {
+                                "displayPropertyIdentifier": _this.rbkeyService.getRBKey("entity." + exportCollectionConfig.baseEntityName.toLowerCase() + "." + _this.exampleEntity.$$getIDName().toLowerCase()),
+                                "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "." + _this.exampleEntity.$$getIDName(),
+                                "comparisonOperator": (_this.allSelected) ? "not in" : "in",
+                                "value": _this.selectionService.getSelections(_this.tableID).join(),
+                                "displayValue": _this.selectionService.getSelections(_this.tableID).join(),
+                                "ormtype": "string",
+                                "fieldtype": "id",
+                                "conditionDisplay": "In List"
+                            }
+                        ];
+                    }
+                }
+                else {
+                    //multiCollectionConfig logic
+                }
+                $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=main.collectionConfigExport" method="post" id="formExport"></form>');
+                $('#formExport')
+                    .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+                    .submit()
+                    .remove();
             }
-            $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=main.collectionConfigExport" method="post" id="formExport"></form>');
-            $('#formExport')
-                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
-                .submit()
-                .remove();
         };
         this.printCurrentList = function (printTemplateID) {
             var exportCollectionConfig = angular.copy(_this.collectionConfig.getCollectionConfig());
@@ -77722,6 +77743,7 @@ var SWListingDisplay = /** @class */ (function () {
             name: "@?",
             /*required*/
             collection: "<?",
+            collectionId: "@?",
             collectionConfig: "<?",
             getCollection: "&?",
             collectionPromise: "<?",
@@ -79700,6 +79722,10 @@ var ListingService = /** @class */ (function () {
         };
         this.setupDefaultGetCollection = function (listingID) {
             if (_this.getListing(listingID).collectionConfigs.length == 0) {
+                if (_this.getListing(listingID).collectionId) {
+                    _this.getListing(listingID).collectionConfig.baseEntityNameType = 'Collection';
+                    _this.getListing(listingID).collectionConfig.id = _this.getListing(listingID).collectionId;
+                }
                 _this.getListing(listingID).collectionPromise = _this.getListing(listingID).collectionConfig.getEntity();
                 return function () {
                     _this.getListing(listingID).collectionConfig.setCurrentPage(_this.getListing(listingID).paginator.getCurrentPage());

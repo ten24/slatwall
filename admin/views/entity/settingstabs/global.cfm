@@ -55,6 +55,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
 		<swa:SlatwallSetting settingName="globalCurrencyType" />
 		<swa:SlatwallSetting settingName="globalDateFormat" />
+		<swa:SlatwallSetting settingName="globalLogApiRequests" />
 		<swa:SlatwallSetting settingName="globalLogMessages" />
 		<swa:SlatwallSetting settingName="globalTimeFormat" />
 		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />

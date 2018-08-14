@@ -57,7 +57,9 @@ Notes:
 	
 	<cffunction name="getMetricDefinitions">
 		<cfreturn [
-			{alias='taxAmount', function='sum', formatType="currency", title=rbKey('entity.taxApplied.taxAmount')},
+			{alias='taxAmount', calculation='SUM(taxAmountSales) - SUM(taxAmountReturn)', formatType="currency", title=rbKey('entity.taxApplied.taxAmount') & " " & rbKey('define.total')},
+			{alias='taxAmountSales', function='sum', formatType="currency"},
+			{alias='taxAmountReturn', function='sum', formatType="currency"},
 			{alias='taxRate', function='avg', formatType="currency", title=rbKey('entity.taxApplied.taxRate')}
 		] />
 	</cffunction>
@@ -99,6 +101,18 @@ Notes:
 					SwTaxCategoryRate.taxCategoryRateCode,
 					SwTaxApplied.taxRate,
 					SwTaxApplied.taxAmount,
+					CASE
+    					WHEN SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' THEN
+    						SwTaxApplied.taxAmount
+						ELSE
+							0
+					END as taxAmountSales,
+					CASE
+    					WHEN SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' THEN
+    						SwTaxApplied.taxAmount
+    					ELSE
+    						0
+					END as taxAmountReturn,
 					SwTaxApplied.taxLiabilityAmount,
 					SwTaxApplied.currencyCode,
 					SwTaxApplied.taxImpositionName,

@@ -86,6 +86,7 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
+    public baseEntityNameType:string;
     private eventID:string;
     public filterGroupAliasMap:any = {};
     public reportFlag:boolean=false;
@@ -105,6 +106,7 @@ class CollectionConfig {
         public  baseEntityAlias?:string,
         public  columns?:Column[],
         public  keywordColumns:Column[]=[],
+        private useElasticSearch:boolean = false,
         private filterGroups:Array<any>=[{filterGroup: []}],
         private keywordFilterGroups:Array<any>=[{filterGroup: []}],
         private joins?:Join[],
@@ -181,6 +183,7 @@ class CollectionConfig {
         }
         this.isDistinct = jsonCollection.isDistinct;
         this.reportFlag = jsonCollection.reportFlag;
+        this.useElasticSearch = jsonCollection.useElasticSearch;
 
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
@@ -219,6 +222,7 @@ class CollectionConfig {
             pageShow: this.pageShow,
             keywords: this.keywords,
             defaultColumns: (!this.columns || !this.columns.length),
+            useElasticSearch: this.useElasticSearch,
             allRecords: this.allRecords,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
@@ -253,6 +257,7 @@ class CollectionConfig {
             pageShow: this.pageShow,
             keywords: this.keywords,
             defaultColumns: (!this.columns || !this.columns.length),
+            useElasticSearch: this.useElasticSearch,
             allRecords: this.allRecords,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
@@ -437,6 +442,11 @@ class CollectionConfig {
                 this.keywordColumns.push(columnObject);
             }
         }
+        return this;
+    };
+
+    public setUseElasticSearch = (flag:boolean=false):CollectionConfig =>{
+        this.useElasticSearch = flag;
         return this;
     };
 
@@ -907,7 +917,11 @@ class CollectionConfig {
         if (angular.isDefined(id)){
             this.setId(id);
         }
-        return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
+        if(this.baseEntityNameType){
+            return this.$hibachi.getEntity(this.baseEntityNameType, this.getOptions());
+        }else{
+            return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
+        }
     };
 
     private validateFilter = (filter, currentGroup?)=>{

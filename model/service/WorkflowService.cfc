@@ -54,6 +54,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
+		//only flush on after
+		if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
+			getHibachiScope().flushORMSession();
+		}
+		
 		var successFlag = false;
 		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
 			continue;
@@ -129,8 +134,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				var workflowTriggers = getWorkflowDAO().getWorkflowTriggersForEvent(eventName = arguments.eventName);
 
 				for (var workflowTrigger in workflowTriggers) {
-
-					runWorkflowByEventTrigger(workflowTrigger,arguments.entity);
+					if(
+						workflowTrigger.getWorkflow().getActiveFlag()
+					){
+						runWorkflowByEventTrigger(workflowTrigger,arguments.entity);
+					}
 				}
 			//}
 		}
@@ -160,7 +168,9 @@ component extends="HibachiService" accessors="true" output="false" {
         getHibachiDAO().flushORMSession();
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		for(var workflowTrigger in workflowTriggers) {
-			runWorkflowsByScheduleTrigger(workflowTrigger);
+			if(workflowTrigger.getWorkflow().getActiveFlag()){
+				runWorkflowsByScheduleTrigger(workflowTrigger);
+			}
 		}
 	}
 
@@ -441,6 +451,20 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ======================  END: Status Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveWorkflow(required any entity, struct data={}) {
+		// Call the default save logic
+		arguments.entity = super.save(argumentcollection=arguments);
+		// If there aren't any errors then flush, and clear cache
+		if(!getHibachiScope().getORMHasErrors()) {
+			
+			getHibachiDAO().flushORMSession();
+			
+			getHibachiCacheService().resetCachedKey('workflowDAO_getWorkflowTriggerEventsArray');
+		}
+		
+		return arguments.entity;
+	}
 	
 	public any function saveWorkflowTrigger(required any entity, struct data={}) {
 

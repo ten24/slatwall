@@ -94,8 +94,13 @@
 			<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
 			<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
 
+			<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
+			<!---escape apostraphe boi--->
+			<cfset JSON = rereplace(JSON,"'","\'",'all')/>
+			<!---convert double quotes to single--->
+			<cfset JSON = rereplace(JSON,'"',"'",'all')/>
 			<span ng-init="
-				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(serializeJson(attributes.collectionList.getCollectionConfigStruct()),'"',"'",'all')#);
+				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#JSON#);
 			"></span>
 			
 			<cfif !attributes.collectionList.getNewFlag()>
@@ -110,6 +115,9 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
+			    <cfif !isNull(attributes.collectionList.getCollectionID())>
+			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
+				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
 			    data-name="#scopeVariableID#"
@@ -131,7 +139,7 @@
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
  				</cfif>
 			    <cfif len(attributes.multiselectFieldName)>
-				  data-multiselectable="#attributes.multiselectFieldName#"
+				  data-multiselectable="true"
 	 			  data-multiselect-field-name="#attributes.multiselectFieldName#"
 	 			  data-multiselect-values="#attributes.multiselectValues#"
 	 			  data-multi-slot="true"

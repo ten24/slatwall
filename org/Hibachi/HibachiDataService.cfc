@@ -1,6 +1,7 @@
 component accessors="true" output="false" extends="HibachiService" {
 
 	property name="hibachiDataDAO";
+	property name="hibachiUtilityService";
 
 	public boolean function isUniqueProperty( required string propertyName, required any entity ) {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
@@ -195,6 +196,8 @@ component accessors="true" output="false" extends="HibachiService" {
 
 		return true;
 	}
+	
+	
 
 	public boolean function loadDataFromXMLRaw(required string xmlRaw, boolean ignorePreviouslyInserted=true) {
 		var xmlRawEscaped = replace(arguments.xmlRaw,"&","&amp;","all");
@@ -247,7 +250,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 				//check if the column needs to be decoded
 				if(structKeyExists(columns[ thisColumnName ], 'decodeForHTML') && columns[ thisColumnName ].decodeForHTML) {
-					columnRecord.value = DecodeforHTML(columnRecord.value);
+					columnRecord.value = getHibachiUtilityService().hibachiDecodeforHTML(columnRecord.value);
 				}
 
 				// Add this column record to the insert

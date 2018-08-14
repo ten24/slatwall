@@ -1072,18 +1072,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	/**
 	* @Suppress
 	*/
-	public any function getLivePrice() {
+	public any function getLivePrice( any account = getHibachiScope().getAccount() ) {
 		if( structKeyExists(variables,"defaultSku") ) {
-			return getDefaultSku().getLivePrice();
+			return getDefaultSku().getLivePrice(arguments.account);
 		}
 	}
 
 	/**
 	* @Suppress
 	*/
-	public any function getLivePriceByCurrencyCode(required string currencyCode){
+	public any function getLivePriceByCurrencyCode(required string currencyCode, any account = getHibachiScope().getAccount() ){
 		if( structKeyExists(variables,"defaultSku") ) {
-			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
+			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode, arguments.account);
 	 	}
 	}
 

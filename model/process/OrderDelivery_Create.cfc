@@ -86,12 +86,32 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return placeholders;
 	}
 	
-	public boolean function isValidQuantity(){
+	public boolean function isValidDeliveryQuantity(){
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
 			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
 				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
 				var thisQuantity = getOrderDeliveryItems()[i].quantity;
-				if(thisQuantity > orderItem.getQuantityUndelivered()) {
+				if( thisQuantity > orderItem.getQuantityUndelivered() ){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean function isValidQuantity(){
+		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
+			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0 && !isNull(getLocation()) ) {
+				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
+				var thisQuantity = getOrderDeliveryItems()[i].quantity;
+				var stock = getService('StockService').getStockBySkuAndLocation(
+					sku=orderItem.getSku(),
+					location=getLocation()
+				);
+				if( 
+					orderItem.getSku().setting('skuTrackInventoryFlag') 
+					&& thisQuantity > stock.getQOH() 
+				) {
 					return false;
 				}
 			}
