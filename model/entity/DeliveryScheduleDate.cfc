@@ -59,8 +59,10 @@ component displayname="DeliveryScheduleDate" entityname="SlatwallDeliverySchedul
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+
 	
 	// Product (many-to-one)
 	public void function setProduct(required any product) {
