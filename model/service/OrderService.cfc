@@ -981,8 +981,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 				
 		for(var orderItem in arguments.order.getOrderItems()){
-			getHibachiScope().addModifiedEntity(orderItem.getStock());
-			getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
+			if(!isNull(orderItem.getStock())){
+				getHibachiScope().addModifiedEntity(orderItem.getStock());
+				getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
+			}
 		}
 
 		// Change the status
@@ -1525,7 +1527,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public any function processOrder_placeOrder(required any order, required struct data) {
+	public any function processOrder_placeOrder(required any order, struct data={}) {
 		
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
@@ -2479,7 +2481,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var term = orderItem.getSku().getGiftCardExpirationTerm();
 		var giftCardCodes = arguments.data.giftCardCodes;
 		
-		if (!orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
+		if (!orderItem.getSku().getGiftCardRecipientRequiredFlag() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
 			
 			// Creates a simple lookup of the orderItemGiftRecipient by using giftCardCode as the key
 			var orderItemGiftRecipientsByGiftCardCodeStruct = {};
@@ -2515,6 +2517,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				giftCard = getService("giftCardService").process(giftCard, giftCard_create, 'create');
 
 				if(giftCard.hasErrors()){
+					orderItem.getOrder().addErrors(giftCard.getErrors());
+				}
+			}
+		} else if(!orderItem.getSku().getGiftCardRecipientRequiredFlag() && orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
+			var totalGiftCardsNeeded = arguments.orderDeliveryItem.getQuantity();
+			for(var i=1; i <= totalGiftCardsNeeded; i++){
+				var giftCard = this.newGiftCard();
+				var giftCard_create = giftCard.getProcessObject('create');
+ 				giftCard_create.setOriginalOrderItem(orderItem);
+				giftCard_create.setGiftCardPin("");
+				giftCard_create.setOrderPayments(orderItem.getOrder().getOrderPayments());
+				giftCard_create.setOwnerAccount(orderItem.getOrder().getAccount());
+				giftCard_create.setOwnerEmailAddress(orderItem.getOrder().getAccount().getEmailAddress());
+				giftCard_create.setOwnerFirstName(orderItem.getOrder().getAccount().getFirstName());
+				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
+				giftCard_create.setCreditGiftCardFlag(true);
+				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				if (!isNull(term)) {
+					giftCard_create.setGiftCardExpirationTerm(term);
+				}
+ 				// Create the gift card
+				giftCard = getService("giftCardService").process(giftCard, giftCard_create, 'create');
+ 				if(giftCard.hasErrors()){
 					orderItem.getOrder().addErrors(giftCard.getErrors());
 				}
 			}

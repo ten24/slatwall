@@ -2,7 +2,7 @@
 <cfimport prefix="sw" taglib="../tags" />
 <cfoutput>
 <cfinclude template="_slatwall-header.cfm" />
-<div class="container">
+<div class="container" ng-cloak>
 
     <h1 class="my-4">#$.slatwall.content('title')#</h4>
     

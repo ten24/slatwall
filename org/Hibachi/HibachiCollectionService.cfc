@@ -531,8 +531,8 @@ component output="false" accessors="true" extends="HibachiService" {
 					
 						for(var i=1; i<=listLen(newQueryKeys[key], delimiter); i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, delimiter);
-							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, delimiter);
-							if(findCount) {
+							//when comparing, let's make sure we decode the old value
+							var findCount = listFindNoCase(urlDecode(oldQueryKeys[key]), thisVal, delimiter);							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, delimiter);
 								if(arguments.toggleKeys) {
 									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, delimiter);
@@ -616,10 +616,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			orderByConfig = arguments.data['orderByConfig'];
 		}
 
-		var groupBysConfig = "";
-		if(structKeyExists(arguments.data,'groupBysConfig')){
-			groupBysConfig = arguments.data['groupBysConfig'];
-		}
 
 		var propertyIdentifiersList = "";
 		if(structKeyExists(arguments.data,"propertyIdentifiersList")){
@@ -686,7 +682,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			isDistinct=isDistinct,
 			columnsConfig=columnsConfig,
 			orderByConfig=orderByConfig,
-			groupBysConfig=groupBysConfig,
 			allRecords=allRecords,
 			dirtyRead=dirtyRead,
 			useElasticSearch=useElasticSearch,
@@ -978,6 +973,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; //<--The fileName of the report to export.
 		param name="data.collectionExportID" default="" type="string";      //<--The collection to export ID
 
+		//short circuit to prevent non admin use
 		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
 			return;
 		}
@@ -1032,6 +1028,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public void function collectionConfigExport(required struct data) {
 		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
 		
+		//short circuit to prevent non admin use
 		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
 			return;
 		}
@@ -1141,6 +1138,11 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public struct function getCollectionConfigExportDataByCollection(required any collectionEntity){
+	
+		//short circuit to prevent non admin use
+		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
+			return;
+		}
 		
 		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
 		var headers = getHeadersListByCollection(arguments.collectionEntity);
@@ -1172,7 +1174,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.collectionEntity.getCollectionObject());
 		
 		for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
-			if (column.ormtype == 'id' && column.key == primaryIDPropertyName){
+			if (
+				column.ormtype == 'id' 
+				&& structKeyExists(column,'key')
+				&& column.key == primaryIDPropertyName
+			){
 				column.isExportable = true;
 				break;
 			}
@@ -1237,7 +1243,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						filterData.logicalOperator = 'OR';
 					}
 
-					if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+					if(!structKeyExists(arguments.collection.getCollectionConfigStruct(),'filterGroups')){
 						arguments.collection.getCollectionConfigStruct()['filterGroups'] = [{"filterGroup"=[]}];
 					}
 
@@ -1428,7 +1434,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 
 				//Handle pagination.
-				if(findNoCase('p:current', key)){
+				if(findNoCase('p:current', key) && isNumeric(data[key]) ){
 					var currentPage = data[key];
 				}
 				if (!isNull(currentPage)){
@@ -1436,7 +1442,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					arguments.collection.setCurrentPageDeclaration(currentPage);
 				}
 
-				if(findNoCase('p:show', key)){
+				if(findNoCase('p:show', key) && isNumeric(data[key])){
 					var pageShow = data[key];
 				}
 

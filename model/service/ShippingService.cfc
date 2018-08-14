@@ -489,11 +489,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Loop over all of the shipping integrations and add thier rates response to the 'responseBeans' struct that is key'd by integrationID
 		var shippingMethodRatesRequestBeans = getShippingMethodRatesRequestBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment);
-		var fulfillmentMethodOptionsCacheKey = [];
+		
+		var fulfillmentMethodOptionsCacheKeyArray = [];
 		for(var shippingMethodRatesRequestBean in shippingMethodRatesRequestBeans){
-			arrayAppend(fulfillmentMethodOptionsCacheKey,shippingMethodRatesRequestBean.getJSON());
+			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,shippingMethodRatesRequestBean.getJSON());
 		}
-		var fulfillmentMethodOptionsCacheKey = hash(serializeJson(fulfillmentMethodOptionsCacheKey)&orderfulfillmentaddress & arguments.orderFulfillment.getOrder().getSubtotalAfterItemDiscounts(),'md5');
+		arrayAppend(fulfillmentMethodOptionsCacheKeyArray,orderfulfillmentaddress);
+		arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getOrder().getSubtotalAfterItemDiscounts());
+		arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getTotalShippingQuantity());
+		arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getSubtotalAfterDiscounts());
+		
+		//cache key for manual shipping method rates
+		var shippingMethodIDList = "";
+		
+		for(var shippingMethod in shippingMethods){
+			shippingMethodIDList = listAppend(shippingMethodIDList,shippingMethod.getShippingMethodID());
+		}
+		
+		var shippingMethodRatesCollectionList = getService('shippingService').getShippingMethodRateCollectionList();
+		shippingMethodRatesCollectionList.addFilter('shippingIntegration','NULL','IS');
+		shippingMethodRatesCollectionList.addFilter('shippingMethod.shippingMethodID',shippingMethodIDList,'IN');
+		
+		var manualShippingMethodRateHash = hash(serializeJson(shippingMethodRatesCollectionList.getRecords(formatRecords=false)),'md5');
+		arrayAppend(fulfillmentMethodOptionsCacheKeyArray,manualShippingMethodRateHash);
+		
+		var fulfillmentMethodOptionsCacheKey = hash(ArrayToList(fulfillmentMethodOptionsCacheKeyArray,''),'md5');
+		
 		
 		if(isNull(arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey()) || arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey() != fulfillmentMethodOptionsCacheKey){
 			

@@ -319,6 +319,13 @@
 	    {
 	        return "otpauth://totp/#getApplicationValue('applicationKey')#:#arguments.email#?secret=#arguments.secretKey#&issuer=#getApplicationValue('applicationKey')#";
 	    }
+	    
+	    //be careful with this. Not for general use. can pose security risk if not used properly.
+	    public string function hibachiDecodeForHTML(string stringValue){
+		
+			var encoder = createObject('java','org.owasp.esapi.ESAPI').encoder();
+			return encoder.decodeForHTML(arguments.stringValue);
+		}
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
@@ -1056,6 +1063,57 @@
 
 			return toString(binaryDecode(base64String,'base64'));
 		}
+		
+		public any function logApiRequest(required struct rc,  required string requestType, any data = {} ){
+	    
+		    var content = arguments.rc.apiResponse.content;
+	        
+	        var apiRequestAudit = getService('hibachiService').newApiRequestAudit();
+	        
+	        if( structKeyExists(content, 'recordsCount') ){
+	            apiRequestAudit.setResultsCount(content.recordsCount);
+	        }else {
+	            apiRequestAudit.setResultsCount(1);
+	        }
+	        
+	        if( structKeyExists(content, 'collectionConfig')){
+	            apiRequestAudit.setCollectionConfig(content.collectionConfig);
+	        }
+	        
+	        if( structKeyExists(content, 'currentPage')){
+	            apiRequestAudit.setCurrentPage(content.currentPage);
+	        }
+	       
+	        if(structKeyExists(content, 'pageRecordsShow')){
+	            apiRequestAudit.setPageShow(content.pageRecordsShow);
+		    }
+	        
+	        var clientIP = cgi.remote_addr;
+	        var clientHeaders = GetHttpRequestData().headers;
+	    	if(structKeyExists(clientHeaders,"X-Forwarded-For") ) {
+			    clientIP = clientHeaders["X-Forwarded-For"];
+	        }
+	        apiRequestAudit.setIpAddress(clientIP);
+	        
+	        var urlEndpoint = cgi.http_host & '' & cgi.path_info;
+	        apiRequestAudit.setUrlEndpoint( urlEndpoint );
+	        
+	        if ( !structIsEmpty(url) ){
+	            apiRequestAudit.setUrlQueryString(serializeJson(url));
+	        }
+	        
+	        if ( !structIsEmpty(form) ){
+	             apiRequestAudit.setParams( serializeJson(form) );
+	        }
+	        
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        
+	        apiRequestAudit.setRequestType( arguments.requestType);
+	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
+	        
+	        apiRequestAudit = getService("HibachiService").saveApiRequestAudit(apiRequestAudit);
+	        
+		}
 
 	</cfscript>
 
@@ -1577,5 +1635,20 @@
 		<cfelse>
 			<cfreturn expandPath(arguments.filePath) />
 		</cfif>
+	</cffunction>
+	<!---check if this is a 32 character id string--->
+	<cffunction name="isHibachiUUID" returntype="boolean">
+		<cfargument name="idString" type="any">
+		
+		<cfif !isValid("string",arguments.idString)>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfif len(arguments.idString) neq 32>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfset var uuid = left(arguments.idString,8) & '-' & mid(arguments.idString,9,4) & '-' & mid(arguments.idString,13,4) & '-' & right(arguments.idString,16)/>
+		<cfreturn isValid('uuid',uuid)/>
 	</cffunction>
 </cfcomponent>

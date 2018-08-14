@@ -5,7 +5,7 @@
 	    }
     },
 	"properties":{
-	    "orderDeliveryItems":					[{"method":"isValidQuantity"},{"method":"hasQuantityOnOneOrderDeliveryItem"},{"method":"hasRecipientsForAllGiftCardDeliveryItems"}],
+	    "orderDeliveryItems":					[{"method":"isValidQuantity"},{"method":"isValidDeliveryQuantity"},{"method":"hasQuantityOnOneOrderDeliveryItem"},{"method":"hasRecipientsForAllGiftCardDeliveryItems"}],
 	    "giftCardCodes":						[{"method":"hasGiftCardCodesForAllGiftCardDeliveryItems"}],
 	    "location":								[{"conditions":"fulfillmentTypeNotAuto","required":true}]
 	},
