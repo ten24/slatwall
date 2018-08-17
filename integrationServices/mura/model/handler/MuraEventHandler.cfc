@@ -929,10 +929,10 @@
 					accountSyncType = getMuraPluginConfig().getSetting("accountSyncType"),
 					superUserSyncFlag = getMuraPluginConfig().getSetting("superUserSyncFlag")
 				};
-				
+				var threadKey = "slatwallMuraAppLoadSync_#cmsSiteID#";
 				// Kick of a thread for the rest of all the syncing
 				if( isNull(cfthread) || !structKeyExists(cfthread,threadKey)){
-					thread action="run" name="slatwallMuraAppLoadSync_#cmsSiteID#" threadData=threadData {
+					thread action="run" name="#threadKey#" threadData=threadData {
 
 						var $ = createObject("mura.event").init( {siteID=threadData.cmsSiteID} ).getValue('MuraScope');
 
