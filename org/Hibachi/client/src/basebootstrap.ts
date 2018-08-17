@@ -84,7 +84,7 @@ export class BaseBootStrapper{
           try {
             if (localStorage.length) off();
             else {
-              localStorage.x = 1;
+              localStorage.setItem('x',1);
               localStorage.removeItem('x');
               off();
             }
