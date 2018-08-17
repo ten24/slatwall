@@ -2,7 +2,8 @@
 
     <label class="control-label" data-ng-if="swPropertyDisplay.showLabel">
 
-        <span data-ng-bind="swPropertyDisplay.title"></span>:
+        <span data-ng-bind="swPropertyDisplay.label"></span>:
+
         <span ng-if="swPropertyDisplay.object.validations.properties[swPropertyDisplay.property][0].required && swPropertyDisplay.fieldType === 'text'">*</span>
         <span sw-tooltip class="j-tool-tip-item"
               ng-if="swPropertyDisplay.hint"
