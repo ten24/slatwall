@@ -43,12 +43,13 @@ class SWListingReportController {
     ) {
         
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
-        console.log(this.collectionId);
-        var selectedReport = {
-            collectionID:this.collectionId,
-            collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
-        };
-        this.selectReport(selectedReport);
+        if(this.collectionId){
+            var selectedReport = {
+                collectionID:this.collectionId,
+                collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
+            };
+            this.selectReport(selectedReport);
+        }
         this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         this.filterPropertiesList = {};
         
@@ -68,19 +69,21 @@ class SWListingReportController {
     }
     
     public saveReportCollection = (collectionName?)=>{
-        console.log(this.collectionConfig);
         if(collectionName || this.collectionId){
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.selectedPeriodColumn.isPeriod = true;
             this.collectionConfig.columns.push(this.selectedPeriodColumn);
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
-                'collectionName':collectionName,
+                
                 'collectionObject':this.collectionConfig.baseEntityName,
                 'accountOwner':{
                     'accountID':this.$rootScope.slatwall.account.accountID
                 },
                 'reportFlag':1
+            }
+            if(collectionName){
+                serializedJSONData['collectionName'] = collectionName;
             }
             
             this.$hibachi.saveEntity(
@@ -92,7 +95,18 @@ class SWListingReportController {
                 },
                 'save'
             ).then((data)=>{
-                window.location.reload();
+                console.log(data);
+                if(this.collectionId){
+                    window.location.reload();    
+                }else{
+                    var url = window.location.href;    
+                    if (url.indexOf('?') > -1){
+                       url += '&collectionID='+data.data.collectionID;
+                    }else{
+                       url += '?collectionID='+data.data.collectionID;
+                    }
+                    window.location.href = url;
+                }
             });
             return;
         }

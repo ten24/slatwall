@@ -87278,25 +87278,39 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.saveReportCollection = function (collectionName) {
-            console.log(_this.collectionConfig);
             if (collectionName || _this.collectionId) {
                 _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                 _this.selectedPeriodColumn.isPeriod = true;
                 _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
                 var serializedJSONData = {
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
-                    'collectionName': collectionName,
                     'collectionObject': _this.collectionConfig.baseEntityName,
                     'accountOwner': {
                         'accountID': _this.$rootScope.slatwall.account.accountID
                     },
                     'reportFlag': 1
                 };
+                if (collectionName) {
+                    serializedJSONData['collectionName'] = collectionName;
+                }
                 _this.$hibachi.saveEntity('Collection', _this.collectionId || "", {
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
                 }, 'save').then(function (data) {
-                    window.location.reload();
+                    console.log(data);
+                    if (_this.collectionId) {
+                        window.location.reload();
+                    }
+                    else {
+                        var url = window.location.href;
+                        if (url.indexOf('?') > -1) {
+                            url += '&collectionID=' + data.data.collectionID;
+                        }
+                        else {
+                            url += '?collectionID=' + data.data.collectionID;
+                        }
+                        window.location.href = url;
+                    }
                 });
                 return;
             }
@@ -87599,12 +87613,13 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
-        console.log(this.collectionId);
-        var selectedReport = {
-            collectionID: this.collectionId,
-            collectionConfig: angular.fromJson(this.collectionConfig.collectionConfigString)
-        };
-        this.selectReport(selectedReport);
+        if (this.collectionId) {
+            var selectedReport = {
+                collectionID: this.collectionId,
+                collectionConfig: angular.fromJson(this.collectionConfig.collectionConfigString)
+            };
+            this.selectReport(selectedReport);
+        }
         this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
         this.filterPropertiesList = {};
         this.getPeriodColumns();

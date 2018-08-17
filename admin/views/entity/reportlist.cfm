@@ -53,6 +53,7 @@ Notes:
 
 <cfif structKeyExists(rc,'collectionID')>
     <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = $.slatwall.getService('HibachiCollectionService').getCollection(rc.collectionID)/>
+    <cfset rc.pageTitle &= ' - #rc['#rc.entityActionDetails.itemEntityName#CollectionList'].getCollectionName()#'/>
 <cfelse>
     <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = $.slatwall.getService('HibachiCollectionService').getCollectionReportList('#rc.entityActionDetails.itemEntityName#')/>
     <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setReportFlag(1)/>
