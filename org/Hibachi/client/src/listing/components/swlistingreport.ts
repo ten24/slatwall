@@ -28,6 +28,8 @@ class SWListingReportController {
     public objectPath:string[]=[];
     public selectedPeriodPropertyIdentifierArray:string[]=[];
     public selectedPeriodPropertyIdentifier;
+    public collectionId:string;
+    
     
     //@ngInject
     constructor(
@@ -39,12 +41,19 @@ class SWListingReportController {
         public observerService,
         public collectionConfigService
     ) {
+        
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
+        console.log(this.collectionId);
+        var selectedReport = {
+            collectionID:this.collectionId,
+            collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
+        };
+        this.selectReport(selectedReport);
         this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         this.filterPropertiesList = {};
         
-        this.getPeriodColumns()
-        this.getPersistedReports();
+        this.getPeriodColumns();
+        
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
     }
     
@@ -59,7 +68,8 @@ class SWListingReportController {
     }
     
     public saveReportCollection = (collectionName?)=>{
-        if(collectionName){
+        console.log(this.collectionConfig);
+        if(collectionName || this.collectionId){
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.selectedPeriodColumn.isPeriod = true;
             this.collectionConfig.columns.push(this.selectedPeriodColumn);
@@ -75,22 +85,14 @@ class SWListingReportController {
             
             this.$hibachi.saveEntity(
                 'Collection',
-                this.selectedCollectionID || "",
+                this.collectionId || "",
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
                 },
                 'save'
             ).then((data)=>{
-                this.getPersistedReports();
-                this.selectedReport = {
-                    collectionID:data.data.collectionID,
-                    collectionObject:data.data.collectionObject,
-                    collectionName:data.data.collectionName,
-                    collectionConfig:data.data.collectionConfig
-                };
-                this.selectedCollectionID = data.data.collectionID;
-                this.collectionNameSaveIsOpen = false;
+                window.location.reload();
             });
             return;
         }
@@ -428,18 +430,7 @@ class SWListingReportController {
         }
     }
 
-    public getPersistedReports = ()=>{
-        var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
-        persistedReportsCollectionList.addFilter('reportFlag',1);
-        persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
-        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
-        persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
-        persistedReportsCollectionList.setAllRecords(true);
-        persistedReportsCollectionList.getEntity().then((data)=>{
-            this.persistedReportCollections = data.records;
-        });
-    }
+    
 }
 
 class SWListingReport  implements ng.IDirective{
@@ -449,6 +440,7 @@ class SWListingReport  implements ng.IDirective{
     public scope = {};
     public bindToController =  {
         collectionConfig:"=?",
+        collectionId:"=?",
         tableId:"@?"
     };
     public controller = SWListingReportController;

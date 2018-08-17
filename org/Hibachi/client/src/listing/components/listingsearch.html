@@ -29,10 +29,25 @@
         <hr >
     </div>
     <!-- REPORT COLLECTIONS -->
-    <span class="input-group-btn s-action"  ng-show="swListingSearch.swListingControls.showReport">
-        <a class="btn btn-sm btn-default s-action" aria-haspopup="true" aria-expanded="false" ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}">
+    <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn s-action"
+        ng-show="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        >
             <i class="fa fa-book"></i>
-        </a>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li>
+                    <a ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}" >New Report</a>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-menu-loader" ng-show="!swListingSearch.swListingDisplay.persistedReportCollections"><i class="fa fa-refresh fa-spin fa-fw"></i></li>
+            <li ng-repeat="persistedReport in swListingSearch.swListingDisplay.persistedReportCollections">
+                <a ng-bind="persistedReport.collectionName" ng-click="swListingSearch.swListingDisplay.selectPersistedReport(persistedReport)"
+                    ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
+                ></a>
+            </li>
+        </ul>
     </span>
 
     <!-- PERSONAL COLLECTIONS -->

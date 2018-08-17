@@ -103,7 +103,7 @@
 				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#JSON#);
 			"></span>
 			
-			<cfif !attributes.collectionList.getNewFlag()>
+			<cfif !attributes.collectionList.getNewFlag() && !structKeyExists(attributes.collectionList.getCollectionConfigStruct(),'periodInterval') >
 				<span ng-controller="collections"
 					data-table-id="#scopeVariableID#"
 					data-collection-id="#attributes.collectionList.getCollectionID()#"
