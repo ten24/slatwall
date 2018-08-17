@@ -1117,7 +1117,7 @@
 
 	</cfscript>
 
-	<cffunction name="logException" returntype="void" access="public">
+	<cffunction name="logException" returntype="void" access="public"  output="false">
 		<cfargument name="exception" required="true" />
 
 		<!--- All logic in this method is inside of a cftry so that it doesnt cause an exception --->
@@ -1142,7 +1142,7 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="logMessage" returntype="void" access="public">
+	<cffunction name="logMessage" returntype="void" access="public"  output="false">
 		<cfargument name="message" default="" />
 		<cfargument name="messageType" default="" />
 		<cfargument name="messageCode" default="" />
@@ -1456,13 +1456,13 @@
 	    <cfreturn LOCAL.Buffer.ToString() />
 	</cffunction>
 
-	<cffunction name="getCurrentUtcTime" returntype="Numeric" >
+	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
 
-    <cffunction name="convertBase64GIFToBase64PDF">
+    <cffunction name="convertBase64GIFToBase64PDF" output="false">
     	<cfargument name="base64GIF" />
     	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")>
     	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
@@ -1612,7 +1612,7 @@
 	    <cfreturn "" />
 	</cffunction>
 
-	<cffunction name="formatS3Path" returntype="string">
+	<cffunction name="formatS3Path" returntype="string" output="false">
 		<cfargument name="filePath" required="true" type="string" />
 		<cfif find('@', arguments.filePath)>
 			<cfreturn arguments.filePath />
@@ -1622,13 +1622,13 @@
 
 	</cffunction>
 
-	<cffunction name="isS3Path" returntype="boolean">
+	<cffunction name="isS3Path" returntype="boolean" output="false">
 		<cfargument name="filePath" required="true" type="string" />
 		<cfreturn left(arguments.filePath, 5) EQ 's3://' />
 	</cffunction>
 
 
-	<cffunction name="hibachiExpandPath" returntype="string">
+	<cffunction name="hibachiExpandPath" returntype="string" output="false">
 		<cfargument name="filePath" required="true" type="string" />
 		<cfif isS3Path(arguments.filePath) >
 			<cfreturn formatS3Path(arguments.filePath) />
@@ -1637,7 +1637,7 @@
 		</cfif>
 	</cffunction>
 	<!---check if this is a 32 character id string--->
-	<cffunction name="isHibachiUUID" returntype="boolean">
+	<cffunction name="isHibachiUUID" returntype="boolean" output="false">
 		<cfargument name="idString" type="any">
 		
 		<cfif !isValid("string",arguments.idString)>
