@@ -20,8 +20,7 @@
 	'expiringSubscriptions',
     'deferredRevenue',
 	'deferredTax',
-	'deferredTotal',
-	''
+	'deferredTotal'
 ]/>
 <cfloop from=1 to="#arraylen(headerRowItems)#" index="i">
     <cfset data[i] = {}/>
