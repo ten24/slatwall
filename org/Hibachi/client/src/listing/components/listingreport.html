@@ -5,15 +5,7 @@
         <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
         <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
     </div>
-	<div class="" style="vertical-align:top; margin-bottom:5px;">
-		<select 
-		    ng-model="swListingReport.selectedReport"
-			ng-options="report as report.collectionName for report in swListingReport.persistedReportCollections track by report.collectionID"
-			ng-change="swListingReport.selectReport(swListingReport.selectedReport)"
-        >
-		</select>
-		
-	</div>
+	
 	<div class="input-group">
 	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
             <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"

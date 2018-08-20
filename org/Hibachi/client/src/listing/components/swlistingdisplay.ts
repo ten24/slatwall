@@ -104,6 +104,7 @@ class SWListingDisplayController{
     public name;
     public usingPersonalCollection:boolean;
     public personalCollectionIdentifier:string;
+    public persistedReportCollections:any;
     //@ngInject
     constructor(
         public $scope,
@@ -129,7 +130,6 @@ class SWListingDisplayController{
             this.usingPersonalCollection=false;
         }
         
-        
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
         }
@@ -137,6 +137,8 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showFilters)){
            this.showFilters = true;
         }
+        
+        
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
@@ -149,6 +151,7 @@ class SWListingDisplayController{
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            
             this.$timeout(()=>{
                 this.collection = this.collectionConfig;
                 this.columns = this.collectionConfig.columns;
@@ -660,6 +663,20 @@ class SWListingDisplayController{
     public selectAll=()=>{
         this.selectionService.selectAll(this.tableID);
     };
+    
+    public getPersistedReports = ()=>{
+        var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
+        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
+        persistedReportsCollectionList.addFilter('reportFlag',1);
+        persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
+        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
+        persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
+        persistedReportsCollectionList.setAllRecords(true);
+        persistedReportsCollectionList.getEntity().then((data)=>{
+            
+            this.persistedReportCollections = data.records;
+        });
+    }
 }
 
 class SWListingDisplay implements ng.IDirective{
