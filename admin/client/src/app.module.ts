@@ -8,9 +8,11 @@ import {slatwalladminmodule} from './slatwall/slatwalladmin.module';
 
 import {CoreModule,coremodule}  from  "../../../org/Hibachi/client/src/core/core.module";
 import {LoggerModule} from "../../../org/Hibachi/client/src/logger/logger.module";
-import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider } from "./ajs-upgraded-providers";  
+import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider,modalProvider } from "./ajs-upgraded-providers";  
 import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
 import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.provider";
+import {SWWorkflowTrigger} from "../../../org/Hibachi/client/src/workflow/components/swworkflowtrigger";
+import {SWConfirm} from "../../../org/Hibachi/client/src/core/components/swconfirm";
 
 
 @NgModule({
@@ -28,7 +30,8 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
     windowProvider,
     rootScopeProvider,
     locationProvider,
-    anchorScrollProvider
+    anchorScrollProvider,
+    modalProvider
   ],
   imports: [
     HttpClientModule,
@@ -39,10 +42,13 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
     SlatwallAdminModule
   ],
   declarations:[
-      HeroDetailComponent
+      HeroDetailComponent,
+      SWWorkflowTrigger,
+      SWConfirm
   ],
   entryComponents: [
-    HeroDetailComponent
+    HeroDetailComponent,
+    SWWorkflowTrigger
   ]
 })
 export class AppModule { 

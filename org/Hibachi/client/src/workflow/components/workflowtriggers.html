@@ -4,13 +4,12 @@
 
 
 	<div class="list-unstyled s-order-item-options" >
-		<span
-			sw-workflow-trigger
+		<sw-workflow-trigger 
+            [workflowtrigger] = "workflowTrigger"
+            [workflowtriggers] = "workflowTriggers"
 			data-ng-if="workflowTrigger.$$isPersisted()"
-			data-workflow-trigger="workflowTrigger"
-			data-workflow-triggers="workflowTriggers"
             data-ng-init="workflowTrigger.$$index = $index">
-		</span>
+		</sw-workflow-trigger>
 		<div class="clearfix"></div>
 	</div>
 </div>

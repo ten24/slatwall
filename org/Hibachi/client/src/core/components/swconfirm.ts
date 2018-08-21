@@ -1,5 +1,8 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
+import { Directive, ElementRef, Input ,HostListener} from "@angular/core";
+import { Inject } from "@angular/core";
 /**
  * <------------------------------------------------------------------------------------------------------------------------------------>
  *   This directive can be used to prompt the user with a confirmation dialog.
@@ -33,21 +36,76 @@
  *<------------------------------------------------------------------------------------------------------------------------------------->
  */
 
-class SWConfirm{
-    public static Factory(){
-        var directive = (
-            $log, $modal
-        ) => new SWConfirm(
-            $log, $modal
-        );
-        directive.$inject = [ '$log',  '$modal'];
-        return directive;
-    }
-    //@ngInject
-    constructor($log, $modal){
-        
+@Directive({
+    selector: "[sw-confirm]"
+})
 
-        var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText){
+
+export class SWConfirm{
+    private $log: any;
+    private $modal: any;
+
+    @Input() callback;
+    @Input() workflowtrigger;
+    @Input() userbkey;
+    @Input() simple;
+    @Input() yestext;
+    @Input() notext;
+    @Input() confirmtext;
+    @Input() messagetext;
+
+
+    //@ngInject
+    constructor(
+        @Inject('$log') $log: any,
+        @Inject('$modal') $modal: any,
+        private el: ElementRef
+    ) {
+        this.$log = $log;
+        this.$modal = $modal;
+    }
+
+    @HostListener('click',['$event'])
+    onClick(){
+        /* Grab the template and build the modal on click */
+        this.$log.debug("Modal is: ");
+        this.$log.debug(this.$modal);
+
+            console.log("elementref", this.el);
+            /* Default Values */    
+            var useRbKey = this.userbkey;
+            var simple = this.simple;
+            var yesText = this.yestext;
+            var noText = this.notext;
+            var confirmText = this.confirmtext;
+            var messageText = this.messagetext;
+            var templateString = this.buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText);
+            var ref =this;
+            var modalInstance = this.$modal.open({
+                template: templateString,
+                controller: 'confirmationController',
+                resolve: {
+                    callback: function () {
+                        return ref.callback;
+                    },
+                    workflowtrigger: function () {
+                        return ref.workflowtrigger;
+                    }
+                }
+            });
+
+            /**
+            * Handles the result - callback or dismissed
+            */
+            modalInstance.result.then((result)=> {
+                this.$log.debug("Result:" + result);
+                return true;
+            }, function () {
+                //There was an error
+            });
+    }
+
+    buildConfirmationModal = function (simple, useRbKey, confirmText, messageText, noText, yesText) {
 
         /* Keys */
         var confirmKey = "[confirm]";
@@ -63,104 +121,65 @@ class SWConfirm{
         var yesVal = "<yes>";
 
         /* Parse Tags */
-        var startTag:string = "\"'";
-        var endTag:string = "'\"";
-        var startParen:string = "'";
-        var endParen:string = "'";
-        var empty:string = "";
+        var startTag: string = "\"'";
+        var endTag: string = "'\"";
+        var startParen: string = "'";
+        var endParen: string = "'";
+        var empty: string = "";
 
         /* Modal String */
-        var parsedKeyString:string = "";
-        var finishedString:string = "";
+        var parsedKeyString: string = "";
+        var finishedString: string = "";
+
+       // console.log(callback);
 
         //Figure out which version of this tag we are using
 
         var templateString =
-                "<div>" +
-                    "<div class='modal-header'><a class='close' data-dismiss='modal' ng-click='cancel()'>×</a><h3 [confirm]><confirm></h3></div>" +
-                "<div class='modal-body' [message]>" + "<message>" + "</div>" +
-                    "<div class='modal-footer'>" +
-                    "<button class='btn btn-sm btn-default btn-inverse' ng-click='cancel()' [no]><no></button>" +
-                    "<button class='btn btn-sm btn-default btn-primary' ng-click='fireCallback(callback)' [yes]><yes></button></div></div></div>";
+            "<div>" +
+            "<div class='modal-header'><a class='close' data-dismiss='modal'  ng-click ='cancel()'>×</a><h3 [confirm]><confirm></h3></div>" +
+            "<div class='modal-body' [message]>" + "<message>" + "</div>" +
+            "<div class='modal-footer'>" +
+            "<button class='btn btn-sm btn-default btn-inverse'  ng-click ='cancel()' [no]><no></button>" +
+                "<button class='btn btn-sm btn-default btn-primary'  ng-click ='fireCallback()' [yes]><yes></button></div></div></div>";
 
 
 
         /* Use RbKeys or Not? */
-        if (useRbKey === "true"){
-            $log.debug("Using RbKey? " + useRbKey);
+        if (useRbKey === "true") {
+            this.$log.debug("Using RbKey? " + useRbKey);
             /* Then decorate the template with the keys. */
-            confirmText 			= swRbKey + startTag + confirmText + endTag;
-            messageText 		= swRbKey + startTag + messageText + endTag;
-            yesText 				= swRbKey + startTag + yesText + endTag;
-            noText 					= swRbKey + startTag + noText + endTag;
+            confirmText = swRbKey + startTag + confirmText + endTag;
+            messageText = swRbKey + startTag + messageText + endTag;
+            yesText = swRbKey + startTag + yesText + endTag;
+            noText = swRbKey + startTag + noText + endTag;
 
-            parsedKeyString 	= templateString.replace(confirmKey, confirmText)
-                                                                    .replace(messageText, messageText)
-                                                                    .replace(noKey, noText)
-                                                                    .replace(yesKey, yesText);
+            parsedKeyString = templateString.replace(confirmKey, confirmText)
+                .replace(messageText, messageText)
+                .replace(noKey, noText)
+                .replace(yesKey, yesText);
 
-            $log.debug(finishedString);
-            finishedString	 = parsedKeyString.replace(confirmKey, empty)
-                                                                    .replace(messageVal, empty)
-                                                                    .replace(noVal, empty)
-                                                                    .replace(yesVal, empty);
-            $log.debug(finishedString);
+            this.$log.debug(finishedString);
+            finishedString = parsedKeyString.replace(confirmKey, empty)
+                .replace(messageVal, empty)
+                .replace(noVal, empty)
+                .replace(yesVal, empty);
+            this.$log.debug(finishedString);
             return finishedString;
-        }else{
+        } else {
             /* Then decorate the template without the keys. */
-            $log.debug("Using RbKey? " + useRbKey);
-            parsedKeyString  = templateString.replace(confirmVal, confirmText)
-                                                                    .replace(messageVal, messageText)
-                                                                    .replace(noVal, noText)
-                                                                    .replace(yesVal, yesText)
-            finishedString	= parsedKeyString.replace(confirmKey, empty)
-                                                                    .replace(messageKey, empty)
-                                                                    .replace(noKey, empty)
-                                                                    .replace(yesKey, empty);
-            $log.debug(finishedString);
+            this.$log.debug("Using RbKey? " + useRbKey);
+            parsedKeyString = templateString.replace(confirmVal, confirmText)
+                .replace(messageVal, messageText)
+                .replace(noVal, noText)
+                .replace(yesVal, yesText)
+            finishedString = parsedKeyString.replace(confirmKey, empty)
+                .replace(messageKey, empty)
+                .replace(noKey, empty)
+                .replace(yesKey, empty);
+            this.$log.debug(finishedString);
             return finishedString;
         }
     };
-    return {
-            restrict: 'EA',
-            scope: {
-                    callback:"&",
-                    entity:"="
-                },
-        link: function (scope, element, attr) {
-            /* Grab the template and build the modal on click */
-            $log.debug("Modal is: ");
-            $log.debug($modal);
-            element.bind('click', function() {
-                    /* Default Values */
-                    var useRbKey = attr.useRbKey   						|| "false";
-                    var simple = attr.simple									||  false;
-                    var yesText = attr.yesText									|| "define.yes";
-                    var noText  = attr.noText  								|| "define.no";
-                var confirmText = attr.confirmText 					|| "define.delete";
-                var messageText = attr.messageText				|| "define.delete_message";
-                var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText);
 
-                var modalInstance = $modal.open({
-                    template: templateString,
-                    controller: 'confirmationController',
-                    scope: scope
-                });
-
-                /**
-                    * Handles the result - callback or dismissed
-                    */
-                modalInstance.result.then(function(result) {
-                    $log.debug("Result:" + result);
-                        return true;
-                }, function() {
-                    //There was an error
-                });
-            });//<--end bind
-        }
-    };
-    }
-}
-export{
-    SWConfirm
 }

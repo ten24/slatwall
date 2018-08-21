@@ -95,7 +95,7 @@ import { DialogModule } from '../dialog/dialog.module';
 
 import { NgModule, Inject, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UpgradeModule, downgradeInjectable } from '@angular/upgrade/static';
+import { UpgradeModule, downgradeInjectable, downgradeComponent } from '@angular/upgrade/static';
 
 
 import { BaseObject } from "./model/baseobject";
@@ -341,7 +341,7 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swActionCaller', SWActionCaller.Factory())
     .directive('swActionCallerDropdown', SWActionCallerDropdown.Factory())
     .directive('swColumnSorter', SWColumnSorter.Factory())
-    .directive('swConfirm', SWConfirm.Factory())
+    .directive('swConfirm',  downgradeComponent({ component: SWConfirm }) as angular.IDirectiveFactory)
     .directive('swEntityActionBar', SWEntityActionBar.Factory())
     .directive('swEntityActionBarButtonGroup', SWEntityActionBarButtonGroup.Factory())
     .directive('swExpandableRecord', SWExpandableRecord.Factory())

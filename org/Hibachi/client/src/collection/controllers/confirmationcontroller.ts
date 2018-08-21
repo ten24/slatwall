@@ -2,15 +2,15 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class ConfirmationController{
   //@ngInject
-  constructor($scope,$log,$modalInstance){
+  constructor($scope,$log,$modalInstance,callback,workflowtrigger){
       $scope.deleteEntity = function (entity) {
       $log.debug("Deleting an entity.");
       $log.debug($scope.entity);
       this.close();
     };
 
-    $scope.fireCallback = function (callbackFunction:Function) {
-      callbackFunction();
+    $scope.fireCallback = function () {
+      callback(workflowtrigger,workflowtrigger.$$index);
       this.close();
     }
     /**

@@ -23,7 +23,7 @@ import {SWSchedulePreview} from "./components/swschedulepreview";
 //modules
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+import {UpgradeModule, downgradeInjectable, downgradeComponent} from '@angular/upgrade/static';
 
 
 @NgModule({
@@ -62,7 +62,7 @@ var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).c
 .directive('swWorkflowTask',SWWorkflowTask.Factory())
 .directive('swWorkflowTaskActions',SWWorkflowTaskActions.Factory())
 .directive('swWorkflowTasks',SWWorkflowTasks.Factory())
-.directive('swWorkflowTrigger',SWWorkflowTrigger.Factory())
+.directive('swWorkflowTrigger', downgradeComponent({ component: SWWorkflowTrigger }) as angular.IDirectiveFactory)
 .directive('swWorkflowTriggers',SWWorkflowTriggers.Factory())
 .directive('swWorkflowTriggerHistory',SWWorkflowTriggerHistory.Factory())
 .directive('swSchedulePreview',SWSchedulePreview.Factory())

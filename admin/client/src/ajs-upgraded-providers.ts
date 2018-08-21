@@ -56,6 +56,10 @@ export function anchorScrollFactory(i:any) {
     return i.get('$anchorScroll');
 }
 
+export function modalFactory(i:any) {
+    return i.get('$modal');
+}
+
 
 // define angular factory provider 
 export const parseProvider = {
@@ -121,5 +125,11 @@ export const locationProvider = {
 export const anchorScrollProvider = {
     provide    : "$anchorScroll",
     useFactory : anchorScrollFactory,
+    deps       : ["$injector"]    
+};
+
+export const modalProvider = {
+    provide    : '$modal',
+    useFactory : modalFactory,
     deps       : ["$injector"]    
 };
