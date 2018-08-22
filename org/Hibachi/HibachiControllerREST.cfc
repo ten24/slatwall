@@ -825,7 +825,9 @@ component output="false" accessors="true" extends="HibachiController" {
 	            if(structKeyExists(entity.getErrors(),'processObjects')){
 	                for(var error in entity.getErrors()['processObjects']){
 	                    var processObject = entity.getProcessObject(error);
-	                    entity.addErrors(processObject.getErrors());
+	                    if(!isNull(processObject)){
+	                        entity.addErrors(processObject.getErrors());
+	                    }
 	                }
 	            }
 	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
