@@ -108,10 +108,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					sku=orderItem.getSku(),
 					location=getLocation()
 				);
-				if( 
-					orderItem.getSku().setting('skuTrackInventoryFlag') 
-					&& thisQuantity > stock.getQOH() 
-				) {
+				if( orderItem.getSku().setting('skuTrackInventoryFlag') 
+				&& thisQuantity > (stock.getQOH() + stock.getQuantity('MQATSBOM')) ){
 					return false;
 				}
 			}
@@ -130,10 +128,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
-		return (
-			!isNull(getorderfulfillment().getShippingIntegration())
-			&& getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')
-		);
+		if(!structKeyExists(variables,'useShippingIntegrationForTrackingNumber')){
+			return (
+				!isNull(getorderfulfillment().getShippingIntegration())
+				&& getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')
+			);
+		}
+		return variables.useShippingIntegrationForTrackingNumber;
 	}
 
 	public boolean function hasQuantityOnOneOrderDeliveryItem() {

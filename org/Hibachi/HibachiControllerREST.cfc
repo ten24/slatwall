@@ -822,6 +822,12 @@ component output="false" accessors="true" extends="HibachiController" {
 	        }
 
 	        if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
+	            if(structKeyExists(entity.getErrors(),'processObjects')){
+	                for(var error in entity.getErrors()['processObjects']){
+	                    var processObject = entity.getProcessObject(error);
+	                    entity.addErrors(processObject.getErrors());
+	                }
+	            }
 	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
