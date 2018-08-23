@@ -16,7 +16,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	public void function postLoad(){
 		if(
-			!this.getNewFlag() 
+			!setting("globalDisableRecordLevelPermissions") 
+			&& !this.getNewFlag() 
 			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
