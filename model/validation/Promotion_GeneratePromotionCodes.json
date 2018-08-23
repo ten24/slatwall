@@ -1,0 +1,5 @@
+{
+  "properties":{
+     "quantity": [{"contexts":"save","dataType":"numeric","minValue":1,"required": true}]
+  }
+}
