@@ -252,6 +252,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
+			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
