@@ -73,7 +73,6 @@
 /// <reference path="../src/sku/components/swskuthumbnail.ts" />
 /// <reference path="../src/sku/services/defaultskuservice.ts" />
 /// <reference path="../src/sku/services/skupriceservice.ts" />
-<<<<<<< HEAD
 /// <reference path="../src/productbundle/components/swproductbundlecollectionfilteritemtypeahead.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroup.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroups.ts" />
@@ -81,8 +80,6 @@
 /// <reference path="../src/productbundle/controllers/create-bundle-controller.ts" />
 /// <reference path="../src/productbundle/services/productbundleservice.ts" />
 /// <reference path="../src/slatwall/components/swcurrencyformatter.ts" />
-=======
->>>>>>> a90e8a8d452ca19d0871c9fa32a8fcf2c50b74da
 /// <reference path="../src/slatwall/filters/swcurrency.ts" />
 /// <reference path="../src/slatwall/components/swcurrencyformatter.ts" />
 /// <reference path="../src/slatwall/services/slatwallpathbuilder.ts" />
