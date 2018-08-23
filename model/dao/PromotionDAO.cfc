@@ -865,5 +865,21 @@ Notes:
 
 		<cfreturn noQualifierDiscountsQuery >
 	</cffunction>
-
+	
+	
+	<cffunction name="getRedeemedPromoCodes" returntype="any" access="public">
+			<cfargument name="promotionID" type="string">
+			
+			<cfquery name="getRedeemedPromotionCodes"> 
+				SELECT * 
+				FROM SwOrderPromotioncode opc
+				INNER JOIN SwOrder o on o.orderID = opc.orderID
+				INNER JOIN SwPromotionCode pc on pc.promotionCodeID = opc.promotionCodeID
+				INNER JOIN SwPromotion p on p.promotionID = pc.promotionID
+				INNER JOIN SwType t on t.typeID = o.orderStatusTypeID
+				WHERE t.systemCode != "ostNotPlaced" and p.promotionID = "#arguments.promotionID#"
+			</cfquery>
+			<cfreturn getRedeemedPromotionCodes>
+	</cffunction>
+	
 </cfcomponent>
