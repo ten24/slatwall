@@ -57,6 +57,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="estimatedShippingDate" ormtype="timestamp";
+	property name="pickupDate" ormtype="timestamp" hb_populateenabled="true";
 	property name="thirdPartyShippingAccountIdentifier" column="thirdPartyShipAccntIdentifier" ormtype="string";
 	property name="handlingFee" ormtype="big_decimal" hb_formatType="currency";
 	// Calculated Properties
