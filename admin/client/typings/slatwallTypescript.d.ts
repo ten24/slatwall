@@ -49,15 +49,12 @@
 /// <reference path="../src/product/components/swproductlistingpages.ts" />
 /// <reference path="../src/product/components/swrelatedproducts.ts" />
 /// <reference path="../src/product/controllers/preprocessproduct_create.ts" />
-<<<<<<< HEAD
-=======
 /// <reference path="../src/productbundle/controllers/create-bundle-controller.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlecollectionfilteritemtypeahead.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroup.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroups.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegrouptype.ts" />
 /// <reference path="../src/productbundle/services/productbundleservice.ts" />
->>>>>>> a90e8a8d452ca19d0871c9fa32a8fcf2c50b74da
 /// <reference path="../src/sku/components/swaddskupricemodallauncher.ts" />
 /// <reference path="../src/sku/components/swdefaultskuradio.ts" />
 /// <reference path="../src/sku/components/swdeleteskupricemodallauncher.ts" />
