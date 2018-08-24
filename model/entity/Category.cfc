@@ -272,11 +272,13 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	public void function preInsert(){
 		super.preInsert();
 		setCategoryIDPath( buildIDPathList( "parentCategory" ) );
+		setCategoryNamePath(createCategoryNamePath());
 	}
 	
 	public void function preUpdate(struct oldData){
 		super.preUpdate(argumentcollection=arguments);
 		setCategoryIDPath( buildIDPathList( "parentCategory" ) );
+		setCategoryNamePath(createCategoryNamePath());
 	}
 	
 	public any function getChildCategoriesSmartList(){

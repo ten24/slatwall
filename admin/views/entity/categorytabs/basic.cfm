@@ -14,6 +14,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="categoryName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="restrictAccessFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="allowProductAssignmentFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.category#" property="parentCategory" edit="#rc.edit#">
 			<cfif not rc.category.isNew()>
 				<hb:HibachiPropertyDisplay object="#rc.category#" property="categoryNamePath" edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.category#" property="urlTitle" edit="#rc.edit#">
