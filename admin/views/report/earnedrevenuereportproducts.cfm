@@ -43,7 +43,7 @@
     </cfloop>
     <cfloop array="#earnedDataRecordsForProducts#" index="dataRecord">
         <cfset productName = dataRecord['subscriptionOrderItem_orderItem_sku_product_productName']/>
-        <cfset index = DateDiff('m',rc.minDate,dataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'])+1/>
+        <cfset index = DateDiff('m',rc.minDate,dataRecord['createdDateTime'])+1/>
         <cfif structKeyExists(productsWithDeliveriesMap,productName)>
             <cfset productsWithDeliveriesMap[productName].subscriptionsEarning[index] = dataRecord['subscriptionUsageCount']/>
             <cfset productsWithDeliveriesMap[productName].earned[index] = dataRecord['earnedSUM']/>
@@ -54,7 +54,7 @@
     <cfloop array="#refundedDataRecordsForProducts#" index="dataRecord">
         <cfif structKeyExists(productsWithDeliveriesMap,productName)>
             <cfset productName = dataRecord['subscriptionOrderItem_orderItem_sku_product_productName']/>
-            <cfset index = DateDiff('m',rc.minDate,dataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'])+1/>
+            <cfset index = DateDiff('m',rc.minDate,dataRecord['createdDateTime'])+1/>
             <cfset productsWithDeliveriesMap[productName].refunded[index] = dataRecord['earnedSUM']/>
             <cfset productsWithDeliveriesMap[productName].refundedTaxAmount[index] = dataRecord['taxAmountSUM']/>
         </cfif>

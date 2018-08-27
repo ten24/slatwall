@@ -14,7 +14,7 @@
     
     <!---collection list for delivered items--->
     <cfset earnedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
-    <cfset earnedRevenueCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
+    <cfset earnedRevenueCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
@@ -28,7 +28,7 @@
     
     <!---Collection list for refunded items--->
     <cfset refundedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
-    <cfset refundedRevenueCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
+    <cfset refundedRevenueCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
     <cfset refundedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
     <cfset refundedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
     <cfset refundedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
@@ -87,14 +87,14 @@
     </cfloop>
     
     <cfloop array="#earnedDataRecords#" index="dataRecord">
-        <cfset index = DateDiff('m',rc.minDate,dataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'])+1/>
+        <cfset index = DateDiff('m',rc.minDate,dataRecord['createdDateTime'])+1/>
         <cfset subscriptionsEarning[index] = dataRecord['subscriptionUsageCount']/>
         <cfset earned[index] = dataRecord['earnedSUM']/>
         <cfset taxAmount[index] = dataRecord['taxAmountSUM']/>
     </cfloop>
     <!---subtract refunds--->
     <cfloop array="#refundedDataRecords#" index="dataRecord">
-        <cfset index = DateDiff('m',rc.minDate,dataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'])+1/>
+        <cfset index = DateDiff('m',rc.minDate,dataRecord['createdDateTime'])+1/>
         <cfset refunded[index] = dataRecord['earnedSUM']/>
         <cfset refundedTaxAmount[index] = dataRecord['taxAmountSUM']/>
     </cfloop>

@@ -95,7 +95,6 @@ class SWListingReportController {
                 },
                 'save'
             ).then((data)=>{
-                console.log(data);
                 if(this.collectionId){
                     window.location.reload();    
                 }else{
@@ -404,7 +403,6 @@ class SWListingReportController {
         //get meta data we need for existing columns
 
         var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias);
-        console.log(promise);
         promise.then((value)=> {
             
             this.metadataService.setPropertiesList(value, baseEntityAlias);
