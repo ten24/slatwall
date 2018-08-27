@@ -3,7 +3,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
-import { Component, Inject, Input } from "@angular/core";
+import { Component, Inject, Input} from "@angular/core";
 import {$Hibachi} from "../../core/services/hibachiservice";
 import {AlertService} from "../../alert/service/alertservice";
 import {MetaDataService} from "../../core/services/metadataservice";
@@ -20,6 +20,9 @@ import {UtilityService} from "../../core/services/utilityservice";
 export class  SWWorkflowTrigger {
 	@Input() workflowtrigger;
 	@Input() workflowtriggers;
+	private done;
+	private finished;
+	private executingTrigger;
 
 	constructor(
 		@Inject("$http") public $http:any,
@@ -28,14 +31,14 @@ export class  SWWorkflowTrigger {
 		private metadataService : MetaDataService,
 		private hibachiPathBuilder : HibachiPathBuilder,
 		private utilityService : UtilityService,
-	){
-	}
-	
-	selectWorkflowTrigger = function(workflowTrigger){ debugger;
+	){	
 		this.done = false;
 		this.finished = false;
+		this.executingTrigger = false;
+	}
+	
+	selectWorkflowTrigger = function(workflowTrigger){	
 		this.workflowtriggers.selectedTrigger = undefined;
-
 		var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(workflowTrigger.data.workflow.data.workflowObject, true);
 		filterPropertiesPromise.then((value)=>{
 			var filterPropertiesList = {
@@ -49,7 +52,8 @@ export class  SWWorkflowTrigger {
 		});
 	};
 	
-	executingTrigger = false;
+
+	
 	executeWorkflowTrigger = function(workflowTrigger){
 		if(this.executingTrigger) return;
 
@@ -62,14 +66,20 @@ export class  SWWorkflowTrigger {
 			return;
 		}
 		this.executingTrigger = true;
-		debugger;
 		var appConfig = this.$hibachi.getConfig();
 		var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=api:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID+'&x='+this.utilityService.createID();
-		this.$http.get(urlString).finally(()=>{
+		this.$http.get(urlString).success(()=>{
 			this.executingTrigger = false;
-			var alert = this.alertService.newAlert();
+			var alert = this.alertService.newAlert(); 
 			alert.msg =  "Task Triggered Successfully. Check History for Status";
 			alert.type = "success";
+			alert.fade = true;
+			this.alertService.addAlert(alert);
+		})
+		.error(()=>{
+			var alert = this.alertService.newAlert(); 
+			alert.msg =  "Something went wrong. Please Try Again";
+			alert.type = "error";
 			alert.fade = true;
 			this.alertService.addAlert(alert);
 		})
