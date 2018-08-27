@@ -1365,6 +1365,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return newPromotionPeriod;
 	}
+	
+	public any function processPromotion_generatePromotionCodes(required any promotion, required any processObject){
+		
+		if (!isNull(processObject.getQuantity())){
+			//Generate all strings in a single list.
+			var promoCodeList = getService("HibachiUtilityService").generateRandomStrings(total=processObject.getQuantity(), length=10);
+			var promoCodeArray = listToArray(promoCodeList);
+			
+			//should this be updated to use a query instead of objects?
+			for (var index = 1; index <= processObject.getQuantity(); index++){
+				var newPromoCode = getService("PromotionService").newPromotionCode();
+				newPromoCode.setPromotionCode(promoCodeArray[index]);
+				newPromoCode.setPromotion(promotion);
+				newPromoCode.setMaximumUseCount(processObject.getMaximumUseCount());
+				newPromoCode.setMaximumAccountUseCount(processObject.getMaximumUseCount());
+				getService("PromotionService").savePromotionCode(newPromoCode);
+			}
+		}
+		return promotion;
+	}
 
 	public any function processPromotionPeriod_endPromotionPeriod(required any promotionPeriod, required any processObject){
 
