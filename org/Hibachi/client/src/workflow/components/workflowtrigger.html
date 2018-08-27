@@ -5,8 +5,8 @@
 		</li>
 	</ul>
 	<ul class="list-unstyled list-inline s-middle">
-		<li *ngIf="workflowtrigger.data.triggerType === 'Event'" class="j-tool-tip-item s-bundle-details" [innerText]="workflowtrigger.data.triggerEventTitle"></li>
-		<li *ngIf="workflowtrigger.data.triggerType === 'Schedule'" class="j-tool-tip-item s-bundle-details" [innerText]="workflowtrigger.data.scheduleCollection.data.collectionName + ' - ' + workflowtrigger.data.schedule.data.scheduleName"></li>
+		<li *ngIf="workflowtrigger.data.triggerType === 'Event'" class="j-tool-tip-item s-bundle-details" [innerText]="workflowtrigger?.data?.triggerEventTitle"></li>
+		<li *ngIf="workflowtrigger.data.triggerType === 'Schedule'" class="j-tool-tip-item s-bundle-details" [innerText]="workflowtrigger?.data?.scheduleCollection?.data?.collectionName + ' - ' + workflowtrigger?.data?.schedule?.data?.scheduleName"></li>
 	</ul>
 	<ul class="list-unstyled list-inline s-last">
         <li class="col-xs-1 j-tool-tip-item s-bundle-details-add" *ngIf="workflowtrigger.data.triggerType === 'Schedule'" (click)="executeWorkflowTrigger(workflowtrigger);">
