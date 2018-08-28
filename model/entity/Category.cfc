@@ -265,6 +265,15 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 
 	// ================== START: Overridden Methods ========================
 	
+	public array function getParentCategoryOptions(){
+		if(!structKeyExists(variables, 'parentCategoryOptions')){
+			var parentCategoryOptions = super.getParentCategoryOptions();
+			arrayPrepend(parentCategoryOptions,{"value":"","name":"None"});
+			variables.parentCategoryOptions = parentCategoryOptions;
+		}
+		return variables.parentCategoryOptions;
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
