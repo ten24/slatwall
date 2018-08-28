@@ -416,7 +416,7 @@ class SWListingDisplayController{
         }
         //setup export action
         if(angular.isUndefined(this.exportAction)){
-            this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
+            this.exportAction = this.$hibachi.buildUrl('main.collectionConfigExport')+'&collectionExportID=';
         }
         //setup print action
         if(angular.isDefined(this.printAction)){
@@ -620,7 +620,7 @@ class SWListingDisplayController{
             } else {
                 //multiCollectionConfig logic
             }
-            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
+            $('body').append('<form action="'+ this.getExportAction() +'" method="post" id="formExport"></form>');
             $('#formExport')
                 .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
                 .submit()
