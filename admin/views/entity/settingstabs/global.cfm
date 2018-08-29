@@ -82,5 +82,6 @@ Notes:
         <swa:SlatwallSetting settingName="globalDisableRecordLevelPermissions" />
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
         <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
+        <swa:SlatwallSetting settingName="globalHibachiCacheName" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
