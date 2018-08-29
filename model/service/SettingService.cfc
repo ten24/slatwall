@@ -262,6 +262,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
 			globalURLKeyCategory = {fieldType="text",defaultValue="cat"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
