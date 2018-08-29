@@ -88,20 +88,27 @@
 						>
 	                    <sw:SwfErrorDisplay propertyIdentifier="creditCardNumber"/>
 					</div>
+					
 					<div class="form-group col-md-4">
 						<label for="expiry-date-month" class="form-label">Expiration Month</label>
-						<input type="text" name="newOrderPayment.expirationMonth" placeholder="MM" id="expiry-date-month" class="form-control"
-							ng-model="OrderPayment_addOrderPayment.expirationMonth" swvalidationrequired="true"
-						>
-	                    <sw:SwfErrorDisplay propertyIdentifier="expirationMonth"/>
-					</div>
+						<select name="newOrderPayment.expirationMonth" id="expiry-date-month" class="field small"
+							ng-model="OrderPayment_addOrderPayment.expirationMonth" swvalidationrequired="true">
+							<option value="" selected>Select a month</option>
+							<option ng-repeat="month in slatwall.months" ng-value="month.value">{{month.name}}</option>
+						</select>
+	    					<sw:SwfErrorDisplay propertyIdentifier="expirationMonth"/>
+    				</div>
+    								
 					<div class="form-group col-md-4">
 						<label for="expiry-date-year" class="form-label">Expiration Year</label>
-						<input type="text" name="newOrderPayment.expirationYear" placeholder="YYYY" id="expiry-date-year" class="form-control" 
-							ng-model="OrderPayment_addOrderPayment.expirationYear" swvalidationrequired="true"
-						>
-	                    <sw:SwfErrorDisplay propertyIdentifier="expirationYear"/>
+						<select name="newOrderPayment.expirationYear" id="expiry-date-year" class="field small"
+							ng-model="OrderPayment_addOrderPayment.expirationYear" swvalidationrequired="true">
+							<option value="" selected>Select a year</option>
+							<option ng-repeat="year in slatwall.years" ng-value="year.value">{{year.name}}</option>
+						</select>
+	    					<sw:SwfErrorDisplay propertyIdentifier="expirationYear"/>
 					</div>
+					
 					<div class="form-group col-md-4">
 						<label for="cvv" class="form-label">CVC/CVV</label>
 						<input type="text" name="newOrderPayment.securityCode" id="cvv" class="form-control" 
