@@ -86366,7 +86366,12 @@ var SWListingDisplayController = /** @class */ (function () {
             }
             //setup export action
             if (angular.isUndefined(_this.exportAction)) {
-                _this.exportAction = _this.$hibachi.buildUrl('main.collectionConfigExport') + '&collectionExportID=';
+                if (_this.collectionId) {
+                    _this.exportAction = _this.$hibachi.buildUrl('main.collectionExport') + '&collectionExportID=';
+                }
+                else {
+                    _this.exportAction = _this.$hibachi.buildUrl('main.collectionConfigExport');
+                }
             }
             //setup print action
             if (angular.isDefined(_this.printAction)) {
@@ -86507,7 +86512,8 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
         };
         this.getExportAction = function () {
-            return _this.exportAction + _this.collectionID;
+            var concatenateString = (_this.collectionId) ? _this.collectionID : '';
+            return _this.exportAction + concatenateString;
         };
         this.getPrintAction = function () {
             return _this.printAction + _this.collectionID;
@@ -86518,7 +86524,7 @@ var SWListingDisplayController = /** @class */ (function () {
         this.exportCurrentList = function (selection) {
             if (selection === void 0) { selection = false; }
             if (_this.collectionId) {
-                $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=main.collectionExport" method="post" id="formExport"></form>');
+                $('body').append('<form action="' + _this.getExportAction() + '" method="post" id="formExport"></form>');
                 $('#formExport')
                     .append("<input type='hidden' name='collectionExportID' value='" + _this.collectionId + "' />")
                     .submit()

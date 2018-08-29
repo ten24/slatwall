@@ -416,7 +416,11 @@ class SWListingDisplayController{
         }
         //setup export action
         if(angular.isUndefined(this.exportAction)){
-            this.exportAction = this.$hibachi.buildUrl('main.collectionConfigExport')+'&collectionExportID=';
+            if(this.collectionId){
+                this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
+            } else {
+                this.exportAction = this.$hibachi.buildUrl('main.collectionConfigExport');
+            }
         }
         //setup print action
         if(angular.isDefined(this.printAction)){
@@ -581,7 +585,8 @@ class SWListingDisplayController{
     };
 
     public getExportAction = ():string =>{
-        return this.exportAction + this.collectionID;
+        const concatenateString = (this.collectionId) ? this.collectionID : '';
+        return this.exportAction + concatenateString;
     };
 
     public getPrintAction = ():string =>{
@@ -594,7 +599,7 @@ class SWListingDisplayController{
 
     public exportCurrentList =(selection:boolean=false)=>{
         if(this.collectionId){
-            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionExport" method="post" id="formExport"></form>');
+            $('body').append('<form action="'+ this.getExportAction() +'" method="post" id="formExport"></form>');
             $('#formExport')
                 .append("<input type='hidden' name='collectionExportID' value='" + this.collectionId + "' />")
                 .submit()
