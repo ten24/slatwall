@@ -5,7 +5,7 @@
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#"/>
 	<!--- figure out if we are in the CMS context based on content --->
 	<cfif (!structKeyExists(server,'lucee') && !structKeyExists(server,'railo'))
-		|| (structKeyExists(server,'lucee') && structKeyExists(getPageContext().getConfig().getCacheConnections(),'slatwall'))
+		|| (structKeyExists(server,'lucee') && structKeyExists(getPageContext().getConfig().getCacheConnections(),'#attributes.hibachiScope.setting('globalHibachiCacheName')#'))
 	>
 		<cfif !isNull(attributes.hibachiScope.getContent())>
 			<cfset attributes.cacheKey &= attributes.hibachiScope.getContent().getContentCacheKey()/>
@@ -22,7 +22,7 @@
 			<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
 			<!---lucee cache must be explicit--->
 			<cfif structKeyExists(server,'lucee')>
-				<cfcache action="flush" expireURL="#expireUrl#" cachename="slatwall">
+				<cfcache action="flush" expireURL="#expireUrl#" cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#">
 				<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#" cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#">
 			<cfelse>
 				<cfcache action="flush" expireURL="#expireUrl#">
@@ -48,7 +48,7 @@
 	</cfsavecontent>
 	<cfif (
 			(!structKeyExists(server,'lucee') && !structKeyExists(server,'railo'))
-			|| (structKeyExists(server,'lucee') && structKeyExists(getPageContext().getConfig().getCacheConnections(),'slatwall'))
+			|| (structKeyExists(server,'lucee') && structKeyExists(getPageContext().getConfig().getCacheConnections(),'#attributes.hibachiScope.setting('globalHibachiCacheName')#'))
 		)
 		&& attributes.timespan neq 0>
 		<cfif structKeyExists(server,'lucee')>
