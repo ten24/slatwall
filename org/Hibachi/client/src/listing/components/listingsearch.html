@@ -14,11 +14,11 @@
     </div>
     <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
-                data-ng-model="swListingSearch.searchText"
+                data-ng-model="swListingSearch.swListingDisplay.searchText"
                 data-ng-model-options='{ debounce: 500 }'
                 data-ng-change="swListingSearch.search()">
         <button class="btn btn-xs btn-default s-add-search-param"
-                data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.searchText"
+                data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.swListingDisplay.searchText"
                 data-ng-disabled="!swListingSearch.selectedSearchColumn"
                 data-ng-click="swListingSearch.addSearchFilter()">
                 <i class="glyphicon glyphicon-plus"></i>

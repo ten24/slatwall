@@ -225,6 +225,10 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
+        
+        if(this.collectionConfig.keywords && this.collectionConfig.keywords.length){
+            this.searchText = this.collectionConfig.keywords;
+        }
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
