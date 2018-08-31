@@ -144,7 +144,7 @@ Notes:
 					END as returnPreDiscount,
 					( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID ) as itemDiscount,
 					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' ) as taxAmountSales,
-					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' ) as taxAmountReturn
+					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' ) as taxAmountReturn,
 					#getReportDateTimeSelect()#
 				FROM
 					SwTaxApplied
