@@ -74,11 +74,14 @@ Notes:
 		
 		<cfset var rs = "" />
 		
+		<cfset var comparisonName =""/>
 		<cfset var comparisonValue =""/>
 		<cfif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfset comparisonValue = "LOWER(settingName)"/>
+			<cfset comparisonName = "LOWER(settingName)"/>
+			cfset comparisonValue = "LOWER(settingValue)"/>
 		<cfelse>
-			<cfset comparisonValue = "settingName"/>
+			<cfset comparisonName = "settingName"/>
+			<cfset comparisonValue = "settingValue"/>
 		</cfif>
 		
 		<cfquery name="rs" maxrows="1">
@@ -87,7 +90,7 @@ Notes:
 			FROM
 				SwSetting
 			WHERE
-			  	#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#">
+			  	#comparaisonName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#">
 		  		<cfif structKeyExists(arguments, "settingValue")>
 			  	  		AND
 			  		#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingValue)#">  
