@@ -1171,7 +1171,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		for(var column in columns){
 			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
 				if (arguments.getTitleFlag){
-					headersList = listAppend(headersList, column.title);
+					if ( structKeyExists(column, 'displayTitle') ){
+						headersList = listAppend(headersList, column.displayTitle);
+					} else {
+						headersList = listAppend(headersList, column.title);
+					}
 				}else {
 					headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
 				}
