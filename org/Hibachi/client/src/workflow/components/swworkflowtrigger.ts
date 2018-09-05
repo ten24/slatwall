@@ -37,7 +37,7 @@ export class  SWWorkflowTrigger {
 		this.executingTrigger = false;
 	}
 	
-	selectWorkflowTrigger = function(workflowTrigger){	
+	selectWorkflowTrigger(workflowTrigger){	
 		this.workflowtriggers.selectedTrigger = undefined;
 		var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(workflowTrigger.data.workflow.data.workflowObject, true);
 		filterPropertiesPromise.then((value)=>{
@@ -54,7 +54,7 @@ export class  SWWorkflowTrigger {
 	
 
 	
-	executeWorkflowTrigger = function(workflowTrigger){
+	executeWorkflowTrigger(workflowTrigger){
 		if(this.executingTrigger) return;
 
 		if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
