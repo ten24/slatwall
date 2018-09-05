@@ -60,7 +60,7 @@ class SWProductDeliveryScheduleDatesController {
     public addDate=(newDeliverScheduleDate)=>{
         if(newDeliverScheduleDate.deliveryScheduleDateValue){
             var deliverScheduleDate = angular.copy(newDeliverScheduleDate);
-            deliverScheduleDate.deliveryScheduleDateValue = deliverScheduleDate.deliveryScheduleDateValue.toString().slice(0,24)
+            deliverScheduleDate.deliveryScheduleDateValue = deliverScheduleDate.deliveryScheduleDateValue.toString().slice(4,24)
             this.deliverScheduleDates.push(deliverScheduleDate);
             this.sortDeliveryScheduleDates();    
         }
