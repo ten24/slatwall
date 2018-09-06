@@ -113,7 +113,7 @@ Notes:
 		isDeletable=false
 	})/>
 	
-	<cfset rc.orderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostClosed')/>
+	<cfset rc.orderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostNotPlaced','!=')/>
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderItemCollectionlist#"
 		usingPersonalCollection="true"
