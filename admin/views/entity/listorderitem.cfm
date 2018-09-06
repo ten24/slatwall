@@ -68,6 +68,7 @@ Notes:
 	</cfloop>
 
 	<cfset rc.orderItemSmartList.addFilter('order.orderStatusType.typeName', local.defaultStatusFilter) />
+	
 </cfif>
 
 <cfoutput>
@@ -86,29 +87,38 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
 		<hb:HibachiListingColumn propertyIdentifier="extendedPrice" />
 	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display 
-		data-using-personal-collection="true"
-		data-personal-collection-identifier="OrderItem"
-		data-collection="'OrderItem'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editorderitem"
-		record-detail-action="admin:entity.detailorderitem"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset displayPropertyList = ""/>
+	<cfset displayPropertyList &= 'order.account.firstName,order.account.lastName,order.orderNumber,order.orderOpenDateTime,sku.product.calculatedTitle,price,quantity,calculatedExtendedPrice,'/>
+	<cfset rc.orderItemCollectionlist.setDisplayProperties(
+		displayPropertyList,
+		{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}
+	)/>
+	<cfset rc.orderItemCollectionlist.addDisplayProperty(
+		displayProperty='order.orderStatusType.typeName',
+		title="#$.slatwall.rbkey('entity.order.orderStatusType')#",
+		columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset rc.orderItemCollectionlist.addDisplayProperty(displayProperty='orderItemID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<cfset rc.orderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostClosed')/>
+	<hb:HibachiListingDisplay 
+		collectionList="#rc.orderItemCollectionlist#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(rc.orderItemCollectionlist.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(rc.orderItemCollectionlist.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="orderItemID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.account.firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.account.lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderStatusType.typeName" title="#$.slatwall.rbKey('entity.order.orderStatusType')#" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderOpenDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="sku.product.calculatedTitle" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="price" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="extendedPrice" ></sw-listing-column>
-	</sw-listing-display>
-
+	</hb:HibachiListingDisplay>
 </cfoutput>
