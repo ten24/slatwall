@@ -23,7 +23,7 @@ export class ListingService{
 
     //@ngInject
     constructor(@Inject("$timeout") private $timeout : any,
-                @Inject("$timeout") private $q :any,
+                @Inject("$q") private $q :any,
                 private collectionConfigService : CollectionConfig,
                 private filterService : FilterService,
                 private historyService : HistoryService,
