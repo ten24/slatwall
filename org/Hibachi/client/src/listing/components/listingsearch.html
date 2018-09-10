@@ -8,17 +8,17 @@
             <li><a href data-ng-click="swListingSearch.selectSearchColumn({'title':'All'})">All</a></li>
             <li data-ng-repeat="column in swListingSearch.searchableOptions | orderBy:'title'"
                 data-ng-if="column.isSearchable && column.title.length && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
-                <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.title"></a>
+                <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.displayTitle ? column.displayTitle : column.title"></a>
             </li>
         </ul>
     </div>
     <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
-                data-ng-model="swListingSearch.searchText"
+                data-ng-model="swListingSearch.swListingDisplay.searchText"
                 data-ng-model-options='{ debounce: 500 }'
                 data-ng-change="swListingSearch.search()">
         <button class="btn btn-xs btn-default s-add-search-param"
-                data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.searchText"
+                data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.swListingDisplay.searchText"
                 data-ng-disabled="!swListingSearch.selectedSearchColumn"
                 data-ng-click="swListingSearch.addSearchFilter()">
                 <i class="glyphicon glyphicon-plus"></i>
@@ -29,10 +29,25 @@
         <hr >
     </div>
     <!-- REPORT COLLECTIONS -->
-    <span class="input-group-btn s-action"  ng-show="swListingSearch.swListingControls.showReport">
-        <a class="btn btn-sm btn-default s-action" aria-haspopup="true" aria-expanded="false" ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}">
+    <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn s-action"
+        ng-show="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        >
             <i class="fa fa-book"></i>
-        </a>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li>
+                    <a ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}" >New Report</a>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-menu-loader" ng-show="!swListingSearch.swListingDisplay.persistedReportCollections"><i class="fa fa-refresh fa-spin fa-fw"></i></li>
+            <li ng-repeat="persistedReport in swListingSearch.swListingDisplay.persistedReportCollections">
+                <a ng-bind="persistedReport.collectionName" ng-click="swListingSearch.swListingDisplay.selectPersistedReport(persistedReport)"
+                    ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
+                ></a>
+            </li>
+        </ul>
     </span>
 
     <!-- PERSONAL COLLECTIONS -->

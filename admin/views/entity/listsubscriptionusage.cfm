@@ -53,46 +53,158 @@ Notes:
 <cfparam name="rc.subscriptionUsageSmartList" type="any" />
 
 <cfoutput>
-<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false" />
-
-<!--- <hb:HibachiListingDisplay smartList="#rc.subscriptionUsageSmartList#"
-						   recordDetailAction="admin:entity.detailsubscriptionUsage"
-						   recordEditAction="admin:entity.editsubscriptionUsage">
-
-	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
-	<hb:HibachiListingColumn propertyIdentifier="account.company" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionOrderItemName" />
-	<hb:HibachiListingColumn propertyIdentifier="currentStatusType" />
-	<hb:HibachiListingColumn propertyIdentifier="nextBillDate" />
-	<hb:HibachiListingColumn propertyIdentifier="expirationDate" />
-	<hb:HibachiListingColumn propertyIdentifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" />
-	<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
-	<hb:HibachiListingColumn propertyIdentifier="autoPayFlag" />
-
-</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'SubscriptionUsage'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editsubscriptionUsage"
-			data-record-detail-action="admin:entity.detailsubscriptionUsage"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="subscriptionUsageID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.company" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="subscriptionOrderItemName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="currentStatusType" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="nextBillDate" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="expirationDate" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="renewalPrice" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="autoPayFlag" ></sw-listing-column>
-	</sw-listing-display>
+	<!---TODO:subscriptionOrderItemName--->
+	<cfset displayPropertyList = "account.firstName,account.lastName,account.company,calculatedCurrentStatus.subscriptionStatusType.typeName,nextBillDate,expirationDate,gracePeriodTerm.termName,renewalPrice,autoPayFlag"/>
+	<cfset rc.subscriptionUsageCollectionList.setDisplayProperties(
+		displayPropertyList,
+		{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}
+	)/>
+	<cfset rc.subscriptionUsageCollectionList.addDisplayProperty(displayProperty='subscriptionUsageID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	<!---check for report year and month to filter--->
+	<cfif structKeyExists(rc,'reportYear') AND structKeyExists(rc,'reportMonth')>
+	    <cfset rc.subscriptionUsageCollectionList.addDisplayProperty(
+    		displayProperty='deferredRevenue',
+    		columnConfig={
+    			isVisible=true,
+    			isSearchable=true,
+    			isDeletable=true,
+    			persistent=false
+    		}
+    	)/>
+	    
+		<cfset months=[	
+				"January",
+				"February",
+				"March",
+				"April",
+				"May",
+				"June",
+				"July",
+				"August",
+				"September",
+				"October",
+				"November",
+				"December"
+			]
+		/>
+		<cfset currentMonth = months[rc.reportMonth]/>
+		
+		<cfset filterDateMax = CreateDateTime(
+			INT(rc.reportYear),
+			INT(rc.reportMonth),
+			INT(daysInMonth(createDateTime(rc.reportYear,rc.reportMonth,1,1,1,1))),
+			23,59,59
+		)/>
+		<cfset filterDate = CreateDateTime(INT(rc.reportYear),rc.reportMonth,1,0,0,0)/>
+		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
+		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+		
+		<!---
+			required string propertyIdentifier,
+		required any value,
+		string comparisonOperator="=",
+		string logicalOperator="AND",
+	    string aggregate="",
+	    string filterGroupAlias="",
+ 		string filterGroupLogicalOperator="AND"
+		--->
+		<cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemID',"NULL","IS NOT")/>
+		
+		<cfset rc.pageTitle = 'Active #rc.pageTitle# for #currentMonth# #rc.reportYear#'/>	
+		
+		<cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
+            <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemType.systemCode',rc.subscriptionType,'IN')/>
+    	<cfelse>
+    		<cfset rc.subscriptionType = ""/>
+        </cfif> 
+        <cfif structKeyExists(rc,'productType') && len(rc.productType)>
+            <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productType.productTypeID',rc.productType,'IN')/>
+        <cfelse>
+            <cfset rc.productType = ""/>
+        </cfif> 
+        <cfif structKeyExists(rc,'productID') && len(rc.productID)>
+            <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID',rc.productID,'IN')/>
+        <cfelse>
+            <cfset rc.productID = ""/>
+        </cfif> 
+        <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,filterDate,filterDateMax)/>    
+        <cfset yearMonthKey = "#rc.reportYear#-#months[reportMonth]#"/>
+        <cfset deferredRevenueDataForPeriod = deferredRevenueData[yearMonthKey]/>
+        
+	</cfif>
+	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false"  />
+	<cfif structKeyExists(rc,'reportYear') AND structKeyExists(rc,'reportMonth')>
+		<div class="container-fluid">
+            <div class="col-12">
+                <div class="dashboard_sec">
+                    <div class="row top_bar">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="inner orange-bg">
+                                <span class="icon"><i class="fa fa-shopping-cart"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Active Subscriptions</h2>
+                                        <span class="value">This Month</span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="order">#deferredRevenueDataForPeriod['activeSubscriptions']#</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-xl-3 col-md-6">
+                            <div class="inner blue-bg">
+                                <span class="icon"><i class="fa fa-dollar"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Deferred Revenue</h2>
+                                        <span class="value">This Month</span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="amount">$<strong>#deferredRevenueDataForPeriod['deferredTotal']#</strong></span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!---<div class="col-xl-3 col-md-6">
+                            <div class="inner red-bg">
+                                <span class="icon"><i class="fa fa-shopping-cart"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Expiring Subscriptions</h2>
+                                        <span class="value">This Month</span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="order">#deferredRevenueDataForPeriod['expiringSubscriptions']#</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>--->
+                    </div><!-- end of .top_bar -->
+                    
+                </div><!-- end of .dashboard_sec -->
+            </div><!-- end of .col-12 -->
+        </div>
+    </cfif>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#rc.subscriptionUsageCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(rc.subscriptionUsageCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(rc.subscriptionUsageCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

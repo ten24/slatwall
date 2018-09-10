@@ -55,6 +55,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
 		<swa:SlatwallSetting settingName="globalCurrencyType" />
 		<swa:SlatwallSetting settingName="globalDateFormat" />
+		<swa:SlatwallSetting settingName="globalLogApiRequests" />
 		<swa:SlatwallSetting settingName="globalLogMessages" />
 		<swa:SlatwallSetting settingName="globalTimeFormat" />
 		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
@@ -78,7 +79,9 @@ Notes:
 		<swa:SlatwallSetting settingName="globalUseExtendedSession" />
 		<swa:SlatwallSetting settingName="globalCopyCartToNewSessionOnLogout" />
         <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
+        <swa:SlatwallSetting settingName="globalDisableRecordLevelPermissions" />
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
         <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
+        <swa:SlatwallSetting settingName="globalHibachiCacheName" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

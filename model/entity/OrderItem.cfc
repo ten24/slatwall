@@ -133,7 +133,20 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return variables.quantityHasChanged;
 	}
 	
-	
+	public any function getSubscriptionOrderItem(){
+		if(structKeyExists(variables,'subscriptionOrderItem')){
+			return variables.subscriptionOrderItem;
+		}else if(!getNewFlag()){
+			var _subscriptionOrderItem = getService('subscriptionService').getSubscriptionOrderItemByOrderItem(this);
+			if(!isNull(_subscriptionOrderItem)){
+				variables.subscriptionOrderItem = _subscriptionOrderItem;
+			}
+		}
+		//if still not set then we return null		
+		if(structKeyExists(variables,'subscriptionOrderItem')){
+			return variables.subscriptionOrderItem;
+		}
+	}
 
 	// @hint Returns options that can act as placeholders for gift card codes that remain to be assigned to fulfill order item quantity
 	public array function getProvidedGiftCardCodePlaceholderOptions( maxPlaceholders = getQuantityUndelivered() ) {

@@ -2490,6 +2490,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		createPersistedTestEntity('product', productData2);
 
 		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setReportFlag(1);
 		myCollection.setDisplayProperties('productName');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productName');

@@ -716,6 +716,12 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
             }
         }
+        
+        
+        if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+            getService('HibachiUtilityService').logApiRequest(arguments.rc, "get");
+        } 
+        
     }
 
     public any function post( required struct rc ) {
@@ -819,8 +825,11 @@ component output="false" accessors="true" extends="HibachiController" {
 	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
+	        
+            if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+                getService('HibachiUtilityService').logApiRequest(arguments.rc,  "post", structuredData);
+            } 
         }
-
 
     }
 
@@ -881,7 +890,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			throw(type="ClientError", message="#message#");
 		}
 	}
-
+	
         /*
 
         GET http://www.mysite.com/slatwall/api/product/ -> returns a collection of all products

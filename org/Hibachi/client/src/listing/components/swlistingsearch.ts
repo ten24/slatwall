@@ -76,7 +76,7 @@ class SWListingSearchController {
     public selectSearchColumn = (column?)=>{
         this.selectedSearchColumn = column;
         this.configureSearchableColumns(column);
-        if(this.searchText){
+        if(this.swListingDisplay.searchText){
             this.search();
         }
     };
@@ -192,13 +192,13 @@ class SWListingSearchController {
 
 
     private search =()=>{
-        if(this.searchText.length > 0 ){
+        if(this.swListingDisplay.searchText.length > 0 ){
             this.listingService.setExpandable(this.listingId, false);
         } else {
             this.listingService.setExpandable(this.listingId, true);
         }
 
-        this.collectionConfig.setKeywords(this.searchText);
+        this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
 
         this.swListingDisplay.collectionConfig = this.collectionConfig;
 

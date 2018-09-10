@@ -319,6 +319,13 @@
 	    {
 	        return "otpauth://totp/#getApplicationValue('applicationKey')#:#arguments.email#?secret=#arguments.secretKey#&issuer=#getApplicationValue('applicationKey')#";
 	    }
+	    
+	    //be careful with this. Not for general use. can pose security risk if not used properly.
+	    public string function hibachiDecodeForHTML(string stringValue){
+		
+			var encoder = createObject('java','org.owasp.esapi.ESAPI').encoder();
+			return encoder.decodeForHTML(arguments.stringValue);
+		}
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
@@ -1024,11 +1031,6 @@
 
 					var value = arguments.queryData[colArray[j]][i];
 
-					// Determine if formatting datetime stamp needed
-					if (isDate(value)) {
-						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
-					}
-
 					// create our row
 					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}
@@ -1061,10 +1063,61 @@
 
 			return toString(binaryDecode(base64String,'base64'));
 		}
+		
+		public any function logApiRequest(required struct rc,  required string requestType, any data = {} ){
+	    
+		    var content = arguments.rc.apiResponse.content;
+	        
+	        var apiRequestAudit = getService('hibachiService').newApiRequestAudit();
+	        
+	        if( structKeyExists(content, 'recordsCount') ){
+	            apiRequestAudit.setResultsCount(content.recordsCount);
+	        }else {
+	            apiRequestAudit.setResultsCount(1);
+	        }
+	        
+	        if( structKeyExists(content, 'collectionConfig')){
+	            apiRequestAudit.setCollectionConfig(content.collectionConfig);
+	        }
+	        
+	        if( structKeyExists(content, 'currentPage')){
+	            apiRequestAudit.setCurrentPage(content.currentPage);
+	        }
+	       
+	        if(structKeyExists(content, 'pageRecordsShow')){
+	            apiRequestAudit.setPageShow(content.pageRecordsShow);
+		    }
+	        
+	        var clientIP = cgi.remote_addr;
+	        var clientHeaders = GetHttpRequestData().headers;
+	    	if(structKeyExists(clientHeaders,"X-Forwarded-For") ) {
+			    clientIP = clientHeaders["X-Forwarded-For"];
+	        }
+	        apiRequestAudit.setIpAddress(clientIP);
+	        
+	        var urlEndpoint = cgi.http_host & '' & cgi.path_info;
+	        apiRequestAudit.setUrlEndpoint( urlEndpoint );
+	        
+	        if ( !structIsEmpty(url) ){
+	            apiRequestAudit.setUrlQueryString(serializeJson(url));
+	        }
+	        
+	        if ( !structIsEmpty(form) ){
+	             apiRequestAudit.setParams( serializeJson(form) );
+	        }
+	        
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        
+	        apiRequestAudit.setRequestType( arguments.requestType);
+	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
+	        
+	        apiRequestAudit = getService("HibachiService").saveApiRequestAudit(apiRequestAudit);
+	        
+		}
 
 	</cfscript>
 
-	<cffunction name="logException" returntype="void" access="public">
+	<cffunction name="logException" returntype="void" access="public"  output="false">
 		<cfargument name="exception" required="true" />
 
 		<!--- All logic in this method is inside of a cftry so that it doesnt cause an exception --->
@@ -1089,7 +1142,7 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="logMessage" returntype="void" access="public">
+	<cffunction name="logMessage" returntype="void" access="public"  output="false">
 		<cfargument name="message" default="" />
 		<cfargument name="messageType" default="" />
 		<cfargument name="messageCode" default="" />
@@ -1403,13 +1456,13 @@
 	    <cfreturn LOCAL.Buffer.ToString() />
 	</cffunction>
 
-	<cffunction name="getCurrentUtcTime" returntype="Numeric" >
+	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
 
-    <cffunction name="convertBase64GIFToBase64PDF">
+    <cffunction name="convertBase64GIFToBase64PDF" output="false">
     	<cfargument name="base64GIF" />
     	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")>
     	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
@@ -1559,7 +1612,7 @@
 	    <cfreturn "" />
 	</cffunction>
 
-	<cffunction name="formatS3Path" returntype="string">
+	<cffunction name="formatS3Path" returntype="string" output="false">
 		<cfargument name="filePath" required="true" type="string" />
 		<cfif find('@', arguments.filePath)>
 			<cfreturn arguments.filePath />
@@ -1569,18 +1622,33 @@
 
 	</cffunction>
 
-	<cffunction name="isS3Path" returntype="boolean">
+	<cffunction name="isS3Path" returntype="boolean" output="false">
 		<cfargument name="filePath" required="true" type="string" />
 		<cfreturn left(arguments.filePath, 5) EQ 's3://' />
 	</cffunction>
 
 
-	<cffunction name="hibachiExpandPath" returntype="string">
+	<cffunction name="hibachiExpandPath" returntype="string" output="false">
 		<cfargument name="filePath" required="true" type="string" />
 		<cfif isS3Path(arguments.filePath) >
 			<cfreturn formatS3Path(arguments.filePath) />
 		<cfelse>
 			<cfreturn expandPath(arguments.filePath) />
 		</cfif>
+	</cffunction>
+	<!---check if this is a 32 character id string--->
+	<cffunction name="isHibachiUUID" returntype="boolean" output="false">
+		<cfargument name="idString" type="any">
+		
+		<cfif !isValid("string",arguments.idString)>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfif len(arguments.idString) neq 32>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfset var uuid = left(arguments.idString,8) & '-' & mid(arguments.idString,9,4) & '-' & mid(arguments.idString,13,4) & '-' & right(arguments.idString,16)/>
+		<cfreturn isValid('uuid',uuid)/>
 	</cffunction>
 </cfcomponent>
