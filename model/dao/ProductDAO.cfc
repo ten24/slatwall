@@ -49,6 +49,17 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+		public void function updateNextDeliveryScheduleDate(required string productID, required any nextDeliveryScheduleDate){
+			var q = new query();
+			
+			q.addParam(name="productID",value=arguments.productID);
+			q.addParam(name="nextDeliveryScheduleDate",value=arguments.nextDeliveryScheduleDate,cfsqltype="cf_sql_timestamp");
+			
+			var sql = "UPDATE swproduct set nextDeliveryScheduleDate=:nextDeliveryScheduleDate where productID = :productID";
+			
+			q.execute(sql=sql);
+		}
+		
 		public numeric function getCurrentMargin(required string productID){
 			return ORMExecuteQuery('
 				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(product.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)

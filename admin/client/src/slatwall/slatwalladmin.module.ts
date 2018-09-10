@@ -13,6 +13,7 @@ import {fulfillmentbatchdetailmodule} from "../fulfillmentbatch/fulfillmentbatch
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {skumodule} from "../sku/sku.module";
+import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.module";
 
 import {HibachiModule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.module";
 import {WorkflowModule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
@@ -98,6 +99,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   productmodule.name,
   productbundlemodule.name,
   skumodule.name,
+  subscriptionusagemodule.name,
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)

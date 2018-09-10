@@ -3,6 +3,7 @@
 import {coremodule} from "./core/core.module";
 declare var angular:any;
 declare var hibachiConfig:any;
+declare var window:any;
 var md5 = require('md5');
 //generic bootstrapper
 export class BaseBootStrapper{
@@ -13,6 +14,8 @@ export class BaseBootStrapper{
     public appConfig:any;
     public attributeMetaData:any;
     public instantiationKey:string;
+    public isPrivate:boolean;
+    
 
     constructor(myApplication){
         this.myApplication = myApplication;
@@ -32,6 +35,7 @@ export class BaseBootStrapper{
             baseURL += '/';
         }
 
+/*
        return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
             this.instantiationKey = instantiationKey;
             var invalidCache = [];
@@ -61,6 +65,96 @@ export class BaseBootStrapper{
             return this.getData(invalidCache);
         });
         
+*/
+           return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
+                this.instantiationKey = instantiationKey;
+                var invalidCache = [];
+                
+                return this.isPrivateMode().then((isPrivate)=>{
+                    if(!isPrivate){
+                        this.isPrivate = true;
+                    }
+                    try{
+                        var hashedData = localStorage.getItem('attributeChecksum');
+                        if(hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
+                            coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
+                        }else{
+                            invalidCache.push('attributeCacheKey');
+                        }
+                    }catch(e){
+                        invalidCache.push('attributeCacheKey');
+                    }
+    
+                    try{
+                        if(!isPrivate){
+                            this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                        }else{
+                            this.appConfig={
+                                instantiationKey:undefined
+                            };
+                            
+                        }
+                        if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
+                            coremodule.constant('appConfig', this.appConfig);
+                            return this.getResourceBundles();
+                        }else{
+                            invalidCache.push('instantiationKey');
+                        }
+                    }catch(e){
+                        invalidCache.push('instantiationKey');
+                    }
+    
+                    return this.getData(invalidCache);
+                });
+                
+            });
+      }])
+
+
+    }
+    
+    isPrivateMode=()=> {
+      return new Promise((resolve) => {
+        const on = () => resolve(true); // is in private mode
+        const off = () => resolve(false); // not private mode
+        const testLocalStorage = () => {
+          try {
+            if (localStorage.length) off();
+            else {
+              localStorage.setItem('x','1');
+              localStorage.removeItem('x');
+              off();
+            }
+          } catch (e) {
+            // Safari only enables cookie in private mode
+            // if cookie is disabled then all client side storage is disabled
+            // if all client side storage is disabled, then there is no point
+            // in using private mode
+            navigator.cookieEnabled ? on() : off();
+          }
+        };
+        // Chrome & Opera
+        if (window.webkitRequestFileSystem) {
+          return void window.webkitRequestFileSystem(0, 0, off, on);
+        }
+        // Firefox
+        if ('MozAppearance' in document.documentElement.style) {
+          const db = indexedDB.open('test');
+          db.onerror = on;
+          db.onsuccess = off;
+          return void 0;
+        }
+        // Safari
+        if (/constructor/i.test(window.HTMLElement)) {
+          return testLocalStorage();
+        }
+        // IE10+ & Edge
+        if (!window.indexedDB && (window.PointerEvent || window.MSPointerEvent)) {
+          return on();
+        }
+        // others
+        return off();
+      });
     }
 
     getInstantiationKey=(baseURL:string):ng.IPromise<any>=>{
@@ -133,16 +227,19 @@ export class BaseBootStrapper{
         if(hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length-1) != '/'){
             urlString+='/';
         }
-
+        
         return this.$http.get(urlString+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
+            
         	var appConfig = resp.data.data;
             if(hibachiConfig.baseURL.length){
                 appConfig.baseURL=urlString;    
             }
-            coremodule.constant('appConfig',resp.data.data);
+            coremodule.constant('appConfig',appConfig);
             try{
-                localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
+                if(!this.isPrivate){
+                    localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
+                }
             }catch(e){}
             this.appConfig = appConfig;
             return this.getResourceBundles();
@@ -200,6 +297,3 @@ export class BaseBootStrapper{
 
     }
 }
-
-
-

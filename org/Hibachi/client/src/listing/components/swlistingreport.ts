@@ -28,6 +28,8 @@ class SWListingReportController {
     public objectPath:string[]=[];
     public selectedPeriodPropertyIdentifierArray:string[]=[];
     public selectedPeriodPropertyIdentifier;
+    public collectionId:string;
+    
     
     //@ngInject
     constructor(
@@ -39,12 +41,20 @@ class SWListingReportController {
         public observerService,
         public collectionConfigService
     ) {
+        
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
+        if(this.collectionId){
+            var selectedReport = {
+                collectionID:this.collectionId,
+                collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
+            };
+            this.selectReport(selectedReport);
+        }
         this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         this.filterPropertiesList = {};
         
-        this.getPeriodColumns()
-        this.getPersistedReports();
+        this.getPeriodColumns();
+        
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
     }
     
@@ -59,38 +69,43 @@ class SWListingReportController {
     }
     
     public saveReportCollection = (collectionName?)=>{
-        if(collectionName){
+        if(collectionName || this.collectionId){
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.selectedPeriodColumn.isPeriod = true;
             this.collectionConfig.columns.push(this.selectedPeriodColumn);
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
-                'collectionName':collectionName,
+                
                 'collectionObject':this.collectionConfig.baseEntityName,
                 'accountOwner':{
                     'accountID':this.$rootScope.slatwall.account.accountID
                 },
                 'reportFlag':1
             }
+            if(collectionName){
+                serializedJSONData['collectionName'] = collectionName;
+            }
             
             this.$hibachi.saveEntity(
                 'Collection',
-                this.selectedCollectionID || "",
+                this.collectionId || "",
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
                 },
                 'save'
             ).then((data)=>{
-                this.getPersistedReports();
-                this.selectedReport = {
-                    collectionID:data.data.collectionID,
-                    collectionObject:data.data.collectionObject,
-                    collectionName:data.data.collectionName,
-                    collectionConfig:data.data.collectionConfig
-                };
-                this.selectedCollectionID = data.data.collectionID;
-                this.collectionNameSaveIsOpen = false;
+                if(this.collectionId){
+                    window.location.reload();    
+                }else{
+                    var url = window.location.href;    
+                    if (url.indexOf('?') > -1){
+                       url += '&collectionID='+data.data.collectionID;
+                    }else{
+                       url += '?collectionID='+data.data.collectionID;
+                    }
+                    window.location.href = url;
+                }
             });
             return;
         }
@@ -387,7 +402,9 @@ class SWListingReportController {
         
         //get meta data we need for existing columns
 
-        this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=> {
+        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias);
+        promise.then((value)=> {
+            
             this.metadataService.setPropertiesList(value, baseEntityAlias);
             this.filterPropertiesList[baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
             this.metadataService.formatPropertiesList(this.filterPropertiesList[baseEntityAlias], baseEntityAlias);
@@ -409,7 +426,7 @@ class SWListingReportController {
     public selectPeriodColumn=(column)=>{
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
-            (async ()=>await this.getPeriodColumns(column.cfc));
+            this.getPeriodColumns(column.cfc);
         }else if(column && column.name){
             this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
             //update the option so it remains selected
@@ -428,18 +445,7 @@ class SWListingReportController {
         }
     }
 
-    public getPersistedReports = ()=>{
-        var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
-        persistedReportsCollectionList.addFilter('reportFlag',1);
-        persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
-        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
-        persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
-        persistedReportsCollectionList.setAllRecords(true);
-        persistedReportsCollectionList.getEntity().then((data)=>{
-            this.persistedReportCollections = data.records;
-        });
-    }
+    
 }
 
 class SWListingReport  implements ng.IDirective{
@@ -449,6 +455,7 @@ class SWListingReport  implements ng.IDirective{
     public scope = {};
     public bindToController =  {
         collectionConfig:"=?",
+        collectionId:"=?",
         tableId:"@?"
     };
     public controller = SWListingReportController;

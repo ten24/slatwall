@@ -101,6 +101,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="ownerAccountID" cascade="all" inverse="true";
 	property name="fulfillmentBatches" singularname="fulfillmentBatch" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="FulfillmentBatch" inverse="true";
 	property name="pickWaves" singularname="pickWave" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="PickWave" inverse="true";
+	property name="apiRequestAudits" singularname="apiRequestAudit" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="ApiRequestAudit" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="accountID" inversejoincolumn="priceGroupID";
@@ -610,7 +611,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			structDelete(variables, "primaryBillingAddress");
 		}
 	}
-
+	
 	// Primary Email Address (many-to-one | circular)
 	public void function setPrimaryEmailAddress( any accountEmailAddress ) {
 		if(structKeyExists(arguments, "accountEmailAddress")) {
