@@ -175,6 +175,11 @@ component accessors="true" output="false" persistent="false" {
 		return replace(lcase(createUUID()), '-', '', 'all');
 	}
 	
+	//Dump & Die, shortcut
+	public any function dd(required any data, numeric top = 2){
+		writeDump(var="#data#", top=arguments.top, abort=true);
+	}
+	
 	// ===========================  END:  UTILITY METHODS ===========================================
 	// ==================== START: INTERNALLY CACHED META VALUES ====================================
 	
