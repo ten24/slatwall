@@ -81,6 +81,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price" hb_formatType="currency";
 	property name="currencyCode";
 	property name="estimatedShippingDate" hb_formFieldType="datetime";
+	property name="oldQuantity";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
