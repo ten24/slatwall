@@ -64,6 +64,7 @@ class PublicService {
     public addBillingAddressErrors;
     public uploadingFile;
     public orderItem;
+    public cmsSiteID;
 
     ///index.cfm/api/scope/
 
@@ -327,9 +328,15 @@ class PublicService {
         if(data){
             method = "post";
             data.returnJsonObjects = "cart,account";
+            if(this.cmsSiteID){
+                data.cmsSiteID = this.cmsSiteID;
+            }
         }else{
             urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
             urlBase += "returnJsonObject=cart,account";
+            if(this.cmsSiteID){
+                urlBase += "&cmsSiteID=" + this.cmsSiteID;
+            }
         }
         if (method == "post"){
 
