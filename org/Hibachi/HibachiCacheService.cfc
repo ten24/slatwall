@@ -169,12 +169,12 @@ component accessors="true" output="false" extends="HibachiService" {
 		thread name="#threadName#" keyPrefix=arguments.keyPrefix {
 			if(getInternalCacheFlag()) {
 				
-				var allKeysArray = listToArray(structKeyList(getCache()));
+				var allKeysArray = listToArray(structKeyList(getCache(), '|'),'|');
 				
 				var prefixLen = len(keyPrefix);
 				
 				for(var key in allKeysArray) {
-					if(left(key, prefixLen) eq keyPrefix) {
+					if(left(key, prefixLen) == keyPrefix) {
 						getCache()[ key ].reset = true;
 					}
 				}

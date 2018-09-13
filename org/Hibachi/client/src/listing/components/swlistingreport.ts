@@ -95,7 +95,6 @@ class SWListingReportController {
                 },
                 'save'
             ).then((data)=>{
-                console.log(data);
                 if(this.collectionId){
                     window.location.reload();    
                 }else{
@@ -403,7 +402,9 @@ class SWListingReportController {
         
         //get meta data we need for existing columns
 
-        this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=> {
+        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias);
+        promise.then((value)=> {
+            
             this.metadataService.setPropertiesList(value, baseEntityAlias);
             this.filterPropertiesList[baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
             this.metadataService.formatPropertiesList(this.filterPropertiesList[baseEntityAlias], baseEntityAlias);
@@ -425,7 +426,7 @@ class SWListingReportController {
     public selectPeriodColumn=(column)=>{
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
-            (async ()=>await this.getPeriodColumns(column.cfc));
+            this.getPeriodColumns(column.cfc);
         }else if(column && column.name){
             this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
             //update the option so it remains selected
