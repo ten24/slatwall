@@ -46,7 +46,7 @@ export class ObserverService extends BaseService{
      * @param {string} id unique id for the object that is listening i.e. namespace
      * @description adds events listeners
      */
-    attach (callback:any, event:string, id?:string):void  {
+    attach (callback:any, event:string, id?:string,scope?:any):void  {
         if(!id){
             id = this.utilityService.createID();
         }
@@ -59,7 +59,7 @@ export class ObserverService extends BaseService{
         if(!this.observers[event][id])
             this.observers[event][id] = [];
 
-        this.observers[event][id].push(callback);
+        this.observers[event][id].push(callback.bind(scope));
     };
 
     /**
@@ -142,7 +142,7 @@ export class ObserverService extends BaseService{
         event = event.toLowerCase();
         eventId = eventId.toLowerCase();
         return this.$timeout(()=>{
-            for(var id in this.observers[event]) {
+            for(var id in this.observers[event]) {       
                 if(id != eventId) continue;
                 angular.forEach(this.observers[event][id], function (callback) {
                     callback(parameters);
