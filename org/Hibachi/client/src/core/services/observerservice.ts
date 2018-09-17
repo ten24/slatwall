@@ -59,7 +59,12 @@ export class ObserverService extends BaseService{
         if(!this.observers[event][id])
             this.observers[event][id] = [];
 
-        this.observers[event][id].push(callback.bind(scope));
+        if(scope !== undefined ) {
+            this.observers[event][id].push(callback.bind(scope));
+        }
+        else {
+            this.observers[event][id].push(callback);
+        }
     };
 
     /**
