@@ -4,40 +4,12 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "../../../
 import {frontendmodule} from './frontend/frontend.module';
 import {coremodule} from "./core/core.module";
 
-export function startupServiceFactory(appProvider: AppProvider, appConfig: AppConfig, resourceBundles: ResourceBundles, attributeMetaData: AttributeMetaData): Function {
-    return () => {
-    
-        appProvider.fetchData().then(() => {
-            for (var key in appProvider.appConfig) {
-
-                appConfig[key] = appProvider.appConfig[key];
-            }
-            if (appProvider.attributeMetaData) {
-                for (var key in appProvider.attributeMetaData) {
-                    attributeMetaData[key] = appProvider.attributeMetaData[key];
-                }
-            }
-            for (var key in appProvider._resourceBundle) {
-                resourceBundles[key] = appProvider._resourceBundle[key];
-            } 
-            appProvider.hasData = true;
-
-        });
-
-    };
-}
-
 @NgModule({
   providers: [
       AppProvider,
       AppConfig,
       ResourceBundles,
-      AttributeMetaData,
-      { 
-        provide: APP_INITIALIZER, 
-        useFactory: startupServiceFactory, 
-        deps: [AppProvider, AppConfig, ResourceBundles, AttributeMetaData], multi: true 
-      }
+      AttributeMetaData
   ],
   imports: [
   ],
@@ -59,6 +31,22 @@ export class BaseBootstrap {
     }
     
     getData(upgrade,appProvider,appConfig,resourceBundles,attributeMetaData,module_name) {
+          appProvider.fetchData().then(() => {
+            for (var key in appProvider.appConfig) {
+
+                appConfig[key] = appProvider.appConfig[key];
+            }
+            if (appProvider.attributeMetaData) {
+                for (var key in appProvider.attributeMetaData) {
+                    attributeMetaData[key] = appProvider.attributeMetaData[key];
+                }
+            }
+            for (var key in appProvider._resourceBundle) {
+                resourceBundles[key] = appProvider._resourceBundle[key];
+            } 
+            appProvider.hasData = true;
+
+        });
         appProvider.hasData$.subscribe((hasData:boolean)=>{ 
           if(hasData){ 
             coremodule.constant('appConfig',appConfig);
