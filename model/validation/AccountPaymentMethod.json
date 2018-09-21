@@ -14,7 +14,7 @@
 		}
 	},
 	"properties":{
-	  "paymentMethod":		[{"contexts":"save","required":true}],
+	  "paymentMethod":			[{"contexts":"save","required":true},{"contexts":"delete","method":"isNotPrimaryPaymentMethod"}],
 		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"creditCardNumber":		[{"contexts":"save","conditions":"paymentTypeCreditCardAndNew,editExistingCreditCardNumber","required":true,"dataType":"creditCard"}],
 		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
