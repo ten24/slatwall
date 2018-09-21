@@ -98,7 +98,7 @@
 		</span>
 	</td>
 	
-	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
+	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.price | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
 	
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	
