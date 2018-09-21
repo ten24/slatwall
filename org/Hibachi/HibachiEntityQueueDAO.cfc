@@ -66,17 +66,33 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		);
 	}
 	
-	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
+	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType, string entityQueueID = createHibachiUUID(), string priority = 2, numeric totalRetry=5){
 		var queryService = new query();
-		var sql = "INSERT INTO SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
-			VALUES ('#createHibachiUUID()#','#arguments.entityQueueType#','#arguments.entityName#','#arguments.entityID#',:createdDateTime,'#getHibachiScope().getAccount().getAccountID()#',
-				'#getHibachiScope().getAccount().getAccountID()#',:modifiedDatetime
-			)
-		";
-		queryService.addParam(name='createdDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
-		queryService.addParam(name='modifiedDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='entityQueueType',value='#arguments.entityQueueType#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseObject',value='#arguments.entityName#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseID',value='#arguments.entityID#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='dateTimeNow',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='accountID',value='#getHibachiScope().getAccount().getAccountID()#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='priority',value='#arguments.priority#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='totalRetry',value='#arguments.totalRetry#',CFSQLTYPE="CF_SQL_STRING");
+		
+		var sql =	"INSERT INTO 
+						SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime,priority,totalRetry)
+					VALUES 
+						(:entityQueueID,:entityQueueType,:baseObject,:baseID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:priority,:totalRetry)";
+						
 		queryService.execute(sql=sql);
 	}
+	
+	public void function deleteEntityQueues(required string entityQueueIDs){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID IN ( :entityQueueID )";
+						
+		queryService.execute(sql=sql);
+	}
+
 	
 	public void function addEntityToQueue(required any entity,required entityQueueType){
 		

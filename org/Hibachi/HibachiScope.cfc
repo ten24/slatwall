@@ -21,6 +21,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
+	
+	
+	property name="entityQueue" type="array";
 
 	public any function init() {
 		setORMHasErrors( false );
@@ -422,5 +425,83 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
 		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
+	}
+	
+	
+	public any function addEntityQueue(required string baseID, required string baseObject, string processMethod, entityQueueData={}, string entityQueueType = '', string priority = 2, numeric totalRetry=5){
+		if(!structKeyExists(variables, "entityQueue")) {
+			variables.entityQueue = [];
+		}
+		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
+		
+		arrayAppend(variables.entityQueue, arguments);
+		getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
+		
+	}
+	
+	public array function getEntityQueue(){
+		if(!structKeyExists(variables, "entityQueue")) {
+			variables.entityQueue = [];
+		}
+		return variables.entityQueue;
+	}
+	
+	public void function clearEntityQueue(){
+		var entityQueues = getEntityQueue();
+		var entityQueueIDsToBeDeleted = '';
+		
+		for(var entityQueue in entityQueues){
+			entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+		}
+		variables.entityQueue = [];
+		getService('HibachiEntityQueueService').deleteEntityQueueItems(entityQueueIDsToBeDeleted);
+	}
+	
+	public void function deleteEntityQueue(entityQueueID){
+		var entityQueues = getEntityQueue();
+		
+		for(var i = 1; i <= arrayLen(entityQueues); i++){
+			if(entityQueues[i]['entityQueueID'] == arguments.entityQueueID){
+				ArrayDeleteAt(entityQueues, i);
+				getService('HibachiEntityQueueService').deleteEntityQueueItems(arguments.entityQueueID);
+				break;
+			}
+		}
+	}
+	
+	public void function digestEntityQueue(){
+		var entityQueues = getEntityQueue();
+		var entityQueueIDsToBeDeleted = '';
+		
+		for(var i = 1; i<= arrayLen(entityQueues); i++)
+
+			var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
+			var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", entityQueue['baseID'] );
+			if(isNull(entity)){
+				entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+				continue;
+			}
+			
+			var processContextIndex = '2';
+			var processData = {
+				'1'=entity, 
+				'2'=entityQueue['entityQueueData']
+			};
+			
+			if(len(entityQueue['processMethod']) && entity.hasProcessObject(entityQueue['processMethod'])){
+				processData['3'] = entity.getProcessObject(entityQueue['processMethod']);
+			}
+			
+			//try{
+				entityService.invokeMethod("process#entityQueue['baseObject']#_#entityQueue['processMethod']#", processData);
+				ArrayDeleteAt(entityQueues, i);
+				entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+			// }catch(any e){
+			
+			
+			// }
+			
+		}
+		getService('HibachiEntityQueueService').deleteEntityQueueItems(entityQueueIDsToBeDeleted);
 	}
 }

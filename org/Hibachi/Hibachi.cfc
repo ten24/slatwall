@@ -559,6 +559,7 @@ component extends="framework.one" {
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
 		createHibachiScope();
+
 		if(
 			(
 				hasReloadKey()
@@ -569,6 +570,8 @@ component extends="framework.one" {
 
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
+			
+
 			// If not, lock the application until this is finished
 			lock scope="Application" timeout="2400"  {
 

@@ -301,6 +301,79 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(productCollectionList.getHQL() CONTAINS '_product_listingPages_content');
 	}
 	
+	
+	
+	
+	/**
+	* @test
+	*/
+	public void function getEntityQueueTest() {
+		assertTrue(arrayLen(request.slatwallScope.getEntityQueue()) == 0);
+	}
+	
+	/**
+	* @test
+	*/
+	public void function addEntityQueueTest() {
+		
+		var slatwallScope = request.slatwallScope;
+		
+		//Get the amount of queue items in the DB
+		var entityQueueItemsCollection = request.slatwallScope.getService('hibachiEntityQueueService').getEntityQueueCollectionList();
+		entityQueueItemsCollection.setReportFlag(false);
+		var InitialEntityQueueItemsCount = entityQueueItemsCollection.getRecordsCount();
+		
+		//Add to EntityQueue
+		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		
+		assertTrue(arrayLen(slatwallScope.getEntityQueue()) == 1);
+		
+		//Get the amount of queue items in the DB after insert
+		var finalEntityQueueItemsCount = entityQueueItemsCollection.getRecordsCount(true);
+		
+		//Check if incremented one EntityQueue item in the DB
+		assertTrue(finalEntityQueueItemsCount - InitialEntityQueueItemsCount == 1);
+	}
+	
+	/**
+	* @test
+	*/
+	public void function clearEntityQueueTest() {
+		
+		var slatwallScope = request.slatwallScope;
+		
+		//Add multiple items to EntityQueue
+		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		
+		//Make sure we have 5 items
+		assertTrue(arrayLen(slatwallScope.getEntityQueue()) == 5);
+		
+		//Get the amount of queue items in the DB
+		var entityQueueItemsCollection = request.slatwallScope.getService('hibachiEntityQueueService').getEntityQueueCollectionList();
+		entityQueueItemsCollection.setReportFlag(false);
+		var InitialEntityQueueItemsCount = entityQueueItemsCollection.getRecordsCount();
+		
+		//Clear queue
+		slatwallScope.clearEntityQueue();
+		
+		//Check if it is really empty
+		assertTrue(arrayLen(slatwallScope.getEntityQueue()) == 0);
+		
+		
+		//Get the amount of queue items in the DB after delete
+		var finalEntityQueueItemsCount = entityQueueItemsCollection.getRecordsCount(true);
+		
+		//make sure it deleted the 5 records
+		assertTrue(InitialEntityQueueItemsCount - finalEntityQueueItemsCount == 5);
+		
+	}
+	
+	
+	
 }
 
 

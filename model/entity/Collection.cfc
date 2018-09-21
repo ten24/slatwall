@@ -2852,28 +2852,29 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			var countHQLSelections = 'SELECT NEW MAP(COUNT(DISTINCT #getBaseEntityAlias()#.id) as recordsCount ';
  			var countHQLSuffix = getHQL(true);
 		}
-
-		for(var totalAvgAggregate in variables.totalAvgAggregates){
-			if(
-				hasAggregateFilter() 
-				||
-				hasGroupBys()
-			){
-				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
-			}else{
-				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+		if(isReport()){
+			for(var totalAvgAggregate in variables.totalAvgAggregates){
+				if(
+					hasAggregateFilter() 
+					||
+					hasGroupBys()
+				){
+					countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+				}else{
+					countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+				}
 			}
-		}
-
-		for(var totalSumAggregate in variables.totalSumAggregates){
-			if(
-				hasAggregateFilter() 
-				||
-				hasGroupBys()
-			){
-				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
-			}else{
-				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+	
+			for(var totalSumAggregate in variables.totalSumAggregates){
+				if(
+					hasAggregateFilter() 
+					||
+					hasGroupBys()
+				){
+					countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+				}else{
+					countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+				}
 			}
 		}
 
