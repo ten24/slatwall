@@ -26,7 +26,7 @@
 	    </cfquery>
 	<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
 	    <cfquery name="local.updateSwProductListingPage" datasource="#this.datasource.name#">
-	        UPDATE SwProductListingPage SET productListingPageID=(SELECT md5(UUID()))
+	        UPDATE SwProductListingPage SET productListingPageID=REPLACE(CAST(UUID() as char character set utf8), '-', '')
 	    </cfquery>
 	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
 	    <cfquery name="local.updateSwProductListingPage" datasource="#this.datasource.name#"> 
