@@ -39,7 +39,7 @@ export class BaseBootStrapper{
                         this.isPrivate = true;
                     }
 		    
-		    // Inspecting attribute model metadata in local storage
+		            // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
                     try{
                         var hashedData = localStorage.getItem('attributeChecksum');
 			
@@ -57,7 +57,7 @@ export class BaseBootStrapper{
                         invalidCache.push('attributeCacheKey');
                     }
     
-                    // Inspecting app config/model metadata in local storage
+                    // Inspecting app config/model metadata in local storage (retreived from /custom/config/config.json)
                     try{
                         if(!isPrivate){
                             this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
