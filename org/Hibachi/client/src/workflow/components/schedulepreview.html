@@ -1,16 +1,16 @@
 <div class="agenda">
     <div class="table-responsive">
         <table class="table table-condensed table-bordered">
-            <tbody data-ng-repeat="scheduleDay in swSchedulePreview.schedule">
+            <tbody *ngFor="let key of scheduleKeys">
             <tr>
-                <td class="agenda-date active" rowspan="{{scheduleDay.times.length + 1}}" >
-                    <div class="dayofmonth" data-ng-bind="scheduleDay.day"></div>
-                    <div class="shortdate">{{scheduleDay.month}}, {{scheduleDay.year}}</div>
-                    <div class="dayofweek text-muted" data-ng-bind="scheduleDay.weekday"></div>
+                <td class="agenda-date active" [attr.rowspan]="schedule[key].times.length + 1">
+                    <div class="dayofmonth" [innerText]="schedule[key].day" ></div>
+                    <div class="shortdate" >{{schedule[key].month}}, {{schedule[key].year}}</div>
+                    <div class="dayofweek text-muted" [innerText]="schedule[key].weekday"></div>
                 </td>
             </tr>
-            <tr data-ng-repeat="test in scheduleDay.times">
-                <td class="agenda-time" data-ng-bind="test"></td>
+            <tr *ngFor="let test of schedule[key].times">
+                <td class="agenda-time" [innerText]="test"></td>
             </tr>
             </tbody>
         </table>

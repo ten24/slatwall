@@ -65,7 +65,7 @@ var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).c
 .directive('swWorkflowTrigger', downgradeComponent({ component: SWWorkflowTrigger }) as angular.IDirectiveFactory)
 .directive('swWorkflowTriggers',SWWorkflowTriggers.Factory())
 .directive('swWorkflowTriggerHistory',SWWorkflowTriggerHistory.Factory())
-.directive('swSchedulePreview',SWSchedulePreview.Factory())
+.directive('swSchedulePreview', downgradeComponent({ component: SWSchedulePreview }) as angular.IDirectiveFactory)
 //filters
 
 ;

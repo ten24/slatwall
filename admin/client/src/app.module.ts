@@ -13,7 +13,7 @@ import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
 import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.provider";
 import {SWWorkflowTrigger} from "../../../org/Hibachi/client/src/workflow/components/swworkflowtrigger";
 import {SWConfirm} from "../../../org/Hibachi/client/src/core/components/swconfirm";
-
+import {SWSchedulePreview} from "../../../org/Hibachi/client/src/workflow/components/swschedulepreview";
 
 @NgModule({
   providers: [
@@ -44,11 +44,13 @@ import {SWConfirm} from "../../../org/Hibachi/client/src/core/components/swconfi
   declarations:[
       HeroDetailComponent,
       SWWorkflowTrigger,
-      SWConfirm
+      SWConfirm,
+      SWSchedulePreview
   ],
   entryComponents: [
     HeroDetailComponent,
-    SWWorkflowTrigger
+    SWWorkflowTrigger,
+    SWSchedulePreview
   ]
 })
 export class AppModule { 

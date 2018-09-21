@@ -448,7 +448,7 @@
 							</div>
                             <div class="s-default-list" data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
                                 <h4>Schedule Preview:</h4>
-                                <sw-schedule-preview data-schedule="schedulePreview"></sw-schedule-preview>
+                                <sw-schedule-preview [schedule]="schedulePreview"></sw-schedule-preview>
                             </div>
 						</div>
 					</div>
