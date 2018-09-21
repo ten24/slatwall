@@ -121,12 +121,17 @@ component displayname="Promotion" entityname="SlatwallPromotion" table="SwPromot
 	public boolean function getCurrentPromotionCodeFlag() {
 		if(!structKeyExists(variables, "currentPromotionCodeFlag")) {
 			variables.currentPromotionCodeFlag = false;
-			for( var i=1; i<= arrayLen(getPromotionCodes()); i++ ) {
-				if(getPromotionCodes()[i].getCurrentFlag()) {
-					variables.currentPromotionCodeFlag = true;
-					break;
-				}
-			}	
+			promotionCodeCollectionList = getService("promotionService").getPromotionCodeCollectionList();
+			promotionCodeCollectionList.addFilter("promotion.promotionID",getPromotionID());
+			promotionCodeCollectionList.setDisplayProperties('startDateTime,endDateTime',{isVisible=true});
+			var promotionCodes = promotionCodeCollectionList.getRecords();
+ 			for( var promoCode in promotionCodes) {
+				//bringing the getCurrentFlag calculation here so we can use a collection
+				if( ( !isNull(promoCode['startDateTime']) && promoCode['startDateTime'] > now() ) || ( !isNull(promoCode['endDateTime']) && promoCode['endDateTime'] < now() ) ) {
+ 					variables.currentPromotionCodeFlag = true;
+ 					break;
+ 				}
+ 			}
 		}
 		
 		return variables.currentPromotionCodeFlag;
