@@ -55,10 +55,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public void function updateOrderAmountsWithTaxes(required any order) {
 
-		if (!arguments.order.hasOrderItem()){
-			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
-			return;
-		}
+		// //Remove existing taxes from OrderItems only if they've not been paid for yet
+		// if(arguments.order.getPaymentAmountDueAfterGiftCards() > 0 && ){
+		// 	removeTaxesFromAllOrderItems(arguments.order);
+		// }
 		
 		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
@@ -151,7 +151,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var orderItem in arguments.order.getOrderItems()) {
 	
 				// Apply Tax for sale items
-				if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
+				if(orderItem.getOrderItemType().getSystemCode() == "oitSale" && arguments.order.getPaymentAmountDueAfterGiftCards() > 0) {
+	
+					removeTaxesFromOrderItem(orderItem);
 	
 					// Get this sku's taxCategory
 					var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
@@ -267,6 +269,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				// Apply Tax for return items
 				} else if (orderItem.getOrderItemType().getSystemCode() == "oitReturn") {
+	
+					removeTaxesFromOrderItem(orderItem);
 	
 					if(!isNull(orderItem.getReferencedOrderItem())) {
 	
@@ -780,6 +784,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderItem.clearVariablesKey('taxAmount');
 		}
 
+	}
+	
+	public void function removeTaxesFromOrderItem(required any orderItem){
+		// Remove all existing tax calculations
+		for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
+			var appliedTax = orderItem.getAppliedTaxes()[ta];
+			if(isNull(appliedTax.getManualTaxAmountFlag()) || !appliedTax.getManualTaxAmountFlag()){
+				appliedTax.removeOrderItem( orderItem );
+			}
+		}
 	}
 
 	public struct function addTaxAddressesStructBillingAddressKey(required any order) {
