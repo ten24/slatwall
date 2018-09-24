@@ -53,11 +53,12 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
+	
 	property name="subscriptionOrderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=subscriptionOrderItemType";
 	property name="subscriptionUsage" cfc="SubscriptionUsage" fieldtype="many-to-one" fkcolumn="subscriptionUsageID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-
+	property name="subscriptionOrderDeliveryItems" singularname="subscriptionOrderDeliveryItem" cfc="SubscriptionOrderDeliveryItem" type="array" fieldtype="one-to-many" fkcolumn="subscriptionOrderItemID" cascade="all-delete-orphan" inverse="true";
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
@@ -70,6 +71,85 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="deferredRevenue" hb_formatType="currency" persistent="false";
+	property name="deferredTaxAmount" persistent="false";
+	
+	//calculatedProperties
+	property name="calculatedDeferredRevenue" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedDeferredTaxAmount" ormtype="big_decimal" hb_formatType="currency";
+	
+	
+	public any function getDeferredRevenue(){
+		var deferredRevenue = 0;
+		var priceEarnedPerItem = 0;
+		if(!isNull(getPriceEarnedPerItem())){
+			priceEarnedPerItem = getPriceEarnedPerItem();
+		}
+		var itemNotDelivered = 0;
+		if(!isNull(getItemsNotDelivered())){
+			itemsNotDelivered = getItemsNotDelivered();
+		}
+		deferredRevenue = getService('HibachiUtilityService').precisionCalculate(priceEarnedPerItem * itemsNotDelivered);
+	
+		return deferredRevenue;
+	}
+	
+	public any function getDeferredTaxAmount(){
+		var deferredTaxAmount = 0;
+		
+		deferredTaxAmount = getService('HibachiUtilityService').precisionCalculate(getTaxAmountEarnedPerItem() * getItemsNotDelivered());
+	
+		return deferredTaxAmount;
+	}
+	
+	public numeric function getItemsNotDelivered(){
+		var itemsNotDelivered = 0;
+		
+		itemsNotDelivered = getItemsToDeliver() - getItemsDelivered();
+		
+		return itemsNotDelivered;
+	}
+	
+	public numeric function getTaxAmountEarnedPerItem(){
+		var taxAmountEarnedPerItem = 0;
+		if(getItemsToDeliver() > 0){
+			taxAmountEarnedPerItem = getService('HibachiUtilityService').precisionCalculate(getOrderItem().getCalculatedTaxAmount() / getItemsToDeliver());
+		}
+		return taxAmountEarnedPerItem;
+	}
+	
+	public numeric function getPriceEarnedPerItem(){
+		var priceEarnedPerItem = 0;
+		var extendedPriceAfterDiscount = 0;
+		if(!isNull(getOrderItem()) && !isNull(getOrderItem().getCalculatedExtendedPriceAfterDiscount())){
+			extendedPriceAfterDiscount = getOrderItem().getCalculatedExtendedPriceAfterDiscount();
+		}
+		if(getItemsToDeliver() > 0){
+			priceEarnedPerItem = getService('HibachiUtilityService').precisionCalculate(extendedPriceAfterDiscount / getItemsToDeliver());
+		}
+		return priceEarnedPerItem;
+	}
+	
+	public numeric function getItemsToDeliver(){
+		var itemsToDeliver = 0;
+		if(
+			!isNull(getSubscriptionUsage())
+			&& !isNull(getSubscriptionUsage().getSubscriptionTerm())
+			&& !isNull(getSubscriptionUsage().getSubscriptionTerm().getItemsToDeliver())
+		){
+			itemsToDeliver = this.getSubscriptionUsage().getSubscriptionTerm().getItemsToDeliver();
+		}
+		return itemsToDeliver;
+	}
+	
+	public numeric function getItemsDelivered(){
+		var itemsDelivered = 0;
+		for(var subscriptionOrderDeliveryItem in getSubscriptionOrderDeliveryItems()){
+			itemsDelivered += subscriptionOrderDeliveryItem.getQuantity();
+		}
+		return itemsDelivered;
+	}
+	
 	public void function setOrderItem(required any orderItem) {
 		variables.orderItem = arguments.orderItem;
 		//copy all the info from order items to subscription usage
@@ -77,6 +157,10 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 			variables.subscriptionUsage.copyOrderItemInfo(arguments.orderItem);
 		}
 	}
+	
+	//calculates the date ranges that the subscription orderItem started and ended
+	
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 

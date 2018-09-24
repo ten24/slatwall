@@ -76,7 +76,10 @@ Notes:
 
 			<!--- Basic --->
 			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
-
+			
+			<cfif rc.product.getDeferredRevenueFlag()>
+				<hb:HibachiEntityDetailItem property="deliveryScheduleDates" />
+			</cfif>			
 			<!--- TODO: We need to show "Bundle Groups" if this is a bundle product, and "Skus" if this is any other type of product --->
 
 			<cfif rc.product.getBaseProductType() eq "productBundle">
@@ -113,7 +116,7 @@ Notes:
 			<!--- Reference --->
 			<hb:HibachiEntityDetailItem property="productReviews" count="#rc.product.getProductReviewsCount()#" />
 			<hb:HibachiEntityDetailItem property="vendors" />
-
+			
 			<!--- Settings --->
 			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/productsettings" />
 			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/skusettings" />
@@ -122,7 +125,7 @@ Notes:
 			<cfloop array="#rc.product.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.product#" attributeSet="#attributeSet#" />
 			</cfloop>
-
+			
 			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.product#" />
 		</hb:HibachiEntityDetailGroup>

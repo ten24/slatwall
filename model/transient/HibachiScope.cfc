@@ -118,6 +118,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			}else{
 				setCurrentRequestSitePathType('sitecode');
 			}
+			
+			if(isNull(variables.currentRequestSite) && structKeyExists(session,'siteID')){
+				variables.currentRequestSite = getService('siteService').getSiteByCMSSiteID(session['siteID']);
+				setCurrentRequestSitePathType('cmsSiteID');
+			}
+			
 			if(isNull(variables.currentRequestSite)){
 				variables.currentRequestSite = getService('siteService').newSite();
 			}

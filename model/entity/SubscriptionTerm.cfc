@@ -54,6 +54,7 @@ component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persi
 	property name="allowProrateFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="autoRenewFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="autoPayFlag" ormtype="boolean" hb_formatType="yesno";
+	property name="itemsToDeliver" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
 	property name="initialTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="initialTermID";

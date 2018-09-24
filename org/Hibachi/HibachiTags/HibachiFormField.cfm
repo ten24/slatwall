@@ -233,7 +233,7 @@
 										<cfelseif key eq "value">
 											<cfset thisOptionValue = option[ key ] />
 										<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#encodeForHTML(option[key])#"', ' ') />
 										</cfif>
 									</cfif>
 								</cfloop>

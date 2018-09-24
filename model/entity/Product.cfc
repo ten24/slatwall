@@ -59,7 +59,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="sortOrder" ormtype="integer" description="The sort order value can be used to manually organize all of the products in your catalog.";
 	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
-
+	property name="deferredRevenueFlag" ormtype="boolean" description="This field identifies a product as having deferred revenue";
+	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
+	property name="startInCurrentPeriodFlag" ormtype="boolean" default="0";
+ 
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal" hb_formatType="currency" description="Stores the latest calculation of the dynamic 'salePrice' property which in turn calculates from the defaultSku's dynamic salePrice property.";
 	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
@@ -79,7 +82,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
-	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="productSchedules" singularname="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="deliveryScheduleDates" singularname="deliveryScheduleDate" cfc="DeliveryScheduleDate" type="array" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="relatedProducts" singularname="relatedProduct" cfc="ProductRelationship" type="array" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
@@ -147,6 +151,31 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	
+	public any function getNextDeliveryScheduleDate(){
+		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
+			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();
+			deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
+			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue|ASC');
+			deliveryScheduleDateCollectionList.setPageRecordsShow(1);
+			var deliveryScheduleDateValueRecords = deliveryScheduleDateCollectionList.getPageRecords();
+			
+			if(arrayLen(deliveryScheduleDateValueRecords)){
+				variables.nextDeliveryScheduleDate=deliveryScheduleDateValueRecords[1]['deliveryScheduleDateValue'];
+			}
+			
+		}
+		if(structKeyExists(variables,'nextDeliveryScheduleDate')){
+			return variables.nextDeliveryScheduleDate;
+		}
+	}
+
+	public boolean function getDeferredRevenueFlag(){
+		if(!structKeyExists(variables,'deferredRevenueFlag')){
+			return false;
+		}
+		return variables.deferredRevenueFlag;
+	}
 
 	public any function getAverageCost(){
 		return getDao('productDao').getAverageCost(this.getProductID());
@@ -1043,18 +1072,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	/**
 	* @Suppress
 	*/
-	public any function getLivePrice() {
+	public any function getLivePrice( any account = getHibachiScope().getAccount() ) {
 		if( structKeyExists(variables,"defaultSku") ) {
-			return getDefaultSku().getLivePrice();
+			return getDefaultSku().getLivePrice(arguments.account);
 		}
 	}
 
 	/**
 	* @Suppress
 	*/
-	public any function getLivePriceByCurrencyCode(required string currencyCode){
+	public any function getLivePriceByCurrencyCode(required string currencyCode, any account = getHibachiScope().getAccount() ){
 		if( structKeyExists(variables,"defaultSku") ) {
-			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
+			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode, arguments.account);
 	 	}
 	}
 
@@ -1271,6 +1300,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	public void function removeProductReview(required any productReview) {
 		arguments.productReview.removeProduct( this );
+	}
+	
+	// Delivery Schedule Date
+	public void function addDeliveryScheduleDate(required any deliveryScheduleDate){
+		arguments.deliveryScheduleDate.setProduct(this);
+	}
+	
+	public void function removeDeliveryScheduleDate(required any deliveryScheduleDate){
+		arguments.deliveryScheduleDate.removeProduct(this);
 	}
 
 	//  (many-to-many - owner)

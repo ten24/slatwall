@@ -745,7 +745,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function processAccount_forgotPassword( required any account, required any processObject ) {
 		var forgotPasswordAccount = getAccountWithAuthenticationByEmailAddress( processObject.getEmailAddress() );
-
+		
 		if(!isNull(forgotPasswordAccount)) {
 			//check to see if the account is locked
 			if(isNull(forgotPasswordAccount.getLoginLockExpiresDateTime()) || DateCompare(Now(), forgotPasswordAccount.getLoginLockExpiresDateTime()) == 1 ){
@@ -1797,17 +1797,19 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.accountPaymentMethod.isDeletable()) {
 
 			var account = arguments.accountPaymentMethod.getAccount();
-
+			
 			arguments.accountPaymentMethod.setOrderPayments([]);
 
 			arguments.accountPaymentMethod.removeAccount();
 
-			// If the primary payment method is this payment method then set the primary to null
-			if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
-				account.setPrimaryPaymentMethod(javaCast("null",""));
-			}
+			// // If the primary payment method is this payment method then set the primary to null
+			// if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
+			// 	account.setPrimaryPaymentMethod(javaCast("null",""));
+			// }
 
 			getAccountDAO().removeAccountPaymentMethodFromOrderPayments( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+			getAccountDAO().removeAccountPaymentMethodFromAccount( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+			
 		}
 
 		return delete(arguments.accountPaymentMethod);

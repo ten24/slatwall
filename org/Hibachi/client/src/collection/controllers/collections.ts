@@ -23,16 +23,16 @@ class CollectionController{
 				collectionConfig:collectionData.collectionConfig
 		};
 
-			var saveCollectionPromise = $hibachi.saveEntity('Collection',$attrs.collectionId,data,'save');
-					saveCollectionPromise.then(function(value){
+		var saveCollectionPromise = $hibachi.saveEntity('Collection',$attrs.collectionId,data,'save');
+			saveCollectionPromise.then(function(value){
 
-					}, function(reason){
-						});
+			}, function(reason){
+			});
 
 		};
 		observerService.attach($scope.saveCollection,'swPaginationUpdate',$attrs.tableId);
 	}
-
+	
 }
 export{
 	CollectionController

@@ -691,20 +691,243 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
 	}*/
 	
+	/**
+	* @test
+	*/
+	/*public void function getProductsScheduledForDeliveryTest(){
+		//create a product that is for deferredRevenue
+		var productData = {
+			productID="",
+			productName="deferredRevenueTest"&createUUID(),
+			deferredRevenueFlag=1
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var skuData = {
+			skuID="",
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var subscriptionTermData = {
+			subscritpionTermID="",
+			itemsToDeliver=12,
+			skus=[
+				{
+					skuID=sku.getSkuID()
+				}
+			]
+		};
+		var subscriptionTerm = createPersistedTestEntity('subscriptionTerm',subscriptionTermData);
+		
+		assert(arraylen(subscriptionTerm.getSKus()));
+		
+		//make sure flag is set
+		assert(product.getDeferredRevenueFlag());
+		
+		//set up a delivery schedule
+		
+		var DeliveryScheduleDateData = {
+			deliveryScheduleDateID="",
+			deliveryScheduleDateValue="12/12/2018",
+			completedFlag=0,
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var deliveryScheduleDate = createPersistedTestEntity('DeliveryScheduleDate',DeliveryScheduleDateData);
+		
+		var NextDeliveryScheduleDateData = {
+			deliveryScheduleDateID="",
+			deliveryScheduleDateValue="1/12/2019",
+			completedFlag=0,
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var nextDeliveryScheduleDate = createPersistedTestEntity('DeliveryScheduleDate',NextDeliveryScheduleDateData);
+		
+		var orderService = variables.mockService.getOrderServiceMock();
+		var productIDList = orderService.getProductsScheduledForDelivery("12/13/2018");
+		assert(listFind(productIDList,product.getProductID()));
+		
+	}*/
 	
 	/**
 	* @test
 	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
 	*/
 	/*public void function createSubscriptionOrderDeliveriestest(){
+	
+		//MOCK DATA BEGIN
+	
+		//create a product that is for deferredRevenue
 		var productData = {
 			productID="",
-			deferredRevenueFlag=true
+			productName="deferredRevenueTest"&createUUID(),
+			deferredRevenueFlag=1
 		};
 		var product = createPersistedTestEntity('product',productData);
-	
-		//make sure the product has a deferredRevenueFlag as true
-		asset(product.getDeferredRevenueFlag());
+		
+		//make sure flag is set
+		assert(product.getDeferredRevenueFlag());
+		
+		var skuData = {
+			skuID="",
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var subscriptionTermData = {
+			subscritpionTermID="",
+			itemsToDeliver=12,
+			skus=[
+				{
+					skuID=sku.getSkuID()
+				}
+			]
+		};
+		var subscriptionTerm = createPersistedTestEntity('subscriptionTerm',subscriptionTermData);
+		
+		assert(arraylen(subscriptionTerm.getSkus()));
+		
+		assertEquals(subscriptionTerm.getItemsToDeliver(),12);
+		
+		//set up a delivery schedule
+		
+		var DeliveryScheduleDateData = {
+			deliveryScheduleDateID="",
+			deliveryScheduleDateValue="12/12/2018",
+			completedFlag=0,
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var deliveryScheduleDate = createPersistedTestEntity('DeliveryScheduleDate',DeliveryScheduleDateData);
+		
+		var NextDeliveryScheduleDateData = {
+			deliveryScheduleDateID="",
+			deliveryScheduleDateValue="1/12/2019",
+			completedFlag=0,
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var nextDeliveryScheduleDate = createPersistedTestEntity('DeliveryScheduleDate',NextDeliveryScheduleDateData);
+		
+		var FinalDeliveryScheduleDateData = {
+			deliveryScheduleDateID="",
+			deliveryScheduleDateValue="1/12/2019",
+			completedFlag=0,
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var finalDeliveryScheduleDate = createPersistedTestEntity('DeliveryScheduleDate',FinalDeliveryScheduleDateData);
+		
+		var subscriptionStatusData = {
+			subscriptionStatusID="",
+			effectiveDateTime="11/11/2018",
+			subscriptionStatusType={
+				//sstActive
+				typeID="444df31fa8adde8d71c5ca279e42a00d"
+			}
+		};
+		var subscriptionStatus = createPersistedTestEntity('subscriptionStatus',subscriptionStatusData);
+		
+		assert(subscriptionStatus.getEffectiveDateTime()<='12/12/2018');
+		
+		var subscriptionUsageData = {
+			subscriptionUsageID="",
+			subscriptionTerm={
+				subscriptionTermID=subscriptionTerm.getSubscriptionTermID()
+			},
+			calculatedCurrentStatus={
+				subscriptionStatusID=subscriptionStatus.getSubscriptionStatusID()
+			}
+		};
+		var subscriptionUsage = createPersistedTestEntity('subscriptionUsage',subscriptionUsageData);
+		
+		assert(!isNull(subscriptionUsage.getCalculatedCurrentStatus()));
+		assertEquals(subscriptionUsage.getCalculatedCurrentStatus().getSubscriptionStatusType().getSystemCode(),'sstActive');
+		assert(!isNull(subscriptionUsage.getSubscriptionTerm()));
+		
+		var orderItemData = {
+			orderItemID="",
+			sku={
+				skuID=sku.getSkuID()
+			},
+			calculatedExtendedPrice=777.12,
+			calculatedTaxAmount=12.12,
+			currencyCode='USD'
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		assert(!isNull(orderItem.getSku()));
+		
+		var subscriptionOrderItemData = {
+			subscritpionOrderItemID="",
+			subscriptionUsage={
+				subscriptionUsageID=subscriptionUsage.getSubscriptionUsageID()
+			}
+		};
+		var subscriptionOrderItem = createTestEntity('subscriptionOrderItem',subscriptionOrderItemData);
+		
+		subscriptionOrderItem.setOrderItem(orderItem);
+		ormflush();
+		
+		assert(!isNull(subscriptionOrderItem.getOrderItem()));
+		
+		assertEquals(subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductID(),product.getProductID());
+		
+		assert(!isNull(subscriptionOrderItem.getSubscriptionUsage()));
+		
+		//MOCK DATA END
+		
+		
+		//MOCK SERVICE BEGIN
+		var orderService = variables.mockService.getOrderServiceMock();
+		var productDao = variables.mockService.getProductDAOMock();
+		orderService.setProductDAO(productDao);
+		var orderDAO = variables.mockService.getOrderDAOMock();
+		orderService.setOrderDAO(orderDAO);
+		
+		//MOCK SERVICE END
+		
+		orderService.createSubscriptionOrderDeliveries('12/13/2018');
+		
+		//reload since sql updated product value
+		entityReload(product);
+		entityReload(subscriptionOrderItem);
+		
+		//make sure that the schedule updated
+		assertEquals(product.getNextDeliveryScheduleDate(),NextDeliveryScheduleDate.getDeliveryScheduleDateValue());
+		assertEquals(1,arraylen(subscriptionOrderItem.getSubscriptionOrderDeliveryItems()));
+		
+		//if schedule is run again and make sure we don't deliver unnecessarily
+		orderService.createSubscriptionOrderDeliveries('12/13/2018');
+		
+		//reload since sql updated product value
+		entityReload(product);
+		
+		//make sure that the schedule stayed the same and no extra deliveries are made
+		assertEquals(product.getNextDeliveryScheduleDate(),NextDeliveryScheduleDate.getDeliveryScheduleDateValue());
+		assertEquals(1,arraylen(subscriptionOrderItem.getSubscriptionOrderDeliveryItems()));
+		
+		//future date arrives make sure we get to we progress to next date
+		orderService.createSubscriptionOrderDeliveries('1/13/2019');
+		
+		//reload since sql updated product value
+		entityReload(product);
+		
+		//make sure that the schedule moved forward and a new deliver was made
+		assertEquals(product.getNextDeliveryScheduleDate(),FinalDeliveryScheduleDate.getDeliveryScheduleDateValue());
+		assertEquals(2,subscriptionOrderItem.getSubscriptionOrderDeliveryItemsCount());
+		
 	}*/
 	
 	/**
