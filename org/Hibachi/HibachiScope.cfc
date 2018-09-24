@@ -469,39 +469,5 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 	}
 	
-	public void function digestEntityQueue(){
-		var entityQueues = getEntityQueue();
-		var entityQueueIDsToBeDeleted = '';
-		
-		for(var i = 1; i<= arrayLen(entityQueues); i++)
-
-			var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
-			var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", entityQueue['baseID'] );
-			if(isNull(entity)){
-				entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-				continue;
-			}
-			
-			var processContextIndex = '2';
-			var processData = {
-				'1'=entity, 
-				'2'=entityQueue['entityQueueData']
-			};
-			
-			if(len(entityQueue['processMethod']) && entity.hasProcessObject(entityQueue['processMethod'])){
-				processData['3'] = entity.getProcessObject(entityQueue['processMethod']);
-			}
-			
-			//try{
-				entityService.invokeMethod("process#entityQueue['baseObject']#_#entityQueue['processMethod']#", processData);
-				ArrayDeleteAt(entityQueues, i);
-				entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-			// }catch(any e){
-			
-			
-			// }
-			
-		}
-		getService('HibachiEntityQueueService').deleteEntityQueueItems(entityQueueIDsToBeDeleted);
-	}
+	
 }

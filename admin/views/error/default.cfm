@@ -57,7 +57,6 @@ Notes:
 		<cfset local.errorDisplayFlag = request.slatwallScope.getApplicationValue('errorDisplayFlag') />
 		<cfset local.errorNotifyEmailAddresses = request.slatwallScope.getApplicationValue('errorNotifyEmailAddresses') />
 	</cfif>
-	
 	<cfif local.errorDisplayFlag>
 		<cfdump var="#request.exception#" />
 	<cfelse>
