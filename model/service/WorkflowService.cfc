@@ -199,7 +199,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(!isNull(arguments.workflowTrigger.getScheduleCollection())){
 				
 				if(arguments.workflowTrigger.getCollectionPassthrough()){
-					//Don't instanciate every object, just passthroughn the collection records returned
+					//Don't Instantiate every object, just passthroughn the collection records returned
 					var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 					var triggerCollection = arguments.workflowTrigger.getScheduleCollection();
 					triggerCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
@@ -215,7 +215,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					
 				}else{
-					//Instanciate one object per Collection Record returned
+					//Instantiate one object per Collection Record returned
 					var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 					var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
 					var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());

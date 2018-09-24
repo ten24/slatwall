@@ -428,7 +428,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	
-	public any function addEntityQueue(required string baseID, required string baseObject, string processMethod, entityQueueData={}, string entityQueueType = '', string priority = 2, numeric totalRetry=5){
+	public any function addEntityQueue(required string baseID, required string baseObject, string processMethod, any entityQueueData={}, string entityQueueType = ''){
 		if(!structKeyExists(variables, "entityQueue")) {
 			variables.entityQueue = [];
 		}
@@ -444,6 +444,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			variables.entityQueue = [];
 		}
 		return variables.entityQueue;
+		
 	}
 	
 	public void function clearEntityQueue(){
@@ -455,6 +456,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		variables.entityQueue = [];
 		getService('HibachiEntityQueueService').deleteEntityQueueItems(entityQueueIDsToBeDeleted);
+		
 	}
 	
 	public void function deleteEntityQueue(entityQueueID){
@@ -467,6 +469,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				break;
 			}
 		}
+		
 	}
 	
 	
