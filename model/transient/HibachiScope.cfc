@@ -378,7 +378,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		variables.emailQueue = [];
 		clearPrintQueue();
 	}
-
 	
 	// =================== JS helper methods  ===========================
 

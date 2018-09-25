@@ -288,6 +288,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		} catch(any e){
+			rethrow;
 			if(!isNull(workflowTriggerHistory)) {
 				// Update the workflowTriggerHistory
 				workflowTriggerHistory.setSuccessFlag(false);
@@ -381,7 +382,6 @@ component extends="HibachiService" accessors="true" output="false" {
 						processData['3'] = arguments.entity.getProcessObject(processContext);
 					}
 					var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
-					
 					if(!processMethod.hasErrors()) {
 						actionSuccess = true;
 					}
@@ -430,7 +430,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 		// Loop over all of the tasks for this workflow
-
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			// Check to see if the task is active and the entity object passes the conditions validation
 			if(
@@ -440,6 +439,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
 				)
 			){
+				
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 					if(!isnull(workflowTaskAction.getUpdateData())){

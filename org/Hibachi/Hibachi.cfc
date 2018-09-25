@@ -1012,12 +1012,24 @@ component extends="framework.one" {
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
 		}
+		
 		if(!getHibachiScope().getORMHasErrors()) {
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+			
+			//Process request entity queue
+			var entityQueueLength = arrayLen(getHibachiScope().getEntityQueue());
+			if(entityQueueLength > 0){
+				var entityQueueArray = (entityQueueLength <= 20) ? getHibachiScope().getEntityQueue() : arraySlice(getHibachiScope().getEntityQueue(), 1, 20);
+				getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+			}
+			
 		}
+		
+		
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
+		
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed

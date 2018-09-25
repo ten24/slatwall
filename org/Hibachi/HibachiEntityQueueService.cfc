@@ -18,8 +18,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 	}
 	
-	public void function processEntityQueue_processQueue( required any entityQueue, any processObject ={} ) {
-
+	public any function processEntityQueue_processQueue( required any entityQueue, any processObject ={} ) {
+		
 		if(!entityQueue.getNewFlag()){
 			//Process a single QUEUE item:
 			
@@ -70,47 +70,59 @@ component accessors="true" output="false" extends="HibachiService" {
 		return entityQueue;
 	}
 	
-	public void function processEntityQueueArray(required array entityQueueArray){
-		
-		var entityQueueIDsToBeDeleted = '';
-		var entityQueueIDsToBeUpdated = '';
-		
-		for(var entityQueue in arguments.entityQueueArray){
-			var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
-			var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", entityQueue['baseID'] );
-			if(isNull(entity)){
-				entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-				continue;
-			}
-			var processContextIndex = '2';
-			var processData = { '1'=entity };
+	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
 			
-			if(isJSON(entityQueue['entityQueueData'])){
-				processData['2'] = deserializeJSON(entityQueue['entityQueueData']);
-				processContextIndex = '3';
+		if(!arraylen(arguments.entityQueueArray)){
+			return;
+		}
+		
+		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
+			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
+			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
+				processEntityQueueArray(entityQueueArray, false);
 			}
-
-			if(len(entityQueue['processMethod']) && entity.hasProcessObject(entityQueue['processMethod'])){
-				processData[processContextIndex] = entity.getProcessObject(entityQueue['processMethod']);
-			}
+		}else{
+			var entityQueueIDsToBeDeleted = '';
+			var entityQueueIDsToBeUpdated = '';
 			
-			try{
-				entityService.invokeMethod("process#entityQueue['baseObject']#_#entityQueue['processMethod']#", processData);
-				entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-			}catch(any e){
-				entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
+			for(var entityQueue in arguments.entityQueueArray){
+			
+				var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
+				var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
+				if(isNull(entity)){
+					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+					continue;
+				}
+				var processContextIndex = '2';
+				var processData = { '1'=entity };
+				
+				if(isJSON(entityQueue['entityQueueData'])){
+					processData['2'] = deserializeJSON(entityQueue['entityQueueData']);
+					processContextIndex = '3';
+				}
+	
+				if(len(entityQueue['processMethod']) && entity.hasProcessObject(entityQueue['processMethod'])){
+					processData[processContextIndex] = entity.getProcessObject(entityQueue['processMethod']);
+				}
+				
+				try{
+					entityService.invokeMethod("process#entityQueue['baseObject']#_#entityQueue['processMethod']#", processData);
+					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+				}catch(any e){
+					entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
+				}
 			}
-		}
-		if(listLen(entityQueueIDsToBeDeleted)){
-			deleteEntityQueueItems(entityQueueIDsToBeDeleted);
-		}
-		if(listLen(entityQueueIDsToBeUpdated)){
-			updateModifiedDateTime(entityQueueIDsToBeUpdated);
+			if(listLen(entityQueueIDsToBeDeleted)){
+				deleteEntityQueueItems(entityQueueIDsToBeDeleted);
+			}
+			if(listLen(entityQueueIDsToBeUpdated)){
+				updateModifiedDateTime(entityQueueIDsToBeUpdated);
+			}
 		}
 	}
 	
 	
-	public any function insertEntityQueueItem(required string entityID, required string entityName, required string entityQueueType, string entityQueueID = createHibachiUUID(), numeric priority = 2, numeric totalRetry=5){
+	public any function insertEntityQueueItem(required string baseID, required string baseObject, string processMethod, string entityQueueID = createHibachiUUID(), numeric priority = 2, numeric totalRetry=5){
 		getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
 	}
 	
