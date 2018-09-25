@@ -85,7 +85,7 @@
     "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css",
     "buildCustomAdmin":"node custom/client/customAdmin.js",
     "buildCustomAdmin:prod":"node custom/client/customAdminProd.js",
-    "buildCustomFrontend":"custom/client/customFrontend.js"
+    "buildCustomFrontend":"custom/client/customFrontend.js",
     "buildCustomFrontend:prod":"custom/client/customFrontendProd.js"
   },
   "jshintConfig": {
