@@ -373,7 +373,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				url[ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 
 				// Render or Redirect a faluire
-				renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.editAction, maintainQueryString=true, rc=arguments.rc);
+				renderOrRedirectFailure( defaultAction="edit#arguments.rc.entityActionDetails.itemEntityName#", maintainQueryString=true, rc=arguments.rc);
 			}
 		}
 	}
