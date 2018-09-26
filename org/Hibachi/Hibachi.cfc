@@ -1015,20 +1015,33 @@ component extends="framework.one" {
 		
 		if(!getHibachiScope().getORMHasErrors()) {
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
-			
-			//Process request entity queue
-			var entityQueueLength = arrayLen(getHibachiScope().getEntityQueue());
-			if(entityQueueLength > 0){
-				var entityQueueArray = (entityQueueLength <= 20) ? getHibachiScope().getEntityQueue() : arraySlice(getHibachiScope().getEntityQueue(), 1, 20);
-				getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
-			}
-			
 		}
 		
 		
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
+		
+		
+		//Process request entity queue
+		var entityQueueData = getHibachiScope().getEntityQueueData();
+		var entityQueueDataLength = structCount(entityQueueData);
+		if(entityQueueDataLength > 0){
+			
+			var entityQueueArray = [];
+			var currentIndex = 1;
+			var limit = getHibachiScope().setting('globalAllowedOutsideRedirectSites');
+			for(var i in entityQueueData){
+				if(limit > 0 && limit >= currentIndex){
+					break;
+				}
+				arrayAppend(entityQueueArray, entityQueueData[i]);
+				currentIndex++;
+			}
+			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+		}
+			
+		
 		
 	}
 

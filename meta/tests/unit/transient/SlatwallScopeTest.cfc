@@ -308,7 +308,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getEntityQueueTest() {
-		assertTrue(arrayLen(request.slatwallScope.getEntityQueue()) == 0);
+		assertTrue(arrayLen(request.slatwallScope.getEntityQueueData()) == 0);
 	}
 	
 	/**
@@ -324,9 +324,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var InitialEntityQueueItemsCount = entityQueueItemsCollection.getRecordsCount();
 		
 		//Add to EntityQueue
-		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		slatwallScope.addEntityQueueData(slatwallScope.getAccount().getAccountID(), 'Account');
 		
-		assertTrue(arrayLen(slatwallScope.getEntityQueue()) == 1);
+		assertTrue(structCount(slatwallScope.getEntityQueueData()) == 1);
 		
 		//Get the amount of queue items in the DB after insert
 		var finalEntityQueueItemsCount = entityQueueItemsCollection.getRecordsCount(true);
@@ -343,14 +343,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var slatwallScope = request.slatwallScope;
 		
 		//Add multiple items to EntityQueue
-		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
-		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
-		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
-		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
-		slatwallScope.addEntityQueue(slatwallScope.getAccount().getAccountID(), 'Account');
+		slatwallScope.addEntityQueueData(slatwallScope.getAccount().getAccountID(), 'Account');
+		slatwallScope.addEntityQueueData(slatwallScope.getAccount().getAccountID(), 'Order');
+		slatwallScope.addEntityQueueData(slatwallScope.getAccount().getAccountID(), 'Sku');
+		slatwallScope.addEntityQueueData(slatwallScope.getAccount().getAccountID(), 'Product');
+		slatwallScope.addEntityQueueData(slatwallScope.getAccount().getAccountID(), 'Collection');
 		
 		//Make sure we have 5 items
-		assertTrue(arrayLen(slatwallScope.getEntityQueue()) == 5);
+		assertTrue(structCount(slatwallScope.getEntityQueueData()) == 5);
 		
 		//Get the amount of queue items in the DB
 		var entityQueueItemsCollection = request.slatwallScope.getService('hibachiEntityQueueService').getEntityQueueCollectionList();
@@ -358,10 +358,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var InitialEntityQueueItemsCount = entityQueueItemsCollection.getRecordsCount();
 		
 		//Clear queue
-		slatwallScope.clearEntityQueue();
+		slatwallScope.clearEntityQueueData();
 		
 		//Check if it is really empty
-		assertTrue(arrayLen(slatwallScope.getEntityQueue()) == 0);
+		assertTrue(structCount(slatwallScope.getEntityQueueData()) == 0);
 		
 		
 		//Get the amount of queue items in the DB after delete

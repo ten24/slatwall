@@ -274,6 +274,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},

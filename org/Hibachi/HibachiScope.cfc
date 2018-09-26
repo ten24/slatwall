@@ -21,9 +21,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
-	
-	
-	property name="entityQueue" type="array";
+	property name="entityQueueData" type="struct";
 
 	public any function init() {
 		setORMHasErrors( false );
@@ -427,44 +425,46 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
 	
+	//change name to entityQueueArray
 	
-	public any function addEntityQueue(required string baseID, required string baseObject, string processMethod, any entityQueueData={}, string entityQueueType = ''){
-		if(!structKeyExists(variables, "entityQueue")) {
-			variables.entityQueue = [];
+	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = ''){
+		if(!structKeyExists(variables, "entityQueueData")) {
+			variables.entityQueueData = {};
 		}
 		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
 		
-		arrayAppend(variables.entityQueue, arguments);
-		getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
-		
-	}
-	
-	public array function getEntityQueue(){
-		if(!structKeyExists(variables, "entityQueue")) {
-			variables.entityQueue = [];
+		if(!structKeyExists(variables.entityQueueData, '#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#')){
+			variables.entityQueueData['#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#'] = arguments;
+			getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
 		}
-		return variables.entityQueue;
+	}
+	
+	public struct function getEntityQueueData(){
+		if(!structKeyExists(variables, "entityQueueData")) {
+			variables.entityQueueData = {};
+		}
+		return variables.entityQueueData;
 		
 	}
 	
-	public void function clearEntityQueue(){
-		var entityQueues = getEntityQueue();
+	public void function clearEntityQueueData(){
+		var entityQueues = getEntityQueueData();
 		var entityQueueIDsToBeDeleted = '';
 		
 		for(var entityQueue in entityQueues){
-			entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+			entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueues[entityQueue]['entityQueueID']);
 		}
-		variables.entityQueue = [];
+		variables.entityQueueData = {};
 		getService('HibachiEntityQueueService').deleteEntityQueueItems(entityQueueIDsToBeDeleted);
 		
 	}
 	
 	public void function deleteEntityQueue(entityQueueID){
-		var entityQueues = getEntityQueue();
+		var entityQueues = getEntityQueueData();
 		
-		for(var i = 1; i <= arrayLen(entityQueues); i++){
-			if(entityQueues[i]['entityQueueID'] == arguments.entityQueueID){
-				ArrayDeleteAt(entityQueues, i);
+		for(var entityQueue in entityQueues){
+			if(entityQueues[entityQueue]['entityQueueID'] == arguments.entityQueueID){
+				StructDelete(entityQueues, entityQueue);
 				getService('HibachiEntityQueueService').deleteEntityQueueItems(arguments.entityQueueID);
 				break;
 			}

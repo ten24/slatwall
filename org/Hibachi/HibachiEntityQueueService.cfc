@@ -118,6 +118,8 @@ component accessors="true" output="false" extends="HibachiService" {
 			if(listLen(entityQueueIDsToBeUpdated)){
 				updateModifiedDateTime(entityQueueIDsToBeUpdated);
 			}
+			
+			
 		}
 	}
 	

@@ -123,6 +123,8 @@
 	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
 	    	// Initate the first flush
 	    	ormFlush();
+	    	// flush again to persist any changes done during ORM Event handler
+			ormFlush();	
 
 			// Use once and clear to avoid reprocessing in subsequent method invocation or through an infinite recursive loop.
 			var modifiedEntities = getHibachiScope().getModifiedEntities();
