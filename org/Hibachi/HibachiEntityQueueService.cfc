@@ -124,7 +124,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	
-	public any function insertEntityQueueItem(required string baseID, required string baseObject, string processMethod, string entityQueueID = createHibachiUUID(), numeric priority = 2, numeric totalRetry=5){
+	public any function insertEntityQueueItem(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = '', string entityQueueID = createHibachiUUID()){
 		getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
 	}
 	

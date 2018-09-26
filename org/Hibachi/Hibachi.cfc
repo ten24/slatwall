@@ -698,6 +698,9 @@ component extends="framework.one" {
                     if(!coreBF.containsBean("hibachiJsonService")){
 						coreBF.declareBean("hibachiJsonService", "#variables.framework.applicationKey#.org.Hibachi.HibachiJsonService",true);
 					}
+					if(!coreBF.containsBean("hibachiEntityQueueDAO")) {
+						coreBF.declareBean("hibachiEntityQueueDAO", "#variables.framework.applicationKey#.org.Hibachi.hibachiEntityQueueDAO", true);
+					}
 					if(!coreBF.containsBean("hibachiEntityQueueService")) {
 						coreBF.declareBean("hibachiEntityQueueService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityQueueService", true);
 					}
