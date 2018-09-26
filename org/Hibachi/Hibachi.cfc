@@ -307,6 +307,11 @@ component extends="framework.one" {
 
 		// Verify that the session is setup
 		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		
+		// CSRF / Duplicate Request Handling
+		if(structKeyExists(request, "context")){
+			getHibachiScope().getService("hibachiSessionService").verifyCSRF(request.context, this); 
+		}	
 
 		var AuthToken = "";
 		if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
