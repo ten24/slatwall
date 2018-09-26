@@ -425,7 +425,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						foundOrderItem.validate(context='save');
 						if(foundOrderItem.hasErrors()) {
-							arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
+							//String replace the max order qty to give user feedback (with 0 as the minimum)
+							var maxOrderQuantity = 0;
+							if (foundOrderItem.getMaximumOrderQuantity() > 0){
+								maxOrderQuantity = foundOrderItem.getMaximumOrderQuantity();
+							}
+							var messageReplaceKeys = {
+								quantityAvailable = maxOrderQuantity
+							};
+							if (messageReplaceKeys.quantityAvailable > 0){
+								var message = getHibachiUtilityService().replaceStringTemplate(rbKey('validate.save.OrderItem.quantity.hasQuantityWithinMaxOrderQuantity'), messageReplaceKeys);
+								message = foundOrderItem.stringReplace(message);
+								
+								if (!isNull(foundOrderItem.getError("addOrderItem"))){
+									foundOrderItem.errors = [];
+								}
+								if (!isNull(order.getError("addOrderItem"))){
+									order.errors = [];
+								}
+								foundOrderItem.addError("addOrderItem", message, true);
+								// Add the error to both the order and the orderItem
+								arguments.order.addError('addOrderItem', message, true);
+							}else{
+								arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
+							}
 						}
 						break;
 					}
@@ -530,7 +553,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem = this.saveOrderItem( newOrderItem );
 
 			if(newOrderItem.hasErrors()) {
-				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
+				//String replace the max order qty to give user feedback with the minimum of 0
+				var maxOrderQuantity = 0;
+				if (newOrderItem.getMaximumOrderQuantity() > 0){
+					maxOrderQuantity = newOrderItem.getMaximumOrderQuantity();
+				}
+				var messageReplaceKeys = {
+					quantityAvailable = maxOrderQuantity
+				};
+ 				var message = getHibachiUtilityService().replaceStringTemplate(rbKey('validate.save.OrderItem.quantity.hasQuantityWithinMaxOrderQuantity'), messageReplaceKeys);
+				message = newOrderItem.stringReplace(message);
+				if (!isNull(newOrderItem.getError("addOrderItem"))){
+					newOrderItem.errors = [];
+				}
+				if (!isNull(order.getError("addOrderItem"))){
+					order.errors = [];
+				}
+				newOrderItem.addError("addOrderItem", message, true);
+				// Add the error to both the order and the orderItem
+				arguments.order.addError('addOrderItem', message, true);
 			}
 		}
 
