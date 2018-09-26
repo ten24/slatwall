@@ -18,6 +18,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         arguments.rc['ajaxRequest'] = true;
         arguments.rc.headers["Content-Type"] = 'application/json';
         
+        if(structKeyExists(arguments.rc,'cmsSiteID')){
+            getHibachiScope().setCurrentRequestSite(getService('siteService').getSiteByCMSSiteID(arguments.rc.cmsSiteID));
+            getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
+        }
         //if we have a get request there is nothing to persist because nothing changed
         if(
             structKeyExists(arguments.rc,'context') 
