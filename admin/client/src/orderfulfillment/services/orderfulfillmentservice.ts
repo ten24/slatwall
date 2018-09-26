@@ -161,6 +161,9 @@ class OrderFulfillmentService {
     /** When a row is selected, remove the other selections.  */
     public swSelectionToggleSelectionfulfillmentBatchItemTable2 = (args) => {
         if (args.action === "uncheck" || args.selectionid != "fulfillmentBatchItemTable2"){
+            if(this.selectedValue = args.selection){
+                this.selectedValue = undefined;
+            }
             return;
         }
         //Are any previously checked?
