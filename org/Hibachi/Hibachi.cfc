@@ -1033,7 +1033,7 @@ component extends="framework.one" {
 			
 			var entityQueueArray = [];
 			var currentIndex = 1;
-			var limit = getHibachiScope().setting('globalAllowedOutsideRedirectSites');
+			var limit = getHibachiScope().setting('globalEntityQueueDataProcessCount');
 			for(var i in entityQueueData){
 				if(limit > 0 && limit >= currentIndex){
 					break;
