@@ -123,7 +123,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	}
 	
 	public any function getSettings() {
-		if(!isNull(getInstalledFlag()) && getInstalledFlag()) {
+		if(!isNull(getInstalledFlag()) && getInstalledFlag() && !isNull(getIntegrationCFC())) {
 			return getIntegrationCFC().getSettings();	
 		}
 		return {};
