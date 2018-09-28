@@ -1020,6 +1020,7 @@ component extends="framework.one" {
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
+		getHibachiScope().getProfiler().logProfiler();
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed
