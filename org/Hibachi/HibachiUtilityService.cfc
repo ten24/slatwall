@@ -1149,13 +1149,20 @@
 		<cfargument name="templatePath" default="" />
 		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
+		<cfargument name="logPrefix" default="" />
 
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
-			<cfif generalLog>
-				<cfset var logText = "General Log" />
-			<cfelse>
-				<cfset var logText = "Detail Log" />
+			<!--- Set default logPrefix if not explicitly provided --->
+			
+			<cfif not len(arguments.logPrefix)>
+				<cfif arguments.generalLog>
+					<cfset arguments.logPrefix = "General Log" />
+				<cfelse>
+					<cfset arguments.logPrefix = "Detail Log" />
+				</cfif>
 			</cfif>
+			
+			<cfset var logText = arguments.logPrefix />
 
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />

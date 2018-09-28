@@ -307,6 +307,11 @@ component extends="framework.one" {
 
 		// Verify that the session is setup
 		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		
+		// CSRF / Duplicate Request Handling
+		if(structKeyExists(request, "context")){
+			getHibachiScope().getService("hibachiSessionService").verifyCSRF(request.context, this); 
+		}	
 
 		var AuthToken = "";
 		if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
@@ -699,7 +704,7 @@ component extends="framework.one" {
 						coreBF.declareBean("hibachiJsonService", "#variables.framework.applicationKey#.org.Hibachi.HibachiJsonService",true);
 					}
 					if(!coreBF.containsBean("hibachiEntityQueueDAO")) {
-						coreBF.declareBean("hibachiEntityQueueDAO", "#variables.framework.applicationKey#.org.Hibachi.hibachiEntityQueueDAO", true);
+						coreBF.declareBean("hibachiEntityQueueDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityQueueDAO", true);
 					}
 					if(!coreBF.containsBean("hibachiEntityQueueService")) {
 						coreBF.declareBean("hibachiEntityQueueService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityQueueService", true);
@@ -1025,7 +1030,6 @@ component extends="framework.one" {
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
 		
-		
 		//Process request entity queue
 		var entityQueueData = getHibachiScope().getEntityQueueData();
 		var entityQueueDataLength = structCount(entityQueueData);
@@ -1044,7 +1048,7 @@ component extends="framework.one" {
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
 		}
 			
-		
+		getHibachiScope().getProfiler().logProfiler();
 		
 	}
 

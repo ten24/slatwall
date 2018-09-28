@@ -433,7 +433,7 @@
 				return onMissingExportMethod( missingMethodName, missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'process' ) ) {
 				if(right(lCaseMissingMethodName,27) == "_updateCalculatedProperties") {
-					return onMissingUpdateCalculatedProperties(missingMethodName, missingMethodArguments)
+					return onMissingUpdateCalculatedProperties(missingMethodName, missingMethodArguments);
 				}else{
 					return onMissingProcessMethod( missingMethodName, missingMethodArguments );
 				}
