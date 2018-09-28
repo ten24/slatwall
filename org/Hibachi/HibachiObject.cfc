@@ -194,6 +194,16 @@ component accessors="true" output="false" persistent="false" {
 	// ====================  END: INTERNALLY CACHED META VALUES =====================================
 	// ========================= START: DELIGATION HELPERS ==========================================
 	
+	public void function addCheckpoint(string description="", string tags, string blockName, any object) {
+		
+		// If no label provided, use the component filename by default
+		if (!structKeyExists(arguments, 'blockName')) {
+			arguments.blockName = listLast(getThisMetaData().path, '/');
+		}
+		
+		getHibachiScope().getProfiler().addCheckpoint(argumentCollection=arguments);
+	}
+	
 	public string function encryptValue(string value) {
 		return getService("hibachiUtilityService").encryptValue(argumentcollection=arguments);
 	}

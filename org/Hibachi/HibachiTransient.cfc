@@ -1009,6 +1009,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// ====================  END: APPLICATION CACHED META VALUES ====================================
 	// ========================= START: DELIGATION HELPERS ==========================================
+	
+	public void function addCheckpoint(string description="", string tags, string blockName, any object) {
+		
+		// If no object provided, use this component
+		if (!structKeyExists(arguments, 'object')) {
+			arguments.object = this;
+		}
+		
+		// If no blockName provided, use the component filename by default
+		if (!structKeyExists(arguments, 'blockName')) {
+			arguments.blockName = listLast(getThisMetaData().path, '/') & '###getIdentityHashCode()#';
+		}
+		
+		super.addCheckpoint(argumentCollection=arguments);
+	}
 
 	// @hint helper function to pass this entity along with a template to the string replace function
 	public string function stringReplace( required string templateString, boolean formatValues=false, boolean removeMissingKeys=false ) {
