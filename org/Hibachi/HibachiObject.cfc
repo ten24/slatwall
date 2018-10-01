@@ -39,12 +39,12 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		return application[ getApplicationValue('applicationKey') ].factory;
+		return application[ getApplicationValue('applicationKey') ].subsystemfactories['main'];
 	}
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBean(required string beanName, struct constructorArgs = { }) {
-		return getBeanFactory().getBean( arguments.beanName, arguments.constructorArgs);
+		return getBeanFactory().getBean( argumentCollection=arguments);
 	}
 	
 	// @hint has a bean out of whatever the fw1 bean factory is
