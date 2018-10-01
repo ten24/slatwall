@@ -363,6 +363,13 @@ class OrderFulfillmentService {
         processObject.data['shippingAddress'] = data.shippingAddress || "";
         processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
         
+        if(state.orderDeliveryAttributes){
+            for(let i = 0; i < state.orderDeliveryAttributes.length; i++){
+                let attribute = state.orderDeliveryAttributes[i];
+                processObject.data[attribute.code] = state[attribute.code];
+            }
+        }
+        
         this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then((result)=>{
             if (result.orderDeliveryID != undefined && result.orderDeliveryID != ''){
                 return result;
