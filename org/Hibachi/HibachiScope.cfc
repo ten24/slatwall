@@ -82,7 +82,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				try {
 					variables.profiler = createObject(profilerComponentPath);
 					break;
-				} catch (any e) {instantiationError = e}
+				} catch (any e) {instantiationError = e;}
 			}
 			
 			if (!structKeyExists(variables, 'profiler')) {
