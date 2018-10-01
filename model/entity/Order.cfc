@@ -189,8 +189,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	
 	public void function init(){
-		setOrderService(getService('orderService'));
-		setOrderDao(getDAO('OrderDAO'));
 		super.init();
 	}
 //	
