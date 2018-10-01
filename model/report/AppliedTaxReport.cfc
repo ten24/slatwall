@@ -144,31 +144,31 @@ Notes:
 					#getReportDateTimeSelect()#
 				FROM
 					SwTaxApplied
-				  INNER JOIN
-				  	SwTaxCategoryRate on SwTaxApplied.taxCategoryRateID = SwTaxCategoryRate.taxCategoryRateID
-				  INNER JOIN
-				  	SwTaxCategory on SwTaxCategoryRate.taxCategoryID = SwTaxCategory.taxCategoryID 
-				  INNER JOIN
-					SwOrderItem on SwTaxApplied.orderItemID = SwOrderItem.orderItemID
-				  INNER JOIN
-				  	SwOrderFulfillment on SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
-				  INNER JOIN
-				  	SwFulfillmentMethod on SwOrderFulfillment.fulfillmentMethodID = SwFulfillmentMethod.fulfillmentMethodID
-				  INNER JOIN
-				  	SwOrder on SwOrderFulfillment.orderID = SwOrder.orderID
-				  INNER JOIN
-				  	SwAccount on SwOrder.accountID = SwAccount.accountID
-				  INNER JOIN
-				  	SwSku on SwOrderItem.skuID = SwSku.skuID
-				  INNER JOIN
-				  	SwProduct on SwSku.productID = SwProduct.productID
-				  INNER JOIN
-				  	SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
-				  LEFT JOIN
-				  	SwAddress on SwOrderFulfillment.shippingAddressID = SwAddress.addressID
-				  LEFT JOIN
-				  	SwOrder ro on SwOrder.orderID = ro.referencedOrderID 
-				WHERE
+				  INNER JOIN 
+					SwTaxCategoryRate ON SwTaxApplied.taxCategoryRateID = SwTaxCategoryRate.taxCategoryRateID
+				  INNER JOIN 
+					SwTaxCategory ON SwTaxCategoryRate.taxCategoryID = SwTaxCategory.taxCategoryID
+				  INNER JOIN 
+					SwOrderItem ON SwTaxApplied.orderItemID = SwOrderItem.orderItemID
+				  INNER JOIN 
+					SwSku ON SwOrderItem.skuID = SwSku.skuID
+				  INNER JOIN 
+					SwProduct ON SwSku.productID = SwProduct.productID
+				  INNER JOIN 
+					SwProductType ON SwProduct.productTypeID = SwProductType.productTypeID
+				  INNER JOIN 
+					SwOrder ON SwOrderItem.orderID = SwOrder.orderID
+				  INNER JOIN 
+					SwAccount ON SwOrder.accountID = SwAccount.accountID
+				  LEFT JOIN 
+					SwOrderFulfillment ON SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
+				  LEFT JOIN 
+					SwFulfillmentMethod ON SwOrderFulfillment.fulfillmentMethodID = SwFulfillmentMethod.fulfillmentMethodID
+				  LEFT JOIN 
+					SwAddress ON SwOrderFulfillment.shippingAddressID = SwAddress.addressID
+				  LEFT JOIN 
+					SwOrder ro ON SwOrder.orderID = ro.referencedOrderID
+				  WHERE
 					SwOrder.orderOpenDateTime is not null
 				  AND
 					#getReportDateTimeWhere()#
