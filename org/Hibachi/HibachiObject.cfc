@@ -217,7 +217,7 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	public void function logHibachi(required string message, boolean generalLog=false){
-		getService("hibachiUtilityService").logMessage(message=arguments.message, generalLog=arguments.generalLog);		
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
 	public void function logHibachiException(required any exception){
