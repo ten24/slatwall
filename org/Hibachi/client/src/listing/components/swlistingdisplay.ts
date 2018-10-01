@@ -11,7 +11,10 @@ class SWListingDisplayController{
     public aggregates = [];
     public buttonGroup = [];
     public childCollectionConfigs = {};
+    //not binding
     public collectionID;
+    //binding
+    public collectionId;
     public collectionPromise;
     public collectionData:any;
     public collectionObject:any;
@@ -101,6 +104,7 @@ class SWListingDisplayController{
     public name;
     public usingPersonalCollection:boolean;
     public personalCollectionIdentifier:string;
+    public persistedReportCollections:any;
     //@ngInject
     constructor(
         public $scope,
@@ -126,7 +130,6 @@ class SWListingDisplayController{
             this.usingPersonalCollection=false;
         }
         
-        
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
         }
@@ -134,6 +137,8 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showFilters)){
            this.showFilters = true;
         }
+        
+        
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
@@ -146,6 +151,7 @@ class SWListingDisplayController{
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            
             this.$timeout(()=>{
                 this.collection = this.collectionConfig;
                 this.columns = this.collectionConfig.columns;
@@ -219,6 +225,12 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
+        
+        if(this.collectionConfig ) {
+            if(this.collectionConfig.keywords && this.collectionConfig.keywords.length){
+                this.searchText = this.collectionConfig.keywords;
+            }
+        }
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
@@ -284,6 +296,11 @@ class SWListingDisplayController{
                     this.collectionConfig.currentPage = 1;
                     this.collectionConfig.setPageShow(state.payload);
                     break;
+            }
+            if(this.collectionId){
+            
+                this.collectionConfig.baseEntityNameType = 'Collection';
+                this.collectionConfig.id = this.collectionId;
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
@@ -514,10 +531,8 @@ class SWListingDisplayController{
             return this.columns.reduce((totalNumericalCols, col) => {
                 return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
             });    
-        }else{
-            return false;
         }
-        
+        return false;
     }
 
     public columnOrderByIndex = (column) =>{
@@ -584,31 +599,39 @@ class SWListingDisplayController{
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
-        if(this.collectionConfigs.length == 0){
-            var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
-            if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
-                && (this.selectionService.getSelections(this.tableID).length > 0)) {
-                exportCollectionConfig.filterGroups[0].filterGroup = [
-                    {
-                        "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
-                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
-                        "comparisonOperator": (this.allSelected) ? "not in":"in",
-                        "value": this.selectionService.getSelections(this.tableID).join(),
-                        "displayValue": this.selectionService.getSelections(this.tableID).join(),
-                        "ormtype": "string",
-                        "fieldtype": "id",
-                        "conditionDisplay": "In List"
-                    }
-                ];
+        if(this.collectionId){
+            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionExport" method="post" id="formExport"></form>');
+            $('#formExport')
+                .append("<input type='hidden' name='collectionExportID' value='" + this.collectionId + "' />")
+                .submit()
+                .remove();
+        }else{
+            if(this.collectionConfigs.length == 0){
+                var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+                if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
+                    && (this.selectionService.getSelections(this.tableID).length > 0)) {
+                    exportCollectionConfig.filterGroups[0].filterGroup = [
+                        {
+                            "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
+                            "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
+                            "comparisonOperator": (this.allSelected) ? "not in":"in",
+                            "value": this.selectionService.getSelections(this.tableID).join(),
+                            "displayValue": this.selectionService.getSelections(this.tableID).join(),
+                            "ormtype": "string",
+                            "fieldtype": "id",
+                            "conditionDisplay": "In List"
+                        }
+                    ];
+                }
+            } else {
+                //multiCollectionConfig logic
             }
-        } else {
-            //multiCollectionConfig logic
+            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
+            $('#formExport')
+                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+                .submit()
+                .remove();
         }
-        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
-        $('#formExport')
-            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
-            .submit()
-            .remove();
     };
 
     public printCurrentList =(printTemplateID)=>{
@@ -646,6 +669,20 @@ class SWListingDisplayController{
     public selectAll=()=>{
         this.selectionService.selectAll(this.tableID);
     };
+    
+    public getPersistedReports = ()=>{
+        var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
+        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
+        persistedReportsCollectionList.addFilter('reportFlag',1);
+        persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
+        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
+        persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
+        persistedReportsCollectionList.setAllRecords(true);
+        persistedReportsCollectionList.getEntity().then((data)=>{
+            
+            this.persistedReportCollections = data.records;
+        });
+    }
 }
 
 class SWListingDisplay implements ng.IDirective{
@@ -674,6 +711,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*required*/
             collection:"<?",
+            collectionId:"@?",
             collectionConfig:"<?",
             getCollection:"&?",
             collectionPromise:"<?",
@@ -819,7 +857,6 @@ class SWListingDisplay implements ng.IDirective{
             }
         };
     }
-
 }
 export{
     SWListingDisplay

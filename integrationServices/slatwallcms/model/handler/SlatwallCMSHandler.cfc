@@ -75,11 +75,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         
         //try to get a site form the domain name
 		var domainNameSite = arguments.slatwallScope.getCurrentRequestSite();
-      
-       	if(!isNull(domainNameSite)){
+    	var domainNameSitePathType = arguments.slatwallScope.getCurrentRequestSitePathType();
+       	if(!isNull(domainNameSite) && domainNameSitePathType != 'cmsSiteID'){
        		var indexOffset = 0;
        		//is CurrentRequestSitePathType == sitecode or domain
-			if(arguments.slatwallScope.getCurrentRequestSitePathType() == 'sitecode'){
+			if(domainNameSitePathType == 'sitecode'){
 				indexOffset = 1;
 			}
        		

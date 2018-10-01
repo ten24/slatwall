@@ -57,7 +57,95 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="paymentService" type="any";
 	property name="skuService" type="any";
 	property name="typeService" type="any";
-
+	
+	public any function getDeferredRevenueData(
+		string subscriptionTypeSystemCode, 
+		string productTypeID,
+		string productID,
+		date minDate,
+		date maxDate
+	){
+		
+		var deferredRevenueData = getSubscriptionDAO().getDeferredRevenueData(argumentCollection=arguments);
+		var deferredActiveSubscriptionData = getSubscriptionDAO().getDeferredActiveSubscriptionData(argumentCollection=arguments);
+		var deferredExpiringSubscriptionData = getSubscriptionDAO().getDeferredExpiringSubscriptionData(argumentCollection=arguments);
+		
+		var possibleMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+		var from = Month(arguments.minDate);
+		var diff = DateDiff('m',arguments.minDate,arguments.maxDate);
+		var to = from + diff;
+		var startYear = Year(arguments.minDate);
+		var monthData = {};
+		var dateDiffInMonths = DateDiff('m',arguments.minDate,arguments.maxDate);
+		//look over months in the future
+		for(var i=from-1;i <= to;i++){
+			if(i % 12 == 1){
+				startYear++;
+			}
+			
+			var monthNamePattern = startYear&'-'&possibleMonths[i % 12 +1];
+			monthData[monthNamePattern]={};
+			
+			if(!isNull(deferredRevenueData)){
+				for(var j=1; j <= deferredRevenueData.recordCount;j++){
+					var currentRecord = QueryGetRow(deferredRevenueData,j);
+					if(currentRecord.thisMonth == monthNamePattern){
+						monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue,'decimal');
+						monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTax,'decimal');
+						monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue+currentRecord.deferredTax,'decimal');
+					}
+				}
+			}
+			
+			if(!structKeyExists(monthData[monthNamePattern],'deferredRevenue')){
+				monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(0,'decimal');
+			}
+			
+			if(!structKeyExists(monthData[monthNamePattern],'deferredTax')){
+				monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(0,'decimal');
+			}
+			
+			if(!structKeyExists(monthData[monthNamePattern],'deferredTotal')){
+				monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(0,'decimal');
+			}
+			
+			if(!isNull(deferredActiveSubscriptionData)){
+				for(var k=1; k <= deferredActiveSubscriptionData.recordCount;k++){
+					var currentRecord = QueryGetRow(deferredActiveSubscriptionData,k);
+					
+					if(currentRecord.thisMonth == monthNamePattern){
+						monthData[monthNamePattern]['activeSubscriptions'] = currentRecord.subscriptionUsageCount;
+					}
+				}
+			}
+			
+			if(!structKeyExists(monthData[monthNamePattern],'activeSubscriptions')){
+				monthData[monthNamePattern]['activeSubscriptions'] = 0;
+			}
+			
+			if(!isNull(deferredExpiringSubscriptionData)){
+				for(var l=1; l <= deferredExpiringSubscriptionData.recordCount;l++){
+					var currentRecord = QueryGetRow(deferredExpiringSubscriptionData,l);
+					
+					if(currentRecord.thisMonth == monthNamePattern){
+						monthData[monthNamePattern]['expiringSubscriptions'] = currentRecord.subscriptionUsageCount;
+					}
+				}
+			}
+			
+			if(!structKeyExists(monthData[monthNamePattern],'expiringSubscriptions')){
+				monthData[monthNamePattern]['expiringSubscriptions'] = 0;
+			}
+			
+		}
+		return monthData;
+		
+	}
+	
+	public any function getSubscriptionOrderItemByOrderItem(required any orderItem){
+		return getSubscriptionDAO().getSubscriptionOrderItemByOrderItemID(arguments.orderItem.getOrderItemID());
+	}
+	
 	public boolean function createSubscriptionUsageBenefitAccountByAccess(required any access, required any account) {
 		var subscriptionUsageBenefitAccountCreated = false;
 		if(!isNull(arguments.access.getSubscriptionUsageBenefitAccount()) && isNull(arguments.access.getSubscriptionUsageBenefitAccount().getAccount())) {
@@ -183,7 +271,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		this.saveSubscriptionOrderItem(subscriptionOrderItem);
 	}
-
+	
 	// setup subscription benefits for use by accounts
 	public void function setupSubscriptionBenefitAccess(required any subscriptionUsageBenefit) {
 		// add this benefit to access
@@ -272,6 +360,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return autoRenewalReminderSubscriptionUsage(arguments.subscriptionUsage, arguments.data);
 		}
 	}
+	
 
 	private void function manualRenewalReminderSubscriptionUsage(required any subscriptionUsage, struct data={}) {
 		param name="arguments.data.eventName" type="string" default="subscriptionUsageRenewalReminder";
@@ -428,7 +517,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return arguments.subscriptionUsage;
 	}
-
+	
 	public any function processSubscriptionUsage_renew(required any subscriptionUsage, required any processObject, struct data={}) {
 
 		var order = arguments.processObject.getOrder();

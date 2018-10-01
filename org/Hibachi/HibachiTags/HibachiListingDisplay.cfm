@@ -103,7 +103,7 @@
 				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#JSON#);
 			"></span>
 			
-			<cfif !attributes.collectionList.getNewFlag()>
+			<cfif !attributes.collectionList.getNewFlag() && !structKeyExists(attributes.collectionList.getCollectionConfigStruct(),'periodInterval') >
 				<span ng-controller="collections"
 					data-table-id="#scopeVariableID#"
 					data-collection-id="#attributes.collectionList.getCollectionID()#"
@@ -115,6 +115,9 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
+			    <cfif !isNull(attributes.collectionList.getCollectionID())>
+			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
+				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
 			    data-name="#scopeVariableID#"
@@ -136,7 +139,7 @@
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
  				</cfif>
 			    <cfif len(attributes.multiselectFieldName)>
-				  data-multiselectable="#attributes.multiselectFieldName#"
+				  data-multiselectable="true"
 	 			  data-multiselect-field-name="#attributes.multiselectFieldName#"
 	 			  data-multiselect-values="#attributes.multiselectValues#"
 	 			  data-multi-slot="true"

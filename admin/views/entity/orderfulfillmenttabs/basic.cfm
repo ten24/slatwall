@@ -12,7 +12,6 @@
  				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="orderFulfillmentStatusType">
 			</cfif>
 			
-			<!--- Estimated Shipping Date --->
 			<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="estimatedShippingDate" edit="#rc.edit#">
 				
 			<!--- Email --->
@@ -22,6 +21,7 @@
 			<!--- Pickup --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupDate" edit="#rc.edit#">
 
 			<!--- Shipping --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">

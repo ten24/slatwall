@@ -893,6 +893,32 @@
 			return variables.entityObjects[ arguments.entityName ];
 		}
 		
+		public array function getProperties() {
+			if( !getHibachiScope().hasApplicationValue("classPropertyCache_#getClassFullname()#") ) {
+				var metaData = getMetaData(this);
+	
+				var hasExtends = structKeyExists(metaData, "extends");
+				var metaProperties = [];
+				do {
+					var hasExtends = structKeyExists(metaData, "extends");
+					if(structKeyExists(metaData, "properties")) {
+						metaProperties = getService("hibachiUtilityService").arrayConcat(metaProperties, metaData.properties);
+					}
+					if(hasExtends) {
+						metaData = metaData.extends;
+					}
+				} while( hasExtends );
+	
+				var metaPropertiesArrayCount = arraylen(metaProperties);
+				for(var i=1; i < metaPropertiesArrayCount;i++){
+					metaProperties[i] = convertStructToLowerCase(metaProperties[i]);
+				}
+				setApplicationValue("classPropertyCache_#getClassFullname()#", metaProperties);
+			}
+	
+			return getApplicationValue("classPropertyCache_#getClassFullname()#");
+		}
+		
 		// @hint returns the properties of a given entity
 		public any function getPropertiesByEntityName( required string entityName ) {
 			

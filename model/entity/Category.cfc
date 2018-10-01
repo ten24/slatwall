@@ -265,6 +265,15 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 
 	// ================== START: Overridden Methods ========================
 	
+	public array function getParentCategoryOptions(){
+		if(!structKeyExists(variables, 'parentCategoryOptions')){
+			var parentCategoryOptions = super.getParentCategoryOptions();
+			arrayPrepend(parentCategoryOptions,{"value":"","name":"None"});
+			variables.parentCategoryOptions = parentCategoryOptions;
+		}
+		return variables.parentCategoryOptions;
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
@@ -272,11 +281,13 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	public void function preInsert(){
 		super.preInsert();
 		setCategoryIDPath( buildIDPathList( "parentCategory" ) );
+		setCategoryNamePath(createCategoryNamePath());
 	}
 	
 	public void function preUpdate(struct oldData){
 		super.preUpdate(argumentcollection=arguments);
 		setCategoryIDPath( buildIDPathList( "parentCategory" ) );
+		setCategoryNamePath(createCategoryNamePath());
 	}
 	
 	public any function getChildCategoriesSmartList(){

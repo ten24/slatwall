@@ -10,7 +10,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, required string columnTypeList, boolean useHeaderRow=true, string columnsList){
 		var csvFile = FileOpen(pathToCSV);
 		var i = 1;
-		while(!FileisEOF(csvFile)){ 
+		while(!FileisEOF(csvFile)){
 			var line = FileReadLine(csvFile);
 			if(i == 1){
 				if(arguments.useHeaderRow){
@@ -19,123 +19,127 @@ component accessors="true" output="false" extends="HibachiService" {
 				this.logHibachi("HibachiDataService loading CSV  with columns: " & arguments.columnsList, true );
 				this.logHibachi("HibachiDataService loading CSV  with ## of columns: " & listLen(arguments.columnsList), true );
 				this.logHibachi("HibachiDataService loading CSV  with ## of column types: " & listLen(arguments.columnTypeList), true );
-				
+
 				var csvQuery = QueryNew(arguments.columnsList, arguments.columnTypeList);
-				var numberOfColumns = listlen(line, ',', true); 
+				var numberOfColumns = listlen(line, ',', true);
 			} else {
-				var row = []; 
+				var row = [];
 				var capture = false;
-				var isText = false;  
-				var capturedText = ''; 
+				var isText = false;
+				var capturedText = '';
 				for(var j = 1; j <= Len(line); j++){
 					var currentChar = mid(line, j, 1);
 					if(j + 1 <= len(line)){
-						var nextChar = mid(line, j+1, 1); 
+						var nextChar = mid(line, j+1, 1);
 					}
 					if(currentChar == ',' && !capture){
-						arrayAppend(row, capturedText); 
-						capturedText = ''; 
-						isText = false; 
+						arrayAppend(row, capturedText);
+						capturedText = '';
+						isText = false;
 						if(!isNull(nextChar) && nextChar != '"' && nextChar != ','){
-							capture = true; 
-						} 
+							capture = true;
+						}
 					} else if(currentChar == '"'){
-						isText = true; 
-						capture = !capture; 
+						isText = true;
+						capture = !capture;
 					} else if (capture){
-						capturedText = capturedText & currentChar; 
+						capturedText = capturedText & currentChar;
 						if(!isText && !isNull(nextChar) && nextChar == ','){
-							capture = false; 
-						}	
+							capture = false;
+						}
 					} else if(isNull(nextChar)){
 						capturedText = capturedText & currentChar;
-					} 
+					}
 				}
 				arrayAppend(row, capturedText);
 				if(ArrayLen(row) == numberOfColumns){
 					QueryAddRow(csvQuery, row);
 				} else {
 					throw("HibachiDataService could not create query from CSV because it is improperly formed at line: " & i);
-				}	
+				}
 			}
-			i++; 
+			i++;
 		}
 		FileClose(csvFile);
-		return csvQuery; 
-	}	
+		return csvQuery;
+	}
 
 	public array function validateCSVFile(required string pathToCSV, string expectedColumnHeaders, boolean expandedPath = false){
-		if(!arguments.expandedPath){ 
-			arguments.pathToCSV = ExpandPath(arguments.pathToCSV); 
-		} 
+		if(!arguments.expandedPath){
+			arguments.pathToCSV = ExpandPath(arguments.pathToCSV);
+		}
 		var csvFile = FileOpen(arguments.pathToCSV);
 		var i = 1;
-		var problemLines = []; 
-		while(!FileisEOF(csvFile)){ 
+		var problemLines = [];
+		while(!FileisEOF(csvFile)){
 			var line = FileReadLine(csvFile);
 			if(i == 1){
 				var columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
 				if(structKeyExists(arguments, "expectedColumnHeaders") && len(arguments.expectedColumnHeaders) > 0){
 					arguments.expectedColumnHeaders = REReplaceNoCase(arguments.expectedColumnHeaders, "[^a-zA-Z\d,]", "", "all");
 					if(columnsList != arguments.expectedColumnHeaders){
-						arrayAppend(problemLines, i); 
-					} 
-				} 
-				var numberOfColumns = listlen(line, ',', true); 
+						arrayAppend(problemLines, i);
+					}
+				}
+				var numberOfColumns = listlen(line, ',', true);
 			} else {
-				var row = []; 
-				var capture = false; 
-				var isText = false; 
-				var capturedText = ''; 
+				var row = [];
+				var capture = false;
+				var isText = false;
+				var capturedText = '';
 				for(var j = 1; j <= Len(line); j++){
 					var currentChar = mid(line, j, 1);
 					if(j + 1 <= len(line)){
-						var nextChar = mid(line, j+1, 1); 
+						var nextChar = mid(line, j+1, 1);
 					}
 					if(currentChar == ',' && !capture){
-						arrayAppend(row, capturedText); 
+						arrayAppend(row, capturedText);
 						capturedText = '';
-						isText = false; 
+						isText = false;
 						if(!isNull(nextChar) && nextChar != '"' && nextChar != ','){
-							capture = true; 
-						} 
+							capture = true;
+						}
 					} else if(currentChar == '"'){
-						isText = true; 
-						capture = !capture; 
+						isText = true;
+						capture = !capture;
 					} else if (capture){
-						capturedText = capturedText & currentChar; 
+						capturedText = capturedText & currentChar;
 						if(!isText && !isNull(nextChar) && nextChar == ','){
-							capture = false; 
-						}	
+							capture = false;
+						}
 					} else if(isNull(nextChar)){
 						capturedText = capturedText & currentChar;
-					} 
+					}
 				}
 				arrayAppend(row, capturedText);
 				if(ArrayLen(row) != numberOfColumns){
-					arrayAppend(problemLines, i); 
+					arrayAppend(problemLines, i);
 				}
 			}
-			i++; 
+			i++;
 		}
 		FileClose(csvFile);
-		return problemLines;	
+		return problemLines;
 	}
 
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
 
-		var checksumFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#/') & 'custom/config/dbDataChecksums.txt.cfm';  
-	
+		var checksumFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#/') & 'custom/config/dbDataChecksums.txt.cfm';
+
 		if(!fileExists(checksumFilePath)){
-			fileWrite(checksumFilePath, '');	
-		} 
+			fileWrite(checksumFilePath, '');
+		}
 
 		var checksumList = fileRead(checksumFilePath);
 
 		// Because some records might depend on other records already being in the DB (fk constraints) we catch errors and re-loop over records
 		var retryCount=0;
 		var runPopulation = true;
+
+		if(!structKeyExists(request,'successfulDBDataScripts')){
+			request.successfulDBDataScripts = [];
+		}
 
 		do{
 			// Set to false so that it will only rerun if an error occurs
@@ -146,26 +150,29 @@ component accessors="true" output="false" extends="HibachiService" {
 				var filePath = dirList[i];
 				if(len(filePath) gt 7 && right(filePath,7) == "xml.cfm"){
 					var xmlRaw = FileRead(filePath);
-					var checksum = hash(xmlRaw); 
+					var checksum = hash(xmlRaw);
 					var identifier = filePath & ':' & checksum;
-					
+
 					if(listFindNoCase(checksumList, identifier) != 0){
-						continue; 
-					}	
+						continue;
+					}
 
 					try{
-						if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 6) {
-							retryCount += 1;
-							runPopulation = true;
+						if(!arrayfind(request.successfulDBDataScripts,dirList[i])){
+							if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 6) {
+								retryCount += 1;
+								runPopulation = true;
+								arrayAppend(request.successfulDBDataScripts,dirList[i]);
+							}
 						}
 						var index = findNoCase(filePath, checksumList);
 						if(index != 0){
-							var identifierToDelete = mid(checksumList, index, len(filePath) + 33); 
+							var identifierToDelete = mid(checksumList, index, len(filePath) + 33);
 							var listIndexToDelete = listFindNoCase(checksumList, identifierToDelete);
-							checksumList = listDeleteAt(checksumList, listIndexToDelete); 	
+							checksumList = listDeleteAt(checksumList, listIndexToDelete);
 						}
 						checksumList = listAppend(checksumList, identifier);
-	
+
 					} catch (any e) {
 						// If we haven't retried 6 times, then increment the retry counter and re-run the population
 						if(retryCount <= 6) {
@@ -180,25 +187,37 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		} while (runPopulation);
 		var insertDataFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/' & 'insertedData.txt.cfm';
-		
+
 		if(structKeyExists(variables, 'insertedData')){
 			FileWrite(insertDataFilePath, variables.insertedData);
-		}		
+		}
 
-		fileWrite(checksumFilePath, checksumList);		
+		fileWrite(checksumFilePath, checksumList);
 
 		return true;
 	}
-	
-	
+
+
 
 	public boolean function loadDataFromXMLRaw(required string xmlRaw, boolean ignorePreviouslyInserted=true) {
-		var xmlRawEscaped = replace(xmlRaw,"&","&amp;","all");
-		
+		var xmlRawEscaped = replace(arguments.xmlRaw,"&","&amp;","all");
 		var xmlData = xmlParse(xmlRawEscaped);
 		var columns = {};
 		var idColumns = "";
 		var includesCircular = false;
+
+		if(structKeyExists(xmlData.Table.xmlAttributes,'dependencies')){
+			var dependencies = listToArray(xmlData.Table.xmlAttributes.dependencies);
+			for(var dependency in dependencies){
+				var dependencyPath = expandPath('/Slatwall')&dependency;
+				var dependencyXMLRaw = FileRead(dependencyPath);
+				if(!arrayFind(request.successfulDBDataScripts,dependencyPath)){
+					loadDataFromXMLRaw(dependencyXMLRaw);
+					arrayAppend(request.successfulDBDataScripts,dependencyPath);
+				}
+			}
+
+		}
 
 		// Loop over each column to parse xml
 		for(var ii=1; ii<= arrayLen(xmlData.Table.Columns.xmlChildren); ii++) {
@@ -228,7 +247,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(structKeyExists(columns[ thisColumnName ], 'dataType')) {
 					columnRecord.dataType = columns[ thisColumnName ].dataType;
 				}
-				
+
 				//check if the column needs to be decoded
 				if(structKeyExists(columns[ thisColumnName ], 'decodeForHTML') && columns[ thisColumnName ].decodeForHTML) {
 					columnRecord.value = getHibachiUtilityService().hibachiDecodeforHTML(columnRecord.value);
@@ -247,7 +266,6 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 
 			}
-
 			var idKey = xmlData.table.xmlAttributes.tableName;
 			for(var l=1; l<=listLen(idColumns); l++) {
 				idKey = listAppend(idKey, insertData[listGetAt(idColumns, l)].value, "~");
@@ -259,8 +277,12 @@ component accessors="true" output="false" extends="HibachiService" {
 			var keyFound = listFindNoCase(variables.insertedData, idKey);
 
 			var updateOnly = ignorePreviouslyInserted && keyFound;
-
-			getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
+			try{
+				getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
+			}catch(any e){
+				writedump(xmlData.table.xmlAttributes.tableName);
+				writedump(e);abort;
+			}
 			if(!keyFound){
 				variables.insertedData = listAppend(variables.insertedData, idKey);
 			}
@@ -750,5 +772,5 @@ component accessors="true" output="false" extends="HibachiService" {
 	public any function getAllAttributeStruct(){
 		return StructNew();
 	}
-	
+
 }
