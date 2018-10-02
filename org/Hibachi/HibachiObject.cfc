@@ -42,6 +42,10 @@ component accessors="true" output="false" persistent="false" {
 		return application[ getApplicationValue('applicationKey') ].subsystemfactories['main'];
 	}
 	
+	public any function getCustom(){
+		return this;
+	}
+	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBean(required string beanName, struct constructorArgs = { }) {
 		return getBeanFactory().getBean( argumentCollection=arguments);

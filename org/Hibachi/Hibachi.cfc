@@ -645,28 +645,50 @@ component extends="framework.one" {
 						singletonPattern="(Service|DAO)$"
 					});
 
+					// Setup the custom bean factory
 					var coreBF = new framework.hibachiaop("/#variables.framework.applicationKey#/model", {
 						transients=["entity", "process", "transient", "report"],
 						transientPattern="Bean$"
 					});
 					coreBF.setParent(hibachiBF);
-
+					
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new framework.hibachiaop("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"]
 						});
-						
-						customBF.setParent(coreBF);
-						
-						setBeanFactory(customBF);
-						setSubsystemBeanFactory('main',customBF);
+
+						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
+						var aggregateBF = new framework.hibachiaop("");
+
+						// Process factories, last takes precendence
+						var beanFactories = [coreBF, customBF];
+
+						// Build the aggregate bean factory by manually declaring the beans
+						for (var bf in beanFactories) {
+							var beanInfo = bf.getBeanInfo().beanInfo;
+							for (var beanName in beanInfo) {
+								// Manually declare all beans from current bean factory except for the automatically generated beanFactory self reference
+								if (beanName != "beanFactory") {
+									if (structKeyExists(beanInfo[beanName], "cfc")) {
+										// Adding bean by class name
+										aggregateBF.declareBean(beanName, beanInfo[beanName].cfc, beanInfo[beanName].isSingleton);
+									} else if (structKeyExists(beanInfo[beanName], "value")) {
+										// Adding bean by instantiated value
+										aggregateBF.addBean(beanName, beanInfo[beanName].value);
+									}
+								}
+							}
+						}
+						aggregateBF.setParent(hibachiBF);
+						setBeanFactory(aggregateBF);
+						setSubsystemBeanFactory('main',aggregateBF);
 					} else {
 						setBeanFactory(coreBF);
 						setSubsystemBeanFactory('main',coreBF);
 					}
-
+					
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 
 					//========================= END: IOC SETUP ===============================
