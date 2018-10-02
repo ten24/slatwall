@@ -478,6 +478,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var optionsSmartList = getService("skuService").getSkuSmartList();
 		optionsSmartList.addFilter('activeFlag', 1);
 		optionsSmartList.addFilter('product.activeFlag', 1);
+		var showUnpublishedSkusFlag = setting('orderShowUnpublishedSkusFlag');
+		if(!isNull(showUnpublishedSkusFlag) && !showUnpublishedSkusFlag){
+			optionsSmartList.addFilter('publishedFlag', 1);
+		}
 		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
 		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
 		return optionsSmartList;
