@@ -63,6 +63,24 @@ component output="false" accessors="true" extends="HibachiService" {
 		// All these potentials require the account to be logged in, and that it matches the hibachiScope
 		if(getHibachiScope().getLoggedInFlag() && arguments.account.getAccountID() == getHibachiScope().getAccount().getAccountID()) {
 			
+			// Check to see if has access to subsystem 
+			if(ArrayFindNoCase(getAuthenticationSubsystemNamesArray(), subsystemName)) {
+					
+				var pgOK = false;
+				for(var p=1; p<=arrayLen(arguments.account.getPermissionGroups()); p++){
+					pgOK = authenticateSubsystemByPermissionGroup(subsystem=subsystemName,permissionGroup=arguments.account.getPermissionGroups()[p]);
+					
+					if(pgOK == false){
+						break;
+					}
+				}
+			
+				if(!pgOk) {
+					authDetails.forbidden = true;
+					return authDetails;
+				}
+			}
+			
 			// Check if the action is anyLogin, if so and the user is logged in, then we can return true
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyLoginMethods, itemName) && getHibachiScope().getLoggedInFlag()) {
 				
@@ -99,7 +117,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				return authDetails;
 			}
 			// Check to see if the controller is an entity, and then verify against the entity itself
-			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].entityController) {
+			if(actionPermissions[ subsystemName ].sections[ sectionName ].entityController) {
 				if ( left(itemName, 6) == "create" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-6), account=arguments.account);
 				} else if ( left(itemName, 6) == "detail" ) {
@@ -132,7 +150,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 			// Check to see if the controller is for rest, and then verify against the entity itself
-			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
+			if(actionPermissions[ subsystemName ].sections[ sectionName ].restController){
 				//require a token to validate
 				if(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify()){
 					if (StructKeyExists(arguments.restInfo, "context")){
@@ -481,6 +499,25 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		if(structKeyExists(permissions.action.subsystems, arguments.subsystem) && structKeyExists(permissions.action.subsystems[arguments.subsystem], "permission") ) {
 			if( !isNull(permissions.action.subsystems[arguments.subsystem].permission.getAllowActionFlag()) && permissions.action.subsystems[arguments.subsystem].permission.getAllowActionFlag()) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean function authenticateSubsystemByPermissionGroup(required string subsystem, required any permissionGroup) {
+		// Pull the permissions detail struct out of the permission group
+		var permissions = arguments.permissionGroup.getPermissionsByDetails();
+		
+		if(StructIsEmpty(permissions.subsystems)) {
+			return true;
+		}
+		
+		if(structKeyExists(permissions.subsystems, arguments.subsystem) ) {
+			if( !isNull(permissions.subsystems[arguments.subsystem].getAllowActionFlag()) && permissions.subsystems[arguments.subsystem].getAllowActionFlag()) {
 				return true;
 			} else {
 				return false;
