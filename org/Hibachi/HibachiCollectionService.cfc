@@ -1010,7 +1010,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 		}
 		if(!isNull(collectionEntity.getMergeCollection())){
-			var collectionData = getMergedCollectionData(collectionEntity, data);
 			var headers1 = getHeadersListByCollection(collectionEntity);
 			var title1 = getHeadersListByCollection(collectionEntity, true);
 			
@@ -1019,6 +1018,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			var mergedTitles = ListRemoveDuplicates(listAppend(title1, title2));
 			var mergedHeaders = ListRemoveDuplicates(listAppend(headers1, headers2));
+			
+			var collectionData = getMergedCollectionData(collectionEntity, data);
+			
 			getHibachiService().export( collectionData, mergedHeaders, mergedTitles, collectionEntity.getCollectionObject(), "csv" );
 			return;
 		}
