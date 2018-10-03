@@ -176,7 +176,7 @@ component  extends="HibachiService" accessors="true" {
 		return attributeValueCopy;
 	}
 	
-	public string function getOptionLabelsByOptionValues(required any optionValueList){
+	public string function getOptionLabelsByOptionValues(required string optionValueList){
 		var attributeOptionCollectionList = this.getAttributeOptionCollectionList();
 		attributeOptionCollectionList.addFilter('attributeOptionValue', arguments.optionValueList, 'in');
 		attributeOptionCollectionList.setDisplayProperties('attributeOptionLabel');
