@@ -124,6 +124,14 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			'12'
 		];
 	}
+	
+	public boolean function isPrimaryPaymentMethod(){
+		return getAccountPaymentMethodID() == getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID;
+	}
+	
+	public boolean function isNotPrimaryPaymentMethod(){
+		return getAccountPaymentMethodID() == getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID;
+	}
 
 	public array function getExpirationYearOptions() {
 		var yearOptions = [];
