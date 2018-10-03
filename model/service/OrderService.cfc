@@ -1707,15 +1707,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 								}
 
-								// Update the order status
-								order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostNew") );
-
 								// Update the orderPlaced
 								order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
-
-								// Save the order to the database
-								getHibachiDAO().save( arguments.order );
-
 
 								// if order had error but payment was captured, clear error and log to hibachi
 								if(arguments.order.hasErrors()) {
@@ -1727,6 +1720,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 									arguments.order.getHibachiErrors().setErrors(structnew());
 								}
+								
+								// Update the order status
+								order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostNew") );
+								
+								// Save the order to the database
+								getHibachiDAO().save( arguments.order );
 
 								// Do a flush so that the order is commited to the DB
 								getHibachiDAO().flushORMSession();
