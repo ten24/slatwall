@@ -359,6 +359,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
+		
+		if(arguments.order.isOrderPaidFor()){
+			return;
+		}
 
 		// Set up a promotionEffectiveDateTime in case this is an order that has already been placed
 		var promotionEffectiveDateTime = now();
