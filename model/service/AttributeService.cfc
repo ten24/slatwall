@@ -175,6 +175,23 @@ component  extends="HibachiService" accessors="true" {
 
 		return attributeValueCopy;
 	}
+	
+	public string function getOptionLabelsByOptionValues(required any optionValueList){
+		var attributeOptionCollectionList = this.getAttributeOptionCollectionList();
+		attributeOptionCollectionList.addFilter('attributeOptionValue', arguments.optionValueList, 'in');
+		attributeOptionCollectionList.setDisplayProperties('attributeOptionLabel');
+		attributeOptionCollectionList.addOrderBy('sortOrder');
+		
+		var optionLabels = '';
+		
+		for (var attributeOption in attributeOptionCollectionList.getRecords() ){
+			optionLabels = ListAppend(optionLabels, attributeOption.attributeOptionLabel, ',' );
+		}
+	
+		
+		return optionLabels;
+		
+	}
 
 	// =====================  END: Logical Methods ============================
 
