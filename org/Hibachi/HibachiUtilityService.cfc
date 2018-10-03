@@ -1658,4 +1658,37 @@
 		<cfset var uuid = left(arguments.idString,8) & '-' & mid(arguments.idString,9,4) & '-' & mid(arguments.idString,13,4) & '-' & right(arguments.idString,16)/>
 		<cfreturn isValid('uuid',uuid)/>
 	</cffunction>
+	
+	<!--- Given a total number of strings to generate, and a length for each string, generates a list. --->
+	<cffunction name="generateRandomStrings" output="no" returntype="string">
+		<cfargument name="length" type="numeric" required="yes">
+		<cfargument name="total" type="numeric" required="yes">
+		<!--- Local vars --->
+		<cfset var listOfAccessCodes = "">
+		    <cfloop  index = "j" from = "1" to = "#total#"> 
+			<cfset var result="">
+			<cfset var i=0>
+			<!--- Create string --->
+			<cfloop index="i" from="1" to="#ARGUMENTS.length#">
+			    <!--- Random character in range A-Z --->
+			    <cfif i mod 5 eq 0>
+				<cfset result= result & chr(randRange(49, 57))>
+			    <cfelseif i mod 3 eq 0 and j mod 2 eq 0>
+				<cfset result= result & chr(randRange(49, 57))>
+			    <cfelse>
+				<cfset result= result & chr(randRange(65, 90))>    
+			    </cfif>
+
+			</cfloop>
+
+			<cfif listFind(listOfAccessCodes, result) eq 0>
+			    <cfset listOfAccessCodes = listAppend(listOfAccessCodes, result)>
+			<cfelse>
+			    <cfset j = j - 1>    <!--- resets the counter by one if there was a dupe. --->
+			</cfif>
+
+		    </cfloop>
+		<!--- Return it --->
+		<cfreturn listOfAccessCodes>
+	</cffunction>
 </cfcomponent>
