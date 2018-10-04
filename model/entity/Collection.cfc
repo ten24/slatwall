@@ -48,6 +48,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="dirtyReadFlag" ormtype="boolean";
 	property name="useElasticSearch" ormtype="boolean" default="0";
 	property name="reportFlag" ormtype="boolean" default="0";
+	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
 
 	// Calculated Properties
 
@@ -116,7 +117,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="filterGroupAliasMap" type="struct" persistent="false";
 	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
 	property name="permissionAppliedFlag" type="boolean" persistent="false" default="0";
-	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
 	property name="appliedRelatedFilters" type="struct" persistent="false";
 	property name="permissionAliasMap" type="struct" persistent="false";
 	property name="checkDORPermissions" type="boolean" persistent="false";
