@@ -89,6 +89,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="FulfillmentBatchItem" inverse="true";
+	property name="stockHolds" singularname="stockHold" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="StockHold" inverse="true";
 	
 	// Related Object Properties (many-to-many)
 
@@ -702,6 +703,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public void function removeGiftCard(required any giftCard){
 		arguments.giftCard.removeOriginalOrderItem( this );
+	}
+	
+	public void function addStockHold(required any stockHold){
+		arguments.stockHold.setOrderItem(this);
+	}
+	
+	
+	public void function removeStockHold(required any stockHold){
+		arguments.stockHold.removeOrderItem( this );
 	}
 
 	// Order Fulfillment (many-to-one)

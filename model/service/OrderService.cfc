@@ -411,7 +411,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
-				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
+				for(var i=arraylen(orderFulfillment.getOrderFulfillmentItems());i>0; i--  ){
+				
+					var orderItem = orderFulfillment.getOrderFulfillmentItems()[i];
+					//evaluate existing stockHold
+					if(arraylen(orderItem.getStockHolds())){
+						//currently only supporting singular stockholds
+						var stockHold = orderItem.getStockHolds()[1];
+						if(stockHold.isExpired()){
+							getService('stockService').deleteStockHold(stockHold);
+							arguments.order.removeOrderItem(orderItem);
+							continue;
+						}
+					}
 					// If the sku, price, attributes & stock all match then just increase the quantity if and only if the match parent orderitem is null.
 					if(
 						arguments.processObject.matchesOrderItem( orderItem ) 
@@ -572,6 +584,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.addError("addOrderItem", message, true);
 				// Add the error to both the order and the orderItem
 				arguments.order.addError('addOrderItem', message, true);
+			}else{
+				//begin stock hold logic
+				if(arguments.processObject.getSku().setting('skuStockHold')){
+					var stockHold = getService('stockService').newStockHold();
+					stockHold.setSku(arguments.processObject.getSku());
+					stockHold.setOrderItem(newOrderItem);
+					stockHold.setStock(arguments.processObject.getStock());
+					stockHold.setStockHoldExpirationDateTime(dateAdd('n',arguments.processObject.getSku().setting('skuStockHoldTime'),now()));
+					
+					stockHold = getService('stockService').saveStockHold(stockHold);
+				}
 			}
 		}
 
@@ -1845,6 +1868,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// concurrent invocation error caused by reading and modifying the array in the same request.
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
+				if(arraylen(orderItem.getStockHolds())){
+					//currently only supporting singular stockholds
+					var stockHold = orderItem.getStockHolds()[1];
+					if(stockHold.isExpired()){
+						getService('stockService').deleteStockHold(stockHold);
+						arguments.order.removeOrderItem(orderItem);
+						continue;
+					}
+				}
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(!isNull(orderItem) && arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
 
@@ -3286,6 +3318,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// loop over the orderItems to remove any that have a qty of 0
 			for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--) {
+				var orderItem = arguments.order.getOrderItems()[i];
+				//evaluate existing stockHold
+				if(arraylen(orderItem.getStockHolds())){
+					//currently only supporting singular stockholds
+					var stockHold = orderItem.getStockHolds()[1];
+					if(stockHold.isExpired()){
+						getService('stockService').deleteStockHold(stockHold);
+						arguments.order.removeOrderItem(orderItem);
+						continue;
+					}
+				}
 				if(arguments.order.getOrderItems()[i].getQuantity() < 1) {
 					arguments.order.removeOrderItem(arguments.order.getOrderItems()[i]);
 				} else if( !isNull(arguments.order.getOrderItems()[i].getOrderFulfillment()) && !arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID())) {
@@ -3799,6 +3842,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		if(!isNull(arguments.orderItem.getOrderReturn())) {
 			arguments.orderItem.removeOrderReturn();
+		}
+		
+		for(var stockHold in arguments.orderItem.getStockHolds()){
+			getService('stockService').deleteStockHold(stockHold);
 		}
 
 		// Actually delete the entity
