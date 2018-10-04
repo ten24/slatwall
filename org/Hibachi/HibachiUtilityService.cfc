@@ -1230,7 +1230,7 @@
 			<cfset local.thisField = Trim(local.thisField) />
 
 			<!--- If the field has a dot or a bracket... --->
-			<cfif hasFormCollectionSyntax(local.thisField)>
+			<cfif hasFormCollectionSyntax(local.thisField) AND !isStruct(arguments.formScope[local.thisField])>
 
 				<!--- Add collection to list if not present. --->
 				<cfset local.tempStruct['formCollectionsList'] = addCollectionNameToCollectionList(local.tempStruct['formCollectionsList'], local.thisField) />
