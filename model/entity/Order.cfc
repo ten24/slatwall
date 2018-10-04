@@ -173,6 +173,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
+	property name="hibachiService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
 	
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
@@ -189,8 +190,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	
 	public void function init(){
-		setOrderService(getService('orderService'));
-		setOrderDao(getDAO('OrderDAO'));
 		super.init();
 	}
 //	
