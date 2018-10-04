@@ -116,6 +116,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="filterGroupAliasMap" type="struct" persistent="false";
 	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
 	property name="permissionAppliedFlag" type="boolean" persistent="false" default="0";
+	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
 	property name="appliedRelatedFilters" type="struct" persistent="false";
 	property name="permissionAliasMap" type="struct" persistent="false";
 	property name="checkDORPermissions" type="boolean" persistent="false";
@@ -3063,7 +3064,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									(column.ormtype eq 'big_decimal'
 									|| column.ormtype eq 'integer'
 									|| column.ormtype eq 'float'
-									|| column.ormtype eq 'double')
+									|| column.ormtype eq 'double'
+									&& !getDisableAveragesAndSumsFlag()
+									)
 								){
 									addTotalAvgAggregate(column);
 									addTotalSumAggregate(column);
@@ -3095,6 +3098,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return HQL;
 	}//<--end function
+	
+	
+	public boolean function getDisableAveragesAndSumsFlag(){
+		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
+			variables.disableAveragesAndSumsFlag = false;
+		}
+		return variables.disableAveragesAndSumsFlag;
+	}
 	
 	public void function addTotalAvgAggregate(required struct column){
 		var found = false;
