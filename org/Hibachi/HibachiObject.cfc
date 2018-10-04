@@ -25,7 +25,7 @@ component accessors="true" output="false" persistent="false" {
 		var clientIP = cgi.remote_addr;
 		var clientHeaders = GetHttpRequestData().headers;
 		if(structKeyExists(clientHeaders,"X-Forwarded-For")){
-			clientIP = clientHeaders["X-Forwarded-For"];
+			clientIP = listRemoveDuplicates( ReplaceNoCase( clientHeaders["X-Forwarded-For"] , ' ', '', 'all') );
 		}
 		return clientIP;
 	}
