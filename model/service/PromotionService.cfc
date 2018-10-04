@@ -306,10 +306,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									});
 
 								}
-								
-								//Now add the order item to the modified entities to recalculate.
-								getHibachiScope().addModifiedEntity(orderItem);
-
 							}
 
 						} // End OrderItem in reward IF
@@ -319,6 +315,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} // End orderItem fulfillment in qualifiedFulfillment list
 
 			} // END Sale Item If
+											
+			//Now add the order item to the modified entities to recalculate.
+			getHibachiScope().addModifiedEntity(orderItem);
 
 		} // End Order Item For Loop
 	}
@@ -360,6 +359,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
+		
+		if(arguments.order.isOrderPaidFor()){
+			return;
+		}
 
 		// Set up a promotionEffectiveDateTime in case this is an order that has already been placed
 		var promotionEffectiveDateTime = now();
@@ -549,6 +552,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
 				newAppliedPromotion.setOrderItem( orderItem );
 				newAppliedPromotion.setDiscountAmount( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
+			
+				//making sure calculated props run
+				getHibachiScope().addModifiedEntity(orderItem);
 			}
 
 		}

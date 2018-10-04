@@ -39,12 +39,16 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		return application[ getApplicationValue('applicationKey') ].factory;
+		return application[ getApplicationValue('applicationKey') ].subsystemfactories['main'];
+	}
+	
+	public any function getCustom(){
+		return this;
 	}
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBean(required string beanName, struct constructorArgs = { }) {
-		return getBeanFactory().getBean( arguments.beanName, arguments.constructorArgs);
+		return getBeanFactory().getBean( argumentCollection=arguments);
 	}
 	
 	// @hint has a bean out of whatever the fw1 bean factory is
@@ -217,7 +221,7 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	public void function logHibachi(required string message, boolean generalLog=false){
-		getService("hibachiUtilityService").logMessage(message=arguments.message, generalLog=arguments.generalLog);		
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
 	public void function logHibachiException(required any exception){
