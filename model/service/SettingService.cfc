@@ -389,6 +389,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingWeight = {fieldType="text", defaultValue=1},
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
+			skuStockHold = {fieldType="yesno", defaultValue=0},
+			skuStockHoldTime = {fieldType="text", defaultValue=0,  validate={dataType="numeric"}},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
