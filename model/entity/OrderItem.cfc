@@ -121,6 +121,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityUnreceived" persistent="false";
 	property name="registrants" persistent="false";
 	property name="renewalSku" persistent="false";
+	property name="skuPerformCascadeCalculateFlag" persistent="false";
+	property name="stockPerformCascadeCalculateFlag" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
@@ -553,6 +555,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 
 		return variables.activeRegistrationsSmartList;
+	}
+	
+	public boolean function getSkuPerformCascadeCalculateFlag() {
+		return getOrderStatusCode() != 'ostNotPlaced';
+	}
+	
+	public boolean function getStockPerformCascadeCalculateFlag() {
+		return getOrderStatusCode() != 'ostNotPlaced';
 	}
 
 	public numeric function getTaxAmount() {

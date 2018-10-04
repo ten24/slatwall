@@ -952,6 +952,25 @@ component extends="framework.one" {
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
+		
+		//Process request entity queue
+		var entityQueueData = getHibachiScope().getEntityQueueData();
+		var entityQueueDataLength = structCount(entityQueueData);
+		if(entityQueueDataLength > 0){
+			
+			var entityQueueArray = [];
+			var currentIndex = 1;
+			var limit = getHibachiScope().setting('globalEntityQueueDataProcessCount');
+			for(var i in entityQueueData){
+				if(limit > 0 && limit >= currentIndex){
+					break;
+				}
+				arrayAppend(entityQueueArray, entityQueueData[i]);
+				currentIndex++;
+			}
+			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+		}
+		
 		getHibachiScope().getProfiler().logProfiler();
 	}
 

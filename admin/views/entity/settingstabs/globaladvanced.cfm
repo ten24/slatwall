@@ -78,6 +78,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalS3Bucket"/>
 		<swa:SlatwallSetting settingName="globalS3AccessKey"/>
 		<swa:SlatwallSetting settingName="globalS3SecretAccessKey"/>
+		<swa:SlatwallSetting settingName="globalEntityQueueDataProcessCount"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

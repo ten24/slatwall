@@ -194,12 +194,29 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 		try{
-			//get workflowTriggers Object
-			//execute Collection and return only the IDs
-			if(!isNull(arguments.workflowTrigger.getScheduleCollection())){
+
+			if(arguments.workflowTrigger.getCollectionPassthrough()){
+				//Don't Instantiate every object, just passthroughn the collection records returned
+				var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+				var triggerCollection = arguments.workflowTrigger.getScheduleCollection();
+				triggerCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
+				var triggerCollectionResult = triggerCollection.getPageRecords();
+ 				var processData = {
+					entity = this.invokeMethod('new#currentObjectName#'),
+					workflowTrigger = arguments.workflowTrigger,
+					collectionData = { 'collectionData' = triggerCollectionResult}
+				};
+				//Call proccess method to execute Tasks
+				this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
+				
+				
+			} else if(!isNull(arguments.workflowTrigger.getScheduleCollection())) {
+				//Instantiate one object per Collection Record returned
 				var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 				var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
+				//execute Collection and return only the IDs
 				var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
+	
 				//Loop Collection Data
 				for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){
 					//get current ObjectID
@@ -303,7 +320,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return workflowTrigger;
 	}
 
-	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type){
+	private boolean function executeTaskAction(required any workflowTaskAction, required any entity, required string type, struct data = {}){
 		var actionSuccess = false;
 		
 		switch (workflowTaskAction.getActionType()) {
@@ -351,11 +368,15 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
-					var processData = {'1'=arguments.entity};
-					
+					var processData = {
+						'1'=arguments.entity,
+						'2' = arguments.data
+					};
+				
 					if(arguments.entity.hasProcessObject(processContext)){
-						processData['2'] = arguments.entity.getProcessObject(processContext);
+						processData['3'] = arguments.entity.getProcessObject(processContext);
 					}
+					
 					var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
 					
 					if(!processMethod.hasErrors()) {
@@ -422,12 +443,16 @@ component extends="HibachiService" accessors="true" output="false" {
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
+							if(!structKeyExists(arguments.data,'collectionData')){
+								arguments.data.collectionData = {};
+							}
 							//Execute ACTION
 							if(structKeyExists(arguments.data,'entity')){
-								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType());
+								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType(), arguments.data.collectionData);
 							}else{
 								var actionSuccess = executeTaskAction(workflowTaskAction, javacast('null',''), data.workflowTrigger.getTriggerType());
 							}
+							
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
 								arguments.data.entity.setAnnounceEvent(true);
 							}
