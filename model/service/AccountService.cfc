@@ -1443,6 +1443,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			ormExecuteQuery("Update SlatwallAccountRelationship set parentAccount.accountID=:toAccountID where parentAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
 			ormExecuteQuery("Update SlatwallAccountRelationship set childAccount.accountID=:toAccountID where childAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
 	
+			//making accountPaymentMethod null in orderPayments that use it
+			getDAO("accountDAO").removeAccountPaymentMethodsFromOrderPaymentsByAccountID(fromAccount.getAccountID());
+	
 			var success = this.deleteAccount(fromAccount);
 			
 			// Dedupe the toAccount.
@@ -1707,7 +1710,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPhoneNumber(javaCast("null", ""));
 			arguments.account.setPrimaryAddress(javaCast("null", ""));
 			arguments.account.setOwnerAccount(javaCast("null", ""));
-			
+			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
 			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
