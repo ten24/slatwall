@@ -283,6 +283,10 @@ component extends="framework.one" {
 		variables.framework.hibachi.isApplicationStart = true;
 		super.onApplicationStart();
 	}
+	
+	public any function getBeanFactory(){
+		return super.getBeanFactory('main');
+	}
 
 	public void function setupGlobalRequest(boolean noredirect=false) {
 		createHibachiScope();
@@ -644,7 +648,7 @@ component extends="framework.one" {
 						],
 						singletonPattern="(Service|DAO)$"
 					});
-
+					
 					// Setup the custom bean factory
 					var coreBF = new framework.hibachiaop("/#variables.framework.applicationKey#/model", {
 						transients=["entity", "process", "transient", "report"],
