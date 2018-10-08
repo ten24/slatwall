@@ -754,6 +754,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  	}
 
 	public void function removeTaxesFromAllOrderItemsAndOrderFulfillments(required any order){
+		
+		//We don't want any values to change if order is already paid for
+		if(arguments.order.getPaymentAmountDueAfterGiftCards() <= 0){
+			return;
+		}
+		
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
 
@@ -765,7 +771,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			orderItem.clearVariablesKey('taxAmount');
-
 		}
 
 		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
