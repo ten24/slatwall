@@ -436,30 +436,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
 						}
 						foundOrderItem.validate(context='save');
+						
 						if(foundOrderItem.hasErrors()) {
 							//String replace the max order qty to give user feedback (with 0 as the minimum)
-							var maxOrderQuantity = 0;
-							if (foundOrderItem.getMaximumOrderQuantity() > 0){
-								maxOrderQuantity = foundOrderItem.getMaximumOrderQuantity();
-							}
 							var messageReplaceKeys = {
-								quantityAvailable = maxOrderQuantity
+								quantityAvailable =  foundOrderItem.getMaximumOrderQuantity(),
+								maxQuantity = foundOrderItem.getSku().setting('skuOrderMaximumQuantity')
 							};
-							if (messageReplaceKeys.quantityAvailable > 0){
-								var message = getHibachiUtilityService().replaceStringTemplate(rbKey('validate.save.OrderItem.quantity.hasQuantityWithinMaxOrderQuantity'), messageReplaceKeys);
-								message = foundOrderItem.stringReplace(message);
+							
+							for (var error in foundOrderItem.getErrors()){
+								for (var errorMessage in foundOrderItem.getErrors()[error]){
+									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+									message = foundOrderItem.stringReplace(message);
 								
-								if (!isNull(foundOrderItem.getError("addOrderItem"))){
-									foundOrderItem.errors = [];
+									foundOrderItem.addError('addOrderItem', message, true);
+									arguments.order.addError('addOrderItem', message, true);
 								}
-								if (!isNull(order.getError("addOrderItem"))){
-									order.errors = [];
-								}
-								foundOrderItem.addError("addOrderItem", message, true);
-								// Add the error to both the order and the orderItem
-								arguments.order.addError('addOrderItem', message, true);
-							}else{
-								arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
+
 							}
 						}
 						break;
@@ -566,24 +559,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
-				var maxOrderQuantity = 0;
-				if (newOrderItem.getMaximumOrderQuantity() > 0){
-					maxOrderQuantity = newOrderItem.getMaximumOrderQuantity();
-				}
 				var messageReplaceKeys = {
-					quantityAvailable = maxOrderQuantity
+					quantityAvailable = newOrderItem.getMaximumOrderQuantity(),
+					maxQuantity = newOrderItem.getSku().setting('skuOrderMaximumQuantity')
 				};
- 				var message = getHibachiUtilityService().replaceStringTemplate(rbKey('validate.save.OrderItem.quantity.hasQuantityWithinMaxOrderQuantity'), messageReplaceKeys);
-				message = newOrderItem.stringReplace(message);
-				if (!isNull(newOrderItem.getError("addOrderItem"))){
-					newOrderItem.errors = [];
+				
+ 				for (var error in newOrderItem.getErrors()){
+					for (var errorMessage in newOrderItem.getErrors()[error]){
+						var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+						message = newOrderItem.stringReplace(message);
+					
+						arguments.order.addError('addOrderItem', message, true);
+						newOrderItem.addError("addOrderItem", message, true);
+					}
 				}
-				if (!isNull(order.getError("addOrderItem"))){
-					order.errors = [];
-				}
-				newOrderItem.addError("addOrderItem", message, true);
-				// Add the error to both the order and the orderItem
-				arguments.order.addError('addOrderItem', message, true);
 			}else{
 				//begin stock hold logic
 				if(arguments.processObject.getSku().setting('skuStockHold')){
@@ -1664,45 +1653,59 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var amountAuthorizeCreditReceive = 0;
 
 							// Process All Payments and Save the ones that were successful
-							for(var orderPayment in arguments.order.getOrderPayments()) {
-								// As long as this orderPayment is active then we can run the place order transaction
-								if(orderPayment.getStatusCode() == 'opstActive') {
-									orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-									amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
-								}
+							if(!order.hasItemsQuantityWithinMaxOrderQuantity()){
+								arguments.order.addError('orderItem','an orderitem is out of stock');	
 							}
-
-
-
-							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
-							for(var orderitem in arguments.order.getOrderItems()) {
-								var errors = orderItem.validate('save').getErrors();
-								if(StructCount(errors)){
-									for(var errorKey in errors){
-										for(var message in errors[errorKey]){
-											arguments.order.addError('orderItem',message);
-										}
+							
+							//Sets the payment processing flag
+							var orderDAO = getDAO("OrderDao");
+							orderDAO.turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
+							
+							if(order.hasErrors()){
+								
+								arguments.order.setPaymentProcessingInProgressFlag(false);
+								
+							} else {
+								// Process All Payments and Save the ones that were successful
+								for(var orderPayment in arguments.order.getOrderPayments()) {
+									// As long as this orderPayment is active then we can run the place order transaction
+									if(orderPayment.getStatusCode() == 'opstActive') {
+										orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
+										amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
 									}
 								}
-								if(orderitem.getSku().getBaseProductType() == "event") {
-									if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
-										arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
-									}
-									if(!orderItem.hasEventRegistration()){
-										arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
-									}
 
-									if (!arguments.order.hasErrors()){
-										for ( var eventRegistration in orderItem.getEventRegistrations() ) {
-											// Set registration status - Should this be done when order is placed instead?
-											if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
-											}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
-											}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
-											}else{
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+								arguments.order.setPaymentProcessingInProgressFlag(false);
+								// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
+								for(var orderitem in arguments.order.getOrderItems()) {
+									var errors = orderItem.validate('save').getErrors();
+									if(StructCount(errors)){
+										for(var errorKey in errors){
+											for(var message in errors[errorKey]){
+												arguments.order.addError('orderItem',message);
+											}
+									}
+									
+									if(orderitem.getSku().getBaseProductType() == "event") {
+										if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
+											arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
+										}
+										if(!orderItem.hasEventRegistration()){
+											arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
+										}
+	
+										if (!arguments.order.hasErrors()){
+											for ( var eventRegistration in orderItem.getEventRegistrations() ) {
+												// Set registration status - Should this be done when order is placed instead?
+												if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+												}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
+												}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
+												}else{
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+												}
 											}
 										}
 									}
