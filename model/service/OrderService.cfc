@@ -1684,6 +1684,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											for(var message in errors[errorKey]){
 												arguments.order.addError('orderItem',message);
 											}
+										}
 									}
 									
 									if(orderitem.getSku().getBaseProductType() == "event") {
