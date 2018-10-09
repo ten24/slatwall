@@ -133,6 +133,8 @@ Notes:
 											stockHold.stockHoldExpirationDateTime > :currentTime
 											AND orderItem.order.orderStatusType.systemCode = 'ostNotPlaced'
 										)
+										OR 
+										orderItem.order.paymentProcessingInProgressFlag=1
 									)
 						  			AND
 						  				orderItem.orderItemType.systemCode = 'oitSale'

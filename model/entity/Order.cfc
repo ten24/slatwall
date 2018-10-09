@@ -61,6 +61,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quotePriceExpiration" ormtype="timestamp";
 	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
+	property name="paymentProcessingInProgressFlag" ormtype="boolean" default="false";
 	property name="orderCanceledDateTime" ormtype="timestamp";
 	property name="orderNotes" ormtype="text";
 	
@@ -201,7 +202,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public void function setOrderDAO(required any orderDAO) {
 		//TODO: check if necessary using setORderDAO()
-		variables.orderDAO = arguments.orderDAO
+		variables.orderDAO = arguments.orderDAO;
 	}
 
 
@@ -360,7 +361,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public boolean function hasGiftCardOrderPaymentAmount(){
 		
 		var amount = getOrderDAO().getGiftCardOrderPaymentAmount(this.getOrderID());
-
+					   
 		if(amount gt 0){
 			return true;
 		}
@@ -473,6 +474,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 
 	}
+	
+	public numeric function getTotalQuantityBySkuID(required string skuID){
+		var quantity = 0;
+		
+		for ( var orderItem in getOrderItems() ){
+			if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == arguments.skuID) {
+				quantity += orderItem.getQuantity();
+			}
+		}
+		
+		return quantity;
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getAddOrderItemSkuOptionsSmartList() {

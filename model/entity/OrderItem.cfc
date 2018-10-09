@@ -255,32 +255,54 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
  		return false;
  	}
  	
-    public boolean function hasQuantityWithinMaxOrderQuantity() {
-        if(getOrderItemType().getSystemCode() == 'oitSale') {
-        	var quantity = 0;
+    public boolean function hasQuantityWithinMaxOrderQuantity(boolean forceMaxOrderSettingFlag=false){
+		if(getOrderItemType().getSystemCode() == 'oitSale') {
+			var quantity = 0;
 			if(!isNull(getOrder())){
-				for (var orderItem in getOrder().getOrderItems()){
-					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-						quantity += orderItem.getQuantity();
-					}
-				}
+				quantity = getOrder().getTotalQuantityBySkuID( getSku().getSkuID() );
 			} else {
 				quantity = getQuantity();
 			}
+			
+			//if forceMaxOrderSettingFlag is true and the quantity is > than the maxOrderQuantitySettting
+			//then we'll want to return true so that we validate against that instead
+			if (arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity')) {
+				return true;
+			}
+			
             return quantity <= getMaximumOrderQuantity();
         }
+        
         return true;
     }
+    
+    public boolean function hasQuantityWithinQATS(){
+		if( getSku().getActiveFlag() && getSku().getProduct().getActiveFlag() && getSku().setting('skuTrackInventoryFlag') == 0   ){
+			return true;
+		}
+		return hasQuantityWithinMaxOrderQuantity(forceMaxOrderSettingFlag=true);
+	}
+
+    public boolean function hasQuantityWithinSkuOrderMaximumQuantity() {
+    	
+		if(getOrderItemType().getSystemCode() == 'oitSale') {
+			var quantity = 0;
+			if(!isNull(getOrder())){
+				quantity = getOrder().getTotalQuantityBySkuID( getSku().getSkuID() );
+			} else {
+				quantity = getQuantity();
+			}
+			
+			return quantity <= getSku().setting('skuOrderMaximumQuantity');
+		}
+		return true;
+	}
 
     public boolean function hasQuantityWithinMinOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
         	if(!isNull(getOrder())){
-				for (var orderItem in getOrder().getOrderItems()){
-					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-						quantity += orderItem.getQuantity();
-					}
-				}
+				quantity = getOrder().getTotalQuantityBySkuID( getSku().getSkuID() );
 			} else {
 				quantity = getQuantity();
 			}
