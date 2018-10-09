@@ -191,17 +191,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	
 	public void function init(){
+		setOrderService(getService('orderService'));
+		setOrderDao(getDAO('OrderDAO'));
 		super.init();
 	}
-//	
-//	public void function setOrderService(required any orderService){
-//		variables.orderService = arguments.orderService;
-//	}
 	
-//	public void function setOrderDAO(required any orderDAO) {
-//		//TODO: check if necessary using setORderDAO()
-//		variables.orderDAO = arguments.orderDAO
-//	}
+	public void function setOrderService(required any orderService){
+		variables.orderService = arguments.orderService;
+	}
+	
+	public void function setOrderDAO(required any orderDAO) {
+		//TODO: check if necessary using setORderDAO()
+		variables.orderDAO = arguments.orderDAO;
+	}
 
 
 	//======= End of Mocking Injection ========
@@ -359,7 +361,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public boolean function hasGiftCardOrderPaymentAmount(){
 		
 		var amount = getOrderDAO().getGiftCardOrderPaymentAmount(this.getOrderID());
-
+					   
 		if(amount gt 0){
 			return true;
 		}
