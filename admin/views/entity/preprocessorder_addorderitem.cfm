@@ -96,6 +96,7 @@ Notes:
 							<cfelse>
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 							</cfif>
+							<input type="hidden" name="oldQuantity" value="#rc.processObject.getQuantity()#">
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
 
 							<!--- Manual Gift Card Code Entry --->

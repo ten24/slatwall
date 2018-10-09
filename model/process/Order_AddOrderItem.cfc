@@ -81,6 +81,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price" hb_formatType="currency";
 	property name="currencyCode";
 	property name="estimatedShippingDate" hb_formFieldType="datetime";
+	property name="oldQuantity";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
@@ -164,7 +165,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getPrice() {
-		if(!structKeyExists(variables, "price")) {
+		if(
+			!structKeyExists(variables, "price") 
+			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPrice() )
+			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getLivePriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity()) )
+		){
 			variables.price = 0;
 			if(!isNull(getSku())) {
 				
@@ -172,8 +177,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				if ( !isNull(getOrder().getAccount()) ){
 					account = getOrder().getAccount();
 				}
-				
-				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode(), account );
+				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( currencyCode=getCurrencyCode() , quantity=getQuantity(), account=account);
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
 				} else {
