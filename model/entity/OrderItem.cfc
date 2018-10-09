@@ -263,15 +263,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			} else {
 				quantity = getQuantity();
 			}
+			
+			//if forceMaxOrderSettingFlag is true and the quantity is > than the maxOrderQuantitySettting
+			//then we'll want to return true so that we validate against that instead
+			if (arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity')) {
+				return true;
+			}
+			
             return quantity <= getMaximumOrderQuantity();
         }
         
-        //if forceMaxOrderSettingFlag is true and the quantity is > than the maxOrderQuantitySettting
-		//then we'll want to return true so that we validate against that instead
-		if (arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity')) {
-			return true;
-		}
-			
         return true;
     }
     
