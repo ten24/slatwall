@@ -210,7 +210,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function login(required struct rc) {
 	
-		if(getHibachiScope().getLoggedInFlag()){
+		if(getHibachiScope().getLoggedInFlag() && !structKeyExists(arguments.rc, 'sRedirectURL')){
 			getFW().redirect(action='admin:main.default', queryString="s=1");
 		}
 		getFW().setView("admin:main.login");

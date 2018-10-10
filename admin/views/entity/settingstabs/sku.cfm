@@ -89,6 +89,8 @@ Notes:
 		<swa:SlatwallSetting settingName="skuAssetLedgerAccount"/>
 		<swa:SlatwallSetting settingName="skuLiabilityLedgerAccount"/>
 		<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuStockHold"/>
+		<swa:SlatwallSetting settingName="skuStockHoldTime"/>
 
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -411,7 +411,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
-				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
+				for(var i=arraylen(orderFulfillment.getOrderFulfillmentItems());i>0; i--  ){
+				
+					var orderItem = orderFulfillment.getOrderFulfillmentItems()[i];
+					//evaluate existing stockHold
+					if(arraylen(orderItem.getStockHolds())){
+						//currently only supporting singular stockholds
+						var stockHold = orderItem.getStockHolds()[1];
+						if(stockHold.isExpired()){
+							getService('stockService').deleteStockHold(stockHold);
+							arguments.order.removeOrderItem(orderItem);
+							continue;
+						}
+					}
 					// If the sku, price, attributes & stock all match then just increase the quantity if and only if the match parent orderitem is null.
 					if(
 						arguments.processObject.matchesOrderItem( orderItem ) 
@@ -424,8 +436,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
 						}
 						foundOrderItem.validate(context='save');
+						
 						if(foundOrderItem.hasErrors()) {
-							arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
+							//String replace the max order qty to give user feedback (with 0 as the minimum)
+							var messageReplaceKeys = {
+								quantityAvailable =  foundOrderItem.getMaximumOrderQuantity(),
+								maxQuantity = foundOrderItem.getSku().setting('skuOrderMaximumQuantity')
+							};
+							
+							for (var error in foundOrderItem.getErrors()){
+								for (var errorMessage in foundOrderItem.getErrors()[error]){
+									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+									message = foundOrderItem.stringReplace(message);
+								
+									foundOrderItem.addError('addOrderItem', message, true);
+									arguments.order.addError('addOrderItem', message, true);
+								}
+
+							}
 						}
 						break;
 					}
@@ -530,7 +558,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem = this.saveOrderItem( newOrderItem );
 
 			if(newOrderItem.hasErrors()) {
-				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
+				//String replace the max order qty to give user feedback with the minimum of 0
+				var messageReplaceKeys = {
+					quantityAvailable = newOrderItem.getMaximumOrderQuantity(),
+					maxQuantity = newOrderItem.getSku().setting('skuOrderMaximumQuantity')
+				};
+				
+ 				for (var error in newOrderItem.getErrors()){
+					for (var errorMessage in newOrderItem.getErrors()[error]){
+						var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+						message = newOrderItem.stringReplace(message);
+					
+						arguments.order.addError('addOrderItem', message, true);
+						newOrderItem.addError("addOrderItem", message, true);
+					}
+				}
+			}else{
+				//begin stock hold logic
+				if(arguments.processObject.getSku().setting('skuStockHold')){
+					var stockHold = getService('stockService').newStockHold();
+					stockHold.setSku(arguments.processObject.getSku());
+					stockHold.setOrderItem(newOrderItem);
+					stockHold.setStock(arguments.processObject.getStock());
+					stockHold.setStockHoldExpirationDateTime(dateAdd('n',arguments.processObject.getSku().setting('skuStockHoldTime'),now()));
+					
+					stockHold = getService('stockService').saveStockHold(stockHold);
+				}
 			}
 		}
 
@@ -1600,45 +1653,60 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var amountAuthorizeCreditReceive = 0;
 
 							// Process All Payments and Save the ones that were successful
-							for(var orderPayment in arguments.order.getOrderPayments()) {
-								// As long as this orderPayment is active then we can run the place order transaction
-								if(orderPayment.getStatusCode() == 'opstActive') {
-									orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-									amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
-								}
+							if(!order.hasItemsQuantityWithinMaxOrderQuantity()){
+								arguments.order.addError('orderItem','an orderitem is out of stock');	
 							}
+							
+							//Sets the payment processing flag
+							var orderDAO = getDAO("OrderDao");
+							orderDAO.turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
+							
+							if(order.hasErrors()){
+								
+								arguments.order.setPaymentProcessingInProgressFlag(false);
+								
+							} else {
+								// Process All Payments and Save the ones that were successful
+								for(var orderPayment in arguments.order.getOrderPayments()) {
+									// As long as this orderPayment is active then we can run the place order transaction
+									if(orderPayment.getStatusCode() == 'opstActive') {
+										orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
+										amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
+									}
+								}
 
-
-
-							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
-							for(var orderitem in arguments.order.getOrderItems()) {
-								var errors = orderItem.validate('save').getErrors();
-								if(StructCount(errors)){
-									for(var errorKey in errors){
-										for(var message in errors[errorKey]){
-											arguments.order.addError('orderItem',message);
+								arguments.order.setPaymentProcessingInProgressFlag(false);
+								// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
+								for(var orderitem in arguments.order.getOrderItems()) {
+									var errors = orderItem.validate('save').getErrors();
+									if(StructCount(errors)){
+										for(var errorKey in errors){
+											for(var message in errors[errorKey]){
+												arguments.order.addError('orderItem',message);
+											}
 										}
 									}
-								}
-								if(orderitem.getSku().getBaseProductType() == "event") {
-									if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
-										arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
-									}
-									if(!orderItem.hasEventRegistration()){
-										arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
-									}
-
-									if (!arguments.order.hasErrors()){
-										for ( var eventRegistration in orderItem.getEventRegistrations() ) {
-											// Set registration status - Should this be done when order is placed instead?
-											if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
-											}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
-											}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
-											}else{
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+									
+									if(orderitem.getSku().getBaseProductType() == "event") {
+										if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
+											arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
+										}
+										if(!orderItem.hasEventRegistration()){
+											arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
+										}
+	
+										if (!arguments.order.hasErrors()){
+											for ( var eventRegistration in orderItem.getEventRegistrations() ) {
+												// Set registration status - Should this be done when order is placed instead?
+												if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+												}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
+												}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
+												}else{
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+												}
 											}
 										}
 									}
@@ -1804,6 +1872,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// concurrent invocation error caused by reading and modifying the array in the same request.
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
+				if(arraylen(orderItem.getStockHolds())){
+					//currently only supporting singular stockholds
+					var stockHold = orderItem.getStockHolds()[1];
+					if(stockHold.isExpired()){
+						getService('stockService').deleteStockHold(stockHold);
+						arguments.order.removeOrderItem(orderItem);
+						continue;
+					}
+				}
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(!isNull(orderItem) && arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
 
@@ -2057,8 +2134,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
-		    	if(arguments.order.getPaymentAmountDue() > 0){
-					getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		    if(arguments.order.getPaymentAmountDue() > 0){
+				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
 		    }
 
 			//update the calculated properties
@@ -3245,6 +3322,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// loop over the orderItems to remove any that have a qty of 0
 			for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--) {
+				var orderItem = arguments.order.getOrderItems()[i];
+				//evaluate existing stockHold
+				if(arraylen(orderItem.getStockHolds())){
+					//currently only supporting singular stockholds
+					var stockHold = orderItem.getStockHolds()[1];
+					if(stockHold.isExpired()){
+						getService('stockService').deleteStockHold(stockHold);
+						arguments.order.removeOrderItem(orderItem);
+						continue;
+					}
+				}
 				if(arguments.order.getOrderItems()[i].getQuantity() < 1) {
 					arguments.order.removeOrderItem(arguments.order.getOrderItems()[i]);
 				} else if( !isNull(arguments.order.getOrderItems()[i].getOrderFulfillment()) && !arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID())) {
@@ -3758,6 +3846,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		if(!isNull(arguments.orderItem.getOrderReturn())) {
 			arguments.orderItem.removeOrderReturn();
+		}
+		
+		for(var stockHold in arguments.orderItem.getStockHolds()){
+			getService('stockService').deleteStockHold(stockHold);
 		}
 
 		// Actually delete the entity

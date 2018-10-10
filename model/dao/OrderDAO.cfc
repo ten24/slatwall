@@ -58,6 +58,15 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="turnOnPaymentProcessingFlag" access="public" returntype="void" output="false">
+		<cfargument name="orderID" type="string" required="true" />
+		
+		<cfset var rs = "" />
+ 		<cfquery name="rs">
+			UPDATE sworder set paymentProcessingInProgressFlag=true where orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="getDeliveredQuantitySum" access="public" returntype="any">
 			<cfargument name="orderItemID" type="string" required="true" />
 

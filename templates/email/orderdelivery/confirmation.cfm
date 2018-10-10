@@ -106,7 +106,7 @@ Notes:
 																<h4 class="mb_xxs mte" style="color: #colorAccent#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 19px;line-height: 25px;">Order &##35;#orderDelivery.getOrder().getOrderNumber()#</h4>
 																
 																<!------- ORDER PLACED DATE ------->
-																<p class="small tm" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">Placed on #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "MM/DD/YYYY")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#</p>
+																<p class="small tm" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">Placed on #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "m/d/yyyy")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#</p>
 															</td>
 														</tr>
 													</tbody>

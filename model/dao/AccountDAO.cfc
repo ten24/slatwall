@@ -110,6 +110,21 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="removeAccountPaymentMethodsFromOrderPaymentsByAccountID">
+		<cfargument name="accountID" type="string" required="true" >
+ 		<cfset var rs = "" />
+ 		<cfquery name="rs">
+			UPDATE
+				SwOrderPayment op
+			LEFT JOIN swAccountPaymentMethod apm
+				ON apm.accountPaymentMethodID = op.accountPaymentMethodID
+			SET
+				op.accountPaymentMethodID = null
+			WHERE
+				apm.accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="removePrimaryAddress">
 		<cfargument name="accountID" type="string" required="true" >
 

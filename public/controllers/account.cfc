@@ -121,6 +121,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getHibachiScope().addActionResult( "public:account.changePassword", account.hasErrors() );
 	}
+	
+	// Account - Update Password
+	public void function updatePassword(required struct rc){
+		var account = getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "updatePassword");
+		
+		getHibachiScope().addActionResult( "public:account.updatePassword", account.hasErrors() );
+	}
 
 	// Account - Create
 	public void function create( required struct rc ) {

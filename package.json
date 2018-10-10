@@ -82,7 +82,11 @@
     "buildFrontend": "cd org/Hibachi/client && webpack --config webpack-frontend-develop.config.js",
     "buildFrontend:prod": "cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js",
     "buildSpec": "cd admin/client && webpack --config webpack-test.config.js",
-    "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css"
+    "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css",
+    "buildCustomAdmin": "node custom/client/customAdmin.js",
+    "buildCustomAdmin:prod": "node custom/client/customAdminProd.js",
+    "buildCustomFrontend": "custom/client/customFrontend.js",
+    "buildCustomFrontend:prod": "custom/client/customFrontendProd.js"
   },
   "jshintConfig": {
     "predef": [

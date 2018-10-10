@@ -88,7 +88,8 @@ Notes:
 	</hb:HibachiListingDisplay> --->
 
 	<sw-listing-display 
-		data-using-personal-collection="true"
+		data-using-personal-collection="false"
+		data-show-filters="false"
 		data-personal-collection-identifier="OrderItem"
 		data-collection="'OrderItem'"
 		data-edit="false"

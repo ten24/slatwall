@@ -1391,7 +1391,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 			if (paymentTransaction.getTransactionSuccessFlag() == false){
-				accountPayment.setActiveFlag(false);
+				arguments.accountPayment.setActiveFlag(false);
 			}
 		}
 
@@ -1442,6 +1442,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			ormExecuteQuery("Update SlatwallAccountRelationship set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
 			ormExecuteQuery("Update SlatwallAccountRelationship set parentAccount.accountID=:toAccountID where parentAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
 			ormExecuteQuery("Update SlatwallAccountRelationship set childAccount.accountID=:toAccountID where childAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
+	
+			//making accountPaymentMethod null in orderPayments that use it
+			getDAO("accountDAO").removeAccountPaymentMethodsFromOrderPaymentsByAccountID(fromAccount.getAccountID());
 	
 			var success = this.deleteAccount(fromAccount);
 			
@@ -1570,12 +1573,15 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			arguments.accountPaymentMethod = this.processAccountPaymentMethod(arguments.accountPaymentMethod, transactionData, 'createTransaction');
 			if (arguments.accountPaymentMethod.hasErrors()){
-				arguments.accountPaymentMethod.errors = [];
+				var errors = arguments.accountPaymentMethod.getErrors();
+				arguments.accountPaymentMethod.getHibachiErrors().setErrors(structnew());
 				arguments.accountPaymentMethod.setActiveFlag(false);
 				this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
 			}
 		}
-
+		if(structKeyExists(local,'errors')){
+			arguments.accountPaymentMethod.addErrors(errors);
+		}
 		return arguments.accountPaymentMethod;
 
 	}
@@ -1704,7 +1710,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPhoneNumber(javaCast("null", ""));
 			arguments.account.setPrimaryAddress(javaCast("null", ""));
 			arguments.account.setOwnerAccount(javaCast("null", ""));
-			
+			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
 			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );

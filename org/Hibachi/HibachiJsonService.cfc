@@ -129,6 +129,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        //cache RB for 1 day or until a reload
 	        //lcase all the resourceBundle keys so we can have consistent casing for the js
 	        for(var key in resourceBundle){
+		    key = REReplace(trim(key), '[^\x00-\x7F]', '', "ALL");
+	            if(!len(key)){
+	                continue;
+	            }
 	            data[lcase(key)] = resourceBundle[key];
 	        }
 	        var json = serializeJson(data);
