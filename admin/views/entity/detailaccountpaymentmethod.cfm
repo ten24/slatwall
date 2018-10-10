@@ -162,8 +162,8 @@ Notes:
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 
-		<hb:HibachiTabGroup object="#rc.accountPaymentMethod#">
-			<hb:HibachiTab property="paymentTransactions" />
-		</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.accountPaymentMethod#">
+			<hb:HibachiEntityDetailItem property="paymentTransactions" />
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
