@@ -22,7 +22,15 @@
 			<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
 			<!---lucee cache must be explicit--->
 			<cfif structKeyExists(server,'lucee')>
-				<cfcache action="flush" expireURL="#expireUrl#" cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#">
+				<!--- Flush on clear cache key --->
+				<cfset flushAttributeStruct = {
+						action="flush",
+						expireURL="#expireUrl#",
+						cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#"
+				}/>
+				
+				<cfcache attributeCollection="#flushAttributeStruct#">
+				
 				<cfset attributeStruct = {
 						name="cacheContent", 
 						action="get", 
