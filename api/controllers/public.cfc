@@ -18,6 +18,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         arguments.rc['ajaxRequest'] = true;
         arguments.rc.headers["Content-Type"] = 'application/json';
         
+        if ( arguments.rc.jsonRequest == true && structKeyExists( arguments.rc, 'deserializedJSONData') ){
+           	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
+        }
+        
         if(structKeyExists(arguments.rc,'cmsSiteID')){
             getHibachiScope().setCurrentRequestSite(getService('siteService').getSiteByCMSSiteID(arguments.rc.cmsSiteID));
             getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
