@@ -1,5 +1,5 @@
 {
 	"properties":{
-		"stockReceiverItems":						[{"contexts":"delete","maxCollection":0}]
+		"stockReceiverItems":						[{"contexts":"delete,edit","maxCollection":0}]
 	}
 }

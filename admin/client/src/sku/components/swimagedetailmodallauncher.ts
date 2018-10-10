@@ -29,16 +29,18 @@ class SWImageDetailModalLauncherController{
         private collectionConfigService,
         private utilityService,
         private $hibachi,
-        private $http
+        private $http,
+        private $element
     ){
+        this.$element = $element;
         this.name = this.baseName + this.utilityService.createID(18);
-        
+        this.imagePath;
         fileService.imageExists(this.imagePath).then(
             ()=>{
-                this.imagePathToUse = this.imagePath; 
+                this.imagePathToUse = this.imagePath + "?version="+Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5); 
             },
             ()=>{
-                this.imagePathToUse = '/assets/images/image-placeholder.jpg';
+                this.imagePathToUse = 'assets/images/image-placeholder.jpg';
             }
         ).finally(
             ()=>{
@@ -90,7 +92,7 @@ class SWImageDetailModalLauncherController{
     }
 
     public updateImage = (rawImage) => {
-
+        console.log('update');
     }
 
     public saveAction = () => {
@@ -109,15 +111,22 @@ class SWImageDetailModalLauncherController{
         } else {
             data.append('imageFile', this.sku.data.imageFile);
         }
-        data.append('uploadFile', this.sku.data.uploadFile);
+       
+        var inputs = document.getElementsByTagName('input');
+        var fileElement:any = $('input[type=file]')[0]
+        data.append('uploadFile', fileElement.files[0]); 
+        
 
         var savePromise = this.$http.post(
-                "/?s=1",
-                data,
-                {
-                    transformRequest: angular.identity,
-                    headers: {'Content-Type': undefined}
-                });
+            "/?s=1",
+            data,
+            {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }
+        ).then(()=>{
+            this.sku.data.imagePath = this.imageFileName.split('?')[0] + "?version="+Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+        });
 
         return savePromise;
     }

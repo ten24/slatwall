@@ -117,7 +117,7 @@ class SWWorkflowTasks{
 					logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue)
 					if((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)) ){
 						logger("scope.$watch", "Change to " + newValue)
-						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
+                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = '_' + newValue.charAt(0).toLowerCase() + newValue.slice(1) ;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}
 				});

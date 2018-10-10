@@ -38,7 +38,9 @@ class AlertService implements IAlertService{
     addAlert = (alert:any):void =>{
         this.alerts.push(alert);
         this.$timeout(()=> {
-            this.removeAlert(alert);
+            if(!alert.dismissable){
+                this.removeAlert(alert);
+            }
         }, 3500);
     };
 

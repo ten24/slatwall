@@ -88,6 +88,7 @@ Notes:
 					<cfset orderReturnItemIndex++ />
 					
 					<input type="hidden" name="orderReturnItems[#orderReturnItemIndex#].orderReturnItem.orderItemID" value="#orderReturnItem.getOrderItemID()#" />
+					<input type="hidden" name="orderReturnItems[#orderReturnItemIndex#].unreceivedQuantity" value="#orderReturnItem.getQuantityUnreceived()#" />
 					
 					<td><cfif not isNull(orderReturnItem.getSku().getProduct().getBrand())>#orderReturnItem.getSku().getProduct().getBrand().getBrandName()#</cfif> </td>
 					<td>#orderReturnItem.getSku().getProduct().getProductName()#</td>

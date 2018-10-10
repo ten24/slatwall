@@ -86,14 +86,113 @@ Notes:
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>
-		<div id="container" style="width: 625px; font-family: arial; font-size: 12px;background:##fff;">
-			<h1 style="font-size: 20px;">Account Email Address Verification</h1>
-			<p>Please verify your email address by clicking on the link below your password by clicking this link where you will be prompted to enter a new password:</p>
-			<p><a href="#resetLink#">#resetLink#</a></p>	
-		</div>
+	<cfinclude template="../inc/header.cfm" />
+	
+	<!-- jumbotron_light_icon -->
+	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+	 <tbody>
+		 <tr>
+			 <td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
+				 <!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+				 <div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+					 <table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+						 <tbody>
+							 <tr>
+								 <td class="content_cell light_b" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainerAccent#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;line-height: inherit;min-width: 0 !important;">
+									 <!-- col-6 -->
+									 <div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+									 <!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td width="600" style="width:600px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+										 <div class="col_6" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;">
+											 <table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+												 <tbody>
+													 <tr>
+														 <td class="column_cell px pte tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 32px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
+															 <table class="ic_h" align="center" width="64" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;width: 64px;">
+																 <tbody>
+																	 <tr>
+																		 <td class="default_b" style="box-sizing: border-box;vertical-align: middle;background-color: #colorBackground#;line-height: 100%;font-family: Helvetica, Arial, sans-serif;text-align: center;mso-line-height-rule: exactly;padding: 16px;border-radius: 80px;">
+																			 <p class="imgr mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 0;line-height: 100%;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;clear: both;"><img src="/assets/images/unlocked.png" width="32" height="32" alt="" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 32px;width: 100% !important;height: auto !important;display: block;margin-left: auto;margin-right: auto;"></p>
+																		 </td>
+																	 </tr>
+																 </tbody>
+															 </table>
+															 
+															 <!------- HEADER COPY ------->
+															 <h1 class="mb_xxs" style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 20px;margin-bottom: 16px;padding: 0;font-weight: bold;font-size: 32px;line-height: 42px;">Account Email Address Verification</h1>
+														 </td>
+													 </tr>
+												 </tbody>
+											 </table>
+										 </div>
+									 <!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+									 </div>
+								 </td>
+							 </tr>
+						 </tbody>
+					 </table>
+				 </div>
+				 <!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+			 </td>
+		 </tr>
+	 </tbody>
+	</table>
+
+	
+	<!-- content_center -->
+	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+		<tbody>
+			<tr>
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
+					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+							<tbody>
+								<tr>
+									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center; padding: 20px 15px 45px; line-height: inherit;min-width: 0 !important;">
+										<!-- col-6 -->
+										<div class="email_row tl" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: left;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+											<div class="col_6" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+													<tbody>
+														<tr>
+															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 16px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
+																
+																<!------- BODY COPY ------->
+																<p style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">Please verify your email address by clicking on the link below your password by clicking this link where you will be prompted to enter a new password:</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+												<table class="ebtn" align="center" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;">
+													<tbody>
+														<tr>
+															
+															<!------- RESET PASSWORD LINK ------->
+															<td class="active_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: Helvetica, Arial, sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 13px 22px;"><a href="#resetLink#" style="text-decoration: none;line-height: inherit;color: #colorContainer#;"><span style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Reset password</span></a></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<cfinclude template="../inc/footer.cfm" />
 	</cfoutput>
 </cfsavecontent>
 <cfsavecontent variable="emailData.emailBodyText">
+	
+	<!-- PLAIN TEXT VERSION -->
 	<cfoutput>
 		Password Reset
 		
@@ -101,4 +200,5 @@ Notes:
 		
 		#resetLink#
 	</cfoutput>
+	
 </cfsavecontent>

@@ -47,10 +47,11 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
+	<div class="alert alert-info alert-dismissable">#$.slatwall.rbKey('admin.entity.producttabs.defaultimages.maximagesizeinfo')##$.slatwall.setting('imageMaxSize')#MB</div>
 	<div class="row s-image-uploader">
 		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFileStruct">
 			<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFileStruct.imageFile#" />
-			<cfif fileExists(expandPath(thisImagePath))>
+			<cfif fileExists($.slatwall.getService('HibachiUtilityService').hibachiExpandPath(thisImagePath))>
 				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
 						<div class="s-image">

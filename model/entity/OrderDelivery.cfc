@@ -50,6 +50,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 
 	// Persistent Properties
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
 	property name="containerLabel" ormtype="clob";
 	// Related Object Properties (Many-To-One)
@@ -63,7 +64,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	// Related Object Properties (One-To-Many)
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
-
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="shippingLabelFiles" singularname="shippingLabelFile" cfc="File" fieldtype="many-to-many" linktable="SwOrderDeliveryShipLabelFile" fkcolumn="orderDeliveryID" inversejoincolumn="fileID";
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -95,6 +99,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 
 	public any function getOrderFulfillment(){
 		return this.getOrderDeliveryItems()[1].getOrderItem().getOrderFulfillment();
+	}
+	
+	public boolean function getLocationIsLeafNode(){
+		return  !getLocation().hasChildren();
 	}
 
     // ============ START: Non-Persistent Property Methods =================
@@ -136,13 +144,22 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
  	public void function removeAttributeValue(required any attributeValue) {
  		arguments.attributeValue.removeOrderDelivery( this );
  	}
+ 	
+ 	// Location (many-to-many - inverse)
+	public void function addShippingLabelFile(required any shippingLabelFile) {
+		arguments.shippingLabelFile.addOrderDelivery( this );
+	}
+	public void function removeShippingLabelFile(required any shippingLabelFile) {
+		arguments.shippingLabelFile.removeOrderDelivery( this );
+	}
+
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentation() {
-		return "Delivery for - " & getOrder().getOrderNumber();
+		return "Order Delivery: Order ##" & getOrder().getOrderNumber();
 	}
 
 	// ==================  END:  Overridden Methods ========================

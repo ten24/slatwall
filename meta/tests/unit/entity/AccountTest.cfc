@@ -1592,58 +1592,6 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(mockpaymentMethod1.getPaymentMethodID(), result[1].getPaymentMethodID());		
 	}
 	
-	/**
-	* @test
-	*/
-	public void function getSaveablePaymentMethodsSmartList_NoneSetting_Test() {
-		var accountData = {
-			accountID = "",
-			firstName = "saveableTest"
-		};
-		var mockAccount = createPersistedTestEntity('Account', accountData);
-
-		var orderData1 = {
-			orderID = "",
-			orderNumber = "orderNumber00001",
-			account = {
-				accountID = mockAccount.getAccountID()
-			}
-		};
-		var order1 = createPersistedTestEntity("Order", orderData1);
-		
-		var paymentMethodData1 = {//PaymentMethod1 meet all filter requirements except the setting
-			paymentMethodID="",
-			activeFlag = 1,
-			allowSaveFlag = 1,
-			paymentMethodType = 'termPayment'
-		};
-		var mockpaymentMethod1 = createPersistedTestEntity('paymentMethod',paymentMethodData1);
-		
-		//create setting that length is 0
-		var settingData = {
-			settingID = "",
-			settingName = "accountEligiblePaymentMethods",
-			settingValue = ""
-		};
-		var settingEntity = createPersistedTestEntity('Setting',settingData);
-		
-		var orderPaymentData1 = {
-				orderPaymentID = "",
-				paymentMethod = {
-					paymentMethodID = mockpaymentMethod1.getPaymentMethodID()
-				},
-				order = {
-					orderID = order1.getOrderID()
-				}
-		};
-		var orderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1);
-		
-		//MockPaymentMethod1 should be added in as setting filter is none there
-		var result = mockAccount.getSaveablePaymentMethodsSmartList().getRecords(refresh = true);
-		assertEquals(1, arrayLen(result));
-		assertEquals(mockpaymentMethod1.getPaymentMethodID(), result[1].getPaymentMethodID());		
-	}
-	
 
 	/**
 	* @test

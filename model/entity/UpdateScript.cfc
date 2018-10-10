@@ -56,9 +56,21 @@ component entityname="SlatwallUpdateScript" table="SwUpdateScript" persistent="t
 	property name="successfulExecutionCount" ormtype="integer" default="0";
 	property name="executionCount" ormtype="integer" default="0" ;
 	property name="lastExecutedDateTime" ormtype="timestamp";
+	
 		
 	// ============ START: Non-Persistent Property Methods =================
 	
+	property name="updateScriptException" persistent="false";
+	
+	public void function setUpdateScriptException(required any e){
+		variables.updateScriptException = arguments.e;
+	}
+	
+	public any function getUpdateScriptException(){
+		if(structKeyExists(variables,"updateScriptException")){
+			return variables.updateScriptException;
+		}
+	}
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

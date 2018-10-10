@@ -3,7 +3,9 @@
 		"vendor":								[{"contexts":"save","required":true}],
 		"vendorOrderType":						[{"contexts":"save","required":true}],
 		"vendorOrderStatusType":				[{"contexts":"save","required":true}],
+		"statusCode":							[{"contexts":"receive","neq":"vostClosed"},
+												 {"contexts":"fulfill","neq":"vostClosed"}],
 		"stockReceivers":						[{"contexts":"delete","maxCollection":0}],
-		"vendorOrderItems":						[{"contexts":"receiveStock","minCollection":1}]
+		"vendorOrderItems":						[{"contexts":"receive","minCollection":1}]
 	}
 }

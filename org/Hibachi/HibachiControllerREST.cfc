@@ -16,7 +16,6 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
-    this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
@@ -34,6 +33,8 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getAttributeModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
+    this.publicMethods=listAppend(this.publicMethods, 'authenticateAction');
+    this.publicMethods=listAppend(this.publicMethods, 'batchCalculate');
 
     this.secureMethods='';
     this.secureMethods=listAppend(this.secureMethods, 'getFormResponses');
@@ -52,6 +53,13 @@ component output="false" accessors="true" extends="HibachiController" {
 
         getFW().setView("public:main.blank");
         arguments.rc.headers["Content-Type"] = "application/json";
+        var functionName = getFW().getItem();
+        if(
+            len(functionName) >= 3 
+            && left(functionName,3)=='get'
+        ){
+            arguments.rc.context = 'GET';
+        }
 
         if(isnull(arguments.rc.apiResponse.content)){
             arguments.rc.apiResponse.content = {};
@@ -62,7 +70,10 @@ component output="false" accessors="true" extends="HibachiController" {
 			&& structKeyExists(GetHttpRequestData().headers,'Content-Type')
 			&& FindNoCase('application/json',GetHttpRequestData().headers['Content-Type'])
 		){
-			structAppend(arguments.rc,deserializeJson(ToString(GetHttpRequestData().content)));
+		    var contentStruct = deserializeJson(ToString(GetHttpRequestData().content));
+		    if(isStruct(contentStruct)){
+			    structAppend(arguments.rc,deserializeJson(ToString(GetHttpRequestData().content)));
+		    }
 		}
         if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET'
             && structKEyExists(arguments.rc, 'serializedJSONData')
@@ -71,9 +82,29 @@ component output="false" accessors="true" extends="HibachiController" {
         ) {
             StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
         }
+        
+        if(structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET'){
+            getHibachiScope().setPersistSessionFlag(false);
+        }
 
         //could possibly check whether we want a different contentType other than json in the future example:xml
 
+    }
+
+    public void function batchCalculate(required struct rc){
+    	if(getHibachiScope().getAccount().getSuperUserFlag()){
+    		
+    		getService('hibachitagservice').cfsetting(requesttimeout=0);
+    		getService('hibachiService').batchUpdateCalculatedPropertiesByEntityName(rc);
+    		if(rc.totalPagesComplete < rc.maxTotalPages){
+    		    arguments.rc.apiRequest = false;
+    		    getFW().setView('api:main.batchCalculate');
+    		}else{
+    		    arguments.rc.apiRequest = true;
+    		    arguments.rc.apiResponse['totalPagesComplete']=arguments.rc.totalPagesComplete;
+    		    arguments.rc.apiResponse['maxTotalPages']=arguments.rc.maxTotalPages;
+    		}
+    	}
     }
 
     public void function getConfig(required struct rc){
@@ -96,19 +127,17 @@ component output="false" accessors="true" extends="HibachiController" {
     	
     	writeOutput(responseValue);abort;
     }
+    
+    public void function authenticateAction(required struct rc){
+    	var account = getHibachiScope().account();
+    	var authenticateActionResult = getHibachiScope().authenticateAction(rc.permissionaction);
+    	writeOutput(authenticateActionResult);abort;
+    }
 
     public void function getInstantiationKey(required struct rc){
     	var data = {};
     	data['instantiationKey'] = '#getApplicationValue('instantiationKey')#';
-    	var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
-    	if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
-    		data['attributeCacheKey'] = getService('HibachiCacheService').getCachedValue(modelCacheKey);
-    	}else if (hasService('attributeService')){
-    		var attributeMetaData = getService('attributeService').getAttributeModel();
-    		data['attributeCacheKey'] = hash(serializeJson(attributeMetaData),'MD5');
-    		getService('HibachiCacheService').setCachedValue(modelCacheKey,data['attributeCacheKey']);
-    	}
-    	
+    	data['attributeCacheKey'] = '#getService('HibachiService').getAttributeCacheKey()#';
     	arguments.rc.apiResponse.content['data']=data;
     }
 
@@ -300,7 +329,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public any function getFilterPropertiesByBaseEntityName( required struct rc){
-        var entityName = rereplace(rc.entityName,'_','');
+    	var entityName = listToArray(rc.entityName, "_")[1];
         var includeNonPersistent = false;
 
 		if(structKeyExists(arguments.rc,'includeNonPersistent') && IsBoolean(arguments.rc.includeNonPersistent)){
@@ -687,6 +716,12 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
             }
         }
+        
+        
+        if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+            getService('HibachiUtilityService').logApiRequest(arguments.rc, "get");
+        } 
+        
     }
 
     public any function post( required struct rc ) {
@@ -783,15 +818,18 @@ component output="false" accessors="true" extends="HibachiController" {
 	            var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entity.getClassName()#.#rc.context#_success" ), replaceValues);
 	            getHibachiScope().showMessage( successMessage, "success" );
 
-	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", replaceValues.entityName, "all" ) , "success");
+	            // getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", replaceValues.entityName, "all" ) , "success");
 	        }
 
 	        if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
+	        
+            if ( getService("SettingService").getSettingValue("globalLogApiRequests") ) {
+                getService('HibachiUtilityService').logApiRequest(arguments.rc,  "post", structuredData);
+            } 
         }
-
 
     }
 
@@ -852,7 +890,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			throw(type="ClientError", message="#message#");
 		}
 	}
-
+	
         /*
 
         GET http://www.mysite.com/slatwall/api/product/ -> returns a collection of all products

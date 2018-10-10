@@ -318,7 +318,6 @@ class SWInputController{
 		}
 
 		this.edit = this.edit || true;
-		console.log(this.fieldType)
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";

@@ -8,9 +8,12 @@ import {formbuildermodule} from "../formbuilder/formbuilder.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
 import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
+import {orderfulfillmentmodule} from "../orderfulfillment/orderfulfillment.module";
+import {fulfillmentbatchdetailmodule} from "../fulfillmentbatch/fulfillmentbatchdetail.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {skumodule} from "../sku/sku.module";
+import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.module";
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
@@ -33,9 +36,12 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   giftcardmodule.name,
   optiongroupmodule.name,
   orderitemmodule.name,
+  orderfulfillmentmodule.name,
+  fulfillmentbatchdetailmodule.name,
   productmodule.name,
   productbundlemodule.name,
   skumodule.name,
+  subscriptionusagemodule.name,
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
@@ -148,7 +154,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 }])
 //filters
 
-.filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
+.filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
 
 ;
 export{

@@ -52,15 +52,28 @@ Notes:
 
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.ordersNotPlacedSmartList" type="any" />
+<cfparam name="rc.ordersNotPlacedCollectionList" type="any" />
 
-<hb:HibachiListingDisplay smartList="#rc.ordersNotPlacedSmartList#"
-						  recordDetailAction="admin:entity.detailorder"
-						  recordEditAction="admin:entity.editorder">
+<cfset displayPropertyList = 'orderType.typeName,orderStatusType.typeName,createdDateTime,calculatedTotal'/>
+<cfset rc.ordersNotPlacedCollectionList.setDisplayProperties(
+	displayPropertyList,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+)/>
 
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" />
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="modifiedDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
+<cfset rc.ordersNotPlacedCollectionList.addDisplayProperty(displayProperty='orderID',columnConfig={
+	isVisible=false,
+	isSearchable=false,
+	isDeletable=false
+	})
+/>
+
+
+<hb:HibachiListingDisplay collectionList="#rc.ordersNotPlacedCollectionList#"
+	recordEditAction="admin:entity.editorder"
+	recordDetailAction="admin:entity.detailorder"
+>
 </hb:HibachiListingDisplay>
-<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />

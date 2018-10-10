@@ -48,7 +48,14 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
-	
+	public any function setup(){
+		super.setup();
+		
+		
+		variables.HibachiValidationService = createMock('Slatwall.org.Hibachi.HibachiValidationService');
+		variables.HibachiService = variables.mockService.getHibachiServiceMock();;
+		variables.SettingService = variables.mockService.getSettingServiceMock();
+	}
 		
 	/**
 	* @test
@@ -60,7 +67,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in allEntities) {
 			var thisEntityName = replace(entityName, "Slatwall","","all");
 			var exampleEntity = request.slatwallScope.newEntity( thisEntityName );
-			var validationStruct = request.slatwallScope.getService('HibachiValidationService').getValidationStruct(exampleEntity);
+			var validationStruct = variables.HibachiValidationService.getValidationStruct(exampleEntity);
 			if(structKeyExists(validationStruct,'properties')){
 				for(var propertyName in validationStruct.properties){
 					var validationPropertyDetails = validationStruct.properties[propertyName];
@@ -145,7 +152,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 			// Check for the entity property keys
 			var exampleEntity = request.slatwallScope.newEntity( thisEntityName );
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.HibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if(!structKeyExists(property, "persistent") || property.persistent) {
 					//var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');
@@ -167,7 +174,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function settingsHaveRBkeys() {
-		var settingMetaData = request.slatwallScope.getService("settingService").getAllSettingMetaData();
+		var settingMetaData = variables.SettingService.getAllSettingMetaData();
 		var settingNameList = structKeyList(settingMetaData);
 		
 		var criminalsMessage = '';

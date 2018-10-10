@@ -52,7 +52,9 @@ Notes:
 	
 	<cffunction name="getMetricDefinitions">
 		<cfreturn [
-			{alias='taxAmount', function='sum', formatType="currency", title=rbKey('entity.taxApplied.taxAmount')},
+			{alias='taxAmount', calculation='SUM(taxAmountSales) - SUM(taxAmountReturn)', formatType="currency", title=rbKey('entity.taxApplied.taxAmount') & " " & rbKey('define.total')},
+			{alias='taxAmountSales', function='sum', formatType="currency"},
+			{alias='taxAmountReturn', function='sum', formatType="currency"},
 			{alias='taxRate', function='avg', formatType="currency", title=rbKey('entity.taxApplied.taxRate')}
 		] />
 	</cffunction>
@@ -136,6 +138,8 @@ Notes:
     						0
 					END as returnPreDiscount,
 					( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID ) as itemDiscount,
+					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' ) as taxAmountSales,
+					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' ) as taxAmountReturn,
 					#getReportDateTimeSelect()#
 				FROM
 					SwTaxApplied

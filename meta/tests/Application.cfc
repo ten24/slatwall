@@ -56,6 +56,8 @@ component extends="meta.testbox.Application"{
 	this.sessionManagement = true;
 
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
+	
+	this.mappings[ '/framework' ] =  "#this.mappings['/Slatwall']#/org/Hibachi/framework";
 	this.mappings[ "/mxunit" ] = expandPath( "/testbox/system/compat" );
 	
 	this.ormEnabled = true;
@@ -64,6 +66,7 @@ component extends="meta.testbox.Application"{
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
 	this.ormSettings.automanageSession = false;
+	setting requestTimeOut="0";
 
 	
 

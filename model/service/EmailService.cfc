@@ -53,18 +53,37 @@ Notes:
 
 	<!--- ===================== START: Logical Methods =========================== --->
 
+	<cffunction name="getWhiteListedEmailAddresses" access="public">
+		<cfargument name="emailAddresses" type="string" required="true" />
+		<cfif getApplicationValue('applicationEnvironment') EQ 'production' >
+			<cfreturn arguments.emailAddresses />
+		</cfif>
+		<cfset var finalEmailAddresses = '' />
+		<cfset var whiteListedDomains = getHibachiScope().setting('globalWhiteListedEmailDomains') />
+		<cfset var emailTestDomain = getHibachiScope().setting('globalTestingEmailDomain') />
+		<cfloop list="#arguments.emailAddresses#" index="local.emailAddress">
+			<cfif listFindNoCase(listLast(local.emailAddress, '@'), whiteListedDomains)>
+				<cfset finalEmailAddresses = listAppend(finalEmailAddresses, local.emailAddress) />
+			<cfelseif len(emailTestDomain)>
+				<cfset local.emailAddress = listFirst(local.emailAddress, '@') & '@' & emailTestDomain />
+				<cfset finalEmailAddresses = listAppend(finalEmailAddresses, local.emailAddress) />
+			</cfif>
+		</cfloop>
+		<cfreturn finalEmailAddresses />
+	</cffunction>
+
 	<cffunction name="sendEmail" returntype="void" access="public">
 		<cfargument name="email" type="any" required="true" />
 
 		<cfset var cfmailAttributes = structNew() />
 		<cfset cfmailAttributes["from"] = arguments.email.getEmailFrom() />
 		<cfset cfmailAttributes["subject"] = arguments.email.getEmailSubject() />
-		<cfset cfmailAttributes["to"] = arguments.email.getEmailTo() />
+		<cfset cfmailAttributes["to"] = getWhiteListedEmailAddresses(arguments.email.getEmailTo()) />
 		<cfif !isNull(arguments.email.getEmailCC())>
-			<cfset cfmailAttributes["cc"] = arguments.email.getEmailCC() />
+			<cfset cfmailAttributes["cc"] = getWhiteListedEmailAddresses(arguments.email.getEmailCC()) />
 		</cfif>
 		<cfif !isNull(arguments.email.getEmailBCC())>
-			<cfset cfmailAttributes["bcc"] = arguments.email.getEmailBCC() />
+			<cfset cfmailAttributes["bcc"] = getWhiteListedEmailAddresses(arguments.email.getEmailBCC()) />
 		</cfif>
 		<cfset cfmailAttributes["charset"] = "utf-8" />
 
@@ -122,14 +141,14 @@ Notes:
 
 			<cfmail attributeCollection="#cfmailAttributes#">
 				<cfif !isNull(arguments.email.getEmailFailTo())>
-					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+					<cfmailparam name="Return-Path" value="#getWhiteListedEmailAddresses(arguments.email.getEmailFailTo())#">
 				</cfif>
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
 				</cfif>
 				<cfif !isNull(arguments.email.getEmailReplyTo())>
-					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+					<cfmailparam name="Reply-To" value="#getWhiteListedEmailAddresses(arguments.email.getEmailReplyTo())#">
 				</cfif>
 				<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
 			</cfmail>

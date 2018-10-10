@@ -54,6 +54,8 @@ component entityname="SlatwallPhysical" table="SwPhysical" output="false" persis
 
 	// Related Object Properties (many-to-one)
 	property name="physicalStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="physicalStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=physicalStatusType";
+	property name="expenseLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="expenseLedgerAccountID";
+	property name="assetLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="assetLedgerAccountID";
 	
 	// Related Object Properties (one-to-many)
 	property name="physicalCounts" singularname="physicalCount" cfc="PhysicalCount" type="array" fieldtype="one-to-many" fkcolumn="physicalID" cascade="all-delete-orphan" inverse="true";
@@ -68,6 +70,9 @@ component entityname="SlatwallPhysical" table="SwPhysical" output="false" persis
 	
 	// Related Object Properties (many-to-many - inverse)
 	
+	// Related Object Properties (one-to-one)
+	property name="cycleCountBatch" cfc="CycleCountBatch"fieldtype="one-to-one" mappedby="physical";
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	

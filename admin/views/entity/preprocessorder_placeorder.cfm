@@ -86,9 +86,13 @@ Notes:
 							<!--- Pickup --->
 							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "pickup">
 								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="pickupLocation" fieldName="orderFulfillments[#ofIndex#].pickupLocation.locationID" fieldClass="required" edit="#rc.edit#" />
+								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="pickupDate" fieldName="orderFulfillments[#ofIndex#].pickupDate" edit="#rc.edit#" />
+								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="estimatedShippingDate" fieldName="orderFulfillments[#ofIndex#].estimatedShippingDate" edit="#rc.edit#" />
 
 							<!--- Shipping --->
 							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "shipping">
+								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="estimatedShippingDate" fieldName="orderFulfillments[#ofIndex#].estimatedShippingDate" edit="#rc.edit#" />
+
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingMethod")>
 									<cfset rc.placeOrderNeedsFulfillmentCharge = true />
 									<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="shippingMethod" fieldName="orderFulfillments[#ofIndex#].shippingMethod.shippingMethodID" fieldClass="required" edit="#rc.edit#" />
@@ -98,6 +102,9 @@ Notes:
 								</cfif>
 							</cfif>
 							<hr />
+							<cfloop array="#orderFulfillment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+								<swa:SlatwallAdminAttributeSetDisplay entity="#orderFulfillment#" attributeSet="#attributeSet#" fieldNamePrefix="orderFulfillments[#ofIndex#]." edit="#rc.edit#" />
+							</cfloop>
 						</cfif>
 					</cfloop>
 				</cfif>

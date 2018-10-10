@@ -60,7 +60,8 @@ Notes:
 							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
 							  recordProcessContext="addOrderItem"
 							  recordProcessEntity="#rc.order#"
-							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
+							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#"
+							  tableClass="addSku">
 		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
@@ -68,7 +69,14 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+		<cfif NOT isNull(rc.order.getDefaultStockLocation()) >
+			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" tdClass="calculatedQATS" methodIdentifier='{"METHODNAME":"getQuantity","METHODARGUMENTS":{"QUANTITYTYPE":"QATS","LOCATIONID":"#rc.order.getDefaultStockLocation().getLocationID()#"}}' />
+		<cfelse>
+			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" tdClass="calculatedQATS" />
+		</cfif>
+		<cfif NOT isNull(rc.order.getDefaultStockLocation()) AND rc.order.getDefaultStockLocation().hasChildren()>
+			<hb:HibachiListingColumn processObjectProperty="locationID" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" fieldClass="span2" />
+		</cfif>
 		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />

@@ -25,7 +25,7 @@
 		<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
 			ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'">edit</a>
 		<a href="" class="s-edit-link" 
-			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked" 
+			ng-show="(orderItem.data.sku.data.baseProductType === 'productBundle' || (orderItem.data.sku.data.bundleFlag === 'Yes ' || orderItem.data.sku.data.bundleFlag === 1)) && !orderItem.clicked" 
 			ng-click="getChildOrderItems(orderItem)">detail</a>
 		<a href="" class="s-edit-link" 
 			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && orderItem.clicked" 
@@ -98,13 +98,19 @@
 		</span>
 	</td>
 	
-	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
+	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.price | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
 	
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	
 	<!-- Handle both cases of this 'discount' being a Return Item -->
 	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">-<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span></td>
 	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
+	
+	<td class="s-subTotal">{{orderItem.data.extendedPrice - orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode}}</td>
+	
+	<!-- Handle Tax Information -->
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
 	<!-- Handle both cases of this 'total' being a Return Item -->
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
@@ -119,10 +125,6 @@
 		</ul>
 	</td>
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.itemTotal | swcurrency:orderItem.data.currencyCode"></span>)</td>
-	
-	<!-- Handle Tax Information -->
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></td>
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
 	<!-- Handle Fulfillment Items -->
 	<td rowspan="1000" class="s-fullfilment">

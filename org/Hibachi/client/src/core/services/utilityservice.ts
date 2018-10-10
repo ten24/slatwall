@@ -178,26 +178,22 @@ class UtilityService extends BaseService{
     };
 
     /**
-     * Removes a substring from a string.
-     * str: The original string.
-     * subStr: The string to remove.
-     * returns the modified string.
+     * Removes an element from a list.
+     * str: The original list.
+     * subStr: The element to remove.
+     * returns the modified list.
      */
-     public listRemove = (str:string, substring:string) => {
-        if (str.indexOf(substring) != -1){
-            //remove it cause its no longer selected.
-            str = str.replace(substring, "");
-            str = str.replace(",,", "");
-            if (str == ","){
-                str = "";
-            }
-            if (str.substring(0, 1) == ',') { 
-                str = str.substring(1);
-            }
-            str = str.substring(0, str.length-1);
+      public listRemove = (str:string, substring:string) => {
+        
+        var strArray = str.split(',');
+        var index = strArray.indexOf(substring);
+        
+        if (index > -1) {
+            strArray.splice(index, 1);
         }
-
-        return str;
+        
+        return strArray.join();
+        
     }
 
     public formatValue=(value,formatType,formatDetails,entityInstance)=>{
@@ -462,6 +458,7 @@ class UtilityService extends BaseService{
             return returnArray;
     };
 
+
         public minutesOfDay = (m):number=>{
             return m.getMinutes() + m.getHours() * 60;
         };
@@ -472,6 +469,7 @@ class UtilityService extends BaseService{
             correctDate.setUTCFullYear(date.getFullYear(),date.getMonth(),date.getDate());
             return correctDate.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
         };
+
 }
 export {
     UtilityService

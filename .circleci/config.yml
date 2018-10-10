@@ -9,6 +9,13 @@ jobs:
     steps: 
       - checkout
       - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+      - run: mkdir $CIRCLE_TEST_REPORTS/core
+      - run: mkdir $CIRCLE_TEST_REPORTS/entity
+      - run: mkdir $CIRCLE_TEST_REPORTS/transient
+      - run: mkdir $CIRCLE_TEST_REPORTS/service
+      - run: mkdir $CIRCLE_TEST_REPORTS/process
+      - run: mkdir $CIRCLE_TEST_REPORTS/dao    
+      - run: npm install -g junit-merge verify-junit-xml
       - run: docker-compose --verbose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
       - run: sudo mkdir -p meta/tests/testresults/xml/integration
       - run: sudo chmod -R 777 meta/tests/testresults
@@ -17,10 +24,19 @@ jobs:
       #    background: true
       - run: sleep 10
       - run: curl http://localhost:80
+      - run: sleep 5
       # This is based on your 1.0 configuration file or project settings
-      - run:
-          command: cd meta/docker/slatwall-ci && docker-compose exec slatwallweb ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";
-          no_output_timeout: 1800s
+      #- run:
+      #    command: cd meta/docker/slatwall-ci && docker-compose exec slatwallweb ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";
+      #    no_output_timeout: 1800s
+      - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fcore\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/core/results.xml
+      - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fentity\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/entity/results.xml
+      - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fprocess\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/process/results.xml
+      - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fservice\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/service/results.xml
+      - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Ftransient\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/transient/results.xml
+      - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fdao\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/dao/results.xml
+      #- run: junit-merge -o /tmp/circleci-test-results/results.xml /tmp/circleci-test-results/core/results.xml /tmp/circleci-test-results/entity/results.xml /tmp/circleci-test-results/process/results.xml /tmp/circleci-test-results/transient/results.xml /tmp/circleci-test-results/dao/results.xml /tmp/circleci-test-results/service/results.xml
+      #- run: verify-junit-xml /tmp/circleci-test-results/results.xml
       - store_test_results:
           path: /tmp/circleci-test-results
       # Save artifacts
@@ -33,14 +49,15 @@ jobs:
     steps:
       - checkout
       - run: git config --global user.email "info@slatwallcommerce.com"
-      - run: git config --global user.name "Big Boy (Slatwall Robot)"
+      - run: git config --global user.name "ten24 (Slatwall Robot)"
       - run: git config --global push.default current
-      - run: npm install -g webpack@1.13.3 gulp less
-      - run: npm install gulp gulp-inject@3 gulp-chmod@1.3.0 gulp-util run-sequence webpack@1.13.3 force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader@1.3.0 md5 blueimp-md5
+      - run: npm install -g webpack@3.3.0 gulp less webpack-cli
+      - run: npm install --only=dev
+      - run: npm link
       - run: pip install awscli
-      - run: cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
-      - run: cd admin/client && gulp gen-ts-refs
-      - run: cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
+      - run: npm run buildHibachi:prod
+      #- run: cd admin/client && gulp gen-ts-refs
+      - run: npm run buildSlatwall:prod
       - run: cd admin/client/css && lessc main.less main.css
       - run: meta/ci/version_merge.sh
       

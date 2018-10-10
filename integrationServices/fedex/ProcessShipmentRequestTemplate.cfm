@@ -72,7 +72,7 @@
         <ns:RequestedShipment>
 	        <ns:ShipTimestamp>#DateFormat(Now(),'yyyy-mm-dd')#T#TimeFormat(Now(),'hh:mm:ss')#</ns:ShipTimestamp>
 	        <ns:DropoffType>REGULAR_PICKUP</ns:DropoffType>
-	        <ns:ServiceType>STANDARD_OVERNIGHT</ns:ServiceType>
+	        <ns:ServiceType>#arguments.requestBean.getShippingIntegrationMethod()#</ns:ServiceType>
 	        <ns:PackagingType>YOUR_PACKAGING</ns:PackagingType>
 	        <ns:TotalWeight>
 	            <ns:Units>LB</ns:Units>
@@ -107,7 +107,10 @@
 	           </ns:Contact>
 	        	<ns:Address>
 	                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
-	                <ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+	                <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
+	                	 <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
+					</cfif>
+		   			<ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
 					<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
 	                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
 					<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
@@ -123,19 +126,42 @@
 	           <ns:PaymentType>THIRD_PARTY</ns:PaymentType>
 	           <ns:Payor>
 	           		<ns:ResponsibleParty>
-			            <ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
-			            <ns:Contact>
-			            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
-			            	<ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
-			            	<ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
-		           		</ns:Contact>
-		           		<ns:Address>
-			            	<ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
-			                <ns:City>#trim(setting('shipperCity'))#</ns:City>
-			                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
-			                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
-			                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
-			            </ns:Address>
+        				<cfif NOT isNull(arguments.requestBean.getThirdPartyShippingAccountIdentifier()) AND len(arguments.requestBean.getThirdPartyShippingAccountIdentifier())>
+	           				<ns:AccountNumber>#arguments.requestBean.getThirdPartyShippingAccountIdentifier()#</ns:AccountNumber>
+	           				<ns:Contact>
+				            	<ns:PersonName>#arguments.requestBean.getContactPersonName()#</ns:PersonName>
+				            	<ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
+				            	<ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
+		           			</ns:Contact>
+		           			<ns:Address>
+				                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
+				                <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
+				                	 <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
+								</cfif>
+								<ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+								<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
+				                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
+								<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
+									<ns:StateOrProvinceCode>#left(arguments.requestBean.getShipToStateCode(),2)#</ns:StateOrProvinceCode> 
+								</cfif>
+				                <ns:PostalCode>#arguments.requestBean.getShipToPostalCode()#</ns:PostalCode>
+				                <ns:CountryCode>#arguments.requestBean.getShipToCountryCode()#</ns:CountryCode>
+			            	</ns:Address>
+	           			<cfelse>
+	           				<ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
+	           				<ns:Contact>
+				            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
+				            	<ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
+				            	<ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
+		           			</ns:Contact>
+		           			<ns:Address>
+				            	<ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
+				                <ns:City>#trim(setting('shipperCity'))#</ns:City>
+				                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
+				                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
+				                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
+			            	</ns:Address>
+	           			</cfif>
 			        </ns:ResponsibleParty>
 	           </ns:Payor>
            </ns:ShippingChargesPayment>
@@ -143,7 +169,7 @@
            
            <ns:LabelSpecification>
 	           <ns:LabelFormatType>COMMON2D</ns:LabelFormatType>
-	           <ns:ImageType>PDF</ns:ImageType>
+	           <ns:ImageType>#trim(setting('labelImageType'))#</ns:ImageType>
 	           <ns:LabelStockType>PAPER_4X6</ns:LabelStockType>
            </ns:LabelSpecification>
 	        

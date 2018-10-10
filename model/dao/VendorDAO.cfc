@@ -58,7 +58,8 @@ component extends="HibachiDAO" {
 		return ormExecuteQuery(hql, params);
 	}	
 	
-	
-	
+	public any function getVendorSkuByVendorAndSku(required string vendorID, required string skuID){
+		return ORMExecuteQuery('FROM SlatwallVendorSku where vendor.vendorID=:vendorID and sku.skuID=:skuID',{vendorID=arguments.vendorID,skuID=arguments.skuID},true);
+	}
 }
 

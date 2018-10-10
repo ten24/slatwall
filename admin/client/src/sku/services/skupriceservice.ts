@@ -131,11 +131,11 @@ export class SkuPriceService {
             
             var currencyData = this.currencies[currencyCode];
             if(currencyData.CONVERTFROM == sku.data.currencyCode){
-                return basePrice * (1 / currencyData.CONVERSIONRATE);
+                return basePrice * (currencyData.CONVERSIONRATE);
             } else if(currencyData.CONVERTFROM == "EUR" && this.currencies[sku.data.currencyCode].CONVERTFROM == "EUR") {
                 //Convert using euro
-                var tempPrice =  basePrice * (1 / currencyData.CONVERSIONRATE);
-                return tempPrice * (1/ this.currencies[sku.data.currencyCode].CONVERSIONRATE); 
+                var tempPrice =  basePrice * (currencyData.CONVERSIONRATE);
+                return tempPrice * (this.currencies[sku.data.currencyCode].CONVERSIONRATE); 
             } else {
                 return "N/A";//will become NaN
             }

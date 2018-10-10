@@ -3,6 +3,16 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+		public string function getDatabaseUUID(){
+			switch(getHibachiScope().getApplicationValue('databaseType')){
+				case 'Oracle10g':
+					return 'LOWER(SYS_GUID())';
+				case 'MySQL':
+					return "LOWER(REPLACE(CAST(UUID() as char character set utf8),'-',''))";
+				case 'MicrosoftSQLServer':
+					return "LOWER(REPLACE(newid(),'-',''))";
+			}
+		}
 		
 		public function formatStructKeyList(required string str){
  		    if (!structKeyExists(server, "lucee")){
@@ -26,6 +36,17 @@
  				qryColumns = listAppend(qryColumns, column.name);
  			}
  			return local.qryColumns;
+ 		}
+
+ 		public string function getSQLType(required any ormtype){
+ 			var types = {
+ 				"big_decimal":"decimal",
+ 				"text":"varchar"
+ 			};
+ 			if(structKeyExists(types, ormtype)){
+ 				return types[ormtype];
+ 			}
+ 			return ormtype;
  		}
  		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
@@ -58,7 +79,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public array function arrayOfStructsSort(aOfS,key,sortOrder2="des"){
+		public array function arrayOfStructsSort(aOfS,key,sortOrder2="asc"){
 
 
 		        //by default, we'll use a textnocase sort
@@ -246,22 +267,26 @@
 			return returnTitle;
 		}
 		
-		public string function createUniqueProperty(required string titleString, required string entityName, required string propertyName){
+		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
 			var addon = 0;
 
-			var urlTitle = createSEOString(arguments.titleString);
+			arguments.propertyValue = createSEOString(arguments.propertyValue);
+			
+			var returnValue = arguments.propertyValue;
+			
+			if (requiresCount) {
+				returnValue = '#returnValue#-1';
+			}
 
-			var returnTitle = urlTitle;
-
-			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 
 			while(!unique) {
 				addon++;
-				returnTitle = "#urlTitle#-#addon#";
-				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+				returnValue = "#arguments.propertyValue#-#addon#";
+				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 			}
 
-			return returnTitle;
+			return returnValue;
 		}
 
   		public string function generateRandomID( numeric numCharacters = 8){
@@ -281,7 +306,6 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
-
 	  	/**
 	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
 	    * Resources: 
@@ -295,6 +319,13 @@
 	    {
 	        return "otpauth://totp/#getApplicationValue('applicationKey')#:#arguments.email#?secret=#arguments.secretKey#&issuer=#getApplicationValue('applicationKey')#";
 	    }
+	    
+	    //be careful with this. Not for general use. can pose security risk if not used properly.
+	    public string function hibachiDecodeForHTML(string stringValue){
+		
+			var encoder = createObject('java','org.owasp.esapi.ESAPI').encoder();
+			return encoder.decodeForHTML(arguments.stringValue);
+		}
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
@@ -310,12 +341,21 @@
 
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
 			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
-				data[ arguments.propertyIdentifier ] = parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+				if(structkeyExists(arguments.parentObject,'getValueByPropertyIdentifier')){
+					data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+				}else{
+					data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
+				}
 				return;
 			}
-			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
 
-			if(!isNull(object) && isObject(object)) {
+			if(structKeyExists(arguments.parentObject,'invokeMethod')){
+				var object = arguments.parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
+			}else{
+				var object = arguments.parentObject[listFirst(arguments.propertyIdentifier, '.')];
+			}
+			//only structs using closures
+			if(!isNull(object) && (isObject(object) || isStruct(object))) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#structNew()#";
 
@@ -336,11 +376,18 @@
 					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
-							data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-							data[thisProperty][i]["errors"] = object[i].getErrors();
-							}catch(any e){
-								writeDump(var=object[i],top=1);abort;
+							if(structKeyExists(data[thisProperty][i],'hasErrors')){
+								data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+								data[thisProperty][i]["errors"] = object[i].getErrors();
+							}else{
+								data[thisProperty][i]["hasErrors"] = false;
+								data[thisProperty][i]["errors"] = {};
 							}
+
+
+						}catch(any e){
+							writeDump(var=object[i],top=1);abort;
+						}
 					}
 
 					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
@@ -492,6 +539,13 @@
 			* Modified by Tony Garcia 18Oct09 to deal with metadata arrays, which don't act like normal arrays
 			*/
 		public array function arrayConcat(required array a1, required array a2) {
+			
+			
+		    if (structKeyExists(server, "lucee")){
+				//using CF10 now so don't need to support CF9
+				arrayAppend(arguments.a1,arguments.a2,true);
+				return arguments.a1;
+		    }else{
 			var newArr = [];
 		    var i=1;
 		    if ((!isArray(a1)) || (!isArray(a2))) {
@@ -507,6 +561,7 @@
 		        newArr[arrayLen(a1)+i] = a2[i];
 		    }
 		    return newArr;
+		}
 		}
 		
 		//name value pair string to struct. Separates url string by & ampersand
@@ -620,11 +675,11 @@
 		}
 
 		// helper method for downloading a file
-		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
+		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown; charset=UTF-8', boolean deleteFile = false) {
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=""#arguments.fileName#""");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
-
+		
 		public string function getIdentityHashCode(required any value) {
 			return createObject("java","java.lang.System").identityHashCode(arguments.value);
 		}
@@ -652,9 +707,21 @@
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}
+		
+		public string function hibachiEncodeForXML(required string xmlString){
+			arguments.xmlString = encodeForXML(arguments.xmlString);
+			arguments.xmlString = ReReplace(arguments.xmlString, '&', '&amp;', 'all');
+			arguments.xmlString = ReReplace(arguments.xmlString, '<', '&lt;', 'all');
+			arguments.xmlString = ReReplace(arguments.xmlString, '>', '&rt;', 'all');
+			return arguments.xmlString;
+		}
 
 		public string function sanitizeForAngular(required string html){
-			return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
+				return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+			}else{
+				return ReReplace(ReReplace(arguments.html,'&##x7b;',chr(123)&chr(002),'all'),'&##x7d;','}','all');
+			}
 		}
 
 		public string function decryptValue(required string value, string salt="") {
@@ -964,11 +1031,6 @@
 
 					var value = arguments.queryData[colArray[j]][i];
 
-					// Determine if formatting datetime stamp needed
-					if (isDate(value)) {
-						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
-					}
-
 					// create our row
 					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}
@@ -977,7 +1039,7 @@
 				if(i mod 1000 EQ 0){
 					fileWriteLine(dataFile,buffer.toString());
 					buffer.setLength(0);
-				}else{
+				}else if (i != arguments.queryData.recordcount){ 
 					buffer.append(JavaCast('string', newLine));
 				}
 			}
@@ -988,9 +1050,74 @@
 			fileClose(dataFile);
 		};
 
+		//Lucee 4 can't handle decoding base64 strings unless the length is divisible by 4. You can pad them with equals without changing the result
+		public string function luceeSafeBase64Decode(required any base64String){
+			var excess = len(base64String)%4;
+			if(excess == 0){
+				return toString(binaryDecode(base64String,'base64'));
+			}
+			
+			for(var i = 4; i > excess; i--){
+				base64String &= '=';
+			}
+
+			return toString(binaryDecode(base64String,'base64'));
+		}
+		
+		public any function logApiRequest(required struct rc,  required string requestType, any data = {} ){
+	    
+		    var content = arguments.rc.apiResponse.content;
+	        
+	        var apiRequestAudit = getService('hibachiService').newApiRequestAudit();
+	        
+	        if( structKeyExists(content, 'recordsCount') ){
+	            apiRequestAudit.setResultsCount(content.recordsCount);
+	        }else {
+	            apiRequestAudit.setResultsCount(1);
+	        }
+	        
+	        if( structKeyExists(content, 'collectionConfig')){
+	            apiRequestAudit.setCollectionConfig(content.collectionConfig);
+	        }
+	        
+	        if( structKeyExists(content, 'currentPage')){
+	            apiRequestAudit.setCurrentPage(content.currentPage);
+	        }
+	       
+	        if(structKeyExists(content, 'pageRecordsShow')){
+	            apiRequestAudit.setPageShow(content.pageRecordsShow);
+		    }
+	        
+	        var clientIP = cgi.remote_addr;
+	        var clientHeaders = GetHttpRequestData().headers;
+	    	if(structKeyExists(clientHeaders,"X-Forwarded-For") ) {
+			    clientIP = clientHeaders["X-Forwarded-For"];
+	        }
+	        apiRequestAudit.setIpAddress(clientIP);
+	        
+	        var urlEndpoint = cgi.http_host & '' & cgi.path_info;
+	        apiRequestAudit.setUrlEndpoint( urlEndpoint );
+	        
+	        if ( !structIsEmpty(url) ){
+	            apiRequestAudit.setUrlQueryString(serializeJson(url));
+	        }
+	        
+	        if ( !structIsEmpty(form) ){
+	             apiRequestAudit.setParams( serializeJson(form) );
+	        }
+	        
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        
+	        apiRequestAudit.setRequestType( arguments.requestType);
+	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
+	        
+	        apiRequestAudit = getService("HibachiService").saveApiRequestAudit(apiRequestAudit);
+	        
+		}
+
 	</cfscript>
 
-	<cffunction name="logException" returntype="void" access="public">
+	<cffunction name="logException" returntype="void" access="public"  output="false">
 		<cfargument name="exception" required="true" />
 
 		<!--- All logic in this method is inside of a cftry so that it doesnt cause an exception --->
@@ -1015,20 +1142,27 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="logMessage" returntype="void" access="public">
+	<cffunction name="logMessage" returntype="void" access="public"  output="false">
 		<cfargument name="message" default="" />
 		<cfargument name="messageType" default="" />
 		<cfargument name="messageCode" default="" />
 		<cfargument name="templatePath" default="" />
 		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
+		<cfargument name="logPrefix" default="" />
 
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
-			<cfif generalLog>
-				<cfset var logText = "General Log" />
-			<cfelse>
-				<cfset var logText = "Detail Log" />
+			<!--- Set default logPrefix if not explicitly provided --->
+			
+			<cfif not len(arguments.logPrefix)>
+				<cfif arguments.generalLog>
+					<cfset arguments.logPrefix = "General Log" />
+				<cfelse>
+					<cfset arguments.logPrefix = "Detail Log" />
+				</cfif>
 			</cfif>
+			
+			<cfset var logText = arguments.logPrefix />
 
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />
@@ -1096,7 +1230,7 @@
 			<cfset local.thisField = Trim(local.thisField) />
 
 			<!--- If the field has a dot or a bracket... --->
-			<cfif hasFormCollectionSyntax(local.thisField)>
+			<cfif hasFormCollectionSyntax(local.thisField) AND !isStruct(arguments.formScope[local.thisField])>
 
 				<!--- Add collection to list if not present. --->
 				<cfset local.tempStruct['formCollectionsList'] = addCollectionNameToCollectionList(local.tempStruct['formCollectionsList'], local.thisField) />
@@ -1329,13 +1463,13 @@
 	    <cfreturn LOCAL.Buffer.ToString() />
 	</cffunction>
 
-	<cffunction name="getCurrentUtcTime" returntype="Numeric" >
+	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
 
-    <cffunction name="convertBase64GIFToBase64PDF">
+    <cffunction name="convertBase64GIFToBase64PDF" output="false">
     	<cfargument name="base64GIF" />
     	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")>
     	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
@@ -1430,6 +1564,10 @@
 		
 		<cfset signature = createS3Signature(cs,awsSecretAccessKey)>
 		 
+		<cfif right(arguments.uploadDir, 1) NEQ '/'>
+			<cfset arguments.uploadDir &= '/' />
+		</cfif>
+
 		<cffile action="readBinary" file="#arguments.uploadDir##arguments.fileName#" variable="binaryFileData">
 		
 		<cfhttp method="PUT" url="http://s3.amazonaws.com/#arguments.bucketName#/#arguments.keyName#" timeout="#arguments.HTTPtimeout#">
@@ -1448,4 +1586,112 @@
 		<cfreturn !isNull(cfhttp) AND structKeyExists(cfhttp.responseHeader, 'Status_Code') AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
+
+	<cffunction name="getSignedS3ObjectLink" access="public" output="false" returntype="string">
+		<cfargument name="bucketName" type="string" required="true">
+		<cfargument name="keyName" type="string" required="true">
+		<cfargument name="awsAccessKeyId" type="string" required="true">
+		<cfargument name="awsSecretAccessKey" type="string" required="true">
+		<cfargument name="minutesValid" type="numeric" required="true" default="1">
+
+		<cfset var s3link = "" />
+		<cfset var epochTime = dateDiff( "s", DateConvert("utc2Local", "January 1 1970 00:00"), now() ) + (arguments.minutesValid * 60) />
+		<cfset var cs = "GET\n\n\n#epochTime#\n/#arguments.bucketName#/#arguments.keyName#" />
+		<cfset var signature = createS3Signature(cs,arguments.awsSecretAccessKey)>
+		<cfset s3link = "https://#arguments.bucketName#.s3.amazonaws.com/#arguments.keyName#?AWSAccessKeyId=#URLEncodedFormat(arguments.awsAccessKeyId)#&Expires=#epochTime#&Signature=#URLEncodedFormat(signature)#" />
+		<cfreturn s3link />
+
+	</cffunction>
+
+	<cffunction name="getClientFileName" returntype="string" output="false" hint="">
+	    <cfargument name="fieldName" required="true" type="string" hint="Name of the Form field" />
+
+	    <cfset var tmpPartsArray = Form.getPartsArray() />
+
+	    <cfif IsDefined("tmpPartsArray")>
+	        <cfloop array="#tmpPartsArray#" index="local.tmpPart">
+	            <cfif local.tmpPart.isFile() AND local.tmpPart.getName() EQ arguments.fieldName>
+	                <cfreturn local.tmpPart.getFileName() />
+	            </cfif>
+	        </cfloop>
+	    </cfif>
+
+	    <cfreturn "" />
+	</cffunction>
+
+	<cffunction name="formatS3Path" returntype="string" output="false">
+		<cfargument name="filePath" required="true" type="string" />
+		<cfif find('@', arguments.filePath)>
+			<cfreturn arguments.filePath />
+		<cfelse>
+			<cfreturn replace(arguments.filePath, 's3://', 's3://#getHibachiScope().setting("globalS3AccessKey")#:#getHibachiScope().setting("globalS3SecretAccessKey")#@') />
+		</cfif>
+
+	</cffunction>
+
+	<cffunction name="isS3Path" returntype="boolean" output="false">
+		<cfargument name="filePath" required="true" type="string" />
+		<cfreturn left(arguments.filePath, 5) EQ 's3://' />
+	</cffunction>
+
+
+	<cffunction name="hibachiExpandPath" returntype="string" output="false">
+		<cfargument name="filePath" required="true" type="string" />
+		<cfif isS3Path(arguments.filePath) >
+			<cfreturn formatS3Path(arguments.filePath) />
+		<cfelse>
+			<cfreturn expandPath(arguments.filePath) />
+		</cfif>
+	</cffunction>
+	<!---check if this is a 32 character id string--->
+	<cffunction name="isHibachiUUID" returntype="boolean" output="false">
+		<cfargument name="idString" type="any">
+		
+		<cfif !isValid("string",arguments.idString)>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfif len(arguments.idString) neq 32>
+			<cfreturn false/>
+		</cfif>
+		
+		<cfset var uuid = left(arguments.idString,8) & '-' & mid(arguments.idString,9,4) & '-' & mid(arguments.idString,13,4) & '-' & right(arguments.idString,16)/>
+		<cfreturn isValid('uuid',uuid)/>
+	</cffunction>
+	
+	<!--- Given a total number of strings to generate, and a length for each string, generates a list. --->
+	<cffunction name="generateRandomStrings" output="no" returntype="string">
+		<cfargument name="length" type="numeric" required="yes">
+		<cfargument name="total" type="numeric" required="yes">
+		
+		
+		<!--- Local vars --->
+		<cfset var listOfAccessCodes = "">
+	    <cfset var j = "" > 
+	    <cfloop  index = "j" from = "1" to = "#total#"> 
+			<cfset var result="">
+			<cfset var i = "" >
+			<!--- Create string --->
+			<cfloop index="i" from="1" to="#ARGUMENTS.length#">
+				<!--- Random character in range A-Z --->
+				<cfif i mod 5 eq 0>
+					<cfset result= result & chr(randRange(49, 57))>
+			    <cfelseif i mod 3 eq 0 and j mod 2 eq 0>
+					<cfset result= result & chr(randRange(49, 57))>
+				<cfelse>
+					<cfset result= result & chr(randRange(65, 90))>    
+			    </cfif>
+	
+			</cfloop>
+	
+			<cfif listFind(listOfAccessCodes, result) eq 0>
+			    <cfset listOfAccessCodes = listAppend(listOfAccessCodes, result)>
+			<cfelse>
+			    <cfset j = j - 1>    <!--- resets the counter by one if there was a dupe. --->
+			</cfif>
+
+	    </cfloop>
+		<!--- Return it --->
+		<cfreturn listOfAccessCodes>
+	</cffunction>
 </cfcomponent>

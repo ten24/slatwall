@@ -130,7 +130,7 @@ Notes:
 								
 								<cfset loadPaymentMethodType = arrayLen(rc.processObject.getNewAccountPayment().getPaymentMethodOptions()) 
 								                               && structKeyExists(rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1], 
-								                                                  'paymentmethodtype') && rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1]['paymentmethodtype']/>
+								                                                  'paymentmethodtype') && !isNull(rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1]['paymentmethodtype'])/>
 								<cfif !isNull(rc.processObject.getNewAccountPayment().getPaymentMethod())>
 									<cfset loadPaymentMethodType = rc.processObject.getNewAccountPayment().getPaymentMethod().getPaymentMethodType()/>
 								<cfelse>
