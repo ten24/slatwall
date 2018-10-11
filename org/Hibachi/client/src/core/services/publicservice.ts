@@ -12,6 +12,7 @@ class PublicService {
     public countries:any;
     public addressOptions:any;
     public requests:{ [action: string]: PublicRequest; }={};
+    public messages:any;
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
     public newCardInfo:any;
@@ -436,6 +437,9 @@ class PublicService {
             this.cart.request = request;
         }
         this.errors = response.errors;
+        if(response.messages){
+            this.messages = response.messages;
+        }
     }
 
     public runCheckoutAdjustments = (response) =>{
