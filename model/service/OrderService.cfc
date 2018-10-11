@@ -3329,6 +3329,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var stockHold = orderItem.getStockHolds()[1];
 					if(stockHold.isExpired()){
 						getService('stockService').deleteStockHold(stockHold);
+						getHibachiScope().addMessage('stockHoldExpired', rbKey('define.stockhold.stockHoldExpired') & ' ' & orderItem.getSku().getSkuDefinition());
 						arguments.order.removeOrderItem(orderItem);
 						continue;
 					}

@@ -887,6 +887,7 @@ component extends="framework.one" {
 			populateAPIHeaders();
 			if(isStruct(arguments.rc.ajaxResponse)){
 				if(structKeyExists(arguments.rc, "messages")) {
+					arrayAppend(arguments.rc.messages,getHibachiScope().getMessages(),true);
 					arguments.rc.ajaxResponse["messages"] = arguments.rc.messages;
 				}
   				arguments.rc.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
