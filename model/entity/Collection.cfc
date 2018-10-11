@@ -2421,7 +2421,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 				var dateLookup = {};
 				
-				for(var i =1; i < arraylen(variables.records);i++){
+				for(var i =1; i <= arraylen(variables.records);i++){
 					var record = variables.records[i];
 					var dateLookupKey = record[pidAlias];
 					dateLookup[dateLookupKey] = i;
@@ -2447,7 +2447,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						break;
 				}
 				
-				for(var k = 0; k < diff;k++){
+				for(var k = 0; k <= diff;k++){
 					var dateValue = DateAdd(getPeriodIntervalDateDiffFormat(),k,formattedMinValue);
 					var currentInterval = dateTimeFormat(dateValue,getPeriodIntervalDateFormat());
 					if(structKeyExists(dateLookup,currentInterval)){
