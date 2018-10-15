@@ -123,9 +123,9 @@
 				infinite-scroll-distance="1">
 			</sw-collection-table> 
 			<sw-pagination-bar
-				ng-if="paginator"
+				*ngIf="paginator"
 				data-collection="collection"
-				data-paginator="paginator"
+				[paginator]="paginator"
 				data-get-collection="getCollection()"
 				>
 			</sw-pagination-bar>

@@ -32,30 +32,30 @@
 		        </form>
 		    </li>
 		    <li *ngIf="paginator.recordsCount > paginator.pageShow">
-		        <ul class="pagination pagination-sm" *ngIf="paginator.pageShowOptions.selectedPageShowOption.value !== 'Auto'">
+		        <ul class="pagination pagination-sm" *ngIf="paginator.selectedPageShowOption.value !== 'Auto'">
 		            <li (click)="paginator.previousPage()" [ngClass]="{disabled:paginator.hasPrevious()}">
 		                <a href="#">&laquo;</a>
 		            </li>
 		            <li *ngIf="paginator.showPreviousJump()">
-		                <a (click)="swPaginationBar.paginator.setCurrentPage(1)">1</a>
+		                <a (click)="paginator.setCurrentPage(1)">1</a>
 		            </li>
-		            <li *ngIf="swPaginationBar.paginator.showPreviousJump()" (click)="swPaginationBar.paginator.previousJump()">
+		            <li *ngIf="paginator.showPreviousJump()" (click)="paginator.previousJump()">
 		                <a href="#">...</a>
 		            </li>
-		            <li *ngFor="let i of paginator.totalPagesArray" [ngClass]="{active:swPaginationBar.paginator.getCurrentPage() === i}" (click)="swPaginationBar.paginator.setCurrentPage(i)" >
+		            <li *ngFor="let i of paginator.totalPagesArray" [ngClass]="{active:paginator.getCurrentPage() === i}" (click)="paginator.setCurrentPage(i)" >
 		            	<span *ngIf="paginator.showPageNumber(i)" >
 		                	<a hreff="#" [textContent]="i"></a>
 		                </span>
 		            </li>
-		            <li *ngIf="swPaginationBar.paginator.showNextJump()" (click)="swPaginationBar.paginator.nextJump()">
+		            <li *ngIf="paginator.showNextJump()" (click)="paginator.nextJump()">
 		                <a href="#">...</a>
 		            </li>
-		            <li *ngIf="swPaginationBar.paginator.showNextJump()">
-		                <a href="#" (click)="swPaginationBar.paginator.setCurrentPage(swPaginationBar.paginator.getTotalPages())" [textContent]="swPaginationBar.paginator.getTotalPages()">
+		            <li *ngIf="paginator.showNextJump()">
+		                <a href="#" (click)="paginator.setCurrentPage(paginator.getTotalPages())" [textContent]="paginator.getTotalPages()">
 		
 		                </a>
 		            </li>
-		            <li [ngClass]="{disabled:swPaginationBar.paginator.hasNext()}" (click)="swPaginationBar.paginator.nextPage()">
+		            <li [ngClass]="{disabled:paginator.hasNext()}" (click)="paginator.nextPage()">
 		                <a href="#">&raquo;</a>
 		            </li>
 		
