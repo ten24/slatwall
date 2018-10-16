@@ -199,7 +199,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		newVendorOrderItem.setSku( arguments.processObject.getSku() );
 		newVendorOrderItem.setSkuPrice( arguments.processObject.getSku().getLivePriceByCurrencyCode( arguments.vendorOrder.getCurrencyCode() ) );
+		if(isNumeric(arguments.processObject.getPrice())){
 		newVendorOrderItem.setPrice( arguments.processObject.getPrice());
+		}
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 			
 		//if vendor sku code was provided then find existing Vendor Sku or create one
