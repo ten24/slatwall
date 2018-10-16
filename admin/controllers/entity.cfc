@@ -78,8 +78,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccount');
 	this.secureMethods=listAppend(this.secureMethods, 'listsku');
+	this.secureMethods=listAppend(this.secureMethods, 'listterm');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxsetup');
+	this.secureMethods=listAppend(this.secureMethods, 'listpaymentmethod');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxstocktransfer');
+	this.secureMethods=listAppend(this.secureMethods, 'listtaxcategory');
 	this.secureMethods=listAppend(this.secureMethods, 'listproduct');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderdelivery');
+	this.secureMethods=listAppend(this.secureMethods, 'liststockreceiver');
 	this.secureMethods=listAppend(this.secureMethods, 'listproductreview');
+	this.secureMethods=listAppend(this.secureMethods, 'listcartandquote');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderitem');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderpayment');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderfulfillment');
