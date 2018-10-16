@@ -46,3 +46,24 @@ export {
     SWPaginationBar,
     SWPaginationBarController
 };
+
+import { Component, Input, OnInit } from '@angular/core';
+import { PaginationService } from '../services/paginationservice';
+
+@Component({
+    selector: 'sw-pagination-bar',
+    templateUrl: '/org/Hibachi/client/src/pagination/components/paginationbar.html'
+})
+export class SwPaginationBar implements OnInit {
+    @Input() paginator: any;    
+    
+    constructor(private paginationService : PaginationService) {
+    
+    }
+    
+    ngOnInit() {    
+        if(angular.isUndefined(this.paginator)){
+            this.paginator = this.paginationService.createPagination();
+        }    
+    }
+}
