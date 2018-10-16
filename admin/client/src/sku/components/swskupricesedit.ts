@@ -23,6 +23,7 @@ class SWSkuPricesEditController{
     public relatedSkuPriceCollectionConfig:any; 
     public loadingPromise:any;
     public masterPriceObject:any; 
+    public priceGroupPriceGroupId:string;
 
     public sku:any; 
     public skuPrice:any;
@@ -60,7 +61,8 @@ class SWSkuPricesEditController{
                 minQuantity:this.minQuantity,
                 maxQuantity:this.maxQuantity, 
                 currencyCode:this.currencyCode,
-                price:this.price
+                price:this.price,
+                priceGroup_priceGroupID:this.priceGroupPriceGroupId
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData);
         }  
@@ -89,7 +91,8 @@ class SWSkuPricesEditController{
                                                                                  this.skuId,
                                                                                  this.minQuantity,
                                                                                  this.maxQuantity,
-                                                                                 this.eligibleCurrencyCodes
+                                                                                 this.eligibleCurrencyCodes,
+                                                                                 this.priceGroupPriceGroupId
                                                                                );
 
         } else if(angular.isDefined(this.skuId)) {
@@ -128,7 +131,8 @@ class SWSkuPricesEdit implements ng.IDirective{
         listingDisplayId:"@?",
         eligibleCurrencyCodeList:"@?",
         skuEligibleCurrencyCodeList:"@?",
-        sku:"=?"
+        sku:"=?",
+        priceGroupPriceGroupId:"@?"
     };
     public controller = SWSkuPricesEditController;
     public controllerAs="swSkuPricesEdit";

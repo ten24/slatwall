@@ -11,7 +11,8 @@ class SWSkuThumbnailController{
     constructor(
         private fileService, 
         private $hibachi,
-        private $http
+        private $http,
+        private appConfig
     ){
         if(!angular.isDefined(this.skuData)){
             throw("You must provide a sku to the SWSkuThumbnailController");
@@ -22,12 +23,12 @@ class SWSkuThumbnailController{
                 //Do nothing
             },
             ()=>{
-                this.skuData.imagePath = '/assets/images/image-placeholder.jpg';
+                this.skuData.imagePath = this.appConfig.baseURL+'assets/images/image-placeholder.jpg';
             }
         ).finally(
             ()=>{
                 if(angular.isDefined(this.skuData.imagePath)){
-                    this.image = this.skuData.imagePath;
+                    this.image = this.appConfig.baseURL+this.skuData.imagePath;
                 }
             }
         )

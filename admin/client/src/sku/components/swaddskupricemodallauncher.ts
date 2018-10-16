@@ -76,6 +76,10 @@ class SWAddSkuPriceModalLauncherController{
         } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
             this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
         }
+        
+        if(angular.isDefined(this.priceGroupId)){
+            this.skuPrice.data.priceGroup_priceGroupID = this.priceGroupId;
+        }
         this.observerService.notify("pullBindings");
     }
     
@@ -169,6 +173,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         pageRecord:"=?",
         minQuantity:"@?",
         maxQuantity:"@?",
+        priceGroupId:"@?",
         currencyCode:"@?",
         eligibleCurrencyCodeList:"@?",
         defaultCurrencyOnly:"=?",
