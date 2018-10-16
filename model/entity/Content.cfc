@@ -131,6 +131,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 				contentCacheKey &= getCmsContentID();				
 			}
 			
+			if(!isNull(getHibachiScope().getCategory()) && !getHibachiScope().getCategory().getNewFlag()){
+				contentCacheKey &= getHibachiScope().getCategory().getCategoryID();
+			}
+			
 			if (!isNull(getHibachiScope().getBrand()) && !getHibachiScope().getBrand().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getBrand().getBrandID();
 			}
