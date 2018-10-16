@@ -1243,11 +1243,22 @@
 		
 		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(
-			required any collectionList, required string entityName, required string propertyIdentifier
+			required any collectionList, required string entityName, required string propertyIdentifier, string inversePropertyIdentifier
 		){
-			var entityCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
-			
-			return entityCollectionList.getRecords();
+			var cacheKey = 'getOptionsByEntityNameAndPropertyIdentifier'&hash(serializeJson(arguments.collectionList.getCollectionConfigStruct()),'md5');
+			cacheKey &=arguments.entityName&arguments.propertyIdentifier;
+			if(structKeyExists(arguments,'inversePropertyIdentifier')){
+				cacheKey&= arguments.inversePropertyIdentifier;
+			}
+			if(!structKeyExists(variables,cacheKey)){
+				var entityCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+				variables[cacheKey]={
+					hql=entityCollectionList.getHQL(),
+					params=entityCollectionList.getHQLParams()
+				};
+				
+			}
+			return ormExecuteQuery(variables[cacheKey].hql,variables[cacheKey].params);
 		}
 		
 		public struct function getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty(required any collectionList, required string entityName, required string propertyIdentifier, required string discriminatorProperty, required string inversePropertyIdentifier){
@@ -1260,12 +1271,23 @@
 			var discriminatorRecords = getOptionsByEntityName(propertyMetaData.cfc);
 			var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 			var optionData = {};
+			var cacheKey = 'getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty'&hash(serializeJson(arguments.collectionList.getCollectionConfigStruct()),'md5');
+			cacheKey &=arguments.entityName&arguments.propertyIdentifier&arguments.discriminatorProperty&arguments.inversePropertyIdentifier;
 			for(var record in discriminatorRecords){
-				var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
-				optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
-				optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+				var recordCacheKey = cacheKey&record['value'];
+				if(!structKeyExists(variables,recordCacheKey)){
+					var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+					optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
+					optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+					
+					var cacheData = {
+						hql= optionsCollectionList.getHQL(),
+						params=optionsCollectionList.getHQLParams()
+					};
+					variables[recordCacheKey]=cacheData;
+				}
+				var optionsCollectionRecords = ormExecuteQuery(variables[recordCacheKey].hql,variables[recordCacheKey].params);
 				
-				var optionsCollectionRecords = optionsCollectionList.getRecords();
 				
 				optionData[record['name']] = optionsCollectionRecords;
 			}
