@@ -949,7 +949,11 @@ export class ListingService{
     //for single column order by
     public toggleOrderBy(listingID:string, column) {
         if(this.getListing(listingID).hasSingleCollectionConfig()){
-            this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+            let orderByPropertyIdentifier = column.propertyIdentifier;
+            if(column.aggregate && column.aggregate.aggregateFunction){
+                orderByPropertyIdentifier = column.aggregate.aggregateFunction + '('+column.propertyIdentifier+')';
+            }
+            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
         }
 
     };

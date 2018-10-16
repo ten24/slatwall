@@ -1,6 +1,7 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+	<cfparam name="attributes.csrf" type="string" default="#request.context.csrf#" />
 	<cfparam name="attributes.object" type="any" />
 	<cfparam name="attributes.saveAction" type="string" default="#request.context.entityActionDetails.saveaction#" />
 	<cfparam name="attributes.saveActionQueryString" type="string" default="" />
@@ -16,6 +17,11 @@
 	<cfparam name="attributes.sRedirectQS" type="string" default="#request.context.entityActionDetails.sRedirectQS#">
 	<cfparam name="attributes.fRedirectQS" type="string" default="#request.context.entityActionDetails.fRedirectQS#">
 	<cfparam name="attributes.forceSSLFlag" type="boolean" default="false" />
+	
+	<!--- Make sure we don't have a stale token (this will happen when validation fails) --->
+	<cfif !CSRFVerifyToken(attributes.csrf, "hibachiCSRFToken")>
+		<cfset attributes.csrf = CSRFGenerateToken("hibachiCSRFToken", false) />
+	</cfif> 
 	
 	<cfset formAction ="" />
 	
@@ -38,6 +44,7 @@
 			<form method="post" action="#formAction#" class="" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.saveaction),':','','all'),'.','','all')#">
 			<input type="hidden" name="#request.context.fw.getAction()#" value="#attributes.saveaction#" />
 			<input type="hidden" name="#attributes.object.getPrimaryIDPropertyName()#" value="#attributes.object.getPrimaryIDValue()#" />
+			<input type="hidden" name="csrf" value="#attributes.csrf#" />
 			<cfif len(attributes.sRedirectURL)><input type="hidden" name="sRedirectURL" value="#attributes.sRedirectURL#" /></cfif>
 			<cfif len(attributes.sRedirectAction)><input type="hidden" name="sRedirectAction" value="#attributes.sRedirectAction#" /></cfif>
 			<cfif len(attributes.sRenderItem)><input type="hidden" name="sRenderItem" value="#attributes.sRenderItem#" /></cfif>

@@ -6,8 +6,8 @@
     <cfset subscriptionOrderItemList.setDisplayProperties('orderItem.sku.product.productName')/>
     
     <cfset subscriptionOrderItemList.addFilter('subscriptionOrderDeliveryItems.quantity',1,">=",'AND','SUM')/>
-    <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
-    <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
+    <cfset subscriptionOrderItemList.addFilter('subscriptionOrderDeliveryItems.createdDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
+    <cfset subscriptionOrderItemList.addFilter('subscriptionOrderDeliveryItems.createdDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
     <cfset subscriptionOrderItemList.addGroupBy('orderItem.sku.product.productName')/>
     <cfset productsWithDeliveries = subscriptionOrderItemList.getPageRecords()/>
     

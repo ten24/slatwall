@@ -108,7 +108,7 @@ Notes:
 		
 		//Quantity on Order
 		public array function getQOO(required string productID, string productRemoteID){
-			var params = { productID = arguments.productID };
+			var params = { productID = arguments.productID, currentTime=now() };
 			var hql = "SELECT NEW MAP(
 							COALESCE(sum(orderItem.quantity),0) as QOO, 
 							sku.skuID as skuID, 
@@ -123,8 +123,19 @@ Notes:
 					  	  	stock.location location
 					  	  LEFT JOIN 
 					  	  	orderItem.sku sku
+					  	  LEFT JOIN
+					  		orderItem.stockHolds stockHold
 						WHERE
+									(
 										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+										OR 
+										(
+											stockHold.stockHoldExpirationDateTime > :currentTime
+											AND orderItem.order.orderStatusType.systemCode = 'ostNotPlaced'
+										)
+										OR 
+										orderItem.order.paymentProcessingInProgressFlag=1
+									)
 						  			AND
 						  				orderItem.orderItemType.systemCode = 'oitSale'
 						  			AND 

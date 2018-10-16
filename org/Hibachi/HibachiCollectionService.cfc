@@ -1010,11 +1010,18 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 		}
 		if(!isNull(collectionEntity.getMergeCollection())){
-			var collectionData = getMergedCollectionData(collectionEntity, data);
 			var headers1 = getHeadersListByCollection(collectionEntity);
+			var title1 = getHeadersListByCollection(collectionEntity, true);
+			
 			var headers2 = getHeadersListByCollection(collectionEntity.getMergeCollection());
+			var title2 = getHeadersListByCollection(collectionEntity.getMergeCollection(), true);
+			
+			var mergedTitles = ListRemoveDuplicates(listAppend(title1, title2));
 			var mergedHeaders = ListRemoveDuplicates(listAppend(headers1, headers2));
-			getHibachiService().export( collectionData, mergedHeaders, mergedHeaders, collectionEntity.getCollectionObject(), "csv" );
+			
+			var collectionData = getMergedCollectionData(collectionEntity, data);
+			
+			getHibachiService().export( collectionData, mergedHeaders, mergedTitles, collectionEntity.getCollectionObject(), "csv" );
 			return;
 		}
 		var exportCollectionConfigData = {};
@@ -1146,11 +1153,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
 		var headers = getHeadersListByCollection(arguments.collectionEntity);
+		var title =  getHeadersListByCollection(arguments.collectionEntity, true);
 		
 		var collectionConfigData = {
 			data=collectionData, 
 			columns=headers, 
-			columnNames=headers, 
+			columnNames=title, 
 			fileName=arguments.collectionEntity.getCollectionConfigStruct().baseEntityName, 
 			fileType = 'csv', 
 			downloadFile=true
@@ -1159,12 +1167,20 @@ component output="false" accessors="true" extends="HibachiService" {
 		return collectionConfigData;
 	}
 
-	public string function getHeadersListByCollection(required any collectionEntity){
+	public string function getHeadersListByCollection(required any collectionEntity, boolean getTitleFlag = false){
 		var headersList = '';
 		var columns = arguments.collectionEntity.getCollectionConfigStruct().columns;
 		for(var column in columns){
 			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
-				headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
+				if (arguments.getTitleFlag){
+					if ( structKeyExists(column, 'displayTitle') ){
+						headersList = listAppend(headersList, column.displayTitle);
+					} else {
+						headersList = listAppend(headersList, column.title);
+					}
+				}else {
+					headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
+				}
 			}
 		}
 		return headersList;

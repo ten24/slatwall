@@ -755,6 +755,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public void function removeTaxesFromAllOrderItemsAndOrderFulfillments(required any order){
 		// First Loop over the orderItems to remove existing taxes
+		
 		for(var orderItem in arguments.order.getOrderItems()) {
 
 			// Remove all existing tax calculations
@@ -777,7 +778,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					appliedTax.removeOrderFulfillment( orderFulfillment );
 				}
 			}
-			orderItem.clearVariablesKey('taxAmount');
+			orderFulfillment.clearVariablesKey('taxAmount');
 		}
 
 	}

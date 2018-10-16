@@ -63,6 +63,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="testAccountFlag" ormtype="boolean";
 	property name="verifiedAccountFlag" ormtype="boolean" default="false";
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
+	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
+
 	//calucluated property
 	property name="calculatedFullName" ormtype="string";
 	// CMS Properties
@@ -148,9 +150,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
-	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
-
-
 
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
