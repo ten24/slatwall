@@ -126,6 +126,11 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			contentCacheKey &= getDao('hibachiDao').getApplicationKey();
 			contentCacheKey &= getHibachiScope().site().getSiteCode();
 			contentCacheKey &= getUrlTitlePath();
+			
+			if(!isNull(getCmsContentID())){
+				contentCacheKey &= getCmsContentID();				
+			}
+			
 			if (!isNull(getHibachiScope().getBrand()) && !getHibachiScope().getBrand().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getBrand().getBrandID();
 			}
