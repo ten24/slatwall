@@ -118,6 +118,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			}else{
 				setCurrentRequestSitePathType('sitecode');
 			}
+			
+			if(isNull(variables.currentRequestSite) && structKeyExists(session,'siteID')){
+				variables.currentRequestSite = getService('siteService').getSiteByCMSSiteID(session['siteID']);
+				setCurrentRequestSitePathType('cmsSiteID');
+			}
+			
 			if(isNull(variables.currentRequestSite)){
 				variables.currentRequestSite = getService('siteService').newSite();
 			}
@@ -379,7 +385,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName,accountAddresses.address.emailAddress,accountAddresses.accountAddressName,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,accountAddresses.address.company,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,accountPaymentMethods.expirationYear,accountPaymentMethods.accountPaymentMethodName","[[:space:]]","","all");
+			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName,accountAddresses.address.emailAddress,accountAddresses.accountAddressName,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,accountAddresses.address.company,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,accountPaymentMethods.expirationYear,accountPaymentMethods.accountPaymentMethodName,accountPaymentMethods.activeFlag","[[:space:]]","","all");
 	}
 	
 	public any function getAccountData(string propertyList) {

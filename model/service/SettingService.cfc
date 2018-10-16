@@ -98,7 +98,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			"attribute",
 			"physical",
 			"location",
-			"integration"
+			"integration",
+			"order"
 		];
 	}
 
@@ -240,7 +241,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalExtendedSessionAutoLogoutInDays = {fieldtype="text", defaultValue=5, validate={dataType="numeric", required=false}},
 			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
-      		globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalLogApiRequests = {fieldtype="yesno",defaultValue=0},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
 			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
@@ -251,6 +253,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
+			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
@@ -260,6 +263,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
 			globalURLKeyCategory = {fieldType="text",defaultValue="cat"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
@@ -288,6 +292,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//Order Fulfillment
 			orderFulfillmentEmailTemplate = {fieldtype="select", defaultValue=""},
+			
+			//Order
+			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
 
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
@@ -386,6 +393,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingWeight = {fieldType="text", defaultValue=1},
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
+			skuStockHold = {fieldType="yesno", defaultValue=0},
+			skuStockHoldTime = {fieldType="text", defaultValue=0,  validate={dataType="numeric"}},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},

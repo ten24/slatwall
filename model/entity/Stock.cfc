@@ -255,7 +255,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 
 	public boolean function getLocationIsLeafNode(){
-		return  !isNull(getLocation().getParentLocation()) && getLocation().getChildLocationsCount() == 0;
+		return getLocation().getChildLocationsCount() == 0;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

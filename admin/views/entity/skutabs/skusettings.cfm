@@ -74,6 +74,9 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuStockHold" settingObject="#rc.sku#"/>
+		<swa:SlatwallSetting settingName="skuStockHoldTime" settingObject="#rc.sku#"/>
+		
 		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "gift-card">
 			<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.sku#" />
 			<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" settingObject="#rc.sku#" />

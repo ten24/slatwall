@@ -1,5 +1,4 @@
 <!---
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 --->
 <cfcomponent accessors="true" persistent="false" output="false" extends="HibachiReport">
 	
@@ -57,7 +52,9 @@ Notes:
 	
 	<cffunction name="getMetricDefinitions">
 		<cfreturn [
-			{alias='taxAmount', function='sum', formatType="currency", title=rbKey('entity.taxApplied.taxAmount')},
+			{alias='taxAmount', calculation='SUM(taxAmountSales) - SUM(taxAmountReturn)', formatType="currency", title=rbKey('entity.taxApplied.taxAmount') & " " & rbKey('define.total')},
+			{alias='taxAmountSales', function='sum', formatType="currency"},
+			{alias='taxAmountReturn', function='sum', formatType="currency"},
 			{alias='taxRate', function='avg', formatType="currency", title=rbKey('entity.taxApplied.taxRate')}
 		] />
 	</cffunction>
@@ -141,34 +138,36 @@ Notes:
     						0
 					END as returnPreDiscount,
 					( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID ) as itemDiscount,
+					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' ) as taxAmountSales,
+					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' ) as taxAmountReturn,
 					#getReportDateTimeSelect()#
 				FROM
 					SwTaxApplied
-				  INNER JOIN
-				  	SwTaxCategoryRate on SwTaxApplied.taxCategoryRateID = SwTaxCategoryRate.taxCategoryRateID
-				  INNER JOIN
-				  	SwTaxCategory on SwTaxCategoryRate.taxCategoryID = SwTaxCategory.taxCategoryID 
-				  INNER JOIN
-					SwOrderItem on SwTaxApplied.orderItemID = SwOrderItem.orderItemID
-				  INNER JOIN
-				  	SwOrderFulfillment on SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
-				  INNER JOIN
-				  	SwFulfillmentMethod on SwOrderFulfillment.fulfillmentMethodID = SwFulfillmentMethod.fulfillmentMethodID
-				  INNER JOIN
-				  	SwOrder on SwOrderFulfillment.orderID = SwOrder.orderID
-				  INNER JOIN
-				  	SwAccount on SwOrder.accountID = SwAccount.accountID
-				  INNER JOIN
-				  	SwSku on SwOrderItem.skuID = SwSku.skuID
-				  INNER JOIN
-				  	SwProduct on SwSku.productID = SwProduct.productID
-				  INNER JOIN
-				  	SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
-				  LEFT JOIN
-				  	SwAddress on SwOrderFulfillment.shippingAddressID = SwAddress.addressID
-				  LEFT JOIN
-				  	SwOrder ro on SwOrder.orderID = ro.referencedOrderID 
-				WHERE
+				  INNER JOIN 
+					SwTaxCategoryRate ON SwTaxApplied.taxCategoryRateID = SwTaxCategoryRate.taxCategoryRateID
+				  INNER JOIN 
+					SwTaxCategory ON SwTaxCategoryRate.taxCategoryID = SwTaxCategory.taxCategoryID
+				  INNER JOIN 
+					SwOrderItem ON SwTaxApplied.orderItemID = SwOrderItem.orderItemID
+				  INNER JOIN 
+					SwSku ON SwOrderItem.skuID = SwSku.skuID
+				  INNER JOIN 
+					SwProduct ON SwSku.productID = SwProduct.productID
+				  INNER JOIN 
+					SwProductType ON SwProduct.productTypeID = SwProductType.productTypeID
+				  INNER JOIN 
+					SwOrder ON SwOrderItem.orderID = SwOrder.orderID
+				  INNER JOIN 
+					SwAccount ON SwOrder.accountID = SwAccount.accountID
+				  LEFT JOIN 
+					SwOrderFulfillment ON SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
+				  LEFT JOIN 
+					SwFulfillmentMethod ON SwOrderFulfillment.fulfillmentMethodID = SwFulfillmentMethod.fulfillmentMethodID
+				  LEFT JOIN 
+					SwAddress ON SwOrderFulfillment.shippingAddressID = SwAddress.addressID
+				  LEFT JOIN 
+					SwOrder ro ON SwOrder.orderID = ro.referencedOrderID
+				  WHERE
 					SwOrder.orderOpenDateTime is not null
 				  AND
 					#getReportDateTimeWhere()#

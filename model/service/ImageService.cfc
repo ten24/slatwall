@@ -104,10 +104,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         var resizedImagePaths = [];
         //var skus = [];
         
-        var skuCollectionList = getService('skuService').getSkuCollectionList();
-        skuCollectionList.setDisplayProperties('skuID,imageFile');
-        skuCollectionList.addFilter('skuID',arguments.skuIDList,'IN');
-        var skuRecords = skuCollectionList.getRecords();
+        var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
         for(var skuRecord in skuRecords){
         	ArrayAppend(
         		resizedImagePaths, 

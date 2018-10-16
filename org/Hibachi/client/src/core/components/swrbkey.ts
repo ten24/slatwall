@@ -1,5 +1,22 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
+import { Directive, ElementRef, Injector, SimpleChanges,Input } from '@angular/core';
+import { UpgradeComponent } from '@angular/upgrade/static';
+
+@Directive({
+  selector: '[sw-rbkey]'
+})
+
+export class SWRbKeyDirective extends UpgradeComponent {
+	@Input() public swrbkey: string;
+	
+  constructor(elementRef: ElementRef, injector: Injector) {
+    super('swrbkey', elementRef, injector);
+  	console.log(this.swrbkey);
+  }
+}
+
 class SWRbKey{
 	public static Factory(){
 		var directive = (

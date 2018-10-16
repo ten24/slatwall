@@ -35,6 +35,7 @@ import { HibachiValidationService } from "./services/hibachivalidationservice";
 import { EntityService } from "./services/entityservice";
 import {HttpInterceptor} from "./services/httpinterceptor";
 import { HttpModule } from '@angular/http';
+import {SWRbKeyDirective} from './components/swrbkey';
 
 //controllers
 import { GlobalSearchController } from "./controllers/globalsearch";
@@ -101,41 +102,41 @@ import { UpgradeModule, downgradeInjectable } from '@angular/upgrade/static';
 import { BaseObject } from "./model/baseobject";
 import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../../../../../admin/client/src/app.provider";
 
-export function startupServiceFactory(appProvider: AppProvider, appConfig: AppConfig, resourceBundles: ResourceBundles, attributeMetaData: AttributeMetaData): Function {
-    return () => {
-    
-        appProvider.fetchData().then(() => {
-            for (var key in appProvider.appConfig) {
-
-                appConfig[key] = appProvider.appConfig[key];
-            }
-            if (appProvider.attributeMetaData) {
-                for (var key in appProvider.attributeMetaData) {
-                    attributeMetaData[key] = appProvider.attributeMetaData[key];
-                }
-            }
-            for (var key in appProvider._resourceBundle) {
-                console.log(appProvider._resourceBundle);
-                resourceBundles[key] = appProvider._resourceBundle[key];
-            } 
-            console.log(appProvider);
-            appProvider.hasData = true;
-
-        });
-
-
-
-    };
-}
+//export function startupServiceFactory(appProvider: AppProvider, appConfig: AppConfig, resourceBundles: ResourceBundles, attributeMetaData: AttributeMetaData): Function {
+//    return () => {
+//    
+//        appProvider.fetchData().then(() => {
+//            for (var key in appProvider.appConfig) {
+//
+//                appConfig[key] = appProvider.appConfig[key];
+//            }
+//            if (appProvider.attributeMetaData) {
+//                for (var key in appProvider.attributeMetaData) {
+//                    attributeMetaData[key] = appProvider.attributeMetaData[key];
+//                }
+//            }
+//            for (var key in appProvider._resourceBundle) {
+//                console.log(appProvider._resourceBundle);
+//                resourceBundles[key] = appProvider._resourceBundle[key];
+//            } 
+//            console.log(appProvider);
+//            appProvider.hasData = true;
+//
+//        });
+//
+//
+//
+//    };
+//}
 
 @NgModule({
-    declarations: [],
+    declarations: [SWRbKeyDirective],
     providers: [
         AppProvider,
         AppConfig,
         ResourceBundles,
         AttributeMetaData,
-        { provide: APP_INITIALIZER, useFactory: startupServiceFactory, deps: [AppProvider, AppConfig, ResourceBundles, AttributeMetaData], multi: true },
+//        { provide: APP_INITIALIZER, useFactory: startupServiceFactory, deps: [AppProvider, AppConfig, ResourceBundles, AttributeMetaData], multi: true },
         LocalStorageService,
         CacheService,
         DraggableService,
@@ -181,9 +182,8 @@ export function startupServiceFactory(appProvider: AppProvider, appConfig: AppCo
 })
 
 export class CoreModule {
-    constructor(public appConfig: AppConfig, private appProvider: AppProvider) {
-        console.log('trst', appConfig);
-        console.log('trst', appProvider);
+    constructor() {
+        
     }
 }
 

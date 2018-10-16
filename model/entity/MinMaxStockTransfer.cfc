@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTransfer" table="swMinMaxStockTransfer" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTransfer" table="swMinMaxStockTransfer" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" hb_permission="this" {
 
 	// Persistent Properties
 	property name="minMaxStockTransferID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

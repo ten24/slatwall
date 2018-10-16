@@ -48,7 +48,7 @@ Notes:
 --->
 <cfcomponent output="false" extends="Slatwall.org.Hibachi.Hibachi">
 	<cfscript>
-
+writedump(var=this,top=2);abort;
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
 	// Allow For Instance Config

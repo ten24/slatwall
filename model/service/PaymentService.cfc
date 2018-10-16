@@ -301,6 +301,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 
+	public any function processPaymentTransaction_voidTransaction(required any paymentTransaction, required struct data) {
+		var originalPaymentTransaction = arguments.paymentTransaction;
+		
+		// Create a new payment transaction
+		var newPaymentTransaction = this.newPaymentTransaction();
+		
+		// Setup the orderPayment in the transaction to be used by the 'runTransaction'
+		newPaymentTransaction.setOrderPayment( originalPaymentTransaction.getOrderPayment() );
+		
+		// Setup the transaction data
+		transactionData = {
+			transactionType = 'void',
+			originalPaymentTransaction = originalPaymentTransaction
+		};
+		
+		// Run the transaction
+		newPaymentTransaction = this.processPaymentTransaction(newPaymentTransaction, transactionData, 'runTransaction');
+		// If the paymentTransaction has errors, then add those errors to the orderPayment itself
+		if(newPaymentTransaction.hasError('runTransaction')) {
+			originalPaymentTransaction.addError('createTransaction', newPaymentTransaction.getError('runTransaction'), true);
+		} else {
+			//On the void transaction, cancel out the original amount(s).
+			if (!isNull(originalPaymentTransaction.getAmountReceived())){
+				newPaymentTransaction.setAmountReceived(originalPaymentTransaction.getAmountReceived() * -1);
+			}
+			
+			if (!isNull(originalPaymentTransaction.getAmountCredited())){
+				newPaymentTransaction.setAmountCredited(originalPaymentTransaction.getAmountCredited() * -1);
+			}
+		}				
+ 		return paymentTransaction;
+	}
 
 	public any function processPaymentTransaction_runTransaction(required any paymentTransaction, required struct data) {
 		param name="arguments.data.amount" default="0";
@@ -380,6 +412,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPaymentMethod") {
 							requestBean.populatePaymentInfoWithAccountPaymentMethod( arguments.paymentTransaction.getPayment() );
+						}
+
+						if(!isNull(arguments.data.originalPaymentTransaction)){
+							requestBean.setOriginalProviderTransactionID( arguments.data.originalPaymentTransaction.getProviderTransactionID() );
 						}
 
 						// Wrap in a try / catch so that the transaction will still get saved to the DB even in error
@@ -497,7 +533,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							var amount = arguments.data.amount;
 
-                            if(arguments.data.transactionType == "charge"){
+                            if(arguments.data.transactionType == "charge" || arguments.data.transactionType == "receive"){
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
 

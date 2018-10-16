@@ -33,7 +33,7 @@ export class Pagination{
     ){
         this.uuid = uuid;
         this.selectedPageShowOption = this.pageShowOptions[0];
-        this.observerService.attach(this.setPageRecordsInfo, 'swPaginationUpdate', this.uuid);
+        this.observerService.attach(this.setPageRecordsInfo, 'swPaginationUpdate', this.uuid,this);
     }
 
     public getSelectedPageShowOption() {

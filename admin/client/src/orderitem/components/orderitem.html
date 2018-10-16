@@ -98,7 +98,7 @@
 		</span>
 	</td>
 	
-	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
+	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.price | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
 	
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	
@@ -106,8 +106,7 @@
 	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">-<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span></td>
 	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
-	<td class="s-qty">{{orderItem.data.extendedPrice - orderItem.data.discountAmount}}</td>
-	
+	<td class="s-subTotal">{{orderItem.data.extendedPrice - orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode}}</td>
 	
 	<!-- Handle Tax Information -->
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></td>

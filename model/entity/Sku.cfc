@@ -75,6 +75,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
 	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
+	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -110,6 +111,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
 	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="MinMaxStockTransferItem" inverse="true" lazy="extra";
 	property name="skuLocationQuantities" singularname="skuLocationQuantity" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuLocationQuantity" inverse="true" cascade="all-delete-orphan";
+	property name="deliveryScheduleDates" singularname="deliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
@@ -921,7 +923,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 							variables.currencyDetails[ currentCurrencyCode ].listPrice = getService("currencyService").convertCurrency(getListPrice(), this.setting('skuCurrency'), currentCurrencyCode);
 							variables.currencyDetails[ currentCurrencyCode ].listPriceFormatted = formatValue( variables.currencyDetails[ currentCurrencyCode ].listPrice, "currency", {currencyCode=currentCurrencyCode});
 						}
-						variables.currencyDetails[ currentCurrencyCode ].price = getService("currencyService").convertCurrency(getPrice(), this.setting('skuCurrency'), currentCurrencyCode);
+						if(!isNull(getPrice())) {
+							variables.currencyDetails[ currentCurrencyCode ].price = getService("currencyService").convertCurrency(getPrice(), this.setting('skuCurrency'), currentCurrencyCode);
+						} else {
+							variables.currencyDetails[ currentCurrencyCode ].price = 0;
+						}
 						variables.currencyDetails[ currentCurrencyCode ].priceFormatted = formatValue( variables.currencyDetails[ currentCurrencyCode ].price, "currency", {currencyCode=currentCurrencyCode});
 						variables.currencyDetails[ currentCurrencyCode ].converted = true;
 					}
@@ -939,10 +945,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.currentAccountPrice;
 	}
+	
+	public any function getPriceByAccount(required any account) {
+		if(!structKeyExists(variables, "accountPrice")) {
+			variables.accountPrice = getService("priceGroupService").calculateSkuPriceBasedOnAccount(sku=this, account=arguments.account);
+		}
+		return variables.accountPrice;
+	}
+
 
 	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
 		if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
-			variables["currentAccountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(sku=this,currencyCode=arguments.currencyCode);
+			variables["currentAccountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(sku=this, currencyCode=arguments.currencyCode);
 			if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
 				return;	
 			}
@@ -951,6 +965,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables["currentAccountPrice_#arguments.currencyCode#"];
 	}
 
+	public any function getPriceByCurrencyCodeAndAccount(required string currencyCode, required any account) {
+		if(!structKeyExists(variables, "accountPrice_#arguments.currencyCode#")) {
+			variables["accountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnAccountAndCurrencyCode(sku=this, account=arguments.account, currencyCode=arguments.currencyCode);
+			if(!structKeyExists(variables, "AccountPrice_#arguments.currencyCode#")) {
+				return;	
+			}
+		}
+		
+		return variables["accountPrice_#arguments.currencyCode#"];
+	}
+	
 	public boolean function getDefaultFlag() {
     	if(!isNull(getProduct().getDefaultSku()) && getProduct().getDefaultSku().getSkuID() == getSkuID()) {
     		return true;
@@ -1093,13 +1118,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return "";
 	}
 
-	public any function getLivePrice() {
+	public any function getLivePrice( any account = getHibachiScope().getAccount() ) {
 		if(!structKeyExists(variables, "livePrice")) {
 			// Create a prices array, and add the
 			var prices = [getPrice()];
 			// Add the current account price, and sale price
 			arrayAppend(prices, getSalePrice());
-			arrayAppend(prices, getCurrentAccountPrice());
+			arrayAppend(prices, getPriceByAccount(arguments.account));
 			// Sort by best price
 			arraySort(prices, "numeric", "asc");
 			// set that in the variables scope
@@ -1108,7 +1133,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.livePrice;
 	}
 
-	public any function getLivePriceByCurrencyCode(required string currencyCode) {
+	public any function getLivePriceByCurrencyCode(required string currencyCode, any account = getHibachiScope().getAccount()) {
 		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode#")) {
 			// Create a prices array, and add the
 			var price = getPriceByCurrencyCode(arguments.currencyCode);
@@ -1123,7 +1148,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				arrayAppend(prices,salePrice);
 			}
 			
-			var currentAccountPrice = getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode);
+			var currentAccountPrice = getPriceByCurrencyCodeAndAccount(currencyCode=arguments.currencyCode, account=arguments.account);
 			if(!isNull(currentAccountPrice)){
 				arrayAppend(prices, currentAccountPrice);	
 			}

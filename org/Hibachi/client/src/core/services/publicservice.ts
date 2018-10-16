@@ -23,6 +23,7 @@ export class PublicService {
     public countries:any;
     public addressOptions:any;
     public requests:{ [action: string]: PublicRequest; }={};
+    public messages:any;
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
     public newCardInfo:any;
@@ -74,6 +75,7 @@ export class PublicService {
     public addBillingAddressErrors;
     public uploadingFile;
     public orderItem;
+    public cmsSiteID;
 
     ///index.cfm/api/scope/
 
@@ -336,9 +338,15 @@ export class PublicService {
         if(data){
             method = "post";
             data.returnJsonObjects = "cart,account";
+            if(this.cmsSiteID){
+                data.cmsSiteID = this.cmsSiteID;
+            }
         }else{
             urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
             urlBase += "returnJsonObject=cart,account";
+            if(this.cmsSiteID){
+                urlBase += "&cmsSiteID=" + this.cmsSiteID;
+            }
         }
         if (method == "post"){
 
@@ -438,6 +446,9 @@ export class PublicService {
             this.cart.request = request;
         }
         this.errors = response.errors;
+        if(response.messages){
+            this.messages = response.messages;
+        }
     }
 
     public runCheckoutAdjustments (response){
@@ -1303,7 +1314,7 @@ export class PublicService {
     
     public getOrderAttributeValues(allowedAttributeSets){
         var attributeValues = {};
-        var orderAttributeModel = JSON.parse(localStorage.attributeMetaData)["Order"];
+        var orderAttributeModel = JSON.parse(localStorage.getItem('attributeMetaData'))["Order"];
         for(var attributeSetCode in orderAttributeModel){
             var attributeSet = orderAttributeModel[attributeSetCode];
             if(allowedAttributeSets.indexOf(attributeSetCode) !== -1){

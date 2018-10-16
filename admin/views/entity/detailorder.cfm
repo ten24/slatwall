@@ -150,6 +150,9 @@ Notes:
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.order#" attributeSet="#attributeSet#" />
 			</cfloop>
 
+			<!--- Settings --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/ordersettings" />
+			
 			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.order#" />
 
