@@ -25,7 +25,7 @@ component accessors="true" output="false" persistent="false" {
 		var clientIP = cgi.remote_addr;
 		var clientHeaders = GetHttpRequestData().headers;
 		if(structKeyExists(clientHeaders,"X-Forwarded-For")){
-			clientIP = clientHeaders["X-Forwarded-For"];
+			clientIP = listRemoveDuplicates( ReplaceNoCase( clientHeaders["X-Forwarded-For"] , ' ', '', 'all') );
 		}
 		return clientIP;
 	}
@@ -39,12 +39,16 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		return application[ getApplicationValue('applicationKey') ].factory;
+		return application[ getApplicationValue('applicationKey') ].subsystemfactories['main'];
+	}
+	
+	public any function getCustom(){
+		return this;
 	}
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBean(required string beanName, struct constructorArgs = { }) {
-		return getBeanFactory().getBean( arguments.beanName, arguments.constructorArgs);
+		return getBeanFactory().getBean( argumentCollection=arguments);
 	}
 	
 	// @hint has a bean out of whatever the fw1 bean factory is
@@ -175,6 +179,11 @@ component accessors="true" output="false" persistent="false" {
 		return replace(lcase(createUUID()), '-', '', 'all');
 	}
 	
+	//Dump & Die, shortcut
+	public any function dd(required any data, numeric top = 2){
+		writeDump(var="#data#", top=arguments.top, abort=true);
+	}
+	
 	// ===========================  END:  UTILITY METHODS ===========================================
 	// ==================== START: INTERNALLY CACHED META VALUES ====================================
 	
@@ -189,6 +198,16 @@ component accessors="true" output="false" persistent="false" {
 	// ====================  END: INTERNALLY CACHED META VALUES =====================================
 	// ========================= START: DELIGATION HELPERS ==========================================
 	
+	public void function addCheckpoint(string description="", string tags, string blockName, any object) {
+		
+		// If no label provided, use the component filename by default
+		if (!structKeyExists(arguments, 'blockName')) {
+			arguments.blockName = listLast(getThisMetaData().path, '/');
+		}
+		
+		getHibachiScope().getProfiler().addCheckpoint(argumentCollection=arguments);
+	}
+	
 	public string function encryptValue(string value) {
 		return getService("hibachiUtilityService").encryptValue(argumentcollection=arguments);
 	}
@@ -202,7 +221,7 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	public void function logHibachi(required string message, boolean generalLog=false){
-		getService("hibachiUtilityService").logMessage(message=arguments.message, generalLog=arguments.generalLog);		
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
 	public void function logHibachiException(required any exception){

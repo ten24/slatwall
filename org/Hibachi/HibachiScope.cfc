@@ -6,6 +6,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="profiler" type="any";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
 	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
@@ -69,6 +70,27 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 
 		return variables.permissionGroupCacheKey;
+	}
+	
+	public any function getProfiler() {
+		if (!structKeyExists(variables, 'profiler')) {
+			// Cannot rely on beanFactory exists in order to allow profiling prior to that part of framework initialization
+			// Manually instantiate 
+			var componentPaths = ['Slatwall.custom.model.transient.HibachiProfiler', 'Slatwall.model.transient.HibachiProfiler', 'Slatwall.org.Hibachi.HibachiProfiler'];
+			var instantiationError = '';
+			for (var profilerComponentPath in componentPaths) {
+				try {
+					variables.profiler = createObject(profilerComponentPath);
+					break;
+				} catch (any e) {instantiationError = e;}
+			}
+			
+			if (!structKeyExists(variables, 'profiler')) {
+				throw("HibachiProfiler component could not be instantiated. Error message: #instantiationError.message#");
+			}
+		}
+		
+		return variables.profiler;
 	}
 
 	public string function getEntityURLKeyType(string entityURLKey=""){

@@ -157,4 +157,5 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
 	}
 	
+	
 }

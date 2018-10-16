@@ -23,7 +23,7 @@ export class ListingService{
 
     //@ngInject
     constructor(@Inject("$timeout") private $timeout : any,
-                @Inject("$timeout") private $q :any,
+                @Inject("$q") private $q :any,
                 private collectionConfigService : CollectionConfig,
                 private filterService : FilterService,
                 private historyService : HistoryService,
@@ -807,7 +807,11 @@ export class ListingService{
     public setupDefaultGetCollection(listingID:string) {
 
         if(this.getListing(listingID).collectionConfigs.length == 0){
-
+            if(this.getListing(listingID).collectionId){
+            
+                this.getListing(listingID).collectionConfig.baseEntityNameType = 'Collection';
+                this.getListing(listingID).collectionConfig.id = this.getListing(listingID).collectionId;
+            }
             this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
 
             return () =>{
@@ -945,7 +949,11 @@ export class ListingService{
     //for single column order by
     public toggleOrderBy(listingID:string, column) {
         if(this.getListing(listingID).hasSingleCollectionConfig()){
-            this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+            let orderByPropertyIdentifier = column.propertyIdentifier;
+            if(column.aggregate && column.aggregate.aggregateFunction){
+                orderByPropertyIdentifier = column.aggregate.aggregateFunction + '('+column.propertyIdentifier+')';
+            }
+            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
         }
 
     };

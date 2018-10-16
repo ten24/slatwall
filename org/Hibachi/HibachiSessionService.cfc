@@ -25,6 +25,40 @@ component output="false" accessors="true" extends="HibachiService"  {
 		return config;
 	}
 	
+	public any function verifyCSRF(required any rc, required any framework){
+		// Right now this logic only runs if CSRF token is present, not as secure as it could be. 
+		if(structKeyExists(arguments.rc, "csrf")){
+			var validToken = CSRFVerifyToken(arguments.rc.csrf,"hibachiCSRFToken");
+			if(!validToken){
+				this.logHibachi("CSRF FAILED - Expected: " & CSRFGenerateToken("hibachiCSRFToken",true) & ' Recieved: ' & arguments.rc.csrf, true); 
+				getHibachiScope().showMessage(getHibachiScope().rbKey("admin.define.csrfinvalid"),"success");
+	
+				//If the token is invalid we don't know if the original request was successful or not, right now this logic assumes success (not ideal)
+				if(structKeyExists(arguments.rc, "sRedirectURL")) {
+						arguments.framework.redirectExact( redirectlocation=arguments.rc.sRedirectURL );
+				} else if (structKeyExists(arguments.rc, "sRedirectAction")) {
+						if(!structKeyExists(arguments.rc,"sRedirectQS")){
+							arguments.rc.sRedirectQS = '';
+						}
+						arguments.framework.redirect( action=arguments.rc.sRedirectAction, preserve="messages", queryString=arguments.rc.sRedirectQS );
+				} else {
+					var frameworkConfig = arguments.framework.getConfig();  
+					var action = arguments.framework.getAction(); 
+					var subsystem = arguments.framework.getSubsystem(); 
+					var section = frameworkConfig['defaultSection'];
+					var item = frameworkConfig['defaultItem'];
+					var defaultSubsystemAction = subsystem & ':' & section & '.' & item;  
+ 					arguments.framework.redirect( action=defaultSubsystemAction, preserve="messages");
+				}	
+			}
+		}
+		
+		//only force a new token if one was passed in
+		arguments.rc.csrf = CSRFGenerateToken("hibachiCSRFToken", structKeyExists(arguments.rc, "csrf")); 
+		
+ 		return arguments.rc;	
+	}
+	
 	public void function setProperSession() {
 		var requestHeaders = getHTTPRequestData();
 		
