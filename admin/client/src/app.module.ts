@@ -3,7 +3,6 @@ import {NgModule, Injectable} from '@angular/core';
 import { HttpClientModule } from "@angular/common/http";
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
-import {HeroDetailComponent} from './slatwall/components/herodetail.component';
 import {slatwalladminmodule} from './slatwall/slatwalladmin.module';
 
 import {CoreModule,coremodule}  from  "../../../org/Hibachi/client/src/core/core.module";
@@ -45,7 +44,7 @@ import { SwRbKey } from "../../../org/Hibachi/client/src/core/components/swrbkey
       SwRbKey
   ],
   entryComponents: [
-    HeroDetailComponent
+
   ]
 })
 export class AppModule { 
