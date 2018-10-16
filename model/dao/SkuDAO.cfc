@@ -115,6 +115,14 @@ Notes:
 	</cffunction>
 	
 	<cfscript>
+		
+	public array function getImageFileDataBySkuIDList(required string skuIDList){
+		var hql = "SELECT NEW MAP(imageFile as imageFile,skuID as skuID) FROM #getApplicationKey()#Sku WHERE skuID IN (:skuIDList)";
+		
+		var params = {skuIDList=arguments.skuIDList};
+		
+		return ORMExecuteQuery(hql,params);
+    }
 
 	public any function getSkuBySkuCode( required string skuCode){
 		return ormExecuteQuery( "SELECT ss FROM SlatwallSku ss LEFT JOIN ss.alternateSkuCodes ascs WHERE ss.skuCode = :skuCode OR ascs.alternateSkuCode = :skuCode", {skuCode=arguments.skuCode}, true ); 
