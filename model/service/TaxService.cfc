@@ -104,7 +104,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
 		
-		if(isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey || true){
+		if(isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey ){
 			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
 	
 			//Remove existing taxes from OrderItems and OrderFulfillments
