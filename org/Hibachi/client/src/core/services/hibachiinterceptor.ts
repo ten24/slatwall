@@ -173,10 +173,13 @@ class HibachiInterceptor implements IInterceptor{
 			delete config.params;
 			config.headers['Content-Type']= 'application/x-www-form-urlencoded';
 		}else if((queryParams[this.appConfig.action] && queryParams[this.appConfig.action].indexOf('api:main.get')!==-1)){
-			if(!config.data){
-				config.data = {};
+			
+			if(!queryParams['context']){
+				config.data.context = 'GET';
+				if(!config.data){
+					config.data = {};
+				}
 			}
-			config.data.context = 'GET';
  		}
 
 		return config;

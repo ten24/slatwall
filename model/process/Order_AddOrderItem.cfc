@@ -173,7 +173,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					account = getOrder().getAccount();
 				}
 				
-				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode(), account );
+				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( currencyCode=getCurrencyCode(), account=account );
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
 				} else {
