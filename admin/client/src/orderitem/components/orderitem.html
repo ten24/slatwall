@@ -60,11 +60,13 @@
 	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
 	
 	<!-- Handle all custom details situations -->
-	<td sw-order-item-detail-stamp
-		data-system-code="orderItem.data.sku.data.baseProductType"
-		order-item-id="orderItem.data.orderItemID"
-		sku-Id="orderItem.data.sku.data.skuID"
-		order-item="orderItem">
+	<td >
+		<sw-order-item-detail-stamp
+			[systemcode]="orderItem.data.sku.data.baseProductType"
+			[orderitemid]="orderItem.data.orderItemID"
+			[skuid]="orderItem.data.sku.data.skuID"
+			[orderitem]="orderItem">
+		</sw-order-item-detail-stamp>
 	</td>
 	
 	<!-- Handle Custom Attributes Values -->
