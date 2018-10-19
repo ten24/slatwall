@@ -1,50 +1,55 @@
-<ul ng-switch="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodType" ng-if="orderFulfillment.data">
-	<li class="s-header" ng-if="!orderFulfillment.data.primaryAddress"> <span ng-bind="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodName"></span>: <a ng-href="{{'?slatAction=entity.editorderfulfillment&orderFulfillmentID='+orderFulfillment.data.orderFulfillmentID}}" class="s-edit-link">edit</a></li>
-	
-	<span ng-switch-when="shipping">
-		<li ng-bind="orderFulfillment.data.shippingAddress.data.streetAddress"></li>
-		<li ng-bind="orderFulfillment.data.shippingAddress.data.street2Address"></li>
-		<li>
-			<span ng-bind="orderFulfillment.data.shippingAddress.data.city"> &nbsp</span> 
-			<span ng-bind="orderFulfillment.data.shippingAddress.data.stateCode"> &nbsp</span><br>
-			<span ng-bind="orderFulfillment.data.shippingAddress.data.postalCode"></span>
+<div *ngIf="orderfulfillment.data" >
+		<li class="s-header" *ngIf="!orderfulfillment.data.primaryAddress">
+			<span [textContent]="orderfulfillment.data.fulfillmentMethod.data.fulfillmentMethodName"></span>: <a href="{{'?slatAction=entity.editorderfulfillment&orderFulfillmentID='+orderfulfillment.data.orderFulfillmentID}}" class="s-edit-link">edit</a>
 		</li>
-	</span>
-	<span ng-switch-when="'attend'">
-		<!-- What critiria are displayed for attend?-->
-	</span>
-	<span ng-switch-when="auto">
-		<!-- What critiria are displayed for auto?-->
-	</span>
-	<span ng-switch-when="email">
-		<!-- Need to add the email address here. -->
-		<span ng-bind="orderFulfillment.data.emailAddress"></span>
-	</span>
-	<span ng-switch-when="pickup">
+	<ul [ngSwitch]="orderfulfillment.data.fulfillmentMethod.data.fulfillmentMethodType" >
+
 		
-		<!-- Need to add a pickup address here.-->
-		<li ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.streetAddress"></li>
-		<li ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.street2Address"></li>
-		<li>
-			<span ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.city"> &nbsp</span> 
-			<span ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.stateCode"> &nbsp</span><br>
-			<span ng-bind="orderFulfillment.data.pickupLocation.data.primaryAddress.data.address.data.postalCode"></span>
-		</li>
-	</span>
-	<span ng-switch-when="download">
-	<!-- Should have the download link here.-->
-	</span>
-	<span ng-switch-default>
-		<ul></ul>
-	</span>
-	<span ng-if="orderFulfillment.data.primaryAddress.data.address.data.streetAddress">
-		<!-- Need to add a pickup address here.-->
-		<b>Return Location:</b> <br>
-		<li ng-bind="orderFulfillment.data.primaryAddress.data.address.data.streetAddress"></li>
-		<li ng-bind="orderFulfillment.data.primaryAddress.data.address.data.street2Address"></li>
-		<li>
-			<span ng-bind="orderFulfillment.data.primaryAddress.data.address.data.city"> &nbsp</span> 
-			<span ng-bind="orderFulfillment.data.primaryAddress.data.address.data.stateCode"> &nbsp</span>
-		</li><br>
-	</span>
-</ul>
+		<span *ngSwitchCase="'shipping'">
+			<li [textContent]="orderfulfillment.data.shippingAddress.data.streetAddress"></li>
+			<li [textContent]="orderfulfillment.data.shippingAddress.data.street2Address"></li>
+			<li>
+				<span [textContent]="orderfulfillment.data.shippingAddress.data.city"> &nbsp;</span> 
+				<span [textContent]="orderfulfillment.data.shippingAddress.data.stateCode"> &nbsp;</span><br>
+				<span [textContent]="orderfulfillment.data.shippingAddress.data.postalCode"></span>
+			</li>
+		</span>
+		<span *ngSwitchCase="'attend'">
+			<!-- What critiria are displayed for attend?-->
+		</span>
+		<span *ngSwitchCase="auto">
+			<!-- What critiria are displayed for auto?-->
+		</span>
+		<span *ngSwitchCase="'email'">
+			<!-- Need to add the email address here. -->
+			<span [textContent]="orderfulfillment.data.emailAddress"></span>
+		</span>
+		<span *ngSwitchCase="'pickup'">
+			
+			<!-- Need to add a pickup address here.-->
+			<li [textContent]="orderfulfillment.data.pickupLocation.data.primaryAddress.data.address.data.streetAddress"></li>
+			<li [textContent]="orderfulfillment.data.pickupLocation.data.primaryAddress.data.address.data.street2Address"></li>
+			<li>
+				<span [textContent]="orderfulfillment.data.pickupLocation.data.primaryAddress.data.address.data.city"> &nbsp;</span> 
+				<span [textContent]="orderfulfillment.data.pickupLocation.data.primaryAddress.data.address.data.stateCode"> &nbsp;</span><br>
+				<span [textContent]="orderfulfillment.data.pickupLocation.data.primaryAddress.data.address.data.postalCode"></span>
+			</li>
+		</span>
+		<span *ngSwitchCase="'download'">
+		<!-- Should have the download link here.-->
+		</span>
+		<span *ngSwitchDefault>
+			<ul></ul>
+		</span> 
+		<span *ngIf="orderfulfillment.data.primaryAddress?.data?.address?.data?.streetAddress">
+			<!-- Need to add a pickup address here.-->
+			<b>Return Location:</b> <br>
+			<li [textContent]="orderfulfillment.data.primaryAddress.data.address.data.streetAddress"></li>
+			<li [textContent]="orderfulfillment.data.primaryAddress.data.address.data.street2Address"></li>
+			<li>
+				<span [textContent]="orderfulfillment.data.primaryAddress.data.address.data.city"> &nbsp;</span> 
+				<span [textContent]="orderfulfillment.data.primaryAddress.data.address.data.stateCode"> &nbsp;</span>
+			</li><br>
+		</span>
+	</ul>
+</div>
