@@ -102,7 +102,7 @@
 	      	},
         </cfif>
         <cfif len(arguments.requestBean.getShipToEmailAddress())>
-	    	"EmailAddress":"ryan.marchand@ten24web.com",
+	    	"EmailAddress":"#arguments.requestBean.getShipToEmailAddress()#",
         </cfif>
         "Address":{
           "AddressLine":"#arguments.requestBean.getShipToStreetAddress()#",
