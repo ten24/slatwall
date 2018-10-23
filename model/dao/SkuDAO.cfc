@@ -201,7 +201,7 @@ Notes:
 		};
 		
 		
-		var hql = 'SELECT COALESCE(AVG(stock.averageCost),0)
+		var hql = 'SELECT COALESCE( sum(stock.averageCost * stock.calculatedQOH) / nullIf(sum(stock.calculatedQOH),0), 0)
 			FROM SlatwallStock stock 
 			LEFT JOIN stock.sku sku
 			LEFT JOIN stock.location location
