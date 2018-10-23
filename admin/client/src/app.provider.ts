@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 declare var hibachiConfig: any;
+declare var window: any;
 var md5 = require('md5');
 @Injectable()
 export class AppConfig {
@@ -41,6 +42,7 @@ export class AppProvider {
     public attributeMetaData: any;
     public instantiationKey: string;
     public _hasData: boolean;
+    public isPrivate:boolean;
 
     constructor(private http: HttpClient) {
         this.hasDataSubject = new Subject<boolean>();
@@ -62,35 +64,100 @@ export class AppProvider {
         } 
         this.instantiationKey = await this.getInstantiationKey(baseURL);
         var invalidCache = [];
-        try { 
-            var hashedData = localStorage.getItem('attributeChecksum');
-            if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
-                this.attributeMetaData = JSON.parse(localStorage.getItem('attributeMetaData'));
-            } else {
+        
+        return this.isPrivateMode().then( async (isPrivate)=>{
+            if(!isPrivate){
+                this.isPrivate = true;
+            }
+        
+            try { 
+                var hashedData = localStorage.getItem('attributeChecksum');
+                if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
+                    this.attributeMetaData = JSON.parse(localStorage.getItem('attributeMetaData'));
+                } else {
+                    invalidCache.push('attributeCacheKey');
+                }
+            } catch (e) {
                 invalidCache.push('attributeCacheKey');
             }
-        } catch (e) {
-            invalidCache.push('attributeCacheKey');
-        }
-
-        try {
-            this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-            console.log(hibachiConfig);
-            console.log(this.appConfig);
-            if (hibachiConfig.instantiationKey === this.appConfig.instantiationKey) {
-                console.log('test', this.appConfig);
-                var ResourceBundles = await this.getResourceBundles();
-                return ResourceBundles;
-            } else {
+    
+            try {
+                if(!isPrivate) {
+                    this.appConfig = JSON.parse(localStorage.getItem('appConfig'));    
+                } else {
+                    this.appConfig= {
+                        instantiationKey:undefined      
+                    };    
+                }
+                console.log(hibachiConfig);
+                console.log(this.appConfig);
+                if (hibachiConfig.instantiationKey === this.appConfig.instantiationKey) {
+                    console.log('test', this.appConfig);
+                    if (invalidCache.length) {
+                        this.getData(invalidCache).then(resp => {
+                            return this.getResourceBundles().then((resp) => {
+                                Promise.resolve(resp);
+                            });
+                        });
+                    }
+                    
+                    var ResourceBundles = await this.getResourceBundles();
+                    return ResourceBundles;
+                } else {
+                    invalidCache.push('instantiationKey');
+                }
+            } catch (e) {
                 invalidCache.push('instantiationKey');
             }
-        } catch (e) {
-            invalidCache.push('instantiationKey');
-        }
-
-        return await this.getData(invalidCache);
+    
+            return await this.getData(invalidCache);
+        });
     }
 
+    isPrivateMode=()=> {
+      return new Promise((resolve) => {
+        const on = () => resolve(true); // is in private mode
+        const off = () => resolve(false); // not private mode
+        const testLocalStorage = () => {
+          try {
+            if (localStorage.length) off();
+            else {
+              localStorage.setItem('x','1');
+              localStorage.removeItem('x');
+              off();
+            }
+          } catch (e) {
+            // Safari only enables cookie in private mode
+            // if cookie is disabled then all client side storage is disabled
+            // if all client side storage is disabled, then there is no point
+            // in using private mode
+            navigator.cookieEnabled ? on() : off();
+          }
+        };
+        // Chrome & Opera
+        if (window.webkitRequestFileSystem) {
+          return void window.webkitRequestFileSystem(0, 0, off, on);
+        }
+        // Firefox
+        if ('MozAppearance' in document.documentElement.style) {
+          const db = indexedDB.open('test');
+          db.onerror = on;
+          db.onsuccess = off;
+          return void 0;
+        }
+        // Safari
+        if (/constructor/i.test(window.HTMLElement)) {
+          return testLocalStorage();
+        }
+        // IE10+ & Edge
+        if (!window.indexedDB && (window.PointerEvent || window.MSPointerEvent)) {
+          return on();
+        }
+        // others
+        return off();
+      });
+    }
+    
     public getInstantiationKey(baseURL: string): Promise<any> {
         return new Promise((resolve, reject) => {
             if (hibachiConfig.instantiationKey) {
@@ -134,6 +201,11 @@ export class AppProvider {
                     try {
                         localStorage.setItem('attributeMetaData', JSON.stringify(resp.data));
                         localStorage.setItem('attributeChecksum', md5(JSON.stringify(resp.data)));
+                        // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
+                        // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
+                        this.appConfig.attributeCacheKey = localStorage.getItem('attributeChecksum').toUpperCase();
+                        this.appConfig = resp.data;
+                        localStorage.setItem('appConfig',JSON.stringify(this.appConfig));
                     } catch (e) { }
                     this.attributeMetaData = resp.data;
                     resolve(true);
@@ -143,7 +215,7 @@ export class AppProvider {
     };
 
 
-    public getInstantiationKeyData(): Promise<any> {
+    public async getInstantiationKeyData(): Promise<any> {
         if (!this.instantiationKey) {
             var d = new Date();
             var n = d.getTime();
@@ -161,18 +233,20 @@ export class AppProvider {
             urlString += '/';
         }
 
-        return this.http.get(urlString + '/custom/config/config.json?instantiationKey=' + this.instantiationKey)
+        return await this.http.get(urlString + '/custom/system/config.json?instantiationKey=' + this.instantiationKey)
             .toPromise().then(async (resp: any) => {
                 console.log('testhere');
-                var appConfig = resp.data;
+                this.appConfig = resp.data;
                 if (hibachiConfig.baseURL.length) {
-                    appConfig.baseURL = urlString;
+                    this.appConfig.baseURL = urlString;
                 }
                 try {
-                    localStorage.setItem('appConfig', JSON.stringify(resp.data));
+                    if(!this.isPrivate) {
+                        localStorage.setItem('appConfig', JSON.stringify(resp.data));
+                    }
                 } catch (e) { }
 
-                this.appConfig = appConfig;
+                //this.appConfig = appConfig;
                 console.log('getINstan2');
                 var ResourceBundles = await this.getResourceBundles();
                 return ResourceBundles;
@@ -187,7 +261,7 @@ export class AppProvider {
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL + '/custom/config/resourceBundles/' + locale + '.json?instantiationKey=' + this.appConfig.instantiationKey;
+        var urlString = this.appConfig.baseURL + '/custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + this.appConfig.instantiationKey;
 
         return new Promise((resolve, reject) => {
             this.http.get(urlString).toPromise().then((response: any) => {
