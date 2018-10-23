@@ -14,12 +14,14 @@ import {SWOrderItem} from "./components/sworderitem";
 import {SwOiShippingLabelStamp} from "./components/swoishippinglabelstamp";
 import {SWOrderItemDetailStamp, SwOrderItemDetailStamp} from "./components/sworderitemdetailstamp";
 import {SWOrderItems} from "./components/sworderitems";
-import {SWResizedImage} from "./components/swresizedimage";
+import {SwResizedImage} from "./components/swresizedimage";
 
 @NgModule({
     declarations :[
         SwOrderItemDetailStamp,
-        SwOiShippingLabelStamp
+        SwOiShippingLabelStamp,
+        SwResizedImage
+        
     ],
     providers: [],
     imports : [
@@ -29,7 +31,8 @@ import {SWResizedImage} from "./components/swresizedimage";
     ],
     entryComponents: [
         SwOrderItemDetailStamp,
-        SwOiShippingLabelStamp
+        SwOiShippingLabelStamp,
+        SwResizedImage
     ]
 })
 export class OrderItemModule{
@@ -45,14 +48,15 @@ var orderitemmodule = angular.module('hibachi.orderitem', [coremodule.name])
 .run([()=> {
 }])
 //directives
-.directive('swChildOrderItem',SWChildOrderItem.Factory())
+.directive('swChildOrderItem',SWChildOrderItem.Factory())       
 .directive('swOrderItem',SWOrderItem.Factory())
 //.directive('swoishippinglabelstamp',SWOiShippingLabelStamp.Factory())
 .directive('swoishippinglabelstamp', downgradeComponent({ component: SwOiShippingLabelStamp }) as angular.IDirectiveFactory)    
 //.directive('swOrderItemDetailStamp',SWOrderItemDetailStamp.Factory())
 .directive('swOrderItemDetailStamp', downgradeComponent({ component: SwOrderItemDetailStamp }) as angular.IDirectiveFactory)    
 .directive('swOrderItems',SWOrderItems.Factory())
-.directive('swresizedimage',SWResizedImage.Factory())
+//.directive('swresizedimage',SWResizedImage.Factory())
+.directive('swresizedimage',downgradeComponent({ component: SwResizedImage }) as angular.IDirectiveFactory)
 //constants
 .constant('orderItemPartialsPath','orderitem/components/')
 ;

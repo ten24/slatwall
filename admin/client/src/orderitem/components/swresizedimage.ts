@@ -1,47 +1,28 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWResizedImage{
-	public static Factory(){
-		var directive = (
-			$http, $log, $q, $hibachi, orderItemPartialsPath,
-			slatwallPathBuilder
-		)=>new SWResizedImage(
-			$http, $log, $q, $hibachi, orderItemPartialsPath,
-			slatwallPathBuilder
-		);
-		directive.$inject = [
-			'$http', '$log', '$q', '$hibachi', 'orderItemPartialsPath',
-			'slatwallPathBuilder'
-		];
-		return directive;
-	}
-	constructor(
-		$http, $log, $q, $hibachi, orderItemPartialsPath,
-			slatwallPathBuilder
-	){
-		return {
-			restrict: 'E',
-			scope:{
-				orderItem:"=",
-			},
-			templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitem-image.html",
-			link: function(scope, element, attrs){
-				var profileName = attrs.profilename;
-				var skuID = scope.orderItem.data.sku.data.skuID;
-				//Get the template.
-				//Call slatwallService to get the path from the image.
-				$hibachi.getResizedImageByProfileName(profileName, skuID)
-                .then(function (response) {
-					
-                    
-					$log.debug(response.resizedImagePaths[0]);
-					scope.orderItem.imagePath = response.resizedImagePaths[0];
-				});
-			}
-		};
-	}
-}
-export{
-	SWResizedImage
-}
+import { Component, Input, OnInit } from '@angular/core';
+import { $Hibachi } from '../../../../../org/Hibachi/client/src/core/services/hibachiservice';
 
+@Component({    
+    selector   : 'swresizedimage',
+    templateUrl: '/admin/client/src/orderitem/components/orderitem-image.html'
+})
+export class SwResizedImage implements OnInit {
+        
+    @Input() orderitem: any;
+    @Input() profilename: string;
+    
+    constructor( private $hibachi: $Hibachi ) {
+        
+    }
+    
+    ngOnInit() {
+        let skuID = this.orderitem.data.sku.data.skuID;
+        //Get the template.
+        //Call slatwallService to get the path from the image.
+        this.$hibachi.getResizedImageByProfileName(this.profilename, skuID)
+            .then((response) => {
+                this.orderitem.imagePath = response.resizedImagePaths[0];
+            });
+    }
+}
