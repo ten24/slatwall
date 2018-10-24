@@ -225,8 +225,7 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
-        
-        if(this.collectionConfig.keywords && this.collectionConfig.keywords.length){
+        if(this.collectionConfig && this.collectionConfig.keywords && this.collectionConfig.keywords.length){
             this.searchText = this.collectionConfig.keywords;
         }
 
