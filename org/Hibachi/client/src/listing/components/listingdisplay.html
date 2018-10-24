@@ -91,11 +91,12 @@
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
                                     <input type="checkbox"
-                                           id="exampleID"
+                                           id="{{swListingDisplay.tableID}}selectAll"
+                                           name="{{swListingDisplay.tableID}}selectAll"
                                            data-ng-model="swListingDisplay.isCurrentPageRecordsSelected"
                                            data-ng-click="swListingDisplay.selectCurrentPageRecords()"
                                            data-ng-disabled="!swListingDisplay.edit">
-                                    <label for="exampleID"></label>
+                                    <label for="{{swListingDisplay.tableID}}selectAll"></label>
                                 </div>
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
