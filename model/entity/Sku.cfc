@@ -368,9 +368,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	//returns gift card redemption amount, or 0 if incorrectly configured
 	public any function getRedemptionAmount(numeric userDefinedPrice){
-    	var amount = variables.price;
+    	var amount = getPrice();
 	    if(
-	        this.getUserDefinedPriceFlag()
+	        !isNull(getUserDefinedPriceFlag()) && getUserDefinedPriceFlag()
 	    ){
 	        if(structKeyExists(arguments,'userDefinedPrice')){
 	            amount = arguments.userDefinedPrice;
@@ -382,7 +382,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	            case "sameAsPrice":
 	                break;
 	            case "fixedAmount":
-	                if(!this.getUserDefinedPriceFlag() && structKeyExists(variables, "redemptionAmount")){
+	                if(!isNull(getUserDefinedPriceFlag()) && !getUserDefinedPriceFlag() && structKeyExists(variables, "redemptionAmount")){
 	                    amount = variables.redemptionAmount;
 	                }
 	                break;
@@ -1059,12 +1059,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.registrantEmailList;
 	}
-
-	public numeric function getRenewalPrice(){
+	
+	// @hint Returns the renewal price for this sku
+	public any function getRenewalPrice(){
 		if(!isNull(this.getRenewalSku())){
 			return this.getRenewalSku().getPrice();
 		} else if(!structKeyExists(variables, "renewalPrice")){
-			variables.renewalPrice = getPrice();
+			variables.renewalPrice = 0;
+			
+			if(!isNull(getPrice())) {
+				variables.renewalPrice = getPrice();
+			}
 		}
 		return variables.renewalPrice;
 	}
