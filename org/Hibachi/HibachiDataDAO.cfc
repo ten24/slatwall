@@ -149,21 +149,12 @@ Notes:
 		<cfargument name="referenceObject" type="string" required="true" />
 		
 		<cfset var rs = "" />
-		<cfset var newShortReferenceID = 1 />
-			
-		<cfquery name="rs">
-			SELECT MAX(shortReferenceID) as shortReferenceID FROM #getTableNameByEntityName('ShortReference')#
+		
+		<cfquery name="rs" result="referenceResult">
+			INSERT INTO #getTableNameByEntityName('ShortReference')# ( referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
 		</cfquery>
 		
-		<cfif rs.shortReferenceID neq "" and isNumeric(rs.shortReferenceID)>
-			<cfset newShortReferenceID = rs.shortReferenceID + 1 />
-		</cfif>
-		
-		<cfquery name="rs">
-			INSERT INTO #getTableNameByEntityName('ShortReference')# (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
-		</cfquery>
-		
-		<cfreturn newShortReferenceID />
+		<cfreturn referenceResult["generatedkey"] />
 	</cffunction>
 	
 	<cfscript>
