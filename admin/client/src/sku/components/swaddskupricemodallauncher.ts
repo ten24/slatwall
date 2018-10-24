@@ -125,8 +125,13 @@ class SWAddSkuPriceModalLauncherController{
                                     }
                                     skuPriceForListing["sku_skuID"] = this.sku.skuID;
                                     skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
-                                    skuPriceForListing["sku_skuDefinition"] = this.sku.skuDefinition;
-                                    pageRecords.splice(index+1,0,skuPriceForListing);
+                                    skuPriceForListing["sku_calculatedSkuDefinition"] = this.sku.calculatedSkuDefinition || pageRecords[index]['sku_calculatedSkuDefinition'];
+                                    this.skuPrice.$$getPriceGroup().then((data)=>{
+                                        skuPriceForListing["priceGroup_priceGroupID"]=this.skuPrice.priceGroup.priceGroupID;
+                                        skuPriceForListing["priceGroup_priceGroupCode"]=this.skuPrice.priceGroup.priceGroupCode;
+                                        pageRecords.splice(index+1,0,skuPriceForListing);    
+                                    })
+                                    ;
                                     break; 
                                 }  
                                 index++; 
