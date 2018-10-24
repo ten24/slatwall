@@ -161,11 +161,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 					itemData.OriginCode = 1;
 					itemData.ItemCode = item.getOrderItem().getSku().getSkuCode();
 					itemData.TaxCode = item.getTaxCategoryRateCode();
-					if(!isNull(item.getOrderItem().getSku().getSkuDescription()) && len(item.getOrderItem().getSku().getSkuDescription())) {
-						itemData.Description = item.getOrderItem().getSku().getSkuDescription();
-					} else if (!isNull(item.getOrderItem().getSku().getProduct().getProductDescription()) && len(item.getOrderItem().getSku().getProduct().getProductDescription())) {
-						itemData.Description = item.getOrderItem().getSku().getProduct().getProductDescription();	
-					}
+					itemData.Description = item.getOrderItem().getSku().getProduct().getProductName();	
 					itemData.Qty = item.getQuantity();
 					itemData.Amount = item.getExtendedPriceAfterDiscount();
 					
