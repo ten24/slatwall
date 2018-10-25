@@ -15,15 +15,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if(
-			!setting("globalDisableRecordLevelPermissions") 
+		if( !setting("globalDisableRecordLevelPermissions")
 			&& !this.getNewFlag() 
 			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
 			try{
 				var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
-				var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+				var entityService = this.getEntityService();
 				var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
 				entityCollectionList.setDisplayProperties(primaryIDName);
 				entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
@@ -75,6 +74,22 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return super.init();
 	}
+
+	public any function getEntityService(){ 
+		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
+	} 
+
+	public struct function getStructRepresentation(){
+		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+	}
+
+	public string function getJsonRepresentation(){
+		return serializeJson(this.getStructRepresentation()); 
+	} 
+
+	public string function getEncodedJsonRepresentation(){ 
+		return encodeForHTML(this.getJsonRepresentation()); 
+	} 
 
 	public string function getTableName(){
 		return getService('hibachiService').getTableNameByEntityName(getClassName());
@@ -145,8 +160,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
     }
 
     public string function getParentPropertyName(){
-    	getService('hibachiService').getParentPropertyByEntityName(getClassName());
+    	return getService('hibachiService').getParentPropertyByEntityName(getClassName());
     }
+
 
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
