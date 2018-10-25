@@ -50,15 +50,13 @@
 /// <reference path="../src/collection/components/swfiltergroupitem.ts" />
 /// <reference path="../src/collection/components/swfiltergroups.ts" />
 /// <reference path="../src/collection/components/swfilteritem.ts" />
-<<<<<<< HEAD
 /// <reference path="../src/collection/components/swrestrictionconfig.ts" />
 /// <reference path="../src/collection/controllers/collections.ts" />
 /// <reference path="../src/collection/controllers/confirmationcontroller.ts" />
 /// <reference path="../src/collection/controllers/createcollection.ts" />
 /// <reference path="../src/collection/controllers/entity_createcollection.ts" />
 /// <reference path="../src/collection/filters/aggregatefilter.ts" />
-=======
->>>>>>> b5eb597cda1acd26dc2261e1222f5636ce71bbed
+
 /// <reference path="../src/collection/services/collectionconfigservice.ts" />
 /// <reference path="../src/collection/services/collectionservice.ts" />
 /// <reference path="../src/core/controllers/globalsearch.ts" />
@@ -139,7 +137,6 @@
 /// <reference path="../src/core/components/swtypeaheadremoveselection.ts" />
 /// <reference path="../src/core/components/swtypeaheadsearch.ts" />
 /// <reference path="../src/core/components/swtypeaheadsearchlineitem.ts" />
-<<<<<<< HEAD
 /// <reference path="../src/core/controllers/globalsearch.ts" />
 /// <reference path="../src/core/filters/datefilter.ts" />
 /// <reference path="../src/core/filters/entityrbkey.ts" />
@@ -182,8 +179,7 @@
 /// <reference path="../src/core/services/typeaheadservice.ts" />
 /// <reference path="../src/core/services/utilityservice.ts" />
 /// <reference path="../src/dialog/controllers/pagedialog.ts" />
-=======
->>>>>>> b5eb597cda1acd26dc2261e1222f5636ce71bbed
+
 /// <reference path="../src/dialog/model/pagedialog.ts" />
 /// <reference path="../src/dialog/controllers/pagedialog.ts" />
 /// <reference path="../src/dialog/services/dialogservice.ts" />
