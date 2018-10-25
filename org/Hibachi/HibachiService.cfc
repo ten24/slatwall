@@ -240,7 +240,9 @@
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
 				}
 	        }
-	        
+
+			getHibachiScope().addModifiedEntity(arguments.entity);
+
 	        // Return the entity
 	        return arguments.entity;
 	    }
@@ -258,7 +260,7 @@
          public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true, folderPath) {
 
             if (isArray(data)){
-                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(ListRemoveDuplicates(columns)));
+                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(ListRemoveDuplicates(columnNames)));
             }
 	    
 			var result = {};
@@ -290,8 +292,8 @@
 				getHibachiUtilityService().queryToCsvFile(
 					filePath = filePath,
 					queryData = arguments.data,
-					columnNames = columns,
-					columnTitles = columnNames
+					columnNames = columnNames,
+					columnTitles = columns
 				);
             }else{
 				throw("Implement export for fileType #arguments.fileType#");
@@ -416,6 +418,8 @@
 					return onMissingGetSmartListMethod( missingMethodName, missingMethodArguments );
 				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
 					return onMissingGetCollectionListMethod( missingMethodName, missingMethodArguments );
+				} else if(right(lCaseMissingMethodName,6) == "struct"){
+					return onMissingGetEntityStructMethod( missingMethodName, missingMethodArguments );
 				} else {
 					return onMissingGetMethod( missingMethodName, missingMethodArguments );
 				}
@@ -530,7 +534,18 @@
 			
 			return getCollectionList(entityName=entityName, data=data);
 		} 
-		 
+
+
+		private function onMissingGetEntityStructMethod( required string missingMethodName, required struct missingMethodArguments ){
+			var entityNameLength = len(arguments.missingMethodName) - 9;
+			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityID = missingMethodArguments[ 1 ]; 
+			
+			var collection = getCollectionList(entityName=entityName); 
+			collection.addFilter(getPrimaryIDPropertyNameByEntityName(entityName), entityID);
+			collection.setPageRecordsShow(1);
+			return collection.getPageRecords(formatRecords=false)[1];
+		}
 	
 		/**
 		 * Provides dynamic list methods, by convention, on missing method:
@@ -850,6 +865,8 @@
 		public any function getEntitiesMetaData() {
 			if(!structCount(variables.entitiesMetaData)) {
 				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+				
+				
 				var allMD = {};
 				for(var entityName in entityNamesArr) {
 					var entity = entityNew(entityName);
@@ -935,10 +952,10 @@
 			
 			if(!structKeyExists(variables,cacheKey)){
 				var propertyMetaData = getPropertiesStructByEntityName(
-					getLastEntityNameInPropertyIdentifier(
+				getLastEntityNameInPropertyIdentifier(
 						arguments.entityName,
 						arguments.propertyIdentifier
-					)
+					)	
 				)[listLast(arguments.propertyIdentifier, ".")];
 				variables[cacheKey] = !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
 			}
@@ -994,7 +1011,7 @@
 
 		public struct function getEntitiesProcessContexts(){
 			var serviceBeanInfo = getBeanFactory().getBeanInfo(regex="\w+Service").beanInfo;
-
+			
 			if(!structCount(variables.entitiesProcessContexts)) {
 				//get processes form the services
 
