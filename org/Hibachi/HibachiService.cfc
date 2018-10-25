@@ -241,8 +241,6 @@
 				}
 	        }
 
-			getHibachiScope().addModifiedEntity(arguments.entity);
-
 	        // Return the entity
 	        return arguments.entity;
 	    }
@@ -260,7 +258,7 @@
          public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true, folderPath) {
 
             if (isArray(data)){
-                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(ListRemoveDuplicates(columnNames)));
+                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(ListRemoveDuplicates(columns)));
             }
 	    
 			var result = {};
@@ -292,8 +290,8 @@
 				getHibachiUtilityService().queryToCsvFile(
 					filePath = filePath,
 					queryData = arguments.data,
-					columnNames = columnNames,
-					columnTitles = columns
+					columnNames = columns,
+					columnTitles = columnNames
 				);
             }else{
 				throw("Implement export for fileType #arguments.fileType#");

@@ -15,8 +15,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if(
-			!this.getNewFlag() 
+		if( !setting("globalDisableRecordLevelPermissions")
+			&& !this.getNewFlag() 
 			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
