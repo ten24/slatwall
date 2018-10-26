@@ -39,7 +39,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		return application[ getApplicationValue('applicationKey') ].subsystemfactories['main'];
+		return application[ getApplicationValue('applicationKey') ].factory;
 	}
 	
 	public any function getCustom(){
