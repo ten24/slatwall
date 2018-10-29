@@ -223,7 +223,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			
 		}
 		for(var missingRBKey in missingRBKeys){
-			debug(missingRBKey);
+			addToDebug(missingRBKey);
 		}
 		assertFalse(arraylen(missingRBKeys));
 		
