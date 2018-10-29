@@ -208,7 +208,6 @@
 /// <reference path="../src/form/components/swfpropertydisplay.ts" />
 /// <reference path="../src/form/components/swinput.ts" />
 /// <reference path="../src/form/components/swpropertydisplay.ts" />
-<<<<<<< HEAD
 /// <reference path="../src/form/services/fileservice.ts" />
 /// <reference path="../src/frontend/components/swfaddressform.ts" />
 /// <reference path="../src/frontend/components/swfcartitems.ts" />
@@ -217,8 +216,7 @@
 /// <reference path="../src/frontend/components/swfpromobox.ts" />
 /// <reference path="../src/frontend/components/swfsavenotes.ts" />
 /// <reference path="../src/frontend/components/swshippingcostestimator.ts" />
-=======
->>>>>>> b5eb597cda1acd26dc2261e1222f5636ce71bbed
+
 /// <reference path="../src/frontend/controllers/frontend.ts" />
 /// <reference path="../src/hibachi/components/swsaveandfinish.ts" />
 /// <reference path="../src/listing/services/listingservice.spec.ts" />
