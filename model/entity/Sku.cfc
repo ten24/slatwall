@@ -1146,7 +1146,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		
 		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode##arguments.quantity##arguments.account.getAccountID()#")) {
 			// Create a prices array, and add the
-			var price = getPriceByCurrencyCode(arguments.currencyCode, arguments.quantity);
+			var price = getPriceByCurrencyCode(arguments.currencyCode, arguments.quantity, arguments.account.getPriceGroups());
 			var prices = [];
 			if(!isNull(price)){
 				arrayAppend(prices,price);
