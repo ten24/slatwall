@@ -150,7 +150,7 @@ Notes:
 		
 		<cfset var rs = "" />
 		
-		<cfquery name="rs" result="referenceResult">
+		<cfquery name="rs" result="local.referenceResult">
 			INSERT INTO #getTableNameByEntityName('ShortReference')# ( referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
 		</cfquery>
 		
