@@ -193,5 +193,66 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		criminalsMessage = 'There are #numOfMissingRbkey# settingNames miss the RBKeys , <br>'&chr(10)&chr(13) & criminalsMessage;
 		assertTrue(numOfMissingRbkey == 0, criminalsMessage);
 	}
+	
+	/**
+	* @test
+	*/
+	public void function permissionsHaveRBkeys() {
+		var actionPermissionDetails = request.SlatwallScope.getService('HibachiAuthenticationService').getActionPermissionDetails();
+		
+		var missingRBKeys = [];
+		
+		for(var subsystemKey in actionPermissionDetails){
+			var subsystemData = actionPermissionDetails[subsystemKey];
+			if(subsystemData.hasSecureMethods){
+				for(var controllerKey in subsystemData.sections){
+					var controllerData = subsystemData.sections[controllerKey];
+					if(len(controllerData.secureMethods)){
+						var secureMethodsArray = listToArray(controllerData.secureMethods);
+						for(var secureMethod in secureMethodsArray){
+							var rbKeyString = "#subsystemKey#.#controllerKey#.#secureMethod#_permission";
+							var rbKeyResult = request.SlatwallScope.rbkey(rbkeyString);
+							if( len(rbKeyResult) >= len('_missing') && right(rbKeyResult,len('_missing')) == '_missing'){
+								arrayAppend(missingRBKeys,rbKeyResult);
+							}
+						}
+					}
+				}
+				
+			}
+			
+		}
+		for(var missingRBKey in missingRBKeys){
+			debug(missingRBKey);
+		}
+		assertFalse(arraylen(missingRBKeys));
+		
+	}
+	
+	/**
+	 * @test
+	 */
+	public void function processObjectsHaveRBKeys() {
+		var missingRBKeys = [];
+
+		var processObjectNames = request.slatwallScope.getService('HibachiService').getProcessComponentDirectoryListing();
+		for (var processObjectName in processObjectNames) {
+			processObjectName = left(processObjectName, len(processObjectName)-4);
+			try {
+				var processObject = request.slatwallScope.getTransient(processObjectName);
+				var properties = processObject.getPropertiesStruct();
+				for (var property in properties) {
+					var keyValue = request.slatwallScope.rbKey("processObject.#processObjectName#.#property#");
+					if (right(keyValue,8) == '_missing') {
+						addToDebug("#keyValue#");
+						ArrayAppend(missingRBKeys, keyValue);
+					}
+				}
+			} catch (any e) {
+				addToDebug(e);
+			}
+		}
+		assert(ArrayLen(missingRBKeys) == 0);
+	}
 
 }
