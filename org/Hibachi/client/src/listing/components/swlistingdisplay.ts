@@ -625,7 +625,7 @@ class SWListingDisplayController{
             }
             $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
             $('#formExport')
-                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig).replace(/'/g,'&#39;') + "' />")
                 .submit()
                 .remove();
         }
@@ -643,7 +643,7 @@ class SWListingDisplayController{
             .append("<input type='hidden' name='processContext' value='addToQueue' />")
             .append("<input type='hidden' name='printID' value='' />")
             .append("<input type='hidden' name='printTemplateID' value='" + printTemplateID +"' />")
-            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />");
+            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig).replace(/'/g,'&#39;') + "' />");
         
         $('#formPrint')
             .submit()
