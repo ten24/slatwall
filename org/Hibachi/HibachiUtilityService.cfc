@@ -837,10 +837,12 @@
 				if (migrateLegacyKeyFlag) {
 					arrayAppend(passwords, {'legacyKey'=legacyKey, 'legacyEncryptionAlgorithm'=getLegacyEncryptionAlgorithm(), 'legacyEncryptionEncoding'=getLegacyEncryptionEncoding(), 'legacyEncryptionKeySize'=getLegacyEncryptionKeySize()});
 					writeEncryptionPasswordFile(passwords);
+					
+					// Remove legacy key file from file system
+					// Commented out 2018-10-30 because the application initialization calls EncryptionService.verifyEncryptionKeyExists() which will recreate the key.xml.cfm during next reload
+					// And the encryption key stored in key.xml.cfm will be ported into the password.txt.cfm with unbound file growth
+					// removeLegacyEncryptionKeyFile();
 				}
-
-				// Remove legacy key file from file system
-				removeLegacyEncryptionKeyFile();
 			}
 
 			var legacyPasswords = [];
