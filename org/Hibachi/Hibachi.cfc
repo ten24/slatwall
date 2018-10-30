@@ -735,6 +735,7 @@ component extends="framework.one" {
 					// Performance worsens if setting the ioc.cfc config omitDirectoryAliases = false. Negatively impacts execution time of the load() method by 2x longer
 					// NOTE: For more details about the quirk, view notes about the load() method in the org/hibachi/framework/hibachiaop.cfc
 					getBeanFactory().load();
+					onBeanFactoryLoadComplete();
 					
 					//==================== START: EVENT HANDLER SETUP ========================
 					
@@ -1161,7 +1162,7 @@ component extends="framework.one" {
 		super.onError(arguments.exception,arguments.event);
 	}
 
-	// THESE METHODS ARE INTENTIONALLY LEFT BLANK
+	// THESE METHODS ARE INTENTIONALLY LEFT BLANK AS EXTENSION POINTS
 	public void function onEveryRequest() {}
 
 	public void function onInternalRequest() {}
@@ -1171,5 +1172,7 @@ component extends="framework.one" {
 	public void function onUpdateRequest() {}
 
 	public void function onFirstRequestPostUpdate() {}
+	
+	public void function onBeanFactoryLoadComplete() {}
 
 }
