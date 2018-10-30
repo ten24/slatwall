@@ -122,6 +122,11 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	public void function onFirstRequestPostUpdate() {
 	}
 	
+	// Allows EncryptionService to setup encryption key during application initialization
+	public void function onBeanFactoryLoadComplete() {
+		getBeanFactory().getBean('encryptionService').verifyEncryptionKeyExists();
+	}
+	
 	// ===================================== END: HIBACHI HOOKS
 	// ===================================== Hibachi HOOKS
 	
