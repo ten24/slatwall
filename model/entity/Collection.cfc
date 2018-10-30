@@ -2671,6 +2671,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var columnsHQL = '';
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
+			getPropertyIdentifierAlias(column.propertyIdentifier);
 			if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
 				if(structKeyExists(column,'attributeID')){
 					columnsHQL &= getColumnAttributeHQL(column);
