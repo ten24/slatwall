@@ -93,6 +93,7 @@ class CollectionConfig {
     public periodInterval:string="";
 
     get collectionConfigString():string {
+        
         return angular.toJson(this.getCollectionConfig(false));
     }
 

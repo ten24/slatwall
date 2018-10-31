@@ -10,7 +10,8 @@ class SWWorkflowTrigger{
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            utilityService
+            utilityService,
+            collectionConfigService
 		)=> new SWWorkflowTrigger(
             $http,
 			$hibachi,
@@ -18,7 +19,8 @@ class SWWorkflowTrigger{
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            utilityService
+            utilityService,
+            collectionConfigService
 		);
 		directive.$inject = [
 			'$http',
@@ -27,10 +29,12 @@ class SWWorkflowTrigger{
 			'metadataService',
 			'workflowPartialsPath',
 			'hibachiPathBuilder',
-            'utilityService'
+            'utilityService',
+            'collectionConfigService'
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$http,
 		$hibachi,
@@ -38,7 +42,8 @@ class SWWorkflowTrigger{
 		metadataService,
 		workflowPartialsPath,
         hibachiPathBuilder,
-        utilityService
+        utilityService,
+        collectionConfigService
         
 	){
 		return {
@@ -71,6 +76,7 @@ class SWWorkflowTrigger{
 						scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTrigger.data.workflow.data.workflowObject);
 						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject], scope.workflowTrigger.data.workflow.data.workflowObject);
 						scope.workflowTriggers.selectedTrigger = workflowTrigger;
+                    	scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig =collectionConfigService.newCollectionConfig().loadJson(scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig.toString());
 
                     });
 				};
