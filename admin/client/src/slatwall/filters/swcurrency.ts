@@ -54,3 +54,47 @@ class SWCurrency{
 
 }
 export {SWCurrency};
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+import { $Hibachi } from '../../../../../org/Hibachi/client/src/core/services/hibachiservice';
+import { CurrencyService } from '../../../../../org/Hibachi/client/src/core/services/currencyservice';
+
+@Pipe({name: 'swcurrency'})
+export class SwCurrency implements PipeTransform {
+        
+    constructor( private $hibachi: $Hibachi, private currencyService: CurrencyService) {
+        
+    }
+    
+
+    transform(value, currencyCode, decimalPlace, returnStringFlag=true): any {
+        let data = null;
+        data = this.currencyService.getCurrencySymbol(currencyCode);
+        return this.realFilter(value, decimalPlace,data, returnStringFlag);
+    }
+
+    realFilter(value,decimalPlace,data,returnStringFlag=true) {
+        // REAL FILTER LOGIC, DISREGARDING PROMISES
+        if(!angular.isDefined(data)){
+            data="$";
+        }
+        if(!value || value.toString().trim() == ''){
+            value = 0;
+        }
+        if(angular.isDefined(value)){
+            if(angular.isDefined(decimalPlace)){
+                //value = $filter('number')(value.toString(), decimalPlace);
+                value = parseFloat(value).toFixed(decimalPlace);
+            } else {
+                //value = $filter('number')(value.toString(), 2);
+                value = parseFloat(value).toFixed(2);
+            }
+        }
+        if(returnStringFlag){
+            return data + value;
+        } else { 
+            return value;
+        }   
+    }
+}
