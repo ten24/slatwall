@@ -718,7 +718,9 @@
 
 		public string function sanitizeForAngular(required string html){
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'%7B',chr(123)&chr(002),'all');
+				return arguments.html;
 			}else{
 				return ReReplace(ReReplace(arguments.html,'&##x7b;',chr(123)&chr(002),'all'),'&##x7d;','}','all');
 			}
