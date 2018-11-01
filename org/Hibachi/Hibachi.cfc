@@ -283,10 +283,6 @@ component extends="framework.one" {
 		variables.framework.hibachi.isApplicationStart = true;
 		super.onApplicationStart();
 	}
-	
-	public any function getBeanFactory(){
-		return super.getBeanFactory('main');
-	}
 
 	public void function setupGlobalRequest(boolean noredirect=false) {
 		createHibachiScope();
@@ -301,10 +297,10 @@ component extends="framework.one" {
 			}else{
 				//RELOAD JUST THE SETTINGS
 				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-						getBeanFactory('main').getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
-					var serverInstance = getBeanFactory('main').getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 					serverInstance.setSettingsExpired(false);
-						getBeanFactory('main').getBean('hibachiCacheService').saveServerInstance(serverInstance);
+						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 				}
 			}
 		}
@@ -635,7 +631,11 @@ component extends="framework.one" {
 					// ================ END: Required Application Setup ==================
 
 					//========================= IOC SETUP ====================================
-
+					
+					// NOTE: ioc config omitDirectoryAliases does affect reload performance, when it is false it takes 2x longer to execute beanFactory.load()
+					
+					// Discover Hibachi beans
+					// Need to have omitDirectoryAliases=true, the beanFactory's info will be used to compile list of class names and comparisons
 					var hibachiBF = new framework.hibachiaop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
@@ -644,64 +644,102 @@ component extends="framework.one" {
 						recurse=false,
 						exclude=[
 							"Hibachi.cfc","HibachiObject.cfc","HibachiTransient.cfc","HibachiProcess.cfc","HibachiEntity.cfc"
-							,"HibachiEventHandler.cfc"
+							,"HibachiEventHandler.cfc","HibachiController.cfc","HibachiControllerEntity.cfc","HibachiControllerREST.cfc"
 						],
-						singletonPattern="(Service|DAO)$"
+						singletonPattern="(Service|DAO)$",
+						omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
 					});
 					
-					// Setup the custom bean factory
+					// Setup the core bean factory
 					var coreBF = new framework.hibachiaop("/#variables.framework.applicationKey#/model", {
 						transients=["entity", "process", "transient", "report"],
-						transientPattern="Bean$"
+						transientPattern="Bean$",
+						omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
 					});
-					coreBF.setParent(hibachiBF);
+					
+					// Manually declare any Hibachi beans that are missing from the coreBF factory as a fallback
+					// NOTE: We cannot rely on coreBF.setParent(hibachiBF) to inject to proper dependency because of ambiguity with overridden class names in various locations Slatwall.org.Hibachi, Slatwall.model, Slatwall.custom.model, Slatwall.integrationServices.{integrationPackage}.model
+					var hibachiBeanInfo = hibachiBF.getBeanInfo().beanInfo;
+					var hibachiFallbackBeanNameList = '';
+					for (var beanName in hibachiBeanInfo) {
+						if (beanName != "beanFactory") {
+							
+							// NOTE: Canonicalize beanName using CFC, without ioc.config.omitDirectorAliases=true, we'll get false negatives testing conditions and end up creating beans that shouldn't be created
+							if (structKeyExists(hibachiBeanInfo[beanName], "cfc")) {
+								
+								// Canonicalized using cfc class name instead of beanName because beanName might be unique but just represent an alias (eg. "{className}Hibachi") for an identical cfc. Prevents cfc from being declared twice with different beanName alias
+								var canonicalizedBeanName = listLast(hibachiBeanInfo[beanName].cfc, '.');
+								
+								// Check if beanName needs to be explicitly declared
+								if (!coreBF.containsBean(canonicalizedBeanName)) {
+									
+									// Adding bean to core bean factory using canonicalized class name
+									coreBF.declareBean(canonicalizedBeanName, hibachiBeanInfo[beanName].cfc, hibachiBeanInfo[beanName].isSingleton);
+									hibachiFallbackBeanNameList = listAppend(hibachiFallbackBeanNameList, canonicalizedBeanName);
+								}
+							} else if (structKeyExists(hibachiBeanInfo[beanName], "value")) {
+								// Adding bean by instantiated value
+								coreBF.addBean(beanName, hibachiBeanInfo[beanName].value);
+							}
+						}
+					}
+					
+					// writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory declared 'Hibachi' fallback beans for: #replace(listSort(hibachiFallbackBeanNameList, 'textnocase'), ',', ', ', 'all')#");
 					
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new framework.hibachiaop("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
-							exclude=["entity"]
+							exclude=["entity"],
+							omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
 						});
-
-						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
-						var aggregateBF = new framework.hibachiaop("");
-
-						// Process factories, last takes precendence
-						var beanFactories = [coreBF, customBF];
-
-						// Build the aggregate bean factory by manually declaring the beans
-						for (var bf in beanFactories) {
-							var beanInfo = bf.getBeanInfo().beanInfo;
-							for (var beanName in beanInfo) {
-								// Manually declare all beans from current bean factory except for the automatically generated beanFactory self reference
-								if (beanName != "beanFactory") {
-									if (structKeyExists(beanInfo[beanName], "cfc")) {
-										// Adding bean by class name
-										aggregateBF.declareBean(beanName, beanInfo[beanName].cfc, beanInfo[beanName].isSingleton);
-									} else if (structKeyExists(beanInfo[beanName], "value")) {
-										// Adding bean by instantiated value
-										aggregateBF.addBean(beanName, beanInfo[beanName].value);
-									}
+						
+						// All beans in customBF overwrite or added to bean declarations in coreBF
+						var customBeanInfo = customBF.getBeanInfo().beanInfo;
+						var customBeanNameList = '';
+						for (var beanName in customBeanInfo) {
+							if (beanName != "beanFactory") {
+								
+								// NOTE: Canonicalize beanName using CFC, without ioc.config.omitDirectorAliases=true, we'll get false negatives testing conditions and end up creating beans that shouldn't be created
+								if (structKeyExists(customBeanInfo[beanName], "cfc")) {
+									
+									// Canonicalized using cfc class name instead of beanName because beanName might be unique but just represent an alias (eg. "{className}Hibachi") for an identical cfc. Prevents cfc from being declared twice with different beanName alias
+									var canonicalizedBeanName = listLast(customBeanInfo[beanName].cfc, '.');
+										
+									// Adding bean to core bean factory using canonicalized class name
+									coreBF.declareBean(canonicalizedBeanName, customBeanInfo[beanName].cfc, customBeanInfo[beanName].isSingleton);
+									customBeanNameList = listAppend(customBeanNameList, canonicalizedBeanName);
+								} else if (structKeyExists(hibachiBeanInfo[beanName], "value")) {
+									// Adding bean by instantiated value
+									coreBF.addBean(beanName, customBeanInfo[beanName].value);
 								}
 							}
 						}
-						aggregateBF.setParent(hibachiBF);
-						setBeanFactory(aggregateBF);
-						setSubsystemBeanFactory('main',aggregateBF);
-					} else {
-						setBeanFactory(coreBF);
-						setSubsystemBeanFactory('main',coreBF);
+						
+						// writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory declared 'Custom' beans: #replace(listSort(customBeanNameList, 'textnocase'), ',', ', ', 'all')#");
+						
 					}
+					
+					setBeanFactory(coreBF);
 					
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 
 					//========================= END: IOC SETUP ===============================
-
+					
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
+					
+					
+					// Manually forces all beans to reload and attempt injections. Modifying this should be done carefully and somewhat fragile. 
+					// All bean factory flattening and aggregation has occured from Hibachi, Core, Custom., Integrations. This avoids potential missing bean errors after custom and integrationService setup
+					// Performance worsens if setting the ioc.cfc config omitDirectoryAliases = false. Negatively impacts execution time of the load() method by 2x longer
+					// NOTE: For more details about the quirk, view notes about the load() method in the org/hibachi/framework/hibachiaop.cfc
+					getBeanFactory().load();
+					onBeanFactoryLoadComplete();
+					
 					//==================== START: EVENT HANDLER SETUP ========================
 					
-					getBeanFactory('main').getBean('hibachiEventService').registerEventHandlers();
+					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
 
 
 					//===================== END: EVENT HANDLER SETUP =========================
@@ -754,7 +792,7 @@ component extends="framework.one" {
 
 					//==================== START: JSON BUILD SETUP ========================
 
-					getBeanFactory('main').getBean('HibachiJsonService').createJson();
+					getBeanFactory().getBean('HibachiJsonService').createJson();
 
 					//===================== END: JSON BUILD SETUP =========================
 
@@ -763,11 +801,11 @@ component extends="framework.one" {
 					//only run the update if it wasn't initiated by serverside cache being expired
 					if(!variables.framework.hibachi.isApplicationStart){
 					if(!arguments.reloadByServerInstance){
-						getBeanFactory('main').getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
+						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
 					}else{
-						var serverInstance = getBeanFactory('main').getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 						serverInstance.setServerInstanceExpired(false);
-							getBeanFactory('main').getBean('hibachiCacheService').saveServerInstance(serverInstance);
+							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 							getHibachiScope().flushORMSession();
 						}						
 					}
@@ -1124,7 +1162,7 @@ component extends="framework.one" {
 		super.onError(arguments.exception,arguments.event);
 	}
 
-	// THESE METHODS ARE INTENTIONALLY LEFT BLANK
+	// THESE METHODS ARE INTENTIONALLY LEFT BLANK AS EXTENSION POINTS
 	public void function onEveryRequest() {}
 
 	public void function onInternalRequest() {}
@@ -1134,5 +1172,7 @@ component extends="framework.one" {
 	public void function onUpdateRequest() {}
 
 	public void function onFirstRequestPostUpdate() {}
+	
+	public void function onBeanFactoryLoadComplete() {}
 
 }

@@ -718,7 +718,9 @@
 
 		public string function sanitizeForAngular(required string html){
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'%7B',chr(123)&chr(002),'all');
+				return arguments.html;
 			}else{
 				return ReReplace(ReReplace(arguments.html,'&##x7b;',chr(123)&chr(002),'all'),'&##x7d;','}','all');
 			}
@@ -837,10 +839,12 @@
 				if (migrateLegacyKeyFlag) {
 					arrayAppend(passwords, {'legacyKey'=legacyKey, 'legacyEncryptionAlgorithm'=getLegacyEncryptionAlgorithm(), 'legacyEncryptionEncoding'=getLegacyEncryptionEncoding(), 'legacyEncryptionKeySize'=getLegacyEncryptionKeySize()});
 					writeEncryptionPasswordFile(passwords);
+					
+					// Remove legacy key file from file system
+					// Commented out 2018-10-30 because the application initialization calls EncryptionService.verifyEncryptionKeyExists() which will recreate the key.xml.cfm during next reload
+					// And the encryption key stored in key.xml.cfm will be ported into the password.txt.cfm with unbound file growth
+					// removeLegacyEncryptionKeyFile();
 				}
-
-				// Remove legacy key file from file system
-				removeLegacyEncryptionKeyFile();
 			}
 
 			var legacyPasswords = [];
