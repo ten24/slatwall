@@ -928,7 +928,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 							variables.currencyDetails[ currentCurrencyCode ].listPriceFormatted = formatValue( variables.currencyDetails[ currentCurrencyCode ].listPrice, "currency", {currencyCode=currentCurrencyCode});
 						}
 						if(!isNull(getPrice())) {
-							variables.currencyDetails[ currentCurrencyCode ].price = getService("currencyService").convertCurrency(getPrice(), this.setting('skuCurrency'), currentCurrencyCode);
+							if(!isNull(getPrice())) {
+								variables.currencyDetails[ currentCurrencyCode ].price = getService("currencyService").convertCurrency(getPrice(), this.setting('skuCurrency'), currentCurrencyCode);
+							} else {
+								variables.currencyDetails[ currentCurrencyCode ].price = 0;
+							}
 						} else {
 							variables.currencyDetails[ currentCurrencyCode ].price = 0;
 						}
