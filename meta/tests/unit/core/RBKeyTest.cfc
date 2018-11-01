@@ -254,5 +254,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		assert(ArrayLen(missingRBKeys) == 0);
 	}
+	
+	/**
+	 * @test
+	 */
+	 public void function processActionsHaveRBKeys() {
+	 	var missingRBKeys = [];
+	 	var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+	 	
+	 	for (var slatwallEntityName in allEntities) {
+	 		var entityName = replace(slatwallEntityName, "Slatwall","","all");
+	 		var entityMetaData = request.slatwallScope.getService('HibachiService').getEntityMetaData(entityName);
+	 		if (StructKeyExists(entityMetaData, "hb_processcontexts")) {
+	 			var processContexts = entityMetaData.hb_processcontexts;
+		 		for (var processContext in processContexts) {
+		 			var keyValue = request.slatwallScope.rbKey("process#entityName#_#processContext#");
+		 			if (right(keyValue, 8) == '_missing') {
+		 				ArrayAppend(missingRBKeys, keyValue);
+		 				addToDebug(keyValue);
+		 			}
+		 		}
+	 		}
+	 	}
+	 	assertEquals(ArrayLen(missingRBKeys), 0);
+	 }
 
 }
