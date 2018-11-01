@@ -225,7 +225,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var missingRBKey in missingRBKeys){
 			addToDebug(missingRBKey);
 		}
-		assertFalse(arraylen(missingRBKeys));
+		
+		assertFalse(arraylen(missingRBKeys),ArrayToList(variables.debugArray, chr(13) & chr(10)));
 		
 	}
 	
@@ -252,7 +253,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				addToDebug(e);
 			}
 		}
-		assert(ArrayLen(missingRBKeys) == 0);
+		assert(ArrayLen(missingRBKeys) == 0,ArrayToList(variables.debugArray, chr(13) & chr(10)));
 	}
 	
 	/**
