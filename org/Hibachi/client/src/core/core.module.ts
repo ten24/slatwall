@@ -25,6 +25,7 @@ import { RbKeyService } from "./services/rbkeyservice";
 import { TypeaheadService } from "./services/typeaheadservice";
 import { $Hibachi } from "./services/hibachiservice";
 import { HistoryService } from "./services/historyservice";
+import { CurrencyService } from "./services/currencyservice";
 import { LocalStorageService } from "./services/localstorageservice";
 import { HibachiServiceDecorator } from "./services/hibachiservicedecorator";
 import { HibachiScope } from "./services/hibachiscope";
@@ -77,7 +78,7 @@ import { SWScrollTrigger } from "./components/swscrolltrigger";
 import { SWTabGroup } from "./components/swtabgroup";
 import { SWTabContent } from "./components/swtabcontent";
 import { SWTooltip } from "./components/swtooltip";
-import { SWRbKey } from "./components/swrbkey";
+import { SWRbKey, SwRbKey } from "./components/swrbkey";
 import { SWOptions } from "./components/swoptions";
 import { SWSelection } from "./components/swselection";
 import { SWClickOutside } from "./components/swclickoutside";
@@ -96,7 +97,7 @@ import { DialogModule } from '../dialog/dialog.module';
 
 import { NgModule, Inject, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UpgradeModule, downgradeInjectable } from '@angular/upgrade/static';
+import { UpgradeModule, downgradeInjectable, downgradeComponent } from '@angular/upgrade/static';
 
 
 import { BaseObject } from "./model/baseobject";
@@ -130,7 +131,7 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
 //}
 
 @NgModule({
-    declarations: [SWRbKeyDirective],
+    declarations: [SWRbKeyDirective, SwRbKey],
     providers: [
         AppProvider,
         AppConfig,
@@ -154,6 +155,7 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
         RequestService,
         HibachiScope,
         $Hibachi,
+        CurrencyService,
         TypeaheadService,
         EntityService,
         CartService,        
@@ -178,6 +180,9 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
         UpgradeModule,
         HttpModule
 
+    ],
+    exports: [
+        SwRbKey
     ]
 })
 
@@ -301,11 +306,12 @@ var coremodule = angular.module('hibachi.core', [
     .service('expandableService', downgradeInjectable(ExpandableService))
     .service('filterService', downgradeInjectable(FilterService))
     .service('formService', downgradeInjectable(FormService))
-    .service('historyService', downgradeInjectable(HistoryService))
+    .service('historyService', downgradeInjectable(HistoryService))   
     .service('metadataService', downgradeInjectable(MetaDataService))
     .service('rbkeyService', downgradeInjectable(RbKeyService))
     .service('typeaheadService', downgradeInjectable(TypeaheadService))
     .service('$hibachi', downgradeInjectable($Hibachi))
+    .service('currencyService',downgradeInjectable(CurrencyService))
     //.decorator('$hibachi',HibachiServiceDecorator)
     .service('hibachiInterceptor', downgradeInjectable(HibachiInterceptor))
     .service('hibachiScope', downgradeInjectable(HibachiScope))
@@ -356,6 +362,7 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swLoading', SWLoading.Factory())
     .directive('swScrollTrigger', SWScrollTrigger.Factory())
     .directive('swRbkey', SWRbKey.Factory())
+//    .directive('swRbkey',downgradeComponent({ component: SwRbKey }) as angular.IDirectiveFactory)
     .directive('swOptions', SWOptions.Factory())
     .directive('swSelection', SWSelection.Factory())
     .directive('swTabGroup', SWTabGroup.Factory())

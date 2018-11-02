@@ -27,6 +27,9 @@ import {SWPaginationBar,SwPaginationBar} from "./components/swpaginationbar";
         FormsModule,
         UpgradeModule
     ],
+    exports: [
+        SwPaginationBar
+    ],
     entryComponents: [
         SwPaginationBar
     ]  

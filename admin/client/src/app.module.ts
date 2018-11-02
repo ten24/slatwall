@@ -41,7 +41,7 @@ import { SwRbKey } from "../../../org/Hibachi/client/src/core/components/swrbkey
     SlatwallAdminModule
   ],
   declarations:[
-      SwRbKey
+//      SwRbKey
   ],
   entryComponents: [
 
