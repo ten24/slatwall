@@ -54,11 +54,13 @@ Notes:
 
 <cfoutput>
 	<!--- Order Items Detail--->
-	<sw-order-items
-		[orderid]="'#rc.order.getOrderID()#'"
+	<div ng-init="order_id='#rc.order.getOrderID()#'">
+		<sw-order-items
+			[orderid]="order_id"
 
-	>
-	</sw-order-items>
+		>
+		</sw-order-items>
+	</div>
 
 	<!--- If in edit and order is of correct status then we can add sale order items --->
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
