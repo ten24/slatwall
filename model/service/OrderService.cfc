@@ -3568,7 +3568,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(
 			!arguments.orderPayment.getSucessfulPaymentTransactionExistsFlag()
 			&& !arguments.orderPayment.hasErrors()
-			&& isNull(arguments.orderPayment.getAccountPaymentMethod())
+			&& (isNull(arguments.orderPayment.getAccountPaymentMethod()) || (!isNull(arguments.orderPayment.getAccountPaymentMethod()) && ListFindNoCase('authorize,authorizeAndCharge',arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())))
 			&& isNull(arguments.orderPayment.getReferencedOrderPayment())
 			&& !isNull(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
 			&& len(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
