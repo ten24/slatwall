@@ -60,9 +60,9 @@ component displayname="Alternate Sku Code" entityname="SlatwallAlternateSkuCode"
 	property name="vendorSkus" type="array" cfc="VendorSku" singularname="vendorSku" fieldtype="one-to-many" fkcolumn="alternateSkuCodeID" cascade="all-delete-orphan" inverse="true";
 	
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// ============ START: Non-Persistent Property Methods =================

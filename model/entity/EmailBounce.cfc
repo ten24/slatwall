@@ -69,7 +69,7 @@ component entityname="SlatwallEmailBounce" table="SwEmailBounce" persistent="tru
 	property name="remoteID" ormtype="string";
 
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// ============ START: Non-Persistent Property Methods =================

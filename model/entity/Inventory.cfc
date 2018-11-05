@@ -59,7 +59,7 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="currencyCode" ormtype="string" length="3";
 	
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Remote properties
