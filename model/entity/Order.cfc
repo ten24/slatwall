@@ -983,12 +983,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			variables.allAppliedPromotions = []; 
 			// get all the promotion codes applied and attached it to applied Promotion Struct
 			var appliedPromotionCodesCollectionList = this.getPromotionCodesCollectionList();
-			appliedPromotionCodesCollectionList.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName,promotion.promotionID');
+			appliedPromotionCodesCollectionList.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName');
+			
+			var appliedPromotionCodesOrderItemCollectionList = appliedPromotionCodesCollectionList.duplicateCollection();
+			
+			var appliedPromotionCodesOrderFulfillmentCollectionList = appliedPromotionCodesCollectionList.duplicateCollection();
+			
 			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=",'OR');
-			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
-			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
+			
+			appliedPromotionCodesOrderItemCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
+			
+			appliedPromotionCodesOrderFulfillmentCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
 			
 			var appliedPromotionCodes = appliedPromotionCodesCollectionList.getRecords();
+			
+			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderItemCollectionList.getRecords(),true);
+			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderFulfillmentCollectionList.getRecords(),true);
 			
 			var promotionCodeCollectionlist = getService('promotionService').getPromotionCodeCollectionList();
 			promotionCodeCollectionlist.addFilter('orders.orderID',getOrderID());
