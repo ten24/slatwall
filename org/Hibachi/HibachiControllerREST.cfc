@@ -50,6 +50,8 @@ component output="false" accessors="true" extends="HibachiController" {
     public any function before( required struct rc ) {
 
         arguments.rc.apiRequest = true;
+        
+        request.layout = false;
 
         getFW().setView("public:main.blank");
         arguments.rc.headers["Content-Type"] = "application/json";

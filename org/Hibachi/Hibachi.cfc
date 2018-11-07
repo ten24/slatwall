@@ -133,9 +133,6 @@ component extends="framework.one" {
 		return 'production';
 	}
 	
-	private struct function getFw1App() {
-    	return application[variables.framework.applicationKey];
-    }
 
 	// =============== configMappings
 
@@ -614,7 +611,13 @@ component extends="framework.one" {
 					}
 
 					// Application Setup Started
-					application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
+					if(!structKeyExists(application,getHibachiInstanceApplicationScopeKey())){
+						application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
+					}else{
+						for(var key in applicationInitData){
+							application[getHibachiInstanceApplicationScopeKey()][key]=applicationInitData[key];
+						}
+					}
 					
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application cache cleared, and init values set.");
 

@@ -381,7 +381,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// =================== JS helper methods  ===========================
 
-	public any function getAvailableAccountPropertyList() {
+	public any function getAvailableCartPropertyList(string cartDataOptions="full") {
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
@@ -419,56 +419,105 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return data;
 	}
 
-	public any function getAvailableCartPropertyList() {
-		return rereplace("orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,
-			billingAccountAddress.accountAddressID,
-			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.extendedUnitPrice,orderItems.extendedUnitPriceAfterDiscount, orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.childOrderItems,
-			orderItems.orderFulfillment.orderFulfillmentID,
-			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,orderItems.sku.skuDefinition,
-			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,orderItems.sku.listPrice,
-			orderItems.sku.product.brand.brandName,
-			orderItems.sku.product.productType.productTypeName,
-			orderItems.sku.product.productDescription,
-			orderFulfillments.accountAddress.accountAddressID,orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
-			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,orderFulfillments.orderFulfillmentItems.sku.skuName,orderFulfillments.orderFulfillmentItems.sku.product.productName,
-			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
-			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.name,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.stateCode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
-			orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
-			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryAddress.address.street2Address,
-			orderFulfillments.pickupLocation.primaryAddress.address.city, orderFulfillments.pickupLocation.primaryAddress.address.stateCode, orderFulfillments.pickupLocation.primaryAddress.address.postalCode,
-			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
-			orderPayments.billingAccountAddress.accountAddressID,orderPayments.billingAddress.addressID,orderPayments.billingAddress.name,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.stateCode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
-			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode,promotionCodes.promotion.promotionName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodType,eligiblePaymentMethodDetails.paymentMethod.paymentMethodID,eligiblePaymentMethodDetails.maximumAmount,
-			orderNotes","[[:space:]]","");
+	public any function getAvailableCartPropertyList(string cartDataOptions="full") {
+		var availablePropertyList = "";
+		
+		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
+			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,";
+		}
+		
+		//orderItemData
+		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'orderItem')){
+			availablePropertyList&="orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.extendedUnitPrice,orderItems.extendedUnitPriceAfterDiscount, orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.childOrderItems,
+				orderItems.orderFulfillment.orderFulfillmentID,
+				orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,orderItems.sku.skuDefinition,
+				orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,orderItems.sku.listPrice,
+				orderItems.sku.product.brand.brandName,
+				orderItems.sku.product.productType.productTypeName,
+				orderItems.sku.product.productDescription,
+			";
+		}
+		
+		//orderfulfillmentdata
+		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'orderFulfillment')){
+			availablePropertyList&="
+				billingAccountAddress.accountAddressID,
+				orderFulfillments.accountAddress.accountAddressID,orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
+				orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,orderFulfillments.orderFulfillmentItems.sku.skuName,orderFulfillments.orderFulfillmentItems.sku.product.productName,
+				orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
+				orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.name,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.stateCode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
+				orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
+				orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryAddress.address.street2Address,
+				orderFulfillments.pickupLocation.primaryAddress.address.city, orderFulfillments.pickupLocation.primaryAddress.address.stateCode, orderFulfillments.pickupLocation.primaryAddress.address.postalCode,
+			";	
+		}
+		//orderPaymentData
+		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'orderPayment')){
+			availablePropertyList&="
+				orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
+				orderPayments.billingAccountAddress.accountAddressID,orderPayments.billingAddress.addressID,orderPayments.billingAddress.name,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.stateCode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
+				orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode,promotionCodes.promotion.promotionName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodType,eligiblePaymentMethodDetails.paymentMethod.paymentMethodID,eligiblePaymentMethodDetails.maximumAmount,
+				orderNotes
+			";
+		}
+		
+		//hard override for the minicart
+		if(arguments.cartDataOptions=="minicart"){
+		    availablePropertyList="orderItems.orderItemID";
+		}
+		
+		availablePropertyList = rereplace(availablePropertyList,"[[:space:]]","","all");
+		
+		if(right(trim(availablePropertyList),1)==','){
+			availablePropertyList = left(availablePropertyList,len(trim(availablePropertyList))-1);
+		}
+		
+		return availablePropertyList;
 	}
 	
-	public any function getCartData(string propertyList) {
+	public any function getCartData(string propertyList,string cartDataOptions="full") {
 		
-		var availablePropertyList = getAvailableCartPropertyList();
+		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 		availablePropertyList = ListAppend(availablePropertyList, getService('OrderService').getOrderAttributePropertyList());
 
-		if(structKeyExists(getService('OrderService'), "getCustomAvailableProperties")){
-			availablePropertyList = listAppend(availablePropertyList, getService('OrderService').getCustomAvailableProperties());
-		}
-		
-		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
-			arguments.propertyList = availablePropertyList;
-		}
+        if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
+            arguments.propertyList = availablePropertyList;
+        }
 
-		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
+        var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
 
-		// add error messages
-		data["hasErrors"] = getCart().hasErrors();
-		data["errors"] = getCart().getErrors();
-		
-		// add process object error messages
-		data[ 'processObjects' ] = {};
-		for(var key in getCart().getProcessObjects()) {
-			data[ 'processObjects' ][ key ] = {};
-			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getCart().getProcessObjects()[ key ].hasErrors();
-			data[ 'processObjects' ][ key ][ 'errors' ] = getCart().getProcessObjects()[ key ].getErrors();
-		}
+        //only need to work if order fulfillment data exists
+        if(structKeyExists(data,'orderFulfillments')){
+            //Attach some meta for for orderFulfillments
+            var requiresFulfillment = false;
+            var orderFulfillmentWithShippingMethodOptionsIndex = 1;
+            for (var orderFulfillment in data.orderFulfillments){
+                if(structKeyExists(orderFulfillment,'shippingMethodOptions')){
+                    if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
+                                requiresFulfillment = true; break;
+                    }
+                    orderFulfillmentWithShippingMethodOptionsIndex++;
+                }
+            }
+            data['requiresFulfillment'] = requiresFulfillment;
+            if (requiresFulfillment){
+                  data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
+            }else{
+                  data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
+            }
+        }
+        // add error messages
+        data["hasErrors"] = getCart().hasErrors();
+        data["errors"] = getCart().getErrors();
+
+        // add process object error messages
+        data[ 'processObjects' ] = {};
+        for(var key in getCart().getProcessObjects()) {
+            data[ 'processObjects' ][ key ] = {};
+            data[ 'processObjects' ][ key ][ 'hasErrors' ] = getCart().getProcessObjects()[ key ].hasErrors();
+            data[ 'processObjects' ][ key ][ 'errors' ] = getCart().getProcessObjects()[ key ].getErrors();
+        }
 		
 		return data;
 	}

@@ -918,7 +918,11 @@ component  accessors="true" output="false"
     
     /** exposes the cart and account */
     public void function getCartData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getCartData();
+        if(!structKeyExists(arguments.data,'cartDataOptions') || !len(arguments.data['cartDataOptions'])){
+            arguments.data['cartDataOptions']='full';
+        }
+    
+        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
     }
     
     public void function getAccountData(any data) {

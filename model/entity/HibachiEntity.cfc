@@ -174,7 +174,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public array function getAttributeValuesForEntity() {
 		if(!structKeyExists(variables, "attributeValuesForEntity")) {
 			variables.attributeValuesForEntity = [];
-			if(hasProperty("attributeValues")) {
+			if(hasProperty("attributeValues") && !getNewFlag() && arrayLen(getAssignedAttributes())) {
 				var primaryIDPropertyIdentifier = "#replace(getEntityName(), '#getDao('hibachiDao').getApplicationValue('applicationKey')#', '')#.#getPrimaryIDPropertyName()#";
 				primaryIDPropertyIdentifier = lcase(left(primaryIDPropertyIdentifier, 1)) & right(primaryIDPropertyIdentifier, len(primaryIDPropertyIdentifier)-1);
 				variables.attributeValuesForEntity = getService("attributeService").getAttributeValuesForEntity(primaryIDPropertyIdentifier=primaryIDPropertyIdentifier, primaryIDValue=getPrimaryIDValue());

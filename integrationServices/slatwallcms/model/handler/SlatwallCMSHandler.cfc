@@ -17,7 +17,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		var applicationDotPath = rereplace(arguments.site.getApp().getAppRootPath(),'/','.','all');
 		var componentPath = "Slatwall" & applicationDotPath & '.Application';
 		if(!structKeyExists(request.slatwallCmsApplications,componentPath)){
-			request.slatwallCmsApplications[componentPath] = createObject("component", "Slatwall" & applicationDotPath & '.Application'); 
+			request.slatwallCmsApplications[componentPath] = createObject("component", "Slatwall" & applicationDotPath & '.Application').init(request._fw1.theframework); 
 		}
 		return request.slatwallCmsApplications[componentPath];
 	}

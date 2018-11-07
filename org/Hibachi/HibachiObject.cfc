@@ -67,7 +67,7 @@ component accessors="true" output="false" persistent="false" {
 		return getBeanFactory().containsBean( arguments.beanName );
 	}
 	// @hint sets bean factory, this probably should not ever be invoked outside of  initialization. Application.cfc should take care of this.
-	public void function setBeanFactory(required any beanFactory) {
+	lock name="application_#getHibachiInstanceApplicationScopeKey()#_beanFactory" timeout="10" {
 		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
 	}
 
@@ -81,18 +81,12 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint returns an application scope cached version of the service
 	public any function getService(required string serviceName) {
-		if( !hasApplicationValue("service_#arguments.serviceName#") ) {
-			setApplicationValue("service_#arguments.serviceName#", getBean(arguments.serviceName) );
-		}
-		return getApplicationValue("service_#arguments.serviceName#");
+		return getBean(arguments.serviceName) ;
 	}
 	
 	// @hint returns an application scope cached version of the service
 	public any function getDAO(required string daoName) {
-		if( !hasApplicationValue("dao_#arguments.daoName#") ) {
-			setApplicationValue("dao_#arguments.daoName#", getBean(arguments.daoName) );
-		}
-		return getApplicationValue("dao_#arguments.daoName#");
+		return getBean(arguments.daoName);
 	}
 	
 	// @hint returns a new transient bean
