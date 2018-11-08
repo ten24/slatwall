@@ -614,7 +614,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var attributeValueStruct = this.getAttributeValuesByCodeStruct();
 		
 		if(!isnull(attributeValueStruct)){
-			for(key in attributeValueStruct){
+			for(var key in attributeValueStruct){
 				if( structKeyExists(arguments.orderItem.getAttributeValuesByAttributeCodeStruct(), key) ){
 					if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
 						return false;

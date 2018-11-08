@@ -112,12 +112,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Returns array of a location and all of its children
 	// @locationID String Top level location 
 	public array function getLocationAndChildren( required string locationID ) {
-		var locAndChildren = [];
-		var smartList = this.getLocationSmartList();
-		smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
-		smartlist.addSelect('calculatedLocationPathName','name');
-		smartlist.addSelect('locationID','value');
-		return smartList.getRecords();
+		var cacheKey = 'locationService_getLocationAndChildren_#arguments.locationID#';
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var smartList = this.getLocationSmartList();
+			smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
+			smartlist.addSelect('calculatedLocationPathName','name');
+			smartlist.addSelect('locationID','value');
+			var locAndChildren = smartList.getRecords();
+			getService('HibachiCacheService').setCachedValue(cacheKey,locAndChildren,DateAdd('n',60,now()));
+		}
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	// ===================== START: Logical Methods ===========================

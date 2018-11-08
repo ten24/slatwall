@@ -673,8 +673,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				
 				// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
 				if (arguments.quantityType == 'MQATSBOM' ){
-					var location = getService("locationService").getLocation(arguments.locationID);
-					var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+					var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
+
 					
 					return stock.getQuantity(arguments.quantityType);
 					
@@ -684,10 +684,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					var totalQuantity = 0;
 					
 					for(var i=1;i<=arraylen(locations);i++) {
-						var location = getService("locationService").getLocation(locations[i]['value']);
 						
 						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
-							var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+							var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
 							totalQuantity += stock.getQuantity(arguments.quantityType);
 							
 						}  
