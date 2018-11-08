@@ -381,7 +381,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// =================== JS helper methods  ===========================
 
-	public any function getAvailableCartPropertyList(string cartDataOptions="full") {
+	public any function getAvailableAccountPropertyList() {
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
