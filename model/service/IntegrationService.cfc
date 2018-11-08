@@ -228,14 +228,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 						var beanComponentPath = integrationCFC.getEventHandlers()[e];
 						var beanName = listLast(beanComponentPath,'.');
-						
+						if(!(
+								len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage
+							)
+						) {
+							beanName=integrationPackage&beanName;
+						}
 						if(!beanFactory.containsBean(beanName)){
-							if(!(
-									len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage
-								)
-							) {
-								beanName=integrationPackage&beanName;
-							}
 							beanFactory.declareBean( beanName, beanComponentPath, true );
 							if(len(beanName) < len('Handler') || right(beanName,len('Handler'))!='Handler'){
 								beanFactory.addAlias(beanName&'Handler',beanName);
