@@ -67,8 +67,10 @@ component accessors="true" output="false" persistent="false" {
 		return getBeanFactory().containsBean( arguments.beanName );
 	}
 	// @hint sets bean factory, this probably should not ever be invoked outside of  initialization. Application.cfc should take care of this.
-	lock name="application_#getHibachiInstanceApplicationScopeKey()#_beanFactory" timeout="10" {
-		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+	public void function setBeanFactory(required any beanFactory) {
+		lock name="application_#getHibachiInstanceApplicationScopeKey()#_beanFactory" timeout="10" {
+			application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+		}
 	}
 
 	// @hint whether or not we have a bean
