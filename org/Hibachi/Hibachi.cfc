@@ -283,6 +283,7 @@ component extends="framework.one" {
 
 	public void function setupGlobalRequest(boolean noredirect=false) {
 		createHibachiScope();
+		
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
@@ -301,7 +302,7 @@ component extends="framework.one" {
 				}
 			}
 		}
-
+		
 		// Verify that the session is setup
 		getHibachiScope().getService("hibachiSessionService").setProperSession();
 		
@@ -731,8 +732,6 @@ component extends="framework.one" {
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
-					
-					
 					// Manually forces all beans to reload and attempt injections. Modifying this should be done carefully and somewhat fragile. 
 					// All bean factory flattening and aggregation has occured from Hibachi, Core, Custom., Integrations. This avoids potential missing bean errors after custom and integrationService setup
 					// Performance worsens if setting the ioc.cfc config omitDirectoryAliases = false. Negatively impacts execution time of the load() method by 2x longer
@@ -742,8 +741,6 @@ component extends="framework.one" {
 					
 					//==================== START: EVENT HANDLER SETUP ========================
 					
-					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
-
 
 					//===================== END: EVENT HANDLER SETUP =========================
 
