@@ -133,9 +133,6 @@ component extends="framework.one" {
 		return 'production';
 	}
 	
-	private struct function getFw1App() {
-    	return application[variables.framework.applicationKey];
-    }
 
 	// =============== configMappings
 
@@ -286,6 +283,7 @@ component extends="framework.one" {
 
 	public void function setupGlobalRequest(boolean noredirect=false) {
 		createHibachiScope();
+		
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
@@ -304,7 +302,7 @@ component extends="framework.one" {
 				}
 			}
 		}
-
+		
 		// Verify that the session is setup
 		getHibachiScope().getService("hibachiSessionService").setProperSession();
 		
@@ -614,7 +612,13 @@ component extends="framework.one" {
 					}
 
 					// Application Setup Started
-					application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
+					if(!structKeyExists(application,getHibachiInstanceApplicationScopeKey())){
+						application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
+					}else{
+						for(var key in applicationInitData){
+							application[getHibachiInstanceApplicationScopeKey()][key]=applicationInitData[key];
+						}
+					}
 					
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application cache cleared, and init values set.");
 
@@ -728,8 +732,6 @@ component extends="framework.one" {
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
-					
-					
 					// Manually forces all beans to reload and attempt injections. Modifying this should be done carefully and somewhat fragile. 
 					// All bean factory flattening and aggregation has occured from Hibachi, Core, Custom., Integrations. This avoids potential missing bean errors after custom and integrationService setup
 					// Performance worsens if setting the ioc.cfc config omitDirectoryAliases = false. Negatively impacts execution time of the load() method by 2x longer
@@ -739,8 +741,6 @@ component extends="framework.one" {
 					
 					//==================== START: EVENT HANDLER SETUP ========================
 					
-					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
-
 
 					//===================== END: EVENT HANDLER SETUP =========================
 
