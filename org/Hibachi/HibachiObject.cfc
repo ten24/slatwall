@@ -75,10 +75,7 @@ component accessors="true" output="false" persistent="false" {
 
 	// @hint whether or not we have a bean
 	public boolean function hasService(required string serviceName){
-		if(!hasApplicationValue("service_#arguments.serviceName#")){
-			return hasBean(arguments.serviceName);
-		}
-		return true;
+		return hasBean(arguments.serviceName);
 	} 
 	
 	// @hint returns an application scope cached version of the service
