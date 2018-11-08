@@ -463,16 +463,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						} else if(!getHibachiValidationService().validate(object=orderFulfillment.getShippingAddress(), context="full", setErrors=false).hasErrors()) {
 							taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
 						}
+						
+						var taxCategoryRateRecords = getTaxCategoryRateRecordsByTaxCategory(taxCategory);
 	
 						// Loop over the rates of that category, to potentially apply
-						for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+						for(var taxCategoryRateData in taxCategoryRateRecords) {
 	
-							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+							var taxAddress = getTaxAddressByTaxAddressLookup(taxAddressLookup=taxCategoryRateData['taxAddressLookup'], taxAddresses=taxAddresses);
 	
-							if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+							if(!isNull(taxAddress) 
+								&&
+								(
+									!structKeyExists(taxCategoryRateData,'addressZone_addressZoneID')
+									|| 
+									getAddressService().isAddressInZoneByZoneID(addressZoneID=taxCategoryRateData['addressZone_addressZoneID'], address=taxAddress)
+								)
+							) {
 	
 								// If this rate has an integration, then try to pull the data from the response bean for that integration
-								if(!isNull(taxCategoryRate.getTaxIntegration())) {
+								if(structKeyExists(taxCategoryRateData,'taxIntegration_integrationID')) {
 								
 									// if account is tax exempt return after removing any tax previously applied to order
 									if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
@@ -480,15 +489,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 	
 									// Look for all of the rates responses for this interation, on this orderItem
-									if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
+									if(structKeyExists(ratesResponseBeans, taxCategoryRateData['taxIntegration_integrationID'])){
 	
-										var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];
+										var thisResponseBean = ratesResponseBeans[ taxCategoryRateData['taxIntegration_integrationID'] ];
 										var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
 										
 										for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 	
 											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment' && taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()){
-	
+												var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 												// Add a new AppliedTax
 												var newAppliedTax = this.newTaxApplied();
 												newAppliedTax.setAppliedType("orderFulfillment");
@@ -535,7 +544,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
 										continue;
 									}
-	
+									var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 									var newAppliedTax = this.newTaxApplied();
 									newAppliedTax.setAppliedType("orderFulfillment");
 									newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
