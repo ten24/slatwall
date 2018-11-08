@@ -732,7 +732,6 @@ component extends="framework.one" {
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
-					writedump(var=getHibachiScope().getService('HibachiEventService').getRegisteredEventHandlers(),top=2);abort;
 					// Manually forces all beans to reload and attempt injections. Modifying this should be done carefully and somewhat fragile. 
 					// All bean factory flattening and aggregation has occured from Hibachi, Core, Custom., Integrations. This avoids potential missing bean errors after custom and integrationService setup
 					// Performance worsens if setting the ioc.cfc config omitDirectoryAliases = false. Negatively impacts execution time of the load() method by 2x longer
