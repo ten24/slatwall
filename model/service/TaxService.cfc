@@ -893,20 +893,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	
-	public boolean function getAddress(required any adressZoneID, any taxAddress) {
-		if(	isNull(arguments.taxCategoryRate.getAddressZone())
-			  ||
-			(
-				!isNull(arguments.taxAddress) 
-				&& getAddressService().isAddressInZone(
-					address=arguments.taxAddress, addressZone=arguments.taxCategoryRate.getAddressZone())
-			)
-		) {
-			return true;
-		}
-
-		return false;
-	}
+	
 
 
 	public any function generateTaxRatesRequestBeanForIntegration( required any order, required any integration ){
