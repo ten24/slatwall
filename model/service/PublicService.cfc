@@ -85,7 +85,7 @@ component  accessors="true" output="false"
 			return theMethod(argumentCollection = methodArguments);
 		}
 		
-		throw("You have attempted to call the method #arguments.methodName# which does not exist in #getClassFullName()#");
+		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
     
     /**
