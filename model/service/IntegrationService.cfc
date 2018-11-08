@@ -222,9 +222,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// If this integration is active lets register all of its event handlers, and decorate the getBeanFactory() with it
 				if( integration.getEnabledFlag() ) {
+					var beanFactory = getBeanFactory();
 					
 					for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
-						getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
+					
+						var beanComponentPath = integrationCFC.getEventHandlers()[e];
+						var beanName = listLast(beanComponentPath,'.');
+						if(!beanFactory.containsBean(beanName)){
+							beanFactory.declareBean(beanName, "#beanComponentPath#",true);				
+						}
 					}
 					
 					if(arrayLen(integrationCFC.getEventHandlers())) {
@@ -232,7 +238,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
-						var beanFactory = getBeanFactory();
+						
 						//if we have entities then copy them into root model/entity
 						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model/entity")){
 							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
