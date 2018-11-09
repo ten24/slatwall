@@ -3446,10 +3446,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var thirdPartyShippingAccountIdentifier = arguments.data.thirdPartyShippingAccountIdentifier;
 			arguments.orderfulfillment.setThirdPartyShippingAccountIdentifier(thirdPartyShippingAccountIdentifier);
 		}
-
+		
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
-
 
  		//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
  		if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
