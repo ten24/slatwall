@@ -98,13 +98,12 @@
         <cfset refunded[index] = dataRecord['earnedSUM']/>
         <cfset refundedTaxAmount[index] = dataRecord['taxAmountSUM']/>
     </cfloop>
-    
     <table class="table table-bordered s-detail-content-table">
         <thead>
             <tr>
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="w">
-                    <cfif w % 12 eq 1 and w neq 1>
+                    <cfif w % 12 eq 0 and w neq 1>
                         <cfset currentYear++/>
                     </cfif>
                     <th>
