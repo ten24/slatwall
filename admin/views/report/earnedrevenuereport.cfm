@@ -110,45 +110,69 @@
                         #possibleMonths[w%12+1]# - #currentYear#
                     </th>
                 </cfloop>
+                <th>
+                    Total
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Subscriptions Earning</td>
+                <cfset totalSubscriptionsEarning=0/>
                 <cfloop array="#subscriptionsEarning#" index="subscriptionsEarningRecord">
                     <td>#subscriptionsEarningRecord#</td>
+                    <cfset totalSubscriptionsEarning += subscriptionsEarningRecord/>
                 </cfloop>
+                <td>#totalSubscriptionsEarning#</td>
             </tr>
             <tr>
                 <td>Earned Revenue</td>
+                <cfset totalEarnedRevenue=0/>
                 <cfloop array="#earned#" index="earnRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(earnRecord,'currency')#</td>
+                    <cfset totalEarnedRevenue+=earnRecord/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalEarnedRevenue,'currency')#</td>
             </tr>
             <tr>
                 <td>Tax</td>
+                <cfset totalTax=0/>
                 <cfloop array="#taxAmount#" index="taxAmountRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(taxAmountRecord,'currency')#</td>
+                    <cfset totalTax+=taxAmountRecord/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalTax,'currency')#</td>
             </tr>
              <tr>
                 <td>Refunded Revenue</td>
+                <cfset totalRefunded = 0/>
                 <cfloop array="#refunded#" index="refundRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(refundRecord,'currency')#</td>
+                    <cfset totalRefunded += refundRecord/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalRefunded,'currency')#</td>
             </tr>
             <tr>
                 <td>Refunded Tax</td>
+                <cfset totalRefundedTax = 0/>
                 <cfloop array="#refundedTaxAmount#" index="refundedTaxAmountRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(refundedTaxAmountRecord,'currency')#</td>
+                    <cfset totalRefundedTax += refundedTaxAmountRecord/>
                 </cfloop>
+                
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalRefundedTax,'currency')#</td>
             </tr>
             <tr>
                 <td>Total</td>
+                <cfset TotalEarned = 0/>
                 <cfloop from="1" to="#arraylen(taxAmount)#" index="i">
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(earned[i]+taxAmount[i]-refunded[i]-refundedTaxAmount[i],'currency')#</td>
+                    <cfset total = earned[i]+taxAmount[i]-refunded[i]-refundedTaxAmount[i]/>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(total,'currency')#</td>
+                    <cfset TotalEarned += total/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(TotalEarned,'currency')#</td>
             </tr>
+            
         </tbody>
     </table>
     <cfif showProducts>

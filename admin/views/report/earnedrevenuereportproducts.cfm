@@ -81,6 +81,7 @@
             
             <cfloop collection="#productsWithDeliveriesMap#" item="productName">
                 <tr>
+                    
                     <td>#productName#</td>
                     <cfloop from="1" to="#arrayLen(productsWithDeliveriesMap[productName].earned)#" index="i">
                         
