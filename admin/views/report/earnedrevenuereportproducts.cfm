@@ -75,6 +75,9 @@
                         #possibleMonths[w%12+1]# - #currentYear#
                     </th>
                 </cfloop>
+                <th>
+                    Total
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -83,18 +86,24 @@
                 <tr>
                     
                     <td>#productName#</td>
+                    <cfset productTotal = 0/>
                     <cfloop from="1" to="#arrayLen(productsWithDeliveriesMap[productName].earned)#" index="i">
-                        
-                        <td>#$.slatwall.getService('hibachiUtilityService').formatValue((productsWithDeliveriesMap[productName].earned[i] - productsWithDeliveriesMap[productName].refunded[i]),'currency')#</td>
+                        <cfset productEarned = (productsWithDeliveriesMap[productName].earned[i] - productsWithDeliveriesMap[productName].refunded[i])/>
+                        <td>#$.slatwall.getService('hibachiUtilityService').formatValue(productEarned,'currency')#</td>
+                        <cfset productTotal += productEarned/>
                         <cfset possibleYearTotal[i]+=(productsWithDeliveriesMap[productName].earned[i] - productsWithDeliveriesMap[productName].refunded[i])/>
                     </cfloop>
+                    <td>#$.slatwall.getService('hibachiUtilityService').formatValue(productTotal,'currency')#</td>
                 </tr>
             </cfloop>
             <tr>
+                <cfset overallTotal=0/>
                 <td>Total</td>
                 <cfloop array="#possibleYearTotal#" index="possibleYearTotalRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(possibleYearTotalRecord,'currency')#</td>
+                    <cfset overallTotal +=possibleYearTotalRecord/>
                 </cfloop>
+                <td>#$.slatwall.getService('hibachiUtilityService').formatValue(overallTotal,'currency')#</td>
             </tr>
         </tbody>
     </table>
