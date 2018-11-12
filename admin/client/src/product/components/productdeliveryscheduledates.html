@@ -18,7 +18,7 @@
                             <span ng-bind="deliverScheduleDate.deliveryScheduleDateValue"></span><br/>
                         </td>
                         <td>
-                            <a ng-if="deliverScheduleDate.formattedDate > swProductDeliveryScheduleDates.currentDateTime" class="btn  s-remove j-tool-tip-item" title="Remove" ng-click="swProductDeliveryScheduleDates.removeDeliveryScheduleDate($index)">
+                            <a ng-if="deliverScheduleDate.formattedDate > swProductDeliveryScheduleDates.currentDateTime && swProductDeliveryScheduleDates.edit===true" class="btn  s-remove j-tool-tip-item" title="Remove" ng-click="swProductDeliveryScheduleDates.removeDeliveryScheduleDate($index)">
                             	<i class="fa fa-times"></i>
                             </a>
                         </td>
@@ -34,7 +34,7 @@
                 <br>
             </span>
             <br/>
-            <p class="input-group s-datepicker">
+            <p ng-show="swProductDeliveryScheduleDates.edit===true" class="input-group s-datepicker">
                 <input class="form-control" 
               		datepicker-popup="MMM dd, yyyy hh:mm a" 
               		close-text="Close" 
@@ -47,6 +47,6 @@
             </p>
         </div>
         
-        <button type="button" class="btn btn-primary" ng-click="swProductDeliveryScheduleDates.addDate(swProductDeliveryScheduleDates.newDeliverScheduleDate)">Add Date</button>
+        <button ng-show="swProductDeliveryScheduleDates.edit===true" type="button" class="btn btn-primary" ng-click="swProductDeliveryScheduleDates.addDate(swProductDeliveryScheduleDates.newDeliverScheduleDate)">Add Date</button>
     </div>
 </div>
