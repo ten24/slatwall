@@ -68,7 +68,9 @@
     
     <cfset currentMonth = Month(rc.minDate)/>
 	<cfset currentYear = Year(rc.minDate)/>
-	<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
+	<cfset monthbegin = createDateTime(Year(rc.minDate),Month(rc.minDate),DaysInMonth(rc.minDate),0,0,0)/>
+    <cfset monthend = createDateTime(Year(rc.maxDate),Month(rc.maxDate),DaysInMonth(rc.maxDate),23,59,59)/>
+	<cfset diff = DateDiff('m',monthbegin,monthend)/>
 	<cfset to = currentMonth + diff/>
     
     <cfset subscriptionsEarning = []/>

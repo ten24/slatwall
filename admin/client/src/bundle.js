@@ -87675,6 +87675,10 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
         };
+        this.selectPeriodInterval = function (interval) {
+            _this.selectedPeriodInterval = { value: interval };
+            _this.updatePeriod();
+        };
         this.selectPeriodColumn = function (column) {
             if (column && column.cfc) {
                 _this.selectedPeriodPropertyIdentifierArray.push(column.name);

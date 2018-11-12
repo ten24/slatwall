@@ -247,6 +247,7 @@ class SWListingReportController {
     
     
     public updatePeriod = ()=>{
+        
         //if we have all the info we need then we can make a report
         if(
             this.selectedPeriodColumn 
@@ -420,6 +421,12 @@ class SWListingReportController {
                 }
             }
         });
+        
+    }
+    
+    public selectPeriodInterval=(interval)=>{
+        this.selectedPeriodInterval={value:interval};
+        this.updatePeriod();
         
     }
     
