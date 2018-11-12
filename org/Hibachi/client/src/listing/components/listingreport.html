@@ -19,7 +19,7 @@
                         >
                     
                   </select>
-            			<a href="##" ng-click="swListingReport.popObjectPath()" class="btn-text">Reset</a>
+            			<a href="##" ng-click="swListingReport.popObjectPath()" class="btn-text">Back</a>
             		</div>
             	</div>
             	
@@ -114,11 +114,11 @@
             		
             		<!-- TODO: Backend - Wireup new period interval UI -->
             		<div class="btn-group btn-group-sm" role="group" aria-label="...">
-                      <button type="button" class="btn btn-default">Hour</button>
-                      <button type="button" class="btn btn-default">Day</button>
-                      <button type="button" class="btn btn-default">Week</button>
-                      <button type="button" class="btn btn-default">Month</button>
-                      <button type="button" class="btn btn-default">Year</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('hour')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='hour'}" class="btn btn-default">Hour</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('day')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='day'}" class="btn btn-default">Day</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('week')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='week'}" class="btn btn-default">Week</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('month')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='month'}" class="btn btn-default">Month</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('year')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='year'}" class="btn btn-default">Year</button>
                     </div>
                 </div><!-- end of .col -->
                 
