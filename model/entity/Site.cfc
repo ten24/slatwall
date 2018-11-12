@@ -68,7 +68,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
-	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fetch="join" fkcolumn="siteID" inversejoincolumn="locationID" inverse="true";
+	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fkcolumn="siteID" inversejoincolumn="locationID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
