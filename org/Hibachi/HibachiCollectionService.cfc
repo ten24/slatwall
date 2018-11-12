@@ -1443,12 +1443,17 @@ component output="false" accessors="true" extends="HibachiService" {
 				applyDataForFilters(arguments.collection,arguments.data,arguments.excludesList,key);
 				//OrderByList
 				var orderBys = data[key];
-				if (left(key,7)=='orderBy'){
-					//this is a list.
-					arguments.collection.setOrderBy(data[key]);
+				
+				if (isSimpleValue(data[key]) && !isNull(data[key]) && data[key] contains "|"){
+					var propertyName = listFirst(data[key],'|'); 
 				}
-
-
+				
+				if (!isNull(propertyName) && left(key,7)=='orderBy' && !listFindNoCase(arguments.excludesList,propertyName)){
+					
+					this.setOrderBy(data[key]);
+					
+				}
+				
 				//Handle pagination.
 				if(findNoCase('p:current', key) && isNumeric(data[key]) ){
 					var currentPage = data[key];
