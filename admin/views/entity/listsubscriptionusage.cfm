@@ -104,6 +104,15 @@ Notes:
 			23,59,59
 		)/>
 		<cfset filterDate = CreateDateTime(INT(rc.reportYear),rc.reportMonth,1,0,0,0)/>
+		
+		<cfset totalEarningsCollectionList = $.slatwall.getService('subscriptionService').getSubscriptionOrderItemCollectionList()/>
+		<cfset totalEarningsCollectionList.setDisplayProperties('')/>
+		<cfset totalEarningsCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.earned','SUM','earnedTotal')/>
+		<cfset totalEarningsCollectionList.addDisplayAggregate('orderItem.calculatedItemTotal','SUM','valueTotal')/>
+		
+		<cfset totalEarningsCollectionList.addFilter('subscriptionUsage.expirationDate',filterDate,'>=')/>
+		<cfset totalEarningsCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+		
 		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
 		
@@ -120,24 +129,40 @@ Notes:
 		
 		<cfset rc.pageTitle = 'Active #rc.pageTitle# for #currentMonth# #rc.reportYear#'/>	
 		
+		<!---total earnings collectionlist--->
+		
 		<cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemType.systemCode',rc.subscriptionType,'IN')/>
+            <cfset totalEarningsCollectionList.addFilter('subscriptionOrderItemType.systemCode',rc.subscriptionType,'IN')/>
     	<cfelse>
     		<cfset rc.subscriptionType = ""/>
         </cfif> 
         <cfif structKeyExists(rc,'productType') && len(rc.productType)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productType.productTypeID',rc.productType,'IN')/>
+            <cfset totalEarningsCollectionList.addFilter('orderItem.sku.product.productType.productTypeID',rc.productType,'IN')/>
         <cfelse>
             <cfset rc.productType = ""/>
         </cfif> 
         <cfif structKeyExists(rc,'productID') && len(rc.productID)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID',rc.productID,'IN')/>
+            <cfset totalEarningsCollectionList.addFilter('orderItem.sku.product.productID',rc.productID,'IN')/>
         <cfelse>
             <cfset rc.productID = ""/>
         </cfif> 
+        <!---as an aggregate will always be one record--->
+        <cfif arraylen(totalEarningsCollectionList.getRecords())>
+            <cfset totalEarned = totalEarningsCollectionList.getRecords()[1]['earnedTotal']/>
+            <cfset totalValue = totalEarningsCollectionList.getRecords()[1]['valueTotal']/>
+        <cfelse>
+            <cfset totalEarned = 0/>
+            <cfset totalValue = 0/>
+        </cfif>
+        
+        
         <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,filterDate,filterDateMax)/>    
         <cfset yearMonthKey = "#rc.reportYear#-#months[reportMonth]#"/>
         <cfset deferredRevenueDataForPeriod = deferredRevenueData[yearMonthKey]/>
+        
         
 	</cfif>
 	
@@ -161,6 +186,22 @@ Notes:
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="col-xl-3 col-md-6">
+                            <div class="inner blue-bg">
+                                <span class="icon"><i class="fa fa-dollar"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Earned Revenue</h2>
+                                        <span class="value">Up to this Month</span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="amount">$<strong>#totalEarned#</strong></span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
     
                         <div class="col-xl-3 col-md-6">
                             <div class="inner blue-bg">
@@ -168,7 +209,7 @@ Notes:
                                 <div class="right_side">
                                     <div class="heading">
                                         <h2>Deferred Revenue</h2>
-                                        <span class="value">This Month</span>
+                                        <span class="value">Month</span>
                                     </div>
                                     <div class="detail">
                                         <span class="amount">$<strong>#deferredRevenueDataForPeriod['deferredTotal']#</strong></span>
@@ -177,6 +218,24 @@ Notes:
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="col-xl-3 col-md-6">
+                            <div class="inner blue-bg">
+                                <span class="icon"><i class="fa fa-dollar"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Total Value</h2>
+                                        <span class="value"></span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="amount">$<strong>#totalValue#</strong></span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
     
                         <!---<div class="col-xl-3 col-md-6">
                             <div class="inner red-bg">
