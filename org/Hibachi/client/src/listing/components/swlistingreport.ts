@@ -33,6 +33,7 @@ class SWListingReportController {
     
     //@ngInject
     constructor(
+        public $scope,
         public $timeout,
         public $rootScope,
         public $hibachi,
@@ -41,18 +42,33 @@ class SWListingReportController {
         public observerService,
         public collectionConfigService
     ) {
-        
+        //hacky way to prepopulate saved dropdowns. should be replaced with better promise logic in future
+        var time = 1000;
+        var initwatch = this.$scope.$watch('swListingReport.periodColumns',(newValue,oldValue)=>{
+            if(newValue){
+                time+=1000
+                for(var i in newValue){
+                    this.selectPeriodColumn(newValue[i]);
+                }   
+                this.$timeout(()=>{
+                    initwatch();
+                },time)
+            }
+           
+        });
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
         if(this.collectionId){
             var selectedReport = {
                 collectionID:this.collectionId,
                 collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
             };
+            
+            
+            
             this.selectReport(selectedReport);
         }
         this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         this.filterPropertiesList = {};
-        
         this.getPeriodColumns();
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
@@ -188,7 +204,7 @@ class SWListingReportController {
         this.selectedCollectionID = selectedReport.collectionID;
         this.collectionName=selectedReport.collectionName;
         
-        this.selectedPeriodInterval = {value:collectionData.periodInterval};
+        
         for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
             var filterGroup = collectionData.filterGroups[0].filterGroup[i];
             
@@ -205,29 +221,36 @@ class SWListingReportController {
                 
             }
         }
-        
+        this.selectedPeriodInterval = {value:collectionData.periodInterval};
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+        
+        
         //navigate propertyIdentifier to populate drop down
         var pidArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
         for(var i=1; i <= pidArray.length-1;i++){
             var propertyName = pidArray[i];
-            for(var j in this.periodColumns){
-                var periodColumn = this.periodColumns[j];
-                if(periodColumn.name===propertyName){
-                    if(periodColumn.cfc){
-                        this.selectPeriodColumn(periodColumn);
-                        break;
-                    }else{
-                        this.selectPeriodColumn(periodColumn);
-                        break;
+            if(this.periodColumns){
+                for(var j in this.periodColumns){
+                    var periodColumn = this.periodColumns[j];
+                    if(periodColumn.name===propertyName){
+                        if(periodColumn.cfc){
+                            this.selectPeriodColumn(periodColumn);
+                            break;
+                        }else{
+                            this.selectPeriodColumn(periodColumn);
+                            break;
+                        }
+                        
+                        
                     }
                     
-                    
                 }
-                
             }
             
+            
         }
+        
+        
         
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
@@ -421,7 +444,6 @@ class SWListingReportController {
                 }
             }
         });
-        
     }
     
     public selectPeriodInterval=(interval)=>{
@@ -431,6 +453,7 @@ class SWListingReportController {
     }
     
     public selectPeriodColumn=(column)=>{
+        
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
             this.getPeriodColumns(column.cfc);
