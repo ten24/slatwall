@@ -936,27 +936,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 
 		variables.collectionObject = HibachiBaseEntity;
-		if(variables.collectionConfig eq '{}' ){
-			var cacheKey = 'setCollectionObject' & arguments.collectionObject & '#getReportFlag()#';
-			var defaultCollectionConfig = getCollectionCacheValue(cacheKey);
-
-			if(isNull(defaultCollectionConfig)){
-				//get default columns
-				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-				var defaultProperties = "";
-				if(getReportFlag()){
-					defaultProperties  = newEntity.getDefaultCollectionReportProperties();
-				}else{
-					defaultProperties = newEntity.getDefaultCollectionProperties();
-				}
-				var columnsArray = [];
-				//check to see if we are supposed to add default columns
-				if(addDefaultColumns){
+		if(variables.collectionConfig == '{}' ){
+			var columnsArray = [];
+			
+			//check to see if we are supposed to add default columns
+			if(addDefaultColumns){
+					
+				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
+				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
+					
+				if(isNull(cachedColumnsArray)){
+					//get default columns
+					var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
+					var defaultProperties = "";
+					if(getReportFlag()){
+						defaultProperties  = newEntity.getDefaultCollectionReportProperties();
+					}else{
+						defaultProperties = newEntity.getDefaultCollectionProperties();
+					}
+					
 					//loop through all defaultProperties
 					for(var defaultProperty in defaultProperties){
 						var columnStruct = {};
 						columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
-
+	
 						columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
 						//if propertyKey is a primary id, hide it and make it so it can't be deleted
 						if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id' && !isReport()){
@@ -978,35 +981,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(structKeyExists(defaultProperty,"fieldtype")){
 							columnStruct['type'] = defaultProperty.fieldtype;
 						}
-	                    if(structKeyExists(defaultProperty,"hb_formatType")){
-	                        columnStruct['type'] = defaultProperty.hb_formatType;
-	                    }
-	                    if(structKeyExists(defaultProperty,"hb_displayType")){
-	                        columnStruct['type'] = defaultProperty.hb_displayType;
-	                    }
-	                    if(!structKeyExists(columnStruct,'type')){
-	                    	columnStruct['type'] = 'none';
-	                    }
+						if(structKeyExists(defaultProperty,"hb_formatType")){
+							columnStruct['type'] = defaultProperty.hb_formatType;
+						}
+						if(structKeyExists(defaultProperty,"hb_displayType")){
+							columnStruct['type'] = defaultProperty.hb_displayType;
+						}
+						if(!structKeyExists(columnStruct,'type')){
+							columnStruct['type'] = 'none';
+						}
 
 						arrayAppend(columnsArray,columnStruct);
 					}
+					setCollectionCacheValue(cacheKey,columnsArray);
+				}else{
+					columnsArray = cachedColumnsArray;
 				}
-
-				var columnsJson = serializeJson(columnsArray);
-
-        var properlyCasedShortEntityName = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
-				defaultCollectionConfig = '{
-          "baseEntityName":"#HibachiBaseEntity#",
-          "baseEntityAlias":"_#properlyCasedShortEntityName#",
-          "columns":#columnsJson#,
-          "filterGroups":[{"filterGroup":[]}]
-        }';
-
-				setCollectionCacheValue(cacheKey,defaultCollectionConfig);
+					
 			}
-			variables.collectionConfig = duplicate(defaultCollectionConfig);
 
+			var columnsJson = serializeJson(columnsArray);
+
+			var properlyCasedShortEntityName = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
+			var defaultCollectionConfig = '{
+				"baseEntityName":"#HibachiBaseEntity#",
+				"baseEntityAlias":"_#properlyCasedShortEntityName#",
+				"columns":#columnsJson#,
+				"filterGroups":[{"filterGroup":[]}]
+			}';
+			variables.collectionConfig = defaultCollectionConfig;
 		}
+		
 	}
 
 	//ADD FUNCTIONS
@@ -3750,9 +3755,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		collectionCollection.addFilter('parentCollection.collectionID', variables.collectionID);
 		if(collectionCollection.getRecordsCount() == 0){
 			return true;
-		}else{
-			return false;
 		}
+		
+		var collectionCollection =  getService('hibachiService').getCollectionCollectionList();
+		collectionCollection.addFilter('parentCollection.collectionID', variables.collectionID);
+		if(collectionCollection.getRecordsCount() == 0){
+			return true;
+		}
+		
+		
+		
+		
+		
+		return false;
 
 
 	}
