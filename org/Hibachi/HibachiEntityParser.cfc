@@ -279,6 +279,9 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(len(hbFormFieldType)){
 			propertyString &= ' hb_formFieldType="#hbFormFieldType#"';
 		}
+		if(len(arguments.attributeData.defaultValue)){
+			propertyString &= ' default="#arguments.attributeData.defaultValue#"';
+		}
 
 		propertyString &= ';';
 
