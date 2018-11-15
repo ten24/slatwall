@@ -13,6 +13,7 @@ import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
 import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.provider";
 
 import { SwRbKey } from "../../../org/Hibachi/client/src/core/components/swrbkey";
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 
 @NgModule({
@@ -36,15 +37,16 @@ import { SwRbKey } from "../../../org/Hibachi/client/src/core/components/swrbkey
     HttpClientModule,
     BrowserModule,
     UpgradeModule,
+    ModalModule.forRoot(),
     CoreModule,
     LoggerModule,
     SlatwallAdminModule
   ],
   declarations:[
-//      SwRbKey
+
   ],
   entryComponents: [
-
+      
   ]
 })
 export class AppModule extends BaseBootstrap { 
