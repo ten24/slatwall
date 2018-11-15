@@ -2134,9 +2134,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
-		    if(arguments.order.getPaymentAmountDue() > 0){
+		    	if(arguments.order.getPaymentAmountDue() != 0){
 				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-		    }
+		    	}
 
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
