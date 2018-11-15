@@ -154,16 +154,16 @@
 		<ul>
 			<li class="s-edit-btn"><a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderitem.data.orderItemID}}"><button type="button" class="btn btn-default"><i class="fa fa-eye"></i></button></a></li>
 			<li class="s-remove-btn">
-				<a> 		<!-- sw-confirm 
+			<a> <!--  sw-confirm 
     						class="s-remove-btn"
-							data-confirm-text="Confirm"
-							data-message-text="Are you sure you want to delete this orderitem?" 
-							data-callback="deleteEntity()"
-							data-use-rb-key="false"
-							data-simple=false
-							data-yes-text="Yes"
-							data-no-text="No"
-							data-entity="orderItem" --><button class="btn btn-default" type="button"><i class="fa fa-trash"></i></button></a></li>
+							[confirmtext]="'Confirm'"
+							[messagetext]="'Are you sure you want to delete this orderitem?'" 
+							[callback]="deleteEntity"
+							[userbkey]="'false'"
+							[simple]="false"
+							[yestext]="'Yes'"
+							[notext]="'No'"
+							[entity]="orderitem"  --><button class="btn btn-default" type="button" (click)="openModalWithComponent()"><i class="fa fa-trash"></i></button></a></li>
 		</ul>
 	</td>
 </tr>

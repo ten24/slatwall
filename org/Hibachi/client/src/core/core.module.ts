@@ -61,7 +61,7 @@ import { SWCollectionOrderBy } from "./components/swcollectionorderby";
 import { SWCollectionColumn } from "./components/swcollectioncolumn";
 import { SWActionCallerDropdown } from "./components/swactioncallerdropdown";
 import { SWColumnSorter } from "./components/swcolumnsorter";
-import { SWConfirm } from "./components/swconfirm";
+import { SWConfirm, SwConfirm } from "./components/swconfirm";
 import { SWDraggable } from "./components/swdraggable";
 import { SWDraggableContainer } from "./components/swdraggablecontainer";
 import { SWEntityActionBar } from "./components/swentityactionbar";
@@ -131,7 +131,7 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
 //}
 
 @NgModule({
-    declarations: [SWRbKeyDirective, SwRbKey],
+    declarations: [SWRbKeyDirective, SwRbKey, SwConfirm],
     providers: [
         AppProvider,
         AppConfig,
@@ -182,7 +182,11 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
 
     ],
     exports: [
-        SwRbKey
+        SwRbKey,
+        SwConfirm
+    ],
+    entryComponents: [
+        SwConfirm
     ]
 })
 

@@ -521,6 +521,8 @@ export{
 import { Component, Input, OnInit } from '@angular/core';
 import { $Hibachi } from '../../../../../org/Hibachi/client/src/core/services/hibachiservice';
 import { CollectionConfig } from '../../../../../org/Hibachi/client/src/collection/services/collectionconfigservice';
+import { SwConfirm } from "../../../../../org/Hibachi/client/src/core/components/swconfirm";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
     selector    : '[sw-order-item]',
@@ -781,8 +783,26 @@ export class SwOrderItem implements OnInit {
         }
     ];
 
-    constructor(private $hibachi: $Hibachi, private collectionConfigService: CollectionConfig) {
+    constructor(
+        private $hibachi: $Hibachi, 
+        private collectionConfigService: CollectionConfig, 
+        private modalService: BsModalService) {
     
+    }
+    
+    bsModalRef: BsModalRef;    
+    
+    openModalWithComponent() {
+        const initialState = {
+            useRbKey : 'false',
+            confirmText : 'Confirm',
+            messageText : 'Are you sure you want to delete this orderitem?',
+            callback: this.deleteEntity.bind(this),
+            yesText : 'Yes',
+            noText : 'No'
+        };
+        this.bsModalRef = this.modalService.show(SwConfirm, {initialState});
+        //this.bsModalRef.content.closeBtnName = 'Close';
     }
 
     ngOnInit() {
