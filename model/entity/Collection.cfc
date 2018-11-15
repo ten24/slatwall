@@ -2670,7 +2670,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
-			if(arguments.filter.ormtype eq 'timestamp'){
+			if(listfindnocase("between,not between,>,>=,<,<=,gt,gte,lt,lte",arguments.filter.comparisonOperator)){
 
 
 				if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
@@ -2712,6 +2712,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var fromValue = dateFormat(fromDate,"yyyy-mm-dd") & " " & timeFormat(fromDate, "HH:MM:SS");
 					var toDate = DateAdd("s", listLast(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
 					var toValue = dateFormat(toDate,"yyyy-mm-dd") & " " & timeFormat(toDate, "HH:MM:SS");
+				}else if(listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)){
+					//convert unix timestamp
+					if(isNumeric(arguments.filter.value)){
+						var fromValue = getService('HibachiUtilityService').getTimeByUtc(arguments.filter.value);
+					}else{
+						var fromValue = arguments.filter.value;
+					}
+					
+				}else if(listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)){
+					if(isNumeric(arguments.filter.value)){
+						var toValue = getService('HibachiUtilityService').getTimeByUtc(arguments.filter.value);
+					}else{
+						var toValue = arguments.filter.value;
+					}
 				}else{
 					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
 					var fromValue = DateAdd("d",-arguments.filter.value,Now());
@@ -2720,12 +2734,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var toValue = Now();
 				}
 
-				var fromParamID = getParamID();
-				addHQLParam(fromParamID, fromValue);
-				var toParamID = getParamID();
-				addHQLParam(toParamID, toValue);
-
-				predicate = ":#fromParamID# AND :#toParamID#";
+				if(!isNull(fromValue)){
+					var fromParamID = getParamID();
+					addHQLParam(fromParamID, fromValue);
+				}
+				if(!isNull(toValue)){
+					var toParamID = getParamID();
+					addHQLParam(toParamID, toValue);
+				}
+				if(!isNull(fromParamID) && !isNull(toParamID)){
+					predicate = ":#fromParamID# AND :#toParamID#";
+				}else if(!isNull(fromParamID)){
+					predicate = ":#fromParamID#";
+				}else if(!isNull(toParamID)){
+					predicate = ":#toParamID#";
+				}
 
 
 			}else if(listFind('integer,float,big_decimal,string',arguments.filter.ormtype)){
