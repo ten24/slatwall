@@ -20,6 +20,7 @@ class OrderFulfillmentService {
         //objects
         commentBeingEdited:undefined,
         emailTemplates:undefined,
+        imagePath:undefined,
         
         //strings
         currentSelectedFulfillmentBatchItemID: "",
@@ -37,11 +38,14 @@ class OrderFulfillmentService {
         //arrays
         accountNames:[],
         orderDeliveryAttributes:[],
+        unassignedContainerItems:{},
+        orderItem:{},
         loading: false,
         tableSelections: {
             table1: [],
             table2: []
-        }
+        },
+        boxes:[{}]
     };
     private updateLock:Boolean = false;
     private selectedValue:string = "";
@@ -132,6 +136,30 @@ class OrderFulfillmentService {
                 this.getEmailList();
                 return {...this.state, action}
             
+            case actions.UPDATE_BOX_DIMENSIONS:
+                this.updateBoxDimensions(action.payload.box);
+                return {...this.state, action}
+                
+            case actions.ADD_BOX:
+                this.addNewBox();
+                return {...this.state, action}
+            
+            case actions.REMOVE_BOX:
+                this.removeBox(action.payload.index);
+                return {...this.state, action}
+                
+            case actions.SET_DELIVERY_QUANTITIES:
+                this.setDeliveryQuantities();
+                return {...this.state, action}
+                
+            case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
+                this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
+                return {...this.state, action}
+            
+            case actions.SET_UNASSIGNED_ITEM_CONTAINER:
+                this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
+                return {...this.state,action}
+            
             case actions.TOGGLE_LOADER:
                 this.state.loading = !this.state.loading;
                 return {...this.state, action}
@@ -160,6 +188,7 @@ class OrderFulfillmentService {
 
     /** When a row is selected, remove the other selections.  */
     public swSelectionToggleSelectionfulfillmentBatchItemTable2 = (args) => {
+        
         if (args.action === "uncheck" || args.selectionid != "fulfillmentBatchItemTable2"){
             if(this.selectedValue = args.selection){
                 this.selectedValue = undefined;
@@ -180,6 +209,9 @@ class OrderFulfillmentService {
                 
                 this.selectionService.removeSelection("fulfillmentBatchItemTable2", current);
                 this.state.currentSelectedFulfillmentBatchItemID = this.selectedValue;
+                this.state.useShippingIntegrationForTrackingNumber = true;
+                this.state.orderItem = {};
+                this.state.boxes = [{}];
                 this.state.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
                     for (var result in results.pageRecords){
                         let currentRecord = results['pageRecords'][result];
@@ -205,6 +237,7 @@ class OrderFulfillmentService {
         this.createLgOrderFulfillmentBatchItemCollection();
         this.createSmOrderFulfillmentBatchItemCollection();
         this.getOrderFulfillmentEmailTemplates();
+        this.getContainerPresetList();
         //Select the initial table row
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
@@ -306,8 +339,8 @@ class OrderFulfillmentService {
         data['orderFulfillment'] = {};
         data['orderFulfillment']['orderFulfillmentID'] = this.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID'];
         data['trackingNumber'] = state.trackingCode || "";
-        
-        if (data['trackingNumer'] == undefined || !data['trackingNumber'].length){
+        data['containers'] = state.boxes || [];
+        if (data['trackingNumber'] == undefined || !data['trackingNumber'].length){
             data['useShippingIntegrationForTrackingNumber'] = state.useShippingIntegrationForTrackingNumber || "false";
         }
 
@@ -361,14 +394,8 @@ class OrderFulfillmentService {
         processObject.data['containerLabel'] = data.containerLabel || "";
         processObject.data['shippingIntegration'] = data.shippingIntegration || "";
         processObject.data['shippingAddress'] = data.shippingAddress || "";
+        processObject.data['containers'] = data.containers;
         processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
-        
-        if(state.orderDeliveryAttributes){
-            for(let i = 0; i < state.orderDeliveryAttributes.length; i++){
-                let attribute = state.orderDeliveryAttributes[i];
-                processObject.data[attribute.code] = state[attribute.code];
-            }
-        }
         
         this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then((result)=>{
             if (result.orderDeliveryID != undefined && result.orderDeliveryID != ''){
@@ -391,12 +418,12 @@ class OrderFulfillmentService {
                         .addSelection(this.listingService.getListing("fulfillmentBatchItemTable1").tableID, 
                             this.listingService.getListingPageRecords("fulfillmentBatchItemTable1")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
            
-                
-                this.listingService
-                    .getListing("fulfillmentBatchItemTable2").selectionService
-                        .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
-                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
-            
+                let args = {
+                    selection:this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")],
+                    selectionid:"fulfillmentBatchItemTable2",
+                    action:"check"
+                };
+                this.swSelectionToggleSelectionfulfillmentBatchItemTable2(args);
             }
             //refresh.
             //Scroll to the quantity div.
@@ -625,6 +652,49 @@ class OrderFulfillmentService {
                 this.state.emailCollection = result.pageRecords || [];
             });
      }
+     
+     /**
+     * Setup the initial email template -> orderFulfillment Collection.
+     */
+     private getContainerPresetList = () => {
+        this.state.containerPresetCollection = this.collectionConfigService.newCollectionConfig("ContainerPreset");
+        this.state.containerPresetCollection.addDisplayProperty("containerPresetID");
+        this.state.containerPresetCollection.addDisplayProperty("containerName");
+        this.state.containerPresetCollection.addDisplayProperty("height");
+        this.state.containerPresetCollection.addDisplayProperty("width");
+        this.state.containerPresetCollection.addDisplayProperty("depth");
+        this.state.containerPresetCollection.getEntity().then( 
+            (result) => {
+                this.state.containerPresetCollection = result.pageRecords || [];
+            });
+     }
+     
+     /**
+     * Update the dimensions of a box on the shipment
+     */
+     private updateBoxDimensions = (box) => {
+        if(!box.containerPreset){
+            return;
+        }
+        box.containerName = box.containerPreset.containerName;
+        box.height = box.containerPreset.height;
+        box.width = box.containerPreset.width;
+        box.depth = box.containerPreset.depth;
+     }
+     
+     /**
+     * Add a box to the shipment
+     */
+     private addNewBox = () => {
+        this.state.boxes.push({containerItems:[]});
+     }
+     
+     /**
+     * Remove a box from the shipment
+     */
+     private removeBox = (index) => {
+        this.state.boxes.splice(index,1);
+     }
 
     /**
      * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
@@ -633,24 +703,170 @@ class OrderFulfillmentService {
         let collection = this.collectionConfigService.newCollectionConfig("OrderItem");
         collection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         collection.addDisplayProperty("sku.skuCode");
+        collection.addDisplayProperty("sku.skuID");
         collection.addDisplayProperty("sku.product.productName");
         collection.addDisplayProperty("sku.skuName");
-        collection.addDisplayProperty("sku.imagePath", "Path", {persistent: false});
-        collection.addDisplayProperty("sku.imageFileName", "File Name", {persistent: false});
-        collection.addDisplayProperty("sku.calculatedQOH");
+        // collection.addDisplayProperty("sku.imagePath", "Path", {persistent: false});
+        // collection.addDisplayProperty("sku.imageFileName", "File Name", {persistent: false});
+        collection.addDisplayAggregate("sku.stocks.calculatedQOH","SUM","QOH");
         collection.addDisplayProperty("quantity");
-        collection.addDisplayProperty("quantityDelivered");
+        collection.addDisplayAggregate("orderDeliveryItems.quantity","SUM","quantityDelivered");
         collection.addDisplayProperty("orderItemID");
         collection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
+        collection.addFilter("sku.stocks.location.locationID", this.$rootScope.slatwall.defaultLocation, "=");
+        collection.setPageShow(100);
         collection.getEntity().then((orderItems)=>{
             if (orderItems && orderItems.pageRecords && orderItems.pageRecords.length){
                 this.state.orderFulfillmentItemsCollection = orderItems['pageRecords'];
-            }else{
+            }
+            else if (orderItems && orderItems.records && orderItems.records.length){
+                this.state.orderFulfillmentItemsCollection = orderItems['records'];
+            }
+            else{
                 this.state.orderFulfillmentItemsCollection = [];
             }
+            let skuIDs = [];
+            for(let i = 0; i < this.state.orderFulfillmentItemsCollection.length; i++){
+                skuIDs[i] = this.state.orderFulfillmentItemsCollection[i]['sku_skuID'];
+            }
+            this.$rootScope.slatwall.getResizedImageByProfileName('small',skuIDs.join(',')).then(result=>{
+                if(!angular.isDefined(this.$rootScope.slatwall.imagePath)){
+                    this.$rootScope.slatwall.imagePath = {};
+                }
+                this.state.imagePath = this.$rootScope.slatwall.imagePath;
+            });
+            
             this.emitUpdateToClient();
         });
      }
+     
+     /**
+      * Submits delivery item quantity information
+      */
+    private setDeliveryQuantities = () =>{
+        let orderDeliveryItems = [];
+        for(let key in this.state.orderItem){
+            orderDeliveryItems.push(
+                {
+                    orderItem:{
+                        orderItemID:key
+                    },
+                    quantity:this.state.orderItem[key]
+                });
+        }
+        
+        let urlString = this.$hibachi.getUrlWithActionPrefix()+'api:main.post';
+        let params = {
+            entityName:'OrderDelivery',
+            context:'getContainerDetails',
+            orderDeliveryItems:orderDeliveryItems,
+            apiFormat:true
+        };
+		let request = this.$hibachi.requestService.newAdminRequest(urlString,params);
+		request.promise.then(result=>{
+		    if(!result.containerStruct){
+		        this.state.boxes = [{containerItems:[]}];
+		        return;
+		    }
+
+		    this.state.unassignedContainerItems = {};
+		    let boxes = [];
+		    for(let key in result.containerStruct ){
+		        if(Array.isArray(result.containerStruct[key])){
+		            let containerArray = result.containerStruct[key];
+		            for(let i = 0; i < containerArray.length; i++){
+		                let container = containerArray[i];
+		                //Do this for UI tracking
+		                container.containerPreset = {
+		                    //Don't judge me
+		                    containerPresetID: container.containerPresetID
+		                }
+		                boxes.push(container);
+		            }
+		        }
+		    }
+		    this.state.boxes = boxes;
+            this.emitUpdateToClient();
+		})
+    }
+    
+    /**
+     * Updates the quantity of a container item.
+     */ 
+    private updateContainerItemQuantity = (containerItem, newQuantity) =>{
+        newQuantity = +newQuantity;
+        if(newQuantity == undefined || isNaN(newQuantity)){
+            return;
+        }
+        if(newQuantity < 0){
+            newQuantity = 0;
+        }
+        
+        if(newQuantity > containerItem.packagedQuantity){
+            let quantityDifference = newQuantity - containerItem.packagedQuantity;
+            if(!this.state.unassignedContainerItems[containerItem.sku.skuCode]){
+                containerItem.newQuantity = containerItem.packagedQuantity;
+                return;
+            }else if(this.state.unassignedContainerItems[containerItem.sku.skuCode].quantity <= quantityDifference){
+                newQuantity = containerItem.packagedQuantity + this.state.unassignedContainerItems[containerItem.sku.skuCode].quantity;
+                quantityDifference = newQuantity - containerItem.packagedQuantity;
+                containerItem.newQuantity = newQuantity;
+                containerItem.packagedQuantity = newQuantity;
+                this.state.unassignedContainerItems[containerItem.sku.skuCode].quantity -= quantityDifference;
+            }
+        }else if(newQuantity < containerItem.packagedQuantity){
+            if(!this.state.unassignedContainerItems[containerItem.sku.skuCode]){
+                this.state.unassignedContainerItems[containerItem.sku.skuCode] = {
+                    sku:containerItem.sku,
+                    item:containerItem.item,
+                    quantity:0
+                };
+            }
+            this.state.unassignedContainerItems[containerItem.sku.skuCode].quantity += containerItem.packagedQuantity - newQuantity;
+            containerItem.packagedQuantity = newQuantity;
+            containerItem.newQuantity = newQuantity;
+        }
+        if(this.state.unassignedContainerItems[containerItem.sku.skuCode].quantity == 0){
+            delete this.state.unassignedContainerItems[containerItem.sku.skuCode];
+        }
+        this.cleanUpContainerItems();
+        this.emitUpdateToClient();
+    }
+    
+    public setUnassignedItemContainer = (skuCode,container) =>{
+        let containerItem = container.containerItems.find(item=>{
+            return item.sku.skuCode == skuCode;
+        });
+        if(!containerItem){
+            containerItem = {
+                item:this.state.unassignedContainerItems[skuCode].item,
+                sku:this.state.unassignedContainerItems[skuCode].sku,
+                packagedQuantity:0
+            };
+            container.containerItems.push(containerItem);
+        }
+        containerItem.packagedQuantity += this.state.unassignedContainerItems[skuCode].quantity;
+        delete this.state.unassignedContainerItems[skuCode];
+        this.cleanUpContainerItems();
+        this.emitUpdateToClient();
+    }
+    
+    /**
+     * Removes any container items from their container if the packaged quantity is zero
+     */
+    private cleanUpContainerItems = ()=>{
+        for(let i = 0; i < this.state.boxes.length; i++){
+            let box = this.state.boxes[i];
+            for(let j = box.containerItems.length-1; j >= 0; j--){
+                let containerItem = box.containerItems[j];
+                if(containerItem.packagedQuantity == 0){
+                    box.containerItems.splice(j,1);
+                }else{
+                    containerItem.newQuantity = containerItem.packagedQuantity;
+                }
+            }
+        }
+    }
 
      /**
      * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
