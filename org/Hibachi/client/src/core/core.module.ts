@@ -73,7 +73,7 @@ import { SWLogin } from "./components/swlogin";
 import { SWModalLauncher } from "./components/swmodallauncher";
 import { SWModalWindow } from "./components/swmodalwindow";
 import { SWNumbersOnly } from "./components/swnumbersonly";
-import { SWLoading } from "./components/swloading";
+import { SWLoading, SwLoading } from "./components/swloading";
 import { SWScrollTrigger } from "./components/swscrolltrigger";
 import { SWTabGroup } from "./components/swtabgroup";
 import { SWTabContent } from "./components/swtabcontent";
@@ -131,7 +131,7 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
 //}
 
 @NgModule({
-    declarations: [SWRbKeyDirective, SwRbKey, SwConfirm],
+    declarations: [SWRbKeyDirective, SwRbKey, SwConfirm, SwLoading],
     providers: [
         AppProvider,
         AppConfig,
@@ -183,10 +183,12 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
     ],
     exports: [
         SwRbKey,
-        SwConfirm
+        SwConfirm,
+        SwLoading
     ],
     entryComponents: [
-        SwConfirm
+        SwConfirm,
+        SwLoading
     ]
 })
 

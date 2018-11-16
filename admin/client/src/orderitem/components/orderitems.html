@@ -48,7 +48,7 @@
 	
 	<sw-pagination-bar [paginator]="paginator"></sw-pagination-bar>
 
-	<div sw-loading="orderitems">
+	<div sw-loading [swloading]="orderitems">
 		{{paginator.getRecordsCount()}}
 		<div class="table-responsive">
 			<table class="table table-bordered s-order-item-table">
