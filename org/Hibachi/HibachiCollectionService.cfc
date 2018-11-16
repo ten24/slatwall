@@ -483,7 +483,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
 
 	*/
-	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
+	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="", string delimiter=",") {
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
 			if(len(cgi.query_string)) {
@@ -526,21 +526,21 @@ component output="false" accessors="true" extends="HibachiService" {
 					} else if(arguments.appendValues) {
 						var delimiter = variables.valuedelimiter;
 						if(findNoCase('like',right(key,4))){
-							delimiter = '|';
+							arguments.delimiter = '|';
 						}
 					
-						for(var i=1; i<=listLen(newQueryKeys[key], delimiter); i++) {
-							var thisVal = listGetAt(newQueryKeys[key], i, delimiter);
+						for(var i=1; i<=listLen(newQueryKeys[key], arguments.delimiter); i++) {
+							var thisVal = listGetAt(newQueryKeys[key], i, arguments.delimiter);
 							//when comparing, let's make sure we decode the old value
-							var findCount = listFindNoCase(urlDecode(oldQueryKeys[key]), thisVal, delimiter);							if(findCount) {
-								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, delimiter);
+							var findCount = listFindNoCase(urlDecode(oldQueryKeys[key]), thisVal, arguments.delimiter);							if(findCount) {
+								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, arguments.delimiter);
 								if(arguments.toggleKeys) {
-									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, delimiter);
+									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, arguments.delimiter);
 								}
 							}
 						}
 						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
-								modifiedURL &= "#key#=#oldQueryKeys[key]##delimiter##newQueryKeys[key]#&";
+								modifiedURL &= "#key#=#oldQueryKeys[key]##arguments.delimiter##newQueryKeys[key]#&";
 						} else if(len(oldQueryKeys[key])) {
 							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 						}
