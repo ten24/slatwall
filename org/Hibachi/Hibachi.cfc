@@ -112,7 +112,7 @@ component extends="framework.one" {
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
-	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
+	try{include "../../custom/system/configFramework.cfm";}catch(any e){}
 	// Allow For DevOps Config
 	try{include "../../../configFramework.cfm";}catch(any e){} 
 	try{include "../../../../configFramework.cfm";}catch(any e){} 
