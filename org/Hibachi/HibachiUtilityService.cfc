@@ -1472,6 +1472,11 @@
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
+    
+    <cffunction name="getTimeByUtc" returntype="any">
+    	<cfargument name="utctimestamp" type="numeric"/>
+    	<cfreturn dateAdd("s", arguments.utctimestamp, createDateTime(1970, 1, 1, 0, 0, 0))/>
+    </cffunction>
 
     <cffunction name="convertBase64GIFToBase64PDF" output="false">
     	<cfargument name="base64GIF" />
