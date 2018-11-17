@@ -2783,7 +2783,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
 			if(len(filter.value)){
-				predicate = "(" & ListQualify(filter.value,variables.inlistDelimiter) & ")";
+				predicate = "(" & ListQualify(filter.value,"'",variables.inlistDelimiter) & ")";
 			}else{
 				predicate = "('')";
 			}
