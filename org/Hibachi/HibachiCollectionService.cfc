@@ -703,7 +703,10 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public any function getAPIResponseForEntityName(required string entityName, required struct data, boolean enforceAuthorization=true, string whiteList){
-		param name="arguments.data.defaultColumns" default="true";
+		
+		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && !structKeyExists(arguments.data,'defaultColumns')){
+			arguments.data['defaultColumns'] = true;
+		}
 		
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
