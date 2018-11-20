@@ -346,8 +346,16 @@ component output="false" accessors="true" extends="HibachiService" {
 			var columnsArray = [];
 		}
 
+		var collectionObject = lcase(arguments.collectionEntity.getCollectionObject());
+		var collectionObjectLength = len(collectionObject);
+
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
 		for(propertyIdentifierItem in propertyIdentifiersArray){
+
+			if(left(propertyIdentifierItem,collectionObjectLength+1) != '_#collectionObject#'){
+				propertyIdentifierItem = '_#collectionObject#.#propertyIdentifierItem#';
+
+			}
 			if(
 				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, propertyIdentifierItem)
 			){
@@ -695,7 +703,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public any function getAPIResponseForEntityName(required string entityName, required struct data, boolean enforceAuthorization=true, string whiteList){
-
+		param name="arguments.data.defaultColumns" default="true";
+		
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
