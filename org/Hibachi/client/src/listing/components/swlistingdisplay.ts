@@ -164,8 +164,7 @@ class SWListingDisplayController{
              (this.baseEntityName) 
              && (
                  this.usingPersonalCollection 
-                 && this.localStorageService.hasItem('selectedPersonalCollection') 
-                 && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]
+                 && this.listingService.hasPersonalCollectionSelected(this.baseEntityName)
              )
              && (
                 angular.isUndefined(this.personalCollectionIdentifier) 
@@ -175,9 +174,8 @@ class SWListingDisplayController{
                 )
             )
         ){
-            var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
-            personalCollection.setDisplayProperties('collectionConfig');
-            personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
+            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
+           
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
@@ -263,6 +261,10 @@ class SWListingDisplayController{
             if(this.columns && this.columns.length){
                 this.collectionConfig.columns = this.columns;
             }
+            //setup selectable
+            this.listingService.setupSelect(this.tableID);
+            this.listingService.setupMultiselect(this.tableID);
+            this.listingService.setupExampleEntity(this.tableID);
             this.setupCollectionPromise();
 
         }

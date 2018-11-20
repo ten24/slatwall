@@ -20,7 +20,9 @@ class ListingService{
                 private rbkeyService,
                 private selectionService,
                 private utilityService,
-                private $hibachi){
+                private $hibachi,
+                private localStorageService
+    ){
         //Setup a store so that controllers can listing for state changes and fire action requests.
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
@@ -1067,6 +1069,21 @@ class ListingService{
         }
     };
     //End Expandable Functions
+    
+    //Begin Personal Collections Functions
+    
+    public hasPersonalCollectionSelected=(baseEntityName:string):boolean=>{
+        return this.localStorageService.hasItem('selectedPersonalCollection') 
+            && this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
+    }
+     public getPersonalCollectionByBaseEntityName=(baseEntityName:string):any=>{
+        var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
+        personalCollection.setDisplayProperties('collectionConfig');
+        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
+        return personalCollection;
+    }
+        
+    //End Personal Collections Functions
 
 }
 export{ListingService};
