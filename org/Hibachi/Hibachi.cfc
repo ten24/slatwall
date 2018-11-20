@@ -856,14 +856,20 @@ component extends="framework.one" {
 	}
 
 	public void function populateCORSHeader(origin){
+		var matched = false;
 		for(var domain in this.CORSWhiteList){
 			if(domain == '*'){
 				request.context.headers['Access-Control-Allow-Origin'] = domain;
-				return;
+				matched = true;
+				break;
 			}else if(REfind(domain, arguments.origin)){
 				request.context.headers['Access-Control-Allow-Origin'] = arguments.origin;
-				return;
+				matched = true;
+				break;
 			}
+		}
+		if(matched){
+			request.context.headers['Access-Control-Allow-Credentials'] = true;
 		}
 	}
 
