@@ -56,22 +56,38 @@ class SWCurrency{
 export {SWCurrency};
 
 
-import { Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, OnDestroy, Pipe, PipeTransform, WrappedValue } from '@angular/core';
 import { $Hibachi } from '../../../../../org/Hibachi/client/src/core/services/hibachiservice';
 import { CurrencyService } from '../../../../../org/Hibachi/client/src/core/services/currencyservice';
 
-@Pipe({name: 'swcurrency'})
+@Pipe({name: 'swcurrency', pure: false})
 export class SwCurrency implements PipeTransform {
         
-    constructor( private $hibachi: $Hibachi, private currencyService: CurrencyService) {
+    private value: any;
+    
+    constructor( 
+        private $hibachi: $Hibachi, 
+        private currencyService: CurrencyService,
+        private changeDetectorRef: ChangeDetectorRef) {
         
     }
     
 
     transform(value, currencyCode, decimalPlace, returnStringFlag=true): any {
         let data = null;
-        data = this.currencyService.getCurrencySymbol(currencyCode);
-        return this.realFilter(value, decimalPlace,data, returnStringFlag);
+        if( this.currencyService.hasCurrencySymbols() ) {
+            data = this.currencyService.getCurrencySymbol(currencyCode);
+            return this.realFilter(value, decimalPlace,data, returnStringFlag);
+        } else  {
+          this.currencyService.getCurrencies().then((currencies) => {
+            let currencySymbols = currencies.data;
+            this.currencyService.setCurrencySymbols(currencySymbols);  
+            data = this.currencyService.getCurrencySymbol(currencyCode);
+            this.value = this.realFilter(value, decimalPlace,data, returnStringFlag);  
+            this.changeDetectorRef.markForCheck(); 
+          });    
+          return WrappedValue.wrap(this.value);
+        }
     }
 
     realFilter(value,decimalPlace,data,returnStringFlag=true) {

@@ -274,7 +274,7 @@ export class SwOrderItems implements OnInit {
     }
     
     ngOnInit() {
-        this.currencyService.getCurrencySymbols();
+        //this.currencyService.getCurrencySymbols();
         var attributesCollection = this.collectionConfigService.newCollectionConfig('Attribute');
         attributesCollection.setDisplayProperties('attributeID,attributeCode,attributeName')
             .addFilter('displayOnOrderDetailFlag',true)

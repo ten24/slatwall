@@ -7,7 +7,7 @@ import {AppConfig} from "../../../../../../admin/client/src/app.provider";
 
 @Injectable() 
 export class CurrencyService {
-    private currencySymbols:any=[];
+    private currencySymbols:any;
     
     constructor(
         //private $hibachi : $Hibachi,
@@ -33,6 +33,19 @@ export class CurrencyService {
         this.getCurrencies().then((currencies) => {
             this.currencySymbols = currencies.data;
         });    
+    };
+    
+    setCurrencySymbols = (currencySymbols) => {
+        this.currencySymbols = currencySymbols;
+    };
+    
+    hasCurrencySymbols = () => {
+        if(this.currencySymbols) {
+            return true;   
+        }
+        else {
+            return false;
+        }
     };
     
     getCurrencySymbol = (currencyCode: string) => {
