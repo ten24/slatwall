@@ -42,20 +42,6 @@ class SWListingReportController {
         public observerService,
         public collectionConfigService
     ) {
-        //hacky way to prepopulate saved dropdowns. should be replaced with better promise logic in future
-        var time = 1000;
-        var initwatch = this.$scope.$watch('swListingReport.periodColumns',(newValue,oldValue)=>{
-            if(newValue){
-                time+=1000
-                for(var i in newValue){
-                    this.selectPeriodColumn(newValue[i]);
-                }   
-                this.$timeout(()=>{
-                    initwatch();
-                },time)
-            }
-           
-        });
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
         if(this.collectionId){
             var selectedReport = {
@@ -63,13 +49,14 @@ class SWListingReportController {
                 collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
             };
             
-            
-            
-            this.selectReport(selectedReport);
+            this.getPeriodColumns().then(()=>{
+                
+                this.selectReport(selectedReport);
+            });
+        }else{
+            this.getPeriodColumns();
+            this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         }
-        this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
-        this.filterPropertiesList = {};
-        this.getPeriodColumns();
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
     }
@@ -226,31 +213,24 @@ class SWListingReportController {
         
         
         //navigate propertyIdentifier to populate drop down
-        var pidArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
-        for(var i=1; i <= pidArray.length-1;i++){
-            var propertyName = pidArray[i];
-            if(this.periodColumns){
-                for(var j in this.periodColumns){
-                    var periodColumn = this.periodColumns[j];
-                    if(periodColumn.name===propertyName){
-                        if(periodColumn.cfc){
-                            this.selectPeriodColumn(periodColumn);
-                            break;
-                        }else{
-                            this.selectPeriodColumn(periodColumn);
-                            break;
-                        }
-                        
-                        
+        this.selectedPeriodPropertyIdentifierArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
+        var lastObject = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionConfig.baseEntityName,this.selectedPeriodColumn.propertyIdentifier);
+        this.getPeriodColumns(lastObject).then(()=>{
+            var propertyName =  this.selectedPeriodPropertyIdentifierArray[ this.selectedPeriodPropertyIdentifierArray.length-1];
+            for(var j in this.periodColumns){
+                var periodColumn = this.periodColumns[j];
+                if(periodColumn.name===propertyName){
+                    if(periodColumn.cfc){
+                        this.selectPeriodColumn(periodColumn,false);
+                        break;
+                    }else{
+                        this.selectPeriodColumn(periodColumn,false);
+                        break;
                     }
-                    
                 }
+                    
             }
-            
-            
-        }
-        
-        
+        });
         
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
@@ -413,26 +393,33 @@ class SWListingReportController {
         if(this.objectPath.length > 1){
             this.objectPath.pop();
             this.selectedPeriodPropertyIdentifierArray.pop();
-            this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false);
+            this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false).then(()=>{
+                
+            });
         }
     }
+    
+    
     
     public getPeriodColumns=(baseEntityAlias=this.collectionConfig.baseEntityAlias,adding=true)=>{
         if(adding){
             
             this.objectPath.push(baseEntityAlias);
         }
-        
-        
         //get meta data we need for existing columns
 
-        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias);
-        promise.then((value)=> {
+        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=>{
             
+        
+        
             this.metadataService.setPropertiesList(value, baseEntityAlias);
+            console.log(this);
+            if(!this.filterPropertiesList){
+                this.filterPropertiesList={};
+            }
+            
             this.filterPropertiesList[baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
             this.metadataService.formatPropertiesList(this.filterPropertiesList[baseEntityAlias], baseEntityAlias);
-            
             //figure out all the possible periods
             var columns = {};
             columns[baseEntityAlias] = angular.copy(this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias));
@@ -443,7 +430,9 @@ class SWListingReportController {
                     this.periodColumns.push(column);
                 }
             }
+            
         });
+        return promise;
     }
     
     public selectPeriodInterval=(interval)=>{
@@ -452,7 +441,7 @@ class SWListingReportController {
         
     }
     
-    public selectPeriodColumn=(column)=>{
+    public selectPeriodColumn=(column,update=true)=>{
         
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
@@ -471,7 +460,9 @@ class SWListingReportController {
             column.isPeriod = true;
             
             this.selectedPeriodColumn = column;
-            this.updatePeriod();
+            if(update){
+                this.updatePeriod();
+            }
         }
     }
 
