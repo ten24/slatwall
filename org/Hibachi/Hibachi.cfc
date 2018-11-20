@@ -377,6 +377,14 @@ component extends="framework.one" {
 		setupGlobalRequest();
 		
 		var httpRequestData = getHTTPRequestData();
+		
+		//Echo origin for OPTIONS preflight
+		if( variables.framework.preflightOptions &&
+        	request._fw1.cgiRequestMethod == "OPTIONS" &&
+			structKeyExists(httpRequestData.headers,'Origin')
+			){
+			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
+		}
 
 		//Set an account before checking auth in case the user is trying to login via the REST API
 		/* Handle JSON requests */
