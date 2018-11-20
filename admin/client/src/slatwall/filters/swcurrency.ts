@@ -63,7 +63,11 @@ import { CurrencyService } from '../../../../../org/Hibachi/client/src/core/serv
 @Pipe({name: 'swcurrency', pure: false})
 export class SwCurrency implements PipeTransform {
         
-    private value: any;
+    private value: any = '-';
+    private data = null;
+    private currentValue: any;
+    private currentCurrencyCode: string;
+    private currentDecimalPlace: any;
     
     constructor( 
         private $hibachi: $Hibachi, 
@@ -74,18 +78,30 @@ export class SwCurrency implements PipeTransform {
     
 
     transform(value, currencyCode, decimalPlace, returnStringFlag=true): any {
-        let data = null;
+        if(
+            this.currentValue === value && 
+            this.currentCurrencyCode === currencyCode &&
+            this.currentDecimalPlace === decimalPlace ) {
+            return this.value;    
+        } else {
+            this.currentValue = value;
+            this.currentCurrencyCode = currencyCode;
+            this.currentDecimalPlace = decimalPlace;    
+        }
         if( this.currencyService.hasCurrencySymbols() ) {
-            data = this.currencyService.getCurrencySymbol(currencyCode);
-            return this.realFilter(value, decimalPlace,data, returnStringFlag);
+            this.data = this.currencyService.getCurrencySymbol(currencyCode);
+            return this.realFilter(value, decimalPlace,this.data, returnStringFlag);
         } else  {
           this.currencyService.getCurrencies().then((currencies) => {
             let currencySymbols = currencies.data;
             this.currencyService.setCurrencySymbols(currencySymbols);  
-            data = this.currencyService.getCurrencySymbol(currencyCode);
-            this.value = this.realFilter(value, decimalPlace,data, returnStringFlag);  
+            this.data = this.currencyService.getCurrencySymbol(currencyCode);
+            this.value = this.realFilter(value, decimalPlace,this.data, returnStringFlag);  
             this.changeDetectorRef.markForCheck(); 
-          });    
+          });   
+          if(this.data !== null) {
+            this.changeDetectorRef.detach();    
+          } 
           return WrappedValue.wrap(this.value);
         }
     }
