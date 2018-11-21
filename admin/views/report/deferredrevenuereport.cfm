@@ -62,6 +62,9 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
+            	 <cfif currentMonth eq 1>
+            	    <cfset currentYear--/>
+            	</cfif>
                 <cfset totalExpiringSubscriptions=0/>
                 <td>Expiring Subscriptions</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
