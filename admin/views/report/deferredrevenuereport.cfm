@@ -7,8 +7,8 @@
     <cfset slatAction = 'report.deferredRevenueReport'/>
     <!--gets deferred revenue-->
     <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate)/>    
-    <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     
+    <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     <cfset currentMonth = Month(rc.minDate)/>
 	<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
 	<cfset to = currentMonth + diff/>
@@ -45,7 +45,7 @@
                 
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1 and i neq 0>
+                    <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     
@@ -60,8 +60,12 @@
                     <cfif structKeyExists(rc,'productID') && len(rc.productID)>
                         <cfset activeSubscriptionQueryString &= "&productID=#rc.productID#"/>
                     </cfif> 
-                    <td><a href="#activeSubscriptionQueryString#">#deferredRevenueData[key].activeSubscriptions#</a></td>
-                    <cfset totalActiveSubscriptions+=deferredRevenueData[key].activeSubscriptions/>
+                    <cfset activeSubscriptionsForMonth = 0>
+                    <cfif structKeyExists(deferredRevenueData,key)>
+                        <cfset activeSubscriptionsForMonth=deferredRevenueData[key].activeSubscriptions/>
+                    </cfif>
+                    <td><a href="#activeSubscriptionQueryString#">#activeSubscriptionsForMonth#</a></td>
+                    <cfset totalActiveSubscriptions+=activeSubscriptionsForMonth/>
                 </cfloop>
                 <td></td>
             </tr>
@@ -74,13 +78,17 @@
                 
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1 and i neq 0>
+                    <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#deferredRevenueData[key].expiringSubscriptions#</td>
-                    <cfset totalExpiringSubscriptions+=deferredRevenueData[key].expiringSubscriptions/>
+                    <cfset expiringSubscriptionsForMonth = 0/>
+                    <cfif structKeyExists(deferredRevenueData,key)>
+                        <cfset expiringSubscriptionsForMonth = deferredRevenueData[key].expiringSubscriptions/>
+                    </cfif>
+                    <td>#expiringSubscriptionsForMonth#</td>
+                    <cfset totalExpiringSubscriptions+=expiringSubscriptionsForMonth/>
                 </cfloop>
                 <td></td>
             </tr>
@@ -91,7 +99,7 @@
                 <td>Deferred Revenue to be Collected</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1 and i neq 0>
+                    <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
@@ -108,7 +116,7 @@
                 
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1 and i neq 0>
+                    <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     
@@ -126,7 +134,7 @@
                 
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1 and i neq 0>
+                    <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     

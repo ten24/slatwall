@@ -79,7 +79,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var dateDiffInMonths = DateDiff('m',arguments.minDate,arguments.maxDate);
 		//look over months in the future
 		for(var i=from-1;i <= to;i++){
-			if(i % 12 == 1){
+			if(i % 12 == 1 && i != 1){
 				startYear++;
 			}
 			

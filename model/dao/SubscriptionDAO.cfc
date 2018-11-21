@@ -195,13 +195,14 @@ Notes:
 			<cfset var to = from + diff/>
 			<cfset var startYear = Year(arguments.minDate)/>
 			<cfloop from="#from#" to="#to#" index="local.i">
-				<cfif i % 12 eq 1>
+				<cfif i % 12 eq 1 and i neq 1>
 					<cfset startYear++/>
 				</cfif>
 				
-				<cfset var monthTimeStamp = CreateDateTime(startYear,i%12+1,1,0,0,0)/>
+				<cfset var beginningOfMonthTimeStamp = CreateDateTime(startYear,i%12+1,1,0,0,0)/>
+				<cfset var endOfMonthTimeStamp = CreateDateTime(startYear,i%12+1,DaysInMonth(beginningOfMonthTimeStamp),0,0,0)/>
 				(
-					select count(distinct su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M') as thisMonth
+					select count(distinct su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(<cfqueryparam value="#beginningOfMonthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M') as thisMonth
 					FROM SwSubsUsage su 
 					inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
 					inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID
@@ -221,8 +222,9 @@ Notes:
 						AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 					</cfif>
 					
-					AND su.expirationDate >= <cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>
-					group by DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M')
+					AND su.expirationDate >= <cfqueryparam value="#endOfMonthTimeStamp#" cfsqltype="cf_sql_timestamp"/>
+					and ss.effectiveDateTime <= <cfqueryparam value="#endOfMonthTimeStamp#" cfsqltype="cf_sql_timestamp"/>
+					group by DATE_FORMAT(<cfqueryparam value="#beginningOfMonthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M')
 				)
 				<cfif i neq to>
 					UNION ALL
