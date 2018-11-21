@@ -14,7 +14,9 @@
 	<cfset to = currentMonth + diff/>
 	<cfset currentYear = Year(rc.minDate)/>
 	<cfif currentMonth eq 1>
-	    <cfset currentYear--/>
+	    <cfset rollover = false/>
+	<cfelse>
+	    <cfset rollover = true/>
 	</cfif>
 	
     <cfinclude template="./revenuereportcontrols.cfm"/>
@@ -25,9 +27,10 @@
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 0 and i neq 1>
+                    <cfif  i%12 eq 0 and i neq 1 and rollover>
                         <cfset currentYear++/>
                     </cfif>
+                    <cfset rollover = true/>
                     <th>
                         #possibleMonth# - #currentYear#
                     </th>
