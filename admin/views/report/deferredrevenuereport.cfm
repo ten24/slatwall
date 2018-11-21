@@ -13,6 +13,9 @@
 	<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
 	<cfset to = currentMonth + diff/>
 	<cfset currentYear = Year(rc.minDate)/>
+	<cfif currentMonth eq 1>
+	    <cfset currentYear--/>
+	</cfif>
 	
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
@@ -62,9 +65,7 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-            	 <cfif currentMonth eq 1>
-            	    <cfset currentYear--/>
-            	</cfif>
+            	 
                 <cfset totalExpiringSubscriptions=0/>
                 <td>Expiring Subscriptions</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
