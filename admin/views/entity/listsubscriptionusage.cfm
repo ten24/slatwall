@@ -113,7 +113,8 @@ Notes:
 		<cfset totalEarningsCollectionList.addFilter('subscriptionUsage.expirationDate',filterDate,'>=')/>
 		<cfset totalEarningsCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
 		
-		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
+		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDateMax,'>=')/>
+		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.effectiveDateTime',filterDateMax,'<=')/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
 		
 		<!---
