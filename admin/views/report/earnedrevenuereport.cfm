@@ -70,16 +70,11 @@
     
 	<cfset currentYear = Year(rc.minDate)/>
 	
-	<cfif currentMonth eq 1>
-	    <cfset rollover = false/>
-	<cfelse>
-	    <cfset rollover = true/>
-	</cfif>
 	<cfset monthbegin = createDateTime(Year(rc.minDate),Month(rc.minDate),DaysInMonth(rc.minDate),0,0,0)/>
     <cfset monthend = createDateTime(Year(rc.maxDate),Month(rc.maxDate),DaysInMonth(rc.maxDate),23,59,59)/>
 	<cfset diff = DateDiff('m',monthbegin,monthend)/>
 	<cfset to = currentMonth + diff/>
-    
+	
     <cfset subscriptionsEarning = []/>
     <cfset earned = []/>
     <cfset taxAmount = []/>
@@ -112,10 +107,9 @@
             <tr>
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="w">
-                    <cfif w % 12 eq 0 and w neq 1 and rollover>
+                    <cfif w % 12 eq 0 and w neq 0 >
                         <cfset currentYear++/>
                     </cfif>
-                    <cfset rollover = true/>
                     <th>
                         #possibleMonths[w%12+1]# - #currentYear#
                     </th>

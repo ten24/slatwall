@@ -13,11 +13,7 @@
 	<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
 	<cfset to = currentMonth + diff/>
 	<cfset currentYear = Year(rc.minDate)/>
-	<cfif currentMonth eq 1>
-	    <cfset rollover = false/>
-	<cfelse>
-	    <cfset rollover = true/>
-	</cfif>
+	
 	
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
@@ -25,12 +21,14 @@
         <thead>
             <tr>
                 <th></th>
+                
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+                    
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif  i%12 eq 0 and i neq 1 and rollover>
+                    <cfif  i%12 eq 0 and i neq 0 >
                         <cfset currentYear++/>
                     </cfif>
-                    <cfset rollover = true/>
+                    
                     <th>
                         #possibleMonth# - #currentYear#
                     </th>
@@ -44,11 +42,13 @@
             	<cfset currentYear = Year(rc.minDate)/>
             	<cfset totalActiveSubscriptions=0/>
                 <td>Active Subscriptions</td>
+                
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1>
+                    <cfif i%12 eq 1 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
+                    
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <cfset activeSubscriptionQueryString = "?slatAction=entity.listsubscriptionusage&reportYear=#currentYear#&reportMonth=#i+1#"/>
                     <cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
@@ -71,11 +71,13 @@
             	 
                 <cfset totalExpiringSubscriptions=0/>
                 <td>Expiring Subscriptions</td>
+                
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1>
+                    <cfif i%12 eq 1 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
+                    
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <td>#deferredRevenueData[key].expiringSubscriptions#</td>
                     <cfset totalExpiringSubscriptions+=deferredRevenueData[key].expiringSubscriptions/>
@@ -86,10 +88,10 @@
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
                 <cfset totalDeferredRevenue = 0/>
-                <td>Deferred Revenue</td>
+                <td>Deferred Revenue to be Collected</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1>
+                    <cfif i%12 eq 1 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
@@ -102,12 +104,14 @@
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
                 <cfset totalDeferredTax=0/>
-                <td>Deferred Tax</td>
+                <td>Deferred Tax to be Collected</td>
+                
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1>
+                    <cfif i%12 eq 1 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
+                    
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <cfset totalDeferredTax+=deferredRevenueData[key].deferredTax/>
                     <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTax,'currency')#</td>
@@ -118,12 +122,14 @@
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
                 <cfset totalDeferredTotal = 0/>
-                <td>Deferred Total</td>
+                <td>Deferred Total to be Collected</td>
+                
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1>
+                    <cfif i%12 eq 1 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
+                    
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <cfset totalDeferredTotal +=deferredRevenueData[key].deferredTotal/>
                     <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotal,'currency')#</td>
