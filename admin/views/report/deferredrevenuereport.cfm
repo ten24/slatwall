@@ -57,7 +57,7 @@
                     <td><a href="#activeSubscriptionQueryString#">#deferredRevenueData[key].activeSubscriptions#</a></td>
                     <cfset totalActiveSubscriptions+=deferredRevenueData[key].activeSubscriptions/>
                 </cfloop>
-                <td>#totalActiveSubscriptions#</td>
+                <td></td>
             </tr>
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
@@ -73,7 +73,7 @@
                     <td>#deferredRevenueData[key].expiringSubscriptions#</td>
                     <cfset totalExpiringSubscriptions+=deferredRevenueData[key].expiringSubscriptions/>
                 </cfloop>
-                <td>#totalExpiringSubscriptions#</td>
+                <td></td>
             </tr>
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>

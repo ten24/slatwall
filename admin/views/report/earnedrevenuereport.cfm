@@ -67,7 +67,12 @@
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
     <cfset currentMonth = Month(rc.minDate)/>
+    
 	<cfset currentYear = Year(rc.minDate)/>
+	
+	<cfif currentMonth eq 1>
+	    <cfset currentYear--/>
+	</cfif>
 	<cfset monthbegin = createDateTime(Year(rc.minDate),Month(rc.minDate),DaysInMonth(rc.minDate),0,0,0)/>
     <cfset monthend = createDateTime(Year(rc.maxDate),Month(rc.maxDate),DaysInMonth(rc.maxDate),23,59,59)/>
 	<cfset diff = DateDiff('m',monthbegin,monthend)/>

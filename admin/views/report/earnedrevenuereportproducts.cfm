@@ -66,6 +66,9 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
 	            <cfset currentYear = Year(rc.minDate)/>
+	            <cfif currentMonth eq 1>
+            	    <cfset currentYear--/>
+            	</cfif>
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="w">
                     <cfif w % 12 eq 0 and w neq 1>
