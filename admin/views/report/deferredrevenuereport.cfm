@@ -6,11 +6,11 @@
 <cfoutput> 
     <cfset slatAction = 'report.deferredRevenueReport'/>
     <!--gets deferred revenue-->
-    <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate)/>    
     
+    <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate)/>    
     <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     <cfset currentMonth = Month(rc.minDate)/>
-	<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
+	<cfset diff = DateDiff('m',createDateTime(Year(rc.minDate),Month(rc.minDate),1,0,0,0),createDateTime(Year(rc.maxDate),Month(rc.maxDate),DaysInMonth(rc.maxDate),0,0,0))/>
 	<cfset to = currentMonth + diff/>
 	<cfset currentYear = Year(rc.minDate)/>
 	
@@ -96,7 +96,7 @@
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
                 <cfset totalDeferredRevenue = 0/>
-                <td>Deferred Revenue to be Collected</td>
+                <td>Deferred Revenue</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
@@ -112,7 +112,7 @@
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
                 <cfset totalDeferredTax=0/>
-                <td>Deferred Tax to be Collected</td>
+                <td>Deferred Tax</td>
                 
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
@@ -130,7 +130,7 @@
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
                 <cfset totalDeferredTotal = 0/>
-                <td>Deferred Total to be Collected</td>
+                <td>Deferred Total</td>
                 
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>

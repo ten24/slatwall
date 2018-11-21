@@ -191,7 +191,7 @@ Notes:
 		<cfquery name="local.deferredActiveSubscriptionQuery">
 			
 			<cfset var from = Month(arguments.minDate)-1/>
-			<cfset var diff = DateDiff('m',arguments.minDate,arguments.maxDate)/>
+			<cfset var diff = DateDiff('m',createDateTime(Year(arguments.minDate),Month(arguments.minDate),1,0,0,0),createDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),0,0,0))/>
 			<cfset var to = from + diff/>
 			<cfset var startYear = Year(arguments.minDate)/>
 			<cfloop from="#from#" to="#to#" index="local.i">
@@ -264,8 +264,8 @@ Notes:
 			</cfif>
 			
 			<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
-				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(Year(arguments.minDate),Month(arguments.minDate),Day(arguments.minDate),0,0,0)#" cfsqltype="cf_sql_timestamp"/>
-				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),Day(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
+				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(Year(arguments.minDate),Month(arguments.minDate),1,0,0,0)#" cfsqltype="cf_sql_timestamp"/>
+				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
 			</cfif>
 			
 			group by DATE_FORMAT(su.expirationDate,'%Y-%M')

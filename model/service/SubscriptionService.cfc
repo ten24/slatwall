@@ -72,14 +72,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var possibleMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 		var from = Month(arguments.minDate);
-		var diff = DateDiff('m',arguments.minDate,arguments.maxDate);
+		var diff = DateDiff('m',createDateTime(Year(arguments.minDate),Month(arguments.minDate),1,0,0,0),createDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),0,0,0));
 		var to = from + diff;
 		var startYear = Year(arguments.minDate);
 		var monthData = {};
-		var dateDiffInMonths = DateDiff('m',arguments.minDate,arguments.maxDate);
+		var dateDiffInMonths = DateDiff('m',createDateTime(Year(arguments.minDate),Month(arguments.minDate),1,0,0,0),createDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),0,0,0));
 		//look over months in the future
-		for(var i=from-1;i <= to;i++){
-			if(i % 12 == 1 && i != 1){
+		for(var i=from-1;i <= to-1;i++){
+			if(i % 12 == 0 && i != 0){
 				startYear++;
 			}
 			
