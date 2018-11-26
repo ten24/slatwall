@@ -17,9 +17,6 @@ component extends="framework.one" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 	
-	// Allow For Instance Config
-	try{include "../../custom/system/configApplication.cfm";}catch(any e){}
-	
 	// Allow For DevOps Config
 	try{include "../../../configApplication.cfm";}catch(any e){} 
 	try{include "../../../../configApplication.cfm";}catch(any e){} 
@@ -118,9 +115,6 @@ component extends="framework.one" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
 	
-	// Allow For Instance Config
-	try{include "../../custom/system/configFramework.cfm";}catch(any e){}
-	
 	// Allow For DevOps Config
 	try{include "../../../configFramework.cfm";}catch(any e){} 
 	try{include "../../../../configFramework.cfm";}catch(any e){} 
@@ -153,8 +147,6 @@ component extends="framework.one" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configMappings.cfm";}catch(any e){}
 	
-	// Allow For Instance Config
-	try{include "../../custom/system/configMappings.cfm";}catch(any e){}
 	
 	// Allow For DevOps Config
 	try{include "../../../configMapping.cfm";}catch(any e){} 
@@ -165,7 +157,7 @@ component extends="framework.one" {
 		!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/systemGeneratedMigration.txt.cfm") 
 	
 	){
-		migrateCustomConfigToSystem();
+		migrateGeneratedFilesToSystem();
 	}
 
 
@@ -202,8 +194,6 @@ component extends="framework.one" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configORM.cfm";}catch(any e){}
 	
-	// Allow For Instance Config
-	try{include "../../custom/system/configORM.cfm";}catch(any e){}
 	
 	// Allow For DevOps Config
 	try{include "../../../configORM.cfm";}catch(any e){} 
@@ -268,18 +258,14 @@ component extends="framework.one" {
 
     }
     
-    public void function migrateCustomConfigToSystem(){
+    public void function migrateGeneratedFilesToSystem(){
     	var systemDirectoryPath = "#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system";;
 		
 		var customConfigPath = "#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config";
-		var customConfigDirectory = directoryList(customConfigPath,false,'path','*.cfm','asc');
-		for(var customConfigFilePath in customConfigDirectory){
-			fileCopy(customConfigFilePath,systemDirectoryPath);
+		var customConfigDirectory = directoryList(customConfigPath,false,'path','*.txt.cfm','asc');
+		for(var generatedFilePath in customConfigDirectory){
+			fileCopy(generatedFilePath,systemDirectoryPath);
 		}
-		// Allow For Instance Config
-		try{include "../../custom/system/configApplication.cfm";}catch(any e){}
-		try{include "../../custom/system/configFramework.cfm";}catch(any e){}
-		try{include "../../custom/system/configMapping.cfm";}catch(any e){}
 		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#" & '/custom/system/systemGeneratedMigration.txt.cfm', now());
     }
     
