@@ -16,6 +16,10 @@ component extends="framework.one" {
 	try{include "../../config/configApplication.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
+	
+	// Allow For Instance Config
+	try{include "../../custom/system/configApplication.cfm";}catch(any e){}
+	
 	// Allow For DevOps Config
 	try{include "../../../configApplication.cfm";}catch(any e){} 
 	try{include "../../../../configApplication.cfm";}catch(any e){} 
@@ -113,6 +117,10 @@ component extends="framework.one" {
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
+	
+	// Allow For Instance Config
+	try{include "../../custom/system/configFramework.cfm";}catch(any e){}
+	
 	// Allow For DevOps Config
 	try{include "../../../configFramework.cfm";}catch(any e){} 
 	try{include "../../../../configFramework.cfm";}catch(any e){} 
@@ -144,9 +152,21 @@ component extends="framework.one" {
 	try{include "../../config/configMappings.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configMappings.cfm";}catch(any e){}
+	
+	// Allow For Instance Config
+	try{include "../../custom/system/configMappings.cfm";}catch(any e){}
+	
 	// Allow For DevOps Config
 	try{include "../../../configMapping.cfm";}catch(any e){} 
 	try{include "../../../../configMapping.cfm";}catch(any e){} 
+	
+		// ==================== START: SYSTEM GENERATED MIGRATION ======================
+	if(
+		!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/systemGeneratedMigration.txt.cfm") 
+	
+	){
+		migrateCustomConfigToSystem();
+	}
 
 
 	// =============== configCustomTags
@@ -181,29 +201,39 @@ component extends="framework.one" {
 	try{include "../../config/configORM.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configORM.cfm";}catch(any e){}
+	
+	// Allow For Instance Config
+	try{include "../../custom/system/configORM.cfm";}catch(any e){}
+	
 	// Allow For DevOps Config
 	try{include "../../../configORM.cfm";}catch(any e){} 
-	try{include "../../../../configORM.cfm";}catch(any e){} 
+	try{include "../../../../configORM.cfm";}catch(any e){}
+	
+
+
+	// ==================== END: SYSTEM GENERATED MIGRATION ======================
 
 	// ==================== START: PRE UPDATE SCRIPTS ======================
 	if(
 		!variables.framework.hibachi.skipDbData
 		&&(
-			!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/lastFullUpdate.txt.cfm") 
-			|| !fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm") 
+			!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/lastFullUpdate.txt.cfm") 
+			|| !fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm") 
 			|| (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)
 		)
 	){
+	
+		
 
 		this.ormSettings.secondaryCacheEnabled = false;
 
 		variables.preupdate = {};
 
-		if(!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm")) {
-			fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", "");
+		if(!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm")) {
+			fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm", "");
 		}
 
-		variables.preupdate.preUpdatesRun = fileRead("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm");
+		variables.preupdate.preUpdatesRun = fileRead("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm");
 
 
 
@@ -218,7 +248,7 @@ component extends="framework.one" {
 			}
 		}
 
-		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
+		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
 	}
 	// ==================== END: PRE UPDATE SCRIPTS ======================
 	// =======  END: ENVIRONMENT CONFIGURATION  =======
@@ -236,6 +266,21 @@ component extends="framework.one" {
 
     public void function setupSubsystem( module ) {
 
+    }
+    
+    public void function migrateCustomConfigToSystem(){
+    	var systemDirectoryPath = "#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system";;
+		
+		var customConfigPath = "#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config";
+		var customConfigDirectory = directoryList(customConfigPath,false,'path','*.cfm','asc');
+		for(var customConfigFilePath in customConfigDirectory){
+			fileCopy(customConfigFilePath,systemDirectoryPath);
+		}
+		// Allow For Instance Config
+		try{include "../../custom/system/configApplication.cfm";}catch(any e){}
+		try{include "../../custom/system/configFramework.cfm";}catch(any e){}
+		try{include "../../custom/system/configMapping.cfm";}catch(any e){}
+		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#" & '/custom/system/systemGeneratedMigration.txt.cfm', now());
     }
     
     public void function createHibachiScope(){
@@ -753,7 +798,7 @@ component extends="framework.one" {
 						)
 					);
 					if(
-						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm')
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/system') & '/lastFullUpdate.txt.cfm')
 						|| (
 							structKeyExists(url, variables.framework.hibachi.fullUpdateKey)
 							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
@@ -780,7 +825,7 @@ component extends="framework.one" {
 						onUpdateRequest();
 
 						// Write File
-						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/config/lastFullUpdate.txt.cfm', now());
+						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/system/lastFullUpdate.txt.cfm', now());
 						updated = true;
 						// Announce the applicationFullUpdate event
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
