@@ -1,4 +1,4 @@
-<div class="s-filter-content-table-view">
+<div *swinit="orderitems as order_items" class="s-filter-content-table-view">
 	<!-- <div class="s-table-header-nav">
 		<div class="s-header-nav">
 			<div class="col-xs-6" style="padding-left:0px;">
@@ -48,7 +48,7 @@
 	
 	<sw-pagination-bar [paginator]="paginator"></sw-pagination-bar>
 
-	<div sw-loading [swloading]="orderitems">
+	<div sw-loading [swloading]="order_items">
 		{{paginator.getRecordsCount()}}
 		<div class="table-responsive">
 			<table class="table table-bordered s-order-item-table">
@@ -70,7 +70,7 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody *ngFor="let orderitem of orderitems" sw-order-item [orderitem]="orderitem" [attributes]="attributes" [orderid]="orderid" [hidden]="!paginator.getRecordsCount()">
+				<tbody *ngFor="let orderitem of order_items" sw-order-item [orderitem]="orderitem" [attributes]="attributes" [orderid]="orderid" [hidden]="!paginator.getRecordsCount()">
 					<!-- Begin Merchandise Row -->
 				</tbody>
 

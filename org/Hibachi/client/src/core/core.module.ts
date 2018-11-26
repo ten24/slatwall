@@ -85,6 +85,7 @@ import { SWClickOutside } from "./components/swclickoutside";
 import { SWDirective } from "./components/swdirective";
 import { SWExportAction } from "./components/swexportaction";
 import { SWHref } from "./components/swhref";
+import { SwInit } from "./components/swinit";
 import { SWProcessCaller } from "./components/swprocesscaller";
 import { SWSortable } from "./components/swsortable";
 import { SWOrderByControls } from "./components/sworderbycontrols";
@@ -131,7 +132,13 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
 //}
 
 @NgModule({
-    declarations: [SWRbKeyDirective, SwRbKey, SwConfirm, SwLoading],
+    declarations: [
+        SWRbKeyDirective, 
+        SwRbKey, 
+        SwConfirm, 
+        SwLoading,
+        SwInit    
+    ],
     providers: [
         AppProvider,
         AppConfig,
@@ -179,12 +186,12 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
         CommonModule,
         UpgradeModule,
         HttpModule
-
     ],
     exports: [
         SwRbKey,
         SwConfirm,
-        SwLoading
+        SwLoading,
+        SwInit
     ],
     entryComponents: [
         SwConfirm,
