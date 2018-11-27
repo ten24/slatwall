@@ -440,7 +440,16 @@ component extends="framework.one" {
 			}
 		}
 
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);
+		var authenticationArguments = {
+			action=request.context[ getAction() ] ,
+			account=getHibachiScope().getAccount(),
+			restInfo=restInfo
+		};
+		if(structKeyExists(request,'context') && structKeyExists(request.context,'processContext')){
+			authenticationArguments.processContext = lCase(request.context.processContext);
+		}
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(argumentCollection = authenticationArguments);
+		
 		// Get the hibachiConfig out of the application scope in case any changes were made to it
 		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
