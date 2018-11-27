@@ -462,7 +462,7 @@ class CollectionConfig {
         }
         var column = {
             propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier, true),
-            title : this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier)),
+            title : this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier, '.')),
             aggregate:{
                 aggregateFunction:aggregateFunction,
                 aggregateAlias:aggregateAlias
