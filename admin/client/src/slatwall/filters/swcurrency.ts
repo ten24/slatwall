@@ -92,7 +92,7 @@ export class SwCurrency implements PipeTransform {
             this.data = this.currencyService.getCurrencySymbol(currencyCode);
             return this.realFilter(value, decimalPlace,this.data, returnStringFlag);
         } else  {
-          this.currencyService.getCurrencies().then((currencies) => {
+          this.currencyService.getCurrencySymbolsPromise().then((currencies) => {
             let currencySymbols = currencies.data;
             this.currencyService.setCurrencySymbols(currencySymbols);  
             this.data = this.currencyService.getCurrencySymbol(currencyCode);
