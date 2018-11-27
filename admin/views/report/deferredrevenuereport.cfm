@@ -6,6 +6,8 @@
 <cfoutput> 
     <cfset slatAction = 'report.deferredRevenueReport'/>
     <!--gets deferred revenue-->
+    <cfset deferredtest = $.slatwall.getDao('subscriptionDAO').getDeferredRevenueLeftToBeCollectedData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate)/>
+    <cfdump var="#deferredtest#"><cfabort>
     
     <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate)/>    
     <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
