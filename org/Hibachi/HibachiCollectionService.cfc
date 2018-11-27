@@ -532,7 +532,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
 						structDelete(newQueryKeys, key);
 					} else if(arguments.appendValues) {
-						var delimiter = variables.valuedelimiter;
+						arguments.delimiter = variables.valuedelimiter;
 						if(findNoCase('like',right(key,4))){
 							arguments.delimiter = '|';
 						}
