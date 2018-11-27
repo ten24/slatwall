@@ -111,6 +111,22 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
+                <cfset totalDeferredRevenue = 0/>
+                <td>Deferred Revenue Left to be Collected</td>
+                <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+                    <cfset possibleMonth = possibleMonths[i%12+1]/>
+                    <cfif i%12 eq 0 and i neq 0>
+                        <cfset currentYear++/>
+                    </cfif>
+                    <cfset key = '#currentYear#-#possibleMonth#'/>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenue,'currency')#</td>
+                    <cfset totalDeferredRevenue+=deferredRevenueData[key].deferredRevenue/>
+                </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredRevenue,'currency')#</td>
+            </tr>
+            <tr>
+                <cfset currentMonth = Month(rc.minDate)/>
+            	<cfset currentYear = Year(rc.minDate)/>
                 <cfset totalDeferredTax=0/>
                 <td>Deferred Tax</td>
                 

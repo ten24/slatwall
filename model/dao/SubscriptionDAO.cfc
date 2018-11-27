@@ -195,7 +195,7 @@ Notes:
 			<cfset var to = from + diff/>
 			<cfset var startYear = Year(arguments.minDate)/>
 			<cfloop from="#from#" to="#to#" index="local.i">
-				<cfif i % 12 eq 1 and i neq 1>
+				<cfif i % 12 eq 0 and i neq 0>
 					<cfset startYear++/>
 				</cfif>
 				
