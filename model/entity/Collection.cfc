@@ -2036,8 +2036,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
-			arrayLen(getRequestAccount().getPermissionGroups()) == 0 ||
-			listFind(excludedEntities, getCollectionObject())
+			!getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getCollectionObject()) ||
+			getRequestAccount().getPermissionGroupsCount() == 0 
 		){
 			return;
 		}
