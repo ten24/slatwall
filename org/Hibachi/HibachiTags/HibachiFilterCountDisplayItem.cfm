@@ -86,9 +86,11 @@
 		<!--- do we have a collection list or should we make one? --->
 		<cfif !isNull(attributes.collectionList) && isObject(attributes.collectionList)>
 			<cfset attributes.entityName = attributes.collectionList.getCollectionObject()/>
+			<cfset attributes.collectionlist.setInlistDelimiter('||')/>
 			<cfset copyOfCollectionList = attributes.collectionList.duplicateCollection()/>
 		<cfelse>
 			<cfset attributes.collectionList = attributes.hibachiScope.getService('HibachiService').getCollectionList(attributes.entityName)/>
+			<cfset attributes.collectionlist.setInlistDelimiter('||')/>
 			<cfset copyOfCollectionList = attributes.collectionList/>
 		</cfif>
 		
@@ -138,8 +140,7 @@
 				
 			<cfelse>
 				
-				<cfset selectedOptions = attributes.hibachiScope.getService('hibachiService').getSelectedOptionsByApplyData(attributes.entityName,attributes.propertyIdentifier)/>
-				
+				<cfset selectedOptions = attributes.hibachiScope.getService('hibachiService').getSelectedOptionsByApplyData(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier)/>
 				
 				<cfif structKeyExists(propertyMetaData,'fieldtype')>
 					<cfset optionCollectionList = attributes.hibachiScope.getService('HibachiService').getOptionsCollectionListByEntityNameAndPropertyIdentifier(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.inversePropertyIdentifier)/>
@@ -176,6 +177,7 @@
 				<cfif attributes.hibachiScope.getService('HibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(attributes.entityName,attributes.propertyIdentifier)>
 					
 					<cfset attributeCollectionList = attributes.hibachiScope.getService('HibachiService').getAttributeCollectionList()/>
+					<cfset attributeCollectionlist.setInlistDelimiter('||')/>
 					<cfset attributeCollectionList.addFilter('attributeCode',listLast(attributes.propertyIdentifier,'.'))/>
 					<cfset attributeCollectionList.setDisplayProperties('attributeInputType')/>
 					<cfset attributeCollectionList.setPageRecordsShow(1)/>
@@ -191,6 +193,7 @@
 							
 							<cfloop array="#attributes.optionData#" index="option">
 								<cfset optionLabelCollectionList = attributes.hibachiScope.getService('HibachiService').getAttributeOptionCollectionList()/>
+								<cfset optionLabelCollectionList.setInlistDelimiter('||')/>
 								<cfset optionLabelCollectionList.addFilter('attribute.attributeCode',listLast(attributes.propertyIdentifier,'.'))/>
 								<cfset optionLabelCollectionList.addFilter('attributeOptionValue',option['name'])/>
 								
@@ -224,6 +227,7 @@
 										<cfset newOptionStruct[listItem]['count'] += option['count']/>
 									<cfelse>
 										<cfset optionLabelCollectionList = attributes.hibachiScope.getService('HibachiService').getAttributeOptionCollectionList()/>
+										<cfset optionLabelCollectionList.setInlistDelimiter('||')/>
 										<cfset optionLabelCollectionList.addFilter('attribute.attributeCode',listLast(attributes.propertyIdentifier,'.'))/>
 										<cfset optionLabelCollectionList.addFilter('attributeOptionValue',listItem)/>
 										<cfset optionLabelCollectionList.setPageRecordsShow(1)/>

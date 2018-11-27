@@ -4,6 +4,28 @@ component output="false" accessors="true" extends="HibachiService" {
 	property name="hibachiSessionService" type="any";
 	property name="totpAuthenticator" type="any";
 	
+	public void function init(){
+		//on init load all possible record level perms
+		loadPermissionRecordRestrictionsCache();
+	}
+	
+	public void function loadPermissionRecordRestrictionsCache(boolean refresh=false){
+		if(!structKeyExists(variables,'permissionRecordRestrictionMap') || arguments.refresh){
+			//Cleanup permissionRecordRestrictionMap
+			variables.permissionRecordRestrictionMap = {};
+			//load possible entities by permissionREcordRestrictions
+			var query = getDAO("HibachiDAO").getRecordLevelPermissionEntitieNames();
+			//for every entity
+			for(var entry in query){
+				variables.permissionRecordRestrictionMap[entry['entityClassName']] = true;
+			}
+		}
+	}
+	
+	public boolean function hasPermissionRecordRestriction(required string entityName){
+		return structKeyExists(variables.permissionRecordRestrictionMap,entityName);
+	}
+	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
 	
 	public boolean function authenticateActionByAccount(required string action, required any account) {

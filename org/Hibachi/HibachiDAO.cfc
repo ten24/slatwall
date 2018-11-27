@@ -312,6 +312,15 @@
 
 		<cfreturn rs.topSortOrder />
 	</cffunction>
+	
+	<cffunction name="getRecordLevelPermissionEntitieNames">
+		<cfquery name="rs">
+			SELECT p.entityClassName FROM swpermissionrecordrestriction prr
+			INNER JOIN swpermission p ON prr.permissionID = p.permissionID
+			GROUP BY p.entityClassName
+		</cfquery>
+		<cfreturn rs />
+	</cffunction>
 
 	<cffunction name="updateRecordSortOrder">
 		<cfargument name="recordIDColumn" />

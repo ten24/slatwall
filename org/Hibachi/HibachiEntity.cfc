@@ -17,7 +17,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public void function postLoad(){
 		if( !setting("globalDisableRecordLevelPermissions")
 			&& !this.getNewFlag() 
-			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
+			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
 			try{

@@ -1292,6 +1292,7 @@
 				var recordCacheKey = cacheKey&record['value'];
 				if(!structKeyExists(variables,recordCacheKey)){
 					var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+					optionsCollectionList.setInlistDelimiter(arguments.collectionList.getInlistDelimiter());
 					optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
 					optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
 					
@@ -1335,7 +1336,8 @@
 		public any function getOptionsCollectionListByEntityNameAndPropertyIdentifier(required any collectionList, required string entityName, required string propertyIdentifier, required string inversePropertyIdentifier){
 			
 			var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
-		
+			entityCollectionList.setInlistDelimiter(arguments.collectionList.getInlistDelimiter());
+			
 			var displayProperties = '';
 			var propertyMetaData = {};
 			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
@@ -1485,9 +1487,10 @@
 			return attributeCacheKey;
 		}
 		
-		public array function getSelectedOptionsByApplyData(required string entityName, required string propertyIdentifier){
+		public array function getSelectedOptionsByApplyData(required any collectionList, required string entityName, required string propertyIdentifier){
 			var entityCollectionList = getService('HibachiService').getCollectionList(arguments.entityName);
 			entityCollectionList.setDistinct(true);
+			entityCollectionList.setInlistDelimiter(arguments.collectionList.getInlistDelimiter());
 			var displayProperties = '';
 			var propertyMetaData = {};
 			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);

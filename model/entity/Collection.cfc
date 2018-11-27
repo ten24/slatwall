@@ -145,6 +145,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		param name="session.entityCollection" type="struct" default="#structNew()#";
 		param name="session.entityCollection.savedStates" type="array" default="#arrayNew(1)#";
 
+		variables.inlistDelimiter = ",";
 		variables.totalAvgAggregates = [];
 		variables.totalSumAggregates = [];
 		variables.hqlParams = {};
@@ -178,7 +179,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiUtilityService(getService('HibachiUtilityService'));
 
 	}
-
+	
+	public void function setInlistDelimiter(delimiter=","){
+		variables.inlistDelimiter = arguments.delimiter;
+	}
+	
+	public string function getInlistDelimiter(){
+		return variables.inlistDelimiter;
+	}
+	
 	public string function getBaseEntityAlias(){
 
 		if(structKeyExists(variables,'baseEntityAlias')){
@@ -270,6 +279,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public any function duplicateCollection(){
 		var duplicateCollection = getService('hibachiService').getCollectionList(getCollectionObject());
+		duplicateCollection.setInlistDelimiter(getInlistDelimiter());
 		duplicateCollection.setCollectionConfig(getCollectionConfig());
 		duplicateCollection.setCollectionConfigStruct(duplicate(getCollectionConfigStruct()));
 		duplicateCollection.clearVariablesKey('groupbys');
@@ -2036,8 +2046,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
-			arrayLen(getRequestAccount().getPermissionGroups()) == 0 ||
-			listFind(excludedEntities, getCollectionObject())
+			!getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getCollectionObject()) ||
+			getRequestAccount().getPermissionGroupsCount() == 0 
 		){
 			return;
 		}
@@ -2806,7 +2816,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
 			if(len(filter.value)){
-				predicate = "(" & ListQualify(filter.value,"'") & ")";
+				predicate = "(" & ListQualify(filter.value,"'",variables.inlistDelimiter) & ")";
 			}else{
 				predicate = "('')";
 			}
@@ -3732,7 +3742,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(len(arguments.comparisonOperator)){
 			key &= ":#arguments.comparisonOperator#";
 		}
-		var delimiter = ',';
+		var delimiter = this.getInlistDelimiter();
 		if(arguments.comparisonOperator=='like'){
 			delimiter = '|';
 		}
