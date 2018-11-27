@@ -102,7 +102,7 @@ Notes:
 
 				return keyLocation & '/';
 			}
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/system/');
 		}
 
 		public string function getLegacyEncryptionAlgorithm() {

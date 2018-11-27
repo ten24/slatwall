@@ -889,7 +889,7 @@
 		}
 
 		private string function getEncryptionKeyLocation() {
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/system/');
 		}
 
 		private string function getEncryptionKeyFileName() {

@@ -74,7 +74,7 @@ Notes:
 	<cffunction name="getInsertedDataFile">
 		<cfset var returnFile = "" />
 		
-		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm' />
+		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/system/') & 'insertedData.txt.cfm' />
 		
 		<cfif !fileExists(filePath)>
 			<cffile action="write" file="#filePath#" output="" addnewline="false" /> 
@@ -88,7 +88,7 @@ Notes:
 	<cffunction name="updateInsertedDataFile">
 		<cfargument name="idKey" type="string" required="true" />
 		
-		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm' />
+		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/system/') & 'insertedData.txt.cfm' />
 		
 		<cffile action="append" file="#filePath#" output=",#arguments.idKey#" addnewline="false" />
 	</cffunction>
