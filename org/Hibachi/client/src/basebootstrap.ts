@@ -57,7 +57,7 @@ export class BaseBootStrapper{
                         invalidCache.push('attributeCacheKey');
                     }
     
-                    // Inspecting app config/model metadata in local storage (retreived from /custom/config/config.json)
+                    // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
                     try{
                         if(!isPrivate){
                             this.appConfig = JSON.parse(localStorage.getItem('appConfig'));

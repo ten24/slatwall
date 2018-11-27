@@ -148,8 +148,8 @@ Notes:
 					<cfzip action="unzip" destination="#unzipDirectoryName#" file="#getTempDirectory()##downloadFileName#" >
 					<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
 					<cfset var sourcePath = unzipDirectoryName />
-					<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
-						<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
+					<cfif fileExists( "#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" )>
+						<cffile action="delete" file="#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" >
 					</cfif>
 					<cfset updateCopyStarted = true />
 					
@@ -165,8 +165,8 @@ Notes:
 				<cfzip action="unzip" destination="#getTempDirectory()#" file="#getTempDirectory()##downloadFileName#" >
 				<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
 				<cfset var sourcePath = getTempDirectory() & "#listFirst(dirList.name[1],'/')#" />
-				<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
-					<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
+				<cfif fileExists( "#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" )>
+					<cffile action="delete" file="#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" >
 				</cfif>
 				<cfset updateCopyStarted = true /> 
 				<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
@@ -259,7 +259,7 @@ Notes:
 	</cffunction>
 
 	<cffunction name='getMetaFolderExistsWithoutDismissalFlag'>
-		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) && !fileExists( expandPath('/Slatwall/custom/config/metaDismiss.txt.cfm') ) />
+		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) && !fileExists( expandPath('/Slatwall/custom/system/metaDismiss.txt.cfm') ) />
 	</cffunction>
 
 	<cffunction name='removeMeta'>
@@ -267,7 +267,7 @@ Notes:
 	</cffunction>
 
 	<cffunction name='dismissMeta'>
-		<cfset fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
+		<cfset fileWrite( expandPath('/Slatwall/custom/system') & '/metaDismiss.txt.cfm', now() ) />
 	</cffunction>
 
 	<cffunction name="getMetaFolderExistsFlag">
