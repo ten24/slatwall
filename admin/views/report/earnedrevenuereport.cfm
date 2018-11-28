@@ -67,12 +67,14 @@
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
     <cfset currentMonth = Month(rc.minDate)/>
+    
 	<cfset currentYear = Year(rc.minDate)/>
+	
 	<cfset monthbegin = createDateTime(Year(rc.minDate),Month(rc.minDate),DaysInMonth(rc.minDate),0,0,0)/>
     <cfset monthend = createDateTime(Year(rc.maxDate),Month(rc.maxDate),DaysInMonth(rc.maxDate),23,59,59)/>
 	<cfset diff = DateDiff('m',monthbegin,monthend)/>
 	<cfset to = currentMonth + diff/>
-    
+	
     <cfset subscriptionsEarning = []/>
     <cfset earned = []/>
     <cfset taxAmount = []/>
@@ -105,7 +107,7 @@
             <tr>
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="w">
-                    <cfif w % 12 eq 0 and w neq 1>
+                    <cfif w % 12 eq 0 and w neq 0 >
                         <cfset currentYear++/>
                     </cfif>
                     <th>
