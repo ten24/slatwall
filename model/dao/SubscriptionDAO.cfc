@@ -308,6 +308,15 @@ Notes:
 						inner join SwProduct p on p.productID = s.productID
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
 						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
+							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productTypeID) AND len(arguments.productTypeID)>
+							AND pt.productTypeID IN (<cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
+							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
 						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 						and p.deferredRevenueFlag=1
 					),0) -
@@ -324,6 +333,15 @@ Notes:
 						inner join SwProduct p on p.productID = s.productID
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
 						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
+							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productTypeID) AND len(arguments.productTypeID)>
+							AND pt.productTypeID IN (<cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
+							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
 						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 					),0)
 				,0) as deferredRevenueLeftToBeCollected,
@@ -338,6 +356,15 @@ Notes:
 						inner join SwProduct p on p.productID = s.productID
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
 						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
+							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productTypeID) AND len(arguments.productTypeID)>
+							AND pt.productTypeID IN (<cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
+							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
 						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 						and p.deferredRevenueFlag=1
 					),0) -
@@ -354,6 +381,15 @@ Notes:
 						inner join SwProduct p on p.productID = s.productID
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
 						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
+							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productTypeID) AND len(arguments.productTypeID)>
+							AND pt.productTypeID IN (<cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
+						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
+							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
+						</cfif>
 						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 					),0)
 				,0) as deferredTaxLeftToBeCollected,
