@@ -194,6 +194,7 @@ Notes:
 			<cfset var diff = DateDiff('m',createDateTime(Year(arguments.minDate),Month(arguments.minDate),1,0,0,0),createDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),0,0,0))/>
 			<cfset var to = from + diff/>
 			<cfset var startYear = Year(arguments.minDate)/>
+			select * FROM (
 			<cfloop from="#from#" to="#to#" index="local.i">
 				<cfif i % 12 eq 0 and i neq 0>
 					<cfset startYear++/>
@@ -229,7 +230,10 @@ Notes:
 				<cfif i neq to>
 					UNION ALL
 				</cfif>
+				
 			</cfloop>
+			) t1
+			ORDER BY STR_TO_DATE(thisMonth,'%Y-%M')
 		</cfquery>
 		<cfreturn local.deferredActiveSubscriptionQuery/>
 	</cffunction>
@@ -269,7 +273,7 @@ Notes:
 			</cfif>
 			
 			group by DATE_FORMAT(su.expirationDate,'%Y-%M')
-			
+			ORDER BY STR_TO_DATE(thisMonth,'%Y-%M')
 		</cfquery>
 		<cfreturn local.deferredExpiringSubscriptionQuery/>
 	</cffunction>
@@ -287,43 +291,80 @@ Notes:
 		
 		<cfset var currentRecordsCount = 0/>
 		<cfquery name="local.deferredRevenueLeftToBeCollectedQuery">
+			select * FROM(
 			<cfloop from="0" to="#monthcount#" index="i">
 				<cfset currentRecordsCount++/>
 				<cfset var currentMonth = DATEADD('m',i,monthbegin)/>
 				<!---total or orderitems--->
-				select COALESCE((
-				select Sum(oi.calculatedExtendedPrice)+Sum(oi.calculatedTaxAmount) from swSubsUsage su
-				inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
-				inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID
-				inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
-				inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
-				inner join SwSku s on s.skuID = oi.skuID
-				inner join SwProduct p on p.productID = s.productID
-				inner join SwProductType pt on pt.productTypeID = p.productTypeID
-				where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
-				and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
-				and p.deferredRevenueFlag=1
-				) -
-				<!---total of currently earned --->
-				(
 				
-				select SUM(sodi.earned)+SUM(sodi.taxAmount) from swSubscriptionOrderDeliveryItem sodi
-				inner join SwSubscriptionOrderItem soi on sodi.subscriptionOrderItemID= soi.subscriptionOrderItemID
-				inner join SwSubsUsage su on su.subscriptionUsageID = soi.subscriptionUsageID
-				inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
-				inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
-				inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
-				inner join SwSku s on s.skuID = oi.skuID
-				inner join SwProduct p on p.productID = s.productID
-				inner join SwProductType pt on pt.productTypeID = p.productTypeID
-				where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
-				and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
-				),0) as total,
-				#currentMonth# as thisMonth
+				select COALESCE(
+					COALESCE((
+						select Sum(oi.calculatedExtendedPrice) from swSubsUsage su
+						inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
+						inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID
+						inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
+						inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
+						inner join SwSku s on s.skuID = oi.skuID
+						inner join SwProduct p on p.productID = s.productID
+						inner join SwProductType pt on pt.productTypeID = p.productTypeID
+						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+						and p.deferredRevenueFlag=1
+					),0) -
+					<!---total of currently earned --->
+					COALESCE((
+					
+						select SUM(sodi.earned) from swSubscriptionOrderDeliveryItem sodi
+						inner join SwSubscriptionOrderItem soi on sodi.subscriptionOrderItemID= soi.subscriptionOrderItemID
+						inner join SwSubsUsage su on su.subscriptionUsageID = soi.subscriptionUsageID
+						inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
+						inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
+						inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
+						inner join SwSku s on s.skuID = oi.skuID
+						inner join SwProduct p on p.productID = s.productID
+						inner join SwProductType pt on pt.productTypeID = p.productTypeID
+						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+					),0)
+				,0) as deferredRevenueLeftToBeCollected,
+				COALESCE(
+					COALESCE((
+						select Sum(oi.calculatedTaxAmount) from swSubsUsage su
+						inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
+						inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID
+						inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
+						inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
+						inner join SwSku s on s.skuID = oi.skuID
+						inner join SwProduct p on p.productID = s.productID
+						inner join SwProductType pt on pt.productTypeID = p.productTypeID
+						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+						and p.deferredRevenueFlag=1
+					),0) -
+					<!---total of currently earned --->
+					COALESCE((
+					
+						select SUM(sodi.taxAmount) from swSubscriptionOrderDeliveryItem sodi
+						inner join SwSubscriptionOrderItem soi on sodi.subscriptionOrderItemID= soi.subscriptionOrderItemID
+						inner join SwSubsUsage su on su.subscriptionUsageID = soi.subscriptionUsageID
+						inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
+						inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
+						inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
+						inner join SwSku s on s.skuID = oi.skuID
+						inner join SwProduct p on p.productID = s.productID
+						inner join SwProductType pt on pt.productTypeID = p.productTypeID
+						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+					),0)
+				,0) as deferredTaxLeftToBeCollected,
+				DATE_FORMAT(#currentMonth#,'%Y-%M') as thisMonth
 				<cfif i neq monthcount>
 					UNION ALL 
 				</cfif>
+				
 			</cfloop>
+			) t1
+			ORDER BY STR_TO_DATE(thisMonth,'%Y-%M')
 		</cfquery>
 		<cfreturn local.deferredRevenueLeftToBeCollectedQuery>
 	</cffunction>
@@ -404,7 +445,9 @@ Notes:
 					</cfloop>
 				) t1
 				GROUP BY thisMonth
+				ORDER BY STR_TO_DATE(thisMonth,'%Y-%M')
 			</cfquery>
+			
 			<cfreturn local.deferredRevenueQuery/>
 		</cfif>
 	</cffunction>

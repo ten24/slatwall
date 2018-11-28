@@ -67,6 +67,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	){
 		
 		var deferredRevenueData = getSubscriptionDAO().getDeferredRevenueData(argumentCollection=arguments);
+		var deferredRevenueLeftToBeCollectedData = getSubscriptionDAO().getDeferredRevenueLeftToBeCollectedData(argumentCollection=arguments);
+		
 		var deferredActiveSubscriptionData = getSubscriptionDAO().getDeferredActiveSubscriptionData(argumentCollection=arguments);
 		var deferredExpiringSubscriptionData = getSubscriptionDAO().getDeferredExpiringSubscriptionData(argumentCollection=arguments);
 		
@@ -86,6 +88,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var monthNamePattern = startYear&'-'&possibleMonths[i % 12 +1];
 			monthData[monthNamePattern]={};
 			
+			if(!isNull(deferredRevenueLeftToBeCollectedData)){
+				for(var k=1; k <= deferredRevenueLeftToBeCollectedData.recordCount;k++){
+					var currentRecord = QueryGetRow(deferredRevenueLeftToBeCollectedData,k);
+					if(currentRecord.thisMonth == monthNamePattern){
+						monthData[monthNamePattern]['deferredRevenueLeftToBeCollected'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeCollected,'decimal');
+						monthData[monthNamePattern]['deferredTaxLeftToBeCollected'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTaxLeftToBeCollected,'decimal');
+						monthData[monthNamePattern]['deferredTotalLeftToBeCollected'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeCollected+currentRecord.deferredTaxLeftToBeCollected,'decimal');
+						break;
+					}
+				}
+			}
+			
+			//format deferredRevenue 
 			if(!isNull(deferredRevenueData)){
 				for(var j=1; j <= deferredRevenueData.recordCount;j++){
 					var currentRecord = QueryGetRow(deferredRevenueData,j);
@@ -93,6 +108,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue,'decimal');
 						monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTax,'decimal');
 						monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue+currentRecord.deferredTax,'decimal');
+						//check if we have left to be collected and reduce it by what we expect to collect
+						if(structKeyExists(monthData[monthNamePattern],'deferredRevenueLeftToBeCollected')){
+							monthData[monthNamePattern]['deferredRevenueLeftToBeCollected'] -= monthData[monthNamePattern]['deferredRevenue'];
+							monthData[monthNamePattern]['deferredTaxLeftToBeCollected'] -= monthData[monthNamePattern]['deferredTax'];
+							monthData[monthNamePattern]['deferredTotalLeftToBeCollected'] -= monthData[monthNamePattern]['deferredTotal'];
+							break;
+						}
+						
 					}
 				}
 			}
@@ -129,6 +152,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					if(currentRecord.thisMonth == monthNamePattern){
 						monthData[monthNamePattern]['expiringSubscriptions'] = currentRecord.subscriptionUsageCount;
+						break;
 					}
 				}
 			}
@@ -138,6 +162,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}
+		
 		return monthData;
 		
 	}
