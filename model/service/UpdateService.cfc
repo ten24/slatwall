@@ -187,6 +187,16 @@ Notes:
 			</cfcatch>
 		</cftry>
 	</cffunction>
+	
+	<cffunction name="updateAttributeIsMigratedFlagByAttributeID" >
+		<cfargument name="attributeID" type="string" required="true"/>
+		<cfargument name="isMigratedFlag" type="boolean" required="true"/>
+		<cfquery>
+			UPDATE swAttribute
+			SET isMigratedFlag = #arguments.isMigratedFlag#
+			WHERE attributeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeID#" /> 
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="updateCMSApplications">
 		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
@@ -332,6 +342,36 @@ Notes:
 	
 
 	<cfscript>
+	
+	public any function migrateAttributeValuesToCustomProperties(){
+			//let's get all attributes flagged to become custom properties
+			var attributeDataQuery = getSlatwallScope().getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
+			var rbKeyValuePairStrings = '';
+			var path = expandPath('/#getApplicationKey()#') & '/custom/config/resourceBundles/en.properties';
+			var rbKeysFileRead = FileRead(path);
+			var rbKeysFileAppend = FileOpen(path,"append");
+			
+			for(var attribute in attributeDataQuery){
+				//if we have never done this before...
+				if(len(attribute['isMigratedFlag']) && !attribute['isMigratedFlag']){
+					//migrate values
+					migrateAttributeToCustomProperty(entityName=attribute['attributeSetObject'],customPropertyName=attribute['attributeCode']);
+					updateAttributeIsMigratedFlagByAttributeID(attribute['attributeID'],true);
+				}
+				//if we don't have an rbKey
+				if(!findNoCase('entity.' & attribute['attributeSetObject'] & '.' & attribute['attributeCode'],rbKeysFileRead)){
+					rbKeyValuePairStrings = rbKeyValuePairStrings & getRbKeyValuePairByAttribute(attribute);
+				}
+			}
+			//if we have new rbkeys to add
+			if(len(rbKeyValuePairStrings)){
+				//write to the .properties file
+				FileWriteLine(rbKeysFileAppend, rbKeyValuePairStrings); 
+				//recreate the JSON file
+				getService("HibachiJSONService").createJson();
+			}
+			FileClose(rbKeysFileAppend);
+		}
 		
 		public boolean function updateEntitiesWithCustomProperties(){
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";

@@ -90,7 +90,7 @@ Notes:
 	<cffunction name = "getAttributeDataQueryByCustomPropertyFlag" returnType = "query">
 		<cfquery name = "local.attributeDataQuery">
 				SELECT
-					att.attributeCode, att.attributeInputType, att.relatedObject, att.typeSetID, attset.attributeSetObject, att.defaultValue
+					att.attributeID,att.attributeCode, att.attributeName, att.attributeInputType, att.relatedObject, att.typeSetID, attset.attributeSetObject,att.isMigratedFlag, att.defaultValue
 				FROM
 					SwAttribute att
 				INNER JOIN

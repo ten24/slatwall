@@ -68,3 +68,9 @@ Notes:
 <cfelse>
 	<cflog file="Slatwall" text="General Log - Script v5_1.3 has run with no errors">
 </cfif>
+
+
+<cfparam name="this.ormSettings.dialect" />
+<cfparam name="this.datasource.name" />
+<cfparam name="this.datasource.username" default="" />
+<cfparam name="this.datasource.password" default="" />
