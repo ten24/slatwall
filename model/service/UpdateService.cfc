@@ -348,8 +348,11 @@ Notes:
 			var attributeDataQuery = getSlatwallScope().getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
 			var rbKeyValuePairStrings = '';
 			var path = expandPath('/#getApplicationKey()#') & '/custom/config/resourceBundles/en.properties';
-			var rbKeysFileRead = FileRead(path);
-			var rbKeysFileAppend = FileOpen(path,"append");
+			
+			if(fileExists(path)){
+				var rbKeysFileRead = FileRead(path);
+				var rbKeysFileAppend = FileOpen(path,"append");
+			}
 			
 			for(var attribute in attributeDataQuery){
 				//if we have never done this before...
@@ -358,19 +361,21 @@ Notes:
 					migrateAttributeToCustomProperty(entityName=attribute['attributeSetObject'],customPropertyName=attribute['attributeCode']);
 					updateAttributeIsMigratedFlagByAttributeID(attribute['attributeID'],true);
 				}
-				//if we don't have an rbKey
-				if(!findNoCase('entity.' & attribute['attributeSetObject'] & '.' & attribute['attributeCode'],rbKeysFileRead)){
+				//if we don't have the rbKey in the file we read
+				var rbKey = 'entity.' & attribute['attributeSetObject'] & '.' & attribute['attributeCode'];
+				if(!isNull(rbKeysFileRead) && !findNoCase(rbKey,rbKeysFileRead)){
 					rbKeyValuePairStrings = rbKeyValuePairStrings & getRbKeyValuePairByAttribute(attribute);
 				}
 			}
 			//if we have new rbkeys to add
-			if(len(rbKeyValuePairStrings)){
+			if(len(rbKeyValuePairStrings) && !isNull(rbKeysFileAppend)){
 				//write to the .properties file
 				FileWriteLine(rbKeysFileAppend, rbKeyValuePairStrings); 
 				//recreate the JSON file
 				getService("HibachiJSONService").createJson();
+				
+				FileClose(rbKeysFileAppend);
 			}
-			FileClose(rbKeysFileAppend);
 		}
 		
 		public boolean function updateEntitiesWithCustomProperties(){
