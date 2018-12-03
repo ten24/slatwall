@@ -1,15 +1,17 @@
 <div data-ng-if="swPropertyDisplay.object" class="form-group" ng-hide="swPropertyDisplay.isHidden" >
 
-    <label class="control-label" data-ng-if="swPropertyDisplay.showLabel">
+    <label class="control-label" data-ng-if="swPropertyDisplay.showLabel" >
 
         <span data-ng-bind="swPropertyDisplay.title"></span>:
         <span ng-if="swPropertyDisplay.object.validations.properties[swPropertyDisplay.property][0].required && swPropertyDisplay.fieldType === 'text'">*</span>
-        <span sw-tooltip class="j-tool-tip-item"
-              ng-if="swPropertyDisplay.hint"
-              data-text="{{swPropertyDisplay.hint}}"
-              data-position="right"
-                >
-            <i class="fa fa-question-circle"></i>
+        <span ng-if="swPropertyDisplay.hint" >
+	        <sw-tooltip class="j-tool-tip-item"
+	              
+	              [text]="swPropertyDisplay.hint"
+	              [position]="'right'"
+	                >
+	            <i class="fa fa-question-circle"></i>
+	        </sw-tooltip>
         </span>
     </label>
     <div data-ng-class="{ 's-form-input' : !swPropertyDisplay.inListingDisplay, 's-input-group' : swPropertyDisplay.inListingDisplay, 's-edit' : swPropertyDisplay.edited }">

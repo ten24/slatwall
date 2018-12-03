@@ -77,7 +77,7 @@ import { SWLoading, SwLoading } from "./components/swloading";
 import { SWScrollTrigger } from "./components/swscrolltrigger";
 import { SWTabGroup } from "./components/swtabgroup";
 import { SWTabContent } from "./components/swtabcontent";
-import { SWTooltip } from "./components/swtooltip";
+import { SWTooltip, SwTooltip } from "./components/swtooltip";
 import { SWRbKey, SwRbKey } from "./components/swrbkey";
 import { SWOptions } from "./components/swoptions";
 import { SWSelection } from "./components/swselection";
@@ -137,7 +137,8 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
         SwRbKey, 
         SwConfirm, 
         SwLoading,
-        SwInit    
+        SwInit,
+        SwTooltip    
     ],
     providers: [
         AppProvider,
@@ -191,11 +192,13 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
         SwRbKey,
         SwConfirm,
         SwLoading,
-        SwInit
+        SwInit,
+        SwTooltip
     ],
     entryComponents: [
         SwConfirm,
-        SwLoading
+        SwLoading,
+        SwTooltip
     ]
 })
 
@@ -380,7 +383,8 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swSelection', SWSelection.Factory())
     .directive('swTabGroup', SWTabGroup.Factory())
     .directive('swTabContent', SWTabContent.Factory())
-    .directive('swTooltip', SWTooltip.Factory())
+//    .directive('swTooltip', SWTooltip.Factory())
+    .directive('swTooltip',downgradeComponent({ component: SwTooltip }) as angular.IDirectiveFactory)
     .directive('swClickOutside', SWClickOutside.Factory())
     .directive('swDirective', SWDirective.Factory())
     .directive('swExportAction', SWExportAction.Factory())
