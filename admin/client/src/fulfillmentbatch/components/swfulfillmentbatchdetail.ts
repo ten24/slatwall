@@ -101,6 +101,7 @@ class SWFulfillmentBatchDetailController  {
 
     public userCaptureAndFulfill = () => {
         //request the fulfillment process.
+        this.state.loading = true;
         this.state.orderItem = this.orderItem;
         
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
