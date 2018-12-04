@@ -317,7 +317,7 @@ class OrderFulfillmentService {
     /** Creates the orderDelivery - fulfilling the items quantity of items specified, capturing as needed. */
     public fulfillItems = (state:any={}, ignoreCapture:boolean = false) => {
         this.state.loading=true;
-        if (state.useShippingIntegrationForTrackingNumber && (state.shippingIntegrationID == "" || state.shippingIntegrationID == null)) {
+      if (state.useShippingIntegrationForTrackingNumber && (state.shippingIntegrationID == "" || state.shippingIntegrationID == null)) {
             this.state.loading = false;
             alert(this.$rootScope.rbKey('define.invalidShippingIntegration'));
             return;
