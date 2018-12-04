@@ -141,7 +141,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			
 			//Add each of the parents in the chain to the string.
 			var parentLocation = this.getParentLocation();
-			while (!isNull(parentLocation)){
+			while (!isNull(parentLocation) && !isStruct(parentLocation)){
 				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "#chr(187)#");
 				if(isNull(parentLocation.getParentLocation())){
 					break;
