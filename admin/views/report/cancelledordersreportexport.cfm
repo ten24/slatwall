@@ -3,7 +3,7 @@
 <cfparam name="rc.productID" default=""/>
 <cfparam name="rc.minDate" default="#CreateDate(Year(now()),1,1)#"/>
 <cfparam name="rc.maxDate" default="#CreateDate(Year(now()),Month(now()),Day(now()))#"/>
-<
+
 <cfparam name="showProducts" default="true"/>
 <!---axe the output--->
 <cfsilent>
