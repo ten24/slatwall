@@ -3,12 +3,12 @@
 		jQuery(document).ready(function() {
 			jQuery('body').on('click', '##ApplyBtn', function(e){
 				e.preventDefault();
-				jQuery("input[name='slatAction']").val('#slatAction#');
+				jQuery("input[name='slatAction']").val('#rc.slatAction#');
 				jQuery('##revrecognition').submit();
 			});
 			jQuery('body').on('click', '##ExportBtn', function(e){
 				e.preventDefault();
-				jQuery("input[name='slatAction']").val('#slatAction#export');
+				jQuery("input[name='slatAction']").val('#rc.slatAction#export');
 				jQuery('##revrecognition').submit();
 			});
 		});
@@ -17,7 +17,7 @@
 
 	
 	<form id="revrecognition" action="?s=1" method="post">
-		<input type="hidden" name="slatAction" value="#slatAction#"/>
+		<input type="hidden" name="slatAction" value="#rc.slatAction#"/>
 		<div id="u119_state0" class="panel_state" data-label="State1" style="">
 		    <div id="u119_state0_content" class="panel_state_content">
 		        <div class="col-xl-3 col-md-4">
