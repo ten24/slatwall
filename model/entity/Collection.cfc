@@ -405,11 +405,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		return ArrayLen(collectionConfig['filterGroups']);
  	}
 
- 	public string function getPropertyIdentifierAlias(required string propertyIdentifier){
+ 	public string function getPropertyIdentifierAlias(required string propertyIdentifier, aliastype="filter"){
  		if(findNoCase('(',arguments.propertyIdentifier)){
  			return propertyIdentifier;
  		}
- 		var cacheKey = 'getPropertyIdentifierAlias'&arguments.propertyIdentifier;
+ 		var cacheKey = 'getPropertyIdentifierAlias'&arguments.propertyIdentifier&arguments.aliastype;
  		//check if the propertyIdentifier has base alias aready and strip it
  		var alias = getBaseEntityAlias();
  		var propertyIdentifierAliasData = getCollectionCacheValue(cacheKey);
@@ -429,7 +429,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
 				if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
-					if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
+					if(
+						(
+							arguments.aliastype=='filter'
+							&& structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')
+						)
+						|| (
+							arguments.aliastype=='column'
+							&& !getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.propertyIdentifier))
+							&& structKeyExists(current_object[propertyIdentifierParts[i]], 'fieldtype')
+							&& current_object[propertyIdentifierParts[i]].fieldtype neq 'id'
+						)
+					){
 						//addGroupBy(alias);
 						propertyIdentifierAliasData.hasManyRelationFilter=true;
 					}
@@ -1883,6 +1894,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				for(var column in this.getCollectionConfigStruct().columns){
 					if(structKeyExists(column,'persistent') && column.persistent == false){
 						variables.nonPersistentColumn = true;
+						//limit nonpersistent data
+						restrictPageRecords();
 						break;
 					}
 				}
@@ -1890,6 +1903,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		return variables.nonPersistentColumn;
+	}
+	
+	public any function restrictPageRecords(){
+		if(!isNull(getPageRecordsShow()) && getPageRecordsShow() > 25){
+			setPageRecordsShow(25);
+		}
 	}
 
 	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
@@ -3042,7 +3061,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var column = arguments.columns[i];
 			if(isReport() && hasPeriodColumn()){
 
-				getPropertyIdentifierAlias(column.propertyIdentifier);
+				getPropertyIdentifierAlias(column.propertyIdentifier,'column');
 				var columnAlias = getColumnAlias(column);
 
 				var addingColumn = false;
@@ -3079,7 +3098,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}else{
 						//verify that column is valid, if not remove it
 						if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
-							getPropertyIdentifierAlias(column.propertyIdentifier);
+							//if propertyIdentifier is object vs primitive then restrict page count
+							getPropertyIdentifierAlias(column.propertyIdentifier,'column');
+							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))){
+								restrictPageRecords();
+							}
 							//check if we have an aggregate
 							
 							if(!isNull(column.aggregate))

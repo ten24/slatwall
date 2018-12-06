@@ -598,11 +598,18 @@ component output="false" accessors="true" extends="HibachiService" {
 			currentPage = arguments.data['currentPage'];
 		}
 		var pageShow = "";
-
+		//combine the different params to prevent forked logic
+		if(structKeyExists(arguments.data, 'pageShow')){
+			arguments.data['P:Show'] = arguments.data['pageShow'];
+		}
+		//if using p:show param then put a limit. This shouldn't affect getRecords
 		if(structKeyExists(arguments.data,'P:Show')){
 			pageShow = arguments.data['P:Show'];
-		} else if(structKeyExists(arguments.data, 'pageShow')){
-			pageShow = arguments.data['pageShow'];
+			//prevent getting too many records
+			var globalAPIPageShowLimit = getService("SettingService").getSettingValue("globalAPIPageShowLimit");
+			if(pageShow > globalAPIPageShowLimit){
+				pageShow = globalAPIPageShowLimit; 
+			}
 		}
 
 		var keywords = "";
