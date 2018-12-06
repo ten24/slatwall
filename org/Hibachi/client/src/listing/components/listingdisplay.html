@@ -179,7 +179,8 @@
                             	<a  href="#"
                             		ng-if="swListingDisplay.selectable"
                                     data-ng-class="(!swListingDisplay.edit) ? 'table-action-selectdisabled':'table-action-select'"
-                                    data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
+                                    data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
+									ng-click="swListingDisplay.select(pageRecord[swListingDisplay.exampleEntity.$$getIDName()])">
 
                                     <i class="hibachi-ui-radio"></i>
                                 </a>

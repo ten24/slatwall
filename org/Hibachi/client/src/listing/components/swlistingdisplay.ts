@@ -74,7 +74,8 @@ class SWListingDisplayController{
     public searching:boolean = false;
     public searchText;
 
-    public selectFieldName;
+	public selectFieldName;
+	public selectValue;
     public selectable:boolean = false;
     public showOrderBy:boolean;
     public showExport:boolean;
@@ -567,6 +568,9 @@ class SWListingDisplayController{
         });
     };
 
+	public select = (selectValue)=>{
+        this.selectValue = selectValue; 
+    }
 
     public getPageRecordKey = (propertyIdentifier)=>{
        return this.listingService.getPageRecordKey(propertyIdentifier);
@@ -780,7 +784,7 @@ class SWListingDisplay implements ng.IDirective{
             sortContextIDValue:"@?",
 
             /*Single Select*/
-            selectFiledName:"@?",
+            selectFieldName:"@?",
             selectValue:"@?",
             selectTitle:"@?",
 
