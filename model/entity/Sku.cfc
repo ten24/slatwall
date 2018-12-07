@@ -598,7 +598,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 
-	public any function getPriceByCurrencyCode( required string currencyCode, numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
+	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 		
 		for(var priceGroup in arguments.priceGroups){
