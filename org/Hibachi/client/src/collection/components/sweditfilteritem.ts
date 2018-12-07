@@ -74,7 +74,6 @@ class SWEditFilterItem{
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
 
-                				
 
                 if(!scope.saveCollection && filterGroupsController.swListingControls){
 
@@ -111,7 +110,6 @@ class SWEditFilterItem{
                                                     propertyIdentifier:scope.collectionConfig.baseEntityAlias
                                                 }
                                             ];
-                                            
                     }else{
                         var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
                         entityAliasArrayFromString.pop();
@@ -122,7 +120,6 @@ class SWEditFilterItem{
                                     cfc:entityAliasArrayFromString[i],
                                     propertyIdentifier:entityAliasArrayFromString[i]
                             };
-
                             scope.filterItem.breadCrumbs.push(breadCrumb);
                         }
                     }
@@ -234,7 +231,7 @@ class SWEditFilterItem{
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
                     if(scope.filterItem.$$isNew === true){
-                        observerService.notify('filterItemAction', {action: 'remove',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});;
+                        observerService.notify('filterItemAction', {action: 'remove',filterItemIndex:scope.filterItemIndex});
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
                         observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
