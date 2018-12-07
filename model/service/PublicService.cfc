@@ -1453,7 +1453,9 @@ component  accessors="true" output="false"
             }else{
               this.addErrors(data,order.getErrors());
             }
-
+            if(getHibachiScope().getAccount().getGuestAccountFlag()){
+                getHibachiScope().getSession().removeAccount();
+            }
         }
 
     
