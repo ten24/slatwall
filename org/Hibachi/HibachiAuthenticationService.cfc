@@ -582,6 +582,11 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function authenticateEntityPropertyByPermissionGroup(required string crudType, required string entityName, required string propertyName, required any permissionGroup) {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
+		
+		//check if it is nonpersistent and if so then we should check perms on calculated prop
+		if(!getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyName)){
+			arguments.propertyName = 'calculated'&arguments.propertyName;
+		}
 
 		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
 			return true;
