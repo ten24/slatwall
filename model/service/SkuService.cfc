@@ -617,30 +617,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processSku_updateInventoryCalculationsForLocations(required any sku) {
 		
-		if(getSettingService().getSettingValue('skuTrackInventoryFlag')){
+		if( arguments.sku.setting('skuTrackInventoryFlag')){
 
-		var locationCollection = getLocationService().getLocationSmartList();
-		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
-		var locations = locationCollection.getRecords();
-		
-		// Update calculations for each location
-		for (var location in locations) {
-
-			// Attempt to load entity or create new entity if it did not previously exist
-			var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(arguments.sku.getSkuID(), location.getLocationID());
-
-			// Sku and Location entity references should already be populated for existing entity
-			if (skuLocationQuantity.getNewFlag()) {
-				skuLocationQuantity.setSku(arguments.sku);
-				skuLocationQuantity.setLocation(location);
-			}
+			var locationCollection = getLocationService().getLocationSmartList();
+			// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
+			var locations = locationCollection.getRecords();
 			
-			// Populate with updated calculated values and sku/location relationships
-			skuLocationQuantity.updateCalculatedProperties(true);
-			this.saveSkuLocationQuantity(skuLocationQuantity);
-		}
+			// Update calculations for each location
+			for (var location in locations) {
 
-		return arguments.sku;
+				// Attempt to load entity or create new entity if it did not previously exist
+				var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(arguments.sku.getSkuID(), location.getLocationID());
+
+				// Sku and Location entity references should already be populated for existing entity
+				if (skuLocationQuantity.getNewFlag()) {
+					skuLocationQuantity.setSku(arguments.sku);
+					skuLocationQuantity.setLocation(location);
+				}
+				
+				// Populate with updated calculated values and sku/location relationships
+				skuLocationQuantity.updateCalculatedProperties(true);
+				this.saveSkuLocationQuantity(skuLocationQuantity);
+			}
+
+			return arguments.sku;
 
 		}
 	}
