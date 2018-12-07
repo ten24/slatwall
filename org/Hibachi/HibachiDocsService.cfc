@@ -289,7 +289,15 @@ component accessors="true" output="false" extends="HibachiService" {
 				serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 			}
 			if(structKeyExists(componentMetaData,'properties')){
-				serviceComponentMetaData[componentName]['properties'] = componentMetaData.properties;
+				var objectProperties = [];
+				for(var prop in componentMetaData.properties){
+					var objectProperty = {};
+					for(var key in prop){
+						objectProperty[lcase(key)]= prop[key];
+					}
+					arrayAppend(objectProperties,objectProperty);
+				}
+				serviceComponentMetaData[componentName]['properties'] = objectProperties;
 			}
 		}
 		return serviceComponentMetaData;
