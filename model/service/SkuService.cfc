@@ -617,6 +617,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processSku_updateInventoryCalculationsForLocations(required any sku) {
 		
+		if(getSettingService().getSettingValue('skuTrackInventoryFlag')){
+
 		var locationCollection = getLocationService().getLocationSmartList();
 		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
 		var locations = locationCollection.getRecords();
@@ -639,6 +641,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return arguments.sku;
+
+		}
 	}
 
 	// =====================  END: Process Methods ============================
