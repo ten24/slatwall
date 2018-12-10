@@ -278,7 +278,7 @@ Notes:
 		<cfreturn local.deferredExpiringSubscriptionQuery/>
 	</cffunction>
 	
-	<cffunction name="getDeferredRevenueLeftToBeCollectedData" access="public" returntype="any">
+	<cffunction name="getDeferredRevenueLeftToBeRecognizedData" access="public" returntype="any">
 		<cfargument name="subscriptionTypeSystemCode" type="string"/>
 		<cfargument name="productTypeID" type="string"/>
 		<cfargument name="productID" type="string"/>
@@ -290,7 +290,7 @@ Notes:
 		<cfset var monthcount = DateDiff('m',monthbegin,monthend)/> 
 		
 		<cfset var currentRecordsCount = 0/>
-		<cfquery name="local.deferredRevenueLeftToBeCollectedQuery">
+		<cfquery name="local.deferredRevenueLeftToBeRecognizedQuery">
 			select * FROM(
 			<cfloop from="0" to="#monthcount#" index="i">
 				<cfset currentRecordsCount++/>
@@ -344,7 +344,7 @@ Notes:
 						</cfif>
 						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 					),0)
-				,0) as deferredRevenueLeftToBeCollected,
+				,0) as deferredRevenueLeftToBeRecognized,
 				COALESCE(
 					COALESCE((
 						select Sum(oi.calculatedTaxAmount) from swSubsUsage su
@@ -392,7 +392,7 @@ Notes:
 						</cfif>
 						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 					),0)
-				,0) as deferredTaxLeftToBeCollected,
+				,0) as deferredTaxLeftToBeRecognized,
 				DATE_FORMAT(#currentMonth#,'%Y-%M') as thisMonth
 				<cfif i neq monthcount>
 					UNION ALL 
@@ -402,7 +402,7 @@ Notes:
 			) t1
 			ORDER BY STR_TO_DATE(thisMonth,'%Y-%M')
 		</cfquery>
-		<cfreturn local.deferredRevenueLeftToBeCollectedQuery>
+		<cfreturn local.deferredRevenueLeftToBeRecognizedQuery>
 	</cffunction>
 	
 	<cffunction name="getDeferredRevenueData" access="public" returntype="any">

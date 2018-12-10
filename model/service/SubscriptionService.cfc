@@ -67,7 +67,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	){
 		
 		var deferredRevenueData = getSubscriptionDAO().getDeferredRevenueData(argumentCollection=arguments);
-		var deferredRevenueLeftToBeCollectedData = getSubscriptionDAO().getDeferredRevenueLeftToBeCollectedData(argumentCollection=arguments);
+		var deferredRevenueLeftToBeRecognizedData = getSubscriptionDAO().getDeferredRevenueLeftToBeRecognizedData(argumentCollection=arguments);
 		
 		var deferredActiveSubscriptionData = getSubscriptionDAO().getDeferredActiveSubscriptionData(argumentCollection=arguments);
 		var deferredExpiringSubscriptionData = getSubscriptionDAO().getDeferredExpiringSubscriptionData(argumentCollection=arguments);
@@ -90,13 +90,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var monthNamePattern = startYear&'-'&possibleMonths[i % 12 +1];
 			monthData[monthNamePattern]={};
 			
-			if(!isNull(deferredRevenueLeftToBeCollectedData)){
-				for(var k=1; k <= deferredRevenueLeftToBeCollectedData.recordCount;k++){
-					var currentRecord = QueryGetRow(deferredRevenueLeftToBeCollectedData,k);
+			if(!isNull(deferredRevenueLeftToBeRecognizedData)){
+				for(var k=1; k <= deferredRevenueLeftToBeRecognizedData.recordCount;k++){
+					var currentRecord = QueryGetRow(deferredRevenueLeftToBeRecognizedData,k);
 					if(currentRecord.thisMonth == monthNamePattern){
-						monthData[monthNamePattern]['deferredRevenueLeftToBeCollected'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeCollected,'decimal');
-						monthData[monthNamePattern]['deferredTaxLeftToBeCollected'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTaxLeftToBeCollected,'decimal');
-						monthData[monthNamePattern]['deferredTotalLeftToBeCollected'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeCollected+currentRecord.deferredTaxLeftToBeCollected,'decimal');
+						monthData[monthNamePattern]['deferredRevenueLeftToBeRecognized'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeRecognized,'decimal');
+						monthData[monthNamePattern]['deferredTaxLeftToBeRecognized'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTaxLeftToBeRecognized,'decimal');
+						monthData[monthNamePattern]['deferredTotalLeftToBeRecognized'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeRecognized+currentRecord.deferredTaxLeftToBeRecognized,'decimal');
 						break;
 					}
 				}
@@ -113,7 +113,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTax,'decimal');
 						monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue+currentRecord.deferredTax,'decimal');
 						//check if we have left to be collected and reduce it by what we expect to collect
-						if(structKeyExists(monthData[monthNamePattern],'deferredRevenueLeftToBeCollected')){
+						if(structKeyExists(monthData[monthNamePattern],'deferredRevenueLeftToBeRecognized')){
 							deferredRevenueOverTime += monthData[monthNamePattern]['deferredRevenue'];
 							deferredTaxOverTime += monthData[monthNamePattern]['deferredTax'];
 						}
@@ -123,9 +123,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
-			monthData[monthNamePattern]['deferredRevenueLeftToBeCollected'] -= deferredRevenueOverTime;
-			monthData[monthNamePattern]['deferredTaxLeftToBeCollected'] -= deferredTaxOverTime;
-			monthData[monthNamePattern]['deferredTotalLeftToBeCollected'] -= (deferredRevenueOverTime + deferredTaxOverTime);
+			monthData[monthNamePattern]['deferredRevenueLeftToBeRecognized'] -= deferredRevenueOverTime;
+			monthData[monthNamePattern]['deferredTaxLeftToBeRecognized'] -= deferredTaxOverTime;
+			monthData[monthNamePattern]['deferredTotalLeftToBeRecognized'] -= (deferredRevenueOverTime + deferredTaxOverTime);
 			
 			if(!structKeyExists(monthData[monthNamePattern],'deferredRevenue')){
 				monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(0,'decimal');

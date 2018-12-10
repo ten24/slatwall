@@ -105,10 +105,21 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenue,'currency')#</td>
+                    <td>
+                        <cfif
+                            
+                            createDateTime(Year(now()),Month(now()),daysInMonth(now()),23,59,59) lte createDateTime(currentYear,i%12+1,daysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59)
+                        >
+                            #$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenue,'currency')#
+                        <cfelse>
+                            - 
+                        </cfif>
+                    </td>
                     <cfset totalDeferredRevenue+=deferredRevenueData[key].deferredRevenue/>
                 </cfloop>
-                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredRevenue,'currency')#</td>
+                <td>
+                    #$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredRevenue,'currency')#
+                </td>
             </tr>
             
             <tr>
@@ -125,7 +136,15 @@
                     
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <cfset totalDeferredTax+=deferredRevenueData[key].deferredTax/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTax,'currency')#</td>
+                    <td>
+                        <cfif
+                            
+                            createDateTime(Year(now()),Month(now()),daysInMonth(now()),23,59,59) lte createDateTime(currentYear,i%12+1,daysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59)
+                        >
+                            #$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTax,'currency')#</td>
+                        <cfelse>
+                            -
+                        </cfif>
                 </cfloop>
                 <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTax,'currency')#</td>
             </tr>
@@ -144,7 +163,15 @@
                     
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <cfset totalDeferredTotal +=deferredRevenueData[key].deferredTotal/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotal,'currency')#</td>
+                    <td>
+                        <cfif
+                            
+                            createDateTime(Year(now()),Month(now()),daysInMonth(now()),23,59,59) lte createDateTime(currentYear,i%12+1,daysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59)
+                        >
+                            #$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotal,'currency')#</td>
+                        <cfelse>
+                            -
+                        </cfif>
                 </cfloop>
                 <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTotal,'currency')#</td>
             </tr>
@@ -152,50 +179,50 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <cfset totalDeferredRevenueLeftToBeCollected = 0/>
-                <td>Deferred Revenue Left to be Collected</td>
+                <cfset totalDeferredRevenueLeftToBeRecognized = 0/>
+                <td>Deferred Revenue Left to be Recognized</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenueLeftToBeCollected,'currency')#</td>
-                    <cfset totalDeferredRevenueLeftToBeCollected+=deferredRevenueData[key].deferredRevenueLeftToBeCollected/>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenueLeftToBeRecognized,'currency')#</td>
+                    <cfset totalDeferredRevenueLeftToBeRecognized+=deferredRevenueData[key].deferredRevenueLeftToBeRecognized/>
                 </cfloop>
-                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredRevenueLeftToBeCollected,'currency')#</td>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredRevenueLeftToBeRecognized,'currency')#</td>
             </tr>
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <cfset totalDeferredTaxLeftToBeCollected = 0/>
-                <td>Deferred Tax Left to be Collected</td>
+                <cfset totalDeferredTaxLeftToBeRecognized = 0/>
+                <td>Deferred Tax Left to be Recognized</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTaxLeftToBeCollected,'currency')#</td>
-                    <cfset totalDeferredTaxLeftToBeCollected+=deferredRevenueData[key].deferredTaxLeftToBeCollected/>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTaxLeftToBeRecognized,'currency')#</td>
+                    <cfset totalDeferredTaxLeftToBeRecognized+=deferredRevenueData[key].deferredTaxLeftToBeRecognized/>
                 </cfloop>
-                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTaxLeftToBeCollected,'currency')#</td>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTaxLeftToBeRecognized,'currency')#</td>
             </tr>
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <cfset totalDeferredTotalLeftToBeCollected = 0/>
-                <td>Deferred Total Left to be Collected</td>
+                <cfset totalDeferredTotalLeftToBeRecognized = 0/>
+                <td>Deferred Total Left to be Recognized</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeCollected,'currency')#</td>
-                    <cfset totalDeferredTotalLeftToBeCollected+=deferredRevenueData[key].deferredTotalLeftToBeCollected/>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#</td>
+                    <cfset totalDeferredTotalLeftToBeRecognized+=deferredRevenueData[key].deferredTotalLeftToBeRecognized/>
                 </cfloop>
-                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTotalLeftToBeCollected,'currency')#</td>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTotalLeftToBeRecognized,'currency')#</td>
             </tr>
         </tbody>
     </table>
