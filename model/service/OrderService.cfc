@@ -1029,6 +1029,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						transactionType = 'credit'
 					};
 					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
+					
+					if (orderPayment.hasErrors() && !isNull(orderPayment.getError('createTransaction'))){
+						order.addError("cancelOrder", orderPayment.getErrors());
+						return orderPayment; //stop processing this cancel on error.
+					}
 				}
 			}
 		}
