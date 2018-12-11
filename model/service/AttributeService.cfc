@@ -260,6 +260,14 @@ component  extends="HibachiService" accessors="true" {
 			//attributeModelCache
 			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
+		
+		//if we are turning this into a custom property, we want to reload all servers to make sure things work properly
+		if(attribute.getCustomPropertyFlag()){
+			var serverInstanceSmartList = this.getServerInstanceSmartList();
+			for(var serverInstance in serverInstanceSmartList.getRecords()){
+				serverInstance.setServerInstanceExpired(true);
+			}	
+		}
 
 		return arguments.attribute;
 	}

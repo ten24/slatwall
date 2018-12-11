@@ -824,6 +824,10 @@ component extends="framework.one" {
 						getHibachiScope().clearApplicationValueByPrefix('class');
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
+						
+						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
+						
+						getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
 
 						onUpdateRequest();
 
