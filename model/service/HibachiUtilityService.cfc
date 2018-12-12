@@ -445,7 +445,8 @@ Notes:
 	* @return struct with file info.
 	*/
 	public struct function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean download = true ) {
-		 return getService("HibachiService").export(data=data, columns=columns, columnNames=columnNames, fileName=fileName, fileType=fileType, downloadFile=download);
+		 arguments.downloadFile = arguments.download;
+		 return getService("HibachiService").export(argumentCollection=arguments);
 	}
 	
 	// @hint utility function to sort array of ojbects can be used to override getCollection() method to add sorting.
