@@ -8,8 +8,10 @@
 			});
 			jQuery('body').on('click', '##ExportBtn', function(e){
 				e.preventDefault();
+				var originalSlatAction = jQuery("input[name='slatAction']").val();
 				jQuery("input[name='slatAction']").val('#rc.slatAction#export');
 				jQuery('##revrecognition').submit();
+				jQuery("input[name='slatAction']").val(originalSlatAction);
 			});
 		});
 		
