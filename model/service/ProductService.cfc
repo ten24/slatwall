@@ -778,7 +778,7 @@ component extends="HibachiService" accessors="true" {
 
 		// GENERATE - EVENT SKUS
 		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "event") {
-
+			arguments.product = this.saveProduct(arguments.product);
 			arguments.product = this.processProduct(arguments.product, arguments.data, 'addEventSchedule');
 
 
