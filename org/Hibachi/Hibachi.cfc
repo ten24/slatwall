@@ -784,7 +784,7 @@ component extends="framework.one" {
 					// All bean factory flattening and aggregation has occured from Hibachi, Core, Custom., Integrations. This avoids potential missing bean errors after custom and integrationService setup
 					// Performance worsens if setting the ioc.cfc config omitDirectoryAliases = false. Negatively impacts execution time of the load() method by 2x longer
 					// NOTE: For more details about the quirk, view notes about the load() method in the org/hibachi/framework/hibachiaop.cfc
-					getBeanFactory().load();
+					coreBF.load();
 					onBeanFactoryLoadComplete();
 					
 					//==================== START: EVENT HANDLER SETUP ========================
