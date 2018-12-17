@@ -496,6 +496,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var shippingMethodRatesRequestBean in shippingMethodRatesRequestBeans){
 				arrayAppend(fulfillmentMethodOptionsCacheKeyArray,shippingMethodRatesRequestBean.getJSON());
 			}
+			for(var shippingMethod in shippingMethods){
+				arrayAppend(fulfillmentMethodOptionsCacheKeyArray, shippingMethod.getModifiedDateTime());
+			}
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,orderfulfillmentaddress);
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getOrder().getSubtotalAfterItemDiscounts());
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getTotalShippingQuantity());
