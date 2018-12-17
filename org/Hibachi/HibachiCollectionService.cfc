@@ -1075,6 +1075,10 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.addDisplayProperty(property['name'], '', {isExportable=true});
 			}
 		} 
+		
+		if(structKeyExists(arguments.data,'exportFileName')){
+			collectionEntity.setExportFileName(arguments.data.exportFileName);
+		}
 
 		var collectionConfigData = getCollectionConfigExportDataByCollection(collectionEntity);
 		getHibachiService().export( argumentCollection=collectionConfigData );
@@ -1164,10 +1168,17 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public struct function getCollectionConfigExportDataByCollection(required any collectionEntity){
-	
+		var exportFileName = "";
+		
 		//short circuit to prevent non admin use
 		if(!getHibachiScope().getAccount().getAdminAccountFlag()){
 			return;
+		}
+		
+		if(!isNull(arguments.collectionEntity.getExportFileName()) && Len(arguments.collectionEntity.getExportFileName())) {
+			exportFileName = arguments.collectionEntity.getExportFileName();
+		} else {
+			exportFileName = arguments.collectionEntity.getCollectionConfigStruct().baseEntityName;
 		}
 		
 		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
@@ -1178,7 +1189,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			data=collectionData, 
 			columns=headers, 
 			columnNames=title, 
-			fileName=arguments.collectionEntity.getCollectionConfigStruct().baseEntityName, 
+			fileName=exportFileName, 
 			fileType = 'csv', 
 			downloadFile=true
 		};
