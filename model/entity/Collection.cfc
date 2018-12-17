@@ -135,7 +135,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="totalAvgAggregates" persistent="false" type="array";
 	property name="totalSumAggregates" persistent="false" type="array";
 
-
+	property name="exportFileName" type="string" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
 
