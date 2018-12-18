@@ -86,6 +86,10 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return [];
 	} 
 	
+	public array function getDetailActions(){
+		return [];
+	}
+	
 	public array function getMenuItems() {
 		return [];
 	}
