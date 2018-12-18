@@ -1602,6 +1602,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			for(var i=1; i<=arrayLen(arguments.data.permissions); i++) {
 
 				var pData = arguments.data.permissions[i];
+				if(structKeyExists(pData,'propertyName')){
+					if(!structKeyExists(pData,'allowReadFlag')){
+						pData['allowReadFlag']=0;
+					}
+					if(!structKeyExists(pData,'allowUpdateFlag')){
+						pData['allowUpdateFlag']=0;
+					}
+				}
 				var pEntity = this.getPermission(arguments.data.permissions[i].permissionID, true);
 				pEntity.populate( pData );
 

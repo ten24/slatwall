@@ -245,6 +245,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
 		}
 		
+		
+	}
+	
+	public void function after(required struct rc){
 		if(structKeyExists(rc,'viewPath')){
 			request.layout = false;
 			getFW().setView("admin:entity.ajax");
