@@ -6,12 +6,22 @@
 				jQuery("input[name='slatAction']").val('#rc.slatAction#');
 				jQuery('##revrecognition').submit();
 			});
+			
 			jQuery('body').on('click', '##ExportBtn', function(e){
 				e.preventDefault();
-				var originalSlatAction = jQuery("input[name='slatAction']").val();
-				jQuery("input[name='slatAction']").val('#rc.slatAction#export');
-				jQuery('##revrecognition').submit();
-				jQuery("input[name='slatAction']").val(originalSlatAction);
+				
+				//creates a hidden form based on current form and alters for export
+				if(jQuery('##revrecognitionexport')){
+					jQuery('##revrecognitionexport').remove();
+				}
+				
+				var exportForm = jQuery('##revrecognition').clone();
+				exportForm.children('input[name="slatAction"]').val(jQuery("input[name='slatAction']").val()+'export');
+				exportForm.attr('id','revrecognitionexport');
+				exportForm.hide();
+				jQuery(document.body).append(exportForm);
+				exportForm.submit();
+				
 			});
 		});
 		
