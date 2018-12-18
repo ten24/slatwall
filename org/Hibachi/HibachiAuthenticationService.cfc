@@ -373,7 +373,6 @@ component output="false" accessors="true" extends="HibachiService" {
 							
 							// Make sure that this property should be added as a property that can have permissions
 							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID")
-								&& (!structKeyExists(entityMetaData.properties[p], "persistent") || entityMetaData.properties[p].persistent)
 								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled neq "false")) {
 								
 								// Add to ManyToMany Properties
@@ -583,10 +582,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 		
-		//check if it is nonpersistent and if so then we should check perms on calculated prop
-		if(!getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyName)){
-			arguments.propertyName = 'calculated'&arguments.propertyName;
-		}
 
 		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
 			return true;

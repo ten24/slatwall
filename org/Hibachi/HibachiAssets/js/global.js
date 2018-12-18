@@ -1859,7 +1859,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		var view = tab.VIEW || tab.view;
 		
 		if($('#'+tabID).html().trim().length === 0){
-			
+			//add loading spinner prior to loading
+			$('#'+tabID).html(''+
+				'<i  class="fa fa-refresh fa-spin"></i>'+
+			'');
 			$('#'+tabID).load(url=window.location.href,data={viewPath:view.split(/\/(.+)/)[1]});
 		}
 		
