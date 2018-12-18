@@ -4,6 +4,7 @@
     <swf-alert data-alert-trigger="removeOrderItemFailure" data-alert-type="danger" data-message="Item removed failure" data-duration="3"></swf-alert>
     <swf-alert data-alert-trigger="updateOrderItemSuccess" data-alert-type="success" data-message="Quantity Updated" data-duration="3"></swf-alert>
     <swf-alert data-alert-trigger="updateOrderItemFailure" data-alert-type="danger" data-message="Quantity update failure" data-duration="3"></swf-alert>
+    <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
     <ul class="col-xs-12" style="min-width:400px;">
         <li class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" ng-cloak>
         <!---- the directive swf-cart-items passed in as an attribute above drives all the functionality in this template.
@@ -57,8 +58,14 @@
                 </div>
             </div>
         </li>
+        <li ng-if="$last" class="row">
+            <div class="col-12 text-center">
+                <button ng-click="swfCartItems.clearCartItems()" class="btn btn-info">Clear Cart</button>
+                <button class="btn btn-primary">Continue To Checkout</button>
+            </div>    
+        </li>
         <hr ng-repeat-end ng-if="!$last">
         <!-- don't show horizontal rule if last element in loop -->
+            
     </ul>
-    <button class="btn btn-primary">Continue To Checkout</button>
 </form>
