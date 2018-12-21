@@ -97,7 +97,7 @@ Notes:
 						<hb:hibachipropertylist divclass="col-md-6">
 							<!--- New Payment Method --->
 							<hb:hibachidisplaytoggle selector="select[name='accountPaymentMethodID']" 
-							                         loadvisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
+							                         loadvisable="#len(rc.processObject.getAccountPaymentMethodID()) < 1#">
 							
 								<!--- New Payment Type --->
 								<hb:hibachipropertydisplay object="#rc.processObject.getNewAccountPayment()#" 
