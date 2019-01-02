@@ -118,7 +118,7 @@ Notes:
 
 			<!--- if the meta directory doesn't exist, add it to the exclusion list--->
 			<cfif !getMetaFolderExistsFlag()>
-				<cfset copyContentExclusionList = "meta" />
+				<cfset copyContentExclusionList = ListAppend(copyContentExclusionList, "meta") />
 			</cfif>
 
 			<!--- before we do anything, make a backup --->
