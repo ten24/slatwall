@@ -107,8 +107,8 @@ Notes:
 			<cfset var downloadUUID = createUUID() />
 			<cfset var downloadFileName = "slatwall-#downloadUUID#.zip" />
 			<cfset var downloadHashFileName = "slatwall-#downloadUUID#.md5.txt" />
-			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.rewriterule,/.htaccess,/web.config,/.settings,/.gitignore' />
-			<cfset var copyContentExclusionList = "" />
+			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.rewriterule,/.htaccess,/web.config,/.settings,/.gitignore,/CODEOWNERS' />
+			<cfset var copyContentExclusionList = "CODEOWNERS" />
 			<cfset var slatwallDirectoryList = "" />
 
 			<!--- If the meta directory exists, and it hasn't been dismissed then we want to delete without user action --->
@@ -118,7 +118,7 @@ Notes:
 
 			<!--- if the meta directory doesn't exist, add it to the exclusion list--->
 			<cfif !getMetaFolderExistsFlag()>
-				<cfset copyContentExclusionList = "meta" />
+				<cfset copyContentExclusionList = ListAppend(copyContentExclusionList, "meta") />
 			</cfif>
 
 			<!--- before we do anything, make a backup --->
