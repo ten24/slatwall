@@ -3336,7 +3336,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						) continue;
 						
 						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
-							groupByList = listprepend(groupByList, column.propertyIdentifier);
+							//if we have the collection objects primary id property as a column exclude all others group bys for better performance
+							variables.groupBys = column.propertyIdentifier;
+							return variables.groupBys; 							
 						}else{
 							groupByList = listAppend(groupByList, column.propertyIdentifier);
 						}
