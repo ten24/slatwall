@@ -220,6 +220,7 @@ component extends="HibachiService" accessors="true" {
 				this.saveSku(newSku);
 				
 				if( newSku.hasErrors() ){
+					newSku.getProduct().addErrors(newSku.getErrors());
 					break;
 				}
 			}
