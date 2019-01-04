@@ -248,14 +248,54 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
+	public void function before(required struct rc){
+		var sites = getService('siteService').getSiteSmartList();
+		sites.addFilter('activeFlag', 1);
+		arguments.rc.sitesArray = sites.getRecords();
+		super.before(rc);
+	}
+	
 	public void function after(required struct rc){
 		if(structKeyExists(rc,'viewPath')){
 			request.layout = false;
 			getFW().setView("admin:entity.ajax");
-			
+
 			rc.templatePath = "./#rc.viewPath#.cfm";
-			
+
 		}
+	}
+	
+	//Account
+	public void function detailAccount(required struct rc){
+		genericDetailMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+	}
+
+	//Account
+	public void function editAccount(required struct rc){
+		genericEditMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+
 	}
 
 	public void function listOrder(required struct rc) {
