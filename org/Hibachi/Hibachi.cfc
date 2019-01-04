@@ -1053,19 +1053,17 @@ component extends="framework.one" {
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed
-	public void function redirectExact(required string redirectLocation, boolean addToken=false) {
+	public void function redirectExact(required string redirectLocation, boolean addToken=false, string preserve='none') {
 		endHibachiLifecycle();
-
-		if(!redirectLocation.startsWith('http')) {
-			location(arguments.redirectLocation, arguments.addToken);
-		} else {
+		
+		if (redirectLocation.startsWith('http')) {
 			//Check to see if redirect link has a domain that is in the approved settings attribute
 			var redirectDomainApprovedFlag = false;
 			if (listLen( getHibachiScope().setting('globalAllowedOutsideRedirectSites') )){
 				allowedDomainArray = listToArray( getHibachiScope().setting('globalAllowedOutsideRedirectSites') );
 
 				for (var allowedDomain in allowedDomainArray){
-					if ( LEFT(arguments.redirectLocation, len(allowedDomain)) == allowedDomain){
+					if ( LEFT(arguments.redirectLocation, len(trim(allowedDomain))) == trim(allowedDomain)){
 						redirectDomainApprovedFlag = true;
 						break;
 					}
@@ -1073,12 +1071,23 @@ component extends="framework.one" {
 			}
 
 			// Check to make sure that the redirect stays on the Slatwall site, redirect back to the Slatwall landing page.
-			if ( getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true ){
-				location(arguments.redirectLocation, arguments.addToken);
-			}else{
-				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken);
+			if ( !(getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true )){
+				arguments.redirectLocation = getPageContext().getRequest().GetRequestUrl().toString();
 			}
 		}
+		
+		
+		var preserveKey = '';
+		if ( arguments.preserve != 'none' ) {
+			preserveKey = saveFlashContext( preserve );
+			if ( find( '?', arguments.redirectLocation ) ) {
+				preserveKey = '&#variables.framework.preserveKeyURLKey#=#preserveKey#';
+			} else {
+				preserveKey = '?#variables.framework.preserveKeyURLKey#=#preserveKey#';
+			}
+		}
+		
+		location(arguments.redirectLocation & preserveKey, arguments.addToken);
 	}
 
 	// This method will execute an actions controller, render the view for that action and return it without going through an entire lifecycle
