@@ -861,10 +861,8 @@
 		// ===================== START: Cached Entity Meta Data Methods ===========================
 		
 		public any function getEntitiesMetaData() {
-			if(!structCount(variables.entitiesMetaData)) {
+			if(structKeyExists(variables, 'entitiesMetaData') && !structCount(variables.entitiesMetaData)) {
 				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-				
-				
 				var allMD = {};
 				for(var entityName in entityNamesArr) {
 					var entity = entityNew(entityName);
