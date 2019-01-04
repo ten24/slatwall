@@ -691,7 +691,7 @@
 			}
 		}
 
-		public string function hibachiHTMLEditFormat(required any html=""){
+		public string function hibachiHTMLEditFormat(required any html="", boolean angularSanitize=true){
 			//If its something that can be turned into a string, make sure its a string.
 			if (isSimpleValue(arguments.html)){
 				arguments.html = "#arguments.html#";
@@ -702,9 +702,11 @@
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
 				var sanitizedString = htmlEditFormat(arguments.html);
 			}else{
-				var sanitizedString = encodeForHTML(arguments.html);	
+				var sanitizedString = encodeForHTML(arguments.html);
 			}
-			sanitizedString = sanitizeForAngular(sanitizedString);
+			if(arguments.angularSanitize){
+				sanitizedString = sanitizeForAngular(sanitizedString);
+			}
 			return sanitizedString;
 		}
 		
