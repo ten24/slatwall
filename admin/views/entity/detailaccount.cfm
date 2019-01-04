@@ -53,17 +53,6 @@ Notes:
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<!--- Set up the order / carts smart lists --->
-<cfset rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList() />
-<cfset rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList() />
-
-<cfset rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList() />
-<cfset rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList() />
-
-<cfif !isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 >
-	<cfset rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' ) />
-</cfif>
-
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.account#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">

@@ -19,8 +19,19 @@
 
 	<cfloop array="#thistag.tabs#" index="tab">
 		
+		<cfset propertyFieldType = ""/>
+		<cfif isObject(attributes.object) and len(tab.property)>
+			<cftry>
+				<cfset propertyFieldType = attributes.object.getPropertyFieldType(tab.property)/>
+			<cfcatch>
+				<cfset propertyFieldType = ""/>
+			</cfcatch>
+			</cftry>
+		</cfif>
+		
 		<!--- Make sure there is a view --->
 		<cfif not len(tab.view) and len(tab.property)>
+			<cfset tab.lazyLoad = false/>
 			<cfset tab.view = "#attributes.subsystem#:#attributes.section#/#lcase(attributes.object.getClassName())#tabs/#lcase(tab.property)#" />
 
 			<cfset propertyMetaData = attributes.object.getPropertyMetaData( tab.property ) />
@@ -48,8 +59,8 @@
 			(not len(tab.tabcontent) and (not attributes.createOrModalFlag or tab.showOnCreateFlag))
 			
 		>
-			<cfif !tab.lazyLoad || tab.open>
-				<cfif fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
+			<cfif !tab.lazyLoad || tab.open || propertyFieldType eq 'wysiwyg'>
+				<cfif len(tab.view) and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
 					<cfif !len(tab.property) OR !attributes.object.isPersistent() OR attributes.hibachiScope.authenticateEntityProperty(attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(request.context.edit, 'update', 'read'), attributes.object.getClassName(), tab.property)>
 						<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
 					</cfif>
@@ -77,7 +88,7 @@
 					<cfset iteration++ />
 					<cfset tabScope = "hibachiEntityDetailGroup#rereplace(createUUID(),'-','','all')##iteration#"/>
 					<div class="j-panel panel panel-default" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true" >
-						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad> onclick='getTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
+						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))> onclick='getTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>
