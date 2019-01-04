@@ -488,6 +488,12 @@
                                             <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">
 						                    	<span>Fulfill</span> 
 						                    </button>
+						                    <ul class="dropdown-menu" role="menu">
+						                        <li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">Fulfill</a></li>
+						                    </ul>
+						                    <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
+						                        <span class="caret"></span>
+						                    </button>
                                         </div>
                                     </div>
                                     <div class="col-md-4" ng-show="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
