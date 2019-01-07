@@ -171,7 +171,7 @@ class SWWorkflowTasks{
 						
 						metadataService.setPropertiesList(value,"_"+ scope.workflow.data.workflowObject.toLowerCase());
 						scope.filterPropertiesList["_"+scope.workflow.data.workflowObject.toLowerCase()] = metadataService.getPropertiesListByBaseEntityAlias("_"+scope.workflow.data.workflowObject.toLowerCase());
-						metadataService.formatPropertiesList(scope.filterPropertiesList["_"+scope.workflow.data.workflowObject],scope.workflow.data.workflowObject.toLowerCase());
+						metadataService.formatPropertiesList(scope.filterPropertiesList["_"+scope.workflow.data.workflowObject.toLowerCase()],"_"+scope.workflow.data.workflowObject.toLowerCase());
 						
 						scope.workflowTasks.selectedTask = workflowTask;
 
