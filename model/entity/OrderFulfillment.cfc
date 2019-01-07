@@ -62,6 +62,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="handlingFee" ormtype="big_decimal" hb_formatType="currency";
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedShippingIntegrationName" ormtype="string";
+	
 	//hash of the integrationResponse used to decide if we need to rebuild the shippingMethodOptions
 	property name="fulfillmentMethodOptionsCacheKey" column="fulfillMethOptionsCacheKey" ormtype="string" hb_auditable="false";
 	
@@ -127,6 +129,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
     property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
     property name="shipmentItemMultiplier" type="numeric" persistent="false";
+    property name="shippingIntegrationName" type="string" persistent="false";
     
 	// Deprecated
 	property name="discountTotal" persistent="false";
@@ -486,6 +489,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	    		for(var i=1; i<=arrayLen(getFulfillmentShippingMethodOptions()); i++) {
 	    			if(getShippingMethod().getShippingMethodID() == getFulfillmentShippingMethodOptions()[i].getShippingMethodRate().getShippingMethod().getShippingMethodID()) {
 	    				variables.selectedShippingMethodOption = getFulfillmentShippingMethodOptions()[i];
+	    				break;
 	    			}
 	    		}
 	    	}

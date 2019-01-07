@@ -20,6 +20,8 @@ class SWImageDetailModalLauncherController{
     public imageOptions=[];
     public skusAffectedCount:number;
     public numberOfSkusWithImageFile:number=0;
+    
+    public swPricingManager;
 
     //@ngInject
     constructor(
@@ -104,7 +106,7 @@ class SWImageDetailModalLauncherController{
         data.append('preprocessDisplayedFlag',"1");
         data.append('ajaxRequest', "1");
 
-        data.append('productID', this.sku.data.product_productID);
+        data.append('productID', this.swPricingManager.productId);
 
         if(this.customImageNameFlag){
             data.append('imageFile', this.imageFileName);
@@ -112,11 +114,14 @@ class SWImageDetailModalLauncherController{
             data.append('imageFile', this.sku.data.imageFile);
         }
        
-        var inputs = document.getElementsByTagName('input');
-        var fileElement:any = $('input[type=file]')[0]
-        data.append('uploadFile', fileElement.files[0]); 
+        const inputs = $('input[type=file]');
+        for(var input of <any>inputs){
+            if(input.files[0]){
+                data.append('uploadFile', input.files[0]);
+                break;
+            }
+        }
         
-
         var savePromise = this.$http.post(
             "/?s=1",
             data,
@@ -140,6 +145,7 @@ class SWImageDetailModalLauncher implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
     public scope = {};
+    public require = {swPricingManager:'?^swPricingManager'};
     public bindToController = {
         skuId:"@",
         skuCode:"@",

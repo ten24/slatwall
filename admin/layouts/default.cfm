@@ -245,6 +245,8 @@ Notes:
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:report.deferredRevenueReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.earnedRevenueReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">

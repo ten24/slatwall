@@ -46,7 +46,6 @@ class SWSkuCodeEditController{
         private $filter,
         private $timeout
     ){
-        console.log('skucodeedit');
         if(angular.isDefined(this.pageRecord)){
             this.pageRecord.edited = false;
         }

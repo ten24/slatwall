@@ -115,46 +115,142 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 
 	// ============== START: Overridden Implicet Getters ===================
 	
-	public any function getReportData() {
-		var skuCollectionRecords = getSkuCollection().getPageRecords();
+	public any function getReportData(boolean allRecords=false, numeric currentPage=1) {
+		var skuCollection = getSkuCollection().duplicateCollection();
+		var displayPropertiesList = 'skuID,skuCode,skuName,calculatedSkuDefinition,product.productID,product.productName,product.productType.productTypeName';
+		skuCollection.setDisplayProperties(displayPropertiesList);
+		skuCollection.addFilter('product.productID','NULL','IS NOT');
+		skuCollection.addOrderBy('product.productName');
+		skuCollection.addOrderBy('skuCode');
+		if(arguments.allRecords){
+			var skuCollectionRecords = skuCollection.getRecords(refresh=true,formatRecords=false);
+		}else{
+			skuCollection.setCurrentPageDeclaration(arguments.currentPage);
+			var skuCollectionRecords = skuCollection.getPageRecords(refresh=true,formatRecords=false);
+		}
 		
+
 		var reportData = {};
-		reportData.headerRowHTML = 'Product Type,Sku Code,Description,Definition,Net Sales Last 12 Months,Committed <br>QC,Expected <br>QE,On Hand <br>QOH,Estimated Months Remaining,Total On Hand <br>QOH+QC,Estimated Days Out';
-		reportData.headerRowXSL = 'Product Type,Sku Code,Description,Definition,Net Sales Last 12 Months,Committed QC,Expected QE,On Hand QOH,Estimated Months Remaining,Total On Hand QOH+QC,Estimated Days Out';
-		reportData.columnList = 'ProductType,SkuCode,Description,Definition,NetSalesLast12Months,CommittedQC,ExpectedQE,OnHandQOH,EstimatedMonthsRemaining,TotalOnHandQOHplusQC,EstimatedDaysOut';
-		reportData.columnsTypeList = 'VarChar,VarChar,VarChar,VarChar,Integer,Integer,Integer,Integer,Decimal,Integer,Integer';
+		reportData.headerRowHTML = 'Product Type,Product Name,Sku Code,Description,Definition,Net Sales Last 12 Months,Committed <br>QC,Expected <br>QOQ <br>QE,On Hand <br>QOH+QE,Estimated Days Out <br>QOH,Estimated Months Remaining,Total On Hand ';
+		reportData.headerRowXSL = 'Product Type,Product Name,Sku Code,Description,Definition,Net Sales Last 12 Months,Committed QC,Expected QE,QOQ,On Hand QOH,Total Qty QOH+QE,Estimated Months Remaining,Estimated Sales Quantity';
+		reportData.columnList = 'ProductType,ProductName,SkuCode,Description,Definition,NetSalesLast12Months,CommittedQC,ExpectedQE,QOQ,OnHandQOH,TotalQtyQOHplusQE,EstimatedMonthsRemaining,EstimatedSalesQuantity';
+		reportData.columnsTypeList = 'VarChar,VarChar,VarChar,VarChar,VarChar,Integer,Integer,Integer,Integer,Integer,Integer,Decimal,Integer';
 		reportData.query = queryNew(reportData.columnList,reportData.columnsTypeList);
 
 		for(var thisSkuDetails in skuCollectionRecords) {
-			var thisSku = getService('SkuService').getSku(thisSkuDetails['skuID']);
-			var netSalesLast12Months = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSku.getSkuID(),getAnalysisHistoryStartDateTime(),getAnalysisHistoryEndDateTime())['quantity'];
-			var estimatedDaysOut = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSku.getSkuID(),getAnalysisHistoryStartDateTime(),getAnalysisHistoryDaysOutDateTime())['quantity'];
+
+			//based on previous year before history end
+			var netSalesLast12Months = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSkuDetails['skuID'],getAnalysisHistoryStartDateTime(),getAnalysisHistoryEndDateTime())['quantity'];
+			//based on same time period between history end and days out date from last year
+			var estimatedSalesQuantity = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSkuDetails['skuID'],DateAdd('yyyy',-1,getAnalysisHistoryEndDateTime()),DateAdd('yyyy',-1,getAnalysisHistoryDaysOutDateTime()))['quantity'];
 			queryAddRow(reportData.query);
+			
 			var productTypeName = "";
-			if(
-				!isNull(!isNull(thisSku.getProduct()))
-				&& !isNull(thisSku.getProduct().getProductType())
-				&& !isNull(thisSku.getProduct().getProductType().getProductTypeName())
-			){
-				productTypeName = thisSku.getProduct().getProductType().getProductTypeName();
+			if(structKeyExists(thisSkuDetails,'product_productType_productTypeName')){
+				productTypeName = thisSkuDetails['product_productType_productTypeName'];
 			}
+			
+			var productName = "";
+			if(structKeyExists(thisSkuDetails,'product_productName')){
+				productName = thisSkuDetails['product_productName'];
+			}
+
+			querySetCell(reportData.query,'ProductName',productName);
 			querySetCell(reportData.query, 'ProductType', productTypeName);
-			querySetCell(reportData.query, 'SkuCode', thisSku.getSkuCode());
-			if(len(thisSku.getSkuName())){
-				querySetCell(reportData.query, 'Description', thisSku.getSkuName());
+			querySetCell(reportData.query, 'SkuCode', thisSkuDetails['skuCode']);
+			if(structKeyExists(thisSkuDetails,'skuName')){
+				querySetCell(reportData.query, 'Description', thisSkuDetails['skuName']);
 			} else {
-				querySetCell(reportData.query, 'Description', thisSku.getProduct().getProductName());
+				querySetCell(reportData.query, 'Description', productName);
 			}
-			querySetCell(reportData.query, 'Definition', thisSku.getCalculatedSkuDefinition());
+			if(structKeyExists(thisSkuDetails,'calculatedSkuDefinition')){
+				querySetCell(reportData.query, 'Definition', thisSkuDetails['calculatedSkuDefinition']);
+			}else{
+				querySetCell(reportData.query, 'Definition', '');
+			}
 			querySetCell(reportData.query, 'NetSalesLast12Months', netSalesLast12Months);
-			querySetCell(reportData.query, 'CommittedQC', thisSku.getQuantity('QC'));
-			querySetCell(reportData.query, 'ExpectedQE', thisSku.getQuantity('QE'));
-			querySetCell(reportData.query, 'OnHandQOH', thisSku.getQOH());
-			querySetCell(reportData.query, 'TotalOnHandQOHplusQC', thisSku.getQOH() + thisSku.getQuantity('QC'));
-			if(netSalesLast12Months != 0) {
-				querySetCell(reportData.query, 'EstimatedMonthsRemaining', thisSku.getQOH()/(netSalesLast12Months/12));
+			
+			var productID = thisSkuDetails['product_productID'];
+
+			var QOQ = getDAO('inventoryDao').getQOQ(thisSkuDetails['skuID']);
+
+			querySetCell(reportData.query,'QOQ',QOQ);
+
+			var QNDOOData = getDao('inventoryDao').getQNDOO(productID=productID);
+			var QNDOO = 0;
+			for(var QNDOODatum in QNDOOData){
+				if(QNDOODatum['skuID']==thisSkuDetails['skuID']){
+					QNDOO = QNDOODatum['QNDOO'];
+					break;
+				}
 			}
-			querySetCell(reportData.query, 'EstimatedDaysOut', estimatedDaysOut);
+
+			var QNDORVOData = getDao('inventoryDao').getQNDORVO(productID=productID);
+			var QNDORVO = 0;
+			for(var QNDORVODatum in QNDORVOData){
+				if(QNDORVODatum['skuID']==thisSkuDetails['skuID']){
+					QNDORVO = QNDORVODatum['QNDORVO'];
+					break;
+				}
+			}
+
+			var QNDOSAData = getDao('inventoryDao').getQNDOSA(productID=productID);
+			var QNDOSA = 0;
+			for(var QNDOSADatum in QNDOSAData){
+				if(QNDOSADatum['skuID']==thisSkuDetails['skuID']){
+					QNDOSA = QNDOSADatum['QNDOSA'];
+					break;
+				}
+			}
+
+			var QC = QNDOO + QNDORVO + QNDOSA;
+
+			querySetCell(reportData.query, 'CommittedQC', QC);
+			var QNROROData = getDao('inventoryDao').getQNRORO(productID=productID);
+			var QNRORO = 0;
+			for(var QNRORODatum in QNROROData){
+				if(QNRORODatum['skuID']==thisSkuDetails['skuID']){
+					QNRORO = QNRORODatum['QNRORO'];
+					break;
+				}
+			}
+			var QNROVOData = getDao('inventoryDao').getQNROVO(productID=productID);
+			var QNROVO = 0;
+			for(var QNROVODatum in QNROVOData){
+				if(QNROVODatum['skuID']==thisSkuDetails['skuID']){
+					QNROVO = QNROVODatum['QNROVO'];
+					break;
+				}
+			}
+			var QNROSAData = getDao('inventoryDao').getQNROSA(productID=productID);
+			var QNROSA = 0;
+			for(var QNROSADatum in QNROSAData){
+				if(QNROSADatum['skuID']==thisSkuDetails['skuID']){
+					QNROSA = QNROSADatum['QNROSA'];
+					break;
+				}
+			}
+			var QE = QNROSA + QNRORO + QNROVO;
+
+
+			querySetCell(reportData.query, 'ExpectedQE', QE);
+			var QOHData = getDao('inventoryDAO').getQOH(productID=productID);
+			var QOH = 0;
+			for(var QOHdatum in QOHData){
+				if(QOHdatum['skuID']==thisSkuDetails['skuID']){
+					QOH = QOHdatum['QOH'];
+					break;
+				}
+			}
+			querySetCell(reportData.query, 'OnHandQOH', QOH);
+			querySetCell(reportData.query, 'TotalQtyQOHplusQE', QOH+QE);
+			var datediff = DateDiff('m',DateAdd('yyyy',-1,getAnalysisHistoryEndDateTime()),DateAdd('yyyy',-1,getAnalysisHistoryDaysOutDateTime()));
+			var estimMonthsRemaining = 0;
+			if(dateDiff != 0 && estimatedSalesQuantity != 0){
+				estimMonthsRemaining=QOH/(estimatedSalesQuantity/dateDiff);
+			}
+			querySetCell(reportData.query, 'EstimatedMonthsRemaining',estimMonthsRemaining) ;
+			querySetCell(reportData.query, 'EstimatedSalesQuantity', estimatedSalesQuantity);
 		}
 
 		return reportData;

@@ -76,6 +76,10 @@ class SWAddSkuPriceModalLauncherController{
         } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
             this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
         }
+        
+        if(angular.isDefined(this.priceGroupId)){
+            this.skuPrice.data.priceGroup_priceGroupID = this.priceGroupId;
+        }
         this.observerService.notify("pullBindings");
     }
     
@@ -121,8 +125,13 @@ class SWAddSkuPriceModalLauncherController{
                                     }
                                     skuPriceForListing["sku_skuID"] = this.sku.skuID;
                                     skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
-                                    skuPriceForListing["sku_skuDefinition"] = this.sku.skuDefinition;
-                                    pageRecords.splice(index+1,0,skuPriceForListing);
+                                    skuPriceForListing["sku_calculatedSkuDefinition"] = this.sku.calculatedSkuDefinition || pageRecords[index]['sku_calculatedSkuDefinition'];
+                                    this.skuPrice.$$getPriceGroup().then((data)=>{
+                                        skuPriceForListing["priceGroup_priceGroupID"]=this.skuPrice.priceGroup.priceGroupID;
+                                        skuPriceForListing["priceGroup_priceGroupCode"]=this.skuPrice.priceGroup.priceGroupCode;
+                                        pageRecords.splice(index+1,0,skuPriceForListing);    
+                                    })
+                                    ;
                                     break; 
                                 }  
                                 index++; 
@@ -169,6 +178,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         pageRecord:"=?",
         minQuantity:"@?",
         maxQuantity:"@?",
+        priceGroupId:"@?",
         currencyCode:"@?",
         eligibleCurrencyCodeList:"@?",
         defaultCurrencyOnly:"=?",

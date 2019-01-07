@@ -81,6 +81,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price" hb_formatType="currency";
 	property name="currencyCode";
 	property name="estimatedShippingDate" hb_formFieldType="datetime";
+	property name="oldQuantity";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
@@ -164,16 +165,19 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getPrice() {
-		if(!structKeyExists(variables, "price")) {
+		var account = getHibachiScope().getAccount();
+		if ( !isNull(getOrder().getAccount()) ){
+			account = getOrder().getAccount();
+		}
+		if(
+			!structKeyExists(variables, "price") 
+			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPrice() )
+			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getLivePriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),account=account) )
+		){
 			variables.price = 0;
 			if(!isNull(getSku())) {
 				
-				var account = getHibachiScope().getAccount();
-				if ( !isNull(getOrder().getAccount()) ){
-					account = getOrder().getAccount();
-				}
-				
-				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode(), account );
+				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( currencyCode=getCurrencyCode() , quantity=getQuantity(), account=account);
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
 				} else {
@@ -608,8 +612,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		//verify that the item has the same amount of attributes related to it
 
 		var attributeValueStruct = this.getAttributeValuesByCodeStruct();
+		
 		if(!isnull(attributeValueStruct)){
-			for(key in attributeValueStruct){
+			for(var key in attributeValueStruct){
 				if( structKeyExists(arguments.orderItem.getAttributeValuesByAttributeCodeStruct(), key) ){
 					if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
 						return false;
@@ -771,8 +776,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		
 		for(var attributeCollectionListRecord in attributeCollectionListRecords){
-			if(len(trim(attributeCollectionListRecord['attributeCode'])) && (structKeyExists(data, attributeCollectionListRecord['attributeCode']) && len(trim(data[ attributeCollectionListRecord['attributeCode'] ])))){
-				attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
+			if(len(trim(attributeCollectionListRecord['attributeCode']))){
+				if (structKeyExists(attributeCollectionListRecord, 'attributeCode') && len(attributeCollectionListRecord['attributeCode']) && structKeyExists(data, attributeCollectionListRecord['attributeCode']) && len(data[ attributeCollectionListRecord['attributeCode']])){
+					attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
+				}
 			}
 		}
 

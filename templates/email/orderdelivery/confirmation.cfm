@@ -343,16 +343,18 @@ Notes:
 																					</cfif>
 																					
 																					<!------- SHIPPING METHOD ------->
-																					<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Method: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;">#orderDelivery.getShippingMethod().getShippingMethodName()#</span></h6>
+																					<cfif not isNull(orderDelivery.getShippingMethod())>
+																						<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Method: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;">#orderDelivery.getShippingMethod().getShippingMethodName()#</span></h6>
+																					</cfif>
 																					
 																					<!------- SHIPPING ADDRESS ------->
 																					<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Address: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;"><cfif len(orderDelivery.getShippingAddress().getName())>#orderDelivery.getShippingAddress().getName()#, </cfif>
-																				<cfif len(orderDelivery.getShippingAddress().getStreetAddress())>#orderDelivery.getShippingAddress().getStreetAddress()#, </cfif>
-																				<cfif len(orderDelivery.getShippingAddress().getStreet2Address())>#orderDelivery.getShippingAddress().getStreet2Address()#, </cfif>
-																				#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
-																				#orderDelivery.getShippingAddress().getCountryCode()#</span></h6>
-																					
-																				</cfif>
+																					<cfif len(orderDelivery.getShippingAddress().getStreetAddress())>#orderDelivery.getShippingAddress().getStreetAddress()#, </cfif>
+																					<cfif len(orderDelivery.getShippingAddress().getStreet2Address())>#orderDelivery.getShippingAddress().getStreet2Address()#, </cfif>
+																					#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
+																					#orderDelivery.getShippingAddress().getCountryCode()#</span></h6>
+																						
+																					</cfif>
 																				</td>
 																			</tr>
 																		</tbody>
@@ -399,6 +401,7 @@ Notes:
 		<cfif not isNull(orderDelivery.getTrackingNumber()) and len(orderDelivery.getTrackingNumber())>
 		Tracking Number : #orderDelivery.getTrackingNumber()#
 		</cfif>
+		<cfif not isNull(orderDelivery.getShippingMethod())>
 		Shipping Method : #orderDelivery.getShippingMethod().getShippingMethodName()#
         Ship-To Address:
         <cfif len(orderDelivery.getShippingAddress().getName())>#orderDelivery.getShippingAddress().getName()#</cfif>
@@ -407,7 +410,7 @@ Notes:
 		#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
 		#orderDelivery.getShippingAddress().getCountryCode()#
 		</cfif>
-
+		</cfif>
 		Items Delivered:
 		===========================================================================
 		<cfloop array="#orderDelivery.getOrderDeliveryItems()#" index="local.orderDeliveryItem">

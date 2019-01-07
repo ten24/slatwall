@@ -107,8 +107,8 @@ Notes:
 			<cfset var downloadUUID = createUUID() />
 			<cfset var downloadFileName = "slatwall-#downloadUUID#.zip" />
 			<cfset var downloadHashFileName = "slatwall-#downloadUUID#.md5.txt" />
-			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.rewriterule,/.htaccess,/web.config,/.settings,/.gitignore' />
-			<cfset var copyContentExclusionList = "" />
+			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.rewriterule,/.htaccess,/web.config,/.settings,/.gitignore,/CODEOWNERS' />
+			<cfset var copyContentExclusionList = "CODEOWNERS" />
 			<cfset var slatwallDirectoryList = "" />
 
 			<!--- If the meta directory exists, and it hasn't been dismissed then we want to delete without user action --->
@@ -118,7 +118,7 @@ Notes:
 
 			<!--- if the meta directory doesn't exist, add it to the exclusion list--->
 			<cfif !getMetaFolderExistsFlag()>
-				<cfset copyContentExclusionList = "meta" />
+				<cfset copyContentExclusionList = ListAppend(copyContentExclusionList, "meta") />
 			</cfif>
 
 			<!--- before we do anything, make a backup --->
@@ -148,8 +148,8 @@ Notes:
 					<cfzip action="unzip" destination="#unzipDirectoryName#" file="#getTempDirectory()##downloadFileName#" >
 					<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
 					<cfset var sourcePath = unzipDirectoryName />
-					<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
-						<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
+					<cfif fileExists( "#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" )>
+						<cffile action="delete" file="#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" >
 					</cfif>
 					<cfset updateCopyStarted = true />
 					
@@ -165,8 +165,8 @@ Notes:
 				<cfzip action="unzip" destination="#getTempDirectory()#" file="#getTempDirectory()##downloadFileName#" >
 				<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
 				<cfset var sourcePath = getTempDirectory() & "#listFirst(dirList.name[1],'/')#" />
-				<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
-					<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
+				<cfif fileExists( "#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" )>
+					<cffile action="delete" file="#slatwallRootPath#/custom/system/lastFullUpdate.txt.cfm" >
 				</cfif>
 				<cfset updateCopyStarted = true /> 
 				<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
@@ -186,6 +186,16 @@ Notes:
 				<cfset getHibachiScope().showMessageKey('admin.main.update.unexpected_error') />
 			</cfcatch>
 		</cftry>
+	</cffunction>
+	
+	<cffunction name="updateAttributeIsMigratedFlagByAttributeID" >
+		<cfargument name="attributeID" type="string" required="true"/>
+		<cfargument name="isMigratedFlag" type="boolean" required="true"/>
+		<cfquery>
+			UPDATE swAttribute
+			SET isMigratedFlag = #arguments.isMigratedFlag#
+			WHERE attributeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeID#" /> 
+		</cfquery>
 	</cffunction>
 
 	<cffunction name="updateCMSApplications">
@@ -259,7 +269,7 @@ Notes:
 	</cffunction>
 
 	<cffunction name='getMetaFolderExistsWithoutDismissalFlag'>
-		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) && !fileExists( expandPath('/Slatwall/custom/config/metaDismiss.txt.cfm') ) />
+		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) && !fileExists( expandPath('/Slatwall/custom/system/metaDismiss.txt.cfm') ) />
 	</cffunction>
 
 	<cffunction name='removeMeta'>
@@ -267,7 +277,7 @@ Notes:
 	</cffunction>
 
 	<cffunction name='dismissMeta'>
-		<cfset fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
+		<cfset fileWrite( expandPath('/Slatwall/custom/system') & '/metaDismiss.txt.cfm', now() ) />
 	</cffunction>
 
 	<cffunction name="getMetaFolderExistsFlag">
@@ -332,6 +342,41 @@ Notes:
 	
 
 	<cfscript>
+	
+	public any function migrateAttributeValuesToCustomProperties(){
+			//let's get all attributes flagged to become custom properties
+			var attributeDataQuery = getSlatwallScope().getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
+			var rbKeyValuePairStrings = '';
+			var path = expandPath('/#getApplicationKey()#') & '/custom/config/resourceBundles/en.properties';
+			
+			if(fileExists(path)){
+				var rbKeysFileRead = FileRead(path);
+				var rbKeysFileAppend = FileOpen(path,"append");
+			}
+			
+			for(var attribute in attributeDataQuery){
+				//if we have never done this before...
+				if(len(attribute['isMigratedFlag']) && !attribute['isMigratedFlag']){
+					//migrate values
+					migrateAttributeToCustomProperty(entityName=attribute['attributeSetObject'],customPropertyName=attribute['attributeCode']);
+					updateAttributeIsMigratedFlagByAttributeID(attribute['attributeID'],true);
+				}
+				//if we don't have the rbKey in the file we read
+				var rbKey = 'entity.' & attribute['attributeSetObject'] & '.' & attribute['attributeCode'];
+				if(!isNull(rbKeysFileRead) && !findNoCase(rbKey,rbKeysFileRead)){
+					rbKeyValuePairStrings = rbKeyValuePairStrings & getRbKeyValuePairByAttribute(attribute);
+				}
+			}
+			//if we have new rbkeys to add
+			if(len(rbKeyValuePairStrings) && !isNull(rbKeysFileAppend)){
+				//write to the .properties file
+				FileWriteLine(rbKeysFileAppend, rbKeyValuePairStrings); 
+				//recreate the JSON file
+				getService("HibachiJSONService").createJson();
+				
+				FileClose(rbKeysFileAppend);
+			}
+		}
 		
 		public boolean function updateEntitiesWithCustomProperties(){
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";

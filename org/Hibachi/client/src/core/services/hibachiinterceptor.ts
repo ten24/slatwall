@@ -194,6 +194,49 @@ export class HibachiInterceptor implements IInterceptor{
 
             return config;
         }
+<<<<<<< HEAD
+=======
+        config.cache = true;
+        config.headers = config.headers || {};
+        if (this.localStorageService.hasItem('token')) {
+            config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
+            this.getJWTDataFromToken(this.localStorageService.getItem('token'));
+        }
+        var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
+		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
+            this.$log.debug(config);
+			config.method = 'POST';
+			config.data = {};
+			var data = {};
+			if(angular.isDefined(config.params)){
+				data = config.params;
+			}
+			var params:IParams = {};
+			params.serializedJsonData = angular.toJson(data);
+			params.context="GET";
+			config.data = $.param(params);
+			delete config.params;
+			config.headers['Content-Type']= 'application/x-www-form-urlencoded';
+		}else if((queryParams[this.appConfig.action] && queryParams[this.appConfig.action].indexOf('api:main.get')!==-1)){
+			
+			if(queryParams && !queryParams['context']){
+				if(!config.data){
+					config.data = {};
+				}
+				config.data.context = 'GET';
+			}
+ 		}
+
+		return config;
+    }
+    public requestError = (rejection): ng.IPromise<any> => {
+		return this.$q.reject(rejection);
+    }
+    public response = (response): ng.IPromise<any> => {
+		if(response.data.messages){
+            var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
+            this.alertService.addAlerts(alerts);
+>>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
 
     })(this);
     

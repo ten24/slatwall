@@ -50,12 +50,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	property name="settingService" type="any";
 	
-	public any function init(any settingService=getService('settingService')) {
-		setSettingService(settingService);
-		
-		return super.init();
-	}
-	
 	public string function encryptValue(required string value) {
 		return encrypt(arguments.value, getEncryptionKey(), getSettingService().getSettingValue("globalEncryptionAlgorithm"), getSettingService().getSettingValue("globalEncryptionEncoding"));
 	}
@@ -86,7 +80,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	private string function getEncryptionKeyLocation() {
-		return getSettingService().getSettingValue("globalEncryptionKeyLocation") NEQ "" ? getSettingService().getSettingValue("globalEncryptionKeyLocation") : expandPath('/Slatwall/custom/config/');
+		return getSettingService().getSettingValue("globalEncryptionKeyLocation") NEQ "" ? getSettingService().getSettingValue("globalEncryptionKeyLocation") : expandPath('/Slatwall/custom/system/');
 	}
 	
 	private string function getEncryptionKeyFileName() {
@@ -100,6 +94,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	private void function storeEncryptionKey(required string key) {
 		var theKey = "<crypt><key>#arguments.key#</key></crypt>";
 		fileWrite(getEncryptionKeyFilePath(),theKey);
+	}
+	
+	public void function verifyEncryptionKeyExists() {
+		if(!encryptionKeyExists()){
+			createEncryptionKey();
+		}
 	}
 	
 	// ===================== START: Logical Methods ===========================

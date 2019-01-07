@@ -68,6 +68,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	this.anyAdminMethods=listAppend(this.anyAdminMethods,'updateListingDisplay');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods,'updateGlobalSearchResults');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods,'updateSortOrder');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods,'rbData');
 	
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods,'updateInventoryTable');

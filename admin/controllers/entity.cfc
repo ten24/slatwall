@@ -78,8 +78,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccount');
 	this.secureMethods=listAppend(this.secureMethods, 'listsku');
+	this.secureMethods=listAppend(this.secureMethods, 'listterm');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxsetup');
+	this.secureMethods=listAppend(this.secureMethods, 'listpaymentmethod');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxstocktransfer');
+	this.secureMethods=listAppend(this.secureMethods, 'listtaxcategory');
 	this.secureMethods=listAppend(this.secureMethods, 'listproduct');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderdelivery');
+	this.secureMethods=listAppend(this.secureMethods, 'liststockreceiver');
 	this.secureMethods=listAppend(this.secureMethods, 'listproductreview');
+	this.secureMethods=listAppend(this.secureMethods, 'listcartandquote');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderitem');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderpayment');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderfulfillment');
@@ -92,6 +100,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
 	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
 	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
+	
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -235,13 +245,57 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
 		}
 		
+		
+	}
+	
+	public void function before(required struct rc){
+		var sites = getService('siteService').getSiteSmartList();
+		sites.addFilter('activeFlag', 1);
+		arguments.rc.sitesArray = sites.getRecords();
+		super.before(rc);
+	}
+	
+	public void function after(required struct rc){
 		if(structKeyExists(rc,'viewPath')){
 			request.layout = false;
 			getFW().setView("admin:entity.ajax");
-			
+
 			rc.templatePath = "./#rc.viewPath#.cfm";
-			
+
 		}
+	}
+	
+	//Account
+	public void function detailAccount(required struct rc){
+		genericDetailMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+	}
+
+	//Account
+	public void function editAccount(required struct rc){
+		genericEditMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+
 	}
 
 	public void function listOrder(required struct rc) {

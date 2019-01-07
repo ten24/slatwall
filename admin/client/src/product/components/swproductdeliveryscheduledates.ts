@@ -75,7 +75,8 @@ class SWProductDeliveryScheduleDates implements ng.IDirective{
     public scope = {};  
     
     public bindToController = {
-        productId:"@"
+        productId:"@",
+        edit:"="
     };
     
     public controller=SWProductDeliveryScheduleDatesController;

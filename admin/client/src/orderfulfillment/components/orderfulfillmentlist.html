@@ -1,13 +1,16 @@
 <section class="container">
 
-<div class="row">
+<div class="row" ng-if="swOrderFulfillmentListController.collections.length">
 <br/>
 <br/>
 		<div class="col-md-12">
 			<div class="row s-body-nav">
 			    <nav class="navbar navbar-default" role="navigation">
 			        <div class="col-md-6 s-header-info">
-			            <h1 class="actionbar-title">Fulfillments Listing </h1>
+			            <h1 class="actionbar-title">Fulfillments Listing 
+			            	<span ng-if="swOrderFulfillmentListController.view === swOrderFulfillmentListController.FulfillmentsList.Views.Fulfillments && $root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['orderfulfillment']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['orderfulfillment'].collectionName"></span>
+				            <span ng-if="swOrderFulfillmentListController.view === swOrderFulfillmentListController.FulfillmentsList.Views.Items && $root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['orderitem']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['orderitem'].collectionName"></span>
+			            </h1>
 			        </div> 
 			        <div class="col-md-6">
 			            <div class="btn-toolbar">
@@ -338,32 +341,9 @@
 							data-persisted-collection-config="true" 
 							data-multiselect-field-name="orderFulfillmentID"
 							data-name="orderFulfillmentCollectionTable"
-							data-multi-slot="multislot">
-							
-							<sw-collection-configs>
-								<sw-collection-config data-entity-name="OrderFulfillment" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
-									
-									<sw-collection-filters>
-										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderType.systemCode" data-comparison-operator="=" data-comparison-value="otSalesOrder"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderStatusType.systemCode" data-comparison-operator="IN" data-comparison-value="ostNew,ostProcessing"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="orderFulfillmentStatusType.systemCode"  data-comparison-operator="!="  data-comparison-value="ofstFulfilled"></sw-collection-filter>
-									</sw-collection-filters>
-									
-									<sw-collection-columns>
-										<sw-collection-column data-property-identifier="orderFulfillmentID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
-										<sw-collection-column data-property-identifier="orderFulfillmentStatusType.systemCode" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
-										<sw-collection-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" title="Fulfillment Method Type" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="order.orderNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="order.account.calculatedFullName" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="order.orderOpenDateTime" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="shippingMethod.shippingMethodName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="shippingAddress.stateCode" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="estimatedShippingDate" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-							        </sw-collection-columns>
-								</sw-collection-config>
-							</sw-collection-configs>
+							data-collection-config="swOrderFulfillmentListController.collections[swOrderFulfillmentListController.FulfillmentsList.Views.Fulfillments]"
+
+							>
 						</sw-listing-display>
 				
 					</div>
@@ -386,36 +366,10 @@
 							data-persisted-collection-config="true" 
 							data-multiselect-field-name="orderItemID" 
 							data-name="orderItemCollectionTable" 
-							data-multi-slot="multislot">
+							data-collection-config="swOrderFulfillmentListController.collections[swOrderFulfillmentListController.FulfillmentsList.Views.Items]"
+
+						>
 							
-							<sw-collection-configs>
-								<sw-collection-config data-entity-name="OrderItem" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
-									
-									<sw-collection-filters>
-										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderType.systemCode" data-comparison-operator="=" data-comparison-value="otSalesOrder"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderStatusType.systemCode" data-comparison-operator="NOT IN" data-comparison-value="ostClosed,ostCanceled"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="orderFulfillment.orderFulfillmentStatusType.systemCode"  data-comparison-operator="!="  data-comparison-value="ofstFulfilled"></sw-collection-filter>
-									</sw-collection-filters>
-									
-									<sw-collection-columns>
-										<sw-collection-column data-property-identifier="orderItemID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
-										<sw-collection-column data-property-identifier="order.orderNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-										<sw-collection-column data-property-identifier="sku.skuCode" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-										<sw-collection-column data-property-identifier="sku.calculatedSkuDefinition" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-										<sw-collection-column data-property-identifier="quantity" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-										<sw-collection-column data-property-identifier="sku.calculatedQOH" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-										<sw-collection-column data-property-identifier="stock.location.locationName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-										<sw-collection-column data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="order.orderOpenDateTime" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-							            <sw-collection-column data-property-identifier="orderFulfillment.estimatedShippingDate" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-							        </sw-collection-columns>
-								</sw-collection-config>
-							</sw-collection-configs>
-						</sw-listing-display>
-						
 						</sw-listing-display>
 				
 					</div>

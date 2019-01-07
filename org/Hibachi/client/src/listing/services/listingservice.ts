@@ -22,6 +22,7 @@ export class ListingService{
     public listingDisplayStore: Store.IStore;
 
     //@ngInject
+<<<<<<< HEAD
     constructor(@Inject("$timeout") private $timeout : any,
                 @Inject("$q") private $q :any,
                 private collectionConfigService : CollectionConfig,
@@ -33,6 +34,20 @@ export class ListingService{
                 private utilityService : UtilityService,
                 private $hibachi : $Hibachi
             ){
+=======
+    constructor(private $timeout,
+                private $q,
+                private collectionConfigService,
+                private filterService,
+                private historyService,
+                private observerService,
+                private rbkeyService,
+                private selectionService,
+                private utilityService,
+                private $hibachi,
+                private localStorageService
+    ){
+>>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
         //Setup a store so that controllers can listing for state changes and fire action requests.
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
@@ -1080,5 +1095,20 @@ export class ListingService{
         }
     };
     //End Expandable Functions
+    
+    //Begin Personal Collections Functions
+    
+    public hasPersonalCollectionSelected=(baseEntityName:string):boolean=>{
+        return this.localStorageService.hasItem('selectedPersonalCollection') 
+            && this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
+    }
+     public getPersonalCollectionByBaseEntityName=(baseEntityName:string):any=>{
+        var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
+        personalCollection.setDisplayProperties('collectionConfig');
+        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
+        return personalCollection;
+    }
+        
+    //End Personal Collections Functions
 
 }

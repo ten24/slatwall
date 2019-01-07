@@ -74,7 +74,8 @@ class SWListingDisplayController{
     public searching:boolean = false;
     public searchText;
 
-    public selectFieldName;
+	public selectFieldName;
+	public selectValue;
     public selectable:boolean = false;
     public showOrderBy:boolean;
     public showExport:boolean;
@@ -164,8 +165,7 @@ class SWListingDisplayController{
              (this.baseEntityName) 
              && (
                  this.usingPersonalCollection 
-                 && this.localStorageService.hasItem('selectedPersonalCollection') 
-                 && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]
+                 && this.listingService.hasPersonalCollectionSelected(this.baseEntityName)
              )
              && (
                 angular.isUndefined(this.personalCollectionIdentifier) 
@@ -175,9 +175,8 @@ class SWListingDisplayController{
                 )
             )
         ){
-            var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
-            personalCollection.setDisplayProperties('collectionConfig');
-            personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
+            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
+           
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
@@ -225,11 +224,8 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
-        
-        if(this.collectionConfig ) {
-            if(this.collectionConfig.keywords && this.collectionConfig.keywords.length){
-                this.searchText = this.collectionConfig.keywords;
-            }
+        if(this.collectionConfig && this.collectionConfig.keywords && this.collectionConfig.keywords.length){
+            this.searchText = this.collectionConfig.keywords;
         }
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
@@ -266,6 +262,10 @@ class SWListingDisplayController{
             if(this.columns && this.columns.length){
                 this.collectionConfig.columns = this.columns;
             }
+            //setup selectable
+            this.listingService.setupSelect(this.tableID);
+            this.listingService.setupMultiselect(this.tableID);
+            this.listingService.setupExampleEntity(this.tableID);
             this.setupCollectionPromise();
 
         }
@@ -568,6 +568,9 @@ class SWListingDisplayController{
         });
     };
 
+	public select = (selectValue)=>{
+        this.selectValue = selectValue; 
+    }
 
     public getPageRecordKey = (propertyIdentifier)=>{
        return this.listingService.getPageRecordKey(propertyIdentifier);
@@ -628,7 +631,7 @@ class SWListingDisplayController{
             }
             $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
             $('#formExport')
-                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig).replace(/'/g,'&#39;') + "' />")
                 .submit()
                 .remove();
         }
@@ -646,7 +649,7 @@ class SWListingDisplayController{
             .append("<input type='hidden' name='processContext' value='addToQueue' />")
             .append("<input type='hidden' name='printID' value='' />")
             .append("<input type='hidden' name='printTemplateID' value='" + printTemplateID +"' />")
-            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />");
+            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig).replace(/'/g,'&#39;') + "' />");
         
         $('#formPrint')
             .submit()
@@ -781,7 +784,7 @@ class SWListingDisplay implements ng.IDirective{
             sortContextIDValue:"@?",
 
             /*Single Select*/
-            selectFiledName:"@?",
+            selectFieldName:"@?",
             selectValue:"@?",
             selectTitle:"@?",
 

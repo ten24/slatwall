@@ -24,6 +24,7 @@ export class OrderFulfillmentService {
         showFulfillmentListing: true,
         expandedFulfillmentBatchListing: true,
         editComment:false,
+        useShippingIntegrationForTrackingNumber:true,
         
         //objects
         commentBeingEdited:undefined,
@@ -32,6 +33,7 @@ export class OrderFulfillmentService {
         //strings
         currentSelectedFulfillmentBatchItemID: "",
         fulfillmentBatchId:undefined,
+        reference1:"",
 
         //empty collections
         smFulfillmentBatchItemCollection:undefined,
@@ -45,11 +47,13 @@ export class OrderFulfillmentService {
         //arrays
         accountNames:[],
         orderDeliveryAttributes:[],
+        orderItem:[],
         loading: false,
         tableSelections: {
             table1: [],
             table2: []
-        }
+        },
+        boxes:[{}]
     };
     private updateLock:Boolean = false;
     private selectedValue:string = "";
@@ -139,6 +143,14 @@ export class OrderFulfillmentService {
             case actions.EMAIL_LIST_REQUESTED:
                 this.getEmailList();
                 return {...this.state, action}
+                
+            case actions.ADD_BOX:
+                this.addNewBox(action.payload.viewState);
+                return {...this.state, action}
+            
+            case actions.REMOVE_BOX:
+                this.removeBox(action.payload.index);
+                return {...this.state, action}
             
             case actions.TOGGLE_LOADER:
                 this.state.loading = !this.state.loading;
@@ -173,35 +185,49 @@ export class OrderFulfillmentService {
     }
 
     /** When a row is selected, remove the other selections.  */
+<<<<<<< HEAD
     public swSelectionToggleSelectionfulfillmentBatchItemTable2 (args) {
         if (args.action === "uncheck" || args.selectionid != "fulfillmentBatchItemTable2"){
             if(this.selectedValue = args.selection){
+=======
+    public swSelectionToggleSelectionfulfillmentBatchItemTable2 = (args) => {
+        if(args.selectionid != "fulfillmentBatchItemTable2"){
+            return;
+        }
+        if (args.action === "uncheck"){
+            if(this.selectedValue == args.selection){
+>>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
                 this.selectedValue = undefined;
             }
             return;
         }
         //Are any previously checked?
-        if (args.action === "check" && args.selection != undefined && args.selectionid == "fulfillmentBatchItemTable2"){
+        if (args.action === "check" 
+            && args.selection != undefined 
+            && args.selection != this.selectedValue
+            && args.selectionid == "fulfillmentBatchItemTable2"){
             
             //set the selection.
             //save the selected value
             var current = "";
             if (this.selectedValue != undefined && this.selectedValue.length){
                 current = this.selectedValue;
-                
-                this.selectedValue = args.selection;
                 //remove that old value
-                
+                this.selectedValue = args.selection;
                 this.selectionService.removeSelection("fulfillmentBatchItemTable2", current);
                 this.state.currentSelectedFulfillmentBatchItemID = this.selectedValue;
+                this.state.useShippingIntegrationForTrackingNumber = true;
+                this.state.orderItem = [];
+                this.state.boxes = [{}];
                 this.state.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
                     for (var result in results.pageRecords){
                         let currentRecord = results['pageRecords'][result];
-                        if (currentRecord['fulfillmentBatchItemID'] == this.state.currentSelectedFulfillmentBatchItemID){
+                        if (currentRecord['fulfillmentBatchItemID'] === this.state.currentSelectedFulfillmentBatchItemID){
                             //Matched - Save some items from the currentRecord to display.
                             //Get the orderItems for this fulfillment
                             this.createOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
                             this.createCurrentRecordDetailCollection(currentRecord);
+                            this.createShippingIntegrationOptions(currentRecord);
                             this.emitUpdateToClient();
                         }
                     }
@@ -211,6 +237,7 @@ export class OrderFulfillmentService {
             }
         }
     }
+    
 
     /** Sets up the batch detail page including responding to listing changes. */
     public setupFulfillmentBatchDetail() {
@@ -223,21 +250,19 @@ export class OrderFulfillmentService {
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
             if (update.action && update.action.type && update.action.type == actions.CURRENT_PAGE_RECORDS_SELECTED){
-                
+
                 /*  Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
                     Outer table, will need to toggle and set the floating cards to this data.
                     on the first one being selected, go to the shrink view and set the selection on there as well.*/
-                        
                 if (angular.isDefined(update.action.payload)){
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1"){
                         
                         //If there is only one item selected, show that detail.
-                        if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1){
+                        if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length === 1){
                             if (this.state.expandedFulfillmentBatchListing){
                                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
                             }
                             this.state.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
-                            
                             //set the selection.
                             if (update.action.payload.values.length && this.state.currentSelectedFulfillmentBatchItemID){
                                 let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
@@ -254,11 +279,12 @@ export class OrderFulfillmentService {
                             this.state.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
                                 for (var result in results.pageRecords){
                                     let currentRecord = results['pageRecords'][result];
-                                    if (currentRecord['fulfillmentBatchItemID'] == this.state.currentSelectedFulfillmentBatchItemID){
+                                    if (currentRecord['fulfillmentBatchItemID'] === this.state.currentSelectedFulfillmentBatchItemID){
                                         //Matched - Save some items from the currentRecord to display.
                                         //Get the orderItems for this fulfillment
                                         this.createOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
                                         this.createCurrentRecordDetailCollection(currentRecord);
+                                        this.createShippingIntegrationOptions(currentRecord);
                                         this.emitUpdateToClient();
                                     }
                                 }
@@ -309,8 +335,19 @@ export class OrderFulfillmentService {
     }
 
     /** Creates the orderDelivery - fulfilling the items quantity of items specified, capturing as needed. */
+<<<<<<< HEAD
     public fulfillItems (state:any={}, ignoreCapture:boolean = false) {
         
+=======
+    public fulfillItems = (state:any={}, ignoreCapture:boolean = false) => {
+        this.state.loading=true;
+      if (state.useShippingIntegrationForTrackingNumber && (state.shippingIntegrationID == "" || state.shippingIntegrationID == null)) {
+            this.state.loading = false;
+            alert(this.$rootScope.rbKey('define.invalidShippingIntegration'));
+            return;
+        }
+
+>>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
         let data:any = {};
         //Add the order information
         data.order = {};
@@ -320,10 +357,11 @@ export class OrderFulfillmentService {
         data['orderFulfillment'] = {};
         data['orderFulfillment']['orderFulfillmentID'] = this.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID'];
         data['trackingNumber'] = state.trackingCode || "";
-        
-        if (data['trackingNumer'] == undefined || !data['trackingNumber'].length){
+        data['containers'] = state.boxes || [];
+        if (data['trackingNumber'] == undefined || !data['trackingNumber'].length){
             data['useShippingIntegrationForTrackingNumber'] = state.useShippingIntegrationForTrackingNumber || "false";
         }
+
 
         //console.log("Batch Information: ", this.state.currentRecordOrderDetail['fulfillmentBatchItem']);
         //Add the orderDelivertyItems as an array with the quantity set to the quantity.
@@ -360,7 +398,9 @@ export class OrderFulfillmentService {
             //shippingAddress.addressID
             data['shippingAddress'] = {};
             data['shippingAddress']['addressID'] = this.state.currentRecordOrderDetail['shippingAddress_addressID'];
-
+            if(data['useShippingIntegrationForTrackingNumber']){
+                data['shippingIntegration'] = {integrationID:state.shippingIntegrationID}
+            }
         }
 
         //Create the process object.
@@ -373,8 +413,10 @@ export class OrderFulfillmentService {
         
         //Shipping information.
         processObject.data['containerLabel'] = data.containerLabel || "";
-        processObject.data['shippingIntegration'] = data.shippingIntegration || "";
+        processObject.data['orderFulfillment']['shippingIntegration'] = data.shippingIntegration || "";
         processObject.data['shippingAddress'] = data.shippingAddress || "";
+        processObject.data['containers'] = data.containers;
+
         processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
         
         if(state.orderDeliveryAttributes){
@@ -385,6 +427,7 @@ export class OrderFulfillmentService {
         }
         
         this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then((result)=>{
+            this.state.loading=false;
             if (result.orderDeliveryID != undefined && result.orderDeliveryID != ''){
                 return result;
             }
@@ -406,16 +449,21 @@ export class OrderFulfillmentService {
                             this.listingService.getListingPageRecords("fulfillmentBatchItemTable1")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
            
                 
-                this.listingService
-                    .getListing("fulfillmentBatchItemTable2").selectionService
-                        .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
-                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
-            
+                let args = {
+                    selection:this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")],
+                    selectionid:"fulfillmentBatchItemTable2",
+                    action:"check"
+                };
+                
+                
+                this.swSelectionToggleSelectionfulfillmentBatchItemTable2(args);
             }
             //refresh.
             //Scroll to the quantity div.
             //scrollTo(orderItemQuantity_402828ee57e7a75b0157fc89b45b05c4)
 
+        },(error)=>{
+            this.state.loading=false;
         });
         
     }
@@ -468,6 +516,17 @@ export class OrderFulfillmentService {
                 });
             }
         }
+    }
+
+    public createShippingIntegrationOptions = (currentRecord)=>{
+        this.$hibachi.getPropertyDisplayOptions("OrderFulfillment",{property:"ShippingIntegration",entityID:currentRecord['orderFulfillment_orderFulfillmentID']}).then(response=>{
+            this.state.shippingIntegrationOptions = response.data;
+            if(currentRecord['orderFulfillment_shippingIntegration_integrationID'].trim() != "" && currentRecord['orderFulfillment_shippingIntegration_integrationID'] != null){
+                this.state.shippingIntegrationID = currentRecord['orderFulfillment_shippingIntegration_integrationID'];
+            } else {
+                this.state.shippingIntegrationID = this.state.shippingIntegrationOptions[0]['VALUE'];
+            }
+        });
     }
 
     /**
@@ -527,7 +586,8 @@ export class OrderFulfillmentService {
         this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.city");
         this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.stateCode");
         this.state.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
-        
+        this.state.currentRecordOrderDetail.addDisplayProperty("shippingIntegration");
+
         this.state.currentRecordOrderDetail.getEntity().then( (entityResults) => {
             if (entityResults['pageRecords'].length){
                 this.state.currentRecordOrderDetail = entityResults['pageRecords'][0];
@@ -568,6 +628,11 @@ export class OrderFulfillmentService {
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
+        this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingIntegration.integrationID");
+        this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastMessage");
+        this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastStatusCode");
+        this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastMessage");
+        this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastStatusCode");
         this.state.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
         
      }
@@ -595,6 +660,7 @@ export class OrderFulfillmentService {
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
+        this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingIntegration.integrationID");
         this.state.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
         return this.state.smFulfillmentBatchItemCollection;
      }
@@ -639,6 +705,21 @@ export class OrderFulfillmentService {
                 this.state.emailCollection = result.pageRecords || [];
             });
      }
+     
+     /**
+     * Add a box to the shipment
+     */
+     private addNewBox = (state) => {
+         this.state = state;
+        this.state.boxes.push({});
+     }
+     
+     /**
+     * Remove a box from the shipment
+     */
+     private removeBox = (index) => {
+        this.state.boxes.splice(index,1);
+     }
 
     /**
      * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
@@ -656,10 +737,15 @@ export class OrderFulfillmentService {
         collection.addDisplayProperty("quantityDelivered");
         collection.addDisplayProperty("orderItemID");
         collection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
+        collection.setPageShow(100);
         collection.getEntity().then((orderItems)=>{
             if (orderItems && orderItems.pageRecords && orderItems.pageRecords.length){
                 this.state.orderFulfillmentItemsCollection = orderItems['pageRecords'];
-            }else{
+            }
+            else if (orderItems && orderItems.records && orderItems.records.length){
+                this.state.orderFulfillmentItemsCollection = orderItems['records'];
+            }
+            else{
                 this.state.orderFulfillmentItemsCollection = [];
             }
             this.emitUpdateToClient();

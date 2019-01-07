@@ -51,7 +51,7 @@ class SWWorkflowTriggers{
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtriggers.html",
 			link: function(scope, element,attrs,formController){
-
+                
                 scope.schedule = {};
 
                 scope.$watch('workflowTriggers.selectedTrigger', function(newValue, oldValue){
@@ -73,6 +73,19 @@ class SWWorkflowTriggers{
                 scope.collectionCollectionConfig = collectionConfigService.newCollectionConfig("Collection");
                 scope.collectionCollectionConfig.setDisplayProperties("collectionID,collectionName");
                 scope.collectionCollectionConfig.addFilter("collectionObject",scope.workflow.data.workflowObject);
+                
+                scope.updateCollection = (collectionConfigData)=>{
+                    if(scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig && collectionConfigData.collectionConfig.collectionConfigString){
+                        
+                        scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig.collectionConfigString);
+                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig =collectionConfigService.newCollectionConfig().loadJson(scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig.toString());
+                        //update the property display programatically
+                        observerService.notifyById('pullBindings','WorkflowTriggerscheduleCollectionConfigpullBindings').then(function(){
+                              
+                        });
+                    }
+                    
+                };
 
                 observerService.attach((item) =>{
                     scope.collectionCollectionConfig.clearFilters();
@@ -80,6 +93,11 @@ class SWWorkflowTriggers{
                     scope.eventOptions = [];
                 },'WorkflowWorkflowObjectOnChange');
                 
+                
+                observerService.attach(
+                    scope.updateCollection,
+                    'filterItemAction'
+                );
 
                 scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
                 scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
@@ -128,9 +146,10 @@ class SWWorkflowTriggers{
 						//Use the cached versions.
 						scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 					}//<---end else
+					
 				};
 				scope.getWorkflowTriggers();//call triggers
-
+                
 
 
 				scope.showCollections = false;

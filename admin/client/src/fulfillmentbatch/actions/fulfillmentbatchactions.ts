@@ -62,6 +62,16 @@ export const REFRESH_BATCHDETAIL  = "REFRESH_BATCHDETAIL";
 export const ADD_BATCH  = "ADD_BATCH";
 
 /**
+ * This will add a box to a shipment.
+ */
+export const ADD_BOX  = "ADD_BOX";
+
+/**
+ * This will remove a box from a shipment.
+ */
+export const REMOVE_BOX  = "REMOVE_BOX";
+
+/**
  * This will fire when the current page records selected on a table are updated.
  */
 export const CURRENT_PAGE_RECORDS_SELECTED  = "CURRENT_PAGE_RECORDS_SELECTED";

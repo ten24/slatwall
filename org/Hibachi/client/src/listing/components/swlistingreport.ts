@@ -33,6 +33,7 @@ class SWListingReportController {
     
     //@ngInject
     constructor(
+        public $scope,
         public $timeout,
         public $rootScope,
         public $hibachi,
@@ -41,19 +42,21 @@ class SWListingReportController {
         public observerService,
         public collectionConfigService
     ) {
-        
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
         if(this.collectionId){
             var selectedReport = {
                 collectionID:this.collectionId,
                 collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
             };
-            this.selectReport(selectedReport);
+            
+            this.getPeriodColumns().then(()=>{
+                
+                this.selectReport(selectedReport);
+            });
+        }else{
+            this.getPeriodColumns();
+            this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         }
-        this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
-        this.filterPropertiesList = {};
-        
-        this.getPeriodColumns();
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
     }
@@ -188,7 +191,7 @@ class SWListingReportController {
         this.selectedCollectionID = selectedReport.collectionID;
         this.collectionName=selectedReport.collectionName;
         
-        this.selectedPeriodInterval = {value:collectionData.periodInterval};
+        
         for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
             var filterGroup = collectionData.filterGroups[0].filterGroup[i];
             
@@ -205,29 +208,29 @@ class SWListingReportController {
                 
             }
         }
-        
+        this.selectedPeriodInterval = {value:collectionData.periodInterval};
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+        
+        
         //navigate propertyIdentifier to populate drop down
-        var pidArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
-        for(var i=1; i <= pidArray.length-1;i++){
-            var propertyName = pidArray[i];
+        this.selectedPeriodPropertyIdentifierArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
+        var lastObject = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionConfig.baseEntityName,this.selectedPeriodColumn.propertyIdentifier);
+        this.getPeriodColumns(lastObject).then(()=>{
+            var propertyName =  this.selectedPeriodPropertyIdentifierArray[ this.selectedPeriodPropertyIdentifierArray.length-1];
             for(var j in this.periodColumns){
                 var periodColumn = this.periodColumns[j];
                 if(periodColumn.name===propertyName){
                     if(periodColumn.cfc){
-                        this.selectPeriodColumn(periodColumn);
+                        this.selectPeriodColumn(periodColumn,false);
                         break;
                     }else{
-                        this.selectPeriodColumn(periodColumn);
+                        this.selectPeriodColumn(periodColumn,false);
                         break;
                     }
-                    
-                    
                 }
-                
+                    
             }
-            
-        }
+        });
         
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
@@ -247,6 +250,7 @@ class SWListingReportController {
     
     
     public updatePeriod = ()=>{
+        
         //if we have all the info we need then we can make a report
         if(
             this.selectedPeriodColumn 
@@ -389,26 +393,33 @@ class SWListingReportController {
         if(this.objectPath.length > 1){
             this.objectPath.pop();
             this.selectedPeriodPropertyIdentifierArray.pop();
-            this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false);
+            this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false).then(()=>{
+                
+            });
         }
     }
+    
+    
     
     public getPeriodColumns=(baseEntityAlias=this.collectionConfig.baseEntityAlias,adding=true)=>{
         if(adding){
             
             this.objectPath.push(baseEntityAlias);
         }
-        
-        
         //get meta data we need for existing columns
 
-        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias);
-        promise.then((value)=> {
+        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=>{
             
+        
+        
             this.metadataService.setPropertiesList(value, baseEntityAlias);
+            console.log(this);
+            if(!this.filterPropertiesList){
+                this.filterPropertiesList={};
+            }
+            
             this.filterPropertiesList[baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
             this.metadataService.formatPropertiesList(this.filterPropertiesList[baseEntityAlias], baseEntityAlias);
-            
             //figure out all the possible periods
             var columns = {};
             columns[baseEntityAlias] = angular.copy(this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias));
@@ -419,11 +430,19 @@ class SWListingReportController {
                     this.periodColumns.push(column);
                 }
             }
+            
         });
+        return promise;
+    }
+    
+    public selectPeriodInterval=(interval)=>{
+        this.selectedPeriodInterval={value:interval};
+        this.updatePeriod();
         
     }
     
-    public selectPeriodColumn=(column)=>{
+    public selectPeriodColumn=(column,update=true)=>{
+        
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
             this.getPeriodColumns(column.cfc);
@@ -441,7 +460,9 @@ class SWListingReportController {
             column.isPeriod = true;
             
             this.selectedPeriodColumn = column;
-            this.updatePeriod();
+            if(update){
+                this.updatePeriod();
+            }
         }
     }
 

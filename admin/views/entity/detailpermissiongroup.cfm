@@ -62,8 +62,8 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
 			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/entitypermissions">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/actionpermissions">
+			<hb:HibachiEntityDetailItem tabid="entitypermissions" lazyLoad="true" view="admin:entity/permissiongrouptabs/entitypermissions">
+			<hb:HibachiEntityDetailItem tabid="actionpermissions" lazyLoad="true" view="admin:entity/permissiongrouptabs/actionpermissions">
             <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts">
             <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/recordrestrictions">
 		</hb:HibachiEntityDetailGroup>
