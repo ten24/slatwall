@@ -3172,6 +3172,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstInvalid') );
 		} else {
 			arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstActive') );
+			arguments.orderPayment.setAmount(arguments.processObject.getAmount());
 		}
 
 		// Flush the statusType for the orderPayment
