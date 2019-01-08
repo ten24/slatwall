@@ -91357,18 +91357,20 @@ var SWWorkflowTasks = /** @class */ (function () {
                     $log.debug(workflowTask);
                     scope.finished = false;
                     scope.workflowTasks.selectedTask = undefined;
-                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject, true);
+                    var workflowObject = scope.workflow.data.workflowObject;
+                    var workflowObjectAlias = "_" + workflowObject.toLowerCase();
+                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(workflowObject, true);
                     filterPropertiesPromise.then(function (value) {
                         scope.filterPropertiesList = {
-                            baseEntityName: scope.workflow.data.workflowObject,
-                            baseEntityAlias: "_" + scope.workflow.data.workflowObject.toLowerCase()
+                            baseEntityName: workflowObject,
+                            baseEntityAlias: workflowObjectAlias
                         };
-                        metadataService.setPropertiesList(value, scope.workflow.data.workflowObject);
-                        scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
-                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject], scope.workflow.data.workflowObject);
-                        metadataService.setPropertiesList(value, "_" + scope.workflow.data.workflowObject.toLowerCase());
-                        scope.filterPropertiesList["_" + scope.workflow.data.workflowObject.toLowerCase()] = metadataService.getPropertiesListByBaseEntityAlias("_" + scope.workflow.data.workflowObject.toLowerCase());
-                        metadataService.formatPropertiesList(scope.filterPropertiesList["_" + scope.workflow.data.workflowObject.toLowerCase()], "_" + scope.workflow.data.workflowObject.toLowerCase());
+                        metadataService.setPropertiesList(value, workflowObject);
+                        scope.filterPropertiesList[workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(workflowObject);
+                        metadataService.formatPropertiesList(scope.filterPropertiesList[workflowObject], workflowObject);
+                        metadataService.setPropertiesList(value, workflowObjectAlias);
+                        scope.filterPropertiesList[workflowObjectAlias] = metadataService.getPropertiesListByBaseEntityAlias(workflowObjectAlias);
+                        metadataService.formatPropertiesList(scope.filterPropertiesList[workflowObjectAlias], workflowObjectAlias);
                         scope.workflowTasks.selectedTask = workflowTask;
                     });
                 };
