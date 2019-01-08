@@ -22,7 +22,6 @@ export class AlertService {
         return this.alerts || [];
     };
 
-<<<<<<< HEAD
     addAlert(alert:any):void{
         this.alerts.push(alert);
         setTimeout(()=> {
@@ -30,18 +29,6 @@ export class AlertService {
                 this.removeAlert(alert);
             }
         }, 3500);
-=======
-    addAlert = (alert:any):void =>{
-        
-        if(alert.msg){
-            this.alerts.push(alert);
-            this.$timeout(()=> {
-                if(!alert.dismissable){
-                    this.removeAlert(alert);
-                }
-            }, 3500);
-        }
->>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
     };
 
     addAlerts(alerts:Alert[]):void{

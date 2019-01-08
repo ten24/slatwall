@@ -185,18 +185,12 @@ export class OrderFulfillmentService {
     }
 
     /** When a row is selected, remove the other selections.  */
-<<<<<<< HEAD
-    public swSelectionToggleSelectionfulfillmentBatchItemTable2 (args) {
-        if (args.action === "uncheck" || args.selectionid != "fulfillmentBatchItemTable2"){
-            if(this.selectedValue = args.selection){
-=======
-    public swSelectionToggleSelectionfulfillmentBatchItemTable2 = (args) => {
+    public swSelectionToggleSelectionfulfillmentBatchItemTable2(args){
         if(args.selectionid != "fulfillmentBatchItemTable2"){
             return;
         }
         if (args.action === "uncheck"){
             if(this.selectedValue == args.selection){
->>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
                 this.selectedValue = undefined;
             }
             return;
@@ -335,11 +329,7 @@ export class OrderFulfillmentService {
     }
 
     /** Creates the orderDelivery - fulfilling the items quantity of items specified, capturing as needed. */
-<<<<<<< HEAD
     public fulfillItems (state:any={}, ignoreCapture:boolean = false) {
-        
-=======
-    public fulfillItems = (state:any={}, ignoreCapture:boolean = false) => {
         this.state.loading=true;
       if (state.useShippingIntegrationForTrackingNumber && (state.shippingIntegrationID == "" || state.shippingIntegrationID == null)) {
             this.state.loading = false;
@@ -347,7 +337,6 @@ export class OrderFulfillmentService {
             return;
         }
 
->>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
         let data:any = {};
         //Add the order information
         data.order = {};

@@ -13,6 +13,7 @@ import {RbKeyService} from "../../core/services/rbkeyservice";
 import {SelectionService} from "../../core/services/selectionservice";
 import {UtilityService} from "../../core/services/utilityservice";
 import {$Hibachi} from "../../core/services/hibachiservice";
+import {LocalStorageService} from "../../core/services/localstorageservice";
 
 @Injectable()
 export class ListingService{
@@ -22,7 +23,6 @@ export class ListingService{
     public listingDisplayStore: Store.IStore;
 
     //@ngInject
-<<<<<<< HEAD
     constructor(@Inject("$timeout") private $timeout : any,
                 @Inject("$q") private $q :any,
                 private collectionConfigService : CollectionConfig,
@@ -32,22 +32,9 @@ export class ListingService{
                 private rbkeyService : RbKeyService,
                 private selectionService : SelectionService,
                 private utilityService : UtilityService,
-                private $hibachi : $Hibachi
+                private $hibachi : $Hibachi,
+                private localStorageService : LocalStorageService
             ){
-=======
-    constructor(private $timeout,
-                private $q,
-                private collectionConfigService,
-                private filterService,
-                private historyService,
-                private observerService,
-                private rbkeyService,
-                private selectionService,
-                private utilityService,
-                private $hibachi,
-                private localStorageService
-    ){
->>>>>>> 6cf5b1742aa928f1aa238feb04031bab7d8b7fde
         //Setup a store so that controllers can listing for state changes and fire action requests.
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.

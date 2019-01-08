@@ -19,53 +19,17 @@ export class BaseBootStrapper{
 
     constructor(myApplication){
         this.myApplication = myApplication;
-        var initInjector = angular.injector(["ng"]);
-        var $http = initInjector.get("$http");
-        var $q = initInjector.get("$q");
-        this.$http = $http;
-        this.$q = $q;
-    }
-    
-    fetchData = ()=>{
-        var baseURL = hibachiConfig.baseURL;
-        if(!baseURL) {
-            baseURL = ''
-        }
-        if(baseURL.length && baseURL.slice(-1) !== '/'){
-            baseURL += '/';
-        }
-
-/*
-       return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
-            this.instantiationKey = instantiationKey;
-            var invalidCache = [];
-            try{
-                var hashedData = localStorage.getItem('attributeChecksum');
-                if(hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
-                    coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
-                }else{
-                    invalidCache.push('attributeCacheKey');
-                }
-            }catch(e){
-                invalidCache.push('attributeCacheKey');
+        return angular.lazy(this.myApplication).resolve(['$http','$q', ($http,$q)=> {
+            this.$http = $http;
+            this.$q = $q;
+            var baseURL = hibachiConfig.baseURL;
+            if(!baseURL) {
+                baseURL = ''
+            }
+            if(baseURL.length && baseURL.slice(-1) !== '/'){
+                baseURL += '/';
             }
 
-            try{
-                this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
-                    coremodule.constant('appConfig', this.appConfig);
-                    return this.getResourceBundles();
-                }else{
-                    invalidCache.push('instantiationKey');
-                }
-            }catch(e){
-                invalidCache.push('instantiationKey');
-            }
-
-            return this.getData(invalidCache);
-        });
-        
-*/
            return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
                 this.instantiationKey = instantiationKey;
                 var invalidCache = [];
@@ -74,20 +38,20 @@ export class BaseBootStrapper{
                     if(!isPrivate){
                         this.isPrivate = true;
                     }
-		    
-		            // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
+            
+                    // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
                     try{
                         var hashedData = localStorage.getItem('attributeChecksum');
-			
+            
                         // attributeMetaData is valid and can be restored from local storage cache
                         if(hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
                             coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
-			    
+                
                         // attributeMetaData is invalid and needs to be refreshed
                         }else{
                             invalidCache.push('attributeCacheKey');
                         }
-		    
+            
                     // attributeMetaData is invalid and needs to be refreshed
                     }catch(e){
                         invalidCache.push('attributeCacheKey');
@@ -103,13 +67,13 @@ export class BaseBootStrapper{
                             };
                             
                         }
-			
+            
                         // appConfig instantiation key is valid (but attribute model may need to be refreshed)
                         if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
 
 
                             // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
-			    
+                
                             coremodule.constant('appConfig', this.appConfig);
 
                             // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
@@ -127,13 +91,13 @@ export class BaseBootStrapper{
                         
                             // All appConfig and attribute model valid, nothing to refresh prior, ends the bootstrapping process
                             return this.getResourceBundles();
-			    
+                
 
                         // Entire app config needs to be refreshed
                         }else{
                             invalidCache.push('instantiationKey');
                         }
-			
+            
                     // Entire app config needs to be refreshed
                     }catch(e){
                         invalidCache.push('instantiationKey');
@@ -145,7 +109,6 @@ export class BaseBootStrapper{
                 
             });
       }])
-
 
     }
     
@@ -272,7 +235,7 @@ export class BaseBootStrapper{
         return this.$http.get(urlString+'/custom/system/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             
-        	var appConfig = resp.data.data;
+            var appConfig = resp.data.data;
             if(hibachiConfig.baseURL.length){
                 appConfig.baseURL=urlString;    
             }
