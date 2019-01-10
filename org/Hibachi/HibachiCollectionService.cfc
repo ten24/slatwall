@@ -328,7 +328,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
-		for(propertyIdentifierItem in propertyIdentifiersArray){
+		for(var propertyIdentifierItem in propertyIdentifiersArray){
 			if(
 				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, propertyIdentifierItem)
 			){
