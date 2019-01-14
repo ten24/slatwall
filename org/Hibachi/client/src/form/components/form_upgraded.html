@@ -1,0 +1,71 @@
+
+<div *ngIf="object && isObject()" >
+	<div  class="col-md-6 s-header-left">
+		<form [formGroup] = "form">
+			<div class="form-group">
+				<label>Workflow Name:</label>
+				<input type="text" class="form-control" [formControl]="form.controls['workflowName']" /> 
+				<sw-error-display-upgraded [control] = "form.controls['workflowName']" ></sw-error-display-upgraded>
+			</div>
+			<div class="form-group" >
+				<label>Object:</label> 
+				<!--  
+				<select  class="form-control"
+				    		 [(ngModel)]="object.data['selected'+propertyIdentifier]"
+							 (ngModelChange)="formFieldChanged(object.data['selected'+propertyIdentifier])"	 
+				>
+					<option 
+						*ngFor="let propertyDisplayOption of options;trackBy: propertyDisplayOption" 
+						[attr.selected]="propertyDisplayOption === object.data['selected'+propertyIdentifier]" >
+							{{propertyDisplayOption?.value}}
+					</option>
+				</select>
+				 -->		
+				   
+				<select class="form-control" disabled="true">
+					<option 
+						*ngFor="let propertyDisplayOption of options; trackBy: propertyDisplayOption"
+						[attr.selected]="propertyDisplayOption == object.data['selectedworkflowObject']"
+					 >{{propertyDisplayOption?.name}}</option>
+				</select>
+				
+			</div>
+
+			<div class="form-group">
+				<label>Active:</label>
+				<div *ngIf="selectedRadioFormName" >
+					
+					<div class="radio" style="display:inline-block;" *ngFor="let option of radioOptions; trackBy: option?.value" >
+						<input type="radio" name="{{'selected'+ object.metaData.className + 'activeFlag'+selectedRadioFormName}}" id="{{object.metaData.className+'.'+ 'activeFlag'+ selectedRadioFormName + $index}}"
+								
+								
+								[value]="option"
+								[checked]="option == selected"
+						>
+						<label for="{{object.metaData.className+'.'+ 'activeFlag' + selectedRadioFormName + $index}}">
+							<span [textContent]="option.name"></span>
+						</label>
+					</div>
+				</div>
+		
+				<input style="display:none"	type="text" *ngIf="selectedRadioFormName && 'activeFlag'"
+						
+						name="'activeFlag'"
+				/>
+			</div>
+
+<!-- 
+			<div class="form-group">
+				<label>Active</label>
+				<div>
+					<div class="radio">
+						<input type="radio" /><label>Yes</label>
+					</div>
+					<div class="radio">
+						<input type="radio" /><label>No</label>
+					</div>
+				</div>
+			</div>  -->
+		</form>
+	</div>
+</div>
