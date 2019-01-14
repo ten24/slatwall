@@ -56,7 +56,24 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.productType#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.productType#" edit="#rc.edit#" />
+		<hb:HibachiEntityActionBar type="detail" object="#rc.productType#" edit="#rc.edit#" >
+
+<!--- action & query string --->
+<!--- querystring="productTypeID=#rc.productType.getProductTypeID()#&redirectAction=#request.context.slatAction#" 
+                baseProductType=#rc.baseProductType.getBaseProductTypeID()#
+                  
+                for editing it: querystring="productTypeID=#rc.productType.getProductTypeID()#&redirectAction=#request.context.slatAction#"
+                  
+                NOTES FOR NEXT TIME:
+                MUST be 'baseProductType=#rc._______#
+                Ex of how it should turn out but must be customized: for merchandise one option: querystring="baseProductType=merchandise&redirectAction=#request.context.slatAction#"
+                
+                querystring="baseProductType=#rc.getBaseProductType()#
+                querystring="baseProductType=#rc.productType.getBaseProductType()#
+--->
+
+<hb:HibachiActionCaller action="admin:entity.createproducttype" querystring="baseProductType=#rc.productType.getBaseProductType()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.productType#">
 			<hb:HibachiEntityDetailItem view="admin:entity/producttypetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
