@@ -1120,6 +1120,33 @@
 	        apiRequestAudit = getService("HibachiService").saveApiRequestAudit(apiRequestAudit);
 	        
 		}
+		
+		public struct function getServerStatusInfo() {
+			var runtime = createObject('java', 'java.lang.Runtime').getRuntime();
+			var statusInfo = {
+				cacheType = getHibachiCacheService().getInternalCacheFlag() ? 'internal' : 'external',
+				cacheElementTotal = getHibachiCacheService().getCacheElementsTotal(),
+				cacheMaxElementsLimit = getHibachiCacheService().getMaxCacheElementsLimit(),
+				cacheHitStackElementTotal = arrayLen(getHibachiCacheService().getCacheHitStack()),
+				cacheSweepTotal = getHibachiCacheService().getCacheSweepTotal(),
+				cacheElementLRUAgeSeconds = isNull(getHibachiCacheService().getCacheElementLRU()) ? 'N/A' : (getTickCount() - getHibachiCacheService().getCacheElementLRU().accessLast) / 1000,
+				cacheElementMRUAgeSeconds = isNull(getHibachiCacheService().getCacheElementMRU()) ? 'N/A' : (getTickCount() - getHibachiCacheService().getCacheElementMRU().accessLast) / 1000,
+				cacheValidationIntervalSeconds = getHibachiCacheService().getCacheValidationIntervalSeconds(),
+				cacheLastValidationSeconds = round(((getTickCount() - getHibachiCacheService().getLastValidationTicks()) / 1000) * 100) / 100,
+				cacheNextValidationSeconds = round((getHibachiCacheService().getCacheValidationIntervalSeconds() - ((getTickCount() - getHibachiCacheService().getLastValidationTicks()) / 1000)) * 100) / 100,
+				systemProcessorsAvailable = runtime.availableProcessors(),
+				systemMemoryTotalAvailableMb = round((runtime.totalMemory() / 1024 ^ 2) * 100) / 100,
+				systemMemoryFreeMb = round((runtime.freeMemory() / 1024 ^ 2) * 100) / 100,
+				systemMemoryUsedMb = round(((runtime.totalMemory() - runtime.freeMemory()) / 1024 ^ 2) * 100) / 100
+			}
+			return statusInfo;
+		}
+		
+		public void function runJvmGc() {
+			var runtime = createObject('java', 'java.lang.Runtime').getRuntime();
+			runtime.gc();
+			runtime.runFinalization();
+		}
 
 	</cfscript>
 
