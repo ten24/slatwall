@@ -877,9 +877,6 @@ component extends="framework.one" {
 				}
 			}
 		}
-		
-		// Verify cache state
-		getHibachiScope().getService('hibachiCacheService').verifyCacheAndValidate();
 	}
 
 	public void function populateAPIHeaders(){

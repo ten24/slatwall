@@ -106,54 +106,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(variables.service.hasCachedValue('test-cache-key-set'));
 		assert( variables.service.getCachedValue('test-cache-key-set') eq "valid-value" );
 	}
-	
-	/**
-	 * @test
-	 */
-	 public void function cache_eviction_policy() {
-	 	var service = new Slatwall.model.dao.HibachiCacheService();
-	 	
-	 	var testTimeStartTicks = getTickCount();
-	 	
-	 	// By default cache has not been validated
-	 	expect(service.getLastValidationTicks()).toBe(0);
-	 	
-	 	// By default cache is empty
-	 	expect(service.getCacheElementsTotal()).toBe(0);
-	 	
-	 	// By default cache has validation interval defined
-	 	expect(service.getCacheValidationIntervalSeconds()).toBeGT(0);
-	 	
-	 	// By default cache has max elements limit defined
-	 	expect(service.getMaxCacheElementsLimit()).toBeGT(0);
-	 	
-	 	// Override defaults for faster testing purposes for faster execution
-	 	service.setCacheValidationIntervalSeconds(2); // sweeps cache once every two seconds
-	 	service.setMaxCacheElementsLimit(5); //
-	 	
-	 	// Execute first validation of cache
-	 	service.verifyCacheAndValidate();
-	 	
-	 	// Verifies it's properly tracking validation execution history
-	 	expect(service.getLastValidationTicks()).notToBeNull().toBeBetween(testTimeStartTicks, getTickCount());
-	 	
-	 	var previousValueForLastValidationTicks = service.getLastValidationTicks();
-	 	
-	 	// Should not force a cache sweep yet (if this fails intermittently, might probably need to increase the cacheValidationIntervalSeconds value overridden above)
-	 	service.verifyCacheAndValidate();
-	 	
-	 	// Expecting the lastValidationTicks to remain unchanged because not enough time has elapsed for the sweep to occur
-	 	expect(service.getLastValidationTicks()).toBe(previousValueForLastValidationTicks, "Expecting 'lastValidationTicks' not to differ. If this assertion fails intermittently, might probably need to increase the 'cacheValidationIntervalSeconds' value overridden above");
-	 	
-	 	// Wait to cause validation interval to lapse (should minimumly exceed the minimum time required to wait between sweeps plus a 500ms padding)
-	 	sleep((service.getCacheValidationIntervalSeconds() * 1000) - (getTickCount() - service.getLastValidationTicks()) + 500);
-	 	
-	 	// Should force cache sweep
-	 	service.verifyCacheAndValidate();
-	 	
-	 	// Now we are expecting a cacheSweep to have occured
-	 	expect(service.getLastValidationTicks()).toBeGT(previousValueForLastValidationTicks);
-	 }
 
 }
 

@@ -226,8 +226,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
 			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
-			globalCacheMaxElementsLimit = {fieldtype="text",defaultValue="1000"},
-			globalCacheValidationIntervalSeconds = {fieldtype="text",defaultValue="10"},
 			globalCopyCartToNewSessionOnLogout = {fieldtype="yesno", defaultValue=0},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},

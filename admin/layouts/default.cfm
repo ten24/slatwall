@@ -254,8 +254,6 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
 									<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true">
 									<hb:HibachiActionCaller action="admin:main.log" type="list">
-									<hb:HibachiActionCaller action="admin:main.serverstatus" type="list">
-									<hb:HibachiActionCaller action="admin:main.runJvmGc" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listemail" type="list">
 									<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
