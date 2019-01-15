@@ -90,8 +90,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'log');
 	this.secureMethods=listAppend(this.secureMethods, 'unlockAccount');
 	this.secureMethods=listAppend(this.secureMethods, 'collectionExport');
-	this.secureMethods=listAppend(this.secureMethods, 'serverstatus');
-	this.secureMethods=listAppend(this.secureMethods, 'runJvmGc');
 
 	public void function before(required struct rc) {
 		rc.pagetitle = rc.$.slatwall.rbKey(replace(rc.slatAction, ':', '.', 'all'));
@@ -388,11 +386,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getFW().redirect(action="entity.detailaccount", queryString="accountID=#arguments.rc.accountid#", preserve="messages");
 
-	}
-	
-	public void function runJvmGc() {
-		getService('hibachiUtilityService').runJvmGc();
-		getFW().redirect(action="admin:main.serverstatus");
 	}
 
 }
