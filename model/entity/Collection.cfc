@@ -3092,6 +3092,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}//<--end if
 
 			}else{
+				getPropertyIdentifierAlias(column.propertyIdentifier,'column');
 				if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
 					if(structKeyExists(column,'attributeID')){
 						columnsHQL &= getColumnAttributeHQL(column);
@@ -3099,7 +3100,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//verify that column is valid, if not remove it
 						if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
 							//if propertyIdentifier is object vs primitive then restrict page count
-							getPropertyIdentifierAlias(column.propertyIdentifier,'column');
+							
+							
 							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))){
 								restrictPageRecords();
 							}

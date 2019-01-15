@@ -350,7 +350,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionObjectLength = len(collectionObject);
 
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
-		for(propertyIdentifierItem in propertyIdentifiersArray){
+		for(var propertyIdentifierItem in propertyIdentifiersArray){
 
 			if(left(propertyIdentifierItem,collectionObjectLength+1) != '_#collectionObject#'){
 				propertyIdentifierItem = '_#collectionObject#.#propertyIdentifierItem#';
