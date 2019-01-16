@@ -6,7 +6,7 @@ import {ScheduleService} from "./services/scheduleservice";
 
 //directives
 import {SWAdminCreateSuperUser} from "./components/swadmincreatesuperuser";
-import {SWWorkflowBasic} from "./components/swworkflowbasic";
+import {SWWorkflowBasic,SwWorkflowBasic} from "./components/swworkflowbasic";
 import {SWWorkflowCondition} from "./components/swworkflowcondition";
 import {SWWorkflowConditionGroupItem} from "./components/swworkflowconditiongroupitem";
 import {SWWorkflowConditionGroups} from "./components/swworkflowconditiongroups";
@@ -27,7 +27,9 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 
 
 @NgModule({
-	declarations : [],
+	declarations : [
+        //SwWorkflowBasic
+    ],
 	providers : [
 		ScheduleService,
 		WorkflowConditionService
@@ -36,7 +38,10 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 	imports : [
 		CommonModule,
 		UpgradeModule
-	]
+	],
+    exports: [
+        //SwWorkflowBasic
+    ]
 })
 
 export class WorkflowModule{

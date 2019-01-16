@@ -34,10 +34,13 @@ import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
 
+import {SwWorkflowBasic} from "../workflow/components/swworkflowbasic";
+
 @NgModule({
     declarations: [
         SwForm,
-        SwErrorDisplay
+        SwErrorDisplay,
+        SwWorkflowBasic
     ],
     providers: [
         FileService
