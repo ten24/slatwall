@@ -1809,8 +1809,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		getCollectionConfigStruct().periodInterval = arguments.periodInterval;
 	}
 
-	//must be private so outside code will use at the hibachitransient level
-	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+	public boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
 		
 		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
 		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);

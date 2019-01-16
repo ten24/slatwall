@@ -1465,7 +1465,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			arguments.data = getHibachiUtilityService().convertNVPStringToStruct(arguments.data);
 			filterKeyList = structKeyList(arguments.data);
 		}
-
 		//Simple Filters
 		if(!arguments.collection.hasFilterDataApplied()){
 			for (var key in arguments.data){
