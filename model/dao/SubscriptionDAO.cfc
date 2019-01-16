@@ -292,7 +292,7 @@ Notes:
 		<cfset var currentRecordsCount = 0/>
 		<cfquery name="local.deferredRevenueLeftToBeRecognizedQuery">
 			select * FROM(
-			<cfloop from="0" to="#monthcount#" index="i">
+			<cfloop from="0" to="#monthcount#" index="local.i">
 				<cfset currentRecordsCount++/>
 				<cfset var currentMonth = DATEADD('m',i,monthbegin)/>
 				<!---total or orderitems--->
