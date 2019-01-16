@@ -131,6 +131,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="mergeCollectionOptions" persistent="false";
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
+	property name="collectionConfigErrorMessageDetail" persistent="false";
 	property name="collectionObjectOptions" persistent="false";
 	property name="totalAvgAggregates" persistent="false" type="array";
 	property name="totalSumAggregates" persistent="false" type="array";
@@ -3826,6 +3827,31 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 
+	}
+	
+	// @hint Ensures that the collection config is valid and can be executed successfully
+	public boolean function hasValidCollectionConfig() {
+		
+		// Attempt to fetch record with the set collectionConfg
+		try {
+			setPageRecordsShow(1);
+			getPageRecords(true);
+			
+		// Error executing collection
+		} catch (any e) {
+			var messageDetail = e.message;
+			
+			// Provide reference to component and line number from stack trace if possible
+			if (isArray(e.tagContext) && arrayLen(e.tagContext)) {
+				messageDetail = "#messageDetail#. #e.tagContext[1].raw_trace# -- #e.tagContext[1].codePrintPlain#";
+			}
+			
+			// Set non-persistent variable so we can relay meaningful error detail with the validation rbKey
+			setCollectionConfigErrorMessageDetail(messageDetail);
+			return false;
+		}
+		
+		return true;
 	}
 
 	// ===============  END: Custom Validation Methods =====================
