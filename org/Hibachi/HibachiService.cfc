@@ -849,7 +849,7 @@
 						currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
 					}
 				}else{
-					logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#", true);
+					logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#");
 				}
 				_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
 			}
