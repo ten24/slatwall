@@ -233,11 +233,15 @@
 										<cfelseif key eq "value">
 											<cfset thisOptionValue = option[ key ] />
 										<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#encodeForHTML(option[key])#"', ' ') />
+											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#request.context.fw.getHibachiScope().hibachiHtmlEditFormat(option[key])#"', ' ') />
 										</cfif>
 									</cfif>
 								</cfloop>
 							</cfif>
+							<cfset thisOptionValue = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionValue)>
+							<cfset thisOptionName = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionName)>
+							<cfset thisOptionData = thisOptionData>
+
 							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
 						</cfloop>
 					</select>
@@ -251,6 +255,7 @@
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
+				<cftry>
 				<cfset suggestionsID = reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all') & "-suggestions" />
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#attributes.value#" />
@@ -280,6 +285,8 @@
 						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
 				</div>
+				<cfcatch></cfcatch>
+				</cftry>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="typeahead">
