@@ -16,12 +16,16 @@ export class BaseBootStrapper{
     public instantiationKey:string;
     public isPrivate:boolean;
     
-
     constructor(myApplication){
         this.myApplication = myApplication;
-        return angular.lazy(this.myApplication).resolve(['$http','$q', ($http,$q)=> {
-            this.$http = $http;
-            this.$q = $q;
+        var initInjector = angular.injector(["ng"]);
+        var $http = initInjector.get("$http");
+        var $q = initInjector.get("$q");
+        this.$http = $http;
+        this.$q = $q;
+    }
+             
+    fetchData = ()=>{
             var baseURL = hibachiConfig.baseURL;
             if(!baseURL) {
                 baseURL = ''
