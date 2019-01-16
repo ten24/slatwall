@@ -2267,6 +2267,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return invoiceNumber;
 	}
+	
+	public any function processOrderDelivery_generateShippingLabel(required any orderDelivery, required any processObject, struct data){
+		//prevent overwriting existing labels
+
+		if (
+			(
+				isNull(arguments.orderDelivery.getTrackingNumber())
+				|| !len(arguments.orderDelivery.getTrackingNumber())
+			)
+			&& arguments.orderDelivery.getOrderFulfillment().hasShippingIntegration()
+		) {
+
+			//get the shipping integration from the previously attempting label generation 
+			var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.orderDelivery.getOrderFulfillment().getShippingIntegration());
+
+			// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
+			if(structKeyExists(shippingIntegrationCFC, 'processShipmentRequest')){
+				shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_generateShippingLabel(arguments.processObject);
+			}
+		}
+		return arguments.orderDelivery;
+	}
 
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {

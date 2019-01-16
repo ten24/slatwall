@@ -50,9 +50,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function setUp() {
 		super.setup();
-
+		
 		//variables.service = request.slatwallScope.getService("hibachiAuthenticationService");
 		variables.service = variables.mockService.getHibachiAuthenticationServiceMock();
+		
+		var settingData = {
+			settingID="",
+			settingName="globalDisableRecordLevelPermissions",
+			settingValue=0
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
 	}
 
 	// getAuthenticationSubsystemNamesArray()
@@ -135,8 +142,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//set the permission applied flag back to false so we can test that the perms we create below can be applied and tested later
 		allDataCollection.setPermissionAppliedFlag(false);
 		
-		
-		
 		//now record level perms restrictions
 		//user should not have access to other order
 		var collectionEntity = createTestEntity('Collection');
@@ -175,9 +180,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',peasantyAccount.getAccountID());
 		
 		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
-		
+		request.slatwallScope.getService('hibachiAuthenticationService').clearVariablesKey('permissionRecordRestrictionMap');
+		request.slatwallScope.getService('hibachiAuthenticationService').loadPermissionRecordRestrictionsCache();
 		assertEquals(arraylen(permissionRecordRestrictions),1);
 		//verify that we have refined the list based on restrictions
+		debug(allDataCollection.getPermissionAppliedFlag());
 		request.slatwallScope.getService('HibachiCacheService').setCache({});
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
 		

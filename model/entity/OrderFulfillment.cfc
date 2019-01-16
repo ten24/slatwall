@@ -60,6 +60,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="pickupDate" ormtype="timestamp" hb_populateenabled="true";
 	property name="thirdPartyShippingAccountIdentifier" column="thirdPartyShipAccntIdentifier" ormtype="string";
 	property name="handlingFee" ormtype="big_decimal" hb_formatType="currency";
+	//for shipping integration saves response with success or why a shipping integration failed
+	property name="lastStatusCode" ormtype="string";			// @hint this is the status code that was passed back in the response bean
+	property name="lastMessage" ormtype="string" length="4000"; // @hint this is a pipe and tilda delimited list of any messages that came back in the response.
+	
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedShippingIntegrationName" ormtype="string";

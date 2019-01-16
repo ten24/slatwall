@@ -239,7 +239,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var processObjectNames = request.slatwallScope.getService('HibachiService').getProcessComponentDirectoryListing();
 		for (var processObjectName in processObjectNames) {
 			processObjectName = left(processObjectName, len(processObjectName)-4);
-			try {
+			if(processObjectName != 'HibachiProcess'){
 				var processObject = request.slatwallScope.getTransient(processObjectName);
 				var properties = processObject.getPropertiesStruct();
 				for (var property in properties) {
@@ -249,8 +249,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						ArrayAppend(missingRBKeys, keyValue);
 					}
 				}
-			} catch (any e) {
-				addToDebug(e);
 			}
 		}
 		assert(ArrayLen(missingRBKeys) == 0,ArrayToList(variables.debugArray, chr(13) & chr(10)));
