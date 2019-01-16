@@ -606,8 +606,6 @@ class OrderFulfillmentService {
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingIntegration.integrationID");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastMessage");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastStatusCode");
-        this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastMessage");
-        this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.lastStatusCode");
         this.state.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
         
      }

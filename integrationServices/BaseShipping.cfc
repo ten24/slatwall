@@ -90,20 +90,29 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		if(arguments.format == 'xml'){
 			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));
 			var result = httpRequest.send().getPrefix();
+			var prefix = {};
+			
 			if (!isNull(result) && structKeyExists(result, "fileContent")){
-				return XmlParse(REReplace(result.fileContent, "^[^<]*", "", "one"));	
+				prefix.fileContent = XmlParse(REReplace(result.fileContent, "^[^<]*", "", "one"));	
 			}
+			prefix.Statuscode = result.Statuscode;
+			return prefix;
 		}else{
 			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
 			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));
-			return deserializeJson(httpRequest.send().getPrefix().fileContent);
+			
+			return httpRequest.send().getPrefix();
 		}
 		
 	}
 	
 	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
+		processShipmentRequestWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
+	}
+	
+	public any function processShipmentRequestWithOrderFulfillment(required any orderFulfillment){
 		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.orderFulfillment);
 		var responseBean = processShipmentRequest(processShipmentRequestBean);
 		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
 		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());

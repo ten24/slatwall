@@ -106,6 +106,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			// As long as there were no errors resetting the password, then we can set the email address in the form scope so that a chained login action will work
 			if(!account.hasErrors() && !structKeyExists(form, "emailAddress") && !structKeyExists(url, "emailAddress")) {
 				form.emailAddress = account.getEmailAddress();
+				//remove transient account from session because we are replacing with login one
+				ORMClearSession();
 			}
 		} else {
 			getHibachiScope().addActionResult( "public:account.resetPassword", true );

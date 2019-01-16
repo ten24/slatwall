@@ -1,6 +1,9 @@
 {
 	"properties":{
-		"collectionID":		    [{"contexts":"save","method":"canSaveCollectionByCollectionObject"},{"contexts":"delete","method":"hasNoAssociatedCollection"}],
+		"collectionID":		    [
+									{"contexts":"save","method":"canSaveCollectionByCollectionObject"},
+									{"contexts":"delete","method":"hasNoAssociatedCollection"}
+								],
 		"collectionCode":	    [{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
 		"collectionName":		[{"contexts":"save","required":true}]
 	}

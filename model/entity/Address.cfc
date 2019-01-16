@@ -75,7 +75,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
- 
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	

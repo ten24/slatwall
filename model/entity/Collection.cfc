@@ -1809,7 +1809,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		getCollectionConfigStruct().periodInterval = arguments.periodInterval;
 	}
 
-	public boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+	//must be private so outside code will use at the hibachitransient level
+	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
 		
 		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
 		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
@@ -3817,6 +3818,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// =============== START: Custom Validation Methods ====================
 	public boolean function hasNoAssociatedCollection() {
+		if(getNewFlag()){
+			return false;
+		}
+		
 		var collectionCollection =  getService('hibachiService').getCollectionCollectionList();
 		collectionCollection.addFilter('parentCollection.collectionID', variables.collectionID);
 		if(collectionCollection.getRecordsCount() == 0){
