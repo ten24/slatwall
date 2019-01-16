@@ -80,7 +80,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public array function getCurrencyCodeOptions() {
-		return getService("currencyService").getCurrencyOptions();
+		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
+		if (ArrayLen(getService("currencyService").getCurrencyOptions()) GT 1) {
+			arrayPrepend(currencyCodeOptions, {value="", name="Select Currency"});
+		}
+		return currencyCodeOptions;
 	}
 	
 	public array function getOrderTypeIDOptions() {
