@@ -255,7 +255,6 @@
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
-				<cftry>
 				<cfset suggestionsID = reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all') & "-suggestions" />
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#attributes.value#" />
@@ -285,8 +284,6 @@
 						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
 				</div>
-				<cfcatch></cfcatch>
-				</cftry>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="typeahead">
