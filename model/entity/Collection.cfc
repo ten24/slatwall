@@ -1809,8 +1809,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		getCollectionConfigStruct().periodInterval = arguments.periodInterval;
 	}
 
-	//must be private so outside code will use at the hibachitransient level
-	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+	public boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
 		
 		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
 		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
@@ -2067,12 +2066,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
-			!getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getCollectionObject()) ||
+			//TODO: figure out why this prevents record level perms from working
+			//!getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getCollectionObject()) ||
 			getRequestAccount().getPermissionGroupsCount() == 0 
 		){
 			return;
 		}
-
 		var permissionRecordRestrictions = getPermissionRecordRestrictions();
 		for(var permissionRecordRestriction in permissionRecordRestrictions){
 
@@ -2090,6 +2089,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!structKeyExists(collectionConfig, 'filterGroups')){
 					continue;
 				}
+				
 				var recordRestrictionFilterGroups = collectionConfig['filterGroups'];
 				if(permissionRecordRestriction['permission_entityClassName'] == getCollectionObject()){
 					for(var filterGroup in recordRestrictionFilterGroups){
