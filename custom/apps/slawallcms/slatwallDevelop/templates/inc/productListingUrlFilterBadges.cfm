@@ -4,13 +4,16 @@
   <!--- for every property in the url struct...--->
   <cfset local.counter = 0 />
   <cfloop collection="#url#" item="local.queryParam">
-
+  	<cfif isStruct(url[local.queryParam]) >
+  		<cfcontinue>
+  	</cfif>
   	<!--- We don't want property names that start with p:, for pagination, among other stuff. Let's
   	define only the ones we want --->
   	<cfif findNoCase("r:",local.queryParam) OR findNoCase("f:",local.queryParam) OR findNoCase("keywords",local.queryParam)>
   		<cfset local.counter++ />
   		<!--- some values will be comma separated such as r:defaultSku.price:10^20,100^ --->
 	  	<cfset local.queryValuesSeparatedWithCommas = url[local.queryParam] />
+	  	
 	  	<!--- If this is not the first filter, let's add & between them ---->
 	  	<cfif local.counter GT 1>
 	  		<cfset local.allFiltersAndValues = local.allFiltersAndValues & '&' />

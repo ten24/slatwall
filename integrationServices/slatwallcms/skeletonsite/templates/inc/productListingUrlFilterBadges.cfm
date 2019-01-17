@@ -4,7 +4,9 @@
   <!--- for every property in the url struct...--->
   <cfset local.counter = 0 />
   <cfloop collection="#url#" item="local.queryParam">
-
+  	<cfif isStruct(url[local.queryParam]) >
+  		<cfcontinue>
+  	</cfif>
   	<!--- We don't want property names that start with p:, for pagination, among other stuff. Let's
   	define only the ones we want --->
   	<cfif findNoCase("r:",local.queryParam) OR findNoCase("f:",local.queryParam) OR findNoCase("keywords",local.queryParam)>
