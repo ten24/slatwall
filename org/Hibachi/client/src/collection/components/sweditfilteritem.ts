@@ -107,7 +107,7 @@ class SWEditFilterItem{
                                                     rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
                                                     entityAlias:scope.collectionConfig.baseEntityAlias,
                                                     cfc:scope.collectionConfig.baseEntityAlias,
-                                                    propertyIdentifier:scope.collectionConfig.baseEntityAlias
+                                                    propertyIdentifier:scope.collectionConfig.baseEntityName
                                                 }
                                             ];
                     }else{
