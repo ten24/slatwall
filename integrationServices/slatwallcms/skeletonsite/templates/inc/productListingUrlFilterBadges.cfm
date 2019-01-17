@@ -4,6 +4,8 @@
   <!--- for every property in the url struct...--->
   <cfset local.counter = 0 />
   <cfloop collection="#url#" item="local.queryParam">
+  	
+  	<!--- lucee groups query params that have dots in them in structs. Let's skip that --->
   	<cfif isStruct(url[local.queryParam]) >
   		<cfcontinue>
   	</cfif>

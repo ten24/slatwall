@@ -56,8 +56,7 @@
             <h6><strong>#arrayLen(productCollection)#</strong> Available Product#arrayLen(productCollection) GT 1 ? 's' : '' #</h6>
         </div>
         <div class="col-sm-6">
-        	<!--- TODO: Fix applied filters include error --->
-    		<!---<cfinclude template="inc/productListingUrlFilterBadges.cfm">--->
+    		<cfinclude template="inc/productListingUrlFilterBadges.cfm">
         </div>
         
         <div class="col-sm-2 offset-md-1">
