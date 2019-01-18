@@ -778,7 +778,7 @@ component  accessors="true" output="false"
             order.setBillingAddress(savedAddress);
             
             var orderPayments = order.getOrderPayments();
-            if(!isNull(orderPayments[1])){
+            if(arrayLen(orderPayments)){
                orderPayments[1].setBillingAddress(savedAddress); 
             }
             
