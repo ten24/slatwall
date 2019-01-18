@@ -777,6 +777,11 @@ component  accessors="true" output="false"
             var order = getHibachiScope().cart();
             order.setBillingAddress(savedAddress);
             
+            var orderPayments = order.getOrderPayments();
+            if(!isNull(orderPayments[1])){
+               orderPayments[1].setBillingAddress(savedAddress); 
+            }
+            
             getService("OrderService").saveOrder(order);
         }
         if(savedAddress.hasErrors()){
