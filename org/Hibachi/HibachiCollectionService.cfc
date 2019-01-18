@@ -1099,8 +1099,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var collection1Headers = getHeadersListByCollection(collection1);
 		var collection2Headers = getHeadersListByCollection(collection2);
-		var collection1Data = this.transformArrayOfStructsToQuery(collection1.getRecords(forExport=true,formatRecords=false), ListToArray(collection1Headers));
-		var collection2Data = this.transformArrayOfStructsToQuery(collection2.getRecords(forExport=true,formatRecords=false), ListToArray(collection2Headers));
+
+		var records1 = this.formatDateRecords(collection1.getRecords(forExport=false,formatRecords=true),collection1);
+		var records2 = this.formatDateRecords(collection2.getRecords(forExport=false,formatRecords=true),collection2);
+		var collection1Data = this.transformArrayOfStructsToQuery(records1, ListToArray(collection1Headers));
+		var collection2Data = this.transformArrayOfStructsToQuery(records2, ListToArray(collection2Headers));
 
 		if(collection2Data.recordCount > 0){
 			var rightIDQuery = new Query();
@@ -1144,7 +1147,46 @@ component output="false" accessors="true" extends="HibachiService" {
 		var joinResult = joinQuery.execute(sql=joinSql).getResult();
 		return joinResult;
 	}
+	
+public any function formatDateRecords(required array collectionRecords, required any collection){
 
+		var records = duplicate(arguments.collectionRecords);
+		var columns = collection.getCollectionConfigStruct().columns;
+		var timestampPropertyIdentifiers = [];
+		var datePropertyIdentifiers = [];
+		for(var column in columns){
+
+			var propertyIdentifier = arguments.collection.convertAliasToPropertyIdentifier(column.propertyIdentifier);
+			var formatType = getService("HibachiService").getFormatTypeByClassNameAndPropertyIdentifier(arguments.collection.getCollectionObject(),propertyIdentifier);
+			var ormType = arguments.collection.getOrmTypeByPropertyIdentifier(propertyIdentifier);
+
+			if ( !isNull(formatType) && formatType == 'date') {	
+
+				arrayAppend(datePropertyIdentifiers, arguments.collection.convertPropertyIdentifierToAlias(column['propertyIdentifier']));
+
+			}else if ( (ormType == "timestamp") || (structKeyExists(column,'ormtype') && column['ormtype'] == "timestamp") ) {
+				var propertyIdentifier = arguments.collection.convertPropertyIdentifierToAlias(column['propertyIdentifier']);
+				arrayAppend(timestampPropertyIdentifiers, propertyIdentifier);
+			}
+
+		}
+
+		for(var record in records){
+			for(var propertyIdentifier in timestampPropertyIdentifiers){
+				if(structKeyExists(record,propertyIdentifier) && !isNull(record[propertyIdentifier]) ){
+					record[propertyIdentifier] = dateTimeFormat(record[propertyIdentifier]);
+				}
+			}
+			for(var propertyIdentifier in datePropertyIdentifiers){
+				if(structKeyExists(record,propertyIdentifier) && !isNull(record[propertyIdentifier]) ){
+					record[propertyIdentifier] = dateTimeFormat(record[propertyIdentifier], 'mm/dd/yyyy');
+				}
+			}
+		}
+
+		return records;
+	}
+	
 	private string function getMergedColumnList(required string collection1Headers, required string collection2Headers){
 		var collection2Columns = '';
 		for(var column in getCollection2UniqueColumns(arguments.collection1Headers, arguments.collection2Headers)){
@@ -1181,7 +1223,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			exportFileName = arguments.collectionEntity.getCollectionConfigStruct().baseEntityName;
 		}
 		
-		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
+		var collectionData = this.formatDateRecords(arguments.collectionEntity.getRecords(forExport=false,formatRecords=true),arguments.collectionEntity);
 		var headers = getHeadersListByCollection(arguments.collectionEntity);
 		var title =  getHeadersListByCollection(arguments.collectionEntity, true);
 		

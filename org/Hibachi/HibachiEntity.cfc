@@ -106,6 +106,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return uploadDirectory;
 	}
+	
+	public string function getFormatTypeByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+			if(findNoCase('.',arguments.propertyIdentifier)){
+				var propertyName = listLast(arguments.propertyIdentifier,'.');
+			} else {
+				var propertyName = listLast(arguments.propertyIdentifier,'_');
+			}
+		return object.getPropertyFormatType(propertyName);
+	}
 
 	public string function getFileUrlByPropertyName(required string propertyName){
 		return getURLFromPath(invokeMethod('get#arguments.propertyName#UploadDirectory')) & invokeMethod('get#arguments.propertyName#');
