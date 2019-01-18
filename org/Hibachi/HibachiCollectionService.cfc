@@ -1473,6 +1473,14 @@ component output="false" accessors="true" extends="HibachiService" {
 				//OrderByList
 				var orderBys = data[key];
 				if (left(key,7)=='orderBy'){
+					if(len(arguments.excludesList)){ 
+						var propertiesToExclude = listToArray(arguments.excludesList);
+						for(var propertyToExclude in propertiesToExclude){
+							data[key] = getHibachiUtilityService().removeListValue(data[key],propertyToExclude & '|DESC');	
+							data[key] = getHibachiUtilityService().removeListValue(data[key],propertyToExclude & '|ASC');	
+						}   
+
+					}
 					//this is a list.
 					arguments.collection.setOrderBy(data[key]);
 				}
