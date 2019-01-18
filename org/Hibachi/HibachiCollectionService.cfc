@@ -935,7 +935,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(
 				(
 					!arguments.enforeAuthorization
-					&& !findnocase('_',collectionPropertyIdentifier)
 				)||
 				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
 			){
