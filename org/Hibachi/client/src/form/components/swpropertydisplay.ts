@@ -447,3 +447,91 @@ export{
     SWPropertyDisplay,
     SWPropertyDisplayController
 }
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { UtilityService } from '../../core/services/utilityservice';
+//import { MetaDataService } from '../../core/services/metadataservice';
+
+@Component({
+    selector : 'sw-property-display-upgraded' ,
+    templateUrl : '/org/Hibachi/client/src/form/components/propertydisplay_upgraded.html'
+})
+export class SwPropertyDisplay implements OnInit  {
+        
+    @Input() public form;
+    @Input() public object;
+    @Input() public propertyIdentifier : string;
+    @Input() public editable : boolean;
+    @Input() public editing : boolean;
+    public value : string;
+    public fieldType : string;
+    public inListingDisplay : boolean;
+    public isHidden : boolean;
+    public showLabel: boolean;
+    public title: string;
+    public labelText: string;
+    public hint : string;
+    
+    constructor(
+        private utilityService: UtilityService,
+        private metaDataService: MetaDataService
+    ) {
+        
+    }
+    
+    ngOnInit() {
+        this.value = this.utilityService.getPropertyValue(this.object, this.propertyIdentifier);
+        this.form.addControl(this.propertyIdentifier, new FormControl(this.value));
+        
+        if(this.inListingDisplay === undefined) {
+            this.inListingDisplay = false;    
+        }
+        
+        if(this.fieldType === undefined && this.object && this.object.metaData) {
+            this.fieldType = this.metaDataService.getPropertyFieldType(this.object,this.propertyIdentifier);
+        }
+        
+        if(this.editing === undefined){
+            this.editing = false;
+        }
+        if(this.editable === undefined){
+            this.editable = true;
+        }
+        if(this.isHidden === undefined){
+            this.isHidden = false;
+        }
+        
+        if( this.fieldType !== 'hidden' &&
+            this.inListingDisplay === undefined  ||
+            !this.inListingDisplay
+        ){
+            this.showLabel = true;
+        } else {
+            this.showLabel = false;
+        }        
+        
+        if( this.title === undefined && this.object && this.object.metaData){
+            this.labelText = this.metaDataService.getPropertyTitle(this.object,this.propertyIdentifier);
+        }
+        
+        this.labelText = this.labelText || this.title;
+        this.title = this.title || this.labelText;
+
+        this.fieldType                  = this.fieldType || "text" ;
+        //this.class              = this.class|| "form-control";
+        //this.fieldAttributes        = this.fieldAttributes || "";
+        //this.label              = this.label || "true";
+        this.labelText          = this.labelText || "";
+        //this.labelClass         = this.labelClass || "";
+        //this.name                   = this.name || "unnamed";
+        //this.value              = this.value || this.initialValue;
+        
+        if(this.hint === undefined && this.object && this.object.metaData){
+            this.hint = this.metaDataService.getPropertyHintByObjectAndPropertyIdentifier(this.object,this.propertyIdentifier);
+        }
+    }
+    
+}

@@ -320,7 +320,6 @@ class SWFormField{
 		 hibachiPathBuilder
 	){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+'formfield.html';
-
 	}
 
 	public link= (scope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) =>{
@@ -363,3 +362,31 @@ export{
 	SWFormFieldController
 }
 
+
+
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+
+@Component({
+    selector : 'sw-form-field-upgraded' ,
+    templateUrl : '/org/Hibachi/client/src/form/components/formfield_upgraded.html'    
+})
+export class SwFormField implements OnInit {
+   
+    @Input() public labelText: string;
+    @Input() public formControl: FormControl;
+    public fieldTypes: string[] = ['email','text','password','number','time','date','datetime','json'];
+    
+    constructor() {
+        
+    }
+    
+    ngOnInit() {
+        if(this.labelText !== undefined) {
+            this.labelText = this.labelText.replace(':','');
+        }
+        
+        
+    }
+    
+}

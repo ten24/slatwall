@@ -513,3 +513,20 @@ class SWInput{
 export{
 	SWInput
 }
+
+
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+
+@Component({    
+    selector: 'sw-input-upgraded',
+    templateUrl: '/org/Hibachi/client/src/form/components/input.html'   
+})
+export class SwInput implements OnInit {
+    
+    @Input() public formControl: FormControl;
+    
+    ngOnInit() {
+        
+    }
+}

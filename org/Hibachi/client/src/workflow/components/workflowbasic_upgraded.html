@@ -1,58 +1,66 @@
 	<div  class="col-md-6 s-header-left">
-		<form [formGroup] = "form">
-			<div class="form-group">
-				<label>Workflow Name:</label>
-				<input type="text" class="form-control" [formControl]="form.controls['workflowName']" /> 
-				<sw-error-display-upgraded [control] = "form.controls['workflowName']" ></sw-error-display-upgraded>
-			</div>
-			<div class="form-group" >
-				<label>Object:</label> 
-				<!--  
-				<select  class="form-control"
-				    		 [(ngModel)]="object.data['selected'+propertyIdentifier]"
-							 (ngModelChange)="formFieldChanged(object.data['selected'+propertyIdentifier])"	 
+		<div class="s-header-detail">
+			<form [formGroup] = "form">
+				<sw-property-display-upgraded 
+					[form]="form"
+					[object]="object"
+					[propertyIdentifier]="'workflowName'"
+					[editing]="true"
+					[editable]="true"
 				>
-					<option 
-						*ngFor="let propertyDisplayOption of options;trackBy: propertyDisplayOption" 
-						[attr.selected]="propertyDisplayOption === object.data['selected'+propertyIdentifier]" >
-							{{propertyDisplayOption?.value}}
-					</option>
-				</select>
-				 -->		
-			
-				<select class="form-control" disabled="true">
-					<option 
-						*ngFor="let propertyDisplayOption of options; trackBy: propertyDisplayOption"
-						[ngValue]="propertyDisplayOption.value"
-						[selected]="propertyDisplayOption.value === object.data['selectedworkflowObject'].value"
-	
-					 >{{propertyDisplayOption?.name}}</option>
-				</select>
-				
-			</div>
-
-			<div class="form-group">
-				<label>Active:</label>
-				<div *ngIf="selectedRadioFormName" >
+				</sw-property-display-upgraded>
+				<!-- 
+				<sw-property-display-upgraded
+					[form]="form"
+					[object]="object"
+					data-options-arguments="{property:'workflowObject'}"
+					data-eager-load-options="true"
+					data-property-identifier="workflowObject"
+					data-editing="true"
+					data-editable="!workflow.$$isPersisted()"
+				>
+				</sw-property-display-upgraded>
+			 	-->
+			<!-- 
+				<div class="form-group">
+					<label>Workflow Name:</label>
+					<input type="text" class="form-control" [formControl]="form.controls['workflowName']" /> 
+					<sw-error-display-upgraded [control] = "form.controls['workflowName']" ></sw-error-display-upgraded>
+				</div>
+				<div class="form-group" >
+					<label>Object:</label> 				
+					<select class="form-control" disabled="true">
+						<option 
+							*ngFor="let propertyDisplayOption of options; trackBy: propertyDisplayOption"
+							[ngValue]="propertyDisplayOption.value"
+							[selected]="propertyDisplayOption.value === object.data['selectedworkflowObject'].value"
+		
+						 >{{propertyDisplayOption?.name}}</option>
+					</select>
 					
-					<div class="radio" style="display:inline-block;" *ngFor="let option of radioOptions; trackBy: option?.value" >
-						<input type="radio" name="{{'selected'+ object.metaData.className + 'activeFlag'+selectedRadioFormName}}" id="{{object.metaData.className+'.'+ 'activeFlag'+ selectedRadioFormName + $index}}"
-								
-								
+				</div>
+	
+				<div class="form-group">
+					<label>Active:</label>
+					<div *ngIf="selectedRadioFormName" >
+						
+						<div class="radio" style="display:inline-block;" *ngFor="let option of radioOptions; trackBy: option?.value" >
+							<input type="radio" name="{{'selected'+ object.metaData.className + 'activeFlag'+selectedRadioFormName}}" 
+								id="{{object.metaData.className+'.'+ 'activeFlag'+ selectedRadioFormName + $index}}"									
 								[value]="option"
 								[checked]="option == selected"
-						>
-						<label for="{{object.metaData.className+'.'+ 'activeFlag' + selectedRadioFormName + $index}}">
-							<span [textContent]="option.name"></span>
-						</label>
+							/>
+							<label for="{{object.metaData.className+'.'+ 'activeFlag' + selectedRadioFormName + $index}}">
+								<span [textContent]="option.name"></span>
+							</label>
+						</div>
 					</div>
-				</div>
-		
-				<input style="display:none"	type="text" *ngIf="selectedRadioFormName && 'activeFlag'"
-						
+			
+					<input style="display:none"	type="text" *ngIf="selectedRadioFormName && 'activeFlag'"							
 						name="'activeFlag'"
-				/>
-			</div>
-
-		</form>
+					/>
+				</div>
+				 -->	
+			</form>
+		</div>
 	</div>

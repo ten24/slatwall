@@ -18,19 +18,19 @@ import {FileService} from "./services/fileservice";
 //  components
 
 //form
-import {SWInput} from "./components/swinput";
+import {SWInput, SwInput} from "./components/swinput";
 import {SWFFormField} from "./components/swfformfield";
 import {SWForm,SwForm} from "./components/swform";
 import {SWFForm} from "./components/swfform";
 import {SWFFileInput} from "./components/swffileinput";
-import {SWFormField} from "./components/swformfield";
+import {SWFormField, SwFormField} from "./components/swformfield";
 import {SWFormFieldFile} from "./components/swformfieldfile";
 import {SWFormFieldJson} from "./components/swformfieldjson";
 import {SWFormFieldSearchSelect} from "./components/swformfieldsearchselect";
 import {SWFormRegistrar} from "./components/swformregistrar";
 import {SWErrorDisplay, SwErrorDisplay} from "./components/swerrordisplay";
 import {SWAddressForm} from "./components/swaddressform";
-import {SWPropertyDisplay} from "./components/swpropertydisplay";
+import {SWPropertyDisplay, SwPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
 
@@ -40,7 +40,10 @@ import {SwWorkflowBasic} from "../workflow/components/swworkflowbasic";
     declarations: [
         SwForm,
         SwErrorDisplay,
-        SwWorkflowBasic
+        SwWorkflowBasic,
+        SwPropertyDisplay,
+        SwFormField,
+        SwInput
     ],
     providers: [
         FileService

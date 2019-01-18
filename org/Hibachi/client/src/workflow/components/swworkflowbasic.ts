@@ -53,7 +53,7 @@ export class SwWorkflowBasic implements OnInit {
     public selectType;
     public optionsArguments;
     public propertyIdentifier;
-    form: FormGroup;
+    public form: FormGroup;
     public selectedRadioFormName;
     public selected;
     public radioOptions;
@@ -70,10 +70,14 @@ export class SwWorkflowBasic implements OnInit {
         
         //this.value = this.utilityService.getPropertyValue(this.object,this.propertyIdentifier);
         //this.object = { ...this.object_original };
-        this.value = this.utilityService.getPropertyValue(this.object,"workflowName");
-
+//        this.value = this.utilityService.getPropertyValue(this.object,"workflowName");
+//
+//        this.form = this.formBuilder.group({
+//            "workflowName": [this.value, Validators.required]
+//        });
+        
         this.form = this.formBuilder.group({
-            "workflowName": [this.value, Validators.required]
+            // empty form object    
         });
         
         this.selectStrategy();
