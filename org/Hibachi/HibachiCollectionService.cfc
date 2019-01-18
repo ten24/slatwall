@@ -328,7 +328,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
-		for(propertyIdentifierItem in propertyIdentifiersArray){
+		for(var propertyIdentifierItem in propertyIdentifiersArray){
 			if(
 				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, propertyIdentifierItem)
 			){
@@ -801,7 +801,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'processContext') && len(collectionOptions.processContext)){
 				collectionEntity.setProcessContext(collectionOptions.processContext);
 			}
-			if(structKeyExists(collectionOptions,'isDistict')){
+			if(structKeyExists(collectionOptions,'isDistinct')){
 				collectionEntity.getCollectionConfigStruct().isDistinct = collectionOptions.isDistinct;
 			}
 			if(structKeyExists(collectionOptions,'dirtyRead')){

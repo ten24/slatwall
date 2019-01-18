@@ -25,7 +25,7 @@
     "typescript": "^1.6.2",
     "vinyl-source-stream": "^1.1.0",
     "webpack": "*",
-    "webpack-dev-server": "^1.12.1",
+    "webpack-dev-server": "^3.1.11",
     "webpack-stream": "*"
   },
   "scripts": {

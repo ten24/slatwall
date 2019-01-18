@@ -69,8 +69,10 @@
 		
 		// For admin request end, we call the endLifecycle
 		public void function verifySlatwallRequest( required any $ ) {
-			if(!structKeyExists(request, "slatwallScope")) {
-				getSlatwallApplication().setupGlobalRequest();	
+			// Cannot rely solely on the non-existence of request.slatwallScope because slatwallApplication.reloadApplication() will create the slatwallScope. 
+			// And in that case we use the forceBootstrapFlag to indicate slatwallApplication.bootstrap() must be invoked.
+			if(!structKeyExists(request, "slatwallScope") || (request.slatwallScope.hasValue('forceBootstrapFlag') && request.slatwallScope.getValue('forceBootstrapFlag'))) {
+				getSlatwallApplication().bootstrap();
 			}
 			if(!structKeyExists(arguments.$, "slatwall")) {
 				$.setCustomMuraScopeKey("slatwall", request.slatwallScope);	
