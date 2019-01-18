@@ -378,6 +378,11 @@ Notes:
 			}
 		}
 		
+		public string function getRbKeyValuePairByAttribute(required any attribute){
+			var newLine = (chr(13) & chr(10));
+			return newLine & 'entity.' & attribute['attributeSetObject'] & '.' & attribute['attributeCode'] & '=' & attribute['attributeName'];
+		}
+		
 		public boolean function updateEntitiesWithCustomProperties(){
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
