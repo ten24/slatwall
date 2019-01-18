@@ -18,6 +18,7 @@ class SWFFormController {
     public errors:any;
     public fileFlag:boolean = false;
     public errorToDisplay:string; //very first error returned from call
+    public uploadProgressPercentage:any = 0;
     
     // @ngInject
     constructor(
@@ -43,6 +44,17 @@ class SWFFormController {
             }
         }
         return formData;
+    }
+    
+    private calculateFileUploadProgress = (xhr)=>{
+        xhr.upload.addEventListener("progress",(event)=>{
+            if (event.lengthComputable) {
+                this.$timeout(()=>{
+                    var uploadProgressPercentage = event.loaded / event.total;
+                    this.uploadProgressPercentage = Math.floor(uploadProgressPercentage * 100);
+                });
+            }
+       }, false);
     }
     
     public getFileFromFormData = (formData)=>{
@@ -96,7 +108,9 @@ class SWFFormController {
             formData.append("returnJsonObjects","cart,account");
             var xhr = new XMLHttpRequest();
             xhr.open('POST', url, true);
-    
+            
+            this.calculateFileUploadProgress(xhr);
+        
             xhr.onload = (result)=>{
                 var response = JSON.parse(xhr.response);
                 if (xhr.status === 200) {
