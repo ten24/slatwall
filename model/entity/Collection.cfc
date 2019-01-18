@@ -1651,15 +1651,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
         var collectionConfigStruct = getCollectionConfigStruct();
         aliases = listAppend(aliases, getBaseEntityAlias());
 
-        if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
-            for(var i = 1; i <= arraylen(collectionConfigStruct.columns); i++){
+
+		if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
+			var columnCount = arraylen(collectionConfigStruct.columns); 
+            for(var i = 1; i <= columnCount; i++){
                 aliases = listAppend(aliases, listFirst(collectionConfigStruct.columns[i].propertyIdentifier, '.'));
             }
         }
+			
 
-        if(structKeyExists(collectionConfigStruct, 'orderBy') && arraylen(collectionConfigStruct.orderBy)){
-            for(var i = 1; i <= arraylen(collectionConfigStruct.orderBy); i++){
+       if(structKeyExists(collectionConfigStruct, 'orderBy') && arraylen(collectionConfigStruct.orderBy)){
+			var orderByCount = arraylen(collectionConfigStruct.orderBy);
+            for(var i = 1; i <= orderByCount; i++){
                 aliases = listAppend(aliases, listFirst(collectionConfigStruct.orderBy[i].propertyIdentifier, '.'));
+            }
+        } 
+
+		if(structKeyExists(collectionConfigStruct, 'groupBys') && listLen(collectionConfigStruct.groupBys)){
+			var groupByArray = listToArray(collectionConfigStruct.groupBys);
+			var groupByCount = arraylen(groupByArray); 
+            for(var i = 1; i <= groupByCount; i++){
+                aliases = listAppend(aliases, listFirst(groupByArray[i], '.'));
             }
         }
 
