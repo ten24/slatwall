@@ -80,37 +80,11 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		// Build Request JSON
 		var jsonPacket = getProcessShipmentRequestJsonPacket(arguments.requestBean);
         
-        var prefix = getPrefix(jsonPacket,"Ship");
-		var jsonResponse = deserializeJson(prefix.fileContent);
-        var responseBean = getShippingProcessShipmentResponseBean(jsonResponse,prefix.Statuscode);
+        var jsonResponse = getJsonResponse(jsonPacket,"Ship");
+
+        var responseBean = getShippingProcessShipmentResponseBean(jsonResponse);
         
         return responseBean;
-	}
-	
-	public any function processShipmentRequestWithOrderDelivery_generateShippingLabel(required any processObject){
-		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderDelivery().getOrderFulfillment());
-		processShipmentRequestBean.populateShippingItemsWithOrderDelivery_GenerateShippingLabel(arguments.processObject, true);
-		var containers = arguments.processObject.getContainers();
-		if(!isNull(containers) && arrayLen(containers)){
-			for(var container in containers){
-				processShipmentRequestBean.addContainer(container);
-			}
-		}
-		var responseBean = processShipmentRequest(processShipmentRequestBean);
-		//save message
-		if(structKeyExists(responseBean.getData(),'ShipmentResponse')){
-			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['ShipmentResponse']['Response']['ResponseStatus']));
-		}else if(structKeyExists(responseBean.getData(),'Fault')){
-			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['Fault']['detail']['Errors']));
-			arguments.processObject.getOrderDelivery().addError('containerLabel',serializeJSON(responseBean.getData()['Fault']['detail']['Errors']));
-		}else{
-			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()));
-			arguments.processObject.getOrderDelivery().addError('containerLabel',serializeJSON(responseBean.getData()));
-		}
-		arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastStatusCode(responseBean.getStatusCode());
-		arguments.processObject.getOrderDelivery().setTrackingNumber(responseBean.getTrackingNumber());
-		arguments.processObject.getOrderDelivery().setContainerLabel(responseBean.getContainerLabel());
 	}
 	
 	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
@@ -124,15 +98,6 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			}
 		}
 		var responseBean = processShipmentRequest(processShipmentRequestBean);
-		//save message
-		if(structKeyExists(responseBean.getData(),'ShipmentResponse')){
-			arguments.processObject.getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['ShipmentResponse']['Response']['ResponseStatus']));
-		}else if(structKeyExists(responseBean.getData(),'Fault')){
-			arguments.processObject.getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['Fault']['detail']['Errors']));
-		}else{
-			arguments.processObject.getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()));
-		}
-		arguments.processObject.getOrderFulfillment().setLastStatusCode(responseBean.getStatusCode());
 		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
 		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
 	}
@@ -146,14 +111,14 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		savecontent variable="jsonPacket" {
 			include "RatesRequestTemplate.cfm";
         }
-        var prefix = getPrefix(jsonPacket,"Rate");
-        var JsonResponse = deserializeJson(prefix.fileContent);
-        var responseBean = getShippingRatesResponseBean(JsonResponse,prefix.Statuscode);
+        var JsonResponse = getJsonResponse(jsonPacket,"Rate");
+        
+        var responseBean = getShippingRatesResponseBean(JsonResponse);
 		
 		return responseBean;
 	}
 	
-	public struct function getPrefix(required any jsonPacket,string service = "Rate"){
+	public struct function getJsonResponse(required any jsonPacket,string service = "Rate"){
 		var urlString = "";
 		if(setting('testingFlag')) {
 			urlString = variables.testUrl & arguments.service;
@@ -164,13 +129,9 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return getResponse(requestPacket=arguments.jsonPacket,urlString=urlString,format="json");
 	}
 	
-	private any function getShippingProcessShipmentResponseBean(struct jsonResponse, string statusCode){
+	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
 		var responseBean = getTransient('ShippingProcessShipmentResponseBean');
 		responseBean.setData(arguments.jsonResponse);
-		if(structKeyExists(arguments,'statusCode')){
-			responseBean.setStatusCode(arguments.statusCode);
-		}
-
 		if(
 			isNull(responseBean.getData()) || 
 			(
@@ -228,12 +189,9 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	
 	
 	
-	public any function getShippingRatesResponseBean(required any JsonResponse, string statusCode){
+	public any function getShippingRatesResponseBean(required any JsonResponse){
 		var responseBean = getTransient('ShippingRatesResponseBean');
 		responseBean.setData(arguments.JsonResponse);
-		if(structKeyExists(arguments,'statusCode')){
-			responseBean.setStatusCode(arguments.statusCode);
-		}
 		if(isNull(responseBean.getData()) || 
 			(
 				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
@@ -264,7 +222,6 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		savecontent variable="jsonPacket" {
 			include "ProcessShipmentRequestTemplate.cfm";
         }
-        
         return jsonPacket;
 	}
 	

@@ -193,13 +193,12 @@
                   {
                     "Code":"DP",
                     "Value":"#arguments.requestBean.getReference1()#"
-                  }<cfif structKeyExists(local,'orderPayment')>,</cfif>
+                  },
                 </cfif>
-                <cfif structKeyExists(local,'orderPayment')>
-                  {
-                    "Value":"#local.orderPayment['purchaseOrderNumber']#"
-                  }
-                </cfif>
+                {
+                  "Code":"TN",
+                  "Value":"#arguments.requestBean.getOrder().getOrderNumber()#"
+                }
               ]
     			  }<cfif count LT round(abs(local.totalWeight / 150))>,</cfif>
     			</cfloop>
@@ -219,13 +218,12 @@
                   {
                     "Code":"DP",
                     "Value":"#arguments.requestBean.getReference1()#"
-                  }<cfif structKeyExists(local,'orderPayment')>,</cfif>
+                  },
                 </cfif>
-                <cfif structKeyExists(local,'orderPayment')>
-                  {
-                    "Value":"#local.orderPayment['purchaseOrderNumber']#"
-                  }
-                </cfif>
+                {
+                  "Code":"TN",
+                  "Value":"#arguments.requestBean.getOrder().getOrderNumber()#"
+                }
               ]
     			  }<cfif packageNumber LT local.packageCount>
     			    ,
@@ -250,13 +248,12 @@
                 {
                   "Code":"DP",
                   "Value":"#arguments.requestBean.getReference1()#"
-                }<cfif structKeyExists(local,'orderPayment')>,</cfif>
+                },
               </cfif>
-              <cfif structKeyExists(local,'orderPayment')>
-                {
-                  "Value":"#local.orderPayment['purchaseOrderNumber']#"
-                }
-              </cfif>
+              {
+                "Code":"TN",
+                "Value":"#arguments.requestBean.getOrder().getOrderNumber()#"
+              }
             ]
     		  }
     		]
