@@ -461,6 +461,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				} else {
 					arrayAppend(imageGalleryArray, thisImage);
 				}
+			}
 		}
 
 		// Add all alternate image paths
