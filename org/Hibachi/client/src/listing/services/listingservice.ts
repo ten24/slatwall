@@ -317,6 +317,30 @@ class ListingService{
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
             this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
         }
+        this.getListing(listingID).collectionConfig.getEntity().then(data=>{
+            this.updatePageRecords(listingID,data);
+        });
+    }
+    
+     public updatePageRecords = (listingID,data) =>{
+        this.getListing(listingID).collectionData = data;
+        this.setupDefaultCollectionInfo(listingID);
+        if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
+            this.setupColumns(listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
+        }else{
+            this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
+        }
+        this.notifyListingPageRecordsUpdate(listingID);
+        this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords ||
+                                                                this.getListing(listingID).collectionData.records;
+
+        this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
+        this.getListing(listingID).searching = false;
+
+        this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
+        if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
+            this.getListing(listingID).columnCount++; 
+        }
     }
 
     public getNGClassObjectForPageRecordRow = (listingID:string, pageRecord)=>{
