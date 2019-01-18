@@ -487,7 +487,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public numeric function getAmountUnassigned(){
 		var amountUnassigned = 0;
 		amountUnassigned -= getOrderPaymentRecieved();
-		for(var accountPayment in getAccountPayments()) {
+		var accountPaymentSmartList = this.getAccountPaymentsSmartList();
+		accountPaymentSmartList.addInFilter('appliedAccountPayments.orderPayment.order.orderStatusType.systemCode', "ostProcessing,ostNew,ostOnHold");
+
+		for(var accountPayment in accountPaymentSmartList.getRecords()) {
 
 
 			for(var paymentTransaction in accountPayment.getPaymentTransactions()){
