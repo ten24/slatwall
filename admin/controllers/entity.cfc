@@ -552,7 +552,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		// Image
 	public void function saveImage(required struct rc){
 		var image = getService("ImageService").getImageByImageID(rc.imageID,true);
-		image.runCalculatedProperties();
+		if(!image.isNew()){
+			image.runCalculatedProperties();
+		}
 		super.genericSaveMethod('Image',rc);
 	}
 
