@@ -1,5 +1,8 @@
 {
 	"conditions":{
+		"slatwallAuthenticatedAccount":{
+	        "slatwallAuthenticationExistsFlag":{"eq":true}
+	    },
 	    "nonIntegrationAuthenticatedAccount":{
 	        "nonIntegrationAuthenticationExistsFlag":{"eq":true}
 	    },
@@ -48,7 +51,7 @@
 			{"contexts":"changePassword","eq":true}
 		],
 		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
-		"primaryEmailAddress":					[{"contexts":"save","method":"getPrimaryEmailAddressesNotInUseFlag"}],
+		"primaryEmailAddress":					[{"contexts":"save","conditions":"slatwallAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
 		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
 		"ownerAccount":							[{"contexts":"delete","method":"canDeleteByOwner"}],
 		"childAccountRelationships":			[{"contexts":"delete","maxCollection":0}]
