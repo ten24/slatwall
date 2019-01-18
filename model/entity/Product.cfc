@@ -455,7 +455,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
 					);
 				}
-				arrayAppend(imageGalleryArray, thisImage);
+				//let's make sure the default sku image always comes first
+				if(skuData['skuID'] == getDefaultSku().getSkuID()){
+					arrayPrepend(imageGalleryArray, thisImage);
+				} else {
+					arrayAppend(imageGalleryArray, thisImage);
+				}
 			}
 		}
 
