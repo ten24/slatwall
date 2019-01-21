@@ -527,7 +527,7 @@ class SWListingDisplayController{
     public hasNumerical=()=>{
         
         // Iterate over columns, find out if we have any numericals and return
-        if(this.columns.length){
+        if(this.columns != null && this.columns.length){
             return this.columns.reduce((totalNumericalCols, col) => {
                 return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
             });    
