@@ -81,7 +81,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public array function getCurrencyCodeOptions() {
 		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
-		if (ArrayLen(getService("currencyService").getCurrencyOptions()) GT 1) {
+		if (ArrayLen(currencyCodeOptions) GT 1) {
 			arrayPrepend(currencyCodeOptions, {value="", name="Select Currency"});
 		}
 		return currencyCodeOptions;
