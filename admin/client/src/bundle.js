@@ -87684,6 +87684,10 @@ var SWListingReportController = /** @class */ (function () {
                 && _this.endDate) {
                 _this.hasMetric = false;
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
+                //if the interval is an hour than we should only be able to show data for one day
+                if (_this.selectedPeriodInterval.value == 'hour') {
+                    _this.endDate = new Date(_this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                }
                 for (var i = _this.reportCollectionConfig.columns.length - 1; i >= 0; i--) {
                     var column = _this.reportCollectionConfig.columns[i];
                     if (column.aggregate) {
