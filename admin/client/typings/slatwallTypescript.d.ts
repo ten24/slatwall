@@ -1,5 +1,4 @@
 //{
-/// <reference path="../src/test.ts" />
 /// <reference path="../src/formbuilder/formbuilder.module.ts" />
 /// <reference path="../src/fulfillmentbatch/fulfillmentbatchdetail.module.ts" />
 /// <reference path="../src/giftcard/giftcard.module.ts" />

@@ -7,7 +7,7 @@ var PATHS = {
     app: path.join(customPath, '/src'),
     lib: path.join(customPath, '/lib')
 };
-
+devConfig.entry.app="./main.ts";
 if(typeof bootstrap !== 'undefined'){
     devConfig.entry.app[this.entry.app.length - 1] = bootstrap;
 }
@@ -17,6 +17,13 @@ devConfig.context = PATHS.app;
 devConfig.watch = false;
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
+    // Workaround for https://github.com/angular/angular/issues/11580
+    new webpack.ContextReplacementPlugin(
+      // The (\\|\/) piece accounts for path separators in *nix and Windows
+      /angular(\\|\/)core(\\|\/)(@angular|esm5)/,
+      path.resolve(__dirname, '../src')
+    ),
+    
     new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
