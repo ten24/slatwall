@@ -386,6 +386,7 @@ class SWListingReportController {
         });
         
         this.chart.draw();
+        this.observerService.notifyById('swListingReport_DrawChart',this.tableId,this.chart);
     }
     
     public popObjectPath=()=>{

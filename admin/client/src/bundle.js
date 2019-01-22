@@ -68499,7 +68499,8 @@ var SWColumnItem = /** @class */ (function () {
             restrict: 'A',
             require: {
                 swDisplayOptions: "?^swDisplayOptions",
-                swListingControls: "?^swListingControls"
+                swListingControls: "?^swListingControls",
+                swListingDisplay: "?^swListingDisplay"
             },
             scope: {
                 column: "=",
@@ -68511,6 +68512,30 @@ var SWColumnItem = /** @class */ (function () {
             },
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
             link: function (scope, element, attrs, controller, observerService) {
+                scope.getReportLabelColor = function (chart) {
+                    if (scope.column.aggregate && chart.config.data.datasets) {
+                        for (var i = 0; i < chart.config.data.datasets.length; i++) {
+                            var dataset = chart.config.data.datasets[i];
+                            if (dataset.label == scope.column.title) {
+                                var color = '#FF0000';
+                                console.log(dataset);
+                                color = dataset.backgroundColor;
+                                scope.column.style = {
+                                    display: 'inline-block',
+                                    width: '40px',
+                                    height: '10px',
+                                    'background-color': color,
+                                    margin: '0 20px',
+                                    'border-radius': '6px',
+                                    'margin-top': '15px',
+                                    'margin-left': '40px'
+                                };
+                                break;
+                            }
+                        }
+                    }
+                };
+                controller.swListingDisplay.observerService.attach(scope.getReportLabelColor, 'swListingReport_DrawChart', controller.swListingDisplay.tableID);
                 if (!scope.saveCollection && controller.swListingControls) {
                     scope.saveCollection = function () {
                         controller.swListingControls.collectionConfig.columns = scope.columns;
@@ -87774,6 +87799,7 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             _this.chart.draw();
+            _this.observerService.notifyById('swListingReport_DrawChart', _this.tableId, _this.chart);
         };
         this.popObjectPath = function () {
             if (_this.objectPath.length > 1) {
