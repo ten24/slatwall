@@ -87686,7 +87686,7 @@ var SWListingReportController = /** @class */ (function () {
                 && _this.startDate
                 && _this.endDate) {
                 //if date is in the wrong format then update those dates
-                if (_this.startDate.indexOf('000Z') != -1) {
+                if (_this.startDate.indexOf && _this.startDate.indexOf('000Z') != -1) {
                     _this.startDate = new Date(_this.startDate).toString('MMM dd, yyyy hh:mm tt');
                     _this.endDate = new Date(_this.endDate).toString('MMM dd, yyyy hh:mm tt');
                 }
@@ -88078,7 +88078,6 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
             window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
-            //window.location.reload();
         };
         this.savePersonalCollection = function (collectionName) {
             if (_this.localStorageService.hasItem('selectedPersonalCollection') &&
