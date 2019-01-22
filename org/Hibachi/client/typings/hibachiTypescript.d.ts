@@ -6,7 +6,6 @@
 /// <reference path="../src/dialog/dialog.module.ts" />
 /// <reference path="../src/entity/entity.module.ts" />
 /// <reference path="../src/form/form.module.ts" />
-/// <reference path="../src/frontend/bootstrap.ts" />
 /// <reference path="../src/frontend/frontend.module.ts" />
 /// <reference path="../src/hibachi/hibachi.module.ts" />
 /// <reference path="../src/listing/listing.module.ts" />
