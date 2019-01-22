@@ -140,7 +140,15 @@
                                     <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
                                 </span>
                             </th>
-                            <th class="s-detail-hidden-content">
+                            <th class="s-detail-hidden-content" ng-if="
+                                swListingDisplay.recordDetailAction.length ||
+                                swListingDisplay.recordDetailActionIdProperty.length ||
+                                swListingDisplay.recordDetailActionIdKey.length ||
+                                swListingDisplay.recordDetailActionProperty.length ||
+                                swListingDisplay.recordEditAction.length ||
+                                swListingDisplay.recordDeleteAction.length ||
+                                swListingDisplay.recordProcessButtonDisplayF.lengthlag
+                            ">
                             </th>
                         </tr>
                     </thead>
