@@ -115,7 +115,7 @@ export class BaseBootStrapper{
 
     }
     
-    isPrivateMode=()=> {
+    isPrivateMode=():Promise<any>=> {
       return new Promise((resolve) => {
         const on = () => resolve(true); // is in private mode
         const off = () => resolve(false); // not private mode
@@ -297,9 +297,11 @@ export class BaseBootStrapper{
         }
         return this.$q.all(rbPromises).then((data) => {
             coremodule.constant('resourceBundles',this._resourceBundle);
+            return true;
         },(error) =>{
             //can enter here due to 404
             coremodule.constant('resourceBundles',this._resourceBundle);
+            return false;
         });
 
     }
