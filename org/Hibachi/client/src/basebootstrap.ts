@@ -82,7 +82,7 @@ export class BaseBootStrapper{
 
                             // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
                             if (invalidCache.length) {
-                                let deferred = $q.defer();
+                                let deferred = this.$q.defer();
                                 this.getData(invalidCache).then(resp => {
                                     this.getResourceBundles().then((resp) => {
                                         deferred.resolve(resp);
@@ -112,7 +112,6 @@ export class BaseBootStrapper{
                 });
                 
             });
-      }])
 
     }
     
