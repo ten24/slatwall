@@ -3,8 +3,8 @@
         <h5 class="mb-0">Promotion Code</h5>
     </div>
     <div class="card-body">
-        <div class="alert alert-success fade" ng-class="{show: swfPromoBox.alertDisplaying}" ng-show="slatwall.successfulActions.includes('addPromotionCode') && swfPromoBox.alertDisplaying">Promotion successfully added.</div>
-        <div class="alert alert-danger fade" ng-class="{show: swfPromoBox.alertDisplaying}" ng-show="slatwall.failureActions.includes('addPromotionCode') && slatwall.getErrors().addPromotionCode.promotionCode[0] && swfPromoBox.alertDisplaying" ng-bind="slatwall.getErrors().addPromotionCode.promotionCode[0]"></div>
+        <swf-alert data-alert-trigger="addPromotionCodeSuccess" data-alert-type="success" data-message="Promotion successfully added." data-duration="3"></swf-alert>
+        <swf-alert data-alert-trigger="addPromotionCodeFailure" data-alert-type="danger" data-message="{{slatwall.getErrors().addPromotionCode.promotionCode[0]}}" data-duration="3"></swf-alert>    
             <div class="row">
                 <div class="col-sm-8 col-7">
                     <input type="text" ng-model="promoCode" class="form-control" placeholder="Enter Promo Code..." required>
