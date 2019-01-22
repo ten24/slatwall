@@ -263,7 +263,7 @@ class SWListingReportController {
             && this.endDate
         ){
             //if date is in the wrong format then update those dates
-            if(this.startDate.indexOf('000Z') != -1){
+            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
                 this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
                 this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
             }
