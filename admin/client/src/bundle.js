@@ -88018,7 +88018,7 @@ exports.SWListingRowSave = SWListingRowSave;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWListingSearchController = /** @class */ (function () {
     //@ngInject
-    function SWListingSearchController($rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService) {
+    function SWListingSearchController($rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService, appConfig) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$hibachi = $hibachi;
@@ -88027,6 +88027,7 @@ var SWListingSearchController = /** @class */ (function () {
         this.collectionService = collectionService;
         this.observerService = observerService;
         this.localStorageService = localStorageService;
+        this.appConfig = appConfig;
         this.displayOptionsClosed = true;
         this.filtersClosed = true;
         this.hasPersonalCollections = false;
@@ -88076,7 +88077,8 @@ var SWListingSearchController = /** @class */ (function () {
                 delete selectedPersonalCollection[_this.swListingDisplay.baseEntityName.toLowerCase()];
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
-            window.location.reload();
+            window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
+            //window.location.reload();
         };
         this.savePersonalCollection = function (collectionName) {
             if (_this.localStorageService.hasItem('selectedPersonalCollection') &&

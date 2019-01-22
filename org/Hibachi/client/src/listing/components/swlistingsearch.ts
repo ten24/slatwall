@@ -34,7 +34,8 @@ class SWListingSearchController {
         public listingService,
         public collectionService,
         public observerService,
-        public localStorageService
+        public localStorageService,
+        public appConfig
     ) {
        
     }
@@ -94,8 +95,8 @@ class SWListingSearchController {
 
             this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
         }
-
-        window.location.reload();
+        window.location.href = this.appConfig.baseURL+'?'+this.appConfig.action+'='+'entity.list'+this.swListingDisplay.baseEntityName.toLowerCase();
+        //window.location.reload();
     }
     
 
