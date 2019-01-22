@@ -342,7 +342,6 @@ class SWListingReportController {
 		if(this.chart!=null){
             this.chart.destroy();
         }
-		
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -365,7 +364,7 @@ class SWListingReportController {
                     xAxes: [{
                       display: true,
                       scaleLabel: {
-                        labelString:this.selectedPeriodInterval.value,
+                        labelString:this.selectedPeriodColumn.displayPropertyIdentifier + ' by ' + this.selectedPeriodInterval.value,
                         display: true,
                       },
                     }]
