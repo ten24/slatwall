@@ -72,6 +72,7 @@ class SWListingReportController {
     }
     
     public saveReportCollection = (collectionName?)=>{
+        debugger;
         if(collectionName || this.collectionId){
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.selectedPeriodColumn.isPeriod = true;

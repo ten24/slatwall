@@ -87521,6 +87521,7 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.saveReportCollection = function (collectionName) {
+            debugger;
             if (collectionName || _this.collectionId) {
                 _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                 _this.selectedPeriodColumn.isPeriod = true;

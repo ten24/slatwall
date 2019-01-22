@@ -2520,6 +2520,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return variables.records;
 	}
+	
+	public function setReportFlag(required boolean reportFlagValue){
+		variables.reportFlag = arguments.reportFlagValue;
+	}
 
 	public void function setRecordsCount(required numeric total){
 		variables.recordsCount = arguments.total;
@@ -3746,7 +3750,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = {};
 		}
-		variables.collectionConfigStruct['reportFlag']=isReport();
+		if(!structKeyExists(variables.collectionConfigStruct,'reportFlag')){
+			if(structKeyExists(variables.collectionConfigStruct,'periodInterval')){
+				variables.collectionConfigStruct['reportFlag']=1;
+			}else{
+				variables.collectionConfigStruct['reportFlag']=isReport();
+			}
+			
+		}
 		
 		return variables.collectionConfigStruct;
 	}
