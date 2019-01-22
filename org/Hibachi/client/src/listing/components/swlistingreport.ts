@@ -122,6 +122,10 @@ class SWListingReportController {
     }
     
     public updateComparePeriod = ()=>{
+        if(this.selectedPeriodInterval.value=='hour'){
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+        }
+        
         this.compareReportCollectionConfig = this.collectionConfig.clone();
         for(var i in this.compareReportCollectionConfig.columns){
             var column = this.compareReportCollectionConfig.columns[i];
