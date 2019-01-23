@@ -80478,6 +80478,14 @@ var LocalStorageService = /** @class */ (function () {
     function LocalStorageService($window) {
         var _this = this;
         this.$window = $window;
+        this.removeItem = function (key) {
+            try {
+                _this.$window.localStorage.removeItem(key);
+            }
+            catch (e) {
+                console.error(e);
+            }
+        };
         this.hasItem = function (key) {
             //try catch to handle safari in private mode which does not allow localstorage
             try {
@@ -87521,7 +87529,6 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.saveReportCollection = function (collectionName) {
-            debugger;
             if (collectionName || _this.collectionId) {
                 _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                 _this.selectedPeriodColumn.isPeriod = true;
@@ -88080,6 +88087,29 @@ var SWListingSearchController = /** @class */ (function () {
             }
             window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
         };
+        this.deleteReportCollection = function (persistedCollection) {
+            console.log('deleteCollection', persistedCollection);
+            _this.$hibachi.saveEntity('Collection', persistedCollection.collectionID, {}, 'delete').then(function (data) {
+            });
+        };
+        this.deletePersonalCollection = function (personalCollection) {
+            _this.$hibachi.saveEntity('Collection', personalCollection.collectionID, {
+                'softDeleteFlag': true
+            }, 'save').then(function (data) {
+                if (_this.localStorageService.hasItem('selectedPersonalCollection')) {
+                    var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
+                    var currentSelectedPersonalCollection = selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()];
+                    if (currentSelectedPersonalCollection) {
+                        var currentSelectedPersonalCollectionID = currentSelectedPersonalCollection.collectionID;
+                        if (personalCollection.collectionID === currentSelectedPersonalCollectionID) {
+                            _this.selectPersonalCollection();
+                        }
+                    }
+                }
+                _this.hasPersonalCollections = false;
+                _this.getPersonalCollections();
+            });
+        };
         this.savePersonalCollection = function (collectionName) {
             if (_this.localStorageService.hasItem('selectedPersonalCollection') &&
                 _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] &&
@@ -88136,6 +88166,7 @@ var SWListingSearchController = /** @class */ (function () {
                 personalCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
                 personalCollectionList.addFilter('collectionObject', _this.swListingDisplay.baseEntityName);
                 personalCollectionList.addFilter('reportFlag', 0);
+                personalCollectionList.addFilter('softDeleteFlag', true, "!=");
                 if (angular.isDefined(_this.personalCollectionIdentifier)) {
                     personalCollectionList.addFilter('collectionDescription', _this.personalCollectionIdentifier);
                 }

@@ -49,6 +49,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="useElasticSearch" ormtype="boolean" default="0";
 	property name="reportFlag" ormtype="boolean" default="0";
 	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
+	property name="softDeleteFlag" ormtype="boolean" default="0";
+
 
 	// Calculated Properties
 

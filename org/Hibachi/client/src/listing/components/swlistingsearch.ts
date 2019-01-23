@@ -98,6 +98,41 @@ class SWListingSearchController {
         window.location.href = this.appConfig.baseURL+'?'+this.appConfig.action+'='+'entity.list'+this.swListingDisplay.baseEntityName.toLowerCase();
     }
     
+    public deleteReportCollection = (persistedCollection)=>{
+        console.log('deleteCollection',persistedCollection);
+        this.$hibachi.saveEntity(
+            'Collection',
+            persistedCollection.collectionID,
+            {},
+            'delete'
+        ).then((data)=>{
+
+        });
+    }
+    
+    public deletePersonalCollection = (personalCollection)=>{
+        this.$hibachi.saveEntity(
+            'Collection',
+            personalCollection.collectionID,
+            {
+                'softDeleteFlag':true
+            },
+            'save'
+        ).then((data)=>{
+            if(this.localStorageService.hasItem('selectedPersonalCollection')){
+                const selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
+                const currentSelectedPersonalCollection = selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()];
+                if(currentSelectedPersonalCollection){
+                    const currentSelectedPersonalCollectionID = currentSelectedPersonalCollection.collectionID;
+                    if(personalCollection.collectionID === currentSelectedPersonalCollectionID){
+                        this.selectPersonalCollection();
+                    }
+                }
+            }
+            this.hasPersonalCollections = false;
+            this.getPersonalCollections();
+        });
+    }
 
     public savePersonalCollection=(collectionName?)=>{
         if(
@@ -174,6 +209,7 @@ class SWListingSearchController {
             personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
             personalCollectionList.addFilter('reportFlag',0);
+            personalCollectionList.addFilter('softDeleteFlag',true,"!=");
             if(angular.isDefined(this.personalCollectionIdentifier)){
                 personalCollectionList.addFilter('collectionDescription',this.personalCollectionIdentifier);
             }
