@@ -3105,6 +3105,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					
 				}else if(structKeyExists(column,'isVisible') && column['isVisible']){
 					columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+					addingColumn = true;
 				}
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
