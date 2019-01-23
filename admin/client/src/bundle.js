@@ -87575,6 +87575,11 @@ var SWListingReportController = /** @class */ (function () {
             _this.startDateCompare.setHours(0, 0, 0, 0);
             _this.endDateCompare = new Date(_this.endDateCompare);
             _this.endDateCompare.setHours(23, 59, 59, 999);
+            //if date is in the wrong format then update those dates
+            if (_this.startDateCompare.indexOf && _this.startDateCompare.indexOf('000Z') != -1) {
+                _this.startDateCompare = new Date(_this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+                _this.endDateCompare = new Date(_this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
+            }
             if (_this.selectedPeriodInterval.value == 'hour') {
                 _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
             }

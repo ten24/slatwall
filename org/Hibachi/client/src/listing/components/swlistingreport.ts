@@ -131,6 +131,12 @@ class SWListingReportController {
         this.endDateCompare = new Date(this.endDateCompare);
         this.endDateCompare.setHours(23,59,59,999);
         
+        //if date is in the wrong format then update those dates
+        if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
+            this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+            this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
+        }
+        
         if(this.selectedPeriodInterval.value=='hour'){
             this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
         }
