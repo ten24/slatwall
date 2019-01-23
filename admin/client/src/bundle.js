@@ -87571,6 +87571,10 @@ var SWListingReportController = /** @class */ (function () {
             return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 1 + ')';
         };
         this.updateComparePeriod = function () {
+            _this.startDateCompare = new Date(_this.startDateCompare);
+            _this.startDateCompare.setHours(0, 0, 0, 0);
+            _this.endDateCompare = new Date(_this.endDateCompare);
+            _this.endDateCompare.setHours(23, 59, 59, 999);
             if (_this.selectedPeriodInterval.value == 'hour') {
                 _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
             }

@@ -124,6 +124,13 @@ class SWListingReportController {
     }
     
     public updateComparePeriod = ()=>{
+        
+        this.startDateCompare = new Date(this.startDateCompare);
+        this.startDateCompare.setHours(0,0,0,0)
+        
+        this.endDateCompare = new Date(this.endDateCompare);
+        this.endDateCompare.setHours(23,59,59,999);
+        
         if(this.selectedPeriodInterval.value=='hour'){
             this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
         }
