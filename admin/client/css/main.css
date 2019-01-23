@@ -1770,6 +1770,24 @@ table tr th .glyphicon {
   padding-top: 14px;
   padding-bottom: 10px;
 }
+.dropdown-menu.with-btn li {
+  display: flex;
+  flex-wrap: no-wrap;
+  justify-content: space-between;
+}
+.dropdown-menu.with-btn li > a {
+  width: 100%;
+  display: block;
+}
+.dropdown-menu.with-btn li a:hover {
+  background-color: #999999;
+}
+.dropdown-menu.with-btn li a.delete-icon {
+  max-width: 40px;
+}
+.dropdown-menu.with-btn li a.delete-icon:hover { 
+  background-color: #DA3749;
+}
 .panel-group .panel + .panel {
   margin-top: 10px;
 }
