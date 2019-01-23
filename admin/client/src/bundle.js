@@ -87572,7 +87572,7 @@ var SWListingReportController = /** @class */ (function () {
         };
         this.updateComparePeriod = function () {
             if (_this.selectedPeriodInterval.value == 'hour') {
-                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy');
+                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
             }
             _this.compareReportCollectionConfig = _this.collectionConfig.clone();
             for (var i in _this.compareReportCollectionConfig.columns) {
@@ -87693,16 +87693,20 @@ var SWListingReportController = /** @class */ (function () {
                 && _this.selectedPeriodInterval
                 && _this.startDate
                 && _this.endDate) {
+                _this.startDate = new Date(_this.startDate);
+                _this.startDate.setHours(0, 0, 0, 0);
+                _this.endDate = new Date(_this.endDate);
+                _this.endDate.setHours(23, 59, 59, 999);
                 //if date is in the wrong format then update those dates
                 if (_this.startDate.indexOf && _this.startDate.indexOf('000Z') != -1) {
-                    _this.startDate = new Date(_this.startDate).toString('MMM dd, yyyy');
-                    _this.endDate = new Date(_this.endDate).toString('MMM dd, yyyy');
+                    _this.startDate = new Date(_this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                    _this.endDate = new Date(_this.endDate).toString('MMM dd, yyyy hh:mm tt');
                 }
                 _this.hasMetric = false;
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
                 //if the interval is an hour than we should only be able to show data for one day
                 if (_this.selectedPeriodInterval.value == 'hour') {
-                    _this.endDate = new Date(_this.startDate).addDays(1).toString('MMM dd, yyyy');
+                    _this.endDate = new Date(_this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
                 }
                 for (var i = _this.reportCollectionConfig.columns.length - 1; i >= 0; i--) {
                     var column = _this.reportCollectionConfig.columns[i];
@@ -87734,7 +87738,7 @@ var SWListingReportController = /** @class */ (function () {
                         _this.renderReport(reportingData, ctx);
                         if (_this.startDateCompare) {
                             var diff = Math.abs(_this.endDate - _this.startDate);
-                            _this.endDateCompare = new Date(_this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy');
+                            _this.endDateCompare = new Date(_this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
                             _this.updateComparePeriod();
                         }
                     });
@@ -87838,7 +87842,6 @@ var SWListingReportController = /** @class */ (function () {
             //get meta data we need for existing columns
             var promise = _this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then(function (value) {
                 _this.metadataService.setPropertiesList(value, baseEntityAlias);
-                console.log(_this);
                 if (!_this.filterPropertiesList) {
                     _this.filterPropertiesList = {};
                 }
