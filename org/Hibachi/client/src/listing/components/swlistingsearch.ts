@@ -99,7 +99,6 @@ class SWListingSearchController {
     }
     
     public deleteReportCollection = (persistedCollection)=>{
-        console.log('deleteCollection',persistedCollection);
         this.$hibachi.saveEntity(
             'Collection',
             persistedCollection.collectionID,
