@@ -517,6 +517,9 @@ export{
 
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+//import { MetaDataService } from '../../core/services/metadataservice';
+import { UtilityService } from "../../core/services/utilityservice";
+import { ValidationControllerService } from "../../validation/services/validationcontrollerservice";
 
 @Component({    
     selector: 'sw-input-upgraded',
@@ -524,9 +527,98 @@ import { FormControl } from '@angular/forms';
 })
 export class SwInput implements OnInit {
     
-    @Input() public formControl: FormControl;
+    @Input() public form:FormControl;
+    @Input() public propertyIdentifier:string;
+    @Input() public fieldType:string;
+    @Input() public object;
+    @Input() public context:string;
+    @Input() public name:string;
     
-    ngOnInit() {
+    constructor(
+        private metadataService :MetaDataService,
+        private utilityService :UtilityService,
+        private validationControllerService :ValidationControllerService
+    ) {
         
     }
+    
+    ngOnInit() {
+        this.getValidationDirectives();
+
+    }
+    
+    public getValidationDirectives = ()=>{
+
+        var name = this.propertyIdentifier;
+        var form = this.form;
+
+        if(this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(this.object,this.propertyIdentifier)){
+            this.object.validations.properties[name] = [];
+            if(
+                (this.object.metaData[this.propertyIdentifier].requiredFlag 
+                    && this.object.metaData[this.propertyIdentifier].requiredFlag == true)
+                    || typeof this.object.metaData[this.propertyIdentifier].requiredFlag === 'string' 
+                    && this.object.metaData[this.propertyIdentifier].requiredFlag.trim().toLowerCase()=="yes"){
+                this.object.validations.properties[name].push({
+                    contexts:"save",
+                    required:true
+                });
+            }
+            if(this.object.metaData[this.propertyIdentifier].validationRegex){
+                this.object.validations.properties[name].push({
+                  contexts:"save",
+                  regex:this.object.metaData[this.propertyIdentifier].validationRegex
+                });
+            }
+        }
+
+        if(angular.isUndefined(this.object.validations )
+            || angular.isUndefined(this.object.validations.properties)
+            || angular.isUndefined(this.object.validations.properties[this.propertyIdentifier])){
+            return '';
+        }
+        
+        var validations = this.object.validations.properties[this.propertyIdentifier];
+
+        var validationsForContext = [];
+
+        //get the form context and the form name.
+        var formContext = this.context;
+        var formName = this.name;
+        
+        //get the validations for the current element.
+        var propertyValidations = this.object.validations.properties[name];
+
+        //check if the contexts match.
+        if (typeof propertyValidations === 'object' && propertyValidations !== null){
+            
+            //if this is a procesobject validation then the context is implied
+            if(propertyValidations[0].contexts === undefined && this.object.metaData.isProcessObject){
+                propertyValidations[0].contexts = this.object.metaData.className.split('_')[1];
+            }
+
+            if (propertyValidations[0].contexts.indexOf(formContext) > -1){
+                console.debug("Matched");
+                for (var prop in propertyValidations[0]){
+                        if (prop != "contexts" && prop !== "conditions" && prop !== undefined){
+
+                              if( propertyValidations[0][prop] === true) {
+                                    this.validationControllerService.addValidation(
+                                        this.form.controls[this.propertyIdentifier],
+                                        prop.toLowerCase());
+                              }
+                        }
+                }
+            }
+        }
+        
+        //loop over validations that are required and create the space delimited list
+        //get all validations related to the form context;
+        angular.forEach(validations,(validation,key)=>{
+            if(validation.contexts && this.utilityService.listFind(validation.contexts.toLowerCase(),this.context.toLowerCase()) !== -1){
+                validationsForContext.push(validation);
+            }
+        });
+
+    };    
 }

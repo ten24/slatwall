@@ -1,1 +1,9 @@
-<sw-input-upgraded *ngIf="indexOf(fieldType.toLowerCase()) >= 0" [formControl]="formControl"></sw-input-upgraded>
+<sw-input-upgraded 
+	*ngIf="fieldTypes.indexOf(fieldType.toLowerCase()) >= 0" 
+	[form]="form"
+	[propertyIdentifier]="propertyIdentifier"
+	[fieldType]="fieldType"
+	[object]="object"
+	[context]="context"
+	[name]="name">
+</sw-input-upgraded>

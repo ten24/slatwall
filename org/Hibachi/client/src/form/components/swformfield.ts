@@ -374,7 +374,13 @@ import { FormControl } from '@angular/forms';
 export class SwFormField implements OnInit {
    
     @Input() public labelText: string;
-    @Input() public formControl: FormControl;
+    @Input() public form;
+    @Input() public propertyIdentifier;
+    @Input() public fieldType;
+    @Input() public object;
+    @Input() public context;
+    @Input() public name: string;
+    
     public fieldTypes: string[] = ['email','text','password','number','time','date','datetime','json'];
     
     constructor() {

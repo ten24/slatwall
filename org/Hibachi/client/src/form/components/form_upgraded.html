@@ -1,4 +1,8 @@
 
 <div *ngIf="object && isObject()" >
-	<sw-workflow-basic-upgraded [object]="object" [name]="name" ></sw-workflow-basic-upgraded>
+	<sw-workflow-basic-upgraded 
+		[object]="object" 
+		[name]="name" 
+		[context]="context"
+	></sw-workflow-basic-upgraded>
 </div>

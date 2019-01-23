@@ -20,6 +20,7 @@ import {SWValidationUnique} from "./components/swvalidationunique";
 import {SWValidationUniqueOrNull} from "./components/swvalidationuniqueornull";
 //services
 import {ValidationService} from "./services/validationservice";
+import {ValidationControllerService} from "./services/validationcontrollerservice";
 
 //modules
 import {coremodule} from "../core/core.module";
@@ -33,7 +34,8 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 @NgModule({
 	declarations : [],
 	providers : [
-        ValidationService
+        ValidationService,
+        ValidationControllerService
     ],
 	imports : [
 		CoreModule,

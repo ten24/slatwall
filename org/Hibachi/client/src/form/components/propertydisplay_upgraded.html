@@ -13,9 +13,13 @@
 					</label>
 					<div [ngClass]="{ 's-form-input' : !inListingDisplay, 's-input-group' : inListingDisplay, 's-edit' : edited }">
 						<sw-form-field-upgraded
-							[formControl]="form.controls[propertyIdentifier]"
+							[form]="form"
+							[propertyIdentifier]="propertyIdentifier"
 							[labelText]="labelText"
-							
+							[fieldType]="fieldType"
+							[object]="object"
+							[context]="context"
+							[name]="name"
 						></sw-form-field-upgraded>
 					</div>
 					

@@ -221,6 +221,8 @@ class SWPropertyDisplayController {
             this.swInputOnChangeEvent = this.swForm.name + this.name + 'change';
             this.observerService.attach(this.onChange, this.swInputOnChangeEvent);
         }
+        
+        
 
 	}
 
@@ -466,6 +468,8 @@ export class SwPropertyDisplay implements OnInit  {
     @Input() public propertyIdentifier : string;
     @Input() public editable : boolean;
     @Input() public editing : boolean;
+    @Input() public context: string;
+    @Input() public name:string;
     public value : string;
     public fieldType : string;
     public inListingDisplay : boolean;

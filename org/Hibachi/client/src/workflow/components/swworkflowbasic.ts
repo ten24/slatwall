@@ -48,6 +48,7 @@ export class SwWorkflowBasic implements OnInit {
     @Input() public object;
     //public object;
     @Input() public name : string;
+    @Input() public context:string;
     public value;
     public options;
     public selectType;
