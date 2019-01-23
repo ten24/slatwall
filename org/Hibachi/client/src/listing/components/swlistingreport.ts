@@ -125,7 +125,7 @@ class SWListingReportController {
     
     public updateComparePeriod = ()=>{
         if(this.selectedPeriodInterval.value=='hour'){
-            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy');
         }
         
         this.compareReportCollectionConfig = this.collectionConfig.clone();
@@ -266,14 +266,14 @@ class SWListingReportController {
         ){
             //if date is in the wrong format then update those dates
             if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
-                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
-                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy');
+                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy');
             }
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
             //if the interval is an hour than we should only be able to show data for one day
             if(this.selectedPeriodInterval.value=='hour'){
-                this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy');
             }
             
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
@@ -309,7 +309,7 @@ class SWListingReportController {
         			this.renderReport(reportingData,ctx);
         			if(this.startDateCompare){
                         var diff = Math.abs(this.endDate - this.startDate);
-                        this.endDateCompare = new Date(this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
+                        this.endDateCompare = new Date(this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy');
                         this.updateComparePeriod();
                     }
                 });
@@ -317,7 +317,7 @@ class SWListingReportController {
             
         }
     }
-
+    
     public renderReport=(reportingData,ctx)=>{
         this.reportingData = reportingData;
 		var dates = [];
