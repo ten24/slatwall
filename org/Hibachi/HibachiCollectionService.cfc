@@ -1477,13 +1477,13 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(len(arguments.excludesList)){ 
 						var propertiesToExclude = listToArray(arguments.excludesList);
 						for(var propertyToExclude in propertiesToExclude){
-							data[key] = getHibachiUtilityService().removeListValue(data[key],propertyToExclude & '|DESC');	
-							data[key] = getHibachiUtilityService().removeListValue(data[key],propertyToExclude & '|ASC');	
+							orderBys = getHibachiUtilityService().removeListValue(orderBys,propertyToExclude & '|DESC');	
+							orderBys = getHibachiUtilityService().removeListValue(orderBys,propertyToExclude & '|ASC');	
 						}   
 
 					}
 					//this is a list.
-					arguments.collection.setOrderBy(data[key]);
+					arguments.collection.setOrderBy(orderBys);
 				}
 
 
