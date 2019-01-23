@@ -655,6 +655,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var periodInterval = "";
 		if(structKeyExists(arguments.data,'periodInterval')){
 			periodInterval = arguments.data['periodInterval'];
+			isReport = true;
 		}
 
 		var allRecords = false;

@@ -71,6 +71,8 @@ class SWListingReportController {
         }
     }
     
+    
+    
     public saveReportCollection = (collectionName?)=>{
         if(collectionName || this.collectionId){
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
@@ -96,7 +98,7 @@ class SWListingReportController {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
                 },
-                'save'
+                'save'  
             ).then((data)=>{
                 if(this.collectionId){
                     window.location.reload();    
