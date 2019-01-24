@@ -2,12 +2,11 @@
 <cfinclude template="_slatwall-header.cfm" />
 <cfoutput>
 
-<!---<cfif isNull($.slatwall.getSession().getLastPlacedOrderID())>
+<cfif isNull($.slatwall.getSession().getLastPlacedOrderID())>
 	<cflocation url="/" addtoken="false" >
 <cfelse>
 	<cfset order = $.slatwall.getService("orderService").getOrder($.slatwall.getSession().getLastPlacedOrderID()) >
-</cfif>--->
-<cfset order = $.slatwall.getService("orderService").getOrder('2c9180826347d27001635ea8158f0519') >
+</cfif>
 
 <div class="container">
     
