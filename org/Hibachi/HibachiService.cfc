@@ -531,7 +531,18 @@
 			}
 			
 			return getCollectionList(entityName=entityName, data=data);
-		} 
+		}
+		
+		public string function getFormatTypeByClassNameAndPropertyIdentifier(required string className, required string propertyIdentifier ) {
+			var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.className, propertyIdentifier=arguments.propertyIdentifier );
+			var object = getService('HibachiService').getEntityObject(entityName);
+			if( findNoCase(".",arguments.propertyIdentifier) ){
+				var propertyName = listLast(arguments.propertyIdentifier,'.');
+			} else {
+				var propertyName = listLast(arguments.propertyIdentifier,'_');
+			}
+			return object.getPropertyFormatType(propertyName);
+		}
 
 
 		private function onMissingGetEntityStructMethod( required string missingMethodName, required struct missingMethodArguments ){
