@@ -63,7 +63,6 @@ Notes:
 			INNER JOIN aa.account a 
 			INNER JOIN a.primaryEmailAddress pea 
 			WHERE #comparisonValue#=:emailAddress
-			AND aa.integration.integrationID is null
 		"/>
 		<cfif structKeyExists(arguments,'accountID')>
 			<cfset hql &= " AND a.accountID != :accountID"/>
