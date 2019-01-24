@@ -2,11 +2,12 @@
 <cfinclude template="_slatwall-header.cfm" />
 <cfoutput>
 
-<cfif isNull($.slatwall.getSession().getLastPlacedOrderID())>
+<!---<cfif isNull($.slatwall.getSession().getLastPlacedOrderID())>
 	<cflocation url="/" addtoken="false" >
 <cfelse>
 	<cfset order = $.slatwall.getService("orderService").getOrder($.slatwall.getSession().getLastPlacedOrderID()) >
-</cfif>
+</cfif>--->
+<cfset order = $.slatwall.getService("orderService").getOrder('2c9180826347d27001635ea8158f0519') >
 
 <div class="container">
     
@@ -20,51 +21,54 @@
 		    <div class="card mb-4">
     			<h5 class="card-header">Billing &amp; Payment</h5>
     			<div class="card-body">
-        		    <!--- Get the applied payments smart list, and filter by only payments that are active --->
-        		    <cfset appliedPaymentsSmartList = order.getOrderPaymentsSmartList() />
-        		    <cfset appliedPaymentsSmartList.addFilter('orderPaymentType.systemCode', 'optCharge') />
-        		    <cfset appliedPaymentsSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive') />
+    				
+        		    <cfset local.paymentService = $.slatwall.getService('PaymentService') />
+        		    <cfset appliedPaymentsCollectionList = order.getOrderPaymentsCollectionList() />
+        		    <cfset appliedPaymentsCollectionList.addFilter('orderPaymentType.systemCode', 'optCharge') />
+        		    <cfset appliedPaymentsCollectionList.addFilter('orderPaymentStatusType.systemCode', 'opstActive') />
+        		    <cfset local.appliedPaymentsRecords = appliedPaymentsCollectionList.getRecords(formatRecords=false) />
         			
-        			<cfif arraylen(appliedPaymentsSmartList.getRecords())>
+        			<cfif arraylen(local.appliedPaymentsRecords)>
         				<h6>Billing Address</h6>
-        			    <cfloop array="#appliedPaymentsSmartList.getRecords()#" index="orderPayment">
+        			    <cfloop array="#local.appliedPaymentsRecords#" index="orderPayment">
+        			    	<cfset local.orderPayment = local.paymentService.getOrderPayment(orderPayment['orderPaymentID']) />
         				    <address>
-        					    <cfif not isNull(orderPayment.getBillingAddress().getName())>
-        						   #orderPayment.getBillingAddress().getName()#<br>
+        					    <cfif not isNull(local.orderPayment.getBillingAddress().getName())>
+        						   #local.orderPayment.getBillingAddress().getName()#<br>
         					    </cfif>
-        					    <cfif not isNull(orderPayment.getBillingAddress().getStreetAddress())>
-        						   #orderPayment.getBillingAddress().getStreetAddress()#<br>
+        					    <cfif not isNull(local.orderPayment.getBillingAddress().getStreetAddress())>
+        						   #local.orderPayment.getBillingAddress().getStreetAddress()#<br>
         					    </cfif>
-        					    <cfif not isNull(orderPayment.getBillingAddress().getStreet2Address())>
-        						   #orderPayment.getBillingAddress().getStreet2Address()#<br />
+        					    <cfif not isNull(local.orderPayment.getBillingAddress().getStreet2Address())>
+        						   #local.orderPayment.getBillingAddress().getStreet2Address()#<br />
         					    </cfif>
-        					    <cfif not isNull(orderPayment.getBillingAddress().getLocality())>
-        						   #orderPayment.getBillingAddress().getLocality()#<br />
+        					    <cfif not isNull(local.orderPayment.getBillingAddress().getLocality())>
+        						   #local.orderPayment.getBillingAddress().getLocality()#<br />
         					    </cfif>
-        					    <cfif not isNull(orderPayment.getBillingAddress().getCity()) and not isNull(orderPayment.getBillingAddress().getStateCode()) and not isNull(orderPayment.getBillingAddress().getPostalCode())>
-        						   #orderPayment.getBillingAddress().getCity()#, #orderPayment.getBillingAddress().getStateCode()# #orderPayment.getBillingAddress().getPostalCode()#<br />
+        					    <cfif not isNull(local.orderPayment.getBillingAddress().getCity()) and not isNull(local.orderPayment.getBillingAddress().getStateCode()) and not isNull(local.orderPayment.getBillingAddress().getPostalCode())>
+        						   #local.orderPayment.getBillingAddress().getCity()#, #local.orderPayment.getBillingAddress().getStateCode()# #local.orderPayment.getBillingAddress().getPostalCode()#<br />
         					    <cfelse>
-        						    <cfif not isNull(orderPayment.getBillingAddress().getCity())>
-        							   #orderPayment.getBillingAddress().getCity()#<br />
+        						    <cfif not isNull(local.orderPayment.getBillingAddress().getCity())>
+        							   #local.orderPayment.getBillingAddress().getCity()#<br />
         						    </cfif>
-        						    <cfif not isNull(orderPayment.getBillingAddress().getStateCode())>
-        							   #orderPayment.getBillingAddress().getStateCode()#<br />
+        						    <cfif not isNull(local.orderPayment.getBillingAddress().getStateCode())>
+        							   #local.orderPayment.getBillingAddress().getStateCode()#<br />
         						    </cfif>
-        						    <cfif not isNull(orderPayment.getBillingAddress().getPostalCode())>
-        							   #orderPayment.getBillingAddress().getPostalCode()#<br />
+        						    <cfif not isNull(local.orderPayment.getBillingAddress().getPostalCode())>
+        							   #local.orderPayment.getBillingAddress().getPostalCode()#<br />
         						    </cfif>
         					    </cfif>
-        					    <cfif not isNull(orderPayment.getBillingAddress().getCountryCode())>
-        						   #orderPayment.getBillingAddress().getCountryCode()#<br />
+        					    <cfif not isNull(local.orderPayment.getBillingAddress().getCountryCode())>
+        						   #local.orderPayment.getBillingAddress().getCountryCode()#<br />
         					    </cfif>
         				    </address>
         
         				    <h6>Payment Method</h6>
         				    
-        				    <cfif orderPayment.getPaymentMethod().getPaymentMethodName() EQ 'Purchase Order'>
-        					   <p>Purchase Order ## <strong>#orderPayment.getPurchaseOrderNumber()#</strong></p>
+        				    <cfif local.orderPayment.getPaymentMethod().getPaymentMethodName() EQ 'Purchase Order'>
+        					   <p>Purchase Order ## <strong>#local.orderPayment.getPurchaseOrderNumber()#</strong></p>
         				    <cfelse>
-        					   <p>#orderPayment.getCreditCardType()# ending in **** #orderPayment.getCreditCardLastFour()#</p>
+        					   <p>#local.orderPayment.getCreditCardType()# ending in **** #local.orderPayment.getCreditCardLastFour()#</p>
         				    </cfif>
         				    <cfbreak>
         			    </cfloop>
