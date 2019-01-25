@@ -150,23 +150,37 @@
 		<h5 class="card-header">Your Order</h5>
 		<div class="card-body">
 		    <cfloop array="#order.getOrderItems()#" index="local.orderItem">
+		    	<cfif local.orderItem.getSku().getBundleFlag() >
+    		    </cfif>
     		    <div class="row mb-2">
     		        <div class="col-12 col-sm-12 col-md-2 text-center">
     		            <a href="#local.orderItem.getSku().getProduct().getProductURL()#/">
     						<img src="#local.orderItem.getSku().getProduct().getResizedImagePath(width='97')#" alt="#encodeForHTML(orderItem.getSku().getProduct().getTitle())#">
     					</a>
     		        </div>
-    		        
     		        <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4">
-    		            <h5><a href="#local.orderItem.getSku().getProduct().getProductURL()#">#local.orderItem.getSku().getProduct().getProductName()#</a></h5>
-            			<ul class="list-unstyled">
-            			    <li><small class="text-secondary">#local.orderItem.getSku().getProduct().getProductType().getProductTypeName()#</small></li>
-            			    <li><small class="text-secondary">Product Code: #local.orderItem.getSku().getProduct().getProductCode()#</small></li>
-            			    <li><small class="text-secondary">Sku Code: #local.orderItem.getSku().getSkuCode()#</small></li>
-            				<li><small class="text-secondary">#local.orderItem.getSku().getSkuDefinition()#</small></li>
-            			</ul>
+	    		        <cfif local.orderItem.getSku().getBundleFlag()>
+	    		    		<h5><a href="#local.orderItem.getSku().getProduct().getProductURL()#">#local.orderItem.getSku().getProduct().getProductName()#</a></h5>
+	            			<ul class="list-unstyled">
+	            				<cfLoop array="#local.orderItem.getSku().getBundledSkus()#" index="local.bundledSku">
+	            					<cfset local.sku = local.bundledSku.getBundledSku() />
+        							<li><a href="#local.sku.getProduct().getProductURL()#">#local.sku.getProduct().getProductName()#</a></li>
+            						<li><small class="text-secondary">Product Code: #local.sku.getProduct().getProductCode()#</small></li>
+            						<li><small class="text-secondary">Sku Code: #local.sku.getSkuCode()#</small></li>
+            						<li><small class="text-secondary">#local.sku.getSkuDefinition()#</small></li>
+            						<li><small class="text-secondary">QTY: #local.bundledSku.getBundledQuantity()#</small></li>
+	            				</cfLoop>
+	            			</ul>
+	    		    	<cfelse>	
+	    		            <h5><a href="#local.orderItem.getSku().getProduct().getProductURL()#">#local.orderItem.getSku().getProduct().getProductName()#</a></h5>
+	            			<ul class="list-unstyled">
+	            			    <li><small class="text-secondary">#local.orderItem.getSku().getProduct().getProductType().getProductTypeName()#</small></li>
+	            			    <li><small class="text-secondary">Product Code: #local.orderItem.getSku().getProduct().getProductCode()#</small></li>
+	            			    <li><small class="text-secondary">Sku Code: #local.orderItem.getSku().getSkuCode()#</small></li>
+	            				<li><small class="text-secondary">#local.orderItem.getSku().getSkuDefinition()#</small></li>
+	            			</ul>
+            			</cfif>
     		        </div>
-    		        
 	                <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
 	                    <div class="col-4 col-sm-6 pt-2">
 	                        Qty: #local.orderItem.getQuantity()#
