@@ -136,7 +136,7 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
       # If there are no conflicts it was likely a minor release
       if [ "$conflicts" = "" ]; then
         echo 'push'
-        git push slatwalldevelop develop-team
+        git push slatwalldevelop
       else
         git reset --hard
       fi
