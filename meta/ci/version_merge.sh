@@ -126,7 +126,15 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
       git checkout -b develop-team slatwalldevelop/develop-team
       git pull slatwalldevelop develop
       git pull origin develop
-      git push slatwalldevelop develop-team
+      # Read all the conflicts of the repository
+      conflicts=$(git diff --name-only --diff-filter=U)
+    
+      # If there are no conflicts it was likely a minor release
+      if [ "$conflicts" = "" ]; then
+        git push slatwalldevelop develop-team
+      else
+        git reset --hard
+      fi
       git checkout develop
     fi
 
