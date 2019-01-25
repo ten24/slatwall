@@ -124,6 +124,8 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
       aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
       echo 'adding remote'
       git remote add slatwalldevelop git@github.com:ten24/SlatwallDevelop.git
+      echo 'fetching'
+      git fetch slatwalldevelop
       echo 'checkout develop-team'
       git checkout -t slatwalldevelop/develop-team
       echo 'pull slatwallDevelop - develop'      
