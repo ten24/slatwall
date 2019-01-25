@@ -123,7 +123,7 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
       aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
       aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
       git remote add slatwalldevelop git@github.com:ten24/SlatwallDevelop.git
-      git checkout -b develop-team slatwalldevelop/develop-team
+      git checkout -t slatwalldevelop/develop-team
       git pull slatwalldevelop develop --no-edit
       git pull origin develop --no-edit
       # Read all the conflicts of the repository
