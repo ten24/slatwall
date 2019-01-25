@@ -161,6 +161,14 @@ class CollectionConfig {
             jsonCollection = angular.fromJson(jsonCollection);
         }
         
+        if(angular.isDefined(jsonCollection['ORDERBY']) && !angular.isDefined(jsonCollection.orderBy)){
+            jsonCollection.orderBy = jsonCollection['ORDERBY'];
+        }
+
+        if(angular.isDefined(jsonCollection['PERIODINTERVAL']) && !angular.isDefined(jsonCollection.periodInterval)){
+            jsonCollection.periodInterval = jsonCollection['PERIODINTERVAL'];
+        }
+        
 
         this.baseEntityAlias = jsonCollection.baseEntityAlias;
         this.baseEntityName = jsonCollection.baseEntityName;

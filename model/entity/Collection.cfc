@@ -49,6 +49,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="useElasticSearch" ormtype="boolean" default="0";
 	property name="reportFlag" ormtype="boolean" default="0";
 	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
+	property name="softDeleteFlag" ormtype="boolean" default="0";
+
 
 	// Calculated Properties
 
@@ -131,6 +133,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="mergeCollectionOptions" persistent="false";
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
+	property name="collectionConfigErrorMessageDetail" persistent="false";
 	property name="collectionObjectOptions" persistent="false";
 	property name="totalAvgAggregates" persistent="false" type="array";
 	property name="totalSumAggregates" persistent="false" type="array";
@@ -1651,15 +1654,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
         var collectionConfigStruct = getCollectionConfigStruct();
         aliases = listAppend(aliases, getBaseEntityAlias());
 
-        if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
-            for(var i = 1; i <= arraylen(collectionConfigStruct.columns); i++){
+
+		if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
+			var columnCount = arraylen(collectionConfigStruct.columns); 
+            for(var i = 1; i <= columnCount; i++){
                 aliases = listAppend(aliases, listFirst(collectionConfigStruct.columns[i].propertyIdentifier, '.'));
             }
         }
+			
 
-        if(structKeyExists(collectionConfigStruct, 'orderBy') && arraylen(collectionConfigStruct.orderBy)){
-            for(var i = 1; i <= arraylen(collectionConfigStruct.orderBy); i++){
+       if(structKeyExists(collectionConfigStruct, 'orderBy') && arraylen(collectionConfigStruct.orderBy)){
+			var orderByCount = arraylen(collectionConfigStruct.orderBy);
+            for(var i = 1; i <= orderByCount; i++){
                 aliases = listAppend(aliases, listFirst(collectionConfigStruct.orderBy[i].propertyIdentifier, '.'));
+            }
+        } 
+
+		if(structKeyExists(collectionConfigStruct, 'groupBys') && listLen(collectionConfigStruct.groupBys)){
+			var groupByArray = listToArray(collectionConfigStruct.groupBys);
+			var groupByCount = arraylen(groupByArray); 
+            for(var i = 1; i <= groupByCount; i++){
+                aliases = listAppend(aliases, listFirst(groupByArray[i], '.'));
             }
         }
 
@@ -2507,6 +2522,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return variables.records;
 	}
+	
+	public function setReportFlag(required boolean reportFlagValue){
+		variables.reportFlag = arguments.reportFlagValue;
+	}
 
 	public void function setRecordsCount(required numeric total){
 		variables.recordsCount = arguments.total;
@@ -3086,6 +3105,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					
 				}else if(structKeyExists(column,'isVisible') && column['isVisible']){
 					columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+					addingColumn = true;
 				}
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
@@ -3733,7 +3753,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = {};
 		}
-		variables.collectionConfigStruct['reportFlag']=isReport();
+		if(!structKeyExists(variables.collectionConfigStruct,'reportFlag')){
+			if(structKeyExists(variables.collectionConfigStruct,'periodInterval')){
+				variables.collectionConfigStruct['reportFlag']=1;
+			}else{
+				variables.collectionConfigStruct['reportFlag']=isReport();
+			}
+			
+		}
 		
 		return variables.collectionConfigStruct;
 	}
@@ -3831,6 +3858,31 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 
+	}
+	
+	// @hint Ensures that the collection config is valid and can be executed successfully
+	public boolean function hasValidCollectionConfig() {
+		
+		// Attempt to fetch record with the set collectionConfg
+		try {
+			setPageRecordsShow(1);
+			getPageRecords(true);
+			
+		// Error executing collection
+		} catch (any e) {
+			var messageDetail = e.message;
+			
+			// Provide reference to component and line number from stack trace if possible
+			if (isArray(e.tagContext) && arrayLen(e.tagContext)) {
+				messageDetail = "#messageDetail#. #e.tagContext[1].raw_trace# -- #e.tagContext[1].codePrintPlain#";
+			}
+			
+			// Set non-persistent variable so we can relay meaningful error detail with the validation rbKey
+			setCollectionConfigErrorMessageDetail(messageDetail);
+			return false;
+		}
+		
+		return true;
 	}
 
 	// ===============  END: Custom Validation Methods =====================

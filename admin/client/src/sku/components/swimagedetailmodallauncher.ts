@@ -107,16 +107,17 @@ class SWImageDetailModalLauncherController{
         data.append('ajaxRequest', "1");
 
         data.append('productID', this.swPricingManager.productId);
-
-        if(this.customImageNameFlag){
+        
+        if(this.imageFileName){
             data.append('imageFile', this.imageFileName);
-        } else {
+        } else if(this.sku.data.imageFile){
             data.append('imageFile', this.sku.data.imageFile);
         }
        
         const inputs = $('input[type=file]');
         for(var input of <any>inputs){
-            if(input.files[0]){
+            var classes = $(input).attr('class').split(' ');
+            if(input.files[0] && classes.indexOf(this.skuCode) > -1){
                 data.append('uploadFile', input.files[0]);
                 break;
             }

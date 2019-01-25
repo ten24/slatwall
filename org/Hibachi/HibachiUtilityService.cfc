@@ -29,7 +29,15 @@
  		    };
  		    return formattedStructKeyList;
  		}	
- 		
+
+		public function removeListValue(required string list, required string value){ 
+			var listIndex = listFindNoCase(arguments.list, arguments.value);
+			if(listIndex != 0){
+				return listDeleteAt(arguments.list, listIndex); 
+			} 
+			return arguments.list; 	
+		} 
+
  		public any function getQueryLabels(required any query){
  			var qryColumns = "";
  			for (var column in getMetaData(arguments.query)){
