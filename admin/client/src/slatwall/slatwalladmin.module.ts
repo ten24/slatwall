@@ -125,18 +125,17 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             //Don't count the field if its undefied or not a number
             if(obj.amount != undefined && !isNaN(obj.amount)) {
                 //Charge / adjustment condition for subtotal
-                if($scope.paymentType==paymentType.aptCharge || $scope.paymentType == paymentType.aptAdjustment) {
-                    if(obj.paymentType==paymentType.aptCharge)
-                        $scope.totalAmountToApply += parseFloat(obj.amount);
-                    else if(obj.paymentType==paymentType.aptCredit)
-                        $scope.totalAmountToApply -= parseFloat(obj.amount);
-
+                if($scope.paymentType==paymentType.aptCharge) {
+                    $scope.totalAmountToApply += parseFloat(obj.amount);
                 //Credit condition for subtotal
                 } else if($scope.paymentType==paymentType.aptCredit) {
-                    if(obj.paymentType==paymentType.aptCharge)
-                        $scope.totalAmountToApply -= parseFloat(obj.amount);
-                    else if(obj.paymentType==paymentType.aptCredit)
+                    $scope.totalAmountToApply -= parseFloat(obj.amount);
+                }else if($scope.paymentType == paymentType.aptAdjustment){
+                    if(obj.paymentType==paymentType.aptCharge){
                         $scope.totalAmountToApply += parseFloat(obj.amount);
+                    }else if(obj.paymentType==paymentType.aptCredit){
+                        $scope.totalAmountToApply -= parseFloat(obj.amount);
+                    }
                 }
             }
         });

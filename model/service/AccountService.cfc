@@ -214,11 +214,21 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
+		
+		//if unassigned amount must be greater than or equal to 0 
+		if(processObject.getAppliedOrderPayments()[arraylen(processObject.getAppliedOrderPayments())].amount < 0){
+			newAccountPayment.addError('amount','unassigned amount must be 0 or greater');
+		}
 	
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
-				if(structKeyExists(appliedOrderPayment,'amount') && IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+				if(
+					structKeyExists(appliedOrderPayment,'amount') 
+					&& IsNumeric(appliedOrderPayment.amount) 
+					&& appliedOrderPayment.amount > 0 
+
+				) {
 					var orderPayment = getOrderService().getOrderPayment( 
 						appliedOrderPayment.orderPaymentID 
 					);

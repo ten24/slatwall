@@ -5,6 +5,8 @@
 									{"contexts":"delete","method":"hasNoAssociatedCollection"}
 								],
 		"collectionCode":	    [{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
-		"collectionName":		[{"contexts":"save","required":true}]
+		"collectionName":		[{"contexts":"save","required":true}],
+		"collectionObject":		[{"contexts":"save","required":true}],
+		"collectionConfig":		[{"contexts":"save","method":"hasValidCollectionConfig"}]
 	}
 }

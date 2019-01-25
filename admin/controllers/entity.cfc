@@ -548,6 +548,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		super.genericSaveMethod('ShippingMethodRate',rc);
 	}
+	
+		// Image
+	public void function saveImage(required struct rc){
+		var image = getService("ImageService").getImageByImageID(rc.imageID,true);
+		if(!image.isNew()){
+			image.runCalculatedProperties();
+		}
+		super.genericSaveMethod('Image',rc);
+	}
 
 	// Task
 	public void function saveTask(required struct rc){

@@ -655,6 +655,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var periodInterval = "";
 		if(structKeyExists(arguments.data,'periodInterval')){
 			periodInterval = arguments.data['periodInterval'];
+			isReport = true;
 		}
 
 		var allRecords = false;
@@ -1473,8 +1474,16 @@ component output="false" accessors="true" extends="HibachiService" {
 				//OrderByList
 				var orderBys = data[key];
 				if (left(key,7)=='orderBy'){
+					if(len(arguments.excludesList)){ 
+						var propertiesToExclude = listToArray(arguments.excludesList);
+						for(var propertyToExclude in propertiesToExclude){
+							orderBys = getHibachiUtilityService().removeListValue(orderBys,propertyToExclude & '|DESC');	
+							orderBys = getHibachiUtilityService().removeListValue(orderBys,propertyToExclude & '|ASC');	
+						}   
+
+					}
 					//this is a list.
-					arguments.collection.setOrderBy(data[key]);
+					arguments.collection.setOrderBy(orderBys);
 				}
 
 

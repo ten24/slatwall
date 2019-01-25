@@ -254,21 +254,6 @@
 				<cfif attributes.propertyIdentifier neq 'appellation'>
 					<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiUtilityService').arrayOfStructsSort(attributes.optionData,'name',attributes.orderBy)/>
 				</cfif>
-				
-				
-				<cfloop array="#selectedOptions#" index="selectedOption">
-					<cfset found = false/>
-					<cfloop array="#attributes.optionData#" index="option">
-						<cfif selectedOption.value eq option.value>
-							<cfset found = true/>
-						</cfif>
-					</cfloop> 
-					<cfif !found>
-						<cfset selectedOption.count = 0/>
-						
-						<cfset arrayAppend(attributes.optionData,selectedOption)/>
-					</cfif>
-				</cfloop>
 			
 			</cfif>
 			
