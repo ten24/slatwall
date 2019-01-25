@@ -150,8 +150,6 @@
 		<h5 class="card-header">Your Order</h5>
 		<div class="card-body">
 		    <cfloop array="#order.getOrderItems()#" index="local.orderItem">
-		    	<cfif local.orderItem.getSku().getBundleFlag() >
-    		    </cfif>
     		    <div class="row mb-2">
     		        <div class="col-12 col-sm-12 col-md-2 text-center">
     		            <a href="#local.orderItem.getSku().getProduct().getProductURL()#/">
