@@ -276,6 +276,23 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
         return true;
     }
     
+	public boolean function getQuantityHasChangedAndHasOrderDelivery(){
+ 		if ( getQuantityHasChanged() && hasOrderDeliveryItem() )   {
+ 			return true;
+ 		}
+ 		return false;
+ 	}
+ 	
+	public boolean function hasQuantityAboveOrderDelivery(){
+		
+		if ( getQuantity() < getQuantityDelivered() ){
+			return false;
+		}
+		
+		return true;
+	}
+
+
     public boolean function hasQuantityWithinQATS(){
 		if( getSku().getActiveFlag() && getSku().getProduct().getActiveFlag() && getSku().setting('skuTrackInventoryFlag') == 0   ){
 			return true;

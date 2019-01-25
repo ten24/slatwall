@@ -58,7 +58,6 @@ class SWWorkflowCondition{
 
 					scope.selectedFilterProperty = selectedFilterProperty;
 				};
-
 				if(angular.isUndefined(scope.workflowCondition.breadCrumbs)){
 					scope.workflowCondition.breadCrumbs = [];
 					if(scope.workflowCondition.propertyIdentifier === ""){

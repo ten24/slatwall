@@ -17,7 +17,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         arguments.rc.requestHeaderData = getHTTPRequestData();
         arguments.rc['ajaxRequest'] = true;
         arguments.rc.headers["Content-Type"] = 'application/json';
-        
+        request.layout = false;
         if ( arguments.rc.jsonRequest == true && structKeyExists( arguments.rc, 'deserializedJSONData') ){
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
         }

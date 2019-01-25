@@ -445,7 +445,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 			// Populate the processObject
 			rc.processObject.populate( arguments.rc );
-			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.data[arguments.entityName])) {
+			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.rc[arguments.entityName])) {
 				entity.populate( arguments.rc[arguments.entityName] );
 				rc.processObject.addPopulatedSubProperty( arguments.entityName, entity );
 			}

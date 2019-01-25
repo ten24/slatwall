@@ -1029,6 +1029,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						transactionType = 'credit'
 					};
 					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
+					
+					if (orderPayment.hasErrors() && !isNull(orderPayment.getError('createTransaction'))){
+						order.addError("cancelOrder", orderPayment.getErrors());
+						return orderPayment; //stop processing this cancel on error.
+					}
 				}
 			}
 		}
@@ -2134,9 +2139,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
-		    if(arguments.order.getPaymentAmountDue() > 0){
+		    	if(arguments.order.getPaymentAmountDue() != 0){
 				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-		    }
+		    	}
 
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
@@ -3446,10 +3451,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var thirdPartyShippingAccountIdentifier = arguments.data.thirdPartyShippingAccountIdentifier;
 			arguments.orderfulfillment.setThirdPartyShippingAccountIdentifier(thirdPartyShippingAccountIdentifier);
 		}
-
+		
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
-
 
  		//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
  		if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
@@ -3568,7 +3572,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(
 			!arguments.orderPayment.getSucessfulPaymentTransactionExistsFlag()
 			&& !arguments.orderPayment.hasErrors()
-			&& isNull(arguments.orderPayment.getAccountPaymentMethod())
+			&& (isNull(arguments.orderPayment.getAccountPaymentMethod()) || (!isNull(arguments.orderPayment.getAccountPaymentMethod()) && ListFindNoCase('authorize,authorizeAndCharge',arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())))
 			&& isNull(arguments.orderPayment.getReferencedOrderPayment())
 			&& !isNull(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
 			&& len(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())

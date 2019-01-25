@@ -802,15 +802,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!arguments.account.hasErrors()) {
 
 			arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
-
-			// Get the temporary accountAuth
-			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
-
-			// Delete the temporary auth
-			this.deleteAccountAuthentication( tempAA );
-
-			// Then flush the ORM session so that an account can be logged in right away
-			getHibachiDAO().flushORMSession();
+			
+			if(!arguments.processObject.hasErrors()){
+				// Get the temporary accountAuth
+				var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
+	
+				// Delete the temporary auth
+				this.deleteAccountAuthentication( tempAA );
+	
+				// Then flush the ORM session so that an account can be logged in right away
+				getHibachiDAO().flushORMSession();
+			}
 		}
 
 		return arguments.account;
@@ -1600,6 +1602,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			for(var i=1; i<=arrayLen(arguments.data.permissions); i++) {
 
 				var pData = arguments.data.permissions[i];
+				if(structKeyExists(pData,'propertyName')){
+					if(!structKeyExists(pData,'allowReadFlag')){
+						pData['allowReadFlag']=0;
+					}
+					if(!structKeyExists(pData,'allowUpdateFlag')){
+						pData['allowUpdateFlag']=0;
+					}
+				}
 				var pEntity = this.getPermission(arguments.data.permissions[i].permissionID, true);
 				pEntity.populate( pData );
 

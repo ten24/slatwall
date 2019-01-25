@@ -16,7 +16,7 @@ class SWPricingManagerController{
         private collectionConfigService
     ){
         this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product"); 
-        this.productCollectionConfig.addFilter("productID", this.productId, "=");
+        this.productCollectionConfig.addFilter("productID", this.productId, "=",'AND',true);
         this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
         this.productCollectionConfig.getEntity().then(
             (response)=>{

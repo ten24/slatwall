@@ -85,7 +85,7 @@ component  accessors="true" output="false"
 			return theMethod(argumentCollection = methodArguments);
 		}
 		
-		throw("You have attempted to call the method #arguments.methodName# which does not exist in #getClassFullName()#");
+		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
     
     /**
@@ -99,20 +99,25 @@ component  accessors="true" output="false"
         var imageHeight = 60;
         var imageWidth  = 60;
         
-        if(arguments.data.profileName == "medium"){
-            imageHeight = 90;
-            imageWidth  = 90;
-        }else if (arguments.data.profileName == "large"){
-            imageHeight = 150;
-            imageWidth  = 150;
+        if(arguments.data.profileName == "small"){
+            imageHeight = getService('SettingService').getSettingValue('productImageSmallHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageSmallWidth');
+            
+        }else if (arguments.data.profileName == "medium"){
+            imageHeight = getService('SettingService').getSettingValue('productImageMediumHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageMediumWidth');
+        }
+        else if (arguments.data.profileName == "large"){
+            imageHeight = getService('SettingService').getSettingValue('productImageLargeHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageLargeWidth');
         }
         else if (arguments.data.profileName == "xlarge"){
-            imageHeight = 250;
-            imageWidth  = 250;
+            imageHeight = getService('SettingService').getSettingValue('productImageXLargeHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageXLargeWidth');
         }
         else if (arguments.data.profileName == "listing"){
-            imageHeight = 263;
-            imageWidth  = 212;
+            imageHeight = getService('SettingService').getSettingValue('productListingImageHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productListingImageWidth');
         }
         arguments.data.ajaxResponse['resizedImagePaths'] = {};
         var skus = [];
@@ -918,7 +923,11 @@ component  accessors="true" output="false"
     
     /** exposes the cart and account */
     public void function getCartData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getCartData();
+        if(!structKeyExists(arguments.data,'cartDataOptions') || !len(arguments.data['cartDataOptions'])){
+            arguments.data['cartDataOptions']='full';
+        }
+    
+        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
     }
     
     public void function getAccountData(any data) {
@@ -1444,7 +1453,9 @@ component  accessors="true" output="false"
             }else{
               this.addErrors(data,order.getErrors());
             }
-
+            if(getHibachiScope().getAccount().getGuestAccountFlag()){
+                getHibachiScope().getSession().removeAccount();
+            }
         }
 
     

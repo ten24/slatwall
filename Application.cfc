@@ -89,7 +89,6 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
 		
 		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
-		
 		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
 	}
 	
@@ -120,6 +119,11 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	}
 	
 	public void function onFirstRequestPostUpdate() {
+	}
+	
+	// Allows EncryptionService to setup encryption key during application initialization
+	public void function onBeanFactoryLoadComplete() {
+		getBeanFactory().getBean('encryptionService').verifyEncryptionKeyExists();
 	}
 	
 	// ===================================== END: HIBACHI HOOKS

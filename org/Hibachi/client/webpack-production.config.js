@@ -11,9 +11,8 @@ var PATHS = {
 var appConfig = {
     context:PATHS.app,
     entry: {
-        app:['./bootstrap.ts'],
-         vendor: ["date", "angular", 'angular-lazy-bootstrap', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
-         'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch','jquery-timepicker'],
+         vendor: ["shim.min.js","zone.js","date", "angular", 'reflect-metadata', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
+         'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch','jquery-timepicker','Chart'],
     },
     watch:false,
     output: {
@@ -26,9 +25,10 @@ var appConfig = {
     resolve: {
         extensions: ['.webpack.js', '.web.js', '.ts', '.js'],
          alias: {
+            'shim.min.js':"../../../../node_modules/core-js/client/shim.min.js",
+            'zone.js':'../../../../node_modules/zone.js/dist/zone.js',
             'date': '../lib/date/date.min.js',
             'angular': '../lib/angular/angular.min.js',
-            'angular-lazy-bootstrap':'../lib/angular-lazy-bootstrap/bootstrap.js',
             'ui.bootstrap':'../lib/angular-ui-bootstrap/ui.bootstrap.min.js',
             'angular-resource':'../lib/angular/angular-resource.min.js',
             'angular-cookies':'../lib/angular/angular-cookies.min.js',
@@ -38,7 +38,9 @@ var appConfig = {
             'metismenu':'../lib/metismenu/metismenu.js',
             'angularjs-datetime-picker':'../lib/angularjs-datetime-picker/angularjs-datetime-picker.js',
             'jquery-typewatch':'../../HibachiAssets/js/jquery-typewatch-2.0.js',
-            'jquery-timepicker':'../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js'
+            'jquery-timepicker':'../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js',
+            '@angular/upgrade/static': '@angular/upgrade/bundles/upgrade-static.umd.js',
+            'Chart':'../lib/chart.js/Chart.min.js'
         },
     },
     module: {
@@ -51,6 +53,11 @@ var appConfig = {
     plugins: [
         new ForceCaseSensitivityPlugin(),
         new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"}),
+        new webpack.ContextReplacementPlugin(
+                // The (\\|\/) piece accounts for path separators in *nix and Windows
+                /angular(\\|\/)core(\\|\/)(@angular|esm5)/,
+                path.resolve(__dirname, '../src')
+        ),
 	    new CompressionPlugin({
 	      asset: "[path].gz[query]",
 	      algorithm: "gzip",
@@ -78,6 +85,4 @@ var appConfig = {
 
 };
     
-    
-; 
 module.exports = appConfig;

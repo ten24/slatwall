@@ -8,7 +8,7 @@ class SWFCartItemsController{
     public orderItem:any;
     public loadingImages:any;
     
-    constructor(private $rootScope){
+    constructor(private $rootScope, private observerService){
         this.loadingImages = true;
         this.$rootScope = $rootScope;
         this.$rootScope.slatwall.doAction('getResizedImageByProfileName',{profileName:'small',skuIds:this.orderItem.sku.skuID})
@@ -49,6 +49,18 @@ class SWFCartItemsController{
         this.$rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
             this.removeOrderItemIsLoading = false;
         });
+    }
+    public clearCartItems = ()=>{
+        let cartItems = this.$rootScope.slatwall.cart.orderItems;
+        let data = {
+            'orderItemIDList': ""
+        };
+        let orderItemIDs = [];
+        for(var i=0; i<cartItems.length; i++){
+            orderItemIDs.push(cartItems[i].orderItemID);
+        }
+        data['orderItemIDList'] = orderItemIDs.join();
+        this.$rootScope.slatwall.doAction('removeOrderItem',data);
     }
 }
  

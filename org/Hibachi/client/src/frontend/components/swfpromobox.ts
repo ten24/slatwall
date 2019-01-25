@@ -6,8 +6,9 @@ class SWFPromoBoxController{
     //@ngInject
     public addPromotionCodeIsLoading:boolean;
     public removePromotionCodeIsLoading:boolean;
+    public alertDisplaying:boolean = false;
     
-    constructor(private $rootScope){
+    constructor(private $rootScope, private $timeout){
         this.$rootScope = $rootScope;
     }
     public addPromotionCode = (promoCode)=>{
@@ -17,6 +18,8 @@ class SWFPromoBoxController{
         }
         this.$rootScope.slatwall.doAction('addPromotionCode',data).then(result=>{
             this.addPromotionCodeIsLoading = false;
+            this.displayAlert();
+           
         });
     }
     public removePromotionCode = (promoCode)=>{
@@ -27,6 +30,13 @@ class SWFPromoBoxController{
         this.$rootScope.slatwall.doAction('removePromotionCode',data).then(result=>{
             this.removePromotionCodeIsLoading = false;
         }); 
+    }
+    
+    public displayAlert(){
+        this.alertDisplaying = true
+         this.$timeout(()=>{
+            this.alertDisplaying = false;
+        },3000);
     }
 }
 

@@ -52,7 +52,8 @@ Notes:
     
     <hb:HibachiPropertyDisplay object="#rc.product#" property="startInCurrentPeriodFlag" edit="#rc.edit#">
     <sw-product-delivery-schedule-dates
-        data-product-id="#rc.product.getProductID()#"    
+        data-product-id="#rc.product.getProductID()#"  
+        data-edit="#rc.edit#"
     >
     </sw-product-delivery-schedule-dates>
 </cfoutput>

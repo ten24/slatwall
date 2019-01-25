@@ -691,7 +691,7 @@
 			}
 		}
 
-		public string function hibachiHTMLEditFormat(required any html=""){
+		public string function hibachiHTMLEditFormat(required any html="", boolean angularSanitize=true){
 			//If its something that can be turned into a string, make sure its a string.
 			if (isSimpleValue(arguments.html)){
 				arguments.html = "#arguments.html#";
@@ -702,9 +702,11 @@
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
 				var sanitizedString = htmlEditFormat(arguments.html);
 			}else{
-				var sanitizedString = encodeForHTML(arguments.html);	
+				var sanitizedString = encodeForHTML(arguments.html);
 			}
-			sanitizedString = sanitizeForAngular(sanitizedString);
+			if(arguments.angularSanitize){
+				sanitizedString = sanitizeForAngular(sanitizedString);
+			}
 			return sanitizedString;
 		}
 		
@@ -718,7 +720,9 @@
 
 		public string function sanitizeForAngular(required string html){
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'%7B',chr(123)&chr(002),'all');
+				return arguments.html;
 			}else{
 				return ReReplace(ReReplace(arguments.html,'&##x7b;',chr(123)&chr(002),'all'),'&##x7d;','}','all');
 			}
@@ -837,10 +841,12 @@
 				if (migrateLegacyKeyFlag) {
 					arrayAppend(passwords, {'legacyKey'=legacyKey, 'legacyEncryptionAlgorithm'=getLegacyEncryptionAlgorithm(), 'legacyEncryptionEncoding'=getLegacyEncryptionEncoding(), 'legacyEncryptionKeySize'=getLegacyEncryptionKeySize()});
 					writeEncryptionPasswordFile(passwords);
+					
+					// Remove legacy key file from file system
+					// Commented out 2018-10-30 because the application initialization calls EncryptionService.verifyEncryptionKeyExists() which will recreate the key.xml.cfm during next reload
+					// And the encryption key stored in key.xml.cfm will be ported into the password.txt.cfm with unbound file growth
+					// removeLegacyEncryptionKeyFile();
 				}
-
-				// Remove legacy key file from file system
-				removeLegacyEncryptionKeyFile();
 			}
 
 			var legacyPasswords = [];
@@ -885,7 +891,7 @@
 		}
 
 		private string function getEncryptionKeyLocation() {
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/system/');
 		}
 
 		private string function getEncryptionKeyFileName() {
@@ -1467,6 +1473,11 @@
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
+    </cffunction>
+    
+    <cffunction name="getTimeByUtc" returntype="any">
+    	<cfargument name="utctimestamp" type="numeric"/>
+    	<cfreturn dateAdd("s", arguments.utctimestamp, createDateTime(1970, 1, 1, 0, 0, 0))/>
     </cffunction>
 
     <cffunction name="convertBase64GIFToBase64PDF" output="false">

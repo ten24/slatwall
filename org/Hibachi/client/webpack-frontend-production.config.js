@@ -1,6 +1,6 @@
 //START NEW PROD
 var devConfig = require('./webpack-frontend-develop.config');
-	devConfig.entry.app = ['./frontend/bootstrap'];
+	devConfig.entry.app = ['./frontend/main.ts'];
     devConfig.output.filename = 'slatwall.js';
     
 var CompressionPlugin = require("compression-webpack-plugin");

@@ -1,4 +1,4 @@
-<!--- Expand View --->
+<!-- Expand View -->
 
 <div class="row s-detail-content-wrapper" ng-show="swFulfillmentBatchDetailController.state.expandedFulfillmentBatchListing" ng-if="swFulfillmentBatchDetailController.state.lgFulfillmentBatchItemCollection" ng-cloak>
 	<div class="col-xs-12">
@@ -9,7 +9,6 @@
                     <i class="fa fa-compress"></i>
                 </a>
             </span>  
-		
         <sw-listing-display
 			data-collection-config="swFulfillmentBatchDetailController.state.lgFulfillmentBatchItemCollection"
 			data-edit="true"
@@ -104,7 +103,8 @@
                         
                         <div class="btn-group s-btn-dropdown" role="group"> 
                             <button type="button" class="btn btn-primary btn-xs" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
-		                    	<span>Fulfill</span> 
+		                    	<span ng-hide="swFulfillmentBatchDetailController.state.loading">Fulfill</span> 
+		                    	<span ng-show="swFulfillmentBatchDetailController.state.loading"><i class="fa fa-spinner fa-pulse fa-fw"></i>Loading</span> 
 		                    </button>
                             <ul class="dropdown-menu" role="menu">
 								<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>
@@ -252,10 +252,10 @@
                                         <div class="col-md-2"><strong>Qty on Hand</strong></div>
                                         <div class="col-md-2">&nbsp</div>
                                     </div><br>
-                                    <span ng-init="swFulfillmentBatchDetailController.orderItem = {};"></span>
+                                    <!--<span ng-init="swFulfillmentBatchDetailController.state.orderItem = {};"></span>-->
                                 	<div class="row" ng-repeat="oi in swFulfillmentBatchDetailController.state.orderFulfillmentItemsCollection">
                                            <div ng-if="swFulfillmentBatchDetailController.prepopulate == true">
-                                        		<span ng-init="(oi.quantityDelivered > 0) ? swFulfillmentBatchDetailController.orderItem[oi.orderItemID] = (oi.quantity - oi.quantityDelivered) : (swFulfillmentBatchDetailController.orderItem[oi.orderItemID] = oi.quantity)"></span>
+                                        		<span ng-init="(oi.quantityDelivered > 0) ? swFulfillmentBatchDetailController.state.orderItem[oi.orderItemID] = (oi.quantity - oi.quantityDelivered) : (swFulfillmentBatchDetailController.state.orderItem[oi.orderItemID] = oi.quantity)"></span>
                         				   </div>
                                            <div class="col-md-2">
                                            	<img src="{{oi['sku_imagePath']||'http://placehold.it/60x60'}}" width="60">
@@ -270,7 +270,7 @@
                                            <div class="col-md-2">{{oi.sku_calculatedQOH}}</div>
                                            
                                            <div class="col-md-2">
-                                            	<input ng-init="swFulfillmentBatchDetailController.prepopulate = false" type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
+                                            	<input ng-init="swFulfillmentBatchDetailController.prepopulate = false" type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.state.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
                                            </div>
                                 	</div>
                                 </div>
@@ -290,21 +290,29 @@
                         <div class="s-body">
                             
                             <div class="s-content-wrapper">
-                                
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label class="s-strong" style="margin-top: 4px;">Print Labels Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
                                     </div>
                                     <div class="col-xs-9">
                                         <div class="row s-ladel-options">
-                                            <div class="col-xs-4 radio">
-                                                <input id="GenerateShippingLabel" type="radio" name="printOption" ng-click="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == true" ng-init="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == true" ng-model="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber" checked>
+                                            <div class="col-xs-3 radio">
+                                                <input id="GenerateShippingLabel" type="radio" name="printOption" data-ng-value="1" ng-model="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber" ng-init="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber = true">
                                                 <label for="GenerateShippingLabel" title="helper text should go here to describe item">Generate Shipping Label(s)</label>
+                                                <!--<input class="form-control s-package-count" type="text" placeholder="# of Packages" ng-model="swFulfillmentBatchDetailController.state.packageCount">-->
                                             </div>
-                                            <div class="col-xs-4 radio">
-                                                <input id="ManualShipment" type="radio" name="printOption">
+                                            <div class="col-xs-3">
+                                                <input id="ManualShipment" type="radio" name="printOption" data-ng-value="0" ng-model="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber">
                                                 <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
-                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-click="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == false" ng-model="swFulfillmentBatchDetailController.state.trackingCode">
+                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-model="swFulfillmentBatchDetailController.state.trackingCode">
+                                            </div>
+                                            <div class="col-xs-3" ng-show="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber">
+                                                <label>Choose Shipping Integration</label>
+                                                <select 
+                                                    ng-model="swFulfillmentBatchDetailController.state.shippingIntegrationID" 
+                                                    ng-options="option['VALUE'] as option['NAME'] for option in swFulfillmentBatchDetailController.state.shippingIntegrationOptions"
+                                                >
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -312,149 +320,71 @@
                                         $('.s-ladel-options input[type=radio]').change(function(){
                                              if($('#GenerateShippingLabel').is(':checked')) { 
                                                  $('.s-add-box-wrapper').parent().show();
+                                                 $('.s-package-count').show();
                                                  $('.s-tracking-code').hide();
                                             }else{
                                                 $('.s-add-box-wrapper').parent().hide();
                                                 $('.s-tracking-code').show();
+                                                $('.s-package-count').hide();
                                             };
                                             
                                         });
                                         
                                     </script>
-                                    <!---<div class="col-xs-12">
+                                    <div class="col-xs-12">
                                         <div class="s-add-box-wrapper">
                                                     
                                             <table class="table">
                                                 <thead>
                                                     <tr>
                                                         <th>Boxes</th>
-                                                        <th>Type</th>
-                                                        <th>Height</th>
-                                                        <th>Width</th>
-                                                        <th>Depth</th>
-                                                        <th>Weight</th>
+                                                        <!--<th>Type</th>-->
+                                                        <th>Height (in)</th>
+                                                        <th>Width (in)</th>
+                                                        <th>Depth (in)</th>
+                                                        <th>Weight (lb)</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>1</td>
+                                                    <tr ng-repeat="box in swFulfillmentBatchDetailController.state.boxes track by $index">
+                                                        <td>{{$index+1}}</td>
+                                                        <!--<td>-->
+                                                        <!--    <select class="form-control" name="">-->
+                                                        <!--        <option value="">Custom</option>-->
+                                                        <!--        <option value="">10x12x4</option>-->
+                                                        <!--        <option value="">10x10x10</option>-->
+                                                        <!--        <option value="">45x10x34</option>-->
+                                                        <!--    </select>-->
+                                                        <!--</td>-->
                                                         <td>
-                                                            <select class="form-control" name="">
-                                                                <option value="">Custom</option>
-                                                                <option value="">10x12x4</option>
-                                                                <option value="">10x10x10</option>
-                                                                <option value="">45x10x34</option>
-                                                            </select>
+                                                            <input type="text" class="form-control" type="button" name="height{{$index}}" placeholder="H" ng-model="box.height">
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="667" placeholder="H">
+                                                            <input type="text" class="form-control" type="button" name="width{{$index}}" placeholder="W" ng-model="box.width">
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="34" placeholder="W">
+                                                            <input type="text" class="form-control" type="button" name="depth{{$index}}" placeholder="D" ng-model="box.depth">
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="604" placeholder="D">
+                                                            <input type="text" class="form-control" type="button" name="weight{{$index}}" placeholder="Weight" ng-model="box.weight">
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="456" placeholder="Weight">
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-default btn-xs s-remove">
+                                                            <button class="btn btn-default btn-xs s-remove" ng-click="swFulfillmentBatchDetailController.userRemovingBox($index)">
                                                                 <i class="fa fa-remove"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>2</td>
-                                                        <td>
-                                                            <select class="form-control" name="">
-                                                                <option value="">Custom</option>
-                                                                <option value="">10x12x4</option>
-                                                                <option value="">10x10x10</option>
-                                                                <option value="" selected>45x10x34</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="45" placeholder="H">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="W">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="34" placeholder="D">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="167" placeholder="Weight">
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-default btn-xs s-remove">
-                                                                <i class="fa fa-remove"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>
-                                                            <select class="form-control" name="">
-                                                                <option value="">Custom</option>
-                                                                <option value="">10x12x4</option>
-                                                                <option value="" selected>10x10x10</option>
-                                                                <option value="">45x10x34</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="H">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="W">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="D">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="30" placeholder="Weight">
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-default btn-xs s-remove">
-                                                                <i class="fa fa-remove"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="s-new-box">
-                                                        <td>-</td>
-                                                        <td>
-                                                            <select class="form-control" name="">
-                                                                <option value="" disabled selected>-Select Size-</option>
-                                                                <option value="">Custom</option>
-                                                                <option value="">10x12x4</option>
-                                                                <option value="">10x10x10</option>
-                                                                <option value="">45x10x34</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="H">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="W">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="D">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="Weight">
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-default btn-xs s-remove">
-                                                                <i class="fa fa-remove"></i>
-                                                            </button>
+                                                        <td colspan="6">
+                                                            <a role="button" ng-click="swFulfillmentBatchDetailController.userAddingNewBox()"><i class="fa fa-plus"></i> Add Box</span>
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                             
                                         </div>
-                                    </div>--->
+                                    </div>
                                 </div>
                                 <hr/>
                                 <!---<div class="row">
@@ -555,14 +485,14 @@
                                     
                                     <div class="col-md-12" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
                                         <div class="btn-group s-btn-dropdown" role="group"> 
-                                            <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill(); swFulfillmentBatchDetailController.state.loading = true">
-						                    	<span><!---<span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span>---> Fulfill</span> 
+                                            <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">
+						                    	<span>Fulfill</span> 
 						                    </button>
-                                            <ul class="dropdown-menu" role="menu">
-												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();swFulfillmentBatchDetailController.state.loading = true">Fulfill</a></li>
+						                    <ul class="dropdown-menu" role="menu">
+						                        <li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">Fulfill</a></li>
 						                    </ul>
-                                            <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
-												<span class="caret"></span>
+						                    <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
+						                        <span class="caret"></span>
 						                    </button>
                                         </div>
                                     </div>

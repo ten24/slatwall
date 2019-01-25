@@ -196,10 +196,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		try{
 			//get workflowTriggers Object
 			//execute Collection and return only the IDs
-			if(!isNull(arguments.workflowTrigger.getScheduleCollection())){
-				var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+			if(
+				!isNull(arguments.workflowTrigger.getScheduleCollectionConfig()) 
+				|| !isNull(arguments.workflowTrigger.getScheduleCollection())
+			){
+				//transient collection takes precedent
+				if(!isNull(arguments.workflowTrigger.getScheduleCollectionConfig())){
+					var scheduleCollectionConfig = deserializeJSON(arguments.workflowTrigger.getScheduleCollectionConfig());
+					var currentObjectName = scheduleCollectionConfig['baseEntityName'];
+					var scheduleCollection = getService('HibachiCollectionService').invokeMethod('get#currentObjectName#CollectionList');
+					scheduleCollection.setCollectionConfigStruct(scheduleCollectionConfig);
+				}else{
+					var scheduleCollection = arguments.workflow.getScheduleCollection();
+					var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+				}
+				
 				var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
-				var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
+				var triggerCollectionResult = scheduleCollection.getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
 				//Loop Collection Data
 				for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){
 					//get current ObjectID
@@ -422,6 +435,11 @@ component extends="HibachiService" accessors="true" output="false" {
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
+							
+							if(!structKeyExists(arguments.data,'collectionData')){
+								arguments.data.collectionData = {};
+							}
+							
 							//Execute ACTION
 							if(structKeyExists(arguments.data,'entity')){
 								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType());

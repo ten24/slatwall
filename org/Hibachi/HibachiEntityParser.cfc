@@ -203,87 +203,87 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 
 	public string function getPropertyStringByAttributeData(required struct attributeData){
 
-		var lineBreak = getHibachiScope().getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue('lineBreakStyle'));
+ 		var lineBreak = getHibachiScope().getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue('lineBreakStyle'));
 		var propertyString = '#lineBreak# property name="#arguments.attributeData.attributeCode#"';
-		var inputType = arguments.attributeData['attributeInputType'];
-		var ORMType = '';
-		var hbFormatType = '';
-		var hbFormFieldType = '';
-		switch(inputType){
-			case 'yesNo':
-				ORMType = 'boolean';
-				hbFormatType = 'yesno';
-				break;
-			case 'select':
-				ORMType = 'string';
-				hbFormFieldType = 'select';
-				break;
-			case 'checkbox':
-				ORMType = 'boolean';
-				break;
-			case 'textArea':
-				ORMType = 'string';
-				hbFormFieldType = 'textarea';
-				break;
-			case 'email':
-				ORMType = 'string';
-				hbFormatType = 'email';
-				break;
-			case 'date':
-				ORMType = 'timestamp';
-				hbFormatType = 'date';
-				break;
-			case 'dateTime':
-				ORMType = 'timestamp';
-				break;
-			case 'time':
-				ORMType = 'timestamp';
-				HbFormatType = 'time';
-				break;
-			case 'wysiwyg':
-				ORMType = 'string';
-				hbFormFieldType = 'wysiwyg';
-				propertyString &= ' length="4000" ';
-				break;
-			case 'file':
-				ORMType = 'string';
-				hbFormFieldType = 'file';
-				propertyString &= ' hb_fileUpload="true" hb_fileAcceptMIMEType="*/*"';
-				break;
-			case 'typeSelect':
-				propertyString &= ' cfc="Type" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
-				if(len(arguments.attributeData.typeSetID)){
-					propertyString &= ' hb_optionsSmartListData="f:parentType.typeID=#arguments.attributeData.typeSetID#"';
-				}
-				break;
-			case 'text':
-			case 'multiselect':
-			case 'checkboxGroup':
-			case 'radioGroup':
-				ORMType = 'string';
-				break;
-			case 'relatedObjectSelect':
-				propertyString &= ' cfc="#arguments.attributeData.relatedObject#" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
-				break;
-			default:
-				return '';
-		}
-
-
-		if(len(ORMType)){
-			propertyString &= ' ormtype="#ORMType#"';
-		}
-		if(len(hbFormatType)){
-			propertyString &= ' hb_formatType="#hbFormatType#"';
-		}
+ 		var inputType = arguments.attributeData['attributeInputType'];
+ 		var ORMType = '';
+ 		var hbFormatType = '';
+ 		var hbFormFieldType = '';
+ 		switch(inputType){
+ 			case 'yesNo':
+ 				ORMType = 'boolean';
+ 				hbFormatType = 'yesno';
+ 				break;
+ 			case 'select':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'select';
+ 				break;
+ 			case 'checkbox':
+ 				ORMType = 'boolean';
+ 				break;
+ 			case 'textArea':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'textarea';
+ 				break;
+ 			case 'email':
+ 				ORMType = 'string';
+ 				hbFormatType = 'email';
+ 				break;
+ 			case 'date':
+ 				ORMType = 'timestamp';
+ 				hbFormatType = 'date';
+ 				break;
+ 			case 'dateTime':
+ 				ORMType = 'timestamp';
+ 				break;
+ 			case 'time':
+ 				ORMType = 'timestamp';
+ 				HbFormatType = 'time';
+ 				break;
+ 			case 'wysiwyg':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'wysiwyg';
+ 				propertyString &= ' length="4000" ';
+ 				break;
+ 			case 'file':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'file';
+ 				propertyString &= ' hb_fileUpload="true" hb_fileAcceptMIMEType="*/*"';
+ 				break;
+ 			case 'typeSelect':
+ 				propertyString &= ' cfc="Type" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
+ 				if(len(arguments.attributeData.typeSetID)){
+ 					propertyString &= ' hb_optionsSmartListData="f:parentType.typeID=#arguments.attributeData.typeSetID#"';
+ 				}
+ 				break;
+ 			case 'text':
+ 			case 'multiselect':
+ 			case 'checkboxGroup':
+ 			case 'radioGroup':
+ 				ORMType = 'string';
+ 				break;
+ 			case 'relatedObjectSelect':
+ 				propertyString &= ' cfc="#arguments.attributeData.relatedObject#" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
+ 				break;
+ 			default:
+ 				return '';
+ 		}
+ 
+ 
+ 		if(len(ORMType)){
+ 			propertyString &= ' ormtype="#ORMType#"';
+ 		}
+ 		if(len(hbFormatType)){
+ 			propertyString &= ' hb_formatType="#hbFormatType#"';
+ 		}
 		if(len(hbFormFieldType)){
 			propertyString &= ' hb_formFieldType="#hbFormFieldType#"';
 		}
-
-		propertyString &= ';';
-
-		return propertyString;
-	}
-
-
+		
+		if(len(arguments.attributeData.defaultValue)){
+			propertyString &= ' default="#arguments.attributeData.defaultValue#"';
+		}
+ 		propertyString &= ';';
+  		return propertyString;
+ 	}
 }
