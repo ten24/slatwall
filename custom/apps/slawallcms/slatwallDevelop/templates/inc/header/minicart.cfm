@@ -1,10 +1,11 @@
 
 <!---- form element stops modal from closing ----->
 <form class="text-center"> 
-        <div ng-show="slatwall.successfulActions.includes('removeOrderItem')" class="alert alert-success" role="alert">Item removed from cart</div>
-        <div ng-show="slatwall.failureActions.includes('removeOrderItem')" class="alert alert-danger" role="alert">Item removed failure</div>
-        <div ng-show="slatwall.successfulActions.includes('updateOrderItem')" class="alert alert-success" role="alert">Quantity updated</div>
-        <div ng-show="slatwall.failureActions.includes('updateOrderItem')" class="alert alert-danger" role="alert">Quantity update failure</div>
+    <swf-alert data-alert-trigger="removeOrderItemSuccess" data-alert-type="success" data-message="Item removed from cart" data-duration="3"></swf-alert>
+    <swf-alert data-alert-trigger="removeOrderItemFailure" data-alert-type="danger" data-message="Item removed failure" data-duration="3"></swf-alert>
+    <swf-alert data-alert-trigger="updateOrderItemSuccess" data-alert-type="success" data-message="Quantity Updated" data-duration="3"></swf-alert>
+    <swf-alert data-alert-trigger="updateOrderItemFailure" data-alert-type="danger" data-message="Quantity update failure" data-duration="3"></swf-alert>
+    <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
     
     <ul class="col-xs-12" style="min-width:400px;">
         <li class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" ng-cloak>
@@ -59,8 +60,13 @@
                 </div>
             </div>
         </li>
+        <li ng-if="$last" class="row">
+            <div class="col-12 text-center">
+                <button ng-if="slatwall.cart.orderItems.length" ng-click="swfCartItems.clearCartItems()" class="btn btn-info">Clear Cart</button>
+                <button class="btn btn-primary">Continue To Checkout</button>
+            </div>    
+        </li>
         <hr ng-repeat-end ng-if="!$last">
         <!-- don't show horizontal rule if last element in loop -->
     </ul>
-    <button class="btn btn-primary">Continue To Checkout</button>
 </form>
