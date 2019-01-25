@@ -122,7 +122,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	}
 
 	public void function populateThirdPartyBillingInformationFromOrderFulfillment(required any orderFulfillment){
-		if(!isNull(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())){
+		if(!isNull(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier()) && len(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())){
 			setThirdPartyShippingAccountIdentifier(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier());
 		}
 	}

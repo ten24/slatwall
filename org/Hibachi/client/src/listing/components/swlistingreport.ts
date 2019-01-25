@@ -71,6 +71,8 @@ class SWListingReportController {
         }
     }
     
+    
+    
     public saveReportCollection = (collectionName?)=>{
         if(collectionName || this.collectionId){
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
@@ -96,7 +98,7 @@ class SWListingReportController {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
                 },
-                'save'
+                'save'  
             ).then((data)=>{
                 if(this.collectionId){
                     window.location.reload();    
@@ -122,6 +124,23 @@ class SWListingReportController {
     }
     
     public updateComparePeriod = ()=>{
+        
+        this.startDateCompare = new Date(this.startDateCompare);
+        this.startDateCompare.setHours(0,0,0,0)
+        
+        this.endDateCompare = new Date(this.endDateCompare);
+        this.endDateCompare.setHours(23,59,59,999);
+        
+        //if date is in the wrong format then update those dates
+        if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
+            this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+            this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
+        }
+        
+        if(this.selectedPeriodInterval.value=='hour'){
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+        }
+        
         this.compareReportCollectionConfig = this.collectionConfig.clone();
         for(var i in this.compareReportCollectionConfig.columns){
             var column = this.compareReportCollectionConfig.columns[i];
@@ -258,8 +277,23 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
+            
+            this.startDate = new Date(this.startDate);
+            this.startDate.setHours(0,0,0,0)
+            
+            this.endDate = new Date(this.endDate);
+            this.endDate.setHours(23,59,59,999);
+            //if date is in the wrong format then update those dates
+            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
+            }
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
+            //if the interval is an hour than we should only be able to show data for one day
+            if(this.selectedPeriodInterval.value=='hour'){
+                this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+            }
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
                 if(column.aggregate){
@@ -342,7 +376,6 @@ class SWListingReportController {
 		if(this.chart!=null){
             this.chart.destroy();
         }
-		
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -365,7 +398,7 @@ class SWListingReportController {
                     xAxes: [{
                       display: true,
                       scaleLabel: {
-                        labelString:this.selectedPeriodInterval.value,
+                        labelString:this.selectedPeriodColumn.displayPropertyIdentifier + ' by ' + this.selectedPeriodInterval.value,
                         display: true,
                       },
                     }]
@@ -387,6 +420,7 @@ class SWListingReportController {
         });
         
         this.chart.draw();
+        this.observerService.notifyById('swListingReport_DrawChart',this.tableId,this.chart);
     }
     
     public popObjectPath=()=>{
@@ -413,7 +447,6 @@ class SWListingReportController {
         
         
             this.metadataService.setPropertiesList(value, baseEntityAlias);
-            console.log(this);
             if(!this.filterPropertiesList){
                 this.filterPropertiesList={};
             }
