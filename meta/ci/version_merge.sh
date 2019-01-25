@@ -122,6 +122,12 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
       md5sum slatwall-be.zip > slatwall-be.md5.txt
       aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
       aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
+      git remote add slatwalldevelop git@github.com:ten24/SlatwallDevelop.git
+      git checkout -b develop-team slatwalldevelop/develop-team
+      git pull slatwalldevelop develop
+      git pull origin develop
+      git push slatwalldevelop develop-team
+      git checkout develop
     fi
 
 
