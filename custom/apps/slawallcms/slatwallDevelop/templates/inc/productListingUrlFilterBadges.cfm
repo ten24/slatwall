@@ -4,8 +4,6 @@
   <!--- for every property in the url struct...--->
   <cfset local.counter = 0 />
   <cfloop collection="#url#" item="local.queryParam">
-  	
-  	<!--- lucee groups query params that have dots in them in structs. Let's skip that --->
   	<cfif isStruct(url[local.queryParam]) >
   		<cfcontinue>
   	</cfif>
@@ -15,6 +13,7 @@
   		<cfset local.counter++ />
   		<!--- some values will be comma separated such as r:defaultSku.price:10^20,100^ --->
 	  	<cfset local.queryValuesSeparatedWithCommas = url[local.queryParam] />
+	  	
 	  	<!--- If this is not the first filter, let's add & between them ---->
 	  	<cfif local.counter GT 1>
 	  		<cfset local.allFiltersAndValues = local.allFiltersAndValues & '&' />

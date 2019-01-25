@@ -13,8 +13,10 @@ class SWFCartItemsController{
         this.$rootScope = $rootScope;
         this.$rootScope.slatwall.doAction('getResizedImageByProfileName',{profileName:'small',skuIds:this.orderItem.sku.skuID})
         .then((result:any)=>{
-            this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
-            this.loadingImages = false;
+            if(result){
+                this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
+                this.loadingImages = false;
+            }    
         });
 
     }
