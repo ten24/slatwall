@@ -1814,6 +1814,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(len(groupByList)){
 				groupByHQL &= ",";
 			}
+			
 			groupByHQL &= " DATE_FORMAT(#getPeriodColumn().propertyIdentifier#,'#periodIntervalFormat#')";
 		}
 
@@ -1821,7 +1822,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function setPeriodInterval(required string periodInterval){
-		getCollectionConfigStruct().periodInterval = arguments.periodInterval;
+		getCollectionConfigStruct()['periodInterval'] = arguments.periodInterval;
 	}
 
 	public boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
@@ -3035,6 +3036,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getPeriodIntervalQueryFormat(required string periodInterval){
+		
 		switch(lcase(arguments.periodInterval)){
 			case 'hour':
 				return '%Y-%m-%d-%H';
@@ -3103,6 +3105,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct()['periodInterval'])
 				){
 					variables.periodColumn = column;
+					
 					var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
 					addingColumn = true;
@@ -3757,14 +3760,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = {};
 		}
-		if(!structKeyExists(variables.collectionConfigStruct,'reportFlag')){
-			if(structKeyExists(variables.collectionConfigStruct,'periodInterval')){
-				variables.collectionConfigStruct['reportFlag']=1;
-			}else{
-				variables.collectionConfigStruct['reportFlag']=isReport();
-			}
-			
+		if(structKeyExists(variables.collectionConfigStruct,'periodInterval')){
+			variables.collectionConfigStruct['reportFlag']=1;
+		}else{
+			variables.collectionConfigStruct['reportFlag']=isReport();
 		}
+			
 		
 		return variables.collectionConfigStruct;
 	}
@@ -3866,7 +3867,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// @hint Ensures that the collection config is valid and can be executed successfully
 	public boolean function hasValidCollectionConfig() {
-		
+		clearVariablesKey('collectionConfigStruct');
 		// Attempt to fetch record with the set collectionConfg
 		try {
 			setPageRecordsShow(1);
@@ -3874,11 +3875,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 		// Error executing collection
 		} catch (any e) {
+			
+			if(getApplicationValue('errorDisplayFlag')){
+				writedump(e);throw();
+			}
 			var messageDetail = e.message;
 			
 			// Provide reference to component and line number from stack trace if possible
 			if (isArray(e.tagContext) && arrayLen(e.tagContext)) {
-				messageDetail = "#messageDetail#. #e.tagContext[1].raw_trace# -- #e.tagContext[1].codePrintPlain#";
+				if(structKeyExists(e.tagContext[1],'codePrintPlain')){
+					messageDetail = "#messageDetail#. #e.tagContext[1].raw_trace# -- #e.tagContext[1].codePrintPlain#";
+				}else{
+					messageDetail = e.message;
+				}
 			}
 			
 			// Set non-persistent variable so we can relay meaningful error detail with the validation rbKey

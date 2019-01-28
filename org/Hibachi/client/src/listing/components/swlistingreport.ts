@@ -100,7 +100,7 @@ class SWListingReportController {
                 'save'  
             ).then((data)=>{
                 if(this.collectionId){
-                    window.location.reload();    
+                    //window.location.reload();    
                 }else{
                     var url = window.location.href;    
                     if (url.indexOf('?') > -1){
@@ -108,7 +108,7 @@ class SWListingReportController {
                     }else{
                        url += '?collectionID='+data.data.collectionID;
                     }
-                    window.location.href = url;
+                   // window.location.href = url;
                 }
             });
             return;
@@ -268,11 +268,6 @@ class SWListingReportController {
     
     
     public updatePeriod = ()=>{
-        console.log('test')
-        console.log(this.selectedPeriodColumn );
-        console.log(this.selectedPeriodInterval );
-        console.log(this.startDate);
-        console.log(this.endDate);
         //if we have all the info we need then we can make a report
         if(
             this.selectedPeriodColumn 
@@ -308,7 +303,6 @@ class SWListingReportController {
                 }
             }
             
-            console.log('dd',this.hasMetric);
             if(this.hasMetric){
                 this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
                 this.reportCollectionConfig.setReportFlag(1);
@@ -319,14 +313,6 @@ class SWListingReportController {
                 this.reportCollectionConfig.removeFilterGroupByFilterGroupAlias('dates');
                 this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
                 this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-                    
-                this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
-                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-                delete this.collectionConfig.periodInterval;
-                    
-                this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
-                this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
                 
                 this.reportCollectionConfig.getEntity().then((reportingData)=>{
                     var ctx = $("#myChart");
@@ -337,6 +323,15 @@ class SWListingReportController {
                         this.updateComparePeriod();
                     }
                 });
+                    
+                this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+                    
+                this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
+                this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
+                
+                
             }
             
         }
@@ -449,8 +444,6 @@ class SWListingReportController {
         //get meta data we need for existing columns
 
         var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=>{
-            
-        
         
             this.metadataService.setPropertiesList(value, baseEntityAlias);
             if(!this.filterPropertiesList){
@@ -493,8 +486,6 @@ class SWListingReportController {
             }else{
                 this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
             }
-            console.log('dd',this.selectedPeriodPropertyIdentifier);
-            debugger;
             //update the option so it remains selected
             for(var i in this.periodColumns){
                 if(column.name === this.periodColumns[i].name){

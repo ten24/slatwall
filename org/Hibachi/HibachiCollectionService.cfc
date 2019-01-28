@@ -704,9 +704,13 @@ component output="false" accessors="true" extends="HibachiService" {
 			splitKeywords=splitKeywords,
 			defaultColumns=defaultColumns,
 			processContext=processContext,
-			isReport=isReport,
-			periodInterval=periodInterval
+			isReport=isReport
+			
 		};
+		if(len(periodInterval)){
+			collectionOptions.periodInterval=periodInterval;
+		}
+		
 		return collectionOptions;
 	}
 
@@ -866,11 +870,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'splitKeywords')){
 				collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
 			}
-			if(structKeyExists(collectionOptions,'isReport')){
-				collectionEntity.setReportFlag(collectionOptions.isReport);
-			}
 			if(structKeyExists(collectionOptions,'periodInterval')){
 				collectionEntity.getCollectionConfigStruct()['periodInterval'] = collectionOptions['periodInterval'];
+				collectionEntity.setReportFlag(1);
 			}
 			
 
