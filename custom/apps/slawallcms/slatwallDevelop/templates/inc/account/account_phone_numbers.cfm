@@ -1,5 +1,7 @@
 <!--- This import allows for the custom tags required by this page to work --->
 <cfimport prefix="sw" taglib="../../../tags" />
+<cfinclude template="account_phone_numbers_collection.cfm" />
+
 <cfoutput>
 <!--- Success/Fail Messages --->
 <cfif $.slatwall.hasSuccessfulAction( "public:account.update" )>
@@ -17,34 +19,33 @@
 
 <!--- START: PHONE NUMBERS --->
 <cfset accountPhoneNumberIndex=0 />
+
 <table class="table table-condensed table-bordered table-striped table-responsive-sm">
 	<tbody>
 		<!--- Loop over the phone numbers to display them --->
-		<cfloop array="#$.slatwall.getAccount().getAccountPhoneNumbersSmartList().getRecords()#" index="accountPhoneNumber">
+		<cfloop  array="#local.phoneNumbers#" index="phoneNumber">
 			<cfset accountPhoneNumberIndex++ />
+		
 			<tr>
-				<td>#accountPhoneNumber.getPhoneNumber()#</td>
+				<td>#phoneNumber['phoneNumber']#</td>
 				<td>
 					<a href="##" onClick="$('.apn#accountPhoneNumberIndex#').toggle()" title="Edit Phone Number">Edit</a>
 				</td>
 				<td>
-					<cfif accountPhoneNumber.getAccountPhoneNumberID() eq $.slatwall.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID()>
+					<cfif phoneNumber['accountPhoneNumberID'] eq $.slatwall.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID()>
 						<spqn class="badge badge-primary">
-							<i class="fa fa-check-circle" title="#accountPhoneNumber.getPhoneNumber()# is the primary phone number for this account"></i>
+							<i class="fa fa-check-circle" title="#phoneNumber['phoneNumber']# is the primary phone number for this account"></i>
 						</span>
 					<cfelse>
-						<a href="?slatAction=public:account.update&primaryPhoneNumber.accountPhoneNumberID=#accountPhoneNumber.getAccountPhoneNumberID()#" title="Set #accountPhoneNumber.getPhoneNumber()# as your primary phone number">Set Primary</a>	
+						<a href="?slatAction=public:account.update&primaryPhoneNumber.accountPhoneNumberID=#phoneNumber['accountPhoneNumberID']#" title="Set #phoneNumber['phoneNumber']# as your primary phone number">Set Primary</a>	
 					</cfif>
 				</td>
 				<td>
-					<a href="?slatAction=public:account.deleteAccountPhoneNumber&accountPhoneNumberID=#accountPhoneNumber.getAccountPhoneNumberID()#" title="Delete Phone Number - #accountPhoneNumber.getPhoneNumber()#">Delete</a>
+					<a href="?slatAction=public:account.deleteAccountPhoneNumber&accountPhoneNumberID=#phoneNumber['accountPhoneNumberID']#" title="Delete Phone Number - #phoneNumber['phoneNumber']#">Delete</a>
 				</td>
 			</tr>
-			
-			
-			
-			<!--- Edit Number
-			<div class="apn#accountPhoneNumberIndex#<cfif not accountPhoneNumber.hasErrors()> hide</cfif>">
+			<!--- Edit Number--->
+			<!---<div class="apn#accountPhoneNumberIndex#<cfif not accountPhoneNumber.hasErrors()> hide</cfif>">
 				<!--- Start: Edit Phone Number --->
 				<form action="?s=1" method="post">
 					<input type="hidden" name="slatAction" value="public:account.update" />
