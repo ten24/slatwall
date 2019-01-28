@@ -2570,9 +2570,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						
+						//try{
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
-						
+						/*}catch(any e){
+							writedump(getCollectionConfigStruct());
+							writedump(getHQL());
+							writedump(getHQLParams());abort;
+						}*/
 						var recordCount = 0;
 						
 						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){

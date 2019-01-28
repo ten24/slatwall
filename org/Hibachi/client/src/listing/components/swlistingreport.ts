@@ -80,7 +80,6 @@ class SWListingReportController {
             this.collectionConfig.columns.push(this.selectedPeriodColumn);
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
-                
                 'collectionObject':this.collectionConfig.baseEntityName,
                 'accountOwner':{
                     'accountID':this.$rootScope.slatwall.account.accountID
@@ -269,7 +268,11 @@ class SWListingReportController {
     
     
     public updatePeriod = ()=>{
-        
+        console.log('test')
+        console.log(this.selectedPeriodColumn );
+        console.log(this.selectedPeriodInterval );
+        console.log(this.startDate);
+        console.log(this.endDate);
         //if we have all the info we need then we can make a report
         if(
             this.selectedPeriodColumn 
@@ -304,6 +307,8 @@ class SWListingReportController {
                     //column.isVisible = false;
                 }
             }
+            
+            console.log('dd',this.hasMetric);
             if(this.hasMetric){
                 this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
                 this.reportCollectionConfig.setReportFlag(1);
@@ -318,6 +323,7 @@ class SWListingReportController {
                 this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
                 this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
                 this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+                delete this.collectionConfig.periodInterval;
                     
                 this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
                 this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
@@ -480,7 +486,15 @@ class SWListingReportController {
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
             this.getPeriodColumns(column.cfc);
         }else if(column && column.name){
-            this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
+            if(
+                this.selectedPeriodPropertyIdentifierArray.length
+                && this.selectedPeriodPropertyIdentifierArray[this.selectedPeriodPropertyIdentifierArray.length-1] == column.name){
+                this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.');
+            }else{
+                this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
+            }
+            console.log('dd',this.selectedPeriodPropertyIdentifier);
+            debugger;
             //update the option so it remains selected
             for(var i in this.periodColumns){
                 if(column.name === this.periodColumns[i].name){

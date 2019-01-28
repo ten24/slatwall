@@ -87697,6 +87697,11 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.updatePeriod = function () {
+            console.log('test');
+            console.log(_this.selectedPeriodColumn);
+            console.log(_this.selectedPeriodInterval);
+            console.log(_this.startDate);
+            console.log(_this.endDate);
             //if we have all the info we need then we can make a report
             if (_this.selectedPeriodColumn
                 && _this.selectedPeriodInterval
@@ -87728,6 +87733,7 @@ var SWListingReportController = /** @class */ (function () {
                         //column.isVisible = false;
                     }
                 }
+                console.log('dd', _this.hasMetric);
                 if (_this.hasMetric) {
                     _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                     _this.reportCollectionConfig.setReportFlag(1);
@@ -87740,6 +87746,7 @@ var SWListingReportController = /** @class */ (function () {
                     _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
                     _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                     _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
+                    delete _this.collectionConfig.periodInterval;
                     _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
                     _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
                     _this.reportCollectionConfig.getEntity().then(function (reportingData) {
@@ -87880,7 +87887,15 @@ var SWListingReportController = /** @class */ (function () {
                 _this.getPeriodColumns(column.cfc);
             }
             else if (column && column.name) {
-                _this.selectedPeriodPropertyIdentifier = _this.selectedPeriodPropertyIdentifierArray.join('.') + '.' + column.name;
+                if (_this.selectedPeriodPropertyIdentifierArray.length
+                    && _this.selectedPeriodPropertyIdentifierArray[_this.selectedPeriodPropertyIdentifierArray.length - 1] == column.name) {
+                    _this.selectedPeriodPropertyIdentifier = _this.selectedPeriodPropertyIdentifierArray.join('.');
+                }
+                else {
+                    _this.selectedPeriodPropertyIdentifier = _this.selectedPeriodPropertyIdentifierArray.join('.') + '.' + column.name;
+                }
+                console.log('dd', _this.selectedPeriodPropertyIdentifier);
+                debugger;
                 //update the option so it remains selected
                 for (var i in _this.periodColumns) {
                     if (column.name === _this.periodColumns[i].name) {
