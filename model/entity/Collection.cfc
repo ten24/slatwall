@@ -3867,7 +3867,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// @hint Ensures that the collection config is valid and can be executed successfully
 	public boolean function hasValidCollectionConfig() {
-		clearVariablesKey('collectionConfigStruct');
 		// Attempt to fetch record with the set collectionConfg
 		try {
 			setPageRecordsShow(1);
