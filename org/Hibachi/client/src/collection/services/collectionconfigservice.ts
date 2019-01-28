@@ -852,6 +852,16 @@ class CollectionConfig {
         return false;
     };
     
+    public hasPeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                return true;
+            }            
+        }
+        return false;
+    }
+    
     public getPeriodColumnFromColumns(columns:any){
         for(var i in columns){
             var column = columns[i];

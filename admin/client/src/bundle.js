@@ -73416,6 +73416,15 @@ var CollectionConfig = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    CollectionConfig.prototype.hasPeriodColumnFromColumns = function (columns) {
+        for (var i in columns) {
+            var column = columns[i];
+            if (column.isPeriod) {
+                return true;
+            }
+        }
+        return false;
+    };
     CollectionConfig.prototype.getPeriodColumnFromColumns = function (columns) {
         for (var i in columns) {
             var column = columns[i];
@@ -87532,7 +87541,9 @@ var SWListingReportController = /** @class */ (function () {
             if (collectionName || _this.collectionId) {
                 _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                 _this.selectedPeriodColumn.isPeriod = true;
-                _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
+                if (!_this.collectionConfig.hasPeriodColumnFromColumns(_this.collectionConfig.columns)) {
+                    _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
+                }
                 var serializedJSONData = {
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
                     'collectionObject': _this.collectionConfig.baseEntityName,
@@ -87549,7 +87560,7 @@ var SWListingReportController = /** @class */ (function () {
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
                 }, 'save').then(function (data) {
                     if (_this.collectionId) {
-                        //window.location.reload();    
+                        window.location.reload();
                     }
                     else {
                         var url = window.location.href;
@@ -87559,7 +87570,7 @@ var SWListingReportController = /** @class */ (function () {
                         else {
                             url += '?collectionID=' + data.data.collectionID;
                         }
-                        // window.location.href = url;
+                        window.location.href = url;
                     }
                 });
                 return;
@@ -87747,6 +87758,7 @@ var SWListingReportController = /** @class */ (function () {
                         }
                     });
                     _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                    delete _this.collectionConfig.periodInterval;
                     _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                     _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
                     _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });

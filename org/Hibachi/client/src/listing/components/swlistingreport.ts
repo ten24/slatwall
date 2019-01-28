@@ -77,7 +77,9 @@ class SWListingReportController {
         if(collectionName || this.collectionId){
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.selectedPeriodColumn.isPeriod = true;
-            this.collectionConfig.columns.push(this.selectedPeriodColumn);
+            if(!this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns)){
+                this.collectionConfig.columns.push(this.selectedPeriodColumn);
+            }
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
                 'collectionObject':this.collectionConfig.baseEntityName,
@@ -100,7 +102,7 @@ class SWListingReportController {
                 'save'  
             ).then((data)=>{
                 if(this.collectionId){
-                    //window.location.reload();    
+                    window.location.reload();    
                 }else{
                     var url = window.location.href;    
                     if (url.indexOf('?') > -1){
@@ -108,7 +110,7 @@ class SWListingReportController {
                     }else{
                        url += '?collectionID='+data.data.collectionID;
                     }
-                   // window.location.href = url;
+                   window.location.href = url;
                 }
             });
             return;
@@ -325,6 +327,7 @@ class SWListingReportController {
                 });
                     
                 this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                delete this.collectionConfig.periodInterval;
                 this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
                 this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
                     
