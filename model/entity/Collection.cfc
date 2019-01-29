@@ -2531,7 +2531,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 				}
 				if(len(reportCacheKey)){
-					getService('HibachiCacheService').setCachedValue(reportCacheKey,reportRecords);
+					//expire tomorrow
+					var cacheExpiration = dateAdd('d',1,now());
+					getService('HibachiCacheService').setCachedValue(reportCacheKey,reportRecords,cacheExpiration);
 				}
 				return reportRecords;
 			}

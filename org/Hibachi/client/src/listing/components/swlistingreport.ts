@@ -81,9 +81,6 @@ class SWListingReportController {
             if(!this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns)){
                 this.collectionConfig.columns.push(this.selectedPeriodColumn);
             }
-            debugger;
-            console.log(this.selectedPeriodColumn);
-            console.log(this.collectionConfig);
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
                 'collectionObject':this.collectionConfig.baseEntityName,
@@ -106,7 +103,7 @@ class SWListingReportController {
                 'save'  
             ).then((data)=>{
                 if(this.collectionId){
-                    //window.location.reload();    
+                    window.location.reload();    
                 }else{
                     var url = window.location.href;    
                     if (url.indexOf('?') > -1){
