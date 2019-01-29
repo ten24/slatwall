@@ -1242,4 +1242,13 @@ component extends="framework.one" {
 	
 	public void function onBeanFactoryLoadComplete() {}
 
+	public string function onMissingView(struct rc) {
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setStatus(404);
+		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="404");
+		return internalView("../../../admin/views/error/404.cfm");
+	}
+
 }
