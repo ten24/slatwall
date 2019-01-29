@@ -1725,7 +1725,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
-		writedump(HQL);abort;
 		return HQL;
 	}
 
@@ -2371,6 +2370,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
+			//check cache key
+			var reportCacheKey = "";
+			if(!this.getNewFlag()){
+				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
+			}
+			
+			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
+				return getService('HibachiCacheService').getCachedValue(reportCacheKey);
+			}
+			
 			arguments.formatRecords=false;
 		}
 		
@@ -2521,7 +2530,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				
 				}
-				
+				if(len(reportCacheKey)){
+					//expire tomorrow
+					var cacheExpiration = dateAdd('d',1,now());
+					getService('HibachiCacheService').setCachedValue(reportCacheKey,reportRecords,cacheExpiration);
+				}
 				return reportRecords;
 			}
 			
