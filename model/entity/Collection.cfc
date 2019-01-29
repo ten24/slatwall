@@ -82,6 +82,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
+	property name="ignorePeriodInterval" type="boolean" persistent="false" default="false";
 
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
@@ -139,6 +140,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="totalSumAggregates" persistent="false" type="array";
 
 	property name="exportFileName" type="string" persistent="false";
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -1723,6 +1725,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
+		writedump(HQL);abort;
 		return HQL;
 	}
 
@@ -1809,11 +1812,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		groupByHQL = ' GROUP BY ' & groupByList;
 
-		if(isReport() && hasPeriodColumn()){
+		if(isReport() && hasPeriodColumn() && !getIgnorePeriodInterval()){
 			var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 			if(len(groupByList)){
 				groupByHQL &= ",";
 			}
+			
 			groupByHQL &= " DATE_FORMAT(#getPeriodColumn().propertyIdentifier#,'#periodIntervalFormat#')";
 		}
 
@@ -1821,7 +1825,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function setPeriodInterval(required string periodInterval){
-		getCollectionConfigStruct().periodInterval = arguments.periodInterval;
+		getCollectionConfigStruct()['periodInterval'] = arguments.periodInterval;
 	}
 
 	public boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
@@ -2221,6 +2225,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
+		
+		if(isReport()){
+			setIgnorePeriodInterval(true);
+		}
 
 		applyPermissions();
 		if(arguments.formatRecords){
@@ -2570,9 +2578,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						
+						//try{
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
-						
+						/*}catch(any e){
+							writedump(getCollectionConfigStruct());
+							writedump(getHQL());
+							writedump(getHQLParams());abort;
+						}*/
 						var recordCount = 0;
 						
 						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){
@@ -3031,6 +3043,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getPeriodIntervalQueryFormat(required string periodInterval){
+		
 		switch(lcase(arguments.periodInterval)){
 			case 'hour':
 				return '%Y-%m-%d-%H';
@@ -3095,10 +3108,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 					addingColumn = true;
 				}else if(
-					structKeyExists(column,'isPeriod') && column.isPeriod
+					!getIgnorePeriodInterval()
+					&& structKeyExists(column,'isPeriod') && column.isPeriod
 					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct()['periodInterval'])
 				){
 					variables.periodColumn = column;
+					
 					var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
 					addingColumn = true;
@@ -3753,14 +3768,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = {};
 		}
-		if(!structKeyExists(variables.collectionConfigStruct,'reportFlag')){
-			if(structKeyExists(variables.collectionConfigStruct,'periodInterval')){
-				variables.collectionConfigStruct['reportFlag']=1;
-			}else{
-				variables.collectionConfigStruct['reportFlag']=isReport();
-			}
-			
+		if(structKeyExists(variables.collectionConfigStruct,'periodInterval')){
+			variables.collectionConfigStruct['reportFlag']=1;
+		}else{
+			variables.collectionConfigStruct['reportFlag']=isReport();
 		}
+			
 		
 		return variables.collectionConfigStruct;
 	}
@@ -3862,7 +3875,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// @hint Ensures that the collection config is valid and can be executed successfully
 	public boolean function hasValidCollectionConfig() {
-		
 		// Attempt to fetch record with the set collectionConfg
 		try {
 			setPageRecordsShow(1);
@@ -3870,11 +3882,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 		// Error executing collection
 		} catch (any e) {
+			
+			if(getApplicationValue('errorDisplayFlag')){
+				writedump(e);throw();
+			}
 			var messageDetail = e.message;
 			
 			// Provide reference to component and line number from stack trace if possible
 			if (isArray(e.tagContext) && arrayLen(e.tagContext)) {
-				messageDetail = "#messageDetail#. #e.tagContext[1].raw_trace# -- #e.tagContext[1].codePrintPlain#";
+				if(structKeyExists(e.tagContext[1],'codePrintPlain')){
+					messageDetail = "#messageDetail#. #e.tagContext[1].raw_trace# -- #e.tagContext[1].codePrintPlain#";
+				}else{
+					messageDetail = e.message;
+				}
 			}
 			
 			// Set non-persistent variable so we can relay meaningful error detail with the validation rbKey

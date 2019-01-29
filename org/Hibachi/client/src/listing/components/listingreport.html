@@ -36,6 +36,9 @@
                               		type="text"
                               		ng-model="swListingReport.startDate"
                               		ng-change="swListingReport.updatePeriod()"
+                              	    year="swListingReport.startDate.year"
+                              	    month="swListingReport.startDate.month"
+                              	    day="swListingReport.startDate.day"
                               		/>
                                 <span class="input-group-btn" >
                                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -52,6 +55,9 @@
                               		type="text"
                               		ng-model="swListingReport.endDate"
                               		ng-change="swListingReport.updatePeriod()"
+                              		year="swListingReport.endDate.year"
+                              		month="swListingReport.endDate.month"
+                              		day="swListingReport.endDate.day"
                               		/>
                                 <span class="input-group-btn" >
                                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -72,7 +78,11 @@
                                   		is-open="swListingReport.openedCalendarStartCompare" 
                                   		type="text"
                                   		ng-change="swListingReport.updatePeriod()"
-                                  		ng-model="swListingReport.startDateCompare"/>
+                                  		ng-model="swListingReport.startDateCompare"
+                                  		year="swListingReport.startDateCompare.year"
+                              	        month="swListingReport.startDateCompare.month"
+                              	        day="swListingReport.startDateCompare.day"
+                                  		/>
                                     <span class="input-group-btn" >
                                         <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarStartCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
@@ -87,7 +97,11 @@
                                   		is-open="swListingReport.openedCalendarEndCompare" 
                                   		type="text"
                                  		ng-change="swListingReport.updatePeriod()"
-                                  		ng-model="swListingReport.endDateCompare"/>
+                                  		ng-model="swListingReport.endDateCompare"
+                                  	    year="swListingReport.endDateCompare.year"
+                              	        month="swListingReport.endDateCompare.month"
+                              	        day="swListingReport.endDateCompare.day"	
+                                  	/>
                                     <span class="input-group-btn" >
                                         <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEndCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
