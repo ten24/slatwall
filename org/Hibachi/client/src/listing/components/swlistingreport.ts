@@ -529,7 +529,7 @@ class SWListingReport  implements ng.IDirective{
     //@ngInject
     constructor(
         public scopeService,
-        public collectionPartialsPath,
+        public collectionPartialsPath, 
         public hibachiPathBuilder
     ){
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingreport.html";

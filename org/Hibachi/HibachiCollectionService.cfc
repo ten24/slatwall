@@ -18,6 +18,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		throw('#arguments.casing# not a valid casing.');
 	}
+	
+	
 
 	public any function getHibachiPropertyIdentifierByCollectionPropertyIdentifier(required string collectionPropertyIdentifier){
 		var hibachiPropertyIdentifier = arguments.collectionPropertyIdentifier;
@@ -1522,6 +1524,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+	
+	public any function processCollection_clearCache(required any collection){
+		var cacheKeyPrefix = '_report_#arguments.collection.getCollectionID()#';
+		getService('HibachiCacheService').resetCachedKeyByPrefix(cacheKeyPrefix,true);	
+		return arguments.collection;
+	}
 
 	// =====================  END: Process Methods ============================
 
