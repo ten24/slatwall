@@ -87908,6 +87908,7 @@ var SWListingReportController = /** @class */ (function () {
                 }
                 column.propertyIdentifier = _this.selectedPeriodPropertyIdentifier;
                 column.isPeriod = true;
+                column.isVisible = true;
                 _this.selectedPeriodColumn = column;
                 if (update) {
                     _this.updatePeriod();

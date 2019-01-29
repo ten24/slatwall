@@ -667,6 +667,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data, 'dirtyRead')){
 			dirtyRead = true;
 		}
+		
 
 		var useElasticSearch = false;
 		if(structKeyExists(arguments.data, 'useElasticSearch')){
@@ -755,8 +756,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-
-
+		
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
 

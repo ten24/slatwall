@@ -82,6 +82,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
+	property name="ignorePeriodInterval" type="boolean" persistent="false" default="false";
 
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
@@ -139,6 +140,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="totalSumAggregates" persistent="false" type="array";
 
 	property name="exportFileName" type="string" persistent="false";
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -1723,6 +1725,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
+		writedump(HQL);abort;
 		return HQL;
 	}
 
@@ -1809,7 +1812,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		groupByHQL = ' GROUP BY ' & groupByList;
 
-		if(isReport() && hasPeriodColumn()){
+		if(isReport() && hasPeriodColumn() && !getIgnorePeriodInterval()){
 			var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 			if(len(groupByList)){
 				groupByHQL &= ",";
@@ -2221,6 +2224,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(arguments.refresh){
 			clearRecordsCache();
+		}
+		
+		if(isReport()){
+			setIgnorePeriodInterval(true);
 		}
 
 		applyPermissions();
@@ -3101,7 +3108,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 					addingColumn = true;
 				}else if(
-					structKeyExists(column,'isPeriod') && column.isPeriod
+					!getIgnorePeriodInterval()
+					&& structKeyExists(column,'isPeriod') && column.isPeriod
 					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct()['periodInterval'])
 				){
 					variables.periodColumn = column;

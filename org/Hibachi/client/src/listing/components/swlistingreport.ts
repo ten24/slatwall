@@ -75,6 +75,7 @@ class SWListingReportController {
     
     public saveReportCollection = (collectionName?)=>{
         if(collectionName || this.collectionId){
+            
             this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.selectedPeriodColumn.isPeriod = true;
             if(!this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns)){
@@ -499,6 +500,8 @@ class SWListingReportController {
             
             column.propertyIdentifier = this.selectedPeriodPropertyIdentifier;
             column.isPeriod = true;
+            column.isVisible = true;
+            
             
             this.selectedPeriodColumn = column;
             if(update){
