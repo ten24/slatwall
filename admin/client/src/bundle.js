@@ -87544,6 +87544,9 @@ var SWListingReportController = /** @class */ (function () {
                 if (!_this.collectionConfig.hasPeriodColumnFromColumns(_this.collectionConfig.columns)) {
                     _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
                 }
+                debugger;
+                console.log(_this.selectedPeriodColumn);
+                console.log(_this.collectionConfig);
                 var serializedJSONData = {
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
                     'collectionObject': _this.collectionConfig.baseEntityName,
@@ -87560,7 +87563,7 @@ var SWListingReportController = /** @class */ (function () {
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
                 }, 'save').then(function (data) {
                     if (_this.collectionId) {
-                        window.location.reload();
+                        //window.location.reload();    
                     }
                     else {
                         var url = window.location.href;
