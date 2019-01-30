@@ -1725,6 +1725,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
+	
 		return HQL;
 	}
 
@@ -1811,7 +1812,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		groupByHQL = ' GROUP BY ' & groupByList;
 
-		if(isReport() && hasPeriodColumn() && !getIgnorePeriodInterval()){
+		if(isReport() && hasPeriodColumn() ){
 			var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 			if(len(groupByList)){
 				groupByHQL &= ",";
@@ -2591,13 +2592,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						//try{
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
-						/*}catch(any e){
-							writedump(getCollectionConfigStruct());
-							writedump(getHQL());
-							writedump(getHQLParams());abort;
-						}*/
 						var recordCount = 0;
 						
 						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){
@@ -3112,7 +3107,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 				var addingColumn = false;
 				if(
-					structKeyExists(column,'isMetric') && column.isMetric
+					(
+						structKeyExists(column,'isMetric') 
+						&& column.isMetric
+					)
+					|| structKeyExists(column,'aggregate')
 				){
 					if(structKeyExists(column,'isDistinct') && column.isDistinct){
 						columnsHQL &= ' COALESCE(#column['aggregate']['aggregateFunction']#(DISTINCT #column.propertyIdentifier#),0) as #columnAlias#';
@@ -3121,8 +3120,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 					addingColumn = true;
 				}else if(
-					!getIgnorePeriodInterval()
-					&& structKeyExists(column,'isPeriod') && column.isPeriod
+					structKeyExists(column,'isPeriod') && column.isPeriod
 					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct()['periodInterval'])
 				){
 					variables.periodColumn = column;

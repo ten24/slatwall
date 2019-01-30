@@ -76,11 +76,7 @@ class SWListingReportController {
     public saveReportCollection = (collectionName?)=>{
         if(collectionName || this.collectionId){
             
-            this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
-            this.selectedPeriodColumn.isPeriod = true;
-            if(!this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns)){
-                this.collectionConfig.columns.push(this.selectedPeriodColumn);
-            }
+            
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
                 'collectionObject':this.collectionConfig.baseEntityName,
@@ -332,6 +328,18 @@ class SWListingReportController {
                 this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
                 this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
                     
+                this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+                this.selectedPeriodColumn.isPeriod = true;
+                
+                //decide whether to add or replace the periodcolumn
+                var hasPeriodColumn = this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns);
+                if(!hasPeriodColumn){
+                    this.collectionConfig.columns.push(this.selectedPeriodColumn);
+                }else{
+                    this.collectionConfig.removePeriodColumnFromColumns(this.collectionConfig.columns);
+                    this.collectionConfig.columns.push(this.selectedPeriodColumn);
+                }
+                    
                 this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
                 this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
                 
@@ -501,6 +509,7 @@ class SWListingReportController {
             column.propertyIdentifier = this.selectedPeriodPropertyIdentifier;
             column.isPeriod = true;
             column.isVisible = true;
+            column.title = column.displayPropertyIdentifier;
             
             
             this.selectedPeriodColumn = column;
