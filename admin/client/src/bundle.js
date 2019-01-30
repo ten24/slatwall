@@ -73427,6 +73427,16 @@ var CollectionConfig = /** @class */ (function () {
         }
         return false;
     };
+    CollectionConfig.prototype.removePeriodColumnFromColumns = function (columns) {
+        for (var i in columns) {
+            var column = columns[i];
+            if (column.isPeriod) {
+                columns.splice(i, 1);
+                return;
+            }
+        }
+        return;
+    };
     CollectionConfig.prototype.getPeriodColumnFromColumns = function (columns) {
         for (var i in columns) {
             var column = columns[i];
@@ -87760,7 +87770,13 @@ var SWListingReportController = /** @class */ (function () {
                     _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
                     _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                     _this.selectedPeriodColumn.isPeriod = true;
-                    if (!_this.collectionConfig.hasPeriodColumnFromColumns(_this.collectionConfig.columns)) {
+                    //decide whether to add or replace the periodcolumn
+                    var hasPeriodColumn = _this.collectionConfig.hasPeriodColumnFromColumns(_this.collectionConfig.columns);
+                    if (!hasPeriodColumn) {
+                        _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
+                    }
+                    else {
+                        _this.collectionConfig.removePeriodColumnFromColumns(_this.collectionConfig.columns);
                         _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
                     }
                     _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });

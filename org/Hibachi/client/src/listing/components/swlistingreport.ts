@@ -330,7 +330,13 @@ class SWListingReportController {
                     
                 this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
                 this.selectedPeriodColumn.isPeriod = true;
-                if(!this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns)){
+                
+                //decide whether to add or replace the periodcolumn
+                var hasPeriodColumn = this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns);
+                if(!hasPeriodColumn){
+                    this.collectionConfig.columns.push(this.selectedPeriodColumn);
+                }else{
+                    this.collectionConfig.removePeriodColumnFromColumns(this.collectionConfig.columns);
                     this.collectionConfig.columns.push(this.selectedPeriodColumn);
                 }
                     

@@ -862,6 +862,17 @@ class CollectionConfig {
         return false;
     }
     
+    public removePeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                columns.splice(i, 1);
+                return;
+            }            
+        }
+        return;
+    }
+    
     public getPeriodColumnFromColumns(columns:any){
         for(var i in columns){
             var column = columns[i];
