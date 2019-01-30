@@ -1,4 +1,14 @@
-    <span 
+    <!---used by reporting where dates could be Year, Year-Month,Year-Week,Year-Week-Day,Year-Week-Day-Hour--->
+    <span ng-if="!swListingDisplayCell.value.indexOf || swListingDisplayCell.value.indexOf('-') > -1" 
+          ng-bind="swListingDisplayCell.value"
+          popover="{{swListingDisplayCell.popover}}"
+          popover-trigger="mouseenter"
+          popover-placement="bottom"
+          popover-popup-delay="50"
+          popover-append-to-body="true">
+    </span>
+    
+    <span ng-if="swListingDisplayCell.value.indexOf(':') > -1" 
           ng-bind="swListingDisplayCell.value | swdate:'MM/dd/yyyy'"
           popover="{{swListingDisplayCell.popover}}"
           popover-trigger="mouseenter"
