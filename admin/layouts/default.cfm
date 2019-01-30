@@ -50,7 +50,8 @@ Notes:
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	
+	<!---<cfdump var="#ORMExecuteQuery("SELECT new Map( _product.productName as productName, _product_categories as categoriesCount, DATE_FORMAT(_product.createdDateTime,'%Y-%m') as createdDateTime) FROM SlatwallProduct as _product left join _product.categories as _product_categories where ( ( _product.createdDateTime >= '2017-2-2' AND _product.createdDateTime <= '2019-2-2' )) GROUP BY _product.productName, DATE_FORMAT(_product.createdDateTime,'%Y-%m')")#" top=2/><cfabort>
+	--->
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>
 	<head>

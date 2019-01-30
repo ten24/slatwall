@@ -69,7 +69,11 @@ export class BaseBootStrapper{
                         }
 			
                         // appConfig instantiation key is valid (but attribute model may need to be refreshed)
-                        if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
+                        if( 
+                            hibachiConfig.instantiationKey
+                            && this.appConfig.instantiationKey
+                            && hibachiConfig.instantiationKey === this.appConfig.instantiationKey
+                        ){
 
 
                             // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles

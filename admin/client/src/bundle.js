@@ -67870,7 +67870,9 @@ var BaseBootStrapper = /** @class */ (function () {
                                 };
                             }
                             // appConfig instantiation key is valid (but attribute model may need to be refreshed)
-                            if (hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
+                            if (hibachiConfig.instantiationKey
+                                && _this.appConfig.instantiationKey
+                                && hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
                                 // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
                                 core_module_1.coremodule.constant('appConfig', _this.appConfig);
                                 // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
@@ -87539,11 +87541,6 @@ var SWListingReportController = /** @class */ (function () {
         };
         this.saveReportCollection = function (collectionName) {
             if (collectionName || _this.collectionId) {
-                _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
-                _this.selectedPeriodColumn.isPeriod = true;
-                if (!_this.collectionConfig.hasPeriodColumnFromColumns(_this.collectionConfig.columns)) {
-                    _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
-                }
                 var serializedJSONData = {
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
                     'collectionObject': _this.collectionConfig.baseEntityName,
@@ -87761,6 +87758,11 @@ var SWListingReportController = /** @class */ (function () {
                     delete _this.collectionConfig.periodInterval;
                     _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                     _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
+                    _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
+                    _this.selectedPeriodColumn.isPeriod = true;
+                    if (!_this.collectionConfig.hasPeriodColumnFromColumns(_this.collectionConfig.columns)) {
+                        _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
+                    }
                     _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
                     _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
                 }
@@ -87909,6 +87911,7 @@ var SWListingReportController = /** @class */ (function () {
                 column.propertyIdentifier = _this.selectedPeriodPropertyIdentifier;
                 column.isPeriod = true;
                 column.isVisible = true;
+                column.title = column.displayPropertyIdentifier;
                 _this.selectedPeriodColumn = column;
                 if (update) {
                     _this.updatePeriod();
