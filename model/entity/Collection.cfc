@@ -481,7 +481,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		required string filterAggregateName,
 		required string propertyIdentifier,
 		required string value,
-		string comparisonOperator="="
+		string comparisonOperator="=",
+		boolean hidden=true
 
 	){
 		var collectionConfigStruct = this.getCollectionConfigStruct();
@@ -500,7 +501,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
-			"hidden"=true
+			"hidden"=arguments.hidden
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
@@ -539,7 +540,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		string logicalOperator="AND",
 	    string aggregate="",
 	    string filterGroupAlias="",
- 		string filterGroupLogicalOperator="AND"
+ 		string filterGroupLogicalOperator="AND",
+ 		boolean hidden=true
 	){
 
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier);
@@ -563,7 +565,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
-			"hidden"=true
+			"hidden"=arguments.hidden
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
