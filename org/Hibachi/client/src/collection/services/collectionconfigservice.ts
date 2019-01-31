@@ -178,6 +178,28 @@ class CollectionConfig {
         }
         if(angular.isDefined(jsonCollection.filterGroups)){
             this.validateFilter(jsonCollection.filterGroups);
+            
+            //backend collections don't add displayValue and displayPropertyIdentifier to their configs
+            // so let's fix that
+            for(let filterGroup of jsonCollection.filterGroups){
+
+                for(let filter of filterGroup['filterGroup']){
+
+                    if(!filter.displayPropertyIdentifier){
+                        let convertedPropertyIdentifier = filter.propertyIdentifier.replace(/_/g, '.');
+                        if(convertedPropertyIdentifier[0] === "."){
+                            convertedPropertyIdentifier = convertedPropertyIdentifier.substr(1);
+                        }
+                        filter.displayPropertyIdentifier =  this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,convertedPropertyIdentifier)+"."+this.utilityService.listLast(convertedPropertyIdentifier,'.'));
+                    }
+
+                    if(!filter.displayValue){
+                        filter.displayValue = filter.value;
+                    }
+
+                }
+            }
+            
             this.filterGroups = jsonCollection.filterGroups;
         }
         this.columns = jsonCollection.columns;
