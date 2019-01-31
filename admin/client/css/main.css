@@ -5766,21 +5766,56 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-report-title-padder {
   padding-left: 15px !important;
 }
-
 /* REPORTING */
-#reporting-top label { display: block; }
-#reporting-top .flex { display: flex; }
-#reporting-top .flex.panel_state_content { margin: 20px 0; }
-#reporting-top .flex.flex-space-bettween { justify-content: space-between; } 
-#reporting-top .flex-cal .btn-default.btn-cal { background-color: #DDDDDD; border: 1px solid #DDDDDD; height: 34px; margin-top: 22px; }
-#reporting-top .flex-cal .btn-default:hover { background-color: #fff; }
-#reporting-top .btn-group { float: none; width: 100%; display: flex; }
-#reporting-top .btn-group button { background-color: #fff; border: 1px solid #DDDDDD; width: 100%; height: 34px; border-radius: 0px; }
-#reporting-top .btn-group button:hover { background-color: #DDDDDD; }
-#reporting-top .flex .col.larger { width: 40%; margin-top: 35px; margin-right: 8%; }
-#reporting-top .flex-end { justify-content: flex-end; margin-top: 10px; }
-#reporting-top h4 { font-size: 14px; font-weight: 600; }
-
+#reporting-top label {
+  display: block;
+}
+#reporting-top .flex {
+  display: flex;
+}
+#reporting-top .flex.panel_state_content {
+  margin: 20px 0;
+}
+#reporting-top .flex.flex-space-bettween {
+  justify-content: space-between;
+}
+#reporting-top .flex-cal .btn-default.btn-cal {
+  background-color: #DDDDDD;
+  border: 1px solid #DDDDDD;
+  height: 34px;
+  margin-top: 22px;
+}
+#reporting-top .flex-cal .btn-default:hover {
+  background-color: #fff;
+}
+#reporting-top .btn-group {
+  float: none;
+  width: 100%;
+  display: flex;
+}
+#reporting-top .btn-group button {
+  background-color: #fff;
+  border: 1px solid #DDDDDD;
+  width: 100%;
+  height: 34px;
+  border-radius: 0px;
+}
+#reporting-top .btn-group button:hover {
+  background-color: #DDDDDD;
+}
+#reporting-top .flex .col.larger {
+  width: 40%;
+  margin-top: 35px;
+  margin-right: 8%;
+}
+#reporting-top .flex-end {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+#reporting-top h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
 /*-- Slideout Sidebar --*/
 .s-slide-main-content {
   text-align: center;
@@ -6450,9 +6485,9 @@ a.disabled > i.hibachi-ui-radio-checked {
   color: #DA5757;
 }
 .s-select-list-wrapper .input-group-btn button.btn-default {
-    border: 1px solid #cccccc;
-    left: -1px;
-    height: 34px!important;
+  border: 1px solid #cccccc;
+  left: -1px;
+  height: 34px!important;
 }
 /*Custom button group component*/
 .s-input-group {
