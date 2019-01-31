@@ -314,12 +314,14 @@ class ListingService{
 
     public clearAllSelections = (listingID) => {
         if (!listingID) return -1;
-        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
-            this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        if(this.getListing(listingID)){
+            for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+                this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+            }
+            this.getListing(listingID).collectionConfig.getEntity().then(data=>{
+                this.updatePageRecords(listingID,data);
+            });
         }
-        this.getListing(listingID).collectionConfig.getEntity().then(data=>{
-            this.updatePageRecords(listingID,data);
-        });
     }
     
      public updatePageRecords = (listingID,data) =>{
@@ -532,8 +534,10 @@ class ListingService{
             }
 
         }
-
-        for(var i=0; i < this.getListing(listingID).columns.length; i++){
+        
+        let length = this.getListing(listingID).columns.length;
+        
+        for(var i=0; i < length; i++){
 
             var column = this.getListing(listingID).columns[i];
 
