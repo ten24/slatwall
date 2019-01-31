@@ -90,7 +90,6 @@ class SWDisplayOptions{
 
 
                 var getTitleFromProperty = function(selectedProperty){
-                    console.log('test',selectedProperty);
                     var baseEntityCfcName = scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+scope.baseEntityName.replace('Slatwall','').slice(1);
                     var propertyIdentifier = selectedProperty.propertyIdentifier;
                     var title = '';
@@ -104,7 +103,6 @@ class SWDisplayOptions{
                     }
                     //if is aggregate of an object
                     if(selectedProperty.aggregate && selectedProperty.cfc){
-                        console.log(propertyIdentifierArray);
                         var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(baseEntityCfcName,actualPropertyIdentifier);
                         title = rbkeyService.getRBKey(prefix+lastEntityName+'_plural');
                         return title;
