@@ -171,6 +171,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 		}
 	}
+	
+	//Collection
+	public void function processCollection(required struct rc){
+		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
+		genericProcessMethod(entityName="Collection",rc=arguments.rc);
+	}
 
 	// Email
 	public void function preprocessEmail(required struct rc) {

@@ -34,6 +34,8 @@ class SWOrderFulfillmentListController {
     public processObject:any;
     public addSelection:Function;
     public FulfillmentsList=FulfillmentsList;
+    public customOrderFulfillmentCollectionConfig:string;
+    public customOrderItemCollectionConfig:string;
     private state:any;
 
     // @ngInject
@@ -106,6 +108,27 @@ class SWOrderFulfillmentListController {
             }
         });
     }
+    
+     private getBaseCollection = (entity):any=>{
+         console.log(entity);
+        var collection = this.collectionConfigService.newCollectionConfig(entity);
+        switch(entity){
+            case "OrderFulfillment":
+                if(this.customOrderFulfillmentCollectionConfig){
+                    collection.loadJson(this.customOrderFulfillmentCollectionConfig);
+                }
+                break;
+            case "OrderItem":
+                if(this.customOrderItemCollectionConfig){
+                    collection.loadJson(this.customOrderItemCollectionConfig);
+                }
+                break;
+            default:
+            break;
+        }
+        return collection;
+     }
+    
 
     /**
      * Implements a listener for the orderFulfillment selections
@@ -194,7 +217,7 @@ class SWOrderFulfillmentListController {
      * Setup the initial orderFulfillment Collection.
      */
      private createOrderFulfillmentCollection = ():void => {
-        this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderFulfillmentCollection = this.getBaseCollection("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderType.systemCode", "Order Type");
         this.orderFulfillmentCollection.addDisplayProperty("fulfillmentMethod.fulfillmentMethodType", "Fulfillment Method Type");
@@ -219,7 +242,7 @@ class SWOrderFulfillmentListController {
         
         status = status.trim();
 
-        this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderFulfillmentCollection = this.getBaseCollection("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
@@ -263,7 +286,7 @@ class SWOrderFulfillmentListController {
         delete this.orderItemCollection;
         this.view = undefined;
 
-        this.orderItemCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderItemCollection = this.getBaseCollection("OrderItem");
         this.orderItemCollection.addDisplayProperty("orderItemID", "ID");
         this.orderItemCollection.addDisplayProperty("order.orderNumber", "Order Number");
         this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
@@ -306,7 +329,7 @@ class SWOrderFulfillmentListController {
         delete this.orderFulfillmentCollection;
         this.view = undefined;
 
-        this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderFulfillmentCollection = this.getBaseCollection("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
@@ -379,7 +402,7 @@ class SWOrderFulfillmentListController {
      * Setup the initial orderItem Collection.
      */
     private createOrderItemCollection = ():void => {
-        this.orderItemCollection = this.collectionConfigService.newCollectionConfig("OrderItem");
+        this.orderItemCollection = this.getBaseCollection("OrderItem");
         this.orderItemCollection.addDisplayProperty("orderItemID");
         this.orderItemCollection.addDisplayProperty("sku.skuCode");
         this.orderItemCollection.addDisplayProperty("sku.calculatedSkuDefinition");
@@ -713,6 +736,8 @@ class SWOrderFulfillmentList implements ng.IDirective{
     public scope = {}
 
     public bindToController = {
+        customOrderFulfillmentCollectionConfig:'=?',
+        customOrderItemCollectionConfig:'=?'
     }
     public controller=SWOrderFulfillmentListController;
     public controllerAs="swOrderFulfillmentListController";
