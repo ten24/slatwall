@@ -7,3 +7,37 @@
 	[context]="context"
 	[name]="name">
 </sw-input-upgraded>
+
+<div [ngSwitch]="fieldType">
+	<div *ngSwitchCase="'select'">
+							<select class="form-control" disabled="true">
+						<option 
+							*ngFor="let propertyDisplayOption of options; trackBy: propertyDisplayOption"
+							[ngValue]="propertyDisplayOption.value"
+							[selected]="propertyDisplayOption.value === object.data['selectedworkflowObject'].value"
+		
+						 >{{propertyDisplayOption?.name}}</option>
+					</select>
+	</div>
+	
+	<div *ngSwitchCase="'yesno'">
+					<div *ngIf="selectedRadioFormName" >
+						
+						<div class="radio" style="display:inline-block;" *ngFor="let option of radioOptions; trackBy: option?.value; let i = index" >
+							<input type="radio" [name]="'selected'+ object.metaData.className + 'activeFlag'+selectedRadioFormName" 
+								[id]="object.metaData.className+'.'+ 'activeFlag'+ selectedRadioFormName + i"									
+								[value]="option"
+								[checked]="option == selected"
+								(click)="formFieldChanged(selected)"
+							/>
+							<label [for]="object.metaData.className+'.'+ 'activeFlag' + selectedRadioFormName + i">
+								<span [textContent]="option.name"></span>
+							</label>
+						</div>
+					</div>
+			
+					<input style="display:none"	type="text" *ngIf="selectedRadioFormName && 'activeFlag'"							
+						name="'activeFlag'"
+					/>	
+	</div>
+</div>

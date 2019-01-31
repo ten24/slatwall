@@ -470,7 +470,9 @@ export class SwPropertyDisplay implements OnInit  {
     @Input() public editing : boolean;
     @Input() public context: string;
     @Input() public name:string;
-    public value : string;
+    @Input() public optionsArguments;
+    @Input() public eagerLoadOptions;
+    public value : string = '';
     public fieldType : string;
     public inListingDisplay : boolean;
     public isHidden : boolean;
@@ -478,6 +480,11 @@ export class SwPropertyDisplay implements OnInit  {
     public title: string;
     public labelText: string;
     public hint : string;
+    public showSave: boolean;
+    public rowSaveEnabled: boolean;
+    public edit: boolean;
+    public errors;
+    public edited:boolean;
     
     constructor(
         private utilityService: UtilityService,
@@ -487,13 +494,25 @@ export class SwPropertyDisplay implements OnInit  {
     }
     
     ngOnInit() {
-        this.value = this.utilityService.getPropertyValue(this.object, this.propertyIdentifier);
+        
         this.form.addControl(this.propertyIdentifier, new FormControl(this.value));
         
+        this.errors = {};
+        this.edited = false;
+        this.edit = this.edit || this.editing;
+        this.editing = this.editing || this.edit;        
+
+        if( this.showSave === undefined  ){
+            this.showSave = true;
+        }        
         if(this.inListingDisplay === undefined) {
             this.inListingDisplay = false;    
         }
         
+        if(this.rowSaveEnabled === undefined){
+            this.rowSaveEnabled = this.inListingDisplay;
+        }
+                
         if(this.fieldType === undefined && this.object && this.object.metaData) {
             this.fieldType = this.metaDataService.getPropertyFieldType(this.object,this.propertyIdentifier);
         }

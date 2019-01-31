@@ -516,7 +516,6 @@ export{
 
 
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 //import { MetaDataService } from '../../core/services/metadataservice';
 import { UtilityService } from "../../core/services/utilityservice";
 import { ValidationControllerService } from "../../validation/services/validationcontrollerservice";
@@ -527,12 +526,13 @@ import { ValidationControllerService } from "../../validation/services/validatio
 })
 export class SwInput implements OnInit {
     
-    @Input() public form:FormControl;
-    @Input() public propertyIdentifier:string;
-    @Input() public fieldType:string;
+    @Input() public form ;
+    @Input() public propertyIdentifier :string;
+    @Input() public fieldType :string;
     @Input() public object;
-    @Input() public context:string;
-    @Input() public name:string;
+    @Input() public context :string;
+    @Input() public name :string;
+    public value:string;
     
     constructor(
         private metadataService :MetaDataService,
@@ -543,8 +543,9 @@ export class SwInput implements OnInit {
     }
     
     ngOnInit() {
+        this.value = this.utilityService.getPropertyValue(this.object, this.propertyIdentifier);
+        this.form.get(this.propertyIdentifier).setValue(this.value);
         this.getValidationDirectives();
-
     }
     
     public getValidationDirectives = ()=>{

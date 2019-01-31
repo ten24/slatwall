@@ -1,7 +1,7 @@
 				<div *ngIf="object" class="form-group" [hidden]="isHidden">
 					<label class="control-label" *ngIf="showLabel">
 						<span [textContent]="title"></span>:
-						<span *ngIf="object.validations.properties[propertyIdentifier][0].required && fieldType === 'text'">*</span>
+						<span *ngIf="object.validations.properties[propertyIdentifier] && object.validations.properties[propertyIdentifier][0].required && fieldType === 'text'">*</span>
 					    <span *ngIf="hint" >
 					        <span sw-tooltip class="j-tool-tip-item"					              
 					              [text]="hint"
@@ -20,6 +20,7 @@
 							[object]="object"
 							[context]="context"
 							[name]="name"
+							[optionsArguments]="optionsArguments"
 						></sw-form-field-upgraded>
 					</div>
 					
