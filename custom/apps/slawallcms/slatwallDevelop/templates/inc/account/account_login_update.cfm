@@ -1,6 +1,8 @@
 <cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
-	
+
+<sw:MessageDisplay />
+
 <!--- Login Update Success Message --->
 <cfif $.slatwall.hasSuccessfulAction('public:account.changePassword')>
 	<div class="alert alert-success">Your password has been updated.</div>
@@ -16,11 +18,16 @@
 		<form action="?s=1" method="post">
 			<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
 			<input type="hidden" name="slatAction" value="public:account.update" />
-		
+			
 			<!--- Primary Email Address --->
 	  		<div class="form-group">
 		  		<label for="emailAddress">Email</label>
-				<sw:FormField type="text" valueObject="#$.slatwall.getAccount().getPrimaryEmailAddress()#" valueObjectProperty="emailAddress" class="form-control" fieldAttributes="required"/>
+				<sw:FormField 
+					type="text" 
+					valueObject="#$.slatwall.getAccount().getPrimaryEmailAddress()#" 
+					valueObjectProperty="emailAddress" 
+					class="form-control" 
+					fieldAttributes="required dataType='email'" />
 				<small class="form-text text-muted">Enter new account email. This will change your account email used to login.</small>
 				<sw:ErrorDisplay object="#$.slatwall.getAccount().getPrimaryEmailAddress()#" errorName="emailAddress" />
 			</div>
@@ -28,7 +35,12 @@
 			<!--- Confirm Email Address --->
 	  		<div class="form-group">
 		  		<label for="emailAddress">Confirm Email Address</label>
-				<sw:FormField type="text" valueObject="#$.slatwall.getAccount().getPrimaryEmailAddress()#" valueObjectProperty="emailAddress" class="form-control" fieldAttributes="required" />
+				<sw:FormField 
+					type="text" 
+					valueObject="#$.slatwall.getAccount().getPrimaryEmailAddress()#" 
+					valueObjectProperty="emailAddress" 
+					class="form-control" 
+					fieldAttributes="required" />
 				<sw:ErrorDisplay object="#$.slatwall.getAccount().getPrimaryEmailAddress()#" errorName="emailAddress" />
 			</div>
 			

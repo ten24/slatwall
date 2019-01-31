@@ -336,6 +336,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.account;
 	}
+	
 	public any function saveAccount(required any account, struct data={}, string context="save"){
 		
 		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
@@ -344,6 +345,35 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.account.setAccountCode(accountCode);
 			}
 		}
+		
+		if (StructKeyExists(arguments.data, 'emailAddress') && !isNull(arguments.data.emailAddress)) {
+			var emailInputs = ListToArray(arguments.data.emailAddress,",");
+			
+			// check if there is an email confirmation field
+			if (ArrayLen(emailInputs) == 2) {
+				var newEmailAddress = emailInputs[1];
+				var newEmailAddressConfirmation = emailInputs[2];
+				
+				// check that email and email confirmation match
+				if (newEmailAddress == newEmailAddressConfirmation) {
+					// check for existing emails
+					var emailAlreadyExistsFlag = false;
+					for (emailAddressObject in arguments.account.getAccountEmailAddresses()) {
+						if (emailAddressObject.getEmailAddress() == newEmailAddress) {
+							arguments.account.addError('emailAddress','Email address already exists');
+							emailAlreadyExistsFlag = true;
+							break;
+						}
+					}
+					if (!emailAlreadyExistsFlag) {
+						arguments.account.getPrimaryEmailAddress().setEmailAddress(newEmailAddress);
+					}
+				} else {
+					arguments.account.addError('emailAddress', 'Email address confirmation field does not match');
+				}
+			}
+		}
+				
 		return super.save(entity=arguments.account,data=arguments.data);
 	}
 	

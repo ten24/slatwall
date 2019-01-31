@@ -144,6 +144,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function update( required struct rc ) {
 		var account = getAccountService().saveAccount( getHibachiScope().getAccount(), arguments.rc );
 
+		if(!account.hasErrors()){
+			account.addMessage(
+			messagename="public:account.update",
+			message="Email address successfully updated"
+			);
+		}
+			
+		account.showErrorsAndMessages();
+
 		getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
 	}
 
