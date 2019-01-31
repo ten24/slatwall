@@ -50,7 +50,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>
 	<head>

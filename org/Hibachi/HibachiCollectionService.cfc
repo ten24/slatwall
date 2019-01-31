@@ -18,6 +18,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		throw('#arguments.casing# not a valid casing.');
 	}
+	
+	
 
 	public any function getHibachiPropertyIdentifierByCollectionPropertyIdentifier(required string collectionPropertyIdentifier){
 		var hibachiPropertyIdentifier = arguments.collectionPropertyIdentifier;
@@ -667,6 +669,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data, 'dirtyRead')){
 			dirtyRead = true;
 		}
+		
 
 		var useElasticSearch = false;
 		if(structKeyExists(arguments.data, 'useElasticSearch')){
@@ -704,9 +707,13 @@ component output="false" accessors="true" extends="HibachiService" {
 			splitKeywords=splitKeywords,
 			defaultColumns=defaultColumns,
 			processContext=processContext,
-			isReport=isReport,
-			periodInterval=periodInterval
+			isReport=isReport
+			
 		};
+		if(len(periodInterval)){
+			collectionOptions.periodInterval=periodInterval;
+		}
+		
 		return collectionOptions;
 	}
 
@@ -751,8 +758,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-
-
+		
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
 
@@ -866,11 +872,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'splitKeywords')){
 				collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
 			}
-			if(structKeyExists(collectionOptions,'isReport')){
-				collectionEntity.setReportFlag(collectionOptions.isReport);
-			}
 			if(structKeyExists(collectionOptions,'periodInterval')){
 				collectionEntity.getCollectionConfigStruct()['periodInterval'] = collectionOptions['periodInterval'];
+				collectionEntity.setReportFlag(1);
 			}
 			
 
@@ -1520,6 +1524,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+	
+	public any function processCollection_clearCache(required any collection){
+		var cacheKeyPrefix = '_report_#arguments.collection.getCollectionID()#';
+		getService('HibachiCacheService').resetCachedKeyByPrefix(cacheKeyPrefix,true);	
+		return arguments.collection;
+	}
 
 	// =====================  END: Process Methods ============================
 

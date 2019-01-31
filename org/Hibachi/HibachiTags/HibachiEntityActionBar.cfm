@@ -78,7 +78,15 @@
 							
 								<cfparam name="request.context.keywords" default="" />
 								<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
-								
+
+								<!--- Listing: Button Groups --->
+								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+											#buttonGroup.generatedContent#
+										</cfif>
+									</cfloop>
+								</cfif>
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
 							
