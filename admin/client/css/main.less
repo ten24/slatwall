@@ -2008,6 +2008,19 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 // Components
 // --------------------------------------------------
 
+/* REPORTING */
+#reporting-top label { display: block; }
+#reporting-top .flex { display: flex; }
+#reporting-top .flex.panel_state_content { margin: 20px 0; }
+#reporting-top .flex.flex-space-bettween { justify-content: space-between; } 
+#reporting-top .flex-cal .btn-default.btn-cal { background-color: #DDDDDD; border: 1px solid #DDDDDD; height: 34px; margin-top: 22px; }
+#reporting-top .flex-cal .btn-default:hover { background-color: #fff; }
+#reporting-top .btn-group { float: none; width: 100%; display: flex; }
+#reporting-top .btn-group button { background-color: #fff; border: 1px solid #DDDDDD; width: 100%; height: 34px; border-radius: 0px; }
+#reporting-top .btn-group button:hover { background-color: #DDDDDD; }
+#reporting-top .flex .col.larger { width: 40%; margin-top: 35px; margin-right: 8%; }
+#reporting-top .flex-end { justify-content: flex-end; margin-top: 10px; }
+#reporting-top h4 { font-size: 14px; font-weight: 600; }
 
 /*-- Slideout Sidebar --*/
 .s-slide-main-content {
@@ -2408,6 +2421,7 @@ padding: 0px 15px;
 }
 
 /*-- List Select Component --*/
+.s-select-list-wrapper { position: relative; }
 .s-select-list-wrapper button.btn {margin-left: 0px !important;}
 .s-select-list-wrapper .form-group {margin:0px;}
 .s-select-list-wrapper .input-group-btn .btn {border-bottom-left-radius: 0px;border-top-left-radius: 0px;}
@@ -2530,7 +2544,7 @@ padding: 0px 15px;
 .s-select-list-wrapper .s-input-btn span, .s-select-list-wrapper .s-input-btn i {position: absolute;top: 8px;right: 8px;height: 14px;margin: auto;font-size: 14px;cursor: pointer;color: @black-20;z-index: 10;}
 .s-select-list-wrapper.s-dropdown .s-input-btn span, .s-select-list-wrapper.s-dropdown .s-input-btn i {right: 68px;}
 .s-select-list-wrapper .s-input-btn span:hover {color:@brand-danger;}
-.s-select-list-wrapper .input-group-btn button.btn-default {border-top:1px solid @black-20;border-bottom:1px solid @black-20;left: -1px;margin-right: -1px;}
+.s-select-list-wrapper .input-group-btn button.btn-default { border: 1px solid #cccccc; left: -1px; height: 34px!important; }
 
 /*Custom button group component*/
 .s-input-group {display: inline-block;position: relative;white-space: nowrap;}
@@ -2562,10 +2576,6 @@ padding: 0px 15px;
 sw-sku-thumbnail .thumbnail {border-radius: 2px;}
 sw-sku-thumbnail .thumbnail .s-image {width: 270px;height: 270px;background-size: contain;background-position: center;background-repeat: no-repeat;margin: auto;max-width: 100%;}
 sw-sku-thumbnail .thumbnail .caption {border-top: 1px solid #eee;}
-/*-- List Select Component Without Add --*/
-.s-select-list-wrapper.s-search .input-group-btn button.btn-default {
-	border-right: 1px solid #CCC;
-}
 
 /*-- Toggle Component --*/
 .stacked .s-toggle-switch {display: block;}
@@ -2979,6 +2989,7 @@ sw-sku-thumbnail .thumbnail .caption {border-top: 1px solid #eee;}
 	position: relative;
 	background: #fff;
     margin-bottom: 5px;
+    padding: 0 10px;
 	border: 1px solid rgba(0, 0, 0, 0);
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
