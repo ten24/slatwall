@@ -68,16 +68,16 @@ Notes:
                     <td ng-bind="$index+1"></td>
 
                     <td>
-                        <input type="text" name="containters[{{$index+1}}].height">
+                        <input type="text" name="containers[{{$index+1}}].height">
                     </td>
                     <td>
-                        <input type="text" name="containters[{{$index+1}}].width">
+                        <input type="text" name="containers[{{$index+1}}].width">
                     </td>
                     <td>
-						<input type="text" name="containters[{{$index+1}}].depth">
+						<input type="text" name="containers[{{$index+1}}].depth">
 					</td>
 					<td>
-                    	<input type="text" name="containters[{{$index+1}}].weight">
+                    	<input type="text" name="containers[{{$index+1}}].weight">
                     </td>
                     <td>
 
