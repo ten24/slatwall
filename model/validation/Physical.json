@@ -1,0 +1,9 @@
+{
+	"properties":{
+		"locations":							[{"contexts":"save","minCollection":1}],
+		"physicalName":							[{"contexts":"save","required":true}],
+		"physicalStatusTypeSystemCode":			[{"contexts":"delete,addPhysicalCount,commit,edit","inList":"pstOpen"}]
+	}
+}
+
+

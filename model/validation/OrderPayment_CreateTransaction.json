@@ -1,0 +1,32 @@
+{
+	"conditions":{
+	    "transactionTypeAuthorize":{
+	        "transactionType":{"eq":"authorize"}
+	    },
+	    "transactionTypeAuthorizeAndCharge":{
+	        "transactionType":{"eq":"authorizeAndCharge"}
+	    }
+	    ,
+	    "transactionTypeCredit":{
+	        "transactionType":{"eq":"credit"}
+	    }
+	    ,
+	    "transactionTypeChargePreAuthorization":{
+	        "transactionType":{"eq":"chargePreAuthorization"}
+	    },
+	    "transactionTypeGiftCard":{
+	    	"transactionType":{"eq":"giftCard"}
+	    }
+	},
+	"properties":{
+		"amount":				[
+			{"required":true,"dataType":"numeric"},
+			{"conditions":"transactionTypeAuthorize,transactionTypeAuthorizeAndCharge,transactionTypeCredit,transactionTypeChargePreAuthorization", "minValue":0},
+			{"conditions":"transactionTypeAuthorize","lteProperty":"orderPayment.amountUnAuthorized"},
+			{"conditions":"transactionTypeAuthorizeAndCharge","lteProperty":"orderPayment.amountUnreceived"},
+
+			{"conditions":"transactionTypeChargePreAuthorization","lteProperty":"orderPayment.amountUncaptured"}
+		],
+		"transactionType":		[{"required":true}]
+	}
+}

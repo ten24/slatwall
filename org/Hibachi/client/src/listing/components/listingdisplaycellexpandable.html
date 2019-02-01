@@ -1,0 +1,15 @@
+
+<!-- TODO: REFACTOR THIS LOGIC TO APPLY FILTERS -->
+<!--indent the primary for expandable-->
+<a class="s-contents-page-title s-no-arrow"
+      href="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}">
+    <span style="margin-left:{{(pageRecord.depth*40)||0}}px;padding-left: 12px;"
+          ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+          popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+          popover-trigger="mouseenter"
+          popover-placement="bottom"
+          popover-popup-delay="50"
+          popover-append-to-body="true">
+    </span>
+</a>
+

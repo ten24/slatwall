@@ -1,0 +1,5 @@
+{
+	"properties":{
+		"endDateTime":				[{"contexts":"save","dataType":"date","required":true}]
+	}
+}

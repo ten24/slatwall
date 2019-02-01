@@ -1,0 +1,9 @@
+{
+	"properties":{
+		"orderDeliveryItemID": 	[{"contexts":"edit,delete", "maxLength":0}],
+		"quantity":				[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"orderDelivery":		[{"contexts":"save","required":true}],
+		"orderItem":			[{"contexts":"save","required":true}],
+		"stock":				[{"contexts":"save","required":true}]
+	}
+}

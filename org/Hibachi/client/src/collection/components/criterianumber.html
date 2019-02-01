@@ -1,0 +1,72 @@
+  <div class="s-filter-group-item" ng-if="selectedFilterProperty">
+    <div class="form-group form-group-sm">
+      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+      <div class="s-no-paddings">
+      	<select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+      			ng-model="selectedFilterProperty.selectedCriteriaType" 
+        		ng-options="conditionOption as conditionOption.display 
+        					for conditionOption in conditionOptions 
+        					" 	
+        		ng-change="selectedConditionChanged(selectedFilterProperty)"
+      	>
+      		<option selected="selected" value="">Select Condition</option>
+        </select>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="form-group form-group-sm">
+		<label ng-show="selectedFilterProperty.showCriteriaValue" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Value:</label>
+		<div class="col-sm-12 s-no-paddings" ng-show="selectedFilterProperty.showCriteriaValue">
+			<input  style="" type="number" class="form-control" 
+					ng-model="selectedFilterProperty.criteriaValue"
+					ng-change="numberChanged()"
+					/>
+		</div>
+      	<label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Range:</label>
+		
+		<p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
+		  <input 	type="number" class="form-control" 
+		  			ng-model="selectedFilterProperty.criteriaRangeStart" 
+		  			ng-change="criteriaRangeChanged(selectedFilterProperty)"
+		  			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaStart"
+		  			/>
+		</p>
+		<label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Range:</label>
+		  
+		    <p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
+		  <input 	type="number" class="form-control" 
+		  			ng-model="selectedFilterProperty.criteriaRangeEnd" 
+		  			ng-change="criteriaRangeChanged(selectedFilterProperty)"
+		  			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd"
+		  			/>
+		</p>
+      <div class="clearfix"></div>
+    </div>
+	<div class="s-select-list-wrapper" ng-show="comparisonOperatorInAndNotInFlag"><!--- Add select component Wrapper --->
+	
+		<div class="form-group"><!--- Option select field wrapper --->
+			<div class="input-group">
+				<div class="s-input-btn">
+					<input id="searchinput"
+						ng-model="newListItem"
+    					type="number" class="form-control" 
+    					/>
+					<span ng-show="newListItem.length > 0" class="glyphicon glyphicon-remove" ng-click="clearField()"></span>
+				</div>
+				<div class="input-group-btn">
+					<button class="btn btn-sm btn-primary" ng-click="addToValueInListFormat(newListItem)"><i class="fa fa-plus"></i></button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="s-selected-list" ng-repeat="listItem in inListArray track by $index"><!--- Selected options wrapper --->
+			
+			<div class="alert s-selected-item" ng-show="listItem.length"><!--- Example Item 2 --->
+				<button type="button" class="close" ng-click="removelistItem(listItem)"><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
+				<strong ng-bind="listItem"></strong>
+			</div>
+			
+		</div>
+		
+	</div>
+  </div>

@@ -1,0 +1,38 @@
+
+<div class="input-group">
+    <div class="input-group-btn search-panel">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
+            <span data-ng-bind="swListingSearch.selectedSearchColumn.title"></span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href data-ng-click="swListingSearch.selectSearchColumn({'title':'All'})">All</a></li>
+            <li data-ng-repeat="column in swListingSearch.searchableOptions | orderBy:'title'"
+                data-ng-if="column.isSearchable && column.title.length && (column.ormtype == 'string' || column.ormtype == 'integer' || column.ormtype == 'big_decimal')">
+                <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.title"></a>
+            </li>
+        </ul>
+    </div>
+
+    <span class="s-search">
+        <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
+                data-ng-model="swListingSearch.searchText"
+                data-ng-model-options='{ debounce: 500 }'
+                data-ng-change="swListingSearch.search()">
+        <button class="btn btn-xs btn-default s-add-search-param"
+                data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.searchText"
+                data-ng-disabled="!swListingSearch.selectedSearchColumn"
+                data-ng-click="swListingSearch.addSearchFilter()">
+                <i class="glyphicon glyphicon-plus"></i>
+        </button>
+    </span>
+    <span class="input-group-btn s-action" ng-show="swListingSearch.showToggleFilters">
+        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.toggleFilters()">
+            <i class="fa fa-filter"></i>
+        </button>
+    </span>
+    <span class="input-group-btn s-action" ng-show="swListingSearch.showToggleDisplayOptions">
+        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.toggleDisplayOptions()">
+            <i class="fa fa-th"></i>
+        </button>
+    </span>
+</div>

@@ -1,0 +1,58 @@
+
+<li data-ng-class="{'s\-disabled':filterItem.$$disabled}" data-ng-if="filterPropertiesList">
+  <!-- Filter display -->
+  <div class="s-filter-item" data-ng-if="!filterItem.$$isNew && !simple">
+  	<div data-ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">
+      <button class="btn btn-xs " 
+              type="button"
+              data-ng-click="logicalOperatorChanged('AND')"
+              data-ng-class="{'btn\-default':filterItem.logicalOperator !== 'AND'}"
+      			>
+      			AND
+      </button>
+      <button class="btn btn-xs " 
+              type="button"
+              data-ng-class="{'btn\-default':filterItem.logicalOperator !== 'OR'}"
+              data-ng-click="logicalOperatorChanged('OR')"
+      			>
+      			OR
+      </button>
+    </div>
+    <div class="panel panel-default"  data-ng-class="{'s\-focus':!filterItem.$$isClosed}" >
+      <div class="panel-heading">
+      	<span data-ng-bind="filterItem.displayPropertyIdentifier | truncate:15"></span>
+      	<a  class="j-tool-tip-item" 
+      		data-toggle="tooltip" data-placement="top" 
+      		title="" data-original-title="Remove">
+            <i class="fa fa-trash"
+               data-ng-click="removeFilterItem()"
+                >
+            </i>
+      	</a>
+      </div>
+      <div data-ng-click="selectFilterItem(filterItem)" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+        <ul class="list-inline">
+            <li class="s-comparison-operator" data-ng-bind="filterItem.comparisonOperator"></li>
+            <li class="s-filter-value" data-ng-bind="filterItem.displayValue | truncate:19" sw-tooltip data-text="{{filterItem.value}}"></li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  <!--- //Filter display --->
+  <!--- Edit Filter Box --->
+  <sw-edit-filter-item
+  		data-collection-config="collectionConfig"
+  		data-filter-item="filterItem"
+  		data-ng-if="filterItem && filterPropertiesList"
+  		data-filter-properties-list="filterPropertiesList"
+  		data-save-collection="saveCollection()"
+  		data-filter-item-index="filterItemIndex"
+  		data-remove-filter-item="removeFilterItem({filterItemIndex:filterItemIndex})"
+  		data-comparison-type="comparisonType"
+        data-simple="simple"
+  >
+  </sw-edit-filter-item>
+  <!--- //Edit Filter Box --->
+
+</li>

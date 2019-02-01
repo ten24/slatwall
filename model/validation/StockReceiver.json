@@ -1,0 +1,5 @@
+{
+	"properties":{
+		"stockReceiverID":				[{"contexts":"delete","maxLength":0}]
+	}
+}

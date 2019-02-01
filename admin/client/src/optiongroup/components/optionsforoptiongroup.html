@@ -1,0 +1,9 @@
+<div class="form-group">
+    <label class="control-label col-sm-4">{{swOptionsForOptionGroup.optionGroup.optionGroupName}}</label>
+    <div class="col-sm-8">
+        <select class="form-control" ng-change="swOptionsForOptionGroup.validateChoice()" ng-model="swOptionsForOptionGroup.selectedOption" ng-options="opt.optionID as opt.optionName for opt in swOptionsForOptionGroup.options">
+            <!-- Options -->
+            <option value="" sw-rbkey="'entity.Product.option.select'"></option>
+        </select>
+    </div>
+</div>

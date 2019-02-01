@@ -1,0 +1,51 @@
+{
+	"conditions":{
+	    "generateContentAccessSkus":{
+    	    "generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"contentAccess"}
+    	},
+	    "generateEventSkus":{
+    		"generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"event"}
+    	},
+    	"generateEventSkusRecurring":{
+    		"generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"event"},
+    		"schedulingType":	{"eq":"recurring"}
+    	},
+    	"generateMerchandiseSkus":{
+    	    "generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"merchandise"}
+    	},
+    	"generateSubscriptionSkus":{
+    	    "generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"subscription"}
+    	},	
+    	"subscriptionWithRenewalSku":{
+    		"baseProductType":	{"eq":"subscription"}, 
+    		"renewalMethod": {"eq":"renewalsku"}
+    	},
+    	"subscriptionWithoutRenewalSku":{
+    		"baseProductType":	{"eq":"subscription"}, 
+    		"renewalMethod": {"eq":"custom"}
+    	},
+    	"createGiftCard":{
+    		"baseProductType": {"eq":"gift-card"}
+    	}
+	},
+	"properties":{
+	    "product.productName": 		[{"required":true}],
+		"product.productCode": 		[{"required":true}],
+		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
+		"subscriptionBenefits": 	[{"conditions":"generateSubscriptionSkus","required":true}],
+		"subscriptionTerms":		[{"conditions":"generateSubscriptionSkus","required":true}],
+		"redemptionAmount":			[{"conditions":"createGiftCard", "dataType":"numeric","minValue":0}],
+		"redemptionAmountType":     [{"conditions":"createGiftCard", "required":true}],
+		"renewalSubscriptionBenefits": [{"conditions":"subscriptionWithoutRenewalSku","required":true}],
+		"renewalPrice":  	[{"conditions":"subscriptionWithoutRenewalSku","required":true,"dataType":"numeric","minValue":0}],
+		"renewalSku": 				[{"conditions":"subscriptionWithRenewalSku", "required":true},
+									 {"conditions":"subscriptionWithoutRenewalSku", "null":true}]
+		
+	}
+}
+

@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"auditType":						[{"contexts":"save","inList":"create,update,delete,rollback,archive,login,loginInvalid,logout"},{"contexts":"rollback","inList":"update,rollback,archive"}],
+		"archiveProcessedFlag":				[{"contexts":"delete","eq":true}]
+	}
+}

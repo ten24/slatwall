@@ -1,0 +1,14 @@
+<div data-ng-class="swSelection.isRadio ? 'radio' : 's-checkbox'"
+     data-ng-if="swSelection.id && swSelection.selectionid && swSelection.selection"
+     style="margin:0;padding:0">
+	<input  type="{{swSelection.isRadio ? 'radio' : 'checkbox'}}"
+            id="j-checkbox-{{swSelection.selectionid}}-{{swSelection.id}}"
+			data-ng-attr-name="{{swSelection.name}}"
+            data-ng-model="swSelection.toggleValue"
+            data-ng-change="swSelection.toggleSelection(swSelection.toggleValue,swSelection.selectionid,swSelection.selection)"
+            data-ng-value="swSelection.id"
+            data-ng-disabled="swSelection.disabled"
+			/>
+    <label for="j-checkbox-{{swSelection.selectionid}}-{{swSelection.id}}">
+	</label>
+</div>

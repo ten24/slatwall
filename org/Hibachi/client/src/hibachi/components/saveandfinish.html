@@ -1,0 +1,7 @@
+<li ng-class="{'active s-loading': swSaveAndFinish.saving === true, 'active': swSaveAndFinish.saving === false}">
+    <a  style="cursor:pointer; padding: 9px 12px; font-size: 16px;"
+        ng-disabled="swSaveAndFinish.saving"
+        ng-click="swSaveAndFinish.save()"
+        sw-rbkey="swSaveAndFinish.rbKey"
+    ></a>
+</li>

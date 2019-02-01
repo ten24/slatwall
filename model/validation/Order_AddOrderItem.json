@@ -1,0 +1,61 @@
+{
+    "conditions":{
+    	"orderItemTypeSale":{
+    	    "orderItemTypeSystemCode":{"eq":"oitSale"}
+    	},
+    	"orderItemTypeReturn":{
+    	    "orderItemTypeSystemCode":{"eq":"oitReturn"}
+    	},
+	    "newOrderFulfillment":{
+	        "orderFulfillment":{"null":true},
+	        "orderItemTypeSystemCode":{"eq":"oitSale"}
+	    },
+	    "newOrderReturn":{
+	        "orderReturn":{"null":true},
+	        "orderItemTypeSystemCode":{"eq":"oitReturn"}
+	    },
+	    "newShippingOrderFulfillmentWithNewAddress":{
+	        "fulfillmentMethodType":{"eq":"shipping"},
+	        "orderFulfillmentID":{"eq":""},
+	        "shippingAccountAddressID":{"eq":"new"}
+	    },
+	    "existingOrderFulfillment":{
+	        "orderFulfillment":{"null":false}
+	    },
+	    "existingOrderReturn":{
+	        "orderReturn":{"null":false}
+	    },
+	    "customizationsExist":{
+	        "assignedOrderItemAttributeSets":{"minCollection":1}
+	    },
+	    "saleOrderItemIsStock":{
+	    	"stock":{"null":false},
+			 "orderItemTypeSystemCode":{"eq":"oitSale"}
+	    },
+	    "saleOrderItemIsSku":{
+	    	"stock":{"null":true},
+			 "orderItemTypeSystemCode":{"eq":"oitSale"}
+	    }
+
+	},
+	"properties":{
+	    "preProcessDisplayedFlag":		[{"conditions":"newOrderFulfillment,newOrderReturn,customizationsExist","eq":1}],
+		"sku":							[{"required":true}],
+		"sku.activeFlag":               [{"conditions":"orderItemTypeSale","eq":true}],
+		"orderFulfillmentID":			[],
+		"orderReturnID":				[],
+		"quantity":						[
+			{"required":true,"dataType":"numeric","minValue":1},{"conditions":"saleOrderItemIsSku","lteProperty":"sku.qats"},
+			{"conditions":"saleOrderItemIsStock","lteProperty":"stock.qats"}
+		],
+		"price":						[{"required":true,"dataType":"numeric","minValue":0}],
+		"emailAddress":					[{"dataType":"email"}]
+
+	},
+	"populatedPropertyValidation":{
+	    "shippingAddress":[
+	    	{"conditions":"existingOrderFulfillment","validate":false},
+	    	{"conditions":"newShippingOrderFulfillmentWithNewAddress","validate":"full"}
+	    ]
+	}
+}

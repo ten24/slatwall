@@ -1,0 +1,9 @@
+{
+	"properties":{
+		"minimumShipmentWeight":		[{"contexts":"save","dataType":"numeric"}],
+		"maximumShipmentWeight":		[{"contexts":"save","dataType":"numeric"}],
+		"minimumShipmentItemPrice":		[{"contexts":"save","dataType":"numeric"}],
+		"maximumShipmentItemPrice":		[{"contexts":"save","dataType":"numeric"}],
+		"defaultAmount":				[{"contexts":"save","dataType":"numeric"}]
+	}
+}

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target":"es5",
+    "module": "commonjs",
+    "sourceMap": true
+  },
+  "files": [
+    "typings/hibachiTypescript.d.ts",
+    "typings/tsd.d.ts",
+    "typings/requirejs/require.d.ts",
+    "typings/js-md5/md5.d.ts",
+    "typings/datejs/datejs.d.ts"
+  ]
+}

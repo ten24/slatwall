@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"product": [{"method":"hasUnusedProductOptionCombinations"}],
+		"options": [{"required":true}]
+	}
+}

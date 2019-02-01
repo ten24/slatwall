@@ -1,0 +1,101 @@
+<div class="col-xs-12 s-add-filter s-add-filter-secondary-layout"  data-ng-class="{collapse:filterItem.$$isClosed, 's-add-filter' : !simple}">
+    <a class="s-close" data-ng-click="swListingControls.toggleFilters()" data-ng-if="simple">
+        <i class="fa fa-times" data-ng-click="cancelFilterItem()" ></i>
+    </a>
+    <div class="row">
+        <h4 data-ng-if="!simple"> <span data-sw-rbkey="'admin.editfilteritem.definefilter'"></span>:
+            <span data-ng-repeat="breadCrumb in filterItem.breadCrumbs">
+	        	<span data-ng-if="filterItem.breadCrumbs.length - 1 !== $index" data-ng-click="selectBreadCrumb($index)">
+                    {{breadCrumb.rbKey}}
+                    <span data-ng-if="$index !== filterItem.breadCrumbs.length - 2"> > </span>
+                </span>
+	        </span>
+            <i class="fa fa-times" data-ng-click="cancelFilterItem()" ></i>
+        </h4>
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-3">
+                    <h4>Define Filter</h4>
+                    <!--<div class="form-group form-group-sm s-option-group">-->
+                        <!--<label class="control-label">-->
+                            <!--<span data-sw-rbkey="'admin.editfilteritem.selectfrom'"></span>-->
+                            <!--<strong data-ng-bind="filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></strong>:-->
+                        <!--</label>-->
+                        <!--<div class="s-option-wrapper">-->
+                            <!--<select class="form-control input-sm">-->
+                                <!--<option value="" selected="selected"> Account</option>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div class="form-group form-group-sm s-option-group s-selected">
+                        <label class="control-label">
+                            <span data-ng-if="!selectedFilterProperty.aggregate" data-sw-rbkey="'admin.editfilteritem.selectfrom'"></span>
+                            <span data-ng-if="selectedFilterProperty.aggregate">{{selectedFilterProperty.aggregate}} of</span>
+                            <strong data-ng-bind="filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></strong>:
+                        </label>
+                        <div class="s-option-wrapper s-right">
+
+                            <select data-ng-model="selectedFilterProperty"
+                                    data-ng-change="selectedFilterPropertyChanged(selectedFilterProperty)"
+                                    data-ng-options="filterProperty as filterProperty.displayPropertyIdentifier
+                                        for filterProperty in filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].data
+                                         | orderBy:['displayPropertyIdentifier'] track by filterProperty.propertyIdentifier
+                                        " class="form-control input-sm s-selected">
+                                <option value=""> {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xs-6 s-criteria" style="min-height:180px;" data-ng-if="selectedFilterProperty.ormType !== 'undefined'">
+                    <h4 data-sw-rbkey="'admin.editfilteritem.criteria'" data-ng-class="{'disabled' : selectedFilterProperty == null}"></h4>
+                    <!--- Alert if no filter has been selected --->
+                    <div class="alert alert-info" data-ng-if="selectedFilterProperty == null" data-sw-rbkey="'entity.Collection.missingFilter'"></div>
+                    <sw-criteria
+                            ng-if="selectedFilterProperty !== null"
+                            data-filter-item="filterItem"
+                            data-selected-filter-property="selectedFilterProperty"
+                            data-filter-properties-list="filterPropertiesList"
+                            data-selected-filter-property-changed="selectedFilterPropertyChanged(selectedFilterProperty)"
+                            data-comparison-type="comparisonType"
+                            data-collection-config="collectionConfig">
+                    </sw-criteria>
+                </div>
+                <div class="col-xs-3" data-ng-if="simple">
+                    <h4>Preview &amp; Save</h4>
+                    <div class="well well-sm">
+                        <div>Preview:</div>
+                        <div style="color: #666">
+                            {{selectedFilterProperty.displayPropertyIdentifier}} {{selectedFilterProperty.selectedCriteriaType.comparisonOperator}} <strong data-ng-bind="filterItem.value | truncate:25"></strong>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary"
+                            data-ng-click="saveFilter(selectedFilterProperty,filterItem,cancelFilterItem)">
+                        Add Filter
+                    </button>
+                </div>
+                <div class="col-xs-3" data-ng-if="!simple">
+                    <div class="s-button-select-group" data-ng-class="{'disabled' : selectedFilterProperty.selectedCriteriaType == null }">
+                        <button type="button"
+                                data-ng-click="saveFilter(selectedFilterProperty,filterItem,addFilterItem)"
+                                class="btn btn-sm btn-primary"
+                                data-sw-rbkey="'admin.editfilteritem.saveandaddanotherfilter'">
+                        </button>
+                        <div class="s-or-box">-<span data-sw-rbkey="'admin.define.or'"></span>-</div>
+                        <button type="button"
+                                data-ng-click="saveFilter(selectedFilterProperty,filterItem,cancelFilterItem)"
+                                class="btn btn-sm btn-primary"
+                                data-sw-rbkey="'admin.editfilteritem.saveandfinish'">
+                        </button>
+                    </div>
+                    <div class="form-group" data-ng-if="filterGroupItem.length > 1">
+                        <div class="s-checkbox">
+                            <input type="checkbox" data-ng-model="filterItem.$$prepareForFilterGroup" id="j-checkbox21">
+                            <label data-ng-click="togglePrepareForFilterGroup()" for="j-checkbox21"> Add To New Group</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

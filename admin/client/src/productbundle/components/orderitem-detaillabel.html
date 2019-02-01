@@ -1,0 +1,3 @@
+<ul ng-switch="systemCode">
+	<li ng-repeat="detail in orderItem.details track by $index" ng-if="orderItem.details.length">{{detail}}<br></li>
+</ul>

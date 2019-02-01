@@ -1,0 +1,17 @@
+{
+
+	"properties":{
+
+		"newContent.urlTitle":				[
+			{
+				"contexts":"duplicateContent","required":true
+			},
+			{
+				"contexts":"duplicateContent","regex":"^[A-Za-z0-9-]+$"
+			}
+		],
+		"newContent.urlTitlePath":			[{"contexts":"duplicateContent","method":"isUniqueUrlTitlePathBySite"}],
+		"newContent.site":					[{"contexts":"duplicateContent","required":true}],
+		"newContent.parentContent":		[{"contexts":"duplicateContent","required":true}]
+	}
+}

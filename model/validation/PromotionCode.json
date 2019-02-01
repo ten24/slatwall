@@ -1,0 +1,14 @@
+{
+	"conditions":{
+	    "needsEndAfterStart":{
+	        "startDateTime":{"required":true},
+	        "endDateTime":{"required":true}
+	    }
+	},
+	"properties":{
+		"promotionCode":			[{"contexts":"save","required":true,"unique":true}],
+		"startDateTime":			[{"contexts":"save","dataType":"date"}],
+		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}],
+		"orders":					[{"contexts":"delete","maxCollection":0}]
+	}
+}

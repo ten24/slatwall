@@ -1,0 +1,8 @@
+<span class="s-select-wrapper" data-sw-loading="swSelect.options">
+	<select class="form-control"
+            data-ng-model="swSelect.selectedOption"
+            data-ng-change="swSelect.selectOption()"
+            data-ng-options="option[swSelect.value] for option in swSelect.options track by option[swSelect.id]">
+        <option value="">- Choose One -</option>
+    </select>
+</span>

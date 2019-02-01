@@ -1,0 +1,198 @@
+<section class="content s-body-margin" id="j-main-content">
+	<div ng-if="entity">
+		<div class="row s-body-nav">
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="col-md-6 s-header-info">
+					<h1 class="actionbar-title" ng-bind="(!entity.$$isPersisted()) ? 'New '+entity.metaData.className :entity.data[entity.metaData.className.toLowerCase()+'Name']"></h1>
+				</div>
+				<div class="col-md-6">
+					<div class="btn-toolbar">
+						<div class="btn-group btn-group-sm">
+							<a title="Workflows"
+								class="adminentitylistworkflow btn btn-default"
+								sw-href="{{'/entity/'+entityName}}"><i
+								class="glyphicon glyphicon-arrow-left"></i> <span sw-rbkey="'entity.'+entityName.toLowerCase()+'_plural'"></span></a>
+						</div>
+						<div class="btn-group btn-group-sm">
+
+						</div>
+
+						 <div class="btn-group btn-group-sm">
+								<!-- Custom confirmation dialog -->
+								<a
+							    sw-confirm
+							    class="btn btn-default s-remove"
+							    data-confirm-text="Confirm"
+								data-message-text="Are you sure you want to delete this Workflow?"
+								data-callback="deleteEntity(entity)"
+								data-use-rb-key="false"
+								data-simple=false
+								data-yes-text="Yes"
+								data-no-text="No"
+                                data-ng-if="entity.$$isPersisted()"
+								><i class="glyphicon glyphicon-trash icon-white"></i> Delete
+								</a>
+								<a
+								title="Cancel" class="adminentitydetailworkflow btn btn-default"
+								target="_self"
+								sw-href="{{'/entity/'+entityName}}"><i
+								class="glyphicon glyphicon-remove icon-white"></i> Cancel</a>
+
+							<button class="btn adminentitysaveworkflow btn btn-success"
+								title="Save" type="button"
+								ng-click="setDirty(entity);entity.$$save();"
+							>
+								<i class="glyphicon glyphicon-ok icon-white"></i> Save
+							</button>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+
+
+		<div class="row s-pannel-control">
+			<div class="col-md-12 s-toggle-panels">
+				<a href="/#" class="j-openall j-tool-tip-item" data-toggle="tooltip"
+					data-placement="bottom" title="" data-original-title="Expand All"
+					ng-click="allTabsOpen = true"
+					><i
+					class="fa fa-expand"></i></a> <a href="/#"
+					class="j-closeall j-tool-tip-item" data-toggle="tooltip"
+					data-placement="bottom" title=""
+					data-original-title="Collapse All"><i class="fa fa-compress"
+
+					></i>
+				</a>
+			</div>
+		</div>
+<div class="panel-group s-pannel-group" id="accordion" ng-if="detailTabs && detailTabs.length">
+	<div class="j-panel panel panel-default" ng-repeat="detailTab in detailTabs" ng-if="entity.$$isPersisted()  || (!entity.$$isPersisted() && detailTab.showCreate !== false)">
+
+		<a style="cursor:pointer" ng-click="detailTab.openTab = !detailTab.openTab">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.tabName.toLowerCase().replace('.html','')"></span>
+					<i class="s-accordion-toggle-icon fa" ng-class="(detailTab.openTab)? 'fa-caret-down' : 'fa-caret-left'"></i>
+				</h4>
+			</div>
+		</a>
+		<div  collapse="!detailTab.openTab" class="panel-collapse"
+			style="height: 0px;">
+			<content class="s-body-box">
+				<ng-include src="tabPartialPath+entityName+'/'+detailTab.tabName.toLowerCase()"></ng-include>
+			</content>
+		</div>
+	</div>
+	<div class="j-panel panel panel-default" data-ng-if="entity.$$isPersisted()">
+		<a data-toggle="collapse" href="/#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<span >System</span> <i
+						class="s-accordion-toggle-icon fa fa-caret-left"></i>
+				</h4>
+			</div>
+		</a>
+		<div id="collapseSystem" class="panel-collapse"
+			style="height: 0px;">
+			<content class="s-body-box" ng-if="openTab || allTabsOpen">
+			<div class="tab-pane" id="tabSystem">
+				<div class="col-md-12">
+					<div class="form-horizontal" style="max-width: 650px;">
+						<div class="form-group">
+							<label class="control-label col-sm-4 title"
+								style="text-align: left;"
+								sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+entityName.toLowerCase()+'id'"></label>
+
+							<div class="col-sm-8">
+
+								<p class="form-control-static value" ng-bind="entity.data[entityName.toLowerCase()+'ID']"></p>
+
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-sm-4 title"
+								style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'remoteid'">Remote ID</label>
+
+							<div class="col-sm-8">
+
+								<p class="form-control-static value" ng-bind="entity.data.remoteID"></p>
+
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-sm-4 title"
+								style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'createddatetime'">Created Date Time</label>
+
+							<div class="col-sm-8">
+
+								<p class="form-control-static value" ng-bind="entity.data.createdDateTime"></p>
+
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-sm-4 title"
+								style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'createdby'">Created By</label>
+
+							<div class="col-sm-8">
+
+								<p class="form-control-static value" ng-bind="entity.data.createdBy"></p>
+
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-sm-4 title"
+								style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'modifieddatetime'">Modified Date Time</label>
+
+							<div class="col-sm-8">
+
+								<p class="form-control-static value" ng-bind="entity.data.modifiedDateTime"></p>
+
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-sm-4 title"
+								style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'modifiedby'">Modified By</label>
+
+							<div class="col-sm-8">
+
+								<p class="form-control-static value" ng-bind="entity.data.modifiedBy"></p>
+
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class="table-responsive">
+					<table
+						class="table table-bordered table-hover">
+						<tbody>
+
+							<tr>
+								<td colspan="5" style="text-align: center;"><em>There
+										is no audit history available</em></td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+
+
+			</div>
+
+			</content>
+		</div>
+
+	</div>
+</div>
+
+
+	</div>
+</section>

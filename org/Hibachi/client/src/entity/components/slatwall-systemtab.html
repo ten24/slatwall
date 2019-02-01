@@ -1,0 +1,14 @@
+<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = !openTab">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			<span >System</span> <i
+				class="s-accordion-toggle-icon fa fa-caret-left"></i>
+		</h4>
+	</div>
+</a>
+<div id="collapseSystem" class="panel-collapse"
+	style="height: 0px;">
+	<content class="s-body-box" ng-if="openTab">
+		<ng-include src="tabPartialPath+'slatwall-systemtab.html'"></ng-include>
+	</content>
+</div>

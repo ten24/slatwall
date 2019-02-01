@@ -1,0 +1,242 @@
+<div class="s-detail-content-wrapper">
+    <div id="collapse2" class="panel-collapse collapse in">
+       <sw-tab-group>
+           <!-- RB support here -->
+           <sw-tab-content data-name="Basic">               
+                <!-- Attempting to incorporate needs into existing listing -->
+                <sw-listing-display
+                        data-multi-slot="true"
+                        data-edit="true"
+                        data-has-search="true"
+                        data-is-angular-route="false"
+                        data-angular-links="false"
+                        data-has-action-bar="false"
+                        data-child-property-name="bundledSkus"
+                        data-record-detail-action="admin:entity.detailsku"
+                        data-base-entity-name="Sku">
+                        <sw-listing-columns>
+                            <sw-listing-column 
+                                data-property-identifier="skuCode" 
+                                data-fallback-property-identifiers="skuCode,bundledSku_skuCode" 
+                                data-cell-view="swSkuCodeEdit"
+                                tdclass="primary">
+                            </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="calculatedSkuDefinition" 
+                                data-fallback-property-identifiers="calculatedSkuDefinition,bundledSku_calculatedSkuDefinition">
+                            </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="price"
+                                data-is-visible="true"
+                                data-cell-view="swSkuPriceEdit">
+                            </sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="calculatedQATS">
+                            </sw-listing-column>
+                            <sw-listing-column
+                                data-property-identifier="calculatedQOH"
+                                data-is-visible="swPricingManager.trackInventory"
+                                data-cell-view="swSkuStockAdjustmentModalLauncher">
+                            </sw-listing-column>
+                            <sw-listing-column
+                                data-property-identifier="imageFile"
+                                data-title="Image"
+                                data-cell-view="swImageDetailModalLauncher"
+                                data-tdclass="s-image"
+                                data-is-visible="true">
+                            </sw-listing-column>
+                            <sw-listing-column
+                                data-property-identifier="defaultSku"
+                                data-title="Default"
+                                data-is-visible="true"
+                                data-cell-view="swDefaultSkuRadio"
+                                tdclass="s-table-select"
+                                >
+                            </sw-listing-column>   
+                        </sw-listing-columns>
+                        
+                        <sw-collection-configs>
+                            <sw-collection-config 
+                                data-entity-name="Sku"
+                                data-parent-directive-controller-as-name="swListingDisplay"
+                                data-parent-deferred-property="singleCollectionDeferred"
+                                data-collection-config-property="collectionConfig">
+                                <sw-collection-columns>
+                                    <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="bundleFlag" data-is-searchable="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="skuCode" data-is-searchable="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="calculatedSkuDefinition" data-is-searchable="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="calculatedQATS" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="calculatedQOH" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="price" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="product.productID"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="product.defaultSku.skuID"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="imageFileName" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="imageFile" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="imagePath" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="currencyCode" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="bundledSkusCount" data-is-searchable="false"></sw-collection-column>
+                                </sw-collection-columns>
+                                <sw-collection-filters>
+                                    <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swPricingManager.productId}}"></sw-collection-filter>
+                                </sw-collection-filters>
+                            </sw-collection-config>
+                        </sw-collection-configs>
+                        
+                        <sw-expandable-row-rules>
+                            <sw-listing-expandable-rule data-filter-property-identifier="bundleFlag" 
+                                                        data-filter-comparison-operator="=" 
+                                                        data-filter-comparison-value="Yes"> 
+                                <sw-config>
+                                    <sw-collection-config 
+                                        data-entity-name="SkuBundle"
+                                        data-parent-directive-controller-as-name="swListingExpandableRule"
+                                        data-parent-deferred-property="hasChildrenCollectionConfigDeferred"
+                                        data-collection-config-property="childrenCollectionConfig"
+                                        data-all-records="true">
+                                        <sw-collection-columns>
+                                            <sw-collection-column data-property-identifier="skuBundleID"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="bundledSku.skuID"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="bundledSku.skuCode"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="bundledSku.calculatedSkuDefinition"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="bundledSku.price"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="bundledSku.currencyCode"></sw-collection-column>
+                                        </sw-collection-columns>
+                                        <sw-collection-filters>
+                                            <sw-collection-filter data-property-identifier="sku.skuID" data-comparison-operator="=" data-comparison-value="${skuID}"></sw-collection-filter>
+                                        </sw-collection-filters>
+                                    </sw-collection-config>
+                                </sw-config>
+                            </sw-listing-expandable-rule>
+                        </sw-expandable-row-rules>
+                        <sw-disabled-row-rules>
+                            <sw-listing-disable-rule  data-filter-property-identifier="skuBundleID" 
+                                                      data-filter-comparison-operator="is not" 
+                                                      data-filter-comparison-value="null">
+                            </sw-listing-disable-rule>
+                        </sw-disabled-row-rules> 
+                        <sw-listing-save-action>
+                            <sw-listing-row-save>
+                            </sw-listing-row-save>
+                        </sw-listing-save-action>
+                </sw-listing-display>
+           </sw-tab-content>
+           <sw-tab-content data-name="Pricing">  
+               <!-- Attempting to incorporate needs into existing listing -->
+                <sw-listing-display
+                        data-multi-slot="true"
+                        data-edit="true"
+                        data-has-search="true"
+                        data-is-angular-route="false"
+                        data-angular-links="false"
+                        data-has-action-bar="false"
+                        data-child-property-name="bundledSkus"
+                        data-base-entity-name="Sku"
+                        data-base-entity-id="{{swPricingManager.productId}}"
+                        data-administrative-count="1"
+                                    >
+                        <sw-listing-columns>
+                            <sw-listing-column 
+                                data-property-identifier="skuCode" 
+                                data-fallback-property-identifiers="skuCode,sku_skuCode" 
+                                tdclass="primary"
+                            ></sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="calculatedSkuDefinition"
+                            ></sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="minQuantity" 
+                                data-title="Minimum Quantity"
+                                data-cell-view="swSkuPriceQuantityEdit"
+                            ></sw-listing-column>
+                            <sw-listing-column 
+                                data-property-identifier="maxQuantity" 
+                                data-title="Maximum Quantity"
+                                data-cell-view="swSkuPriceQuantityEdit"
+                            >
+                            </sw-listing-column>
+                            <sw-listing-column
+                                data-property-identifier="price"
+                                data-is-visible="true"
+                                data-cell-view="swSkuPricesEdit"
+                                data-header-view="swSkuCurrencySelector"
+                            >
+                            </sw-listing-column>
+                        </sw-listing-columns>
+                        
+                        <sw-collection-configs>
+                            <sw-collection-config 
+                                data-entity-name="Sku"
+                                data-parent-directive-controller-as-name="swListingDisplay"
+                                data-parent-deferred-property="singleCollectionDeferred"
+                                data-collection-config-property="collectionConfig"
+                            >
+                                <sw-collection-columns>
+                                    <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="price"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="bundleFlag" data-is-searchable="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="skuCode" data-is-searchable="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="calculatedSkuDefinition" data-is-searchable="true"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="imageFileName" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="imageFile" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="imagePath" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="eligibleCurrencyCodeList" data-is-searchable="false"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="currencyCode"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="skuPricesCount" data-is-searchable="false"></sw-collection-column>
+                                </sw-collection-columns>
+                                <sw-collection-filters>
+                                    <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swPricingManager.productId}}"></sw-collection-filter>
+                                </sw-collection-filters>
+                            </sw-collection-config>
+                        </sw-collection-configs>
+                        
+                         <sw-expandable-row-rules>
+                            <sw-listing-expandable-rule data-filter-property-identifier="skuPricesCount" data-filter-comparison-operator=">" data-filter-comparison-value="0" data-refresh-children-event="updateSkuPrices" > 
+                                <sw-config>
+                                    <sw-collection-config 
+                                        data-entity-name="SkuPrice"
+                                        data-parent-directive-controller-as-name="swListingExpandableRule"
+                                        data-parent-deferred-property="hasChildrenCollectionConfigDeferred"
+                                        data-collection-config-property="childrenCollectionConfig"
+                                        data-all-records="true"
+                                    >
+                                        <sw-collection-columns>
+                                            <sw-collection-column data-property-identifier="skuPriceID"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sku.skuID"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sku.skuCode"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sku.calculatedSkuDefinition"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sku.eligibleCurrencyCodeList" data-is-searchable="false"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="minQuantity"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="maxQuantity"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="price"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="currencyCode"></sw-collection-column>
+                                        </sw-collection-columns>
+                                        <sw-collection-filters>
+                                            <sw-collection-filter data-property-identifier="sku.skuID" data-comparison-operator="=" data-comparison-value="${skuID}"></sw-collection-filter>
+                                            <sw-collection-filter data-property-identifier="currencyCode" data-comparison-operator="=" data-comparison-value="{{swPricingManager.product.defaultSku_currencyCode}}"></sw-collection-filter>
+                                        </sw-collection-filters>
+                                    </sw-collection-config>
+                                </sw-config>
+                            </sw-listing-expandable-rule>
+                        </sw-expandable-row-rules> 
+                        
+                        <sw-listing-save-action>
+                            <sw-listing-row-save>
+                            </sw-listing-row-save>
+                        </sw-listing-save-action>
+                        <sw-listing-add-action>
+                            <sw-add-sku-price-modal-launcher data-default-currency-only="true">
+                                <a href="#" title="Add Price" class="btn btn-default btn-xs" data-target="#">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </sw-add-sku-price-modal-launcher>
+                        </sw-listing-add-action>  
+                        <sw-listing-delete-action>
+                            <sw-delete-sku-price-modal-launcher>
+                            </sw-delete-sku-price-modal-launcher>
+                        </sw-listing-delete-action>  
+                </sw-listing-display>
+           </sw-tab-content>
+       </sw-tab-group>
+    </div>
+</div>

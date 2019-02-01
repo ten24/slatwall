@@ -1,0 +1,78 @@
+<sw-modal-launcher data-modal-name="{{swImageDetailModalLauncher.name}}"
+                   data-title="Image Detail"
+                   data-save-action="swImageDetailModalLauncher.saveAction"
+                   data-cancel-action="swImageDetailModalLauncher.cancelAction"
+                   >
+    <sw-modal-button>
+        <!-- Load Sku Image Here -->
+        <div ng-if="swImageDetailModalLauncher.sku" class="table-image-wrapper" style="background-image: URL({{swImageDetailModalLauncher.sku.data.imagePath}})">
+            <!--- Image is a background image set in parent div --->
+        </div>
+    </sw-modal-button>
+    <sw-modal-content>
+        <sw-form ng-if="swImageDetailModalLauncher.sku"
+                 data-object="swImageDetailModalLauncher.sku"
+                 data-name="{{swImageDetailModalLauncher.name}}">
+            <div class="row">
+
+                <!--<div class="col-md-12 s-alert-message" ng-show="swImageDetailModalLauncher.numberOfSkusWithImageFile > 0">
+                    <div class="alert alert-info" id="j-multi-sku-message">
+                        <strong>{{swImageDetailModalLauncher.numberOfSkusWithImageFile}} skus with the filename: {{swImageDetailModalLauncher.imageFile}}  will be effected.</strong>
+                    </div>
+                    <div class="alert alert-info" id="j-custom-sku-message" style="display:none;">
+                        You have choosen to overwrite the defualt image for sku <strong>OTB_DrinkingTeam-1826-1</strong>.
+                    </div>
+                </div>-->
+
+                <div class="alert alert-info popup-alert-message" id="j-multi-sku-message">
+                    <strong>( {{swImageDetailModalLauncher.skusAffectedCount}} ) skus with the same option value will be effected.</strong>
+                    <div>
+                        <ul>
+                            <li ng-repeat="option in swImageDetailModalLauncher.imageOptions">{{ option.data.optionGroup_optionGroupName }} : {{ option.data.optionName }} ( {{swImageDetailModalLauncher.skusAffectedCount}} )</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-xs-4 s-image-edit">
+                    <sw-sku-thumbnail data-sku-data="swImageDetailModalLauncher.sku.data"
+                                      data-image-only="true">
+                    </sw-sku-thumbnail>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" ng-if="!swImageDetailModalLauncher.customImageNameFlag" id="j-standard-image-name">
+                                <label for="" class="control-label">Image Name</label>
+                                <input type="text" name="imagefile" ng-model="swImageDetailModalLauncher.sku.data.imageFile" class="form-control" disabled>
+                            </div>
+                            <div class="form-group" ng-if="swImageDetailModalLauncher.customImageNameFlag" id="j-custom-image-name">
+                                <label for="" class="control-label">Custom Image Name</label>
+                                <input type="text" name="customimagename" ng-model="swImageDetailModalLauncher.imageFileName"  class="form-control">
+                            </div>
+                            <div class="s-checkbox" id="j-toggle-image-type">
+                                <input type="checkbox" name="imagetoggle" ng-model="swImageDetailModalLauncher.customImageNameFlag" id="checkbox{{swImageDetailModalLauncher.sku.data.skuCode}}">
+                                <label for="checkbox{{swImageDetailModalLauncher.sku.data.skuCode}}"> Overwrite default image name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <sw-property-display
+                                data-object="swImageDetailModalLauncher.sku"
+                                data-name="uploadFile"
+                                data-label="Image File"
+                                data-property-identifier="uploadFile"
+                                data-field-type="file"
+                                data-binary-file-target="imagePath"
+                                data-raw-file-target="uploadFile"
+                                data-editing="true"
+                                data-editable="true"
+                                data-event-announcers="change"
+                                data-on-change-event="{{swImageDetailModalLauncher.imageFileUpdateEvent}}"
+                            >
+                            </sw-property-display>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </sw-form>
+    </sw-modal-content>
+</sw-modal-launcher>

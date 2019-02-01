@@ -1,0 +1,21 @@
+<div class="row s-header-bar">
+  <div class="col-md-7"><h1 ng-bind="headerTitle"></h1></div>
+  <div class="col-md-5 s-header-nav">
+    <ul class="nav nav-tabs" role="tablist">
+    	<li ng-repeat="tab in tabArray" role="tab" ng-class="{active:tab.isActive}" >
+    		<a href="##j-{{tab.id}}" ng-bind="tab.tabTitle" data-toggle="tab" ng-click="selectedTabChanged(tab)"></a>
+    	<li>
+     <!-- <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
+      <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount"></span>)</span></a></li>
+      <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>-->
+    </ul>
+  </div>
+</div>
+
+<div class="row s-options">
+  <div class="tab-content" id="j-property-box">
+    <div ng-repeat="tab in tabArray" class="tab-pane" ng-class="{active:tab.isActive}" id="j-{{tab.id}}">
+    	<span sw-directive directive="tab.directive"></span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+{
+	"properties":{
+		"vendor":								[{"contexts":"save","required":true}],
+		"vendorOrderType":						[{"contexts":"save","required":true}],
+		"vendorOrderStatusType":				[{"contexts":"save","required":true}],
+		"stockReceivers":						[{"contexts":"delete","maxCollection":0}],
+		"vendorOrderItems":						[{"contexts":"receiveStock","minCollection":1}]
+	}
+}

@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"stockAdjustmentDelivery":		[{"contexts":"save","required":true}],
+		"stockAdjustmentItem":			[{"contexts":"save","required":true}],
+		"stock":						[{"contexts":"save","required":true}]
+	}
+}

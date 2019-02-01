@@ -1,0 +1,16 @@
+<div class="s-tab-table">
+    <div class="row s-tabs">
+        <ul class="nav nav-tabs" role="tablist"> 
+            <li role="presentation" 
+                ng-repeat="tab in swTabGroup.tabs track by $index"
+                ng-class="{'active':tab.active}" 
+                ng-show="!tab.hide">
+                <a ng-click="swTabGroup.switchTab(tab)" role="tab" data-toggle="tab" aria-controls="{{tab.name}}" aria-expanded="true"><span ng-bind="tab.name"></span></a>
+            </li> 
+        </ul> 
+    </div>
+    <div class="tab-content">
+        <!-- Tab Content Here -->
+        <ng-transclude></ng-transclude>
+    </div> 
+</div>

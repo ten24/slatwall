@@ -1,0 +1,38 @@
+<td>
+	<i ng-click="toggleChildContent(contentData)" style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }} s-listing-arrow"></i> <a href="http://{{contentData.site_domainNames}}/{{contentData.urlTitlePath}}" class="s-contents-page-title"><span ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></span></a>
+</td>
+<!--<td ng-bind="contentData.contentTemplateFile"></td>-->
+<td ng-bind="contentData.allowPurchaseFlag"></td>
+<td ng-bind="contentData.productListingPageFlag"></td>
+<td ng-bind="contentData.activeFlag"></td>
+
+<!--<td><i class="fa fa-caret-right"></i></td>-->
+
+<!--<td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="contentData[column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length).replace('.','_')]" ng-show="column.isVisible"></td>-->
+   
+<td class="s-edit-elements">
+  <ul class="list-unstyled list-inline">
+    <li ng-if="contentData.contentID">
+    	<!--<a sw-href="{{'/entity/Content/'+contentData.contentID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-eye-open"></i>
+    	</a>-->
+    	<!--<a sw-href="{{'/entity/Content/null?parentContentID='+contentData.contentID+'&siteID='+contentData.site_siteID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-plus-sign"></i>
+    	</a>-->
+    	<a href="?slatAction=entity.editContent&contentID={{contentData.contentID}}" class="btn btn-default btn-xs" title="Edit Content">
+    		<i class="fa fa-pencil"></i>
+    	</a>
+
+    	<a 	title="Create Content" 
+    		class="adminentitypreprocessorder btn btn-default btn-xs modalload" 
+    		target="_self" href="?slatAction=entity.preprocesscontent&amp;processContext=create&amp;parentContentID={{contentData.contentID}}&amp;siteID={{contentData.site_siteID}}" 
+    		data-toggle="modal" 
+    		data-target="#adminModal">
+    		<i class="fa fa-plus"></i>
+    	</a>
+    	<!--<a href="?slatAction=entity.detailContent&contentID={{contentData.contentID}}&parentContentID={{contentData.contentID}}+'&siteID={{contentData.site_siteID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-plus-sign"></i>
+    	</a>-->
+    </li>
+  </ul>
+</td>

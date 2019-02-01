@@ -1,0 +1,43 @@
+<div class="s-md-content-block-inner">
+	<div class="s-title">
+		Balance
+		<div class="dropdown s-action">
+			<a href="##" class="dropdown-toggle hide" id="dropdownMenu" data-toggle="dropdown">
+				<i class="fa fa-ellipsis-h" title="actions"></i>
+			</a>
+			<ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
+				<li><a href="#">Add Funds</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="s-body">
+		<ul class="list-unstyled">
+			<li>
+				<div class="row s-line-item s-strong">
+					<div class="col-xs-6 s-title">Remaining Balance:</div>
+					<div class="col-xs-6 s-value" ng-bind-html="swGiftCardBalance.currentBalance | swcurrency:swGiftCardBalance.giftCard.currencyCode"></div>
+				</div>
+			</li>
+	
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title">Original Balance:</div>
+					<div class="col-xs-6 s-value" ng-bind-html="swGiftCardBalance.initialBalance | swcurrency:swGiftCardBalance.giftCard.currencyCode"></div>
+				</div>
+			</li>
+	
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-12">
+						<div class="progress">
+							<div class="progress-bar" role="progressbar" aria-valuenow="{{swGiftCardBalance.balancePercentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{swGiftCardBalance.balancePercentage}}%">
+								{{swGiftCardBalance.balancePercentage}}% </div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+</div>
