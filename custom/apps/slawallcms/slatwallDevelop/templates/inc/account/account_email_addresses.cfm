@@ -1,7 +1,8 @@
 <!--- This import allows for the custom tags required by this page to work --->
 <cfimport prefix="sw" taglib="../../../tags" />
+<cfinclude template="account_email_addresses_collection.cfm" />
+
 <cfoutput>
-	
 <!--- Success/Fail Messages --->
 <cfif $.slatwall.hasSuccessfulAction( "public:account.update" )>
 	<div class="alert alert-success alert-dismissible fade show">
@@ -22,24 +23,23 @@
 <table class="table table-condensed table-bordered table-striped table-responsive-sm">
 	<!--- Loop over all of the existing email addresses --->
 	<tbody>
-		
-		<cfloop array="#$.slatwall.getAccount().getAccountEmailAddressesSmartList().getRecords()#" index="accountEmailAddress">
+		<cfloop array="#local.emailAddresses#" index="emailAddress">
 			<cfset accountEmailAddressIndex++ />
-		<!--- Display Email Address --->
+			<!--- Display Email Address --->
 			<tr>
-				<td>#accountEmailAddress.getEmailAddress()#</td>
+				<td>#emailAddress['emailAddress']#</td>
 				<td>
-					<cfif accountEmailAddress.getAccountEmailAddressID() eq $.slatwall.getAccount().getPrimaryEmailAddress().getAccountEmailAddressID()>
+					<cfif emailAddress['accountEmailAddressID'] eq $.slatwall.getAccount().getPrimaryEmailAddress().getAccountEmailAddressID()>
 						<spqn class="badge badge-primary">
-							<i class="fa fa-check-circle" title="#accountEmailAddress.getEmailAddress()# is the primary email address for this account"></i> Primary
+							<i class="fa fa-check-circle" title="#emailAddress['emailAddress']# is the primary email address for this account"></i> Primary
 						</spqn>
 					<cfelse>
-						<a href="?slatAction=public:account.update&primaryEmailAddress.accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Set #accountEmailAddress.getEmailAddress()# as your primary email address">Set Primary</a>&nbsp;
+						<a href="?slatAction=public:account.update&primaryEmailAddress.accountEmailAddressID=#emailAddress['accountEmailAddressID']#" title="Set #emailAddress['emailAddress']# as your primary email address">Set Primary</a>&nbsp;
 					</cfif>
 				</td>
 				<td>
-					<cfif accountEmailAddress.getAccountEmailAddressID() neq $.slatwall.getAccount().getPrimaryEmailAddress().getAccountEmailAddressID()>
-						<a href="?slatAction=public:account.deleteAccountEmailAddress&accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Delete Email Address - #accountEmailAddress.getEmailAddress()#">Delete</a>
+					<cfif emailAddress['accountEmailAddressID'] neq $.slatwall.getAccount().getPrimaryEmailAddress().getAccountEmailAddressID()>
+						<a href="?slatAction=public:account.deleteAccountEmailAddress&accountEmailAddressID=#emailAddress['accountEmailAddressID']#" title="Delete Email Address - #emailAddress['emailAddress']#">Delete</a>
 					</cfif>
 				</td>
 			</tr>
