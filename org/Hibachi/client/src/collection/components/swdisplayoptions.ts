@@ -94,11 +94,18 @@ class SWDisplayOptions{
                     var propertyIdentifier = selectedProperty.propertyIdentifier;
                     var title = '';
                     var propertyIdentifierArray = propertyIdentifier.replace(/^_/,'').split(/[._]+/);
+                    var actualPropertyIdentifier = propertyIdentifierArray.slice(1,propertyIdentifierArray.length).join('.');
                     var currentEntity;
                     var currentEntityInstance;
                     var prefix = 'entity.';
                     if(selectedProperty.$$group == "attribute"){
                         return selectedProperty.displayPropertyIdentifier;
+                    }
+                    //if is aggregate of an object
+                    if(selectedProperty.aggregate && selectedProperty.cfc){
+                        var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(baseEntityCfcName,actualPropertyIdentifier);
+                        title = rbkeyService.getRBKey(prefix+lastEntityName+'_plural');
+                        return title;
                     }
 
                     angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key:number){
@@ -118,7 +125,6 @@ class SWDisplayOptions{
                             }
                         }
                     });
-
 
                     return title;
                 };
