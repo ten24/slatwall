@@ -162,6 +162,11 @@ component  extends="HibachiService" accessors="true" {
 				name='404',
 				urlTitle="404",
 				contentTemplateFile="default.cfm"
+			},
+			{
+				name='Missing Partial',
+				urlTitle="missing-partial",
+				contentTemplateFile="slatwall-missing-partial.cfm"
 			}
 		];
 
@@ -234,7 +239,7 @@ component  extends="HibachiService" accessors="true" {
 		createSlatwallTemplatesChildren(slatwallTemplatesContent,arguments.site);
 	}
 
-	public void function deploySite(required any site, boolean createContent=true) {
+	public void function deploySite(required any site, boolean createContent=true, boolean createTemplates=true) {
 		// copy skeletonsite to /apps/{applicationCodeOrID}/{siteCodeOrID}/
 		if(!directoryExists(arguments.site.getSitePath())){
 			directoryCreate(arguments.site.getSitePath());
@@ -249,7 +254,16 @@ component  extends="HibachiService" accessors="true" {
 		if(arguments.createContent){
 			createDefaultContentPages(arguments.site);
 		}
-
+		if(!arguments.createTemplates){
+			var siteTemplatesPath = arguments.site.getSitePath()&'templates/'; 
+			if(DirectoryExists(siteTemplatesPath)){ 
+				DirectoryDelete(siteTemplatesPath,true); 
+			}
+			var siteTagsPath = arguments.site.getSitePath()&'tags/'; 
+			if(DirectoryExists(siteTagsPath)){ 
+				DirectoryDelete(siteTagsPath,true); 
+			}
+		} 
 
 		// create 6 content nodes for this site, and map to the appropriate templates
 			// home (urlTitle == '') -> /custom/apps/slatwallcms/site1/templates/home.cfm
@@ -270,6 +284,15 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: DAO Passthrough ===========================
 
+	public string function getSiteCodes(string delimiter=','){
+		var cacheKey = 'getSiteCodes_'&ToBase64(arguments.delimiter);
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)) {
+			getService('HibachiCacheService').setCachedValue(cacheKey,getDao('siteDao').getSiteCodes(arguments.delimiter));
+		}
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
+	}
+
+
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
@@ -287,6 +310,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 
 	public any function saveSite(required any site, struct data={}){
+		getService('HibachiCacheService').resetCachedKeyByPrefix('getSiteCodes');
 		//get new flag before persisting
 		var newFlag = arguments.site.getNewFlag();
 
@@ -310,9 +334,12 @@ component  extends="HibachiService" accessors="true" {
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
-
+			var createTemplatesFlag = true; 
+			if(structKeyExists(data, "useAppTemplatesFlag") && arguments.data.useAppTemplatesFlag){
+				createTemplatesFlag = !arguments.data.useAppTemplatesFlag;
+			}
 			//deploy skeletonSite
-			deploySite(arguments.site);
+			deploySite(site=arguments.site,createContent=true,createTemplates=createTemplatesFlag);
 			arguments.site = super.save(arguments.site, arguments.data);
 			getDao('siteDao').flushOrmSession();
 

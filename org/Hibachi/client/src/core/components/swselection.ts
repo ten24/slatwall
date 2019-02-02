@@ -22,6 +22,10 @@ class SWSelectionController{
         }else{
             this.toggleValue = selectionService.hasSelection(this.selectionid,this.selection);
         }
+        
+        if(this.isRadio && this.toggleValue){
+            this.toggleValue = this.selection;
+        }
 
         if(this.isRadio && this.toggleValue){
             this.toggleValue = this.selection;

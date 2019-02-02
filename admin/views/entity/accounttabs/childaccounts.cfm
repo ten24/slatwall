@@ -52,10 +52,13 @@ Notes:
 
 <cfparam name="rc.account" type="any" />
 
-<!---<cfdump var="#rc.account.getChildAccountRelationships()#" top=2><cfabort>--->
 <hb:HibachiListingDisplay smartList="#rc.account.getChildAccountRelationshipsSmartList()#"
-						  recordDetailAction="admin:entity.detailaccountRelationShip"
-						  recordEditAction="admin:entity.editaccountRelationShip"
+						  recordDetailAction="admin:entity.detailaccount"
+						  recordEditAction="admin:entity.editaccount"
+						  recordEditActionProperty="childAccount.accountID"
+						  recordDetailActionProperty="childAccount.accountID"
+						  recordDeleteAction="admin:entity.deleteaccountrelationship"
+						  recordDeleteQueryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
 						  >
 
 	<hb:HibachiListingColumn propertyIdentifier="childAccount.firstName" />
@@ -69,5 +72,5 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="accountRelationshipRole.accountRelationshipRoleName" />
 	<hb:HibachiListingColumn propertyIdentifier="approvalFlag" />
 </hb:HibachiListingDisplay>
-<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&parentAccountID=#rc.account.getAccountID()#&processcontext=create" modal=true />
+<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&parentAccountID=#rc.account.getAccountID()#&processcontext=addaccountrelationship" />
 

@@ -57,6 +57,7 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="entityQueueDateTime" ormtype="timestamp";
 	property name="entityQueueData" ormtype="string" length="8000";
 	property name="logHistoryFlag" ormtype="boolean" default="0";
+	property name="mostRecentError" ormtype="string" length="8000";
 
 	// Related Object Properties (many-to-one)
 	

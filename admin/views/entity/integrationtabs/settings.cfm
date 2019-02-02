@@ -53,7 +53,7 @@ Notes:
 
 <!--- Dynamic Settings --->
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
+	<swa:SlatwallSettingTable showInheritance="#rc.integration.getIntegrationCFC().getAllowSiteSpecificSettingsFlag()#" includeSettingNamesOnlyForSites="#rc.integration.getIntegrationCFC().getAllowedSiteSettingNamesPrefixed()#" showMultiSite="#rc.integration.getIntegrationCFC().getAllowSiteSpecificSettingsFlag()#">
 		<cfloop list="#listSort(structKeyList(rc.integration.getSettings()), "textnocase")#" index="local.settingName">
 			<swa:SlatwallSetting settingName="integration#rc.integration.getIntegrationPackage()##local.settingName#" settingObject="#rc.integration#" />
 		</cfloop>

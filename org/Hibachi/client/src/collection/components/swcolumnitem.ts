@@ -28,12 +28,13 @@ class SWColumnItem{
 		collectionPartialsPath,
         observerService
 	){
-
+		
 		return {
 			restrict: 'A',
 			require:{
                 swDisplayOptions:"?^swDisplayOptions",
-				swListingControls:"?^swListingControls"
+				swListingControls:"?^swListingControls",
+				swListingDisplay:"?^swListingDisplay"
             },
 			scope:{
 				column:"=",
@@ -45,6 +46,32 @@ class SWColumnItem{
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
 			link: function(scope, element,attrs,controller,observerService){
+				
+				scope.getReportLabelColor=(chart)=>{
+					if(scope.column.aggregate && chart.config.data.datasets){
+						for(let i=0;i<chart.config.data.datasets.length;i++){
+							var dataset = chart.config.data.datasets[i];
+							if(dataset.label==scope.column.title){
+								let color = '#FF0000';
+								console.log(dataset);
+								color = dataset.backgroundColor;
+								scope.column.style = {
+									display:'inline-block',
+									width: '40px',
+									height: '10px',
+									'background-color': color,
+									margin: '0 20px',
+									'border-radius': '6px',
+									'margin-top': '15px',
+									'margin-left': '40px'
+								};
+								break;
+							}
+						}
+					}
+				}				
+				controller.swListingDisplay.observerService.attach(scope.getReportLabelColor,'swListingReport_DrawChart',controller.swListingDisplay.tableID);
+				
                 if(!scope.saveCollection && controller.swListingControls){
 
                     scope.saveCollection = ()=>{
@@ -79,7 +106,7 @@ class SWColumnItem{
 						priority:0
 					};
 				}
-
+				
 				scope.toggleVisible = function(column){
 					if(angular.isUndefined(column.isVisible)){
 						column.isVisible = false;

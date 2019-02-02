@@ -18,6 +18,11 @@ abstract class BaseEntityService extends BaseObject{
         this.utilityService = utilityService;
         this.$hibachi = $hibachi;
         this.$injector = $injector;
+        //make case insensitive
+        for(var key in Entities){
+            Entities[key.toLowerCase()] = Entities[key];
+        }
+        
         if(!this.objectName){
             this.objectName = this.baseObjectName;
         }
@@ -57,9 +62,9 @@ abstract class BaseEntityService extends BaseObject{
             }else if(type === 'Process'){
                 Barrell = Processes;
             }
-            if(Barrell[objectName]){
-                this.utilityService.extend(Barrell[objectName],baseObject);
-                var entity = new Barrell[objectName](this.$injector);
+            if(Barrell[objectName.toLowerCase()]){
+                this.utilityService.extend(Barrell[objectName.toLowerCase()],baseObject);
+                var entity = new Barrell[objectName.toLowerCase()](this.$injector);
             }else{
                 var entity = new baseObject();
                 //throw('need to add '+ objectName+' class');

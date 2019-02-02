@@ -51,7 +51,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	// Persistent Properties
 	property name="emailTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="emailTemplateName" ormtype="string";
-	property name="emailTemplateObject" ormtype="string" hb_formFieldType="select";
+	property name="emailTemplateObject" ormtype="string" hb_formFieldType="select" index="PI_EMAIL_TEMPLATE_OBJECT";
 	property name="emailTemplateFile" ormtype="string" hb_formFieldType="select";
 	property name="emailBodyHTML" ormtype="string" length="4000";
 	property name="emailBodyText" ormtype="string" length="4000";

@@ -61,4 +61,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return getAccount().getPasswordResetID();
 	}
 	
+    public boolean function getIsTokenExpiredFlag(required swprid){
+		var account = getHibachiScope().getService('HibachiService').getAccountByAccountID( left(swprid, 32) );
+		var isTokenExpiredFlag = true;
+	
+		if(!isNull(account)){
+			var accountID = account.getAccountID();
+			var accountAuthentication = getHibachiScope().getDAO('accountDAO').getPasswordResetAccountAuthentication(accountID);
+
+			if (!isNull(accountAuthentication)){
+				var passwordResetToken = lcase("#accountID##hash(accountAuthentication.getAccountAuthenticationID() & accountID)#");
+				isTokenExpiredFlag = passwordResetToken != url.swprid;
+			}
+		}
+		return isTokenExpiredFlag;
+	}
+	
 }

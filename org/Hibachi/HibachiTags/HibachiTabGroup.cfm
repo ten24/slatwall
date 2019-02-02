@@ -6,12 +6,17 @@
 <cfparam name="attributes.section" type="string" default="#request.context.fw.getSection( request.context[ request.context.fw.getAction() ])#">
 <cfparam name="attributes.tabLocation" type="string" default="left" />
 
+
 <cfif (not isObject(attributes.object) || not attributes.object.isNew()) and (not structKeyExists(request.context, "modal") or not request.context.modal)>
 	<cfif thisTag.executionMode is "end">
 
 		<cfparam name="thistag.tabs" default="#arrayNew(1)#" />
 		<cfparam name="activeTab" default="tabSystem" />
-
+		
+		<cfif arrayLen(thistag.tabs)>
+			<cfset activeTab = thistag.tabs[1].tabid />
+		</cfif>
+		
 		<cfloop array="#thistag.tabs#" index="tab">
 			<!--- Make sure there is a view --->
 			<cfif not len(tab.view) and len(tab.property)>
@@ -39,19 +44,19 @@
 			</cfif>
 
 			<cfif not len(tab.tabcontent)>
-				<cfif fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
-					<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
-				<cfelseif len(tab.property)>
-					<cfsavecontent variable="tab.tabcontent">
-						<hb:HibachiPropertyDisplay object="#attributes.object#" property="#tab.property#" edit="#request.context.edit#" displaytype="plain" />
-					</cfsavecontent>
+				<cfif !tab.lazyLoad || activeTab eq tab.tabid>
+					<cfif fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
+						<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
+					<cfelseif len(tab.property)>
+						<cfsavecontent variable="tab.tabcontent">
+							<hb:HibachiPropertyDisplay object="#attributes.object#" property="#tab.property#" edit="#request.context.edit#" displaytype="plain" />
+						</cfsavecontent>
+					</cfif>
 				</cfif>
 			</cfif>
 		</cfloop>
 
-		<cfif arrayLen(thistag.tabs)>
-			<cfset activeTab = thistag.tabs[1].tabid />
-		</cfif>
+		
 
 		<cfoutput>
 			<div class="row">
@@ -67,7 +72,7 @@
 					<div class="row collapse navbar-collapse" id="main-tab-nav">
 						<ul class="nav nav-tabs s-negative">
 							<cfloop array="#thistag.tabs#" index="tab">
-								<li <cfif activeTab eq tab.tabid>class="active"</cfif>>
+								<li <cfif activeTab eq tab.tabid>class="active"<cfelseif tab.lazyLoad> onclick='getTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
 									<a href="###tab.tabid#" data-toggle="tab">
 										<span class="s-title">#tab.text# </span>
 										<cfif len(tab.count) and tab.count gt 0> 

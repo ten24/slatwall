@@ -25,7 +25,7 @@
                 </div>-->
 
                 <div class="alert alert-info popup-alert-message" id="j-multi-sku-message">
-                    <strong>( {{swImageDetailModalLauncher.skusAffectedCount}} ) skus with the same option value will be effected.</strong>
+                    ({{swImageDetailModalLauncher.skusAffectedCount}}) skus with the same option value will be effected.
                     <div>
                         <ul>
                             <li ng-repeat="option in swImageDetailModalLauncher.imageOptions">{{ option.data.optionGroup_optionGroupName }} : {{ option.data.optionName }} ( {{swImageDetailModalLauncher.skusAffectedCount}} )</li>
@@ -42,7 +42,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" ng-if="!swImageDetailModalLauncher.customImageNameFlag" id="j-standard-image-name">
-                                <label for="" class="control-label">Image Name</label>
+                                <label for="" class="control-label">Image Name: </label>
                                 <input type="text" name="imagefile" ng-model="swImageDetailModalLauncher.sku.data.imageFile" class="form-control" disabled>
                             </div>
                             <div class="form-group" ng-if="swImageDetailModalLauncher.customImageNameFlag" id="j-custom-image-name">
@@ -57,6 +57,7 @@
                         <div class="col-md-6">
                             <sw-property-display
                                 data-object="swImageDetailModalLauncher.sku"
+                                data-class="form-control {{swImageDetailModalLauncher.sku.data.skuCode}}"
                                 data-name="uploadFile"
                                 data-label="Image File"
                                 data-property-identifier="uploadFile"

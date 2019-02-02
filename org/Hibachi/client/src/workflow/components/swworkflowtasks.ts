@@ -117,7 +117,7 @@ class SWWorkflowTasks{
 					logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue)
 					if((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)) ){
 						logger("scope.$watch", "Change to " + newValue)
-						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
+                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = '_' + newValue.charAt(0).toLowerCase() + newValue.slice(1) ;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}
 				});
@@ -159,16 +159,20 @@ class SWWorkflowTasks{
 					$log.debug(workflowTask);
 					scope.finished = false;
 					scope.workflowTasks.selectedTask = undefined;
-
 					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject, true);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
 							baseEntityName:scope.workflow.data.workflowObject,
-							baseEntityAlias:"_"+ scope.workflow.data.workflowObject
+							baseEntityAlias:"_"+ scope.workflow.data.workflowObject.toLowerCase()
 						};
 						metadataService.setPropertiesList(value,scope.workflow.data.workflowObject);
 						scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
 						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
+						
+						metadataService.setPropertiesList(value,"_"+ scope.workflow.data.workflowObject.toLowerCase());
+						scope.filterPropertiesList["_"+scope.workflow.data.workflowObject.toLowerCase()] = metadataService.getPropertiesListByBaseEntityAlias("_"+scope.workflow.data.workflowObject.toLowerCase());
+						metadataService.formatPropertiesList(scope.filterPropertiesList["_"+scope.workflow.data.workflowObject],scope.workflow.data.workflowObject.toLowerCase());
+						
 						scope.workflowTasks.selectedTask = workflowTask;
 
 					});

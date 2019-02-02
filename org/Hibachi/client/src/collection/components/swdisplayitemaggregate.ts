@@ -42,33 +42,35 @@ class SWDisplayItemAggregate{
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitemaggregate.html",
             link: function(scope, element,attrs,displayOptionsController){
                 scope.showDisplayItem = false;
-                scope.aggegate ={};
-                scope.aggegate.selectedAggregate = '';
+                scope.aggregate ={};
+                scope.aggregate.selectedAggregate = '';
 
                 scope.aggregateOptions = [
                     {id:'average', value:'Average'},
                     {id:'count', value:'Count'},
-                    {id:'sum', value:'Sum'}
+                    {id:'sum', value:'Sum'},
+                    {id:'min', value:'Min'},
+                    {id:'max', value:'Max'}
                 ];
 
                 scope.selectAggregate = function (aggregate) {
-                    if(aggregate == 'count'){
+                    if(aggregate == 'count' || scope.selectedProperty.ormtype){
                         scope.selectedProperty.aggregate = aggregate;
                         scope.selectedPropertyChanged({selectedProperty:scope.selectedProperty});
                     }else{
-                        scope.aggegate.currentObject = scope.selectedProperty.cfc;
+                        scope.aggregate.currentObject = scope.selectedProperty.cfc;
                     }
                 };
 
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
-                    selectedDisplayOption.aggregate = scope.aggegate.selectedAggregate;
-                    selectedDisplayOption.aggregateObject = scope.aggegate.currentObject;
+                    selectedDisplayOption.aggregate = scope.aggregate.selectedAggregate;
+                    selectedDisplayOption.aggregateObject = scope.aggregate.currentObject;
                     scope.selectedPropertyChanged({selectedProperty:selectedDisplayOption});
                 };
 
 
                 scope.$watch('selectedProperty', function(selectedProperty) {
-                    if(angular.isDefined(selectedProperty)){
+                    if(angular.isDefined(selectedProperty) && !selectedProperty.ormtype){
                         if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])){
                             var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
                             filterPropertiesPromise.then(function(value){

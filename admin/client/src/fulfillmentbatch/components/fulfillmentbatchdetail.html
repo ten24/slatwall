@@ -1,0 +1,510 @@
+<!-- Expand View -->
+
+<div class="row s-detail-content-wrapper" ng-show="swFulfillmentBatchDetailController.state.expandedFulfillmentBatchListing" ng-if="swFulfillmentBatchDetailController.state.lgFulfillmentBatchItemCollection" ng-cloak>
+	<div class="col-xs-12">
+		<div class="s-content-header">
+			<h2>Fulfillments</h2>
+			<span class="pull-right s-compress-icon s-detail-show-content" ng-click="swFulfillmentBatchDetailController.userToggleFulfillmentBatchListing()">
+                <a href="#" class="s-compress-table">
+                    <i class="fa fa-compress"></i>
+                </a>
+            </span>  
+        <sw-listing-display
+			data-collection-config="swFulfillmentBatchDetailController.state.lgFulfillmentBatchItemCollection"
+			data-edit="true"
+			data-has-search="true"
+			data-record-detail-action="admin:entity.detailorderfulfillment"
+			data-record-detail-action-id-property="orderFulfillmentID"
+			data-record-detail-action-id-key="orderFulfillment_orderFulfillmentID"
+			data-is-angular-route="false"
+			data-angular-links="true"
+			data-has-action-bar="true" 
+			data-persisted-collection-config="true"
+			data-multiselectable="true"
+			data-multi-slot="true"
+			data-multiselect-field-name="fulfillmentBatchItemID" 
+			data-name="fulfillmentBatchItemTable1">
+			<sw-listing-columns></sw-listing-columns>
+		</sw-listing-display>
+        </div> 
+	</div>
+</div>	
+<!--- Shrink View --->
+<div class="row s-detail-content-wrapper" ng-show="!swFulfillmentBatchDetailController.state.expandedFulfillmentBatchListing" ng-if="swFulfillmentBatchDetailController.state.smFulfillmentBatchItemCollection"  ng-cloak>
+	<div class="col-xs-4">
+    	<div class="s-content-header">
+		<h2>Fulfillments</h2>
+        <a href="#" class="s-expand-table pull-right" ng-click="swFulfillmentBatchDetailController.userToggleFulfillmentBatchListing()">
+            <i class="fa fa-expand"></i>
+        </a> 
+                        
+        <sw-listing-display
+			data-collection-config="swFulfillmentBatchDetailController.state.smFulfillmentBatchItemCollection"
+			data-edit="true"
+			data-has-search="false"
+			data-record-detail-action="admin:entity.detailorderfulfillment"
+			data-record-detail-action-id-property="orderFulfillmentID"
+			data-record-detail-action-id-key="orderFulfillment_orderFulfillmentID"
+			data-is-angular-route="false"
+			data-angular-links="true"
+			data-has-action-bar="true" 
+			data-persisted-collection-config="true" 
+			data-multiselectable="true"
+			data-multi-slot="true"
+			data-multiselect-field-name="fulfillmentBatchItemID" 
+			data-name="fulfillmentBatchItemTable2">	
+			<sw-listing-columns></sw-listing-columns>
+		<sw-listing-display>
+        </div>
+	</div>
+	
+	<!--- Stuff on this size here --->
+	<div class="col-xs-8 ">
+		<!--- Need to make this into lg size card and create event connection between listing and directive.  --->
+		<div class="s-detail-body s-arrow" ng-show="!swFulfillmentBatchDetailController.state.currentRecordOrderDetail">Loading Record . . .</div>
+        <div class="s-detail-body s-arrow" ng-show="swFulfillmentBatchDetailController.state.currentRecordOrderDetail">
+            <div class="s-content-header">
+                <h2>Order <a href="/?slataction=entity.detailOrder&orderID={{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_orderID']}}">#{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_orderNumber']}}</a></h2>
+                <span class="pull-right">
+                    
+                    <div class="btn-toolbar" role="toolbar"> 
+                        <div class="btn-group" role="group"> 
+                            <button class="btn btn-xs btn-default" role="button" data-toggle="collapse" data-target="#j-comments" aria-expanded="false" aria-controls="j-comments">{{swFulfillmentBatchDetailController.state.commentsCollection.length || 0}} <i class="fa fa-comment"></i></button>
+                        </div> 
+                        
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-print"></i>
+                            </button>
+                            <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresPrintList()" ng-show="swFulfillmentBatchDetailController.state.printCollection.length">
+                                <li ng-repeat="printTemplate in swFulfillmentBatchDetailController.state.printCollection" ng-if="swFulfillmentBatchDetailController.state.printCollection.length">
+                                	<a title="{{printTemplate.printTemplateName}}" class="adminentityprocessprint " target="_self" href="/?slatAction=entity.processprint&amp;printTemplateID={{printTemplate.printTemplateID}}&amp;printID=&processContext=addToQueue&orderFulfillmentID={{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID']}}&&redirectAction=admin:entity.detailfulfillmentbatch&fulfillmentBatchID={{swFulfillmentBatchDetailController.state.fulfillmentBatchId}}">{{printTemplate.printTemplateName}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-envelope"></i>
+                            </button>
+                             <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresEmailList()" ng-show="swFulfillmentBatchDetailController.state.emailCollection.length">
+                                <li ng-repeat="emailTemplate in swFulfillmentBatchDetailController.state.emailCollection" ng-if="swFulfillmentBatchDetailController.state.printCollection.length">
+                                	<a title="{{emailTemplate.emailTemplateName}}" class="adminentitypreprocessemail  modalload-fullwidth" target="_self" href="/?slatAction=entity.preprocessemail&emailTemplateID={{emailTemplate.emailTemplateID}}&redirectAction=admin:entity.detailfulfillmentbatch&processContext=addToQueue&fulfillmentBatchID={{swFulfillmentBatchDetailController.state.fulfillmentBatchId}}&orderFulfillmentID={{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID']}}" data-toggle="modal" data-target="#adminModal">
+										{{emailTemplate.emailTemplateName}}
+									</a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="btn-group" role="group">
+                        	<button class="btn btn-default btn-xs dropdown-toggle" sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Delete Fulfillment Batch Item?" message-text="Selecting yes will delete this batch item." callback="swFulfillmentBatchDetailController.deleteFulfillmentBatchItem()"><i class="fa fa-trash"></i></button>
+                            
+                        </div> 
+                        
+                        <div class="btn-group s-btn-dropdown" role="group"> 
+                            <button type="button" class="btn btn-primary btn-xs" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
+		                    	<span ng-hide="swFulfillmentBatchDetailController.state.loading">Fulfill</span> 
+		                    	<span ng-show="swFulfillmentBatchDetailController.state.loading"><i class="fa fa-spinner fa-pulse fa-fw"></i>Loading</span> 
+		                    </button>
+                            <ul class="dropdown-menu" role="menu">
+								<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>
+		                    </ul>
+                            <button type="button" class="btn btn-primary s-btn-select btn-xs" data-toggle="dropdown" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
+								<span class="caret"></span>
+		                    </button>
+                        </div>
+                    </div>
+                </span>
+            </div>
+            
+            <!--- Handle displaying / adding and deleting comments on the fulfillment item. --->
+            <ul class="collapse s-item-comments list-unstyled" id="j-comments"> 
+                
+                <li class="s-comment-item" ng-repeat="comment in swFulfillmentBatchDetailController.state.commentsCollection" style="padding: 15px;border-bottom:1px dotted #ccc">
+                    <div class="s-info">
+                        <span class="s-user">
+                            <a href="/?slatAction=entity.detailaccount&accountID={{comment.createdByAccountID}}" ng-if="swFulfillmentBatchDetailController.state.accountNames[comment.createdByAccountID]">{{swFulfillmentBatchDetailController.state.accountNames[comment.createdByAccountID]}}</a>
+                        </span>
+                        <span class="s-date"> <small> {{comment.createdDateTime}} </small><!--10 hours ago---></span>
+                        <!--- Should only be able to edit own comments. --->
+                        <span class="s-actions" style="float: right" ng-if="$root.slatwall.account.accountID && $root.slatwall.account.accountID == comment.createdByAccountID">
+                            <a sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this comment." callback="swFulfillmentBatchDetailController.userDeletingComment(comment)"><i class="fa fa-remove"></i></a>
+                            <a href="#" type="button" ng-click="swFulfillmentBatchDetailController.userEditingComment(comment)"><i class="fa fa-pencil"></i></a>
+                        </span>
+                    </div>
+                    <!--- Comments should show as a textarea if we are editing the comment. --->
+                    <span ng-if="swFulfillmentBatchDetailController.state.commentBeingEdited == undefined">
+                    	<p>{{comment.comment}}</p>
+                    </span>
+                    
+                    <!--- During editing it is a textarea --->
+                    <span ng-if="swFulfillmentBatchDetailController.state.commentBeingEdited == comment">
+                    	<span ng-init="editComment = comment.comment"></span><!--- Set the initial value of the comment --->
+                    	<textarea class="form-control" name="name" rows="3" cols="" ng-model="editComment"></textarea>
+                    	<button class="btn btn-sm btn-primary" ng-disabled="!editComment" style="margin-top:5px" ng-click="swFulfillmentBatchDetailController.userSavingComment(comment, editComment)">Save Comment</button>
+                    </span>
+                </li>
+                
+                <li class="s-comment-item" style="padding:15px;border-bottom:1px dotted #ccc" ng-show="swFulfillmentBatchDetailController.state.commentBeingEdited == undefined">
+                    <textarea class="form-control" name="name" rows="3" cols="" ng-model="swFulfillmentBatchDetailController.state.newComment"></textarea>
+                    <button class="btn btn-sm btn-primary" ng-disabled="!swFulfillmentBatchDetailController.state.newComment" style="margin-top:5px" ng-click="swFulfillmentBatchDetailController.userSavingComment({}, swFulfillmentBatchDetailController.state.newComment)">Add Comment</button>
+                </li>
+                
+            </ul>
+            <!--- Handle displaying Order Information. --->
+            <div class="s-item-detail" style="background-color:#F7F7F7">
+                
+                <!--- Item Header --->
+                <div class="s-item-detail-header" style="background-color:white;">
+                    <div class="col-xs-4">
+                        <div class="s-item-detail-header-block">
+                            <h4>Basic</h4>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <div class="row s-line-item">
+                                        <div class="col-xs-5 s-title">Account:</div>
+                                        <div class="col-xs-7 s-value"><a href="/?slatAction=entity.detailaccount&accountID={{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_account_accountID']}}">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_account_firstName']}} {{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_account_lastName']}}</a></div>
+                                    </div>
+                                </li>        
+                                <li>
+                                    <div class="row s-line-item">
+                                        <div class="col-xs-5 s-title">Date Placed:</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_orderOpenDateTime']}}</div>
+                                    </div>
+                                </li>        
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="s-item-detail-header-block">
+                            <h4>Payment</h4>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <div class="row s-line-item">
+                                        <div class="col-xs-5 s-title">Original Total:</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_calculatedTotal']|currency}}</div>
+                                    </div>
+                                </li>        
+                                <li>
+                                    <div class="row s-line-item">
+                                        <div class="col-xs-5 s-title">Balance Due:</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue']|currency}}</div>
+                                    </div>
+                                </li>            
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="s-item-detail-header-block">
+                            <h4>Shipping</h4>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <div class="row s-line-item">
+                                        <div class="col-xs-5 s-title">Method:</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['shippingMethod_shippingMethodName']}}</div>
+                                    </div>
+                                </li>        
+                                <li>
+                                    <div class="row s-line-item">
+                                        <div class="col-xs-5 s-title">Location:</div>
+                                        <div class="col-xs-7 s-value">
+                                            <div class="s-city-state">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['shippingAddress_city']}} {{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['shippingAddress_stateCode']|uppercase}}.</div>
+                                        </div>
+                                    </div>
+                                </li>             
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+               
+                <!--- Fulfillment Items Display --->
+                <div class="s-detail-body s-arrow s-remove-manual-fulfill"><!--- ***Removing s-remove-manual-fulfill will show fulfill all and activate inputs*** --->
+                    <div class="s-content-block-wrapper">
+                        <div class="s-header"  style="background-color:white">
+                            <a href="#" ng-click="swFulfillmentBatchDetailController.prepopulate = true" class="pull-right">Populate All Quantity Values</a>
+                            <h3>Fulfillment Items <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
+                        </div>
+                        <div class="s-body">
+                            <div class="s-table-toolbar">
+                                <div class="s-select-list-wrapper s-search">
+								    <div class="form-group">
+								        <div class="input-group s-search-group">
+								            <!--- Uncomment the search box when we add barcode. --->
+								            <!---<div class="s-input-btn">
+								                <input type="text" value="" class="form-control s-sku" placeholder="&#xf02a;">
+								                <span class="glyphicon glyphicon-remove"></span>
+								            </div>--->
+								            <div class="input-group-btn s-fulfill-all">
+								                <button class="btn btn-sm btn-default" type="submit">Fulfill All</button>
+								            </div>
+								        </div>
+								    </div>
+								</div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <div class="table table-bordered">
+                                    <div class="row">
+                                    	<div class="col-md-2">&nbsp</div>
+                                        <div class="col-md-2"><strong>Item</strong></div>
+					                    <div class="col-md-2"><strong>Qty Ordered</strong></div>
+                                        <div class="col-md-2"><strong>Qty Delivered</strong></div>
+                                        <div class="col-md-2"><strong>Qty on Hand</strong></div>
+                                        <div class="col-md-2">&nbsp</div>
+                                    </div><br>
+                                    <!--<span ng-init="swFulfillmentBatchDetailController.state.orderItem = {};"></span>-->
+                                	<div class="row" ng-repeat="oi in swFulfillmentBatchDetailController.state.orderFulfillmentItemsCollection">
+                                           <div ng-if="swFulfillmentBatchDetailController.prepopulate == true">
+                                        		<span ng-init="(oi.quantityDelivered > 0) ? swFulfillmentBatchDetailController.state.orderItem[oi.orderItemID] = (oi.quantity - oi.quantityDelivered) : (swFulfillmentBatchDetailController.state.orderItem[oi.orderItemID] = oi.quantity)"></span>
+                        				   </div>
+                                           <div class="col-md-2">
+                                           	<img src="{{oi['sku_imagePath']||'http://placehold.it/60x60'}}" width="60">
+                                           </div>
+                                           
+                                           <div class="col-md-2">{{oi['sku_skuName']}} <br>{{oi['sku_skuCode']}}</div>
+                                           
+                                           <div class="col-md-2">{{oi.quantity}}</div>
+                                           
+                                           <div class="col-md-2">{{oi.quantityDelivered}}</div>
+                                           
+                                           <div class="col-md-2">{{oi.sku_calculatedQOH}}</div>
+                                           
+                                           <div class="col-md-2">
+                                            	<input ng-init="swFulfillmentBatchDetailController.prepopulate = false" type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.state.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
+                                           </div>
+                                	</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <!-- E -->
+                
+                <!--- Start Print Label Options --->
+                <div class="s-detail-body s-arrow">
+                    <div class="s-content-block-wrapper"  style="background-color:white">
+                        <div class="s-header">
+                            <h3>Shipping Options</h3>
+                            <a href="#" class="s-toggle"><!--- populated with css ---></a>
+                        </div>
+                        <div class="s-body">
+                            
+                            <div class="s-content-wrapper">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label class="s-strong" style="margin-top: 4px;">Print Labels Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="row s-ladel-options">
+                                            <div class="col-xs-3 radio">
+                                                <input id="GenerateShippingLabel" type="radio" name="printOption" data-ng-value="1" ng-model="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber" ng-init="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber = true">
+                                                <label for="GenerateShippingLabel" title="helper text should go here to describe item">Generate Shipping Label(s)</label>
+                                                <!--<input class="form-control s-package-count" type="text" placeholder="# of Packages" ng-model="swFulfillmentBatchDetailController.state.packageCount">-->
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <input id="ManualShipment" type="radio" name="printOption" data-ng-value="0" ng-model="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber">
+                                                <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
+                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-model="swFulfillmentBatchDetailController.state.trackingCode">
+                                            </div>
+                                            <div class="col-xs-3" ng-show="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber">
+                                                <label>Choose Shipping Integration</label>
+                                                <select 
+                                                    ng-model="swFulfillmentBatchDetailController.state.shippingIntegrationID" 
+                                                    ng-options="option['VALUE'] as option['NAME'] for option in swFulfillmentBatchDetailController.state.shippingIntegrationOptions"
+                                                >
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $('.s-ladel-options input[type=radio]').change(function(){
+                                             if($('#GenerateShippingLabel').is(':checked')) { 
+                                                 $('.s-add-box-wrapper').parent().show();
+                                                 $('.s-package-count').show();
+                                                 $('.s-tracking-code').hide();
+                                            }else{
+                                                $('.s-add-box-wrapper').parent().hide();
+                                                $('.s-tracking-code').show();
+                                                $('.s-package-count').hide();
+                                            };
+                                            
+                                        });
+                                        
+                                    </script>
+                                    <div class="col-xs-12">
+                                        <div class="s-add-box-wrapper">
+                                                    
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Boxes</th>
+                                                        <!--<th>Type</th>-->
+                                                        <th>Height (in)</th>
+                                                        <th>Width (in)</th>
+                                                        <th>Depth (in)</th>
+                                                        <th>Weight (lb)</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="box in swFulfillmentBatchDetailController.state.boxes track by $index">
+                                                        <td>{{$index+1}}</td>
+                                                        <!--<td>-->
+                                                        <!--    <select class="form-control" name="">-->
+                                                        <!--        <option value="">Custom</option>-->
+                                                        <!--        <option value="">10x12x4</option>-->
+                                                        <!--        <option value="">10x10x10</option>-->
+                                                        <!--        <option value="">45x10x34</option>-->
+                                                        <!--    </select>-->
+                                                        <!--</td>-->
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="height{{$index}}" placeholder="H" ng-model="box.height">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="width{{$index}}" placeholder="W" ng-model="box.width">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="depth{{$index}}" placeholder="D" ng-model="box.depth">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="weight{{$index}}" placeholder="Weight" ng-model="box.weight">
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-default btn-xs s-remove" ng-click="swFulfillmentBatchDetailController.userRemovingBox($index)">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6">
+                                                            <a role="button" ng-click="swFulfillmentBatchDetailController.userAddingNewBox()"><i class="fa fa-plus"></i> Add Box</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <!---<div class="row">
+                                    <div class="col-xs-3">
+                                        <label class="s-strong" style="margin-top: 4px;">Extra Print Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="row">
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions1" type="checkbox" name="ExtraPrintOptions" checked>
+                                                <label for="ExtraPrintOptions1" title="helper text should go here to describe item"> Standard Packing Slip</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions2" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions2" title="helper text should go here to describe item"> Birthday Coupon</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions3" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions3" title="helper text should go here to describe item"> 15% Off Next Purchase</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions4" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions4" title="helper text should go here to describe item"> April Savings</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions5" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions5" title="helper text should go here to describe item"> Christmas Savings</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions6" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions6" title="helper text should go here to describe item"> Easter Savings</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>--->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!--- Start Custom Attributes --->
+                <div class="s-detail-body s-arrow" ng-if="swFulfillmentBatchDetailController.state.orderDeliveryAttributes && swFulfillmentBatchDetailController.state.orderDeliveryAttributes.length">
+                    <div class="s-content-block-wrapper">
+                        <div class="s-header">
+                            <h3>Order Delivery Custom Properties <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
+                            <a href="##" class="s-toggle"><!--- populated with css ---></a>
+                        </div>
+                        <div class="s-body">
+                            <div class="s-content-wrapper form-horizontal">        
+                                <div class="form-group" ng-repeat="attribute in swFulfillmentBatchDetailController.state.orderDeliveryAttributes">
+                                    <label for="input" class="col-xs-3 control-label">{{attribute.name}}: <i class="fa fa-info-circle s-tooltip-hint" title="{{attribute.hint||attribute.description}}"></i></label>
+                                    
+                                    <div class="col-sm-9" ng-if="attribute.type == 'text'">
+                                        <input title="{{attribute.hint||attribute.description}}" type="text" class="form-control" name="{{attribute.code}}" ng-required="{{attribute.isRequired=='Yes '}}" ng-model="swFulfillmentBatchDetailController.state[attribute.code]">
+                                    </div>
+                                    
+                                    <div class="col-sm-9" ng-if="attribute.type == 'textArea'">
+                                        <textarea title="{{attribute.hint||attribute.description}}" rows="5" cols="70" type="textarea" class="form-control" name="{{attribute.code}}" ng-required="{{attribute.isRequired=='Yes '}}" ng-model="swFulfillmentBatchDetailController.state[attribute.code]" ></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="s-detail-body s-arrow">
+                    <div class="s-content-block-wrapper">
+                        <div class="s-header">
+                            <h3>Fulfill Items</h3>
+                        </div>
+                        <div class="s-body" ng-if="swFulfillmentBatchDetailController.state.loading">
+                        	<center>
+                        		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>
+							</center>
+                        </div>
+                        <div class="s-body" ng-if="!swFulfillmentBatchDetailController.state.loading">
+                            <div class="s-content-wrapper">
+                                <div class="row">
+                                    <!---<div class="col-xs-2">
+                                        <div class="s-title">Authorized</div>
+                                        <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountAuthorizedTotal']|currency}}</div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="s-title">Fulfilled</div>
+                                        <div class="s-content">$0.00</div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="s-title">Captured</div>
+                                        <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountCapturedTotal']|currency}}</div>
+                                    </div>
+                                    <div class="col-xs-2 s-captured">
+                                    	<span ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] === 0">
+	                                        <div class="s-title">To Capture</div>
+	                                        <input type="text" class="form-control" ng-model="swFulfillmentBatchDetailController.state.capturableAmount">
+	                                        <button class="btn btn-xs btn-success">Capture</button>
+                                        </span>
+                                    </div>--->
+                                    
+                                    <div class="col-md-12" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
+                                        <div class="btn-group s-btn-dropdown" role="group"> 
+                                            <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">
+						                    	<span>Fulfill</span> 
+						                    </button>
+						                    <ul class="dropdown-menu" role="menu">
+						                        <li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">Fulfill</a></li>
+						                    </ul>
+						                    <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
+						                        <span class="caret"></span>
+						                    </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" ng-show="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
+                                        There are no items to fulfill on this order.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</section>

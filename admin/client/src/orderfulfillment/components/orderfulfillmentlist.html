@@ -1,0 +1,389 @@
+<section class="container">
+
+<div class="row" ng-if="swOrderFulfillmentListController.collections.length">
+<br/>
+<br/>
+		<div class="col-md-12">
+			<div class="row s-body-nav">
+			    <nav class="navbar navbar-default" role="navigation">
+			        <div class="col-md-6 s-header-info">
+			            <h1 class="actionbar-title">Fulfillments Listing 
+			            	<span ng-if="swOrderFulfillmentListController.view === swOrderFulfillmentListController.FulfillmentsList.Views.Fulfillments && $root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['orderfulfillment']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['orderfulfillment'].collectionName"></span>
+				            <span ng-if="swOrderFulfillmentListController.view === swOrderFulfillmentListController.FulfillmentsList.Views.Items && $root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['orderitem']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['orderitem'].collectionName"></span>
+			            </h1>
+			        </div> 
+			        <div class="col-md-6">
+			            <div class="btn-toolbar">
+							<div class="btn-group btn-group-sm">
+			                    <a href="##" title="Create Batch" class="btn btn-primary" data-toggle="modal" data-target="#j-pick-list-modal-fulfillments">Create Batch</a> 
+								<!-- Button trigger modal -->
+
+								<div id="j-pick-list-modal-fulfillments" class="modal fade in" aria-hidden="false">
+								    
+								        <div class="modal-dialog">
+								            <div class="modal-content">
+								                <div class="modal-header">
+								                    <a class="close" data-dismiss="modal">×</a>
+								                    <h3>Create Batch <span class="s-title-detail">({{swOrderFulfillmentListController.getTotalFulfillmentsSelected()||0}} fulfillments selected)</span></h3>
+								                </div>
+								                <div class="modal-body s-visable">
+								                    
+							                        <div class="row">
+							                            <div class="col-md-12 s-select-list-wrapper s-search">
+							                                <div class="s-property form-horizontal">
+							                                    
+							                                    <div class="form-group">
+							                                    	
+							                                        <label for="orderFulfillmentID" class="control-label col-sm-4">Batch Location <span class="s-label-desc"></span></label>
+							                                        <div class="col-sm-8">
+																		
+																		<!--- Single Location Picker  --->
+																		<div class="form-group">
+																		   
+																						<sw-typeahead-input-field
+																								data-entity-name="Location"
+																						        data-property-to-save="locationID"
+																						        data-property-to-show="calculatedLocationPathName"
+																						        data-properties-to-load="locationID,calculatedLocationPathName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
+																						        data-show-add-button="true"
+																						        data-show-view-button="true"
+																						        data-placeholder-rb-key="entity.location"
+																						        data-placeholder-text="Stock Location"
+																						        data-multiselect-mode="false"
+																						        data-filter-flag="true"
+																						        data-selected-format-string="${calculatedLocationPathName}&nbsp;"
+																						        data-field-name="locationID">
+																						
+																						    <sw-collection-config
+																						            data-entity-name="Location"
+																						            data-collection-config-property="typeaheadCollectionConfig"
+																						            data-parent-directive-controller-as-name="swTypeaheadInputField"
+																						            data-all-records="false"
+																						            data-page-show="50">
+																						
+																								<sw-collection-columns>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="calculatedLocationPathName" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
+																							    </sw-collection-columns>
+																								
+																						    	<sw-collection-order-bys>
+																						        	<sw-collection-order-by data-order-by="calculatedLocationPathName|ASC"></sw-collection-order-by>
+																						    	</sw-collection-order-bys>
+																						
+																						    </sw-collection-config>
+																							
+																							    
+																							    <span sw-typeahead-search-line-item data-property-identifier="calculatedLocationPathName"></span><br>
+																							    	
+																						</sw-typeahead-input-field>
+																						<!--- VIEW CHANGE: No location selected --->
+																						<!-- <input id="searchinput" type="search" class="form-control" placeholder="All Locations" value="" title="">
+																						<i class="fa fa-search"></i> -->
+																						
+																						<!--- Loading Icon if ajax request is required --->
+																		                <!--<i class="fa fa-refresh fa-spin"></i>-->
+																		         
+																		    </div>
+																		</div>
+																		
+																		<!--- Multi Location Picker  --->
+																		<div class="s-select-list-wrapper s-search ng-hide" id="j-multi-locaction-view">
+																		    <div class="form-group">
+																		        <!-- Option select field wrapper -->
+																		        <div class="input-group">
+																		            <div class="s-input-btn">
+																		                <input id="searchinput" type="search" class="form-control" placeholder="Add Location...">
+																		                <!-- <span class="glyphicon glyphicon-remove"></span> -->
+																						<i class="fa fa-search"></i>
+																		                <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
+																		            </div>
+																		            <div class="input-group-btn">
+																		                <button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
+																		            </div>
+																		        </div>
+																		    </div>
+																			
+																		    <!-- Dropdown wrapper -->
+																		    <div class="dropdown s-search-results-wrapper" style="display: none;">
+																		        <ul class="dropdown-menu">
+																					<li class="s-index-0" data-group="las-angeles"><a href="##">Las Angeles</a></li>
+																		            <li class="s-index-1" data-group="las-angeles"><a href="##">Hollywood</a></li>
+																					<li class="s-index-1" data-group="las-angeles"><a href="##">Venice</a></li>
+																		            <li class="s-index-0" data-group="san-diego"><a href="##">San Diego</a></li>
+																		            <li class="s-index-1" data-group="san-diego"><a href="##">Encinitas Warehouse</a></li>
+																					<li class="s-index-2" data-group="san-diego"><a href="##">843 Moonlight</a></li>
+																					<li class="s-index-3" data-group="san-diego"><a href="##">Room 23</a></li>
+																					<li class="s-index-3" data-group="san-diego"><a href="##">Room 45</a></li>
+																					<li class="s-index-4" data-group="san-diego"><a href="##">Row 3 with really long title to show what it would do </a></li>
+																		            <li class="s-index-1" data-group="san-diego"><a href="##">Del Mar Warehouse</a></li>
+																		            <li class="s-index-1" data-group="san-diego"><a href="##">Carlsbad Warehouse</a></li>
+																					<li class="s-index-0" data-group="boston"><a href="##">Boston</a></li>
+																		        </ul>
+																		    </div>
+																			
+																			<div class="s-selected-list">
+																		        <!-- Selected options wrapper -->
+																		        <div class="alert s-selected-item">
+																		            <!-- Example Item 2 -->
+																		            <button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+																		            Search Result Title 1
+																		        </div>
+																		        <div class="alert s-selected-item">
+																		            <!-- Example Item 2 -->
+																		            <button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+																		            Search Result Title 2
+																		        </div>
+																		    </div>
+																			
+																		</div>
+																		
+																			
+							                                        </div>
+																	
+							                                    </div>
+																
+																<div class="form-group">
+							                                        <label for="orderFulfillmentID" class="control-label col-sm-4">Assign Batch <span class="s-label-desc"></span></label>
+							                                        <div class="col-sm-8">
+																		<!--- Single Assigned Account Picker  --->
+																		<div class="s-select-list-wrapper s-search" id="j-single-location-view">
+																		    <sw-typeahead-input-field
+																				data-entity-name="Account"
+																		        data-property-to-save="accountID"
+																		        data-property-to-show="primaryEmailAddress_emailAddress"
+																		        data-properties-to-load="accountID,lastName,firstName,primaryEmailAddress.emailAddress"
+																		        data-show-add-button="true"
+																		        data-show-view-button="true"
+																		        data-placeholder-rb-key="entity.account"
+																		        data-placeholder-text="Select Account"
+																		        data-multiselect-mode="false"
+																		        data-filter-flag="true"
+																		        data-selected-format-string="${lastName}&nbsp;${firstName}"
+																		        data-field-name="accountID">
+																			<!-- end ngIf: swTypeaheadSearch.placeholderText -->
+																		    <sw-collection-config
+																		            data-entity-name="Account"
+																		            data-collection-config-property="typeaheadCollectionConfig"
+																		            data-parent-directive-controller-as-name="swTypeaheadInputField"
+																		            data-all-records="false"
+																		            data-page-show="50">
+																				
+																				
+																				
+																				<sw-collection-columns>
+																					<sw-collection-column data-property-identifier="primaryEmailAddress_emailAddress" data-is-searchable="true"></sw-collection-column>
+																					<sw-collection-column data-property-identifier="firstName" data-is-searchable="true"></sw-collection-column>
+																			        <sw-collection-column data-property-identifier="lastName" data-is-searchable="true"></sw-collection-column>
+																			        <sw-collection-column data-property-identifier="accountID"></sw-collection-column>
+																			    </sw-collection-columns>
+																				
+																		    	<sw-collection-order-bys>
+																		        	<sw-collection-order-by data-order-by="lastName|ASC"></sw-collection-order-by>
+																		    	</sw-collection-order-bys>
+																		
+																		    </sw-collection-config>
+																			
+																			<span sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress_emailAddress">&nbsp;</span> <span sw-typeahead-search-line-item data-property-identifier="lastName">&nbsp;</span><span sw-typeahead-search-line-item data-property-identifier="firstName">&nbsp;</span><br>
+																			    	
+																		</sw-typeahead-input-field>
+																			
+																		</div>
+							                                        </div>
+							                                    </div>
+							                                    
+																<div class="form-group" style="padding-top:75px">
+							                                        <label class="control-label col-sm-4">Batch Name <span class="s-label-desc">(optional)</span></label>
+							                                        <div class="col-sm-8">
+							                                            <textarea name="batchName" value="" placeholder="" class="form-control" ng-model="swOrderFulfillmentListController.getProcessObject().data.fulfillmentBatchName"></textarea>
+							                                        </div>
+							                                    </div>
+							                                    
+																<div class="form-group" style="padding-top:75px">
+							                                        <label class="control-label col-sm-4">Batch Description <span class="s-label-desc">(optional)</span></label>
+							                                        <div class="col-sm-8">
+							                                            <textarea name="batchDescription" value="" placeholder="" class="form-control" ng-model="swOrderFulfillmentListController.getProcessObject().data.description"></textarea>
+							                                        </div>
+							                                    </div>
+							                                </div>
+							                            </div>
+							                        </div>
+							                        <div class="modal-footer">
+								                    	<a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
+								                    	<button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0 || !swOrderFulfillmentListController.getProcessObject().data || !swOrderFulfillmentListController.getProcessObject()['data']['locationID']">Add Batch <i ng-if="swOrderFulfillmentListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button> 
+								                	</div>
+								                </div>
+								            </div>
+								        </div>
+								</div>
+			                </div>
+			            </div>
+			        </div>
+			    </nav>
+			</div>
+
+			
+			
+			<!-- <div class="alert alert-danger alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong>Error!</strong> There was an error with the info you entered 
+			</div> -->
+			
+			<div class="row s-detail-modules-wrapper">
+				
+				
+				
+				<!--- ITEMS MODULE --->
+				<div class="col-sm-6 col-md-6 col-lg-2 s-detail-module">
+			        
+					<!--Small content block-->
+			        <div class="s-sm-content-block">
+						
+						<div class="dropdown s-action">
+							<a href="##" class="dropdown-toggle" id="changeThisLabel1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-ellipsis-h" title="actions"></i>
+							</a>
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.state.showFulfillmentListing == true" ng-click="swOrderFulfillmentListController.toggleOrderFulfillmentListing()">
+								<li>
+									<a href="##">Items View</a> 
+								</li>
+							</ul>
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.state.showFulfillmentListing == false" ng-click="swOrderFulfillmentListController.toggleOrderFulfillmentListing()">
+								<li>
+									<a href="##">Fulfillments View</a>
+								</li>
+							</ul>
+						</div>
+						
+			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+			                <i class="fa fa-dropbox"></i>
+			            </div>
+			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
+			                <div class="s-title" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments">
+			                    Fulfillments <!---<span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>--->
+			                </div>
+			                <div class="s-title" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items">
+			                    Fulfillment Items <!---<span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>--->
+			                </div>
+			            </div>
+
+			        </div>
+			        
+			    </div>
+				<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module">
+			    
+
+			    </div>
+				<!--- AVAILBALE MODULE --->
+			    <!---<div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('available');">
+					
+			        <div ng-class="{ 's-sm-content-block s-status s-green s-selected': swOrderFulfillmentListController.filters['available'], 's-sm-content-block s-status s-green': !swOrderFulfillmentListController.filters['available'] }">	
+			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+			                <i class="fa fa-circle"></i>
+			            </div>
+			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
+			                <div class="s-title">
+			                    Available <span class="s-number"></span>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('unavailable');">		
+					
+			        <div ng-class="{ 's-sm-content-block s-status s-red s-selected': swOrderFulfillmentListController.filters['unavailable'], 's-sm-content-block s-status s-red': !swOrderFulfillmentListController.filters['unavailable'] }">
+			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+			                <i class="fa fa-circle"></i>
+			            </div>
+			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
+			                <div class="s-title">
+			                    Unavailable <span class="s-number"></span>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			    
+			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('paid');">		
+					
+			        <div ng-class="{ 's-sm-content-block s-status s-yellow s-selected': swOrderFulfillmentListController.filters['paid'], 's-sm-content-block s-status s-gray': !swOrderFulfillmentListController.filters['paid'] }">
+			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+			                <i class="fa fa-circle"></i>
+			            </div>
+			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
+			                <div class="s-title">
+			                    Paid <span class="s-number"></span>
+			                </div>
+			            </div>
+			        </div>
+			    </div>--->
+			</div>
+			<div class="row s-detail-content-wrapper" ng-if="(swOrderFulfillmentListController.view != swOrderFulfillmentListController.views.Fulfillments && swOrderFulfillmentListController.view != swOrderFulfillmentListController.views.Items) || swOrderFulfillmentListController.refreshFlag">
+				<center>
+            		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> LOADING
+				</center>
+			</div>
+			<span ng-init="multislot = true"></span>
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments && !swOrderFulfillmentListController.refreshFlag">	
+				<div class="col-xs-12">
+					<div class="s-detail-body" ng-init="swOrderFulfillmentListController.refreshFlag = false">
+						<!--- data-collection-config="swOrderFulfillmentListController.orderFulfillmentCollection" --->
+						<sw-listing-display
+							data-base-entity-name="OrderFulfillment"
+							data-edit="true"
+							data-has-search="true"
+							data-record-detail-action="admin:entity.detailorderfulfillment"
+							data-is-angular-route="false"
+							data-angular-links="false"
+							data-has-action-bar="false"
+							data-using-personal-collection="true"
+							data-persisted-collection-config="true" 
+							data-multiselect-field-name="orderFulfillmentID"
+							data-name="orderFulfillmentCollectionTable"
+							data-collection-config="swOrderFulfillmentListController.collections[swOrderFulfillmentListController.FulfillmentsList.Views.Fulfillments]"
+
+							>
+						</sw-listing-display>
+				
+					</div>
+				</div>
+			</div>
+			
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items && !swOrderFulfillmentListController.refreshFlag">	
+				<div class="col-xs-12">
+					<div class="s-detail-body" ng-init="swOrderFulfillmentListController.refreshFlag = false">
+						<!--- data-collection-config="swOrderFulfillmentListController.orderItemCollection" --->
+						<sw-listing-display
+							data-base-entity-name="OrderItem"
+							data-edit="true"
+							data-has-search="true"
+							data-record-detail-action="admin:entity.detailorderitem"
+							data-is-angular-route="false"
+							data-angular-links="false"
+							data-has-action-bar="false"
+							data-using-personal-collection="true"
+							data-persisted-collection-config="true" 
+							data-multiselect-field-name="orderItemID" 
+							data-name="orderItemCollectionTable" 
+							data-collection-config="swOrderFulfillmentListController.collections[swOrderFulfillmentListController.FulfillmentsList.Views.Items]"
+
+						>
+							
+						</sw-listing-display>
+				
+					</div>
+				</div>
+			</div>
+			<br/>
+			
+		</div>	
+	</div>
+<section>			
+
+
+
+
+
+
+

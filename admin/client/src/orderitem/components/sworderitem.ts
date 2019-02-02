@@ -8,6 +8,8 @@ class SWOrderItem{
 			$http,
 			$templateCache,
 			$hibachi,
+			$timeout,
+			collectionConfigService,
 			orderItemPartialsPath,
 			slatwallPathBuilder
 		)=> new SWOrderItem(
@@ -16,6 +18,8 @@ class SWOrderItem{
 			$http,
 			$templateCache,
 			$hibachi,
+			$timeout,
+			collectionConfigService,
 			orderItemPartialsPath,
 			slatwallPathBuilder
 	  	);
@@ -25,6 +29,8 @@ class SWOrderItem{
 			'$http',
 			'$templateCache',
 			'$hibachi',
+			'$timeout',
+			'collectionConfigService',
 			'orderItemPartialsPath',
 			'slatwallPathBuilder'
 		];
@@ -37,6 +43,8 @@ class SWOrderItem{
 		$http,
 		$templateCache,
 		$hibachi,
+		$timeout,
+		collectionConfigService,
 		orderItemPartialsPath,
 		slatwallPathBuilder
 	){
@@ -429,6 +437,7 @@ class SWOrderItem{
 					deletePromise.then(function(result){
  						if(!result.errors || !Object.keys(result.errors).length){
  							delete scope.orderItem;
+							window.location.reload();
  						}
                         scope.paginator.getCollection();
 					});
@@ -438,29 +447,58 @@ class SWOrderItem{
 				/**
 				* Gets a list of child order items if they exist.
 				*/
-				scope.getChildOrderItems = function(){
+				scope.getChildOrderItems = ()=>{
 					if(!scope.orderItem.childItemsRetrieved){
 						scope.orderItem.clicked = !scope.orderItem.clicked;
 						scope.orderItem.hide = !scope.orderItem.hide;
 						scope.orderItem.childItemsRetrieved = true;
-						var orderItemsPromise = $hibachi.getEntity('orderItem', options);
-						orderItemsPromise.then(function(value){
-							var collectionConfig:any = {};
-							collectionConfig.columns = columnsConfig;
-							collectionConfig.baseEntityName = 'SlatwallOrderItem';
-							collectionConfig.baseEntityAlias = '_orderitem';
-							var childOrderItems = $hibachi.populateCollection(value.records,collectionConfig);
-							angular.forEach(childOrderItems,function(childOrderItem){
-								childOrderItem.depth = scope.orderItem.depth+1;
-								scope.childOrderItems.push(childOrderItem);
-								childOrderItem.data.productBundleGroupPercentage = 1;
-								if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
-									childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
-								}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
-									childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
-								}
-							});
-						});
+
+						if(scope.orderItem.sku.bundleFlag === 'Yes ' || scope.orderItem.sku.bundleFlag === 1){
+							var skuBundleCollection = collectionConfigService.newCollectionConfig('SkuBundle');
+				            skuBundleCollection.setDisplayProperties('bundledQuantity, bundledSku.skuCode, bundledSku.price, bundledSku.product.productName');
+				            skuBundleCollection.addFilter('sku.skuID',scope.orderItem.sku.skuID); 
+				           
+				          
+				            
+				            var skuBundleCollectionPromise = skuBundleCollection.getEntity().then((data)=>{ 
+				                if(data.pageRecords.length){
+				                	var childOrderItems = $hibachi.populateCollection(data.pageRecords,skuBundleCollection);
+									angular.forEach(childOrderItems,function(childOrderItem){
+										childOrderItem.depth = scope.orderItem.depth+1;
+										scope.childOrderItems.push(childOrderItem);
+										childOrderItem.data.productBundleGroupPercentage = 1;
+										if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
+											childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
+										}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
+											childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
+										}
+									});	
+				
+				                }
+				            });							
+							
+						}else{
+							var orderItemsPromise = $hibachi.getEntity('orderItem', options);						
+							orderItemsPromise.then(function(value){
+								var collectionConfig:any = {};
+								collectionConfig.columns = columnsConfig;
+								collectionConfig.baseEntityName = 'SlatwallOrderItem';
+								collectionConfig.baseEntityAlias = '_orderitem';
+								
+								var childOrderItems = $hibachi.populateCollection(value.records,collectionConfig);
+								angular.forEach(childOrderItems,function(childOrderItem){
+									childOrderItem.depth = scope.orderItem.depth+1;
+									scope.childOrderItems.push(childOrderItem);
+									childOrderItem.data.productBundleGroupPercentage = 1;
+									if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
+										childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
+									}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
+										childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
+									}
+								});
+							});							
+						}								
+						
 					}else{
 						//We already have the items so we just need to show them.
 						angular.forEach(scope.childOrderItems, function(child){

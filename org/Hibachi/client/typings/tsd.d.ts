@@ -10,6 +10,7 @@
 /// <reference path="js-md5/md5.d.ts" />
 /// <reference path="jasmine/jasmine.d.ts" />
 /// <reference path="datejs/datejs.d.ts" />
+/// <reference path="chart.js/index.d.ts" />
 /// <reference path="md5/md5.d.ts" />
 /// <reference path="bootstrap/bootstrap.d.ts" />
 interface String {

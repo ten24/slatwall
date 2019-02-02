@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"setupName":			[{"contexts":"save","required":true}],
+		"location":				[{"contexts":"save","required":true}],
+		"maxQuantity":			[{"contexts":"save","required":true,"dataType":"numeric","minValue":0,"gteProperty":"minQuantity"}]
+	}
+}

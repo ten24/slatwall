@@ -56,6 +56,9 @@ component displayname="Alternate Sku Code" entityname="SlatwallAlternateSkuCode"
 	property name="alternateSkuCodeType" cfc="Type" fieldtype="many-to-one" fkcolumn="skuTypeID" hb_optionsSmartListData="f:parentType.systemCode=alternateSkuCodeType";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	
+	// Related Object Properties (One-to-Many)
+	property name="vendorSkus" type="array" cfc="VendorSku" singularname="vendorSku" fieldtype="one-to-many" fkcolumn="alternateSkuCodeID" cascade="all-delete-orphan" inverse="true";
+	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
@@ -84,6 +87,14 @@ component displayname="Alternate Sku Code" entityname="SlatwallAlternateSkuCode"
 			arrayDeleteAt(arguments.sku.getAlternateSkuCodes(), index);
 		}
 		structDelete(variables, "sku");
+	}
+	
+	// VendorSku (one-to-many)
+	public void function addVendorSku(required any vendorSku) {
+		arguments.vendorSku.setAlternateSkuCode( this );
+	}
+	public void function removeVendorSku(required any vendorSku) {
+		arguments.vendorSku.removeAlternateSkuCode( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

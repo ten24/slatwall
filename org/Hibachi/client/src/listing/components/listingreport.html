@@ -1,0 +1,178 @@
+
+<div id="reporting-top">
+    <div class="alert alert-error" ng-show="swListingReport.hasMetric==false">You must have an aggregate column to render the report</div>
+    
+    <div class="flex flex-space-between">
+        <div class="col">
+            <div class="flex flex-col-left">
+    	
+            	<div class="col">
+            		<div style="margin-bottom:5px;">
+            		    <label>Dimensions</label>
+            			<select 
+                      ng-model="swListingReport.selectedPeriodColumn" 
+                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier
+                                        for periodColumn in swListingReport.periodColumns
+                                         | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
+                            "
+                            ng-change="swListingReport.selectPeriodColumn(swListingReport.selectedPeriodColumn)"
+                        >
+                    
+                  </select>
+            			<a href="##" ng-click="swListingReport.popObjectPath()" class="btn-text">Back</a>
+            		</div>
+            	</div>
+            	
+        		<div class="col">
+        		
+        			<div class="flex flex-cal">
+            			<div class="col-cal">
+                            <p class="input-group s-datepicker">
+                                <label>Start Date</label>
+                                <input class="form-control" 
+                              		datepicker-popup="MMM dd, yyyy" 
+                              		close-text="Close" 
+                              		is-open="swListingReport.openedCalendarStart" 
+                              		type="text"
+                              		ng-model="swListingReport.startDate"
+                              		ng-change="swListingReport.updatePeriod()"
+                              	    year="swListingReport.startDate.year"
+                              	    month="swListingReport.startDate.month"
+                              	    day="swListingReport.startDate.day"
+                              		/>
+                                <span class="input-group-btn" >
+                                    <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-cal">
+                            <p class="input-group s-datepicker">
+                                <label>End Date</label>
+                                <input class="form-control" 
+                              		datepicker-popup="MMM dd, yyyy" 
+                              		close-text="Close" 
+                              		is-open="swListingReport.openedCalendarEnd" 
+                              		type="text"
+                              		ng-model="swListingReport.endDate"
+                              		ng-change="swListingReport.updatePeriod()"
+                              		year="swListingReport.endDate.year"
+                              		month="swListingReport.endDate.month"
+                              		day="swListingReport.endDate.day"
+                              		/>
+                                <span class="input-group-btn" >
+                                    <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                            <a href="#" id="hibachi-report-enable-compare" class="pull-right">+ Compare Dates</a>
+                        </div>
+                        
+                        <input type="hidden" name="reportCompareFlag" value="0">
+                		<div id="hibachi-report-compare-date" class="hide flex compare">
+                		    <span><i class="fa fa-arrows-h" style="margin-top: 30px;padding-left: 10px;font-size: 17px;"></i></span>
+                			<div class="col-cal">
+                                <p class="input-group s-datepicker">
+                                    <label>Start Date</label>
+                                    <input class="form-control" 
+                                  		datepicker-popup="MMM dd, yyyy" 
+                                  		close-text="Close" 
+                                  		is-open="swListingReport.openedCalendarStartCompare" 
+                                  		type="text"
+                                  		ng-change="swListingReport.updatePeriod()"
+                                  		ng-model="swListingReport.startDateCompare"
+                                  		year="swListingReport.startDateCompare.year"
+                              	        month="swListingReport.startDateCompare.month"
+                              	        day="swListingReport.startDateCompare.day"
+                                  		/>
+                                    <span class="input-group-btn" >
+                                        <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarStartCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-cal">
+                                <p class="input-group s-datepicker">
+                                    <label>End Date</label>
+                                    <input class="form-control" 
+                                  		datepicker-popup="MMM dd, yyyy" 
+                                  		close-text="Close" 
+                                  		is-open="swListingReport.openedCalendarEndCompare" 
+                                  		type="text"
+                                 		ng-change="swListingReport.updatePeriod()"
+                                  		ng-model="swListingReport.endDateCompare"
+                                  	    year="swListingReport.endDateCompare.year"
+                              	        month="swListingReport.endDateCompare.month"
+                              	        day="swListingReport.endDateCompare.day"	
+                                  	/>
+                                    <span class="input-group-btn" >
+                                        <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEndCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
+                		</div>
+                    </div><!-- end of .flex-cal -->
+                    
+            	</div><!-- end of .col -->
+        	</div><!-- end of .flex -->
+    		
+    	</div>
+    	
+        <div class="col">
+            <div class="flex flex-col-right">
+            	
+            	<div class="col">
+                    <!--- <select 
+            		    ng-model="swListingReport.selectedPeriodInterval"
+            			ng-options="periodInterval as periodInterval.value for periodInterval in swListingReport.periodIntervals track by periodInterval.value"
+            			ng-change="swListingReport.updatePeriod()"
+                    >
+            		</select> --->
+            		
+            		<!-- TODO: Backend - Wireup new period interval UI -->
+            		<div class="btn-group btn-group-sm" role="group" aria-label="...">
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('hour')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='hour'}" class="btn btn-default">Hour</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('day')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='day'}" class="btn btn-default">Day</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('week')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='week'}" class="btn btn-default">Week</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('month')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='month'}" class="btn btn-default">Month</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('year')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='year'}" class="btn btn-default">Year</button>
+                    </div>
+                </div><!-- end of .col -->
+                
+            	<div class="col save-btn">
+            	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
+                        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
+                            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        >
+                            Save <i class="fas fa-save"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right" ng-show="swListingReport.collectionNameSaveIsOpen">
+                            <li style="padding:8px;">
+                                <div class="s-form-input s-input-group s-edit" style="width:100px;">
+                                    <input
+                                        type="text"
+                                        ng-model="swListingReport.collectionName"
+                                        class="form-control" placeholder=""
+                                        style="display: inline-block !important;
+                                        height: 22px !important;
+                                        vertical-align: bottom !important;
+                                        font-size: 12px;
+                                        padding: 0px 5px;"
+                                    >
+                                    <a class="btn btn-xs btn-success s-action-btn"
+                                        ng-click="swListingReport.saveReportCollection(swListingReport.collectionName)">
+                                        save
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </span>
+                </div>
+                
+        	</div><!-- end of .flex-align-right -->
+    	</div><!-- end of .col -->
+    </div><!-- end of .flex -->
+
+	
+	<div id="chartContainer">
+        <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
+        <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
+    </div>
+</div>

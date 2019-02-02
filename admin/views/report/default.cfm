@@ -49,7 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
-
+	
 	<div class="row s-body-nav" style="margin-bottom: 30px;">
 	    <nav class="navbar navbar-default" role="navigation">
 	      	<div class="col-md-4 s-header-info">
@@ -72,6 +72,7 @@ Notes:
 							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 						</cfloop>
 					</cfif>
+					
 					<cfif arrayLen(rc.savedReports)>
 						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('entity.report_plural')#</strong></h5></li>
 						<cfloop array="#rc.savedReports#" index="report">
@@ -90,6 +91,8 @@ Notes:
 							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 						</cfloop>
 					</cfif>
+					
+					<!---<cfset $.slatwall.getService('HibachiService').get--->
 				</hb:HibachiDividerHider>
 			</ul>
 		</div>

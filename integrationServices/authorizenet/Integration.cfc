@@ -65,10 +65,13 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			duplicateWindow = {fieldType="text", defaultValue=600, validate={dataType="numeric", minValue=0, required=true}},
 			loginID = {fieldType="text"},
 			transKey = {fieldType="text"},
-			testModeFlag = {fieldType="yesno", defaultValue="1"},
 			testServerFlag = {fieldType="yesno", defaultValue="0"},
-			gatewayURL = {fieldType="text", defaultValue="https://secure2.authorize.net/gateway/transact.dll"},
-			testGatewayURL = {fieldType="text", defaultValue="https://test2.authorize.net/gateway/transact.dll"}
+			gatewayURL = {fieldType="text", defaultValue="https://api.authorize.net/xml/v1/request.api"},
+			testGatewayURL = {fieldType="text", defaultValue="https://apitest.authorize.net/xml/v1/request.api"},
+			invoiceNumberTemplate = {fieldtype="text"},
+			invoiceUserFileOneTemplate = {fieldtype="text"},
+			invoiceUserFileTwoTemplate = {fieldtype="text"},
+			invoiceUserFileThreeTemplate = {fieldtype="text"}
 		};
 
 		return settings;

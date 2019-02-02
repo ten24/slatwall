@@ -58,7 +58,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stockAdjustmentItem#" edit="#rc.edit#" saveActionQueryString="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#">
+	<hb:HibachiEntityDetailForm object="#rc.stockAdjustmentItem#" sRedirectAction="admin:entity.detailstockadjustment" edit="#rc.edit#" saveActionQueryString="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#">
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>

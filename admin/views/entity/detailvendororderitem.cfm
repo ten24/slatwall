@@ -70,7 +70,9 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem.getStock().getLocation()#" property="locationName" edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="quantity" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="cost" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="price" edit="#rc.edit#">	
 				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="estimatedReceivalDateTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="shippingWeight" edit="#rc.edit#"/>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

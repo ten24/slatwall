@@ -2,10 +2,9 @@
 <cfparam name="this.datasource.name" />
 <cfparam name="this.datasource.username" default="" />
 <cfparam name="this.datasource.password" default="" />
-
 <cfsetting requesttimeout="1200" />
-	
 <cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwProductListingPage" />
+
 <cfif currenttables.recordCount>
 	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" name="productlistingpagecolumns" table="SwProductListingPage" />
 	<cfset local.found = false /> 
@@ -27,7 +26,7 @@
 	    </cfquery>
 	<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
 	    <cfquery name="local.updateSwProductListingPage" datasource="#this.datasource.name#">
-	        UPDATE SwProductListingPage SET productListingPageID=REPLACE(uuid(),'-','')
+	        UPDATE SwProductListingPage SET productListingPageID=(SELECT md5(UUID()))
 	    </cfquery>
 	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
 	    <cfquery name="local.updateSwProductListingPage" datasource="#this.datasource.name#"> 

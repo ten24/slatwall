@@ -60,9 +60,9 @@
                             >
                         </span>
 
-
+                        
                         <span
-                                data-ng-if="selectedProperty.$$group == 'compareCollections'"
+                                data-ng-if="selectedProperty.$$group == 'compareCollections' || ['integer','big_decimal','float'].indexOf(selectedProperty.ormtype) > -1 || ['id'].indexOf(selectedProperty.fieldtype) > -1"
                                 sw-display-item-aggregate
                                 data-selected-property="selectedProperty"
                                 data-properties-list="propertiesList"
@@ -70,7 +70,7 @@
                                 data-selected-property-changed="selectedPropertyChanged(selectedProperty, true)"
                                 >
                         </span>
-
+                        
 
                     </div>
                     <div class="col-xs-3">

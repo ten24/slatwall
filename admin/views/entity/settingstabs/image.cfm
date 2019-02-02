@@ -52,6 +52,7 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="imageAltString" />
+		<swa:SlatwallSetting settingName="imageMaxSize" />
 		<swa:SlatwallSetting settingName="imageMissingImagePath" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

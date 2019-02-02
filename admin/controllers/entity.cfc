@@ -58,7 +58,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="optionService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
-	property name="permissionService" type="any";
 	property name="promotionService" type="any";
 	property name="scheduleService" type="any";
 	property name="settingService" type="any";
@@ -77,6 +76,32 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods, 'settings');
 	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
+	this.secureMethods=listAppend(this.secureMethods, 'listaccount');
+	this.secureMethods=listAppend(this.secureMethods, 'listsku');
+	this.secureMethods=listAppend(this.secureMethods, 'listterm');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxsetup');
+	this.secureMethods=listAppend(this.secureMethods, 'listpaymentmethod');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxstocktransfer');
+	this.secureMethods=listAppend(this.secureMethods, 'listtaxcategory');
+	this.secureMethods=listAppend(this.secureMethods, 'listproduct');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderdelivery');
+	this.secureMethods=listAppend(this.secureMethods, 'liststockreceiver');
+	this.secureMethods=listAppend(this.secureMethods, 'listproductreview');
+	this.secureMethods=listAppend(this.secureMethods, 'listcartandquote');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderitem');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderpayment');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderfulfillment');
+	this.secureMethods=listAppend(this.secureMethods, 'listfulfillmentmethod');
+	this.secureMethods=listAppend(this.secureMethods, 'listlocation');
+	this.secureMethods=listAppend(this.secureMethods, 'listsite');
+	this.secureMethods=listAppend(this.secureMethods, 'listtype');
+	this.secureMethods=listAppend(this.secureMethods, 'listproducttype');
+	this.secureMethods=listAppend(this.secureMethods, 'listbrand');
+	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
+	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
+	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
+	
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -146,6 +171,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 		}
 	}
+	
+	//Collection
+	public void function processCollection(required struct rc){
+		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
+		genericProcessMethod(entityName="Collection",rc=arguments.rc);
+	}
 
 	// Email
 	public void function preprocessEmail(required struct rc) {
@@ -209,11 +241,68 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
 			}
 		}
+		if(!isNull(rc.orderID) && getService('orderService').getOrder(rc.orderID).validate('edit').hasErrors()){
+			getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+		}
+		
 		genericEditMethod(entityName="Order", rc=arguments.rc);
 		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
 			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
 		}
+		
+		
+	}
+	
+	public void function before(required struct rc){
+		var sites = getService('siteService').getSiteSmartList();
+		sites.addFilter('activeFlag', 1);
+		arguments.rc.sitesArray = sites.getRecords();
+		super.before(rc);
+	}
+	
+	public void function after(required struct rc){
+		if(structKeyExists(rc,'viewPath')){
+			request.layout = false;
+			getFW().setView("admin:entity.ajax");
+
+			rc.templatePath = "./#rc.viewPath#.cfm";
+
+		}
+	}
+	
+	//Account
+	public void function detailAccount(required struct rc){
+		genericDetailMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+	}
+
+	//Account
+	public void function editAccount(required struct rc){
+		genericEditMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+
 	}
 
 	public void function listOrder(required struct rc) {
@@ -221,6 +310,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		arguments.rc.orderSmartList.addInFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
 		arguments.rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
+		
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		arguments.rc.orderCollectionList.addOrderBy('orderOpenDateTime|DESC');
 	}
 
 	// Order (Carts and quotes)
@@ -229,6 +321,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		arguments.rc.orderSmartList.addInFilter('orderStatusType.systemCode', 'ostNotPlaced');
 		arguments.rc.orderSmartList.addOrder("createdDateTime|DESC");
+		
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','IN');
+		arguments.rc.orderCollectionList.addOrderBy('createdDateTime|DESC');
 
 		arguments.rc.entityActionDetails.createAction="admin:entity.createOrder";
 		getFW().setView("admin:entity.listorder");
@@ -411,15 +506,63 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	// Stock Adjustment
 	public void function createStockAdjustment(required struct rc) {
-		param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
-
 		arguments.rc.sRedirectAction = 'admin:entity.editstockadjustment';
 
 		// Call the generic logic
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
 
 		// Set the type correctly
-		rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
+		if(isNull(rc.stockAdjustmentType) || isValid('string',rc.stockAdjustmentType)){
+			param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
+			rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
+		}
+	}
+	
+	public void function detailStockAdjustment(required struct rc){
+		super.genericDetailMethod('StockAdjustment',arguments.rc);
+	}
+	
+	public void function editStockAdjustmentItem(required struct rc){
+		var stockAdjustment = getService('StockService').getStockAdjustmentItem(arguments.rc.stockAdjustmentItemID).getStockAdjustment();
+		var statusType = stockAdjustment.getstockAdjustmentStatusType().getSystemCode();
+		if(statusType == "sastClosed"){
+			getHibachiScope().showMessage(rbkey('validate.edit.StockAdjustmentItem'),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailstockadjustmentitem",maintainQueryString=true,rc=arguments.rc);
+		} else {
+			arguments.rc.fRedirectAction = 'admin:entity.editstockadjustmentitem';
+			// Call the generic logic
+			super.genericDetailMethod('StockAdjustmentItem',arguments.rc);
+		}
+	}
+	
+	public void function editStockAdjustment(required struct rc) {
+		var stockAdjustment = getService('StockService').getStockAdjustment(arguments.rc.stockAdjustmentID);
+		var statusType = stockAdjustment.getstockAdjustmentStatusType().getSystemCode();
+		
+		if(statusType == "sastClosed"){
+			getHibachiScope().showMessage(rbkey("validate.edit.StockAdjustment"),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailstockadjustment",maintainQueryString=true,rc=arguments.rc);
+		} else {
+			arguments.rc.fRedirectAction = 'admin:entity.editstockadjustment';
+			// Call the generic logic
+			super.genericEditMethod(entityName="StockAdjustment", rc=arguments.rc);
+		}
+	}
+	
+	public void function saveShippingMethodRate(required struct rc){
+		if(structKeyExists(rc,'manualRateIntegrationIDs') &&  structKeyExists(rc,'shippingIntegrationMethods')){
+			getService("ShippingService").associateManualRateAndIntegrations(rc.shippingMethodRateID,rc.manualRateIntegrationIDs,rc.shippingIntegrationMethods);
+		}
+		super.genericSaveMethod('ShippingMethodRate',rc);
+	}
+	
+		// Image
+	public void function saveImage(required struct rc){
+		var image = getService("ImageService").getImageByImageID(rc.imageID,true);
+		if(!image.isNew()){
+			image.runCalculatedProperties();
+		}
+		super.genericSaveMethod('Image',rc);
 	}
 
 	// Task
@@ -427,6 +570,29 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.runningFlag=false;
 
 		super.genericSaveMethod('Task',rc);
+	}
+	
+	public void function updateCalculatedProperties(required struct rc){
+		super.genericDetailMethod(rc.entityName, arguments.rc);
+		
+		var entity = rc[rc.entityName];
+		
+		entity.runCalculatedProperties();
+		
+		var params = {};
+		params[entity.getPrimaryIDPropertyName()] = entity.getPrimaryIDValue();
+		
+		if(!entity.hasErrors()){
+			getHibachiScope().showMessage(getHibachiScope().rbKey("admin.entity.updateCalculatedProperties_success"), "success"); 
+		}else{
+			entity.showErrorsAndMessages();
+		}
+		
+		renderOrRedirectSuccess( 
+			defaultAction="admin:entity.detail#lcase(rc.entityName)#", 
+			maintainQueryString=true,
+			rc=params
+		);
 	}
 
 
@@ -450,5 +616,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			FileDelete(filePath);
 		}
 		renderOrRedirectSuccess( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	public void function deleteImage(required struct rc){
+		if(structKeyExists(rc,"optionID") && !isNull(rc.optionID) && len(rc.optionID)){
+			getOptionService().removeDefaultImageFromOption(rc.optionID,rc.imageID);
+		}
+		genericDeleteMethod(entityName="image", rc=arguments.rc);
 	}
 }

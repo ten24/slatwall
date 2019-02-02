@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"cycleCountGroupName":		[{"contexts":"create,save","required":true}],
+		"frequencyToCount":			[{"contexts":"create,save","required":true,"dataType":"numeric","minValue":1}],
+		"daysInCycle":				[{"contexts":"create,save","required":true,"dataType":"numeric","minValue":1}]
+	}
+} 

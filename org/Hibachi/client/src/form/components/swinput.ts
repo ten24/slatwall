@@ -222,7 +222,7 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) != undefined && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) == "currency"){
+		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) != undefined && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) == "currency" && !this.edit){
 			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
 				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
@@ -318,7 +318,6 @@ class SWInputController{
 		}
 
 		this.edit = this.edit || true;
-		console.log(this.fieldType)
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";

@@ -1,4 +1,4 @@
-/*
+    /*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -48,14 +48,94 @@ Notes:
 */
 
 component accessors="true" output="false" extends="Slatwall.model.transient.fulfillment.ShippingRequestBean" {
-
+    
+    property name="packageCount" type="numeric";
+    property name="packageNumber" type="numeric";
+    property name="container" type="struct";
+    property name="containers" type="array";
+    property name="masterTrackingID" type="string";
+    
 	public any function init() {
 		// Set defaults
 
 
 		return super.init();
 	}
+	
+	public struct function getContainer(){
+	    if(isNull(variables.container)){
+	        var container = {};
+	        container.height = 1;
+	        container.width = 1;
+	        container.depth = 1;
+            variables.container = container;
+	    }
+	    var dimensions = 'height,width,depth';
+	    for(var dimension in dimensions){
+	        if(isNull(variables.container[dimension])){
+	            variables.container[dimension] = 1;
+	        }
+	    }
+	    
+	    return variables.container;
+	}
+	
+	public void function addContainer(struct container){
+	    if(isNull(arguments.container)){
+	        arguments.container = {};
+	        arguments.container.height = 1;
+	        arguments.container.width = 1;
+	        arguments.container.depth = 1;
+	    }
+	    var dimensions = 'height,width,depth';
+	    for(var dimension in dimensions){
+	        if(isNull(arguments.container[dimension])){
+	            arguments.container[dimension] = 1;
+	        }
+	    }
+	    if(isNull(variables.containers)){
+	    	variables.containers = [];
+	    }
+	    var containers = variables.containers;
+	    arrayAppend(containers,arguments.container);
+	    this.setContainers(containers);
+	}
 
-
+    public void function populateShippingItemsWithOrderDelivery_Create(required any processObject, boolean clear=false){
+        if(arguments.clear){
+			variables.shippingItemRequestBeans = [];
+		} 
+		var orderDeliveryItems = arguments.processObject.getOrderDeliveryItems();
+		for(var i=1; i <= arrayLen(orderDeliveryItems); i++) {
+		    var orderItem = getService('orderService').getOrderItem(orderDeliveryItems[i].orderItem.orderItemID);
+		    if(isnull(orderItem) || orderItem.getNewFlag()){
+		        continue;
+		    }
+		    var sku = orderItem.getSku();
+			addShippingItem(
+				value=sku.getPrice(),
+				weight=sku.setting( 'skuShippingWeight' ),
+				weightUnitOfMeasure=sku.setting( 'skuShippingWeightUnitCode' ),
+				quantity=orderDeliveryItems[i].quantity
+		    );
+		}
+    }
+    
+    public void function populateShippingItemsWithOrderDelivery_GenerateShippingLabel(required any processObject, boolean clear=false){
+        if(arguments.clear){
+			variables.shippingItemRequestBeans = [];
+		} 
+		var orderDeliveryItems = arguments.processObject.getOrderDelivery().getOrderDeliveryItems();
+		for(var i=1; i <= arrayLen(orderDeliveryItems); i++) {
+		    
+		    var sku = orderDeliveryItems[i].getOrderItem().getSku();
+			addShippingItem(
+				value=sku.getPrice(),
+				weight=sku.setting( 'skuShippingWeight' ),
+				weightUnitOfMeasure=sku.setting( 'skuShippingWeightUnitCode' ),
+				quantity=orderDeliveryItems[i].getQuantity()
+		    );
+		}
+    }
 
 }

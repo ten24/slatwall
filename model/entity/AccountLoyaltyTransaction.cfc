@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoyaltyTransaction" table="SwAccountLoyaltyTransaction" persistent="true"  extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountLoyaltyTransaction" hb_processContext="create" {
+component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoyaltyTransaction" table="SwAccountLoyaltyTransaction" persistent="true"  extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="accountLoyalty.accountLoyaltyTransactions" hb_processContext="create" {
 	
 	// Persistent Properties
 	property name="accountLoyaltyTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
