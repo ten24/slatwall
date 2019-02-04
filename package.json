@@ -55,6 +55,7 @@
     "ng-annotate-webpack-plugin": "0.2.0",
     "run-sequence": "1.1.4",
     "rxjs": "^5.4.3",
+    "script-loader": "^0.7.2",
     "strip-loader": "^0.1.2",
     "tsify": "^4.0.1",
     "typescript": "^2.9.2",
