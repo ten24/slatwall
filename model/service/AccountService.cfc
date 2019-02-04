@@ -336,6 +336,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.account;
 	}
+	
 	public any function saveAccount(required any account, struct data={}, string context="save"){
 		
 		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
@@ -344,6 +345,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.account.setAccountCode(accountCode);
 			}
 		}
+				
 		return super.save(entity=arguments.account,data=arguments.data);
 	}
 	
@@ -366,6 +368,18 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.addErrors(accountRelationship.getErrors());
 		}
 		
+		return arguments.account;
+	}
+	
+	public any function processAccount_updatePrimaryEmailAddress(required any account, required any processObject, struct data={}) {
+		arguments.account = arguments.processObject.getAccount();
+		if (!isNull(arguments.processObject.getEmailAddress())) {
+			arguments.account.getPrimaryEmailAddress().setEmailAddress(arguments.processObject.getEmailAddress());
+		}
+		this.saveAccount(arguments.account);
+		if (arguments.account.hasErrors()) {
+			arguments.account.addError(arguments.account.getErrors());
+		}
 		return arguments.account;
 	}
 
