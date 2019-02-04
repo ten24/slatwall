@@ -56,9 +56,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="emailAddressConfirm";
 	
     public boolean function isUniqueEmailToAccount() {
-        
         var existingEmailAddresses = [];
-        for (accountEmailAddressObject in account.getAccountEmailAddresses()) {
+        for (var accountEmailAddressObject in account.getAccountEmailAddresses()) {
             ArrayAppend(existingEmailAddresses, accountEmailAddressObject.getEmailAddress());
         }
         if (ArrayContains(existingEmailAddresses, emailAddress)) {
