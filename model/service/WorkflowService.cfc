@@ -137,11 +137,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				var workflowTriggers = getWorkflowDAO().getWorkflowTriggersForEvent(eventName = arguments.eventName);
 
 				for (var workflowTrigger in workflowTriggers) {
-					if(
-						workflowTrigger.getWorkflow().getActiveFlag()
-					){
-						runWorkflowByEventTrigger(workflowTrigger,arguments.entity);
-					}
+					runWorkflowByEventTrigger(workflowTrigger,arguments.entity);
 				}
 			//}
 		}
@@ -479,6 +475,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
 			
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+			
 			getHibachiDAO().flushORMSession();
 			
 			getHibachiCacheService().resetCachedKey('workflowDAO_getWorkflowTriggerEventsArray');
@@ -500,6 +498,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
+			
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			
 			getHibachiDAO().flushORMSession();
 			
@@ -527,6 +527,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there aren't any errors then flush, and clear cache
 		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
+			
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			
 			getHibachiDAO().flushORMSession();
 			
