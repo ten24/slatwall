@@ -114,6 +114,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.createAuthenticationFlag;
 	}
 	
+	public any function getOrderCreatedSite(){
+		if(!structKeyExists(variables,'orderCreatedSite') && !isNull(getHibachiScope().getCurrentRequestSite())){
+			variables.orderCreatedSite = getHibachiScope().getCurrentRequestSite();
+		}
+		if(structKeyExists(variables,'orderCreatedSite')){
+			return variables.orderCreatedSite;
+		}
+	}
+	
 	public array function getFulfillmentMethodIDOptions() {
 		if(!structKeyExists(variables, "fulfillmentMethodIDOptions")) {
 			var fmSL = getService("fulfillmentService").getFulfillmentMethodSmartList();

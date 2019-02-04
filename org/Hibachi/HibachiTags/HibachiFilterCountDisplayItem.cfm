@@ -239,9 +239,9 @@
 												value=listItem,
 												count=optionLabelCollectionList.getRecordsCount()
 											}/>
+											<!--- array append structure by reference to prevent dupes --->
+											<cfset arrayAppend(newOptionData,newOptionStruct[listItem])/>
 										</cfif>
-										<!--- array append structure by reference to prevent dupes --->
-										<cfset arrayAppend(newOptionData,newOptionStruct[listItem])/>
 									</cfif>
 								</cfif>
 							</cfloop> 
