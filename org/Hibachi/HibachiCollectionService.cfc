@@ -543,6 +543,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					
 						for(var i=1; i<=listLen(newQueryKeys[key], arguments.delimiter); i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, arguments.delimiter);
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, delimiter);
 							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, arguments.delimiter);
 								if(arguments.toggleKeys) {
