@@ -68,6 +68,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderOriginID" hb_rbKey="entity.orderOrigin" hb_formFieldType="select";
 	property name="defaultStockLocationID" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="select";
 	property name="orderCreatedSite" cfc="Site" fieldtype="many-to-one";
+	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
 	property name="organizationFlag" hb_rbKey="entity.account.organizationFlag" hb_formFieldType="yesno" default=0;
 
 	// Cached Properties
@@ -146,5 +147,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		arrayAppend(options, collectionList.getRecords(), true );
 		
 		return options;
+	}
+	
+	public any function getAccountCreatedSiteOptions(){
+		return getOrderCreatedSiteOptions();
 	}
 }
