@@ -528,6 +528,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Get all keys and values from the old query string added
 		for(var key in oldQueryKeys) {
 			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				// decode needed in cases where the filter value is encoded (ex: The filter originally had a space before being passed into the query string)
+				oldQueryKeys[key] = URLDecode(oldQueryKeys[key]);
 				if(!structKeyExists(newQueryKeys, key)) {
 					modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 				} else {
@@ -541,8 +543,8 @@ component output="false" accessors="true" extends="HibachiService" {
 					
 						for(var i=1; i<=listLen(newQueryKeys[key], arguments.delimiter); i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, arguments.delimiter);
-							//when comparing, let's make sure we decode the old value
-							var findCount = listFindNoCase(urlDecode(oldQueryKeys[key]), thisVal, arguments.delimiter);							if(findCount) {
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, delimiter);
+							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, arguments.delimiter);
 								if(arguments.toggleKeys) {
 									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, arguments.delimiter);
