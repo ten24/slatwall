@@ -90,16 +90,27 @@ Notes:
 								   WHERE runningFlag=true') />
 
 	</cffunction> 
+	
+	<cffunction name="resetExpiredWorkflows">
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			UPDATE swWorkflowTrigger 
+			SET runningFlag = 0
+			WHERE runningFlag=true AND DATE_ADD(nextRunDateTime, INTERVAL timeout MINUTE) < NOW()
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="getDueWorkflows" access="public" returntype="array">
 		<cfreturn ORMExecuteQuery('FROM
 										SlatwallWorkflowTrigger
 									WHERE
+										workflow.activeFlag = true
+									AND
 										triggerType = :triggerType
 									AND
 										(runningFlag is NULL or runningFlag = false)
 									AND
-										(nextRunDateTime IS NULL OR nextRunDateTime <= CURRENT_TIMESTAMP())
+										nextRunDateTime <= CURRENT_TIMESTAMP()
 								',{triggerType='Schedule'})/>
 
 	</cffunction>
