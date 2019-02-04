@@ -637,10 +637,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.orderFulfillment.removeFulfillmentShippingMethodOption( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c] );
 		
 					// Else if this method option is the same shipping method that the user previously selected, then we can just update the fulfillmentCharge, as long as this wasn't set manually.
-					} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && 
-							   arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && 
-							   !arguments.orderFulfillment.getManualFulfillmentChargeFlag() &&
-								!len(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier()
+					} else if (
+						!isNull(arguments.orderFulfillment.getShippingMethod()) 
+						&& arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() 
+						&& !arguments.orderFulfillment.getManualFulfillmentChargeFlag() 
+						&& !len(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())
 					) {
 						arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
 					}
