@@ -2831,6 +2831,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderFulfillment;
 	}
 	
+	// Process: Order Fulfillment
+	public any function processOrderFulfillment_manualHandlingFee(required any orderFulfillment, struct data={}) {
+
+		arguments.orderFulfillment.setManualHandlingFeeFlag( true );
+		arguments.orderFulfillment = this.saveOrderFulfillment(arguments.orderFulfillment, arguments.data);
+
+		if(arguments.orderFulfillment.hasErrors()) {
+			arguments.orderFulfillment.setManualHandlingFeeFlag( false );
+		}
+
+		return arguments.orderFulfillment;
+	}
+	
 	public any function processOrderFulfillment_changeFulfillmentMethod(required any orderFulfillment, required any processObject){
 		
 		if(isNull(arguments.processObject.getFulfillmentMethod())){
