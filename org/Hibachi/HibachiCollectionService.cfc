@@ -528,6 +528,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Get all keys and values from the old query string added
 		for(var key in oldQueryKeys) {
 			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				// decode needed in cases where the filter value is encoded (ex: The filter originally had a space before being passed into the query string)
+				oldQueryKeys[key] = URLDecode(oldQueryKeys[key]);
 				if(!structKeyExists(newQueryKeys, key)) {
 					modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 				} else {
