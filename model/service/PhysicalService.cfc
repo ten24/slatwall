@@ -148,6 +148,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getCountFile()) ) {
 			
+			getService('hibachiTagService').cfsetting(requesttimeout="600");
+			
 			// Get the temp directory
 			var tempDir = getHibachiTempDirectory();
 			
@@ -155,7 +157,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var documentData = fileUpload( tempDir,'countFile','','makeUnique' );
 			
 			//check uploaded file if its a valid text file
-			if( documentData.serverFileExt != "txt" ){
+			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv" ){
 				
 				// Make sure that nothing is persisted
 				getHibachiScope().setORMHasErrors( true );
@@ -326,7 +328,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.cycleCountBatch.addPhysical(newPhysical);
 
 			// Process Physical
-			// this.processPhysical(newPhysical, {}, 'commit'); ];
+			// this.processPhysical(newPhysical, {}, 'commit');
 		}
 		getHibachiScope().flushORMSession();
 		arguments.data['sRedirectQS']='physicalID=#newPhysical.getPhysicalID()#';
@@ -336,6 +338,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
+	
+	public any function exportPhysical(){
+
+		return getService('hibachiService').export(getPhysicalDiscrepancyQuery(argumentCollection=arguments),'skuCode,locationName,productName,QOH,discrepancy');
+	}
 	
 	// ======================  END: Status Methods ============================
 	
