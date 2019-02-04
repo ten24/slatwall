@@ -6,7 +6,7 @@ import {ScheduleService} from "./services/scheduleservice";
 
 //directives
 import {SWAdminCreateSuperUser} from "./components/swadmincreatesuperuser";
-import {SWWorkflowBasic,SwWorkflowBasic} from "./components/swworkflowbasic";
+import {SWWorkflowBasic} from "./components/swworkflowbasic";
 import {SWWorkflowCondition} from "./components/swworkflowcondition";
 import {SWWorkflowConditionGroupItem} from "./components/swworkflowconditiongroupitem";
 import {SWWorkflowConditionGroups} from "./components/swworkflowconditiongroups";
