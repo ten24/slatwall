@@ -62,13 +62,7 @@
 			$.slatwall.setRBLocale( $.siteConfig('javaLocale') );
 			
 			// Setup the correct site in the request object
-			if(isNull($.slatwall.getCurrentRequestSite())){
-				var site = $.slatwall.getService("siteService").getSiteByCMSSiteID( $.event('siteID') );
-				$.slatwall.setCurrentRequestSite( site );
-			}else{
-				var site = $.slatwall.getCurrentRequestSite();
-			}
-				$.slatwall.setSite( site );
+			$.slatwall.setSite( $.slatwall.getService("siteService").getSiteByCMSSiteID( $.event('siteID') ) );
 			
 			// Call any public slatAction methods that are found
 			if(len($.event('slatAction'))) {
