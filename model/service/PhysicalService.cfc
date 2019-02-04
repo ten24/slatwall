@@ -147,8 +147,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getCountFile()) ) {
-
-			getService('hibachiTagService').cfsetting(requesttimeout="600");			
+			
 			// Get the temp directory
 			var tempDir = getHibachiTempDirectory();
 			
@@ -156,7 +155,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var documentData = fileUpload( tempDir,'countFile','','makeUnique' );
 			
 			//check uploaded file if its a valid text file
-			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv"  ){
+			if( documentData.serverFileExt != "txt" ){
 				
 				// Make sure that nothing is persisted
 				getHibachiScope().setORMHasErrors( true );
@@ -270,71 +269,73 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	// CycleCountBatch
-	public any function processCycleCountBatch_physicalCount(required any cycleCountBatch, required any processObject) {
+	public any function processCycleCountBatch_physicalCount(required any cycleCountBatch, required any processObject, struct data={}) {
 
-		// create Physical
 		var newPhysical = this.newPhysical();
-		var locationPhysicalCounts = {};
-		newPhysical.setPhysicalName(arguments.processObject.getPhysicalName());
+		newPhysical.addLocation(arguments.cycleCountBatch.getLocation());
 		newPhysical.setCycleCountBatch(arguments.cycleCountBatch);
-			
-		for(var cycleCountBatchItem in arguments.cycleCountBatch.getCycleCountBatchItems()) {
-			if(cycleCountBatchItem.getQuantity() != '') {
+		newPhysical.setPhysicalName(arguments.processObject.getPhysicalName());
+		
+		var newPhysicalCount = this.newPhysicalCount();
+		newPhysicalCount.setLocation(arguments.cycleCountBatch.getLocation());
+		newPhysicalCount.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
+		newPhysicalCount.setPhysical(newPhysical);
+		this.savePhysical(newPhysical);
+		
+		for(var cycleCountItem in arguments.data.cycleCountItems) {
+			if(!isNull(cycleCountItem.quantity) && cycleCountItem.quantity != '' && isNumeric(cycleCountItem.quantity)) {
+				var cycleCountBatchItem = this.newCycleCountBatchItem();
+				cycleCountBatchItem.setStock(getStockService().getStockBySkuIDAndLocationID(cycleCountItem.skuID,newPhysicalCount.getLocation().getLocationID()));
+				cycleCountBatchItem.setCycleCountBatch(arguments.cycleCountBatch);
+				cycleCountBatchItem.setCycleCountGroup(this.getCycleCountGroup(cycleCountItem.cycleCountGroupID));
+				cycleCountBatchItem.setQuantity(cycleCountItem.quantity);
+				cycleCountBatchItem = this.saveCycleCountBatchItem(cycleCountBatchItem);
+				if(cycleCountBatchItem.hasErrors()){
+					newPhysicalCount.addErrors(cycleCountBatchItem.getErrors());
+				}
 				
-				if(!newPhysical.hasLocation(cycleCountBatchItem.getStock().getLocation())) {
-					newPhysical.addLocation(cycleCountBatchItem.getStock().getLocation());
-					// create Physical Count
-					var newPhysicalCount = this.newPhysicalCount();
-					newPhysicalCount.setPhysical(newPhysical);
-					newPhysicalCount.setLocation(cycleCountBatchItem.getStock().getLocation());
-					newPhysicalCount.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
-					newPhysicalCount = this.savePhysical(newPhysicalCount);
-					locationPhysicalCounts[cycleCountBatchItem.getStock().getLocation().getLocationID()] = newPhysicalCount;
-				}
-				if(!newPhysical.hasSku(cycleCountBatchItem.getStock().getSku())) {
-					newPhysical.addSku(cycleCountBatchItem.getStock().getSku());
-				}
 				// create Physical Count Item
 				var newPhysicalCountItem = this.newPhysicalCountItem();
-				newPhysicalCountItem.setPhysicalCount(locationPhysicalCounts[cycleCountBatchItem.getStock().getLocation().getLocationID()]);
+				newPhysicalCountItem.setPhysicalCount(newPhysicalCount);
 				newPhysicalCountItem.setQuantity(cycleCountBatchItem.getQuantity());
 				newPhysicalCountItem.setStock(cycleCountBatchItem.getStock());
 				newPhysicalCountItem.setSkuCode(cycleCountBatchItem.getStock().getSku().getSkuCode());
 				newPhysicalCountItem.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
 				newPhysicalCountItem.setCycleCountBatchItem(cycleCountBatchItem);
 				newPhysicalCountItem = this.savePhysicalCountItem(newPhysicalCountItem);
+				if(newPhysicalCountItem.hasErrors()){
+					newPhysicalCount.addErrors(newPhysicalCountItem.getErrors());
+				}
 				
-				// save the physical to prevent the object references an unsaved transient instance
-				newPhysical = this.savePhysical(newPhysical);
-				
-				cycleCountBatchItem.getStock().getSku().updateCalculatedProperties(true);
+				if(!newPhysicalCount.hasErrors()){
+					newPhysical.addSku(cycleCountBatchItem.getStock().getSku());
+				}else{
+					newPhysical.addErrors(newPhysicalCount.getErrors());
+				}
 			}
 		}
 		
 		//Need to validate the physical in case there were no cycleCountBatchItem with a quantity
-		newPhysical.validate(context="cycleCountBatchPhysicalCount");
+		if(!newPhysical.hasErrors()){
+			newPhysical.validate(context="save");
+		}
 		
 		if(newPhysical.hasErrors()) {
 			arguments.cycleCountBatch.addErrors(newPhysical.getErrors());
 		} else {
-			arguments.cycleCountBatch.setPhysical(newPhysical);
-			arguments.cycleCountBatch.setCycleCountBatchStatusType( getService('TypeService').getTypeBySystemCode('ccbstClosed'));
-			
-			// Process Physical
-			this.processPhysical(newPhysical, {}, 'commit'); 
-		}
+			arguments.cycleCountBatch.addPhysical(newPhysical);
 
+			// Process Physical
+			// this.processPhysical(newPhysical, {}, 'commit'); ];
+		}
+		getHibachiScope().flushORMSession();
+		arguments.data['sRedirectQS']='physicalID=#newPhysical.getPhysicalID()#';
 		return arguments.cycleCountBatch;
 	}
 
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
-	
-	public any function exportPhysical(){
-		
-		return getService('hibachiService').export(getPhysicalDiscrepancyQuery(argumentCollection=arguments),'skuCode,locationName,productName,QOH,discrepancy');
-	}
 	
 	// ======================  END: Status Methods ============================
 	
@@ -354,31 +355,21 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Return the entity
 		return arguments.entity;
 	}
-
+	
 	public any function processCycleCountBatch_create(required any cycleCountBatch, required any processObject, struct data={}) {
 		arguments.cycleCountBatch.setCycleCountBatchStatusType( getService('TypeService').getTypeBySystemCode('ccbstOpen'));
-			
-		var cycleCountGroupCollectionList = getService('physicalService').getCycleCountGroupCollectionList();
-		cycleCountGroupCollectionList.addFilter("cycleCountGroupID",arguments.processObject.getCycleCountGroups(), "IN");
-		
-		for (var cycleCountGroupStruct in cycleCountGroupCollectionList.getRecords()){
-			var cycleCountGroup = getService("physicalService").getCycleCountGroup(cycleCountGroupStruct.cycleCountGroupID);
-			
+		arguments.cycleCountBatch.setCycleCountBatchName(arguments.processObject.getCycleCountBatchName());
+		arguments.cycleCountBatch.setLocation(arguments.processObject.getLocation());
+
+		var cycleCountGroupIDs = arguments.processObject.getCycleCountGroups();
+		for (var cycleCountGroupID in cycleCountGroupIDs){
+			var cycleCountGroup = getService("physicalService").getCycleCountGroup(cycleCountGroupID);
 			arguments.cycleCountBatch.addCycleCountGroup(cycleCountGroup);
-			
-			for(var stockDetails in cyclecountgroup.getCycleCountGroupsStockCollection().getRecords(formatRecords=false)) {
-					var stock = getService('StockService').getStock( stockDetails['stockID'] );
-		
-					var newCycleCountBatchItem = getHibachiScope().newEntity('cycleCountBatchItem');
-					newCycleCountBatchItem.setCycleCountBatch(arguments.cycleCountBatch);
-					newCycleCountBatchItem.setStock(stock);
-					getHibachiScope().saveEntity(newCycleCountBatchItem);
-				}	
 		}
 		
 		return save(arguments.cycleCountBatch, arguments.data);
 	}
-	
+
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
