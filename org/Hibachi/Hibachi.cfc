@@ -629,6 +629,17 @@ component extends="framework.one" {
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 
+					try{
+						var q = new query();
+						q.setSQL('SHOW TABLES;');
+						q.setSQL('SELECT 1');
+						q.setDatasource(variables.framework.hibachi.readOnlyDataSource);
+						q.execute();
+					}catch(any e){
+						structDelete(variables.framework.hibachi,'readOnlyDataSource');
+						variables.framework.hibachi.readOnlyDataSource=this.datasource.name;
+					}
+
 					// Setup the app init data
 					var applicationInitData = {};
 					applicationInitData["initialized"] = 				false;
