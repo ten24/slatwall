@@ -46,6 +46,17 @@
 	Notes:
 	
 --->
+<cfset local.orderPaymentCollectionList = getService('orderService').getOrderPaymentCollectionList() />
+<cfset local.orderPaymentCollectionList.addFilter('order.orderID',arguments.requestBean.getOrder().getOrderID()) />
+<cfset local.orderPaymentCollectionList.addFilter('purchaseOrderNumber','null','IS NOT') />
+<cfset local.orderPaymentCollectionList.addFilter('orderPaymentStatusType.systemCode','opstActive','=') />
+<cfset local.orderPaymentCollectionList.setDisplayProperties('purchaseOrderNumber') />
+<cfset local.orderPayments = local.orderPaymentCollectionList.getRecords() />
+<cfloop array="#local.orderPayments#" index="local.currentOrderPayment">
+	<cfif len(local.currentOrderPayment['purchaseOrderNumber']) >
+		<cfset local.orderPayment = local.currentOrderPayment />
+	</cfif>
+</cfloop>
 
 <cfoutput >
 {
@@ -63,7 +74,7 @@
     "Request":{
       "RequestOption":"validate"
     },
-    "TransactionReference":"1111",
+    "TransactionReference":"#arguments.requestBean.getOrder().getOrderNumber()#",
     "Shipment":{
       "Service":{
         "Code":"#arguments.requestBean.getShippingIntegrationMethod()#"
@@ -91,10 +102,11 @@
         "ShipperNumber": "#setting('shipperNumber')#"
   	  },
       "ShipTo":{
-        "Name":"#arguments.requestBean.getShipToName()#",
         "AttentionName":"#arguments.requestBean.getShipToName()#",
         <cfif len(arguments.requestBean.getShipToCompany())>
-    		"CompanyDisplayableName":"#arguments.requestBean.getShipToCompany()#",
+    		  "Name":"#arguments.requestBean.getShipToCompany()#",
+    		<cfelse>
+    		  "Name":"#arguments.requestBean.getShipToName()#",
         </cfif>
         <cfif len(arguments.requestBean.getShipToPhoneNumber())>
 	        "Phone":{
@@ -105,7 +117,11 @@
 	    	"EmailAddress":"#arguments.requestBean.getShipToEmailAddress()#",
         </cfif>
         "Address":{
+          <cfif NOT len(arguments.requestBean.getShipToStreet2Address())>
           "AddressLine":"#arguments.requestBean.getShipToStreetAddress()#",
+          <cfelse>
+          "AddressLine":["#arguments.requestBean.getShipToStreetAddress()#","#arguments.requestBean.getShipToStreet2Address()#"],
+          </cfif>
           "City":"#arguments.requestBean.getShipToCity()#",
           "StateProvinceCode":"#arguments.requestBean.getShipToStateCode()#",
           "PostalCode":"#arguments.requestBean.getShipToPostalCode()#",
@@ -156,22 +172,65 @@
         </cfif>
         }
       },
-     <cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' )>
+     <cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' ) />
+     <cfset local.packageCount = 0 />
+     <cfif NOT isNull(arguments.requestBean.getContainers())>
+      <cfset local.packageCount = arrayLen( arguments.requestBean.getContainers() ) />
+     </cfif>
     		"Package":[
-    		<cfif local.totalWeight gt 150>
-    			<cfset local.finalWeight = local.totalWeight MOD 150>
+    		<cfif local.packageCount EQ 0 AND local.totalWeight gt 150 >
+    			<cfset local.finalWeight = local.totalWeight MOD 150 />
     			<cfloop index="count" from="1" to="#round(abs(local.totalWeight / 150))#">
     				
     			  {
-    			    "PackagingType": { "Code": "02" },
+    			    "Packaging": { "Code": "02" },
     			    "PackageWeight": {
     			      "Weight": "150",
     			      "UnitOfMeasurement": { "Code": "LBS" }
-    			    }
+    			    },
+    			    "ReferenceNumber":[
+                <cfif NOT isNull(arguments.requestBean.getReference1())>
+                  {
+                    "Code":"DP",
+                    "Value":"#arguments.requestBean.getReference1()#"
+                  },
+                </cfif>
+                {
+                  "Code":"TN",
+                  "Value":"#arguments.requestBean.getOrder().getOrderNumber()#"
+                }
+              ]
     			  }<cfif count LT round(abs(local.totalWeight / 150))>,</cfif>
-    					
     			</cfloop>
     			]
+    		<cfelseif local.packageCount GT 0 >
+    		  <cfset packageNumber = 0/>
+    		  <cfloop array="#arguments.requestBean.getContainers()#" index="container">
+    		    <cfset packageNumber++/>
+    		    {
+    			    "Packaging": { "Code": "02" },
+    			    "PackageWeight": {
+    			      "Weight": "#isNull(container.weight) ? local.totalWeight / local.packageCount : container.weight#",
+    			      "UnitOfMeasurement": { "Code": "LBS" }
+    			    },
+    			    "ReferenceNumber":[
+                <cfif NOT isNull(arguments.requestBean.getReference1())>
+                  {
+                    "Code":"DP",
+                    "Value":"#arguments.requestBean.getReference1()#"
+                  },
+                </cfif>
+                {
+                  "Code":"TN",
+                  "Value":"#arguments.requestBean.getOrder().getOrderNumber()#"
+                }
+              ]
+    			  }<cfif packageNumber LT local.packageCount>
+    			    ,
+    			  <cfelse>
+    			    ]
+    			  </cfif>
+    		  </cfloop>
     		<cfelse>
     			
     		  {
@@ -183,7 +242,19 @@
       					"Weight":"#arguments.requestBean.getTotalWeight( unitCode='lb' )#",	
       				</cfif>
       				"UnitOfMeasurement": { "Code": "LBS" }
-      			  }
+      			  },
+    			  "ReferenceNumber":[
+              <cfif NOT isNull(arguments.requestBean.getReference1())>
+                {
+                  "Code":"DP",
+                  "Value":"#arguments.requestBean.getReference1()#"
+                },
+              </cfif>
+              {
+                "Code":"TN",
+                "Value":"#arguments.requestBean.getOrder().getOrderNumber()#"
+              }
+            ]
     		  }
     		]
     		</cfif>

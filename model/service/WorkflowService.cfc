@@ -54,6 +54,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
+		
+	
 		//only flush on after
 		if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
 			getHibachiScope().flushORMSession();
@@ -110,6 +112,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				workflowTrigger.setWorkflowTriggerException(e);
 			}
 		}
+		
 
 		if (!isNull(workflowTriggerHistory)) {
 			// Set the end for history
@@ -134,11 +137,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				var workflowTriggers = getWorkflowDAO().getWorkflowTriggersForEvent(eventName = arguments.eventName);
 
 				for (var workflowTrigger in workflowTriggers) {
-					if(
-						workflowTrigger.getWorkflow().getActiveFlag()
-					){
-						runWorkflowByEventTrigger(workflowTrigger,arguments.entity);
-					}
+					runWorkflowByEventTrigger(workflowTrigger,arguments.entity);
 				}
 			//}
 		}
@@ -154,28 +153,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function runAllWorkflowsByScheduleTrigger() {
 		
-		var runningWorkflowTriggers = getWorkflowDAO().getRunningWorkflows(); 
-		
-		for(var i=1; i<=arrayLen(runningWorkflowTriggers); i++){
-			var runningWorkflowTrigger = runningWorkflowTriggers[i];
-			var timeout = 90; 
-			if(structKeyExists(runningWorkflowTrigger, "timeout")){
-				timeout = runningWorkflowTrigger["timeout"]; 
-			}
-			getWorkflowDAO().updateWorkflowTriggerRunning(runningWorkflowTrigger["workflowTriggerID"],false,timeout);
-		}
-
-        getHibachiDAO().flushORMSession();
+		getWorkflowDAO().resetExpiredWorkflows(); 
+	
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		for(var workflowTrigger in workflowTriggers) {
-			if(workflowTrigger.getWorkflow().getActiveFlag()){
-				runWorkflowsByScheduleTrigger(workflowTrigger);
-			}
+			runWorkflowsByScheduleTrigger(workflowTrigger);
 		}
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
+		
+		var timeout = workflowTrigger.getTimeout();
+		if(!isNull(timeout)){
+			//convert to seconds
+			timeout = timeout * 60;
+			getService('hibachiTagService').cfsetting(requesttimeout=timeout);
+		}
 
+		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
+			return arguments.workflowTrigger;
+		}
+		
 		//Change WorkflowTrigger runningFlag to TRUE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
 
@@ -289,6 +287,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		//Change WorkflowTrigger runningFlag to FALSE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
+	
 
 		if(!isNull(workflowTriggerHistory)) {
 			// Set the end for history
@@ -422,7 +421,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			// Check to see if the task is active and the entity object passes the conditions validation
 			if(
-				workflowTask.getActiveFlag() && workflowTask.getWorkflow().getActiveFlag() 
+				workflowTask.getActiveFlag() 
 				&& (
 					!structKeyExists(arguments.data,'entity')
 					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
@@ -476,6 +475,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
 			
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+			
 			getHibachiDAO().flushORMSession();
 			
 			getHibachiCacheService().resetCachedKey('workflowDAO_getWorkflowTriggerEventsArray');
@@ -497,6 +498,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
+			
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			
 			getHibachiDAO().flushORMSession();
 			
@@ -524,6 +527,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there aren't any errors then flush, and clear cache
 		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
+			
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			
 			getHibachiDAO().flushORMSession();
 			
@@ -623,6 +628,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.comparisonOperator;
 	}	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
+		
+		getHibachiDAO().flushORMSession();
+		
 		/*
 		
 		You are going to want to use:

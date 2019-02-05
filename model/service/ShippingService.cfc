@@ -637,9 +637,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.orderFulfillment.removeFulfillmentShippingMethodOption( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c] );
 		
 					// Else if this method option is the same shipping method that the user previously selected, then we can just update the fulfillmentCharge, as long as this wasn't set manually.
-					} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && 
-							   arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && 
-							   !arguments.orderFulfillment.getManualFulfillmentChargeFlag()
+					} else if (
+						!isNull(arguments.orderFulfillment.getShippingMethod()) 
+						&& arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() 
+						&& !arguments.orderFulfillment.getManualFulfillmentChargeFlag() 
+						&& !len(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())
 					) {
 						arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
 					}
@@ -652,7 +654,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
 		
 					// If the fulfillmentCharge wasn't done manually then this can be updated
-					if(!arguments.orderFulfillment.getManualFulfillmentChargeFlag()) {
+					if(!arguments.orderFulfillment.getManualFulfillmentChargeFlag() && !len(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())) {
 						arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getTotalCharge() );
 					}
 				}

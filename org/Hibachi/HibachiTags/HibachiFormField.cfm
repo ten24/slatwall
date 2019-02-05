@@ -233,11 +233,15 @@
 										<cfelseif key eq "value">
 											<cfset thisOptionValue = option[ key ] />
 										<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#encodeForHTML(option[key])#"', ' ') />
+											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#request.context.fw.getHibachiScope().hibachiHtmlEditFormat(option[key])#"', ' ') />
 										</cfif>
 									</cfif>
 								</cfloop>
 							</cfif>
+							<cfset thisOptionValue = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionValue)>
+							<cfset thisOptionName = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionName)>
+							<cfset thisOptionData = thisOptionData>
+
 							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
 						</cfloop>
 					</select>

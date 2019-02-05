@@ -727,7 +727,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			for(var i=1; i<=arrayLen(validations[ arguments.propertyName ]); i++) {
 				var constraintDetails = validations[ arguments.propertyName ][i];
 				if(!structKeyExists(constraintDetails, "conditions")) {
-					if(constraintDetails.constraintType == "required") {
+					if(constraintDetails.constraintType == "required" && constraintDetails.constraintValue) {
 						validationClass = listAppend(validationClass, "required", " ");
 					} else if (constraintDetails.constraintType == "dataType") {
 						if(constraintDetails.constraintValue == "numeric") {

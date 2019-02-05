@@ -847,13 +847,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( arguments.processObject.getCopyFromType() == 'accountPaymentMethod' && len(arguments.processObject.getAccountPaymentMethodID())) {
 			// Setup the newOrderPayment from the existing payment method
 			var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.processObject.getAccountPaymentMethodID() );
-			newOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
-
+			if ( accountPaymentMethod.getAccount().getAccountID() == arguments.order.getAccount().getAccountID() ){
+				newOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
+			} else {
+				newOrderPayment.addError('orderPaymentID', "An issue occured while adding your Order Payment.");
+			}
 		// If they just used an exiting account address then we can try that by itself
 		}else if(arguments.processObject.getCopyFromType() == 'previousOrderPayment' && len(arguments.processObject.getPreviousOrderPaymentID())){
 			// Setup the newOrderPayment from the existing payment method
 			var orderPayment = getService('OrderService').getOrderPayment(arguments.processObject.getPreviousOrderPaymentID());
-			newOrderPayment.copyFromOrderPayment(orderPayment);
+			if ( orderPayment.getOrder().getOrderID() == arguments.order.getOrderID() ){
+				newOrderPayment.copyFromOrderPayment( orderPayment );
+			} else {
+				newOrderPayment.addError('orderPaymentID', "An issue occured while adding your Order Payment.");
+			}
 
 		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
@@ -2266,6 +2273,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var invoiceNumber = "#arguments.processObject.getOrder().getOrderNumber()#-#orderDeliveriesCount#";
 		
 		return invoiceNumber;
+	}
+	
+	public any function processOrderDelivery_generateShippingLabel(required any orderDelivery, required any processObject, struct data){
+		//prevent overwriting existing labels
+
+		if (
+			(
+				isNull(arguments.orderDelivery.getTrackingNumber())
+				|| !len(arguments.orderDelivery.getTrackingNumber())
+			)
+			&& arguments.orderDelivery.getOrderFulfillment().hasShippingIntegration()
+		) {
+
+			//get the shipping integration from the previously attempting label generation 
+			var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.orderDelivery.getOrderFulfillment().getShippingIntegration());
+
+			// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
+			if(structKeyExists(shippingIntegrationCFC, 'processShipmentRequest')){
+				shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_generateShippingLabel(arguments.processObject);
+			}
+		}
+		return arguments.orderDelivery;
 	}
 
 	// Process: Order Delivery

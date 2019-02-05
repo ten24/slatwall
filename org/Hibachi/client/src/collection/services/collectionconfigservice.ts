@@ -161,6 +161,14 @@ class CollectionConfig {
             jsonCollection = angular.fromJson(jsonCollection);
         }
         
+        if(angular.isDefined(jsonCollection['ORDERBY']) && !angular.isDefined(jsonCollection.orderBy)){
+            jsonCollection.orderBy = jsonCollection['ORDERBY'];
+        }
+
+        if(angular.isDefined(jsonCollection['PERIODINTERVAL']) && !angular.isDefined(jsonCollection.periodInterval)){
+            jsonCollection.periodInterval = jsonCollection['PERIODINTERVAL'];
+        }
+        
 
         this.baseEntityAlias = jsonCollection.baseEntityAlias;
         this.baseEntityName = jsonCollection.baseEntityName;
@@ -170,6 +178,28 @@ class CollectionConfig {
         }
         if(angular.isDefined(jsonCollection.filterGroups)){
             this.validateFilter(jsonCollection.filterGroups);
+            
+            //backend collections don't add displayValue and displayPropertyIdentifier to their configs
+            // so let's fix that
+            for(let filterGroup of jsonCollection.filterGroups){
+
+                for(let filter of filterGroup['filterGroup']){
+
+                    if(!filter.displayPropertyIdentifier){
+                        let convertedPropertyIdentifier = filter.propertyIdentifier.replace(/_/g, '.');
+                        if(convertedPropertyIdentifier[0] === "."){
+                            convertedPropertyIdentifier = convertedPropertyIdentifier.substr(1);
+                        }
+                        filter.displayPropertyIdentifier =  this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,convertedPropertyIdentifier)+"."+this.utilityService.listLast(convertedPropertyIdentifier,'.'));
+                    }
+
+                    if(!filter.displayValue){
+                        filter.displayValue = filter.value;
+                    }
+
+                }
+            }
+            
             this.filterGroups = jsonCollection.filterGroups;
         }
         this.columns = jsonCollection.columns;
@@ -843,6 +873,27 @@ class CollectionConfig {
         });
         return false;
     };
+    
+    public hasPeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                return true;
+            }            
+        }
+        return false;
+    }
+    
+    public removePeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                columns.splice(i, 1);
+                return;
+            }            
+        }
+        return;
+    }
     
     public getPeriodColumnFromColumns(columns:any){
         for(var i in columns){

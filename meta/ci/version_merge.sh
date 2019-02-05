@@ -122,6 +122,27 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
       md5sum slatwall-be.zip > slatwall-be.md5.txt
       aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
       aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
+      echo 'adding remote'
+      git remote add slatwalldevelop git@github.com:ten24/SlatwallDevelop.git
+      echo 'fetching'
+      git fetch slatwalldevelop
+      echo 'checkout develop-team'
+      git checkout -t slatwalldevelop/develop-team
+      echo 'pull slatwallDevelop - develop'      
+      git pull slatwalldevelop develop --no-edit
+      echo 'pull slatwall - develop'
+      git pull origin develop --no-edit
+      # Read all the conflicts of the repository
+      conflicts=$(git diff --name-only --diff-filter=U)
+    
+      # If there are no conflicts it was likely a minor release
+      if [ "$conflicts" = "" ]; then
+        echo 'push'
+        git push slatwalldevelop
+      else
+        git reset --hard
+      fi
+      git checkout develop
     fi
 
 

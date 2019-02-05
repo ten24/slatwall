@@ -34,9 +34,9 @@
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
-            <i class="fa fa-book"></i>
+            <i class="fas fa-chart-line"></i>
         </button>
-        <ul class="dropdown-menu pull-right">
+        <ul class="dropdown-menu pull-right  with-btn">
             <li>
                     <a ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}" >New Report</a>
             </li>
@@ -46,7 +46,11 @@
                 <a ng-bind="persistedReport.collectionName" ng-click="swListingSearch.swListingDisplay.selectPersistedReport(persistedReport)"
                     ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
                 ></a>
+                <a href="#" style="display:inline;"
+                sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this Report." callback="swListingSearch.deleteReportCollection(persistedReport)"
+                ><i class="fa fa-trash"></i></a>
             </li>
+            
         </ul>
     </span>
 
@@ -56,7 +60,7 @@
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
-            <i class="fa fa-floppy-o"></i>
+            <i class="fas fa-save"></i>
         </button>
         <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
             <li style="padding:8px;">
@@ -88,7 +92,7 @@
         >
             <i  class="fa fa-bookmark"></i>
         </button>
-        <ul class="dropdown-menu pull-right">
+        <ul class="dropdown-menu pull-right with-btn">
             <li>
                     <a href="#" ng-click="swListingSearch.clearPersonalCollection()">Default</a>
             </li>
@@ -96,6 +100,9 @@
             <li class="dropdown-menu-loader" ng-show="!swListingSearch.personalCollections"><i class="fa fa-refresh fa-spin fa-fw"></i></li>
             <li ng-repeat="personalCollection in swListingSearch.personalCollections">
                 <a href="#" ng-bind="personalCollection.collectionName" ng-click="swListingSearch.selectPersonalCollection(personalCollection)"></a>
+                 <a href="#" style="display:inline;"
+                    sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this Collection." callback="swListingSearch.deletePersonalCollection(personalCollection)"
+                ><i class="fa fa-trash"></i></a>
             </li>
         </ul>
     </span>

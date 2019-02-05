@@ -1261,15 +1261,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
 			}
-
-
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-			var serverInstanceSmartList = this.getServerInstanceSmartList();
-			serverInstanceSmartList.addWhereCondition("a#lcase(getDao('hibachiDao').getApplicationKey())#serverinstance.serverInstanceID != '#serverInstance.getServerInstanceID()#'");
-			for(var serverInstance in serverInstanceSmartList.getRecords()){
-				serverInstance.setServerInstanceExpired(true);
-
-			}
 		}
 
 		return arguments.entity;

@@ -18,6 +18,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		throw('#arguments.casing# not a valid casing.');
 	}
+	
+	
 
 	public any function getHibachiPropertyIdentifierByCollectionPropertyIdentifier(required string collectionPropertyIdentifier){
 		var hibachiPropertyIdentifier = arguments.collectionPropertyIdentifier;
@@ -350,7 +352,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionObjectLength = len(collectionObject);
 
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
-		for(propertyIdentifierItem in propertyIdentifiersArray){
+		for(var propertyIdentifierItem in propertyIdentifiersArray){
 
 			if(left(propertyIdentifierItem,collectionObjectLength+1) != '_#collectionObject#'){
 				propertyIdentifierItem = '_#collectionObject#.#propertyIdentifierItem#';
@@ -526,6 +528,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Get all keys and values from the old query string added
 		for(var key in oldQueryKeys) {
 			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
+				// decode needed in cases where the filter value is encoded (ex: The filter originally had a space before being passed into the query string)
+				oldQueryKeys[key] = URLDecode(oldQueryKeys[key]);
 				if(!structKeyExists(newQueryKeys, key)) {
 					modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 				} else {
@@ -539,8 +543,8 @@ component output="false" accessors="true" extends="HibachiService" {
 					
 						for(var i=1; i<=listLen(newQueryKeys[key], arguments.delimiter); i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, arguments.delimiter);
-							//when comparing, let's make sure we decode the old value
-							var findCount = listFindNoCase(urlDecode(oldQueryKeys[key]), thisVal, arguments.delimiter);							if(findCount) {
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, delimiter);
+							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, arguments.delimiter);
 								if(arguments.toggleKeys) {
 									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, arguments.delimiter);
@@ -655,6 +659,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var periodInterval = "";
 		if(structKeyExists(arguments.data,'periodInterval')){
 			periodInterval = arguments.data['periodInterval'];
+			isReport = true;
 		}
 
 		var allRecords = false;
@@ -666,6 +671,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data, 'dirtyRead')){
 			dirtyRead = true;
 		}
+		
 
 		var useElasticSearch = false;
 		if(structKeyExists(arguments.data, 'useElasticSearch')){
@@ -703,9 +709,13 @@ component output="false" accessors="true" extends="HibachiService" {
 			splitKeywords=splitKeywords,
 			defaultColumns=defaultColumns,
 			processContext=processContext,
-			isReport=isReport,
-			periodInterval=periodInterval
+			isReport=isReport
+			
 		};
+		if(len(periodInterval)){
+			collectionOptions.periodInterval=periodInterval;
+		}
+		
 		return collectionOptions;
 	}
 
@@ -750,8 +760,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-
-
+		
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
 
@@ -865,11 +874,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'splitKeywords')){
 				collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
 			}
-			if(structKeyExists(collectionOptions,'isReport')){
-				collectionEntity.setReportFlag(collectionOptions.isReport);
-			}
 			if(structKeyExists(collectionOptions,'periodInterval')){
 				collectionEntity.getCollectionConfigStruct()['periodInterval'] = collectionOptions['periodInterval'];
+				collectionEntity.setReportFlag(1);
 			}
 			
 
@@ -1465,7 +1472,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			arguments.data = getHibachiUtilityService().convertNVPStringToStruct(arguments.data);
 			filterKeyList = structKeyList(arguments.data);
 		}
-
 		//Simple Filters
 		if(!arguments.collection.hasFilterDataApplied()){
 			for (var key in arguments.data){
@@ -1474,8 +1480,16 @@ component output="false" accessors="true" extends="HibachiService" {
 				//OrderByList
 				var orderBys = data[key];
 				if (left(key,7)=='orderBy'){
+					if(len(arguments.excludesList)){ 
+						var propertiesToExclude = listToArray(arguments.excludesList);
+						for(var propertyToExclude in propertiesToExclude){
+							orderBys = getHibachiUtilityService().removeListValue(orderBys,propertyToExclude & '|DESC');	
+							orderBys = getHibachiUtilityService().removeListValue(orderBys,propertyToExclude & '|ASC');	
+						}   
+
+					}
 					//this is a list.
-					arguments.collection.setOrderBy(data[key]);
+					arguments.collection.setOrderBy(orderBys);
 				}
 
 
@@ -1512,6 +1526,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+	
+	public any function processCollection_clearCache(required any collection){
+		var cacheKeyPrefix = '_report_#arguments.collection.getCollectionID()#';
+		getService('HibachiCacheService').resetCachedKeyByPrefix(cacheKeyPrefix,true);	
+		return arguments.collection;
+	}
 
 	// =====================  END: Process Methods ============================
 
