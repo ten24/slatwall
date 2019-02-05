@@ -49,6 +49,7 @@ Notes:
 <cfcomponent extends="HibachiService" persistent="false" accessors="true" output="false">
 
 	<cfproperty name="templateService" />
+	<cfproperty name="hibachiEntityQueueDAO" />
 	<cfproperty name="hibachiUtilityService" />
 
 	<!--- ===================== START: Logical Methods =========================== --->
@@ -74,6 +75,7 @@ Notes:
 
 	<cffunction name="sendEmail" returntype="void" access="public">
 		<cfargument name="email" type="any" required="true" />
+		<cfargument name="async" type="boolean" default="false" />
 
 		<cfset var cfmailAttributes = structNew() />
 		<cfset cfmailAttributes["from"] = arguments.email.getEmailFrom() />
@@ -86,6 +88,7 @@ Notes:
 			<cfset cfmailAttributes["bcc"] = getWhiteListedEmailAddresses(arguments.email.getEmailBCC()) />
 		</cfif>
 		<cfset cfmailAttributes["charset"] = "utf-8" />
+		<cfset cfmailAttributes["spoolEnable"] = arguments.async />
 
 		<cfif structKeyExists(arguments, 'emailTemplate') && !isNull(arguments.emailTemplate) && len(arguments.emailTemplate.setting('emailSMTPServer'))>
 			<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
@@ -96,67 +99,80 @@ Notes:
 			<cfset cfmailAttributes["password"] = arguments.emailTemplate.setting('emailSMTPPassword') />
 		</cfif>
 
-		<!--- Send Multipart E-mail --->
-		<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
-			<cfmail attributeCollection="#cfmailAttributes#">
-				<cfif !isNull(arguments.email.getRelatedObject())>
-					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
-					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
-				</cfif>
-				<cfif !isNull(arguments.email.getEmailReplyTo())>
-					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
-				</cfif>
-				<cfif !isNull(arguments.email.getEmailFailTo())>
-					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
-				</cfif>
-				<cfmailpart type="text/plain">
-					<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
-				</cfmailpart>
-				<cfmailpart type="text/html">
+
+		<cfset var success = true />
+		<cftry>
+			<!--- Send Multipart E-mail --->
+			<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
+				<cfmail attributeCollection="#cfmailAttributes#">
+					<cfif !isNull(arguments.email.getRelatedObject())>
+						<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
+						<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
+					</cfif>
+					<cfif !isNull(arguments.email.getEmailReplyTo())>
+						<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+					</cfif>
+					<cfif !isNull(arguments.email.getEmailFailTo())>
+						<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+					</cfif>
+					<cfmailpart type="text/plain">
+						<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
+					</cfmailpart>
+					<cfmailpart type="text/html">
+						<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
+					</cfmailpart>
+				</cfmail>
+			<!--- Send HTML Only E-mail --->
+			<cfelseif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailTo())>
+
+				<cfset cfmailAttributes["type"] = "text/html" />
+
+				<cfmail attributeCollection="#cfmailAttributes#">
+					<cfif !isNull(arguments.email.getEmailFailTo())>
+						<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
+					</cfif>
+					<cfif !isNull(arguments.email.getRelatedObject())>
+						<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
+						<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
+					</cfif>
+					<cfif !isNull(arguments.email.getEmailReplyTo())>
+						<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
+					</cfif>
 					<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
-				</cfmailpart>
-			</cfmail>
-		<!--- Send HTML Only E-mail --->
-		<cfelseif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailTo())>
+				</cfmail>
+			<!--- Send Text Only E-mail --->
+			<cfelseif len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
 
-			<cfset cfmailAttributes["type"] = "text/html" />
+				<cfset cfmailAttributes["type"] = "text/plain" />
 
-			<cfmail attributeCollection="#cfmailAttributes#">
-				<cfif !isNull(arguments.email.getEmailFailTo())>
-					<cfmailparam name="Return-Path" value="#arguments.email.getEmailFailTo()#">
-				</cfif>
-				<cfif !isNull(arguments.email.getRelatedObject())>
-					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
-					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
-				</cfif>
-				<cfif !isNull(arguments.email.getEmailReplyTo())>
-					<cfmailparam name="Reply-To" value="#arguments.email.getEmailReplyTo()#">
-				</cfif>
-				<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
-			</cfmail>
-		<!--- Send Text Only E-mail --->
-		<cfelseif len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
+				<cfmail attributeCollection="#cfmailAttributes#">
+					<cfif !isNull(arguments.email.getEmailFailTo())>
+						<cfmailparam name="Return-Path" value="#getWhiteListedEmailAddresses(arguments.email.getEmailFailTo())#">
+					</cfif>
+					<cfif !isNull(arguments.email.getRelatedObject())>
+						<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
+						<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
+					</cfif>
+					<cfif !isNull(arguments.email.getEmailReplyTo())>
+						<cfmailparam name="Reply-To" value="#getWhiteListedEmailAddresses(arguments.email.getEmailReplyTo())#">
+					</cfif>
+					<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
+				</cfmail>
+			</cfif>
 
-			<cfset cfmailAttributes["type"] = "text/plain" />
+			<cfcatch type="any"> 
+				<cfset success = false />
+			</cfcatch> 
 
-			<cfmail attributeCollection="#cfmailAttributes#">
-				<cfif !isNull(arguments.email.getEmailFailTo())>
-					<cfmailparam name="Return-Path" value="#getWhiteListedEmailAddresses(arguments.email.getEmailFailTo())#">
-				</cfif>
-				<cfif !isNull(arguments.email.getRelatedObject())>
-					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
-					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
-				</cfif>
-				<cfif !isNull(arguments.email.getEmailReplyTo())>
-					<cfmailparam name="Reply-To" value="#getWhiteListedEmailAddresses(arguments.email.getEmailReplyTo())#">
-				</cfif>
-				<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
-			</cfmail>
-		</cfif>
+		</cftry> 
 
-		<!--- If the email is set to be saved, then we persist to the DB --->
-		<cfif arguments.email.getLogEmailFlag()>
-			<cfset getHibachiDAO().save(arguments.email) />
+		<!--- If the email is set to be saved or it was not sent successfully, then we persist to the DB --->
+		<cfif arguments.email.getLogEmailFlag() OR NOT success>
+			<cfset arguments.email = getHibachiDAO().save(arguments.email) />
+
+			<cfif not success>
+				<cfset	getHibachiEntityQueueDAO().insertEntityQueue(arguments.email.getEmailID(),'Email','processEmail_send') />	
+			</cfif> 
 		</cfif>
 	</cffunction>
 
@@ -309,6 +325,11 @@ Notes:
 		}
 
 		return arguments.email;
+	}
+	
+	public any function processEmail_send(required any email, struct data={}) {
+		this.sendEmail(arguments.email); 	
+		return arguments.email; 	
 	}
 
 	public any function processEmail_addToQueue(required any email, required struct data) {

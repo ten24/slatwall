@@ -481,14 +481,22 @@ component output="false" accessors="true" extends="HibachiController" {
 	public void function getProcessMethodOptionsByEntityName(required struct rc){
 		var processOptions = [];
 		var allProcessMethods = getHibachiService().getEntitiesProcessContexts();
-		if(structKeyExists(allProcessMethods, arguments.rc.entityName)){
-			for(var processMethod in allProcessMethods[arguments.rc.entityName]){
-				arrayAppend(processOptions, {
-					'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
-					'value' = 'process#arguments.rc.entityName#_#processMethod#'
-				});
-			}
+		if(!structKeyExists(allProcessMethods, arguments.rc.entityName)){
+		    allProcessMethods[arguments.rc.entityName] = [];
 		}
+		
+		if(!arrayFindNoCase(allProcessMethods[arguments.rc.entityName], 'updateCalculatedProperties')){
+		    // Add missing method
+		    arrayAppend(allProcessMethods[arguments.rc.entityName], 'updateCalculatedProperties');
+		}
+		
+		for(var processMethod in allProcessMethods[arguments.rc.entityName]){
+			arrayAppend(processOptions, {
+				'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
+				'value' = 'process#arguments.rc.entityName#_#processMethod#'
+			});
+		}
+		
 		arguments.rc.apiResponse.content['data'] = processOptions;
 	}
 
