@@ -72,6 +72,6 @@ Notes:
 <hb:HibachiListingDisplay collectionList="#rc.ordersNotPlacedCollectionList#"
 	recordEditAction="admin:entity.editorder"
 	recordDetailAction="admin:entity.detailorder" 
-	usingPersonalCollection="true"
+	usingPersonalCollection="false"
 >
 </hb:HibachiListingDisplay>
