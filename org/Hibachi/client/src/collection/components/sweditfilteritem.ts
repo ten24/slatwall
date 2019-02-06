@@ -106,7 +106,7 @@ class SWEditFilterItem{
                                                 {
                                                     rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
                                                     entityAlias:scope.collectionConfig.baseEntityAlias,
-                                                    cfc:scope.collectionConfig.baseEntityAlias,
+                                                    cfc:scope.collectionConfig.baseEntityName,
                                                     propertyIdentifier:scope.collectionConfig.baseEntityAlias
                                                 }
                                             ];
