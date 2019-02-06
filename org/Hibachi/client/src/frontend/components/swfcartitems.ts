@@ -16,7 +16,6 @@ class SWFCartItemsController{
             this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
             this.loadingImages = false;
         });
-
     }
     
     public getProductDescriptionAndTruncate = (length=4000)=>{
