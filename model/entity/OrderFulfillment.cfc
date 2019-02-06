@@ -736,8 +736,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 					variables.shippingMethod = arguments.shippingMethod;
 
 					// Set the charge
-					if(!getManualfulfillmentChargeFlag()) {
+					if(!getManualfulfillmentChargeFlag() && (isNull(getThirdPartyShippingAccountIdentifier()) || !len(getThirdPartyShippingAccountIdentifier()))) {
 						setFulfillmentCharge( getFulfillmentShippingMethodOptions()[i].getTotalCharge() );
+					}else if(len(getThirdPartyShippingAccountIdentifier())){
+						setFulfillmentCharge(0);
 					}
 				}
 			}

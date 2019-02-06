@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.ordersPlacedSmartList" type="any" />
 <cfparam name="rc.ordersPlacedCollectionList" type="any" />
 
-<cfset displayPropertyList = 'orderNumber,orderOpenDateTime,orderType.typeName,orderStatusType.typeName,createdDateTime,calculatedTotal'/>
+<cfset displayPropertyList = 'orderNumber,orderOpenDateTime'/>
 <cfset rc.ordersPlacedCollectionList.setDisplayProperties(
 	displayPropertyList,
 	{
@@ -63,6 +63,11 @@ Notes:
 		isDeletable=true
 	}
 )/>
+
+<cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='orderType.typeName', title="Order Type", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='orderStatusType.typeName', title="Order Status", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='createdDateTime', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='calculatedTotal', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
 
 <cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='orderID',columnConfig={
 	isVisible=false,
@@ -75,6 +80,7 @@ Notes:
 	collectionList="#rc.ordersPlacedCollectionList#"
 	recordEditAction="admin:entity.editorder"
 	recordDetailAction="admin:entity.detailorder"
+	usingPersonalCollection="false"
 >
 </hb:HibachiListingDisplay>
 <hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />

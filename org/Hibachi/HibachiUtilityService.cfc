@@ -338,7 +338,9 @@
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
 
-			for(var propertyIdentifier in listToArray(arguments.propertyIdentifierList)) {
+			var propertyIdentifierArray = listToArray(arguments.propertyIdentifierList);
+			for(var i=1; i <= arraylen(propertyIdentifierArray);i++) {
+				var propertyIdentifier = propertyIdentifierArray[i];
 				if( listFindNoCase(arguments.availablePropertyIdentifierList, trim(propertyIdentifier)) ) {
 					buildPropertyIdentifierDataStruct(arguments.object, trim(propertyIdentifier), responseData);
 				}
