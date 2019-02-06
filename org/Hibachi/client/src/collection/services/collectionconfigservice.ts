@@ -196,7 +196,6 @@ class CollectionConfig {
                     if(!filter.displayValue){
                         filter.displayValue = filter.value;
                     }
-
                 }
             }
             
