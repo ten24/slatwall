@@ -25,7 +25,7 @@
 				<cfif arrayLen(local.cycleCountBatchItems)>
 					<tr>
 						<td class="primary">#local.day + local.daysCompleted#</td>
-						<cfloop array="#local.cycleCountBatchItems#" item="local.cycleCountBatchItem">
+						<cfloop array="#local.cycleCountBatchItems#" index="local.cycleCountBatchItem">
 							<td><cfif structKeyExists(local.cycleCountBatchItem,'skuCode')>#local.cycleCountBatchItem['skuCode']#</cfif></td>
 						</cfloop>
 						<td>
