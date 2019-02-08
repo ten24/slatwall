@@ -9,10 +9,11 @@ var PATHS = {
 };
 
 var appConfig = {
+    mode:'development',
     context:PATHS.app,
     entry: {
         app:['./bootstrap.ts'],
-         vendor: ["../lib/vendor.ts"],
+         vendor: ["../lib/vendor.ts"]
     },
     watch:true,
     output: {
@@ -32,9 +33,15 @@ var appConfig = {
 	      { test: /\.tsx?$/, loader: 'ts-loader' }
 	    ]
 	},
-    plugins: [
+    /*plugins: [
         new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"})
-    ]
+    ]*/
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
+    }
+   
 
 };
 
