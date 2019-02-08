@@ -81,7 +81,7 @@ Notes:
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
 
-		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/vendors~.bundle.js" charset="utf-8"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
 		#request.slatwallScope.renderJSObject()#
 		<script type="text/javascript">

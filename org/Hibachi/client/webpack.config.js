@@ -12,14 +12,12 @@ var appConfig = {
     mode:'development',
     context:PATHS.app,
     entry: {
-        app:['./bootstrap.ts'],
-         vendor: ["../lib/vendor.ts"]
+        bundle:['./bootstrap.ts']
     },
     watch:true,
     output: {
         path: PATHS.app,
-        filename: 'bundle.js',
-        library: 'hibachi'
+        filename: '[name].js'
     },
     // Turn on sourcemaps
     //devtool: 'source-map',
@@ -38,7 +36,19 @@ var appConfig = {
     ]*/
     optimization: {
         splitChunks: {
-            chunks: 'all'
+            chunks: 'async',
+            minSize: 30000,
+            maxSize: 300000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            automaticNameDelimiter: '~',
+            name: true,
+            cacheGroups: {
+                vendors: {
+                  filename: '[name].bundle.js'
+                }
+            }
         }
     }
    

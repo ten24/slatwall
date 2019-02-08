@@ -1,5 +1,6 @@
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
+import '../lib/vendor.ts';
 import {coremodule} from "./core/core.module";
 declare var angular:any;
 declare var hibachiConfig:any;
