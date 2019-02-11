@@ -64,8 +64,11 @@ Notes:
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 
-				<h3>Required Details</h3>
-				<hr />
+				<cfif len(rc.order.getOrderRequirementsList())>
+					<h3>Required Details</h3>
+					<hr />
+				</cfif>
+				
 				<!--- Update Order Fulfillment Details --->
 				<cfif listFindNoCase(rc.order.getOrderRequirementsList(), 'fulfillment')>
 					<cfset ofIndex=0 />
