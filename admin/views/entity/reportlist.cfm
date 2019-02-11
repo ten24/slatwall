@@ -76,7 +76,7 @@ Notes:
 </hb:HibachiEntityDetailForm>
 <hb:HibachiListingDisplay 
 	collectionList="#rc['#rc.entityActionDetails.itemEntityName#CollectionList']#"
-	usingPersonalCollection="true"
+	usingPersonalCollection="false"
 	reportAction="admin:entity.reportlist#lcase(rc['#rc.entityActionDetails.itemEntityName#CollectionList'].getCollectionObject())#"
 	showReport="true"
 >
