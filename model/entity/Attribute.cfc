@@ -369,6 +369,20 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeAttribute( this );
 	}
+	
+	public boolean function isValidPropertyName(){
+		if(
+			isNull(getAttributeSet())
+			|| isNull(getAttributeCode())
+		){
+			return false;
+		}
+		
+		return !getService('HibachiService').getEntityHasPropertyByEntityName(
+			getAttributeSet().getAttributeSetObject(),
+			getAttributeCode()	
+		);
+	}
 
 	public boolean function isValidString(string stringValue){
 		var attributeCodeLength = len(getAttributeCode());
