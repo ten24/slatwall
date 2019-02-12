@@ -33,6 +33,7 @@ class SWListingReportController {
     
     //@ngInject
     constructor(
+        public $filter,
         public $scope,
         public $timeout,
         public $rootScope,
@@ -40,7 +41,7 @@ class SWListingReportController {
         public metadataService,
         public listingService,
         public observerService,
-        public collectionConfigService
+        public collectionConfigService,
     ) {
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
         if(this.collectionId){
@@ -357,7 +358,9 @@ class SWListingReportController {
 		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
 		    pidAliasArray.shift();
 		    var pidAlias = pidAliasArray.join('_');
-		    dates.push(element[pidAlias]);
+		    var value = this.$filter('swdatereporting')(element[pidAlias],this.selectedPeriodInterval.value);
+		    
+		    dates.push(value);
 		});
 		
 		this.reportCollectionConfig.columns.forEach(column=>{
