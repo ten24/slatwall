@@ -18,7 +18,6 @@ class SWFCartItemsController{
                 this.loadingImages = false;
             }    
         });
-
     }
     
     public getProductDescriptionAndTruncate = (length=4000)=>{
