@@ -67,7 +67,9 @@ Notes:
 		<hb:HibachiPropertyRow>
 			<h5>Counts</h5>
 			<hb:HibachiPropertyList>
-			    <cfloop array="#rc.processObject.getCycleCountItems()#" item="local.cycleCountItem" index="index">
+				<cfset local.cycleCountItems = rc.processObject.getCycleCountItems() />
+			    <cfloop from="1" to="#arrayLen(local.cycleCountItems)#" index="index">
+			    	<cfset local.cycleCountItem = local.cycleCountItems[index] />
 			        <div class="form-group">
 						<label for="cycleCountItems[#index#].quantity" class="control-label col-sm-4">
 							<span class="s-title">#local.cycleCountItem['skuCode']#</span>

@@ -11,7 +11,7 @@
 		<thead>
 			<tr>
 				<th>Day</th>
-				<cfloop array="#local.cycleCountGroups#" item="cycleCountGroup">
+				<cfloop array="#local.cycleCountGroups#" index="cycleCountGroup">
 					<cfloop index="i" from="1" to="#cycleCountGroup.getItemCountPerDay()#">
 						<th>#cycleCountGroup.getCycleCountGroupName()#</th>
 					</cfloop>
