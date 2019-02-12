@@ -43,6 +43,7 @@ import {EntityRBKey} from "./filters/entityrbkey";
 import {SWTrim} from "./filters/swtrim";
 import {SWUnique} from "./filters/swunique";
 import {DateFilter} from "./filters/datefilter";
+import {DateReporting} from "./filters/datereporting";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
@@ -225,8 +226,9 @@ var coremodule = angular.module('hibachi.core',[
 .service('entityService',EntityService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
-//filters
+//filters 
 .filter('dateFilter',['$filter',DateFilter.Factory])
+.filter('swdatereporting',['$filter',DateReporting.Factory])
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
