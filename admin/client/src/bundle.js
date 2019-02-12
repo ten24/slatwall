@@ -88267,8 +88267,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var chart_js_1 = __webpack_require__(322);
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
-    function SWListingReportController($scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
+    function SWListingReportController($filter, $scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
         var _this = this;
+        this.$filter = $filter;
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.$rootScope = $rootScope;
@@ -88532,7 +88533,8 @@ var SWListingReportController = /** @class */ (function () {
                 var pidAliasArray = _this.selectedPeriodColumn.propertyIdentifier.split('.');
                 pidAliasArray.shift();
                 var pidAlias = pidAliasArray.join('_');
-                dates.push(element[pidAlias]);
+                var value = _this.$filter('swdatereporting')(element[pidAlias], _this.selectedPeriodInterval.value);
+                dates.push(value);
             });
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
