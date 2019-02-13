@@ -29,6 +29,8 @@ class SWListingReportController {
     public selectedPeriodPropertyIdentifierArray:string[]=[];
     public selectedPeriodPropertyIdentifier;
     public collectionId:string;
+    public createdByAccountID:string;
+    public swListingDisplay:any;
     
     
     //@ngInject
@@ -275,7 +277,9 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
-            
+            if(this.swListingDisplay && this.swListingDisplay.collectionData && this.swListingDisplay.collectionData.createdByAccountID){
+                this.createdByAccountID = this.swListingDisplay.collectionData.createdByAccountID;                
+            }
             this.startDate = new Date(this.startDate);
             this.startDate.setHours(0,0,0,0)
             
@@ -537,7 +541,7 @@ class SWListingReport  implements ng.IDirective{
     };
     public controller = SWListingReportController;
     public controllerAs = 'swListingReport';
-
+    public require={swListingDisplay:"?^swListingDisplay"};
     //@ngInject
     constructor(
         public scopeService,
