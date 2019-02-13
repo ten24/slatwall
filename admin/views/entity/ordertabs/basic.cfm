@@ -18,6 +18,8 @@
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress" valuelink="mailto:#rc.order.getAccount().getEmailAddress()#">
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="phoneNumber">
 			</cfif>
+			
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderName" edit="#rc.edit#">
 
 			<!--- Origin --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="#rc.edit#">
