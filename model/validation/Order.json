@@ -19,6 +19,9 @@
 												{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"},
 												{"contexts":"auditRollback","inList":"ostNotPlaced"}
 		],
+		"typeCode":[
+												{"contexts":"placeOrder","inList":"otSalesOrder,otReturnOrder,otExchangeOrder"}
+		],
 		"orderStatusType":[{"contexts":"edit","method":"isNotClosed"}],
 		"quantityDelivered":				[
 												{"contexts":"cancelOrder","maxValue":0},
