@@ -1532,7 +1532,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		getService('HibachiCacheService').resetCachedKeyByPrefix(cacheKeyPrefix,true);	
 		return arguments.collection;
 	}
-
+	
+	public any function processCollection_ExportData(required any collection, required any processObject, struct data={}) {
+		//perform export
+		
+		return arguments.collection;
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================
