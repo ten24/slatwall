@@ -175,7 +175,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	//Collection
 	public void function processCollection(required struct rc){
 		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
-		rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
+		//redirect to report listing only if the collection is a report
+		if(rc.collection.isReport()){
+			rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
+		}
 		genericProcessMethod(entityName="Collection",rc=arguments.rc);
 	}
 
