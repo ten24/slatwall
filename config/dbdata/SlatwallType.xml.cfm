@@ -59,6 +59,7 @@
 
 		<Record typeID="444df2deab6476cb2c429946d6538436" typeIDPath="444df2deab6476cb2c429946d6538436" parentTypeID="NULL" typeName="Order Types" systemCode="orderType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2df9f923d6c6fd0942a466e84cc" typeIDPath="444df2deab6476cb2c429946d6538436,444df2df9f923d6c6fd0942a466e84cc" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Sales Order" systemCode="otSalesOrder" sortOrder="1" />
+		<Record typeID="2c99808468e74c730168e78249e70003" typeIDPath="444df2deab6476cb2c429946d6538436,2c99808468e74c730168e78249e70003" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Schedule Order" systemCode="otSchedule" sortOrder="1" />
 		<Record typeID="444df2dd05a67eab0777ba14bef0aab1" typeIDPath="444df2deab6476cb2c429946d6538436,444df2dd05a67eab0777ba14bef0aab1" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Return Order" systemCode="otReturnOrder" sortOrder="2" />
 		<Record typeID="444df2e00b455a2bae38fb55f640c204" typeIDPath="444df2deab6476cb2c429946d6538436,444df2e00b455a2bae38fb55f640c204" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Exchange Order" systemCode="otExchangeOrder" sortOrder="3" />
 
