@@ -136,8 +136,8 @@
                     </div>
                 </div><!-- end of .col -->
                 
-            	<div class="col save-btn">
-            	    <span class="col-md-8" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID"> Make Public: <input ng-model="swListingReport.isPublic" type="checkbox"/></span>
+            	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
+            	    <span class="col-md-8" > Make Public: <input ng-model="swListingReport.isPublic" type="checkbox"/></span>
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
