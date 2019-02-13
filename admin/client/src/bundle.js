@@ -78237,7 +78237,6 @@ var DateReporting = /** @class */ (function () {
     //@ngInject
     DateReporting.Factory = function ($filter) {
         return function (date, periodInterval) {
-            console.log('test', date, periodInterval);
             if (date.trim && date.trim().length === 0) {
                 return '';
             }
