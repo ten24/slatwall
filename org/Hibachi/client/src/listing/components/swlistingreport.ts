@@ -31,6 +31,8 @@ class SWListingReportController {
     public collectionId:string;
     public createdByAccountID:string;
     public swListingDisplay:any;
+    public isPublic:boolean;
+    public accountOwnerID:string;
     
     
     //@ngInject
@@ -83,11 +85,17 @@ class SWListingReportController {
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
                 'collectionObject':this.collectionConfig.baseEntityName,
-                'accountOwner':{
-                    'accountID':this.$rootScope.slatwall.account.accountID
-                },
                 'reportFlag':1
             }
+            
+            if(!this.isPublic){
+                serializedJSONData['accountOwner']={
+                    'accountID':this.$rootScope.slatwall.account.accountID
+                };
+            }else{
+                serializedJSONData['publicFlag']=1;
+            }
+            
             if(collectionName){
                 serializedJSONData['collectionName'] = collectionName;
             }
@@ -102,6 +110,7 @@ class SWListingReportController {
                 'save'  
             ).then((data)=>{
                 if(this.collectionId){
+                    
                     window.location.reload();    
                 }else{
                     var url = window.location.href;    
@@ -110,6 +119,7 @@ class SWListingReportController {
                     }else{
                        url += '?collectionID='+data.data.collectionID;
                     }
+                    
                    window.location.href = url;
                 }
             });
@@ -277,9 +287,18 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
-            if(this.swListingDisplay && this.swListingDisplay.collectionData && this.swListingDisplay.collectionData.createdByAccountID){
-                this.createdByAccountID = this.swListingDisplay.collectionData.createdByAccountID;                
+            if(this.swListingDisplay && this.swListingDisplay.collectionData){
+                if(this.swListingDisplay.collectionData.createdByAccountID){
+                    this.createdByAccountID = this.swListingDisplay.collectionData.createdByAccountID;                
+                }
+                if(this.swListingDisplay.collectionData.accountOwner_accountID){
+                    this.accountOwnerID = this.swListingDisplay.collectionData.accountOwner_accountID;
+                    this.isPublic = false;
+                }else if(this.collectionId){
+                    this.isPublic = true;
+                }
             }
+            
             this.startDate = new Date(this.startDate);
             this.startDate.setHours(0,0,0,0)
             

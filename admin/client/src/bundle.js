@@ -88295,11 +88295,16 @@ var SWListingReportController = /** @class */ (function () {
                 var serializedJSONData = {
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
                     'collectionObject': _this.collectionConfig.baseEntityName,
-                    'accountOwner': {
-                        'accountID': _this.$rootScope.slatwall.account.accountID
-                    },
                     'reportFlag': 1
                 };
+                if (!_this.isPublic) {
+                    serializedJSONData['accountOwner'] = {
+                        'accountID': _this.$rootScope.slatwall.account.accountID
+                    };
+                }
+                else {
+                    serializedJSONData['publicFlag'] = 1;
+                }
                 if (collectionName) {
                     serializedJSONData['collectionName'] = collectionName;
                 }
@@ -88461,8 +88466,17 @@ var SWListingReportController = /** @class */ (function () {
                 && _this.selectedPeriodInterval
                 && _this.startDate
                 && _this.endDate) {
-                if (_this.swListingDisplay && _this.swListingDisplay.collectionData && _this.swListingDisplay.collectionData.createdByAccountID) {
-                    _this.createdByAccountID = _this.swListingDisplay.collectionData.createdByAccountID;
+                if (_this.swListingDisplay && _this.swListingDisplay.collectionData) {
+                    if (_this.swListingDisplay.collectionData.createdByAccountID) {
+                        _this.createdByAccountID = _this.swListingDisplay.collectionData.createdByAccountID;
+                    }
+                    if (_this.swListingDisplay.collectionData.accountOwner_accountID) {
+                        _this.accountOwnerID = _this.swListingDisplay.collectionData.accountOwner_accountID;
+                        _this.isPublic = false;
+                    }
+                    else if (_this.collectionId) {
+                        _this.isPublic = true;
+                    }
                 }
                 _this.startDate = new Date(_this.startDate);
                 _this.startDate.setHours(0, 0, 0, 0);

@@ -933,6 +933,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(!isNull(arguments.collectionEntity.getCreatedByAccountID())){
 				collectionStruct['createdByAccountID'] = arguments.collectionEntity.getCreatedByAccountID();
 			}
+			if(!isNull(arguments.collectionEntity.getAccountOwner())){
+				collectionStruct['accountOwner_accountID'] = arguments.collectionEntity.getAccountOwner().getAccountID();
+			}
+			
 			structAppend(response,collectionStruct);
 		}
 		
