@@ -36,13 +36,13 @@
         >
             <i class="fas fa-chart-line"></i>
         </button>
-        <ul class="dropdown-menu pull-right  with-btn">
+        <ul class="dropdown-menu pull-right  with-btn autocomplete-options" >
             <li>
                     <a ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}" >New Report</a>
             </li>
             <li role="separator" class="divider"></li>
             <li class="dropdown-menu-loader" ng-show="!swListingSearch.swListingDisplay.persistedReportCollections"><i class="fa fa-refresh fa-spin fa-fw"></i></li>
-            <li ng-repeat="persistedReport in swListingSearch.swListingDisplay.persistedReportCollections">
+            <li ng-repeat="persistedReport in swListingSearch.swListingDisplay.persistedReportCollections" >
                 <a ng-bind="persistedReport.collectionName" ng-click="swListingSearch.swListingDisplay.selectPersistedReport(persistedReport)"
                     ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
                 ></a>
