@@ -952,19 +952,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public array function getOrderTypeOptions() {
 		if(!structKeyExists(variables, "orderTypeOptions")) {
-			var sl = getPropertyOptionsSmartList("orderType");
-			var inFilter = "otExchangeOrder,otSalesOrder,otReturnOrder";
-			if(getSaleItemSmartList().getRecordsCount() gt 0) {
-				inFilter = listDeleteAt(inFilter, listFindNoCase(inFilter, "otReturnOrder"));
-			}
-			if(getReturnItemSmartList().getRecordsCount() gt 0) {
-				inFilter = listDeleteAt(inFilter, listFindNoCase(inFilter, "otSalesOrder"));
-			}
-			sl.addInFilter('systemCode', inFilter);
-			sl.addSelect('typeName', 'name');
-			sl.addSelect('typeID', 'value');
-
-			variables.orderTypeOptions = sl.getRecords();
+			var orderTypeCollection = getService('TypeService').getTypeCollectionList();
+			orderTypeCollection.setDisplayProperties('typeID|value,typeName|name');
+			orderTypeCollection.addFilter('parentType.systemCode','orderType');
+			variables.orderTypeOptions = orderTypeCollection.getRecords();
 		}
 		return variables.orderTypeOptions;
 	}
