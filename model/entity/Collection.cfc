@@ -50,7 +50,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="reportFlag" ormtype="boolean" default="0";
 	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
 	property name="softDeleteFlag" ormtype="boolean" default="0";
-
+	property name="publicFlag" ormtype="boolean" default="0";
 
 	// Calculated Properties
 
@@ -141,6 +141,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="exportFileName" type="string" persistent="false";
 	
+	
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -184,6 +186,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiUtilityService(getService('HibachiUtilityService'));
 
 	}
+	//if we are public then we can't have an account owner
+	public void function setPublicFlag(boolean publicFlagValue){
+		if(structKeyExists(arguments,'publicFlagValue')){
+			if(arguments.publicFlagValue){
+				setAccountOwner(javacast('null',''));
+				
+			}
+			variables.publicFlag = arguments.publicFlagValue;
+		}
+	}
+	//if we have an account owner then we can't be public
+	public void function setAccountOwner(any accountOwner){
+		if(!structKeyExists(arguments,'accountOwner')){
+			structDelete(variables,'accountOwner');
+		}else{
+			variables.accountOwner = arguments.accountOwner;
+			setPublicFlag(false);
+		}
+	}
+	
 	
 	public void function setInlistDelimiter(delimiter=","){
 		variables.inlistDelimiter = arguments.delimiter;

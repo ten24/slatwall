@@ -921,13 +921,20 @@ component output="false" accessors="true" extends="HibachiService" {
 			for(var authorizedProperty in authorizedProperties){
 				arguments.collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
-
+			
 			var collectionStruct = {};
 			if(structKeyExists(collectionOptions,'allRecords') && collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
 			}else{
 				//paginated collection struct
 				collectionStruct = getFormattedPageRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
+			}
+			//supply collection author so that we can drive UI showing and hiding of elements via angular
+			if(!isNull(arguments.collectionEntity.getCreatedByAccountID())){
+				collectionStruct['createdByAccountID'] = arguments.collectionEntity.getCreatedByAccountID();
+			}
+			if(!isNull(arguments.collectionEntity.getAccountOwner())){
+				collectionStruct['accountOwner_accountID'] = arguments.collectionEntity.getAccountOwner().getAccountID();
 			}
 			
 			structAppend(response,collectionStruct);
