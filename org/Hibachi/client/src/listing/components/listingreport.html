@@ -11,7 +11,7 @@
             		    <label>Dimensions</label>
             			<select 
                       ng-model="swListingReport.selectedPeriodColumn" 
-                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier
+                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by periodColumn.fieldtype
                                         for periodColumn in swListingReport.periodColumns
                                          | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
                             "
