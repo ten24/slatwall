@@ -54,6 +54,200 @@ component extends="HibachiService" output="false" accessors="true"  {
     
 	// ===================== START: Logical Methods ===========================
 	
+	public any function getContainerDetails(required any entity,boolean apiFormat=false){
+	    var itemPackageName = '';
+	    var itemArrayName = '';
+	    var ignoreExcludedItems = false;
+		
+	    var entityClassName = arguments.entity.getClassName();
+
+	    switch(entityClassName){
+      
+	        case "Order":
+	        	itemArrayName="OrderItems";
+        		break;
+            
+            case "OrderDelivery":
+	        	itemArrayName="OrderDeliveryItems";
+            	break;
+            case "OrderFulfillment":
+	        	itemArrayName="OrderFulfillmentItems";
+        		break;
+            
+    		case "ShippingRatesRequestBean":
+    			itemPackageName="OrderFulfillment";
+	        	itemArrayName="OrderFulfillmentItems";
+	        	ignoreExcludedItems=true;
+        		break;
+    		case "ShippingProcessShipmentRequestBean":
+    			itemPackageName="OrderDelivery";
+	        	itemArrayName="OrderDeliveryItems";
+        		break;
+			case "OrderDelivery_Create": case "OrderDelivery_GetContainerDetails":
+				var itemArray = getItemArrayFromOrderDelivery_Create(arguments.entity);
+				break;
+        default:
+            throw("#entity.getClassName()# is not a valid entity for function 'getContainerDetails'");
+	    }
+
+	    var packageEntity = arguments.entity;
+	    
+	    if(len(itemPackageName)){
+    		packageEntity = arguments.entity.invokeMethod('get#itemPackageName#');
+	    }
+	    
+	    if(isNull(packageEntity)){
+	    	return;
+	    }
+	    
+    	if(!structKeyExists(local,'itemArray')){
+    		try{
+    			var itemArray = packageEntity.invokeMethod('get#itemArrayName#');
+    		}catch(any e){
+    			writeDump(var=arguments.entity,top=3);
+    			writeDump(e);abort;
+    		}
+    	}
+    	
+    	//For rate requests, filter out skus with Shipping Cost Exempt set to true
+		if(ignoreExcludedItems){
+			itemArray = arrayFilter(itemArray,function(item){
+				if(item.getClassName() == 'OrderItem'){
+					var orderItem = item;
+				}else{
+					var orderItem = item.getOrderItem();
+				}
+				return !orderItem.getSku().setting('skuShippingCostExempt');
+			});
+		}
+
+	    var containerStruct = {'packageCount':0};
+	    
+	    for(var item in itemArray){
+	    	arguments.containerStruct = addItemToContainerStruct(containerStruct, item);
+	    }
+
+		 if(arguments.apiFormat){
+        	for(var key in containerStruct){
+        		if(isArray(containerStruct[key])){
+        			for(var container in containerStruct[key]){
+        				for(var containerItem in container.containerItems){
+    						if(containerItem.item.getClassName() == 'OrderItem'){
+        						containerItem.item = {
+        							'orderItemID':containerItem.item.getOrderItemID(),
+        							'skuCode':containerItem.item.getSku().getSkuCode(),
+        							'skuName':containerItem.item.getSku().getSkuName(),
+        							'quantity':containerItem.item.getQuantity()
+        						};
+        					}else{
+        						containerItem.item = {
+        							'orderItemID':containerItem.item.getOrderItem().getOrderItemID(),
+        							'skuCode':containerItem.item.getOrderItem().getSku().getSkuCode(),
+        							'skuName':containerItem.item.getOrderItem().getSku().getSkuName(),
+        							'quantity':containerItem.item.getOrderItemQuantity()
+        						};
+        					}
+        					containerItem.sku = {
+        							'skuID':containerItem.sku.getSkuID(),
+        							'skuCode':containerItem.sku.getSkuCode(),
+        							'skuName':containerItem.sku.getSkuName()
+        						};
+        				}
+        			}
+        		}
+        	}
+        }
+	    return containerStruct;
+	}
+	
+	private any function getItemArrayFromOrderDelivery_Create(required any processObject){
+		//Get # of bottles for each bottle size option
+        var itemArray = [];
+        var deliveryItems = arguments.processObject.getOrderDeliveryItems();
+        for (var itemData in deliveryItems){
+			if (itemData.quantity > 0 ){
+				var orderItem = getService('OrderService').getOrderItemByOrderItemID(itemData.orderitem.orderItemID);
+				if (!isNull(orderItem)){
+					
+					var containerBean = getTransient('ContainerItemBean');
+					containerBean.setOrderItem(orderItem);
+					containerBean.setQuantity(itemData.quantity);
+					containerBean.setOrderItemQuantity(itemData.quantity);
+					arrayAppend(itemArray, containerBean);
+				}
+				
+			}
+        }
+        return itemArray;
+	}
+	
+	private struct function addItemToContainerStruct(required struct containerStruct, required any item){
+		
+		var packageName = 'default';
+		if(!structKeyExists(arguments.containerStruct,packageName) || isNull(arguments.containerStruct[packageName]) || arrayIsEmpty(arguments.containerStruct[packageName])){
+			arguments.containerStruct[packageName] = [{'maxQuantity'=1000}];
+			arguments.containerStruct['packageCount'] += 1;
+		}
+		var containerArray = arguments.containerStruct[packageName];
+		
+		var remainingQuantity = item.getQuantity();
+		
+		if(structKeyExists(item,'getCurrencyCode')){
+			var currencyCode = item.getCurrencyCode();
+		}else if(structKeyExists(item,'getOrderItem')){
+			var currencyCode = item.getOrderItem().getCurrencyCode();
+		}else{
+			var currencyCode = 'USD';
+		}
+		var itemValue = item.getSku().getAverageCost(currencyCode);
+		var itemWeight = item.getSku().setting('skuShippingWeight');
+			
+		for(var i = 1; i <= arrayLen(containerArray); i++){
+			var container = containerArray[i];
+			if(remainingQuantity > 0){
+				if(!structKeyExists(container,'containerItems')){
+					container['containerItems'] = [];
+				}
+				var containerItems = container['containerItems'];
+				
+				var currentQuantity = 0;
+				for(var containerItem in containerItems){
+					currentQuantity += containerItem['packagedQuantity'];
+				}
+				var allowedQuantity = container['maxQuantity'] - currentQuantity;
+				if(allowedQuantity >= remainingQuantity){
+					var packageQuantity = remainingQuantity;
+				}else{
+					var packageQuantity = allowedQuantity;
+				}
+				if(packageQuantity == 0){
+					continue;
+				}
+				if(!structKeyExists(container, 'itemcount')){
+					container['itemcount'] = 0;
+				}
+				container['itemcount'] += packageQuantity;
+				arrayAppend(containerItems,{'item':item,'sku':item.getSku(),'packagedQuantity':packageQuantity});
+
+				container['containerItems'] = containerItems;
+				remainingQuantity -= packageQuantity;
+				
+				if(!structKeyExists(container, 'value')){
+					container['value'] = 0;
+				}
+				container['value'] += (itemValue * packageQuantity);
+				
+				if(!structKeyExists(container,'weight')){
+					container['weight'] = 0;	
+				}
+				container['weight'] += (itemWeight * packageQuantity);
+			}else{
+				break;
+			}
+		}
+		return arguments.containerStruct;
+	}
+	
 	public any function populateContainerFromContainerStructAndOrderDelivery(required struct containerStruct,required any orderDelivery){
 	    var container = this.newContainer();
 	    
