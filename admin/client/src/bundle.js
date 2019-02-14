@@ -78247,7 +78247,6 @@ var DateReporting = /** @class */ (function () {
     //@ngInject
     DateReporting.Factory = function ($filter) {
         return function (date, periodInterval) {
-            console.log('test', date, periodInterval);
             if (date.trim && date.trim().length === 0) {
                 return '';
             }
@@ -88303,7 +88302,7 @@ var SWListingReportController = /** @class */ (function () {
             }
             _this.compareReportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
             _this.compareReportCollectionConfig.setReportFlag(1);
-            _this.compareReportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
+            _this.compareReportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false, isExportable: true });
             _this.compareReportCollectionConfig.setAllRecords(true);
             _this.compareReportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
             //TODO:should add as a filterGroup
@@ -88451,7 +88450,7 @@ var SWListingReportController = /** @class */ (function () {
                 if (_this.hasMetric) {
                     _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                     _this.reportCollectionConfig.setReportFlag(1);
-                    _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
+                    _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false, isExportable: true });
                     _this.reportCollectionConfig.setAllRecords(true);
                     _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
                     _this.reportCollectionConfig.removeFilterGroupByFilterGroupAlias('dates');
@@ -88630,6 +88629,7 @@ var SWListingReportController = /** @class */ (function () {
                 column.propertyIdentifier = _this.selectedPeriodPropertyIdentifier;
                 column.isPeriod = true;
                 column.isVisible = true;
+                column.isExportable = true;
                 column.title = column.displayPropertyIdentifier;
                 _this.selectedPeriodColumn = column;
                 if (update) {
