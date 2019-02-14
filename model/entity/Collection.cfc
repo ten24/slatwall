@@ -2250,10 +2250,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			clearRecordsCache();
 		}
 		
-		if(isReport()){
-			setIgnorePeriodInterval(true);
-		}
-
 		applyPermissions();
 		if(arguments.formatRecords){
 			//If we are caching this (someone set setCacheable(true) on the collectionList)
@@ -2317,6 +2313,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 						}else{
 							HQL = getHQL();
+							
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
@@ -2399,6 +2396,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var reportCacheKey = "";
 			if(!this.getNewFlag()){
 				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
+				reportCacheKey &= getIgnorePeriodInterval();
 			}
 			
 			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
@@ -2500,6 +2498,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
+		}
+		if(getIgnorePeriodInterval()){
+			return variables.records;
 		}
 		//backfill missing data intervals
 		if(isReport() && hasPeriodColumn()){

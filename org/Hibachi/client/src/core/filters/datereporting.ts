@@ -4,7 +4,6 @@ class DateReporting{
     //@ngInject
     public static Factory($filter){
         return (date,periodInterval)=>{
-            console.log('test',date,periodInterval)
             if(date.trim && date.trim().length===0){
                 return '';
             }
