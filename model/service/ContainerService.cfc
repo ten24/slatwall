@@ -329,7 +329,7 @@ component extends="HibachiService" output="false" accessors="true"  {
 		return container;
 	}
 	
-	private any function getOrderDeliveryItemFromContainerAndContainerItemStruct(required any container, required struct containerItemStruct){
+	public any function getOrderDeliveryItemFromContainerAndContainerItemStruct(required any container, required struct containerItemStruct){
 	    // Create a new orderDeliveryItem
 		var newOrderDeliveryItem = getOrderService().newOrderDeliveryItem();
 

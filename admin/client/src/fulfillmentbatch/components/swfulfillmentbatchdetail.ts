@@ -9,7 +9,6 @@ import * as actions from '../actions/fulfillmentbatchactions';
 class SWFulfillmentBatchDetailController  {
     
     public state;
-    public orderItem = {};
     public fulfillmentBatchId: string;
     
     // @ngInject
@@ -35,7 +34,6 @@ class SWFulfillmentBatchDetailController  {
                 stateChanges.action.type == actions.REMOVE_BOX ||
                 stateChanges.action.type == actions.SET_DELIVERY_QUANTITIES)){
                 //set the new state.
-                this.orderItem = {};
                 this.state = stateChanges;
             }
 
@@ -106,7 +104,6 @@ class SWFulfillmentBatchDetailController  {
     public userCaptureAndFulfill = () => {
         //request the fulfillment process.
         this.state.loading = true;
-        this.state.orderItem = this.orderItem;
 
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.CREATE_FULFILLMENT_REQUESTED,

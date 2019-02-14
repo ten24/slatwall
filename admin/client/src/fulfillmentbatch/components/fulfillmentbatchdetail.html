@@ -306,7 +306,7 @@
                                                 <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
                                                 <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-model="swFulfillmentBatchDetailController.state.trackingCode">
                                             </div>
-                                            <div class="col-xs-3" ng-show="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber">
+                                            <div class="col-xs-3" ng-show="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == 1">
                                                <label>Choose Shipping Integration</label>
                                                <select 
                                                    ng-model="swFulfillmentBatchDetailController.state.shippingIntegrationID" 

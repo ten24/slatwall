@@ -36361,9 +36361,10 @@ var OrderFulfillmentService = /** @class */ (function () {
             if (state === void 0) { state = {}; }
             if (ignoreCapture === void 0) { ignoreCapture = false; }
             _this.state.loading = true;
-            if (state.useShippingIntegrationForTrackingNumber && (state.shippingIntegrationID == "" || state.shippingIntegrationID == null)) {
+            if (state.useShippingIntegrationForTrackingNumber == 1 && (state.shippingIntegrationID == "" || state.shippingIntegrationID == null)) {
                 _this.state.loading = false;
                 alert(_this.$rootScope.rbKey('define.invalidShippingIntegration'));
+                _this.emitUpdateToClient();
                 return;
             }
             var data = {};
@@ -60607,7 +60608,6 @@ var SWFulfillmentBatchDetailController = /** @class */ (function () {
         this.listingService = listingService;
         this.orderFulfillmentService = orderFulfillmentService;
         this.rbkeyService = rbkeyService;
-        this.orderItem = {};
         this.userViewingFulfillmentBatchDetail = function (batchID) {
             _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
                 type: actions.SETUP_BATCHDETAIL,
@@ -60658,7 +60658,6 @@ var SWFulfillmentBatchDetailController = /** @class */ (function () {
         this.userCaptureAndFulfill = function () {
             //request the fulfillment process.
             _this.state.loading = true;
-            _this.state.orderItem = _this.orderItem;
             _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
                 type: actions.CREATE_FULFILLMENT_REQUESTED,
                 payload: { viewState: _this.state }
@@ -60763,7 +60762,6 @@ var SWFulfillmentBatchDetailController = /** @class */ (function () {
                 stateChanges.action.type == actions.REMOVE_BOX ||
                 stateChanges.action.type == actions.SET_DELIVERY_QUANTITIES)) {
                 //set the new state.
-                _this.orderItem = {};
                 _this.state = stateChanges;
             }
         });
