@@ -32,6 +32,9 @@
 		   	<div id="collapse#uuid#" class="collapse" aria-labelledby="#uuid#FilterCountDisplayItem" data-parent="##accordion">
 				<div class="card-body">
             		<cfloop array="#arguments.optionData#" index="option">
+			        <cfif structKeyExists(option,'COUNT') AND option['COUNT'] EQ 0 >
+            				<cfcontinue>
+            			</cfif>
             			<cfset isFilterApplied = attributes.collectionList.isFilterApplied(filterIdentifier,option['value'],attributes.filterType,attributes.comparisonOperator)/>
 						<div class="form-check">
 						<cfif structKeyExists(option,'name') && structKeyExists(option,'value')>
