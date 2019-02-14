@@ -107,7 +107,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-
+	property name="containerStruct" type="struct" persistent="false";
 	property name="accountAddressOptions" type="array" persistent="false";
 	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
@@ -700,6 +700,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			variables.manualFulfillmentChargeFlag = 0;
 		}
 		return variables.manualFulfillmentChargeFlag;
+	}
+
+	public struct function getContainerStruct() {
+		if(!structKeyExists(variables,'containerStruct')){
+			variables.containerStruct = getService('containerService').getContainerDetails(this);
+		}
+		return variables.containerStruct;
 	}
 
 	public any function getShippingAddress() {
