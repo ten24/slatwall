@@ -955,6 +955,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			var orderTypeCollection = getService('TypeService').getTypeCollectionList();
 			orderTypeCollection.setDisplayProperties('typeID|value,typeName|name');
 			orderTypeCollection.addFilter('parentType.systemCode','orderType');
+			
+			if(getService('OrderService').getOrderItemCollectionList().getRecordsCount() == 0){
+				orderTypeCollection.addFilter('systemCode','otReturnOrder', '!=');
+			}
+
 			variables.orderTypeOptions = orderTypeCollection.getRecords();
 		}
 		return variables.orderTypeOptions;
