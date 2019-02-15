@@ -11,7 +11,7 @@
             		    <label>Dimensions</label>
             			<select 
                       ng-model="swListingReport.selectedPeriodColumn" 
-                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier
+                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by periodColumn.fieldtype
                                         for periodColumn in swListingReport.periodColumns
                                          | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
                             "
@@ -136,13 +136,15 @@
                     </div>
                 </div><!-- end of .col -->
                 
-            	<div class="col save-btn">
+            	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
+            	    <span class="col-md-8" > Make Public: <input ng-model="swListingReport.isPublic" type="checkbox"/></span>
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         >
                             Save <i class="fas fa-save"></i>
                         </button>
+                        
                         <ul class="dropdown-menu pull-right" ng-show="swListingReport.collectionNameSaveIsOpen">
                             <li style="padding:8px;">
                                 <div class="s-form-input s-input-group s-edit" style="width:100px;">

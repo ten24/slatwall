@@ -50,7 +50,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="reportFlag" ormtype="boolean" default="0";
 	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
 	property name="softDeleteFlag" ormtype="boolean" default="0";
-
+	property name="publicFlag" ormtype="boolean" default="0";
 
 	// Calculated Properties
 
@@ -141,6 +141,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="exportFileName" type="string" persistent="false";
 	
+	
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -184,6 +186,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiUtilityService(getService('HibachiUtilityService'));
 
 	}
+	//if we are public then we can't have an account owner
+	public void function setPublicFlag(boolean publicFlagValue){
+		if(structKeyExists(arguments,'publicFlagValue')){
+			if(arguments.publicFlagValue){
+				setAccountOwner(javacast('null',''));
+				
+			}
+			variables.publicFlag = arguments.publicFlagValue;
+		}
+	}
+	//if we have an account owner then we can't be public
+	public void function setAccountOwner(any accountOwner){
+		if(!structKeyExists(arguments,'accountOwner')){
+			structDelete(variables,'accountOwner');
+		}else{
+			variables.accountOwner = arguments.accountOwner;
+			setPublicFlag(false);
+		}
+	}
+	
 	
 	public void function setInlistDelimiter(delimiter=","){
 		variables.inlistDelimiter = arguments.delimiter;
@@ -2228,10 +2250,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			clearRecordsCache();
 		}
 		
-		if(isReport()){
-			setIgnorePeriodInterval(true);
-		}
-
 		applyPermissions();
 		if(arguments.formatRecords){
 			//If we are caching this (someone set setCacheable(true) on the collectionList)
@@ -2295,6 +2313,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 						}else{
 							HQL = getHQL();
+							
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
@@ -2377,6 +2396,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var reportCacheKey = "";
 			if(!this.getNewFlag()){
 				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
+				reportCacheKey &= getIgnorePeriodInterval();
 			}
 			
 			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
@@ -2478,6 +2498,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
+		}
+		if(getIgnorePeriodInterval()){
+			return variables.records;
 		}
 		//backfill missing data intervals
 		if(isReport() && hasPeriodColumn()){
