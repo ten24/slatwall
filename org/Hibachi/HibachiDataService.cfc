@@ -124,6 +124,7 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
+		arraySort(dirList,"textnocase");
 
 		var checksumFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#/') & 'custom/system/dbDataChecksums.txt.cfm';  
 	
