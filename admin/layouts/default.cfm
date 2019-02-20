@@ -47,6 +47,20 @@ Notes:
 
 --->
 
+<!---<cfset hql = "
+		
+		SELECT new Map( _order.orderNumber as orderNumber, _order_account.calculatedFullName as account_calculatedFullName, _order.orderOpenDateTime as orderOpenDateTime, _order_orderStatusType.typeName as orderStatusType_typeName, _order.calculatedTotal as calculatedTotal, _order.orderID as orderID) 
+		FROM SlatwallOrder as _order 
+		left join _order.account as _order_account 
+		left join _order.orderStatusType as _order_orderStatusType 
+		where ( 
+			_order_orderStatusType.systemCode IN ('ostNew','ostProcessing','ostOnHold','ostClosed','ostCanceled') 
+		) 
+		ORDER BY _order.orderOpenDateTime DESC
+		GROUP BY _order.orderID
+	"/>
+<cfdump var="#ORMExecuteQuery(HQL,{},false,{maxresults=10})#"/><cfabort>--->
+
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>

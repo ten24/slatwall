@@ -66,25 +66,23 @@ Notes:
 	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
 
 	<div class="col-md-6">
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#"
-				recordDetailAction="admin:entity.detailorder">
-			<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
-			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-			<hb:HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
-			<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true"/>
-			<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
+		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" 
+			collectionList="#rc.orderCollectionList#"
+			recordDetailAction="admin:entity.detailorder">
+			
 		</hb:HibachiListingDisplay>
 		<br />
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" smartList="#rc.productReviewSmartList#"
-				recordDetailAction="admin:entity.detailproductreview">
-			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.calculatedTitle" />
-			<hb:HibachiListingColumn propertyIdentifier="reviewerName" />
-			<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
+		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" 
+				recordDetailAction="admin:entity.detailproductreview"
+			collectionList="#rc.productReviewCollectionList#"
+			>
+			
 		</hb:HibachiListingDisplay>
 	</div>
+	
 	<div class="col-md-6">
 		<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
-		<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
+	<!---	<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />--->
 	</div>
 	
 

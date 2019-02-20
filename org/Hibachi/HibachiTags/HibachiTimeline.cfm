@@ -10,7 +10,7 @@
 	<cfset thisTag.hibachiAuditService = attributes.hibachiScope.getService('HibachiAuditService') />
 	<cfset thisTag.mode = "" />
 	<cfset thisTag.auditArray = [] />
-	
+	<cfdump var="test"><cfabort>
 	<!--- AuditSmartList was passed in, so use as is --->
 	<cfif isObject(attributes.auditSmartList)>
 		<cfset thisTag.mode = "auditSmartList" />
@@ -18,7 +18,7 @@
 	<!--- There is a specific entity, so use that entities auditSmartList --->
 	<cfelseif isObject(attributes.object) && attributes.object.isPersistent()>
 		<cfset thisTag.mode = "object" />
-		<cfset attributes.auditSmartList = attributes.object.getAuditSmartList() />
+		<cfset attributes.auditSmartList = attributes.object.getAuditCollectionList() />
 		
 	<!--- No AuditSmartList was pased in, and no object was passed in so just create a new auditSmartList --->
 	<cfelse>
