@@ -825,7 +825,13 @@ component output="false" accessors="true" extends="HibachiController" {
 	        }
 
 	        if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
-	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
+	            if(structKeyExists(entity.getHibachiErrors().getErrors(),'processObjects')){
+	                var processObject = entity.getProcessObject(entity.getHibachiErrors().getErrors()['processObjects'][1]);
+	                var errors = processObject.getErrors();
+	            }else{
+	                var errors = entity.getHibachiErrors().getErrors();
+	            }
+                arguments.rc.apiResponse.content.errors = errors;
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
 	        

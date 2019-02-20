@@ -152,6 +152,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
+	
+	//CUSTOM PROPERTIES BEGIN
+
+ property name="productSummary" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="audience" ormtype="string" hb_formFieldType="select";
+ property name="productRedirectURL" ormtype="string";
+ property name="healthsmartGrade" ormtype="string" hb_formFieldType="select";
+ property name="healthsmartFlag" ormtype="boolean" hb_formatType="yesno";
+ property name="healthsmartDigttalPrint" ormtype="string" hb_formFieldType="select";
+ property name="productStatusCode" ormtype="string" hb_formFieldType="select";
+ property name="productFormat" ormtype="string" hb_formFieldType="select";
+ property name="productSize" ormtype="string";
+ property name="productTypeCode" ormtype="string" hb_formFieldType="select";
+ property name="productGroupCode" ormtype="string" hb_formFieldType="select";
+ property name="author" ormtype="string";
+ property name="publishedDate" ormtype="timestamp";
+ property name="flagNIH" ormtype="boolean" hb_formatType="yesno" default="0";
+ property name="flagNewFeatured" ormtype="boolean" hb_formatType="yesno" default="No";
+ property name="productVideoCode" ormtype="string";
+ property name="extendedText" ormtype="string" hb_formFieldType="textarea";//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();
