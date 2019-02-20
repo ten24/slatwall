@@ -1538,6 +1538,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		return arguments.collection;
 	}
+	
+	//import
+	
+	public any function processCollection_Import(required any collection, required any processObject, struct data={}) {
+		//perform export
+		
+		return arguments.collection;
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================
