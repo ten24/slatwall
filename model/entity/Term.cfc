@@ -72,6 +72,7 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 	property name="loyaltyTerms" singularname="loyaltyTerm" cfc="LoyaltyTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all-delete-orphan" inverse="true" lazy="extra";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="giftCardExpirationTermID" cascade="all" inverse="true" lazy="extra";
 	property name="giftCardExpirationTerms" singularname="giftCardExpirationTerm" cfc="Sku" type="array" fieldtype="one-to-many" fkcolumn="giftCardExpirationTermID" cascade="all" inverse="true" lazy="extra";
+	property name="scheduleOrders" singularname="scheduleOrder" cfc="Order" type="array" fieldtype="one-to-many" fkcolumn="scheduleOrderTermID" cascade="all" inverse="true" lazy="extra";
 
 	// Related Object Properties (many-to-many)
 
