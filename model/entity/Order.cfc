@@ -72,6 +72,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
 
 	//schedule order
+	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
 	property name="scheduleOrderStartDateTime" ormtype="timestamp" hb_displayType="datetime";
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp" hb_displayType="datetime";
 
