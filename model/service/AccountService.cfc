@@ -1554,6 +1554,18 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function saveAccount(required any account, struct data={}, string context="save"){
 		
+		if (StructKeyExists(arguments.data, 'primaryEmailAddress.accountEmailAddressID')) {
+			var currentPrimaryEmailAddress = arguments.account.getPrimaryEmailAddress();
+			var newPrimaryEmailAddress = this.getAccountEmailAddress(arguments.data.primaryEmailAddress.accountEmailAddressID);
+			
+			// send email if primary address is different
+			if (currentPrimaryEmailAddress.getEmailAddress() != newPrimaryEmailAddress.getEmailAddress()) {
+				arguments.account.setPrimaryEmailAddress(newPrimaryEmailAddress);
+				getService('emailService').generateAndSendFromEntityAndEmailTemplateID(newPrimaryEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+			}
+		}
+		
+		
 		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
 			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
 				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
