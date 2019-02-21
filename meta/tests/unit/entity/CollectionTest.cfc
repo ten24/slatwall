@@ -70,7 +70,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setCollectionObject('product');
 		var propertyIdentifier = myCollection.convertAliasToPropertyIdentifier(alias);
 		assertEquals('defaultSku.skuID',propertyIdentifier);
-		debug(propertyIdentifier);
 		
 	}
 	
@@ -82,7 +81,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var myCollection=variables.entityService.newCollection();
 		myCollection.setCollectionObject('OrderItem');
 		var propertyIdentifier = myCollection.convertAliasToPropertyIdentifier(alias);
-		debug(propertyIdentifier);
+		assertEquals('sku.createdDateTime',propertyIdentifier);
 	}
 	
 	/**
