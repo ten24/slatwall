@@ -44,7 +44,7 @@
 								<cfset optionBuildUrl = attributes.baseBuildUrl & "#buildURLValue#"/>
 			                	<input 
 			                		class="form-check-input"
-			                		onclick="window.location='#attributes.hibachiScope.getService('hibachiCollectionService').buildURL( '#optionBuildURl#' )#'" 
+			                		onclick="window.location='#attributes.hibachiScope.getService('hibachiCollectionService').buildURL( queryAddition='#optionBuildURl#',valueDelimiter='||')#'" 
 			                		type="checkbox" 
 			                		id="#arguments.title##option['value']#"
 			                		value="#optionBuildUrl#" 
