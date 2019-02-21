@@ -1953,15 +1953,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			setPageRecordsShow(25);
 		}
 	}
-
+	//there are two types of alias. One on the collection config in this format _product_defaultSku.skuID
+	//and another on the record output formatted like defaultSku_skuID
 	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
 		var cacheKey = 'convertAliasToPropertyIdentifier'&arguments.propertyIdentifierWithAlias;
 
 		var convertedAlias = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedAlias)){
+			//assume collection config format
 			if(left(arguments.propertyIdentifierWithAlias,1) == '_'){
 	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
 	 			arguments.propertyIdentifierWithAlias = listRest(right(arguments.propertyIdentifierWithAlias,len(arguments.propertyIdentifierWithAlias)-1),'.');
+			//assume output format
+			}else{
+	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
 	 		}
 	 		convertedAlias = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifierWithAlias);
 	 		setCollectionCacheValue(cacheKey,convertedAlias);
