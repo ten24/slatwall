@@ -1653,6 +1653,11 @@ table tr th .glyphicon {
   vertical-align: middle;
   margin-top: 18px;
 }
+
+.s-property.form-horizontal .actionbar-title {
+  margin: 0px 0px 15px 0px;
+  color: #000000;
+}
 .s-toggle-panels {
   padding: 0px;
   margin-bottom: 3px;

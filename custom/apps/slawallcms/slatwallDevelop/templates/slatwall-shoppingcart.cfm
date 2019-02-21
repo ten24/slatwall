@@ -68,7 +68,7 @@ Notes:
 <div class="container">
     <!--- Page Title --->
     <h1 class="my-4">#$.Slatwall.content('title')#</h1>
-    
+    <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
     <!--- Show cart if order items exist --->
     <div ng-if="slatwall.cart.orderItems.length" ng-cloak>
         <div class="card mb-5">
@@ -79,6 +79,7 @@ Notes:
                     </div>
                     <div class="col-sm-3">
                         <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
+                        <input type="button" class="btn-block btn btn-info float-right" ng-click="slatwall.doAction('clearOrder', {})" value="Clear Cart">
                     </div>
                 </div>
             </div>
@@ -92,6 +93,7 @@ Notes:
                     </div>
                     <div class="col-sm-3">
                         <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
+                        <input type="button" class="btn-block btn btn-info float-right" ng-click="slatwall.doAction('clearOrder', {})" value="Clear Cart">
                     </div>
                 </div>
             </div>
