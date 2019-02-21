@@ -337,18 +337,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 	
-	public any function saveAccount(required any account, struct data={}, string context="save"){
-		
-		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
-			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
-				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
-				arguments.account.setAccountCode(accountCode);
-			}
-		}
-				
-		return super.save(entity=arguments.account,data=arguments.data);
-	}
-	
 	public any function processAccountRelationship_Approval(required accountRelationship){
 		
 	}
@@ -1563,6 +1551,29 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveAccount(required any account, struct data={}, string context="save"){
+		
+		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
+			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
+				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
+				arguments.account.setAccountCode(accountCode);
+			}
+		}
+				
+		return super.save(entity=arguments.account,data=arguments.data);
+	}
+	
+	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
+		arguments.accountEmailAddress = super.save(entity=arguments.accountEmailAddress, data=arguments.data);
+		if(!arguments.accountEmailAddress.hasErrors()){
+			if(arguments.accountEmailAddress.getPrimaryEmailChangedFlag()){
+				//send email because the primary changed
+				getService('emailService').generateAndSendFromEntityAndEmailTemplateID(arguments.accountEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+			}
+		}
+		return arguments.accountEmailAddress;
+	}
 	
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
 		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
