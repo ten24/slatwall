@@ -493,7 +493,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
 
 	*/
-	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="", string delimiter=",") {
+	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="", string delimiter=",",string valueDelimiter=",") {
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
 			if(len(cgi.query_string)) {
@@ -503,7 +503,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var modifiedURL = "?";
 		variables.dataKeyDelimiter = ":";
-		variables.valuedelimiter = ",";
+		variables.valuedelimiter = arguments.valueDelimiter;
 		
 		// Turn the old query string into a struct
 		var oldQueryKeys = {};
@@ -1404,7 +1404,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			//Handle Range
 			if (left(arguments.key, 2) == "r:"){
 				var value = arguments.data[arguments.key];
-				var ranges = listToArray(value);
+				var ranges = listToArray(value,arguments.collection.getInlistDelimiter());
 				var filterParts = "#listToArray(arguments.key, ':')#";
 				var prop = filterParts[2];//property
 				if(
@@ -1413,7 +1413,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					&& listFind(trim(arguments.excludesList),trim(prop)) == 0
 				){
 					var ormtype = arguments.collection.getOrmTypeByPropertyIdentifier(prop);
-					var rangeValues = listToArray(data[arguments.key]);//value 20^40,100^ for example.
+					var rangeValues = listToArray(data[arguments.key],arguments.collection.getInlistDelimiter());//value 20^40,100^ for example.
 
 					for(var i=1; i <= arraylen(rangeValues);i++){
 						var rangeValue = rangeValues[i];
