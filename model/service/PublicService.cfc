@@ -126,11 +126,10 @@ component  accessors="true" output="false"
         var skuSmartList = getService('skuService').getSkuSmartList();
         skuSmartList.addInFilter('skuID',data.skuIDs);
         
-        if( skuSmartList.getRecordsCount() > 0){
-            var skus = skuSmartList.getRecords();
-            
-            for  (var sku in skus){
-                arguments.data.ajaxResponse['resizedImagePaths'][sku.getSkuID()] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
+        for (var skuID in data.skuIDs){
+            var sku = getService('SkuService').getSku(skuID);
+            if(!isNull(sku)){
+                arguments.data.ajaxResponse['resizedImagePaths'][skuID] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
             }
         }
         arguments.data.returnJsonObjects = "";
@@ -914,8 +913,10 @@ component  accessors="true" output="false"
         
         if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var subscriptionUsage = getSubscriptionService().saveSubscriptionUsage( subscriptionUsage, arguments.data );
+            if(subscriptionUsage.hasErrors()){
+                addErrors(arguments.data,subscriptionUsage.getErrors());
+            }
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
-            return subscriptionUsage;
         } else {
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", true );
         }
@@ -935,10 +936,38 @@ component  accessors="true" output="false"
         
         if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.data, 'renew' );
+            if(subscriptionUsage.hasErrors()){
+                addErrors(arguments.data,subscriptionUsage.getErrors());
+            }
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
-            return subscriptionUsage;
         } else {
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", true );
+        }
+    }
+    
+    /** 
+     * @http-context cancelSubscriptionUsage
+     * @description Subscription Usage - Cancel
+     * @http-return <b>(200)</b> Successfully Cancelled or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod SubscriptionUsage_Cancel
+     */
+    public void function cancelSubscriptionUsage(required struct data) {
+        param name="arguments.data.subscriptionUsageID" default="";
+        
+        var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( arguments.data.subscriptionUsageID );
+        
+        if(!structKeyExists(arguments.data,'effectiveDateTime')){
+            arguments.data.effectiveDateTime = subscriptionUsage.getExpirationDate();
+        }
+        
+        if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.data, 'cancel' );
+            if(subscriptionUsage.hasErrors()){
+                addErrors(arguments.data,subscriptionUsage.getErrors());
+            }
+            getHibachiScope().addActionResult( "public:account.cancelSubscriptionUsage", subscriptionUsage.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:account.cancelSubscriptionUsage", true );
         }
     }
     

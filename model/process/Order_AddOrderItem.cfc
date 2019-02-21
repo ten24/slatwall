@@ -171,7 +171,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		if(
 			!structKeyExists(variables, "price") 
-			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPrice() )
+			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCodeAndAccount(currencyCode=getCurrencyCode(),account=account) )
 			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getLivePriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),account=account) )
 		){
 			variables.price = 0;

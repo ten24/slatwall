@@ -4,6 +4,7 @@
 <cfparam name="rc.collection" type="any">
 <cfparam name="rc.edit" type="boolean">
 
+
 <hb:HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
 	<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#">
     <hb:HibachiProcessCaller entity="#rc.collection#" action="admin:entity.preprocesscollection" processContext="clone" queryString="sRedirectAction=admin:entity.detailcollection" type="list" modal="true" hideDisabled="false" />

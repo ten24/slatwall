@@ -57,7 +57,7 @@ Notes:
 	<hb:HibachiEntityActionBar type="listing" object="#rc.cycleCountBatchSmartList#" showCreate="false">
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocesscyclecountbatch" entity="cyclecountbatch" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true"  text="#rc.$.slatwall.rbKey('admin.entity.preprocesscyclecountbatch')#" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocesscyclecountbatch" entity="cyclecountbatch" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" text="#rc.$.slatwall.rbKey('admin.entity.preprocesscyclecountbatch')#"/>
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
@@ -65,9 +65,9 @@ Notes:
 	                          recordeditaction="admin:entity.editcyclecountbatch"
 							  recorddetailaction="admin:entity.detailcyclecountbatch">
 	
-		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchDate" />
+		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchName" />
 		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchStatusType.typeName" title="Batch Status" />
-		<hb:HibachiListingColumn propertyidentifier="physical.physicalStatusType.typeName" title="Physical Status" />
+		<!---<hb:HibachiListingColumn propertyidentifier="physical.physicalStatusType.typeName" title="Physical Status" />--->
 	</hb:HibachiListingDisplay>
 
 </cfoutput>

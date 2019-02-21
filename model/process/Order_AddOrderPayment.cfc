@@ -396,7 +396,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public void function setHibachiErrors( required any errorBean ) {
-		if ( !isnull(this.getGiftCardID() ) ){
+		if ( !isNull(this.getGiftCardID()) && !isNull(errorBean.getErrors()) && !structIsEmpty(errorBean.getErrors())){
 			getHibachiScope().setORMHasErrors( true );			
 		}
 		
