@@ -1417,7 +1417,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					var rangeValues = listToArray(data[arguments.key],arguments.collection.getInlistDelimiter());//value 20^40,100^ for example.
 
 					for(var i=1; i <= arraylen(rangeValues);i++){
-						
+						var rangeValue = rangeValues[i];
 						var rangeArray = listToArray(rangeValue,'^');
 						var rangeLen = 0;
 						if (isArray(rangeArray)){
