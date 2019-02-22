@@ -53,7 +53,8 @@
                 class="form-control"
                 min="1" 
                 ng-value="orderItem.quantity" 
-                ng-model="newQuantity" 
+                ng-model="newQuantity"
+                ng-model-options="{debounce:250}"
                 ng-change="swfCartItems.updateOrderItemQuantity(newQuantity);slatwall.cart.orderItemChangedIndex = $index" 
             required>
         </div>
