@@ -93,12 +93,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.fulf
 	            arguments.container[dimension] = 1;
 	        }
 	    }
-	    if(isNull(variables.containers)){
-	    	variables.containers = [];
-	    }
-	    var containers = variables.containers;
-	    arrayAppend(containers,arguments.container);
-	    this.setContainers(containers);
 	}
 
     public void function populateShippingItemsWithOrderDelivery_Create(required any processObject, boolean clear=false){
@@ -127,7 +121,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.fulf
 		} 
 		var orderDeliveryItems = arguments.processObject.getOrderDelivery().getOrderDeliveryItems();
 		for(var i=1; i <= arrayLen(orderDeliveryItems); i++) {
-		    
+
 		    var sku = orderDeliveryItems[i].getOrderItem().getSku();
 			addShippingItem(
 				value=sku.getPrice(),
