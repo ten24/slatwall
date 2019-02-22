@@ -1577,14 +1577,41 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
-		arguments.accountEmailAddress = super.save(entity=arguments.accountEmailAddress, data=arguments.data);
-		if(!arguments.accountEmailAddress.hasErrors()){
-			if(arguments.accountEmailAddress.getPrimaryEmailChangedFlag()){
-				//send email because the primary changed
-				getService('emailService').generateAndSendFromEntityAndEmailTemplateID(arguments.accountEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+		
+		if (StructKeyExists(arguments.data,'emailAddress') && StructKeyExists(arguments.data,'emailAddressConfirm')) {
+			// check email address inputs match 
+			if (arguments.data.emailAddress == arguments.data.emailAddressConfirm) {
+				
+				var existingEmailAddresses = [];
+				for (var e in getHibachiScope().getAccount().getAccountEmailAddresses()) {
+					existingEmailAddresses.append(e.getEmailAddress());
+				}
+				
+				// check if email already exists
+				if (!ArrayContains(existingEmailAddresses, arguments.data.emailAddress)) {
+					
+					// save
+					arguments.accountEmailAddress = super.save(entity=arguments.accountEmailAddress, data=arguments.data);
+					if(!arguments.accountEmailAddress.hasErrors()){
+						if(arguments.accountEmailAddress.getPrimaryEmailChangedFlag()){
+							
+							//send email because the primary changed
+							getService('emailService').generateAndSendFromEntityAndEmailTemplateID(arguments.accountEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+						}
+					}
+					
+				} else {
+					arguments.accountEmailAddress.addError(errorName='emailAddress',errorMessage=getHibachiScope().getRbkey('validation.AccountEmailAddress.emailAlreadyExists'));
+				}
+				
+			} else {
+				arguments.accountEmailAddress.addError(errorName='emailAddress',errorMessage=getHibachiScope().getRbkey('validation.AccountEmailAddress.matchingInputs'));
 			}
+			
 		}
+		
 		return arguments.accountEmailAddress;
+		
 	}
 	
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){

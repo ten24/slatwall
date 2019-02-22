@@ -102,14 +102,18 @@
 		  		<label for="emailAddress">Email</label>
 				<sw:FormField type="text" valueObject="#$.slatwall.getAccount().getPrimaryEmailAddress()#" valueObjectProperty="emailAddress" class="form-control" fieldAttributes="required"/>
 				<small class="form-text text-muted">Enter new account email. This will change your account email used to login.</small>
-				<sw:ErrorDisplay object="#$.slatwall.getAccount().getPrimaryEmailAddress()#" errorName="emailAddress" />
+				<div class="text-danger small">
+					<sw:ErrorDisplay object="#$.slatwall.getAccount().getPrimaryEmailAddress()#" errorName="emailAddress" />
+				</div>
 			</div>
 			
 			<!--- Confirm Email Address --->
 	  		<div class="form-group">
 		  		<label for="emailAddress">Confirm Email Address</label>
-				<sw:FormField type="text" valueObject="#$.slatwall.getAccount().getPrimaryEmailAddress()#" valueObjectProperty="emailAddress" class="form-control" fieldAttributes="required" />
-				<sw:ErrorDisplay object="#$.slatwall.getAccount().getPrimaryEmailAddress()#" errorName="emailAddress" />
+				<sw:FormField type="text" valueObject="#$.slatwall.getAccount().getPrimaryEmailAddress()#" valueObjectProperty="emailAddressConfirm" class="form-control" fieldAttributes="required" />
+				<div class="text-danger small">
+					<sw:ErrorDisplay object="#$.slatwall.getAccount().getPrimaryEmailAddress()#" errorName="emailAddressConfirm" class="text-danger small"/>
+				</div>
 			</div>
 			
 			<div class="form-group">

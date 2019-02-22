@@ -150,34 +150,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	// Account Email Address - Update
 	public void function updateAccountEmailAddress(required struct rc) {
 		var primaryAccountEmailAddress = getHibachiScope().getAccount().getPrimaryEmailAddress();
-		
-		if (StructKeyExists(arguments.rc, 'emailAddress')) {
-			
-			// email address from request context comes in list form
-			// so separate
-			var emailAddress = ListToArray(arguments.rc.emailAddress)[1];
-			var confirmEmailAddress = ListToArray(arguments.rc.emailAddress)[2];
-			
-			// check for matching values
-			if (emailAddress == confirmEmailAddress) {
-				
-				// get only email addresses
-				var existingEmailAddresses = [];
-				for (var e in getHibachiScope().getAccount().getAccountEmailAddresses()) {
-					existingEmailAddresses.append(e.getEmailAddress());
-				}
-				
-				if (!ArrayContains(existingEmailAddresses, emailAddress)) {
-					arguments.rc.emailAddress = emailAddress;
-					primaryAccountEmailAddress = getAccountService().saveAccountEmailAddress(primaryAccountEmailAddress, arguments.rc);
-		
-					getHibachiScope().addActionResult( "public:account.updatePrimaryEmailAddress", primaryAccountEmailAddress.hasErrors() );
-				}
-			} else {
-				getHibachiScope().addActionResult('public:account.updatePrimaryEmailAddress', true);
-			}
-		}
-		
+		primaryAccountEmailAddress = getAccountService().saveAccountEmailAddress(primaryAccountEmailAddress, arguments.rc);
+		getHibachiScope().addActionResult( "public:account.updatePrimaryEmailAddress", primaryAccountEmailAddress.hasErrors() );
 	}
 
 	// Account Email Address - Delete
