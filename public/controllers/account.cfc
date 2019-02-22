@@ -63,11 +63,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function after( required struct rc ) {
 		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions())) {
-			getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
+			getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL,preserve="messages" );
 		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(getHibachiScope().getFailureActions())) {
-			getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL );
+			getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL,preserve="messages" );
 		} else if (structKeyExists(arguments.rc, "redirectURL")) {
-			getFW().redirectExact( redirectLocation=arguments.rc.redirectURL );
+			getFW().redirectExact( redirectLocation=arguments.rc.redirectURL,preserve="messages" );
 		}
 	}
 
@@ -149,9 +149,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account Email Address - Update
 	public void function updateAccountEmailAddress(required struct rc) {
-		var primaryAccountEmailAddress = getHibachiScope().getAccount().getPrimaryEmailAddress();
-		primaryAccountEmailAddress = getAccountService().saveAccountEmailAddress(primaryAccountEmailAddress, arguments.rc);
-		getHibachiScope().addActionResult( "public:account.updatePrimaryEmailAddress", primaryAccountEmailAddress.hasErrors() );
+		// var primaryAccountEmailAddress = getHibachiScope().getAccount().getPrimaryEmailAddress();
+		// primaryAccountEmailAddress = getAccountService().saveAccountEmailAddress(primaryAccountEmailAddress, arguments.rc);
+
+		var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.rc, 'updatePrimaryEmailAddress');
+		getHibachiScope().addActionResult( "public:account.updatePrimaryEmailAddress", account.hasErrors() );
 	}
 
 	// Account Email Address - Delete
