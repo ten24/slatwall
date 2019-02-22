@@ -372,7 +372,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
 		if(arguments.account.getNewFlag()){
-		
+			arguments.account.setAccountCreateIPAddress( getRemoteAddress() );
 			// Populate the account with the correct values that have been previously validated
 			arguments.account.setFirstName( processObject.getFirstName() );
 			arguments.account.setLastName( processObject.getLastName() );
