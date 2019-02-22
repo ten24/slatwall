@@ -60,11 +60,13 @@
     <!-- PERSONAL COLLECTIONS -->
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-        >
-            <i class="fas fa-save"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
+            <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            >
+                <i class="fas fa-save"></i>
+            </button>
+        </span>
         <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
             <li style="padding:8px;">
                 <div class="s-form-input s-input-group s-edit" style="width:100px;">
@@ -89,12 +91,14 @@
     </span>
     <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn s-action"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-
-        >
-            <i  class="fa fa-bookmark"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="All Saved Reports" data-position="bottom">
+            <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+    
+            >
+                <i  class="fa fa-bookmark"></i>
+            </button>
+        </span>
         <ul class="dropdown-menu pull-right with-btn">
             <li>
                     <a href="#" ng-click="swListingSearch.clearPersonalCollection()">Default</a>
