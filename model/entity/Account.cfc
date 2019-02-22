@@ -152,13 +152,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 	
-	//CUSTOM PROPERTIES BEGIN
-
- property name="primaryPermissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="primaryPermissionGroupID";
- property name="website" ormtype="string";
- property name="websiteTwo" ormtype="string";
- property name="gsa" ormtype="string";
- property name="department" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}

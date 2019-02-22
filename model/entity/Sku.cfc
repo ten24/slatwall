@@ -217,17 +217,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// ==================== START: Logical Methods =========================	
 	
-	//CUSTOM PROPERTIES BEGIN
-
- property name="comment" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="isbn" ormtype="string";
- property name="salesForceNumber" ormtype="string";
- property name="SFPriceBookEntryNumber" ormtype="string";
- property name="shelfNumber" ormtype="string";
- property name="altShelf2" ormtype="string";
- property name="altShelf3" ormtype="string";
- property name="altShelf4" ormtype="string";
- property name="grossWeight" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
