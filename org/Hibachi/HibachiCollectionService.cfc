@@ -1414,10 +1414,10 @@ component output="false" accessors="true" extends="HibachiService" {
 					&& listFind(trim(arguments.excludesList),trim(prop)) == 0
 				){
 					var ormtype = arguments.collection.getOrmTypeByPropertyIdentifier(prop);
-					var rangeValues = listToArray(data[arguments.key]);//value 20^40,100^ for example.
+					var rangeValues = listToArray(data[arguments.key],arguments.collection.getInlistDelimiter());//value 20^40,100^ for example.
 
 					for(var i=1; i <= arraylen(rangeValues);i++){
-						var rangeValues = listToArray(data[arguments.key],arguments.collection.getInlistDelimiter());//value 20^40,100^ for example.
+						
 						var rangeArray = listToArray(rangeValue,'^');
 						var rangeLen = 0;
 						if (isArray(rangeArray)){
