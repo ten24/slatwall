@@ -3211,8 +3211,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									|| column.ormtype eq 'integer'
 									|| column.ormtype eq 'float'
 									|| column.ormtype eq 'double'
-									&& !getDisableAveragesAndSumsFlag()
-									)
+									) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
 								){
 									addTotalAvgAggregate(column);
 									addTotalSumAggregate(column);
