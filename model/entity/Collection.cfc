@@ -2396,7 +2396,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
-			
+			this.setExcludeOrderBy(true);
 			//check cache key
 			var reportCacheKey = "";
 			if(!this.getNewFlag()){
