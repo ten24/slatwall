@@ -502,6 +502,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 
 		var modifiedURL = "?";
+	
 		variables.dataKeyDelimiter = ":";
 		variables.valuedelimiter = arguments.valueDelimiter;
 		

@@ -96,9 +96,6 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 
 
 	
-	//CUSTOM PROPERTIES BEGIN
-
- property name="backgroundImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";//CUSTOM PROPERTIES END
 	public array function getInheritedAttributeSetAssignments(){
 		// Todo get by all the parent productTypeIDs
 		var attributeSetAssignments = getService("AttributeService").getAttributeSetAssignmentSmartList().getRecords();

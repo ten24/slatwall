@@ -96,10 +96,6 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 
 	// Attribute Values (one-to-many)
 	
-	//CUSTOM PROPERTIES BEGIN
-
- property name="categoryBackgroundImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
- property name="showShortDescription" ormtype="boolean" hb_formatType="yesno" default="false";//CUSTOM PROPERTIES END
 	public void function addAttributeValue(required any attributeValue) {
 		arguments.attributeValue.setCategory( this );
 	}

@@ -77,13 +77,6 @@ component displayname="ContainerPreset" entityname="SlatwallContainerPreset" tab
 
 	
 	// ============ START: Non-Persistent Property Methods =================
-		//CUSTOM PROPERTIES BEGIN
-property name="maxQuantity" ormtype="integer";
-    property name="bottleSize" cfc="Option" fieldtype="many-to-one" fkcolumn="sizeOptionID";
-    
-    property name="bottleSizeOptions" persistent="false";
-    
-   //CUSTOM PROPERTIES END
 	public array function getDimensionUnitOptions(){
 	    if(!structKeyExists(variables,'dimensionUnitOptions')){
             var dimensionUnitCollectionList = getService('measurementService').getMeasurementUnitCollectionList(measurmentType='length');
