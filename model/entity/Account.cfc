@@ -64,6 +64,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="verifiedAccountFlag" ormtype="boolean" default="false";
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
+	property name="accountCreateIPAddress" ormtype="string";
 
 	//calucluated property
 	property name="calculatedFullName" ormtype="string";
@@ -152,13 +153,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 	
-	//CUSTOM PROPERTIES BEGIN
-
- property name="primaryPermissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="primaryPermissionGroupID";
- property name="website" ormtype="string";
- property name="websiteTwo" ormtype="string";
- property name="gsa" ormtype="string";
- property name="department" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
