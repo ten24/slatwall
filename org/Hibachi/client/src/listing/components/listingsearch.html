@@ -31,11 +31,14 @@
     <!-- REPORT COLLECTIONS -->
     <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn s-action"
         ng-show="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-        >
-            <i class="fas fa-chart-line"></i>
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span sw-tooltip class="tool-tip-item" data-text="New Report" data-position="bottom">
+                <i class="fas fa-chart-line"></i>
+            </span>
         </button>
+        
         <ul class="dropdown-menu pull-right  with-btn autocomplete-options" >
             <li>
                     <a ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}" >New Report</a>
@@ -57,11 +60,13 @@
     <!-- PERSONAL COLLECTIONS -->
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-        >
-            <i class="fas fa-save"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
+            <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            >
+                <i class="fas fa-save"></i>
+            </button>
+        </span>
         <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
             <li style="padding:8px;">
                 <div class="s-form-input s-input-group s-edit" style="width:100px;">
@@ -86,12 +91,14 @@
     </span>
     <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn s-action"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-
-        >
-            <i  class="fa fa-bookmark"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="All Saved Reports" data-position="bottom">
+            <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+    
+            >
+                <i  class="fa fa-bookmark"></i>
+            </button>
+        </span>
         <ul class="dropdown-menu pull-right with-btn">
             <li>
                     <a href="#" ng-click="swListingSearch.clearPersonalCollection()">Default</a>
@@ -107,22 +114,31 @@
         </ul>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
-        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
-            <i class="fa fa-filter"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Filtering" data-position="bottom">
+            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
+                <i class="fa fa-filter"></i>
+            </button>
+        </span>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleDisplayOptions">
-        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
-            <i class="fa fa-th"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Display Options" data-position="bottom">
+            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
+                <i class="fa fa-th"></i>
+            </button>
+        </span>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showExport">
-        <button type="button"
-                class="btn btn-sm btn-default"
-                data-ng-click="swListingSearch.swListingControls.exportCollection()">
-            <i class="fa fa-download"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Export" data-position="bottom">
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-ng-click="swListingSearch.swListingControls.exportCollection()">
+                <i class="fa fa-download"></i>
+            </button>
+        </span>
     </span>
+    
+    
+    
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
         <button type="button"
                 class="btn btn-sm btn-default dropdown-toggle"
