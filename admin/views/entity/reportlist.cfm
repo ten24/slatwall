@@ -69,7 +69,7 @@ Notes:
     	    <cfif structKeyExists(rc,'collection')>
     	        <cfif !rc.collection.isNew()>
         		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="clearCache"  type="list" />
-        		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="duplicate" type="list"  />
+        		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="clone" type="list"  />
         	    </cfif>
     	    </cfif>
     </hb:HibachiEntityActionBar>
