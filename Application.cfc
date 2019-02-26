@@ -168,7 +168,12 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			
 		} else if(arguments.type eq "layout" && arguments.pathInfo.subsystem neq "common") {
 			if(arguments.pathInfo.path eq "default" && !fileExists(expandPath(arguments.fullPath))) {
-				arguments.fullPath = left(arguments.fullPath, findNoCase("/integrationServices/", arguments.fullPath)) & 'admin/layouts/default.cfm';
+				var rootPath = left(arguments.fullPath, findNoCase("/integrationServices/", arguments.fullPath));
+				if(fileExists(expandPath(rootPath) & "/custom/admin/layouts/default.cfm")) {
+					arguments.fullPath = rootPath & '/custom/admin/layouts/default.cfm';
+				} else {
+					arguments.fullPath = rootPath & 'admin/layouts/default.cfm';
+				}
 			}
 		}
 		
