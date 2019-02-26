@@ -65,12 +65,12 @@ Notes:
     <hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#" collectionEntity="#rc.collection#" 
         deleteAction="entity.deleteCollection" deleteQueryString="sRedirectAction=entity.reportlist#lcase(rc.collection.getCollectionObject())#"
     >
-    		
     	<!--- Create ---> 
     	    <cfif structKeyExists(rc,'collection')>
-    	        <hb:HibachiEntityActionBarButtonGroup>
-        			<hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="clearCache" class="btn btn-primary" icon=" icon-white" />
-        		</hb:HibachiEntityActionBarButtonGroup>
+    	        <cfif !rc.collection.isNew()>
+        		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="clearCache"  type="list" />
+        		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="duplicate" type="list"  />
+        	    </cfif>
     	    </cfif>
     </hb:HibachiEntityActionBar>
 </hb:HibachiEntityDetailForm>
