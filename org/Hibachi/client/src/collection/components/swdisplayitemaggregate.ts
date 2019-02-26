@@ -64,7 +64,6 @@ class SWDisplayItemAggregate{
                 
 
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
-                    console.log(displayOptionsController);
                     var breadCrumb = {
 							entityAlias:scope.selectedProperty.name,
 							cfc:scope.selectedProperty.cfc,
@@ -76,8 +75,6 @@ class SWDisplayItemAggregate{
                     selectedDisplayOption.aggregateObject = scope.aggregate.currentObject;
                     scope.selectedPropertyChanged({selectedProperty:selectedDisplayOption});
                     displayOptionsController.selectedPropertyChanged(selectedDisplayOption);
-                    console.log(selectedDisplayOption);
-                    console.log(displayOptionsController);
                 };
 
 

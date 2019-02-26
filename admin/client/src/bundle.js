@@ -71858,7 +71858,6 @@ var SWDisplayItemAggregate = /** @class */ (function () {
                     }
                 };
                 scope.selectedDisplayOptionChanged = function (selectedDisplayOption) {
-                    console.log(displayOptionsController);
                     var breadCrumb = {
                         entityAlias: scope.selectedProperty.name,
                         cfc: scope.selectedProperty.cfc,
@@ -71869,8 +71868,6 @@ var SWDisplayItemAggregate = /** @class */ (function () {
                     selectedDisplayOption.aggregateObject = scope.aggregate.currentObject;
                     scope.selectedPropertyChanged({ selectedProperty: selectedDisplayOption });
                     displayOptionsController.selectedPropertyChanged(selectedDisplayOption);
-                    console.log(selectedDisplayOption);
-                    console.log(displayOptionsController);
                 };
                 scope.$watch('selectedProperty', function (selectedProperty) {
                     if (angular.isDefined(selectedProperty) && !selectedProperty.ormtype) {
