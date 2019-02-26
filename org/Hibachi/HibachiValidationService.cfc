@@ -222,7 +222,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(
 			(!isBoolean(arguments.context) || arguments.context)
 			//don't validate delete context if the object is new. Just skip this logic
-			&& !(arguments.object.isNew() && arguments.context == 'delete')
+			&& !(arguments.context == 'delete' && arguments.object.isNew())
 		) {
 
 			// Get the valdiations for this context
