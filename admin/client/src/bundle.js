@@ -72109,7 +72109,6 @@ var SWDisplayOptions = /** @class */ (function () {
                 });
                 scope.selectedPropertyChanged = function (selectedProperty, aggregate) {
                     // drill down or select field?
-                    console.log(selectedProperty);
                     if (!aggregate) {
                         scope.selectedProperty = selectedProperty;
                         scope.selectedAggregate = undefined;
