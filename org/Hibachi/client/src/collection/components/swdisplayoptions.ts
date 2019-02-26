@@ -67,7 +67,7 @@ class SWDisplayOptions{
 
                 };
                 this.selectedPropertyChanged = function(selectedProperty, aggregate?){
-                    $scope.selectedPropertyChanged(selectedProperty,aggregate)
+                    $scope.selectedPropertyChanged(selectedProperty,aggregate);
                 }
             }],
             link: (scope,element,$attrs,controllers,observerService)=>{
