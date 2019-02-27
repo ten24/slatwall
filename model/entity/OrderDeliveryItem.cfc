@@ -60,6 +60,7 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	// Related Object Properties (one-to-many)
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderDeliveryItemID" inverse="true" cascade="all"; // Used For Returns
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderDeliveryItemID" cfc="FulfillmentBatchItem" inverse="true";
+	property name="containerItems" singularname="containerItem" fieldType="one-to-many" type="array" fkColumn="orderDeliveryItemID" cfc="ContainerItem" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

@@ -47,11 +47,9 @@
 	
 --->
 <cfoutput>
-    <ns:ProcessShipmentRequest
-        xsi:schemaLocation="http://www.fedex.com/templates/components/apps/wpor/secure/downloads/xml/Aug09/Advanced/ShipService_v17.xsd"
-        xmlns:ns="http://fedex.com/ws/ship/v17"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://fedex.com/ws/ship/v21">
+	<SOAP-ENV:Body>
+    <ns:ProcessShipmentRequest>
         <ns:WebAuthenticationDetail>
 	        <ns:UserCredential>
 	            <ns:Key>#trim(setting('transactionKey'))#</ns:Key>
@@ -65,7 +63,7 @@
           
         <ns:Version>
            <ns:ServiceId>ship</ns:ServiceId>
-           <ns:Major>17</ns:Major>
+           <ns:Major>21</ns:Major>
            <ns:Intermediate>0</ns:Intermediate>
            <ns:Minor>0</ns:Minor>
         </ns:Version>
@@ -74,16 +72,19 @@
 	        <ns:DropoffType>REGULAR_PICKUP</ns:DropoffType>
 	        <ns:ServiceType>#arguments.requestBean.getShippingIntegrationMethod()#</ns:ServiceType>
 	        <ns:PackagingType>YOUR_PACKAGING</ns:PackagingType>
-	        <ns:TotalWeight>
-	            <ns:Units>LB</ns:Units>
-	            <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
-	        </ns:TotalWeight>
+	        <cfif arguments.requestBean.getPackageNumber() EQ 1>
+		        <ns:TotalWeight>
+		            <ns:Units>LB</ns:Units>
+		            <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
+		        </ns:TotalWeight>
+	        </cfif>
 	        <ns:TotalInsuredValue>
 	            <ns:Currency>USD</ns:Currency>
 	            <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
 	        </ns:TotalInsuredValue>
 	       
-	        <ns:Shipper>
+			<ns:Shipper>
+				<ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
 	        	<ns:Contact>
 	            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
 	            	<ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
@@ -99,18 +100,18 @@
 	        </ns:Shipper>
 	        <ns:Recipient>
 	        	<ns:Contact>
-		            <ns:PersonName>#arguments.requestBean.getContactPersonName()#</ns:PersonName>
+		            <ns:PersonName>#getService('hibachiUtilityService').hibachiEncodeForXML(arguments.requestBean.getContactPersonName())#</ns:PersonName>
 		            
-		            <ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
+		            <ns:CompanyName>#getService('hibachiUtilityService').hibachiEncodeForXML(arguments.requestBean.getContactCompany())#</ns:CompanyName>
 		            
-		            <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
+		            <ns:PhoneNumber>#getService('hibachiUtilityService').hibachiEncodeForXML(arguments.requestBean.getContactPhoneNumber())#</ns:PhoneNumber>
 	           </ns:Contact>
 	        	<ns:Address>
-	                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
+	                <ns:StreetLines>#getService('hibachiUtilityService').hibachiEncodeForXML(arguments.requestBean.getShipToStreetAddress())#</ns:StreetLines>
 	                <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
-	                	 <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
-					</cfif>
-		   			<ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+	                	 <ns:StreetLines>#getService('hibachiUtilityService').hibachiEncodeForXML(arguments.requestBean.getShipToStreet2Address())#</ns:StreetLines>
+	                </cfif>
+	                <ns:City>#getService('hibachiUtilityService').hibachiEncodeForXML(arguments.requestBean.getShipToCity())#</ns:City>
 					<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
 	                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
 					<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
@@ -123,45 +124,49 @@
 	        </ns:Recipient>
 	        
 	        <ns:ShippingChargesPayment>
-	           <ns:PaymentType>THIRD_PARTY</ns:PaymentType>
-	           <ns:Payor>
+	        	<cfif NOT isNull(arguments.requestBean.getThirdPartyShippingAccountIdentifier()) AND len(arguments.requestBean.getThirdPartyShippingAccountIdentifier())>
+	        		<ns:PaymentType>THIRD_Party</ns:PaymentType>
+        		<cfelse>
+        			<ns:PaymentType>SENDER</ns:PaymentType>
+        		</cfif>
+	            <ns:Payor>
 	           		<ns:ResponsibleParty>
-        				<cfif NOT isNull(arguments.requestBean.getThirdPartyShippingAccountIdentifier()) AND len(arguments.requestBean.getThirdPartyShippingAccountIdentifier())>
-	           				<ns:AccountNumber>#arguments.requestBean.getThirdPartyShippingAccountIdentifier()#</ns:AccountNumber>
-	           				<ns:Contact>
-				            	<ns:PersonName>#arguments.requestBean.getContactPersonName()#</ns:PersonName>
-				            	<ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
-				            	<ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
-		           			</ns:Contact>
-		           			<ns:Address>
-				                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
-				                <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
-				                	 <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
-								</cfif>
-								<ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
-								<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
-				                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
-								<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
-									<ns:StateOrProvinceCode>#left(arguments.requestBean.getShipToStateCode(),2)#</ns:StateOrProvinceCode> 
-								</cfif>
-				                <ns:PostalCode>#arguments.requestBean.getShipToPostalCode()#</ns:PostalCode>
-				                <ns:CountryCode>#arguments.requestBean.getShipToCountryCode()#</ns:CountryCode>
-			            	</ns:Address>
-	           			<cfelse>
-	           				<ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
-	           				<ns:Contact>
-				            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
-				            	<ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
-				            	<ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
-		           			</ns:Contact>
-		           			<ns:Address>
-				            	<ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
-				                <ns:City>#trim(setting('shipperCity'))#</ns:City>
-				                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
-				                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
-				                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
-			            	</ns:Address>
-	           			</cfif>
+			            <cfif NOT isNull(arguments.requestBean.getThirdPartyShippingAccountIdentifier()) AND len(arguments.requestBean.getThirdPartyShippingAccountIdentifier())>
+                            <ns:AccountNumber>#arguments.requestBean.getThirdPartyShippingAccountIdentifier()#</ns:AccountNumber>
+                            <ns:Contact>
+		                        <ns:PersonName>#arguments.requestBean.getContactPersonName()#</ns:PersonName>
+		                        <ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
+		                        <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
+                            </ns:Contact>
+                            <ns:Address>
+                            <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
+                            <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
+                                <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
+                            </cfif>
+                            <ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+                            <cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
+                                <ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
+                            <cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
+                                <ns:StateOrProvinceCode>#left(arguments.requestBean.getShipToStateCode(),2)#</ns:StateOrProvinceCode> 
+                            </cfif>
+                            <ns:PostalCode>#arguments.requestBean.getShipToPostalCode()#</ns:PostalCode>
+                            <ns:CountryCode>#arguments.requestBean.getShipToCountryCode()#</ns:CountryCode>
+                        	</ns:Address>
+                        <cfelse>
+                            <ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
+                            <ns:Contact>
+                                <ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
+                                <ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
+                                <ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
+                            </ns:Contact>
+                            <ns:Address>
+                                <ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
+                                <ns:City>#trim(setting('shipperCity'))#</ns:City>
+                                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
+                                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
+                                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
+                        	</ns:Address>
+                        </cfif>
 			        </ns:ResponsibleParty>
 	           </ns:Payor>
            </ns:ShippingChargesPayment>
@@ -172,29 +177,58 @@
 	           <ns:ImageType>#trim(setting('labelImageType'))#</ns:ImageType>
 	           <ns:LabelStockType>PAPER_4X6</ns:LabelStockType>
            </ns:LabelSpecification>
-	        
 	        <ns:RateRequestTypes>NONE</ns:RateRequestTypes>
-	        <ns:PackageCount>1</ns:PackageCount>
+	        <cfif arguments.requestBean.getPackageCount() GT 1 && arguments.requestBean.getPackageNumber() GT 1>
+	        	<ns:MasterTrackingId>
+	        		<ns:TrackingIdType>FEDEX</ns:TrackingIdType>
+	        		<ns:TrackingNumber>#arguments.requestBean.getMasterTrackingID()#</ns:TrackingNumber>
+        		</ns:MasterTrackingId>
+	        </cfif>
+	        <ns:PackageCount>#arguments.requestBean.getPackageCount()#</ns:PackageCount>
 	        
 	        <ns:RequestedPackageLineItems>
-	            <ns:SequenceNumber>1</ns:SequenceNumber>
+				<ns:SequenceNumber>#arguments.requestBean.getPackageNumber()#</ns:SequenceNumber>
 	            <ns:InsuredValue>
 	                <ns:Currency>USD</ns:Currency>
-	                <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
+	                <ns:Amount>#NumberFormat(arguments.requestBean.getTotalValue() / arguments.requestBean.getPackageCount(), ".00")#</ns:Amount>
 	            </ns:InsuredValue>
 	            <ns:Weight>
 	                <ns:Units>LB</ns:Units>
-	                <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
+	                <ns:Value>#arguments.requestBean.getContainer().weight#</ns:Value>
 	            </ns:Weight>
 	            <ns:Dimensions>
-		            <ns:Length>1</ns:Length>
-		            <ns:Width>1</ns:Width>
-		            <ns:Height>1</ns:Height>
+		            <ns:Length>#ceiling(arguments.requestBean.getContainer().depth)#</ns:Length>
+		            <ns:Width>#ceiling(arguments.requestBean.getContainer().width)#</ns:Width>
+		            <ns:Height>#ceiling(arguments.requestBean.getContainer().height)#</ns:Height>
 		            <ns:Units>IN</ns:Units>
 	            </ns:Dimensions>
-	            <ns:PhysicalPackaging>BOX</ns:PhysicalPackaging>
+				<ns:PhysicalPackaging>BOX</ns:PhysicalPackaging>
+				<cfif not isNull(requestBean.getOrder()) && not isNull(requestBean.getOrder().getOrderNumber())>
+					<ns:CustomerReferences>
+						<ns:CustomerReferenceType>INVOICE_NUMBER</ns:CustomerReferenceType>
+						<ns:Value>#requestBean.getOrder().getOrderNumber()#</ns:Value>
+					</ns:CustomerReferences>
+				</cfif>
+				<cfif setting('specialServiceAlcoholFlag')>
+					<ns:CustomerReferences>
+						<ns:CustomerReferenceType>CUSTOMER_REFERENCE</ns:CustomerReferenceType>
+						<ns:Value>$AW</ns:Value>
+					</ns:CustomerReferences>
+					<ns:SpecialServicesRequested>
+						<ns:SpecialServiceTypes>ALCOHOL</ns:SpecialServiceTypes>
+						<ns:SpecialServiceTypes>SIGNATURE_OPTION</ns:SpecialServiceTypes>
+						<ns:SignatureOptionDetail>
+							<ns:OptionType>ADULT</ns:OptionType>
+						</ns:SignatureOptionDetail>
+						<ns:AlcoholDetail>
+							<ns:RecipientType>CONSUMER</ns:RecipientType>
+						</ns:AlcoholDetail>
+					</ns:SpecialServicesRequested>
+				</cfif>
 	        </ns:RequestedPackageLineItems>
 	    </ns:RequestedShipment>
         
-    </ns:ProcessShipmentRequest>
+	</ns:ProcessShipmentRequest>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 </cfoutput>

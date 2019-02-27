@@ -1953,15 +1953,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			setPageRecordsShow(25);
 		}
 	}
-
+	//there are two types of alias. One on the collection config in this format _product_defaultSku.skuID
+	//and another on the record output formatted like defaultSku_skuID
 	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
 		var cacheKey = 'convertAliasToPropertyIdentifier'&arguments.propertyIdentifierWithAlias;
 
 		var convertedAlias = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedAlias)){
+			//assume collection config format
 			if(left(arguments.propertyIdentifierWithAlias,1) == '_'){
 	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
 	 			arguments.propertyIdentifierWithAlias = listRest(right(arguments.propertyIdentifierWithAlias,len(arguments.propertyIdentifierWithAlias)-1),'.');
+			//assume output format
+			}else{
+	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
 	 		}
 	 		convertedAlias = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifierWithAlias);
 	 		setCollectionCacheValue(cacheKey,convertedAlias);
@@ -2313,7 +2318,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 						}else{
 							HQL = getHQL();
-							
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
@@ -2392,6 +2396,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
+			this.setExcludeOrderBy(true);
 			//check cache key
 			var reportCacheKey = "";
 			if(!this.getNewFlag()){
@@ -3206,8 +3211,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									|| column.ormtype eq 'integer'
 									|| column.ormtype eq 'float'
 									|| column.ormtype eq 'double'
-									&& !getDisableAveragesAndSumsFlag()
-									)
+									) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
 								){
 									addTotalAvgAggregate(column);
 									addTotalSumAggregate(column);
@@ -3453,7 +3457,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-		if(arguments.excludeOrderBy || (isReport() && hasPeriodColumn())){
+		if(arguments.excludeOrderBy){
 			this.setExcludeOrderBy(true);
 		}
 
@@ -3576,7 +3580,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
-
 
 		}
 

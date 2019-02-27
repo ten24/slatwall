@@ -68,7 +68,12 @@ Notes:
 
 				<input type="hidden" name="order.orderID" value="#rc.processObject.getOrder().getOrderID()#" />
 				<input type="hidden" name="orderFulfillment.orderFulfillmentID" value="#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" />
-				<swa:SlatwallLocationTypeahead locationPropertyName="location.locationID"  locationLabelText="#$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
+				<cfif !isNull(rc.orderFulfillment.getOrder().getDefaultStockLocation()) AND NOT rc.orderFulfillment.getOrder().getDefaultStockLocation().hasChildren() >
+					<cfset local.selectedLocationID = rc.orderFulfillment.getOrder().getDefaultStockLocation().getLocationID() />
+				<cfelse>
+					<cfset local.selectedLocationID = "" />
+				</cfif>
+				<swa:SlatwallLocationTypeahead locationPropertyName="location.locationID"  locationLabelText="#$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true" selectedLocationID="#local.selectedLocationID#"></swa:SlatwallLocationTypeahead>
 
 				<!--- Shipping - Hidden Fields --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
@@ -77,19 +82,12 @@ Notes:
 					<input type="hidden" name="shippingAddress.addressID" value="#rc.processObject.getShippingAddress().getAddressID()#" />
 				</cfif>
 				<hb:HibachiActionCaller action="admin:entity.detailorder" queryString="orderID=#rc.processObject.getOrder().getOrderID()#" text=" #$.slatwall.rbkey('entity.Order.OrderNumber')#: #rc.processObject.getOrder().getOrderNumber()#">
-				
+
 				<!--- Shipping - Inputs --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
 					<cfif hasShippingIntegration && getHibachiScope().setting('globalUseShippingIntegrationForTrackingNumberOption')>
-						<hb:HibachiDisplayToggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
-							<hb:HibachiPropertyDisplay 
-								object="#rc.processObject#" 
-								property="useShippingIntegrationForTrackingNumber" 
-								edit="true"
-							>
-						</hb:HibachiDisplayToggle>
-						<hb:HibachiDisplayToggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisible="#!hasShippingIntegration#">
+						<hb:HibachiDisplayToggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisable="#!hasShippingIntegration#">
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
 						</hb:HibachiDisplayToggle>
 					<cfelse>
@@ -153,6 +151,7 @@ Notes:
 						<th>Quantity</th>
 					</tr>
 					<cfset orderItemIndex = 0 />
+					
 					<cfloop array="#rc.processObject.getOrderDeliveryItems()#" index="recordData">
 						<tr>
 							<cfset orderItemIndex++ />
@@ -180,8 +179,24 @@ Notes:
 						</tr>
 					</cfloop>
 				</table>
+				
+				<hr />
+					
+				<hb:HibachiErrorDisplay object="#rc.processObject#" errorName="containers" />
+
+				<cfset local.containerDetails = serializeJson(rc.processObject.getContainerDetailsForOrderDelivery()) />
+				<cfset local.shippingMethodHasIntegration = !isNull(rc.orderFulfillment.getShippingMethodRate()) AND !isNull(rc.orderFulfillment.getShippingMethodRate().getShippingIntegration()) />
+
+				<!--- Shipping - Hidden Fields --->
+				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping"
+					OR rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
+					
+					
+					<span ng-init='defaultContainerJson=#local.containerDetails#'></span>
+					<sw-order-delivery-detail default-container-json="defaultContainerJson" order-fulfillment-id="#rc.orderFulfillment.getOrderFulfillmentID()#" has-integration="#local.shippingMethodHasIntegration#">Loading ...</sw-order-delivery-detail>
+				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
-
+		
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
