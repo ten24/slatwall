@@ -21,7 +21,7 @@
         <!--- Address & Payment Indo --->
 	    <div class="row">
 		    <!--- Shipping --->
-		    <div class="col-md-6">
+		    <div class="col-md-6 mt-1">
     			<div class="card">
     				<cfif arrayLen(order.getOrderFulfillments())>
 		                <cfloop array="#order.getOrderFulfillments()#" index="orderFulfillment">
@@ -62,7 +62,7 @@
     			</div>
     		</div>
 			<!--- Billing & Payment --->
-			<div class="col-md-6">
+			<div class="col-md-6 mt-1">
 			    <div class="card">
 				    <h5 class="card-header">Billing & Payment</h5>
     				<div class="card-body">
@@ -184,7 +184,7 @@
     	<div class="row">
         	<div class="col-12">
     	        <cfloop array="#order.getOrderItems()#" index="local.orderItem">
-    	        	<div class="bg-light mt-3 mb-3">
+    	        	<div class="bg-light mt-3 mb-3 p-2 pb-3">
     	        		<div class="col-xl-3 col-lg-12 mt-2 mb-2">
     	        			<cfset local.smallimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.orderItem.getSku().getProduct().getDefaultSku().getSkuID()#","small") />
     	        			<cfif arrayLen(local.smallimages)>
