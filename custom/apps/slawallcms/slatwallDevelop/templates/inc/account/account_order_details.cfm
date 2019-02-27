@@ -256,7 +256,7 @@
             			    <a href="javascript:window.print();" class="btn btn-primary"><i class="fa fa-print"></i> Print Order</a>
             			<cfelse>
             			    <a href="javascript:window.print();" class="btn btn-primary mt-1"><i class="fa fa-print"></i> Print Quote</a>
-            			    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary col-12 mt-1">Resume Checkout</a>
+            			    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary mt-1">Resume Checkout</a>
             			</cfif>
             		</div>
             	</div>
