@@ -89,8 +89,8 @@ Notes:
 		<sw-listing-column data-property-identifier="paymentMethod.paymentMethodName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="orderPaymentType.typeName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="amount" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="amountReceived" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="amountCredited" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedAmountReceived" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedAmountCredited" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>
