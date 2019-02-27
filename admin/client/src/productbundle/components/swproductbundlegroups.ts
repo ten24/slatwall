@@ -105,6 +105,7 @@ class SWProductBundleGroups implements ng.IDirective{
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         $http,
 		$log,
