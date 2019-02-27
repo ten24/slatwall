@@ -230,7 +230,7 @@
             		    <h5 class="card-header">Quote Summary</h5>
             		</cfif>
             		<div class="card-body">
-            			<p>Item Total:
+            			<p>Subtotal:
             			    <span class="pull-right">#order.getFormattedValue('subTotalAfterItemDiscounts')#</span>
             			</p>
             			<p>Shipping:
