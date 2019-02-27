@@ -6,7 +6,7 @@
         <swf-alert data-alert-trigger="removeOrderItemFailure" data-alert-type="danger small" data-message="Item removed failure" data-duration="3"></swf-alert>
         <swf-alert data-alert-trigger="updateOrderItemSuccess" data-alert-type="success small" data-message="Quantity Updated" data-duration="3"></swf-alert>
         <swf-alert data-alert-trigger="updateOrderItemFailure" data-alert-type="danger small" data-message="Quantity update failure" data-duration="3"></swf-alert>
-        <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
+        <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success small" data-message="Cart Cleared" data-duration="3"></swf-alert>
         <div class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" ng-cloak>
         <!---- the directive swf-cart-items passed in as an attribute above drives all the functionality in this template.
                all methods and variables (excluding the ones preceded by "slatwall") will be applied to the current orderItem 
@@ -26,13 +26,13 @@
                     - removeOrderItemIsLoading:boolean
                         flag that indicates if a remove order item request is being loaded. Useful for driving loading spinners.
                ------>
-            <div class="col-3 text-center">
-                <img src="http://fillmurray.com/100/100" class="img-fluid">
-                <!---<img class="img-fluid" ng-src="{{orderItem.sku.imagePath}}" ng-show="orderItem.sku.smallImagePath" alt="{{orderItem.sku.product.productName}}">--->
+            <div class="col-3">
+                <img src="http://fillmurray.com/100/100" class="img-fluid mt-2 text-center">
+                <!---<img class="img-fluid mt-1 text-center" ng-src="{{orderItem.sku.imagePath}}" ng-show="orderItem.sku.smallImagePath" alt="{{orderItem.sku.product.productName}}">--->
             </div>
             
-            <div class="col-9">
-                <!---<h6><a href="##" ng-bind="orderItem.sku.product.productName"></a></h6>--->
+            <div class="col-9 pl-0">
+                <a href="/{{slatwall.globalURLKeyProduct}}/{{orderItem.sku.product.urlTitle}}/" ng-bind="orderItem.sku.product.productName" class="small"></a>
                 <div class="row mt-2">
                     <div class="col-4">
                         <input
@@ -49,15 +49,13 @@
                         <small><strong ng-bind="orderItem.extendedPriceAfterDiscount | currency" ng-show="!swfCartItems.updateOrderItemQuantityIsLoading"></strong></small>
                     </div>
                     <div class="col-3">
-                        <button 
+                        <a  href="#"
                             ng-disabled="swfCartItems.removeOrderItemIsLoading" 
                             ng-click="swfCartItems.removeOrderItem()" 
-                            ng-class="{disabled: swfCartItems.removeOrderItemIsLoading}" 
-                            type="button" 
-                            class="btn btn-danger btn-sm rounded">
-                            &times;
+                            ng-class="{disabled: swfCartItems.removeOrderItemIsLoading}">
+                            <i ng-show="!swfCartItems.removeOrderItemIsLoading" class="fa fa-times-circle fa-lg text-secondary"></i>
                             <i ng-show="swfCartItems.removeOrderItemIsLoading" class="fa fa-refresh fa-spin fa-fw"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
