@@ -469,6 +469,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		primaryEmailAddressObject = this.saveAccountEmailAddress(primaryEmailAddressObject);
 		arguments.account = this.saveAccount(arguments.account);
 		
+		if (!arguments.account.hasErrors()) {
+			getService('emailService').generateAndSendFromEntityAndEmailTemplateID(arguments.account.getPrimaryEmailAddress(), "2c928084690cc18d01690ce5f0d4003e");
+		}
+		
 		return arguments.account;
 	} 
 
