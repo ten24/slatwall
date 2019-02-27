@@ -36,7 +36,7 @@
     				                </cfif>
     				            </div>
 							<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
-								<h4>Pick Up</h4>
+								<h5 class="card-header">Pick Up</h5>
 							<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
 								<h5 class="card-header">Gift Card Details</h5>
 								<div class="card-body">
@@ -54,6 +54,8 @@
     									</cfloop>
     				                </address>
     				            </div>
+    				        <cfelse> 
+    				        	<h5 class="card-header">Delivery Information Unavailable</h5>
 							</cfif>
 						</cfloop>
 					</cfif>
@@ -182,7 +184,7 @@
     	<div class="row">
         	<div class="col-12">
     	        <cfloop array="#order.getOrderItems()#" index="local.orderItem">
-    	        	<div class="row bg-light mt-3 mb-3">
+    	        	<div class="bg-light mt-3 mb-3">
     	        		<div class="col-xl-3 col-lg-12 mt-2 mb-2">
     	        			<cfset local.smallimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.orderItem.getSku().getProduct().getDefaultSku().getSkuID()#","small") />
     	        			<cfif arrayLen(local.smallimages)>
@@ -220,7 +222,7 @@
 
         <!--- Order Details --->
         <div class="row">
-    		<div class="col-md-6">
+    		<div class="col-md-12">
     			<div class="card">
     			    <cfif $.slatwall.content().getUrlTitle() EQ "order">
             			<h5 class="card-header">Order Summary</h5>
@@ -248,9 +250,9 @@
             			</p>
             			
             			<cfif $.slatwall.content().getUrlTitle() EQ "order">
-            			    <a href="javascript:window.print();" class="btn btn-primary col-12"><i class="fa fa-print"></i> Print Order</a>
+            			    <a href="javascript:window.print();" class="btn btn-primary"><i class="fa fa-print"></i> Print Order</a>
             			<cfelse>
-            			    <a href="javascript:window.print();" class="btn btn-primary col-12 mt-1"><i class="fa fa-print"></i> Print Quote</a>
+            			    <a href="javascript:window.print();" class="btn btn-primary mt-1"><i class="fa fa-print"></i> Print Quote</a>
             			    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary col-12 mt-1">Resume Checkout</a>
             			</cfif>
             		</div>
