@@ -205,12 +205,15 @@
     	                    <strong>#local.orderItem.getFormattedValue('price', 'currency')# (#NumberFormat(local.orderItem.getQuantity())#)</strong><br>
     	                    <cfif len(local.orderItem.getSku().getCalculatedSkuDefinition())>
     	                        #local.orderItem.getSku().getCalculatedSkuDefinition()#
-    	                    </cfif>        			
+    	                    </cfif>
     	        		</div>
     	        		<div class="col-xl-2 col-lg-12 mt-2">
     	        			#local.orderItem.getFormattedValue('calculatedItemTotal', 'currency')#
     	        		</div>
-    	        		<cfif $.slatwall.content().getUrlTitle() EQ "order" AND local.orderItem.getSku().getProduct().getActiveFlag() EQ true>
+    	        		<cfif 
+    	        		$.slatwall.content().getUrlTitle() EQ "order" 
+    	        		AND local.orderItem.getSku().getProduct().getActiveFlag() EQ true
+    	        		AND local.orderItem.getSku().getProduct().getPublishedFlag() EQ true>
         	        		<div class="col-xl-2 col-lg-12 mt-2">
         	        		    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary"><i class="fa fa-print"></i> Reorder</a>
         	        		</div>
