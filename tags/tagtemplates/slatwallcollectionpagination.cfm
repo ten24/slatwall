@@ -55,7 +55,7 @@
 			        	</a>
 			        </li>
 		        </cfif>
-		    	<small>Page #currentPage# of #lastPage#</small>
+		    	<!---<small>Page #currentPage# of #lastPage#</small>--->
 		    </ul>
 		</nav>
 	</cfif>
