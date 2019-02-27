@@ -27,8 +27,9 @@
                         flag that indicates if a remove order item request is being loaded. Useful for driving loading spinners.
                ------>
             <div class="col-3">
-                <img src="http://fillmurray.com/100/100" class="img-fluid mt-2 text-center">
-                <!---<img class="img-fluid mt-1 text-center" ng-src="{{orderItem.sku.imagePath}}" ng-show="orderItem.sku.smallImagePath" alt="{{orderItem.sku.product.productName}}">--->
+                <a href="/{{slatwall.globalURLKeyProduct}}/{{orderItem.sku.product.urlTitle}}/">
+                    <img class="img-fluid mt-2 text-center" ng-src="{{orderItem.sku.imagePath}}" ng-show="orderItem.sku.smallImagePath" alt="{{orderItem.sku.product.productName}}">
+                </a>                    
             </div>
             
             <div class="col-9 pl-0">
