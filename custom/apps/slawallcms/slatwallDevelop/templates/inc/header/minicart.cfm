@@ -1,14 +1,13 @@
 
 <!---- form element stops modal from closing ----->
-<form class="text-center"> 
-    <swf-alert data-alert-trigger="removeOrderItemSuccess" data-alert-type="success" data-message="Item removed from cart" data-duration="3"></swf-alert>
-    <swf-alert data-alert-trigger="removeOrderItemFailure" data-alert-type="danger" data-message="Item removed failure" data-duration="3"></swf-alert>
-    <swf-alert data-alert-trigger="updateOrderItemSuccess" data-alert-type="success" data-message="Quantity Updated" data-duration="3"></swf-alert>
-    <swf-alert data-alert-trigger="updateOrderItemFailure" data-alert-type="danger" data-message="Quantity update failure" data-duration="3"></swf-alert>
-    <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
-    
-    <ul class="col-xs-12" style="min-width:400px;">
-        <li class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" ng-cloak>
+<form> 
+    <div style="min-width: 300px;" class="px-2">
+        <swf-alert data-alert-trigger="removeOrderItemSuccess" data-alert-type="success small" data-message="Item removed from cart" data-duration="3"></swf-alert>
+        <swf-alert data-alert-trigger="removeOrderItemFailure" data-alert-type="danger small" data-message="Item removed failure" data-duration="3"></swf-alert>
+        <swf-alert data-alert-trigger="updateOrderItemSuccess" data-alert-type="success small" data-message="Quantity Updated" data-duration="3"></swf-alert>
+        <swf-alert data-alert-trigger="updateOrderItemFailure" data-alert-type="danger small" data-message="Quantity update failure" data-duration="3"></swf-alert>
+        <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
+        <div class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" ng-cloak>
         <!---- the directive swf-cart-items passed in as an attribute above drives all the functionality in this template.
                all methods and variables (excluding the ones preceded by "slatwall") will be applied to the current orderItem 
                and belong to the swf-cart-items directive's scope.
@@ -27,27 +26,29 @@
                     - removeOrderItemIsLoading:boolean
                         flag that indicates if a remove order item request is being loaded. Useful for driving loading spinners.
                ------>
-            <div class="col-4 text-center">
-                <img class="img-fluid" ng-src="{{orderItem.sku.imagePath}}" alt="preview">
-                <h6><a href="##" ng-bind="orderItem.sku.product.productName"></a></h6>
+            <div class="col-3 text-center">
+                <img src="http://fillmurray.com/100/100" class="img-fluid">
+                <!---<img class="img-fluid" ng-src="{{orderItem.sku.imagePath}}" ng-show="orderItem.sku.smallImagePath" alt="{{orderItem.sku.product.productName}}">--->
             </div>
             
-            <div class="col-8 text-center row">
-                <div class="col-5">
-                    <input
-                        type="number" 
-                        class="form-control"
-                        min="1" 
-                        ng-value="orderItem.quantity" 
-                        ng-model="newQuantity" 
-                        ng-change="swfCartItems.updateOrderItemQuantity(newQuantity)" 
-                    required>
-                </div>
-                <div class="col-5">
-                    <i ng-show="swfCartItems.updateOrderItemQuantityIsLoading" class="fa fa-refresh fa-spin fa-fw float-left mb-2 mr-1"></i>
-                    <small><strong ng-bind="orderItem.extendedPriceAfterDiscount | currency"></strong></small>
-                </div>
-                <div class="col-2">
+            <div class="col-9">
+                <!---<h6><a href="##" ng-bind="orderItem.sku.product.productName"></a></h6>--->
+                <div class="row mt-2">
+                    <div class="col-4">
+                        <input
+                            type="number" 
+                            class="form-control form-control-sm text-center"
+                            min="1" 
+                            ng-value="orderItem.quantity" 
+                            ng-model="newQuantity" 
+                            ng-change="swfCartItems.updateOrderItemQuantity(newQuantity)" 
+                        required>
+                    </div>
+                    <div class="col-4">
+                        <i ng-show="swfCartItems.updateOrderItemQuantityIsLoading" class="fa fa-refresh fa-spin fa-fw mb-2 mr-1"></i>
+                        <small><strong ng-bind="orderItem.extendedPriceAfterDiscount | currency" ng-show="!swfCartItems.updateOrderItemQuantityIsLoading"></strong></small>
+                    </div>
+                    <div class="col-3">
                         <button 
                             ng-disabled="swfCartItems.removeOrderItemIsLoading" 
                             ng-click="swfCartItems.removeOrderItem()" 
@@ -57,16 +58,14 @@
                             &times;
                             <i ng-show="swfCartItems.removeOrderItemIsLoading" class="fa fa-refresh fa-spin fa-fw"></i>
                         </button>
+                    </div>
                 </div>
             </div>
-        </li>
-        <li ng-if="$last" class="row">
-            <div class="col-12 text-center">
-                <button ng-if="slatwall.cart.orderItems.length" ng-click="swfCartItems.clearCartItems()" class="btn btn-info">Clear Cart</button>
-                <button class="btn btn-primary">Continue To Checkout</button>
-            </div>    
-        </li>
+        </div>
+        <div ng-if="$last" class="mt-3 mb-2 text-center">
+            <button ng-if="slatwall.cart.orderItems.length" ng-click="swfCartItems.clearCartItems()" class="btn btn-info btn-sm">Clear Cart</button>
+            <a href="/shopping-cart/" class="btn btn-primary btn-sm">Go to Cart</a>
+        </div>
         <hr ng-repeat-end ng-if="!$last">
-        <!-- don't show horizontal rule if last element in loop -->
-    </ul>
+    </div>
 </form>

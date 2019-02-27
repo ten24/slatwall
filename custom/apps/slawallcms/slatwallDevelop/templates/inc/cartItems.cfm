@@ -33,8 +33,12 @@
     <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4">
         <small class="text-secondary" ng-bind="orderItem.sku.product.productType.productTypeName"></small>
         <h4><a href="/{{slatwall.globalURLKeyProduct}}/{{orderItem.sku.product.urlTitle}}/" ng-bind="orderItem.sku.product.productName"></a></h4>
-        <small ng-if="orderItem.sku.skuCode"><strong>Sku Code: </strong>{{orderItem.sku.skuCode}}</small>
-        <p ng-if="orderItem.sku.skuDefinition" class="mb-3"><small><strong>SKU Defintion Label: </strong>{{orderItem.sku.skuDefinition}}</small></p>
+        <small ng-if="orderItem.sku.skuCode" class="d-block">
+            <strong>SKU Code: </strong>{{orderItem.sku.skuCode}}
+        </small>
+        <small ng-if="orderItem.sku.skuDefinition" class="d-block mt-1">
+            <strong>SKU Defintion Label: </strong>{{orderItem.sku.skuDefinition}}
+        </small>
         <p ng-if="swfCartItems.getProductDescriptionAndTruncate(120)" class="mb-3"><small><strong>Description: </strong>{{swfCartItems.getProductDescriptionAndTruncate(120)}}</small></p>
     </div>
     
@@ -83,8 +87,12 @@
     <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4 offset-lg-2">
         <small class="text-secondary" ng-bind="child.sku.product.productType.productTypeName"></small>
         <h6><a href="/{{slatwall.globalURLKeyProduct}}/{{child.sku.product.urlTitle}}/" ng-bind="child.sku.product.productName"></a></h6>
-        <small ng-if="child.sku.skuCode"><strong>Sku Code: </strong>{{child.sku.skuCode}}</small>
-        <p ng-if="child.sku.skuDefinition" class="mb-3"><small><strong>SKU Defintion Label: </strong>{{child.sku.skuDefinition}}</small></p>
+        <small ng-if="child.sku.skuCode" class="d-block mb-1">
+            <strong>SKU Code: </strong>{{child.sku.skuCode}}
+        </small>
+        <small ng-if="child.sku.skuDefinition" class="d-block mt-1">
+            <strong>SKU Defintion Label: </strong>{{child.sku.skuDefinition}}
+        </small>
     </div>
     
     <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
