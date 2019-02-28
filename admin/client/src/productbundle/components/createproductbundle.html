@@ -13,6 +13,7 @@
 			<span ng-if="product">
 
 			        <div class="col-xs-6">
+			        
 				        <sw-form name="form.createProduct1"
 				     		data-object="product"
 							data-context="save"
@@ -31,6 +32,31 @@
 									data-on-change="product.data.skus[0].data.skuCode = product.data.productCode + '-1'"
 							></sw-property-display>
 						</sw-form>
+					
+						<sw-form-upgrade
+							[name]="form.createProduct1"
+							[object]="product"
+							[context]="'save'"
+						>
+							<sw-property-display-upgraded 
+								[object]="product"
+								[form]="form"
+								[propertyIdentifier]="'productName'"
+								[editing]="true"
+								[editable]="true"
+								[context]="'save'"
+							>
+							</sw-property-display-upgraded>
+							<sw-property-display-upgraded
+								[object]="product"
+								[form]="form"
+								[propertyIdentifier]="'productCode'"
+								[editing]="true"
+								[editable]="true"
+								
+							>
+							</sw-property-display-upgraded>
+						</sw-form-upgrade>
 						<sw-form name="form.createSku2"
 					     		data-object="product.data.skus[0]"
 								data-context="save"
@@ -44,6 +70,22 @@
 									data-editable="true"
 							></sw-property-display>
 						</sw-form>
+						
+						<sw-form-upgrade
+							[name]="form.createSku2"
+							[object]="product.data.skus[0]"
+							[context]="'save'"
+							*ngIf="product.data.skus[0]"
+						>
+							<sw-property-display-upgraded 
+								*ngIf="product.data.skus[0]"
+								[object]="product.data.skus[0]"
+								[propertyIdentifier]="'price'"
+								[editing]="true"
+								[editable]="true"
+							></sw-property-display-upgraded>
+						</sw-form-upgrade>
+						
 			        </div>
 
 
@@ -68,6 +110,20 @@
 									data-is-dirty="true"
 							></sw-property-display>
 						</sw-form>
+						<sw-form-upgrade
+							[name]="form.createProduct"	
+							[object]="product"
+							[context]="'save'"
+						>
+							<sw-property-display-upgraded
+								[object]="product"
+								[propertyIdentifier]="'productType'"
+								[editing]="true"
+								[editable]="true"
+								[optionsArguments]="{propertyIdentifier:'productType',argument1:'productBundle'}"
+								[isdirty]="true"
+							></sw-property-display-upgraded>
+						</sw-form-upgrade>
 
 					</div>
 

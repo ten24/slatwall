@@ -87,6 +87,7 @@ class SWPropertyDisplayController {
 	}
 
     public $onInit=()=>{
+       
         var bindToControllerProps = this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
         for(var i in bindToControllerProps){
 

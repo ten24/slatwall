@@ -1,11 +1,12 @@
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Host, Optional, Inject } from '@angular/core';
 import { UtilityService } from '../../core/services/utilityservice';
 import { $Hibachi } from '../../core/services/hibachiservice';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormShareService } from '../../form/services/formshareservice';
 
 @Component({
-    selector : 'sw-workflow-basic-upgraded',
+    selector : 'sw-workflow-basic-upgrade',
     templateUrl : '/org/Hibachi/client/src/workflow/components/workflowbasic_upgraded.html'    
 })
 export class SwWorkflowBasic implements OnInit {
@@ -18,24 +19,23 @@ export class SwWorkflowBasic implements OnInit {
     public options;
     public selectType;
     public optionsArguments;
-    public propertyIdentifier;
-    public form: FormGroup;
+    public propertyidentifier;
+    public form;
     public selectedRadioFormName;
     public selected;
-    public radioOptions;
+    public radioOptions; 
         
     constructor(
         private formBuilder: FormBuilder,
         private utilityService : UtilityService,
-        private $hibachi : $Hibachi
+        private $hibachi : $Hibachi,
+        private formShareService: FormShareService
     ) {
-        
+            
     }
     
     ngOnInit() {
-        console.log(this.object);
-        debugger;
-        //this.value = this.utilityService.getPropertyValue(this.object,this.propertyIdentifier);
+        //this.value = this.utilityService.getPropertyValue(this.object,this.propertyidentifier);
         //this.object = { ...this.object_original };
 //        this.value = this.utilityService.getPropertyValue(this.object,"workflowName");
 //
@@ -43,10 +43,13 @@ export class SwWorkflowBasic implements OnInit {
 //            "workflowName": [this.value, Validators.required]
 //        });
         
-        this.form = this.formBuilder.group({
-            // empty form object    
-        });
-        
+//        this.form = this.formBuilder.group({
+//            // empty form object    
+//        });
+        this.formShareService.form$.subscribe((form)  => {
+            this.form = form;
+        });        
+
         this.selectStrategy();
         this.yesnoStrategy();
     }
@@ -62,12 +65,12 @@ export class SwWorkflowBasic implements OnInit {
     }
 
     public getOptions = ()=>{
-        this.propertyIdentifier = 'workflowObject';
+        this.propertyidentifier = 'workflowObject';
         if(angular.isUndefined(this.options)){
             
-            if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyIdentifier')){
+            if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyidentifier')){
                 this.optionsArguments={
-                    'propertyIdentifier':this.propertyIdentifier
+                    'propertyIdentifier':this.propertyidentifier
                 };
             }
 
@@ -80,52 +83,52 @@ export class SwWorkflowBasic implements OnInit {
                 if(this.selectType === 'object'
                 ){
 
-                    if(angular.isUndefined(this.object.data[this.propertyIdentifier])){
-                        this.object.data[this.propertyIdentifier] = this.$hibachi['new'+this.object.metaData[this.propertyIdentifier].cfc]();
+                    if(angular.isUndefined(this.object.data[this.propertyidentifier])){
+                        this.object.data[this.propertyidentifier] = this.$hibachi['new'+this.object.metaData[this.propertyidentifier].cfc]();
                     }
 
-                    if(this.object.data[this.propertyIdentifier].$$getID() === ''){
-                        this.object.data['selected'+this.propertyIdentifier] = this.options[0];
-                        this.object.data[this.propertyIdentifier] = this.$hibachi['new'+this.object.metaData[this.propertyIdentifier].cfc]();
-                        this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = this.options[0].value;
+                    if(this.object.data[this.propertyidentifier].$$getID() === ''){
+                        this.object.data['selected'+this.propertyidentifier] = this.options[0];
+                        this.object.data[this.propertyidentifier] = this.$hibachi['new'+this.object.metaData[this.propertyidentifier].cfc]();
+                        this.object.data[this.propertyidentifier]['data'][this.object.data[this.propertyidentifier].$$getIDName()] = this.options[0].value;
                     }else{
                         var found = false;
                         for(var i in this.options){
                             if(angular.isObject(this.options[i].value)){
-                                if(this.options[i].value === this.object.data[this.propertyIdentifier]){
-                                    this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-                                    this.object.data[this.propertyIdentifier] = this.options[i].value;
+                                if(this.options[i].value === this.object.data[this.propertyidentifier]){
+                                    this.object.data['selected'+this.propertyidentifier] = this.options[i];
+                                    this.object.data[this.propertyidentifier] = this.options[i].value;
                                     found = true;
                                     break;
                                 }
                             }else{
-                                if(this.options[i].value === this.object.data[this.propertyIdentifier].$$getID()){
-                                    this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-                                    this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = this.options[i].value;
+                                if(this.options[i].value === this.object.data[this.propertyidentifier].$$getID()){
+                                    this.object.data['selected'+this.propertyidentifier] = this.options[i];
+                                    this.object.data[this.propertyidentifier]['data'][this.object.data[this.propertyidentifier].$$getIDName()] = this.options[i].value;
                                     found = true;
                                     break;
                                 }
                             }
                             if(!found){
-                                this.object.data['selected'+this.propertyIdentifier] = this.options[0];
+                                this.object.data['selected'+this.propertyidentifier] = this.options[0];
                             }
                         }
 
                     }
                 } else if(this.selectType === 'string'){
-                    if(this.object.data[this.propertyIdentifier] !== null){
+                    if(this.object.data[this.propertyidentifier] !== null){
                         for(var i in this.options){
-                            if(this.options[i].value === this.object.data[this.propertyIdentifier]){
-                                this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-                                this.object.data[this.propertyIdentifier] = this.options[i].value;
+                            if(this.options[i].value === this.object.data[this.propertyidentifier]){
+                                this.object.data['selected'+this.propertyidentifier] = this.options[i];
+                                this.object.data[this.propertyidentifier] = this.options[i].value;
                                 
                             }
                         }
 
                     } else{
 
-                        this.object.data['selected'+this.propertyIdentifier] = this.options[0];
-                        this.object.data[this.propertyIdentifier] = this.options[0].value;
+                        this.object.data['selected'+this.propertyidentifier] = this.options[0];
+                        this.object.data[this.propertyidentifier] = this.options[0].value;
                     }
 
                 }
@@ -139,11 +142,11 @@ export class SwWorkflowBasic implements OnInit {
         //format value
 
         this.selectedRadioFormName = this.utilityService.createID(26);
-//        this.object.data[this.propertyIdentifier] = (
-//            this.object.data[this.propertyIdentifier]
-//            && this.object.data[this.propertyIdentifier].length
-//            && this.object.data[this.propertyIdentifier].toLowerCase().trim() === 'yes'
-//        ) || this.object.data[this.propertyIdentifier] == 1 ? 1 : 0;
+//        this.object.data[this.propertyidentifier] = (
+//            this.object.data[this.propertyidentifier]
+//            && this.object.data[this.propertyidentifier].length
+//            && this.object.data[this.propertyidentifier].toLowerCase().trim() === 'yes'
+//        ) || this.object.data[this.propertyidentifier] == 1 ? 1 : 0;
 
         
         this.object.data['activeFlag'] = (
@@ -176,7 +179,7 @@ export class SwWorkflowBasic implements OnInit {
         }
 
 //        this.$timeout(()=>{
-//            this.form[this.propertyIdentifier].$dirty = this.isDirty;
+//            this.form[this.propertyidentifier].$dirty = this.isDirty;
 //        });
     }
 }

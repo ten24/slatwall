@@ -61,13 +61,13 @@ class SWFormFieldController {
 	}
 
 	public formFieldChanged = (option)=>{
-        debugger;
+        
 		if(this.fieldType === 'yesno'){
 			this.object.data[this.propertyIdentifier] = option.value;
 
 			this.form[this.propertyIdentifier].$dirty = true;
 			this.form['selected'+this.object.metaData.className+this.propertyIdentifier+this.selectedRadioFormName].$dirty = false;
-		    debugger;
+		   
         }else if(this.fieldType == 'checkbox'){
 			this.object.data[this.propertyIdentifier] = option.value;
 			this.form[this.propertyIdentifier].$dirty = true;

@@ -1,28 +1,42 @@
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterContentInit, ContentChild } from '@angular/core';
 import { $Hibachi } from '../../core/services/hibachiservice';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormShareService } from '../services/formshareservice';
 
 @Component({
     selector    : 'sw-form-upgraded',
-    templateUrl : '/org/Hibachi/client/src/form/components/form_upgraded.html'
+    templateUrl : '/org/Hibachi/client/src/form/components/form_upgraded.html',
+    providers   : [FormShareService]
 })
-export class SwForm implements OnInit {
+export class SwForm implements OnInit, AfterContentInit  {
     
     @Input() public object : any;
     @Input() public name : string; // Workflow.basic.html
+    @ContentChild("inside") inside;
     public context:string;
     public entityName:string;
     public isDirty: boolean;
     public isProcessForm:boolean|string;
+    public form: FormGroup;
     
     constructor(
-        private $hibachi: $Hibachi
-    ) {
+        private $hibachi: $Hibachi,
+        private formBuilder: FormBuilder,
+        private formShareService: FormShareService
+    ) { 
         
     }
     
     ngOnInit() {
-        debugger;
+
+        this.form = this.formBuilder.group({
+            // empty form object    
+        });
+
+        this.formShareService.setForm(this.form);
+
+
         if(angular.isUndefined(this.isDirty)){
             this.isDirty = false;
         }        
@@ -57,6 +71,10 @@ export class SwForm implements OnInit {
         }
         
         this.context = this.context || this.name;
+    }
+
+    ngAfterContentInit() {
+        
     }
 
     public isObject=()=>{

@@ -12,6 +12,7 @@ import {UpgradeModule,downgradeInjectable, downgradeComponent} from '@angular/up
 
 //services
 import {FileService} from "./services/fileservice"; 
+import {FormShareService} from "./services/formshareservice";
 
 //directives
 
@@ -49,7 +50,8 @@ import {SwWorkflowBasic} from "../workflow/components/swworkflowbasic_upgraded";
         SwInput
     ],
     providers: [
-        FileService
+        FileService,
+        FormShareService
     ],  
     imports: [
         CommonModule,
@@ -62,7 +64,10 @@ import {SwWorkflowBasic} from "../workflow/components/swworkflowbasic_upgraded";
     
     ],
     entryComponents: [
-        SwForm
+        SwForm,
+        SwWorkflowBasic,
+        SwPropertyDisplay,
+        SwFormField
     ]  
 })
 
@@ -83,16 +88,19 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 .directive('swInput',SWInput.Factory())
 .directive('swfFormField',SWFFormField.Factory())
 .directive('swForm',SWForm.Factory())
-.directive('swFormUpgraded', downgradeComponent({ component: SwForm }) as angular.IDirectiveFactory )
+.directive('swFormUpgrade', downgradeComponent({ component: SwForm }) as angular.IDirectiveFactory )
+.directive('swWorkflowBasicUpgrade', downgradeComponent({ component: SwWorkflowBasic }) as angular.IDirectiveFactory )
 .directive('swfForm',SWFForm.Factory())
 .directive('swfFileInput',SWFFileInput.Factory())
 .directive('swFormField',SWFormField.Factory())
+.directive('swFormFieldUpgraded', downgradeComponent({ component: SwFormField }) as angular.IDirectiveFactory )
 .directive('swFormFieldFile',SWFormFieldFile.Factory())
 .directive('swFormFieldJson',SWFormFieldJson.Factory())
 .directive('swFormFieldSearchSelect',SWFormFieldSearchSelect.Factory())
 .directive('swFormRegistrar',SWFormRegistrar.Factory())
 .directive('swfPropertyDisplay',SWFPropertyDisplay.Factory(SWFPropertyDisplay,"swfpropertydisplay.html"))
 .directive('swPropertyDisplay',SWPropertyDisplay.Factory(SWPropertyDisplay,"propertydisplay.html"))
+.directive('swPropertyDisplayUpgraded', downgradeComponent({ component: SwPropertyDisplay }) as angular.IDirectiveFactory )
 .directive('swErrorDisplay',SWErrorDisplay.Factory())
 .directive('swAddressForm',SWAddressForm.Factory())
 .directive('swFormSubscriber',SWFormSubscriber.Factory());

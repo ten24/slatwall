@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { UtilityService } from '../../core/services/utilityservice';
 import { MetaDataService } from '../../core/services/metadataservice';
+import { FormShareService } from '../services/formshareservice';
 
 @Component({
     selector : 'sw-property-display-upgraded' ,
@@ -12,13 +13,14 @@ export class SwPropertyDisplay implements OnInit  {
         
     @Input() public form;
     @Input() public object;
-    @Input() public propertyIdentifier : string;
+    @Input("propertyidentifier") public propertyIdentifier : string;
     @Input() public editable : boolean;
     @Input() public editing : boolean;
     @Input() public context: string;
     @Input() public name:string;
     @Input() public optionsArguments;
     @Input() public eagerLoadOptions;
+    @Input() public isdirty;
     public value : string = '';
     public fieldType : string;
     public inListingDisplay : boolean;
@@ -32,23 +34,38 @@ export class SwPropertyDisplay implements OnInit  {
     public edit: boolean;
     public errors;
     public edited:boolean;
+    public errorName;
+    public initialValue;
+    public propertyDisplayID;
     
     constructor(
         private utilityService: UtilityService,
-        private metaDataService: MetaDataService
+        private metaDataService: MetaDataService,
+        private formShareService: FormShareService
     ) {
         
     }
     
     ngOnInit() {
         
-        this.form.addControl(this.propertyIdentifier, new FormControl(this.value));
+        this.formShareService.form$.subscribe((form)  => {
+            this.form = form;
+            if(this.value === undefined) {
+                this.value = '';    
+            }
+
+            this.form.addControl(this.propertyIdentifier, new FormControl(this.value));
+        });        
         
         this.errors = {};
         this.edited = false;
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;        
 
+        this.errorName = this.errorName || this.name;
+        this.initialValue = this.object[this.propertyIdentifier];
+        this.propertyDisplayID = this.utilityService.createID(32);
+        
         if( this.showSave === undefined  ){
             this.showSave = true;
         }        
@@ -72,6 +89,9 @@ export class SwPropertyDisplay implements OnInit  {
         }
         if(this.isHidden === undefined){
             this.isHidden = false;
+        }
+        if(this.context === undefined) {
+            this.context = '';    
         }
         
         if( this.fieldType !== 'hidden' &&

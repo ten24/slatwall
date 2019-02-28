@@ -13,7 +13,7 @@ export class SwFormField implements OnInit {
    
     @Input() public labelText: string;
     @Input() public form;
-    @Input() public propertyIdentifier;
+    @Input() public propertyidentifier;
     @Input() public fieldType;
     @Input() public object;
     @Input() public context;
@@ -35,7 +35,7 @@ export class SwFormField implements OnInit {
     }
     
     ngOnInit() {
-        
+   
         if(this.labelText !== undefined) {
             this.labelText = this.labelText.replace(':','');
         }
@@ -51,45 +51,44 @@ export class SwFormField implements OnInit {
     }
 
     public formFieldChanged = (option)=>{
-        debugger;
+
         if(this.fieldType === 'yesno'){
-            this.object.data[this.propertyIdentifier] = option.value;
+            this.object.data[this.propertyidentifier] = option.value;
             console.log(this.form);
-            this.form.controls[this.propertyIdentifier].markAsDirty();// = true;
-            console.log('selected'+this.object.metaData.className+this.propertyIdentifier+this.selectedRadioFormName);
-            this.form.controls['selected'+this.object.metaData.className+this.propertyIdentifier+this.selectedRadioFormName].dirty = false;
+            this.form.controls[this.propertyidentifier].markAsDirty();// = true;
+            console.log('selected'+this.object.metaData.className+this.propertyidentifier+this.selectedRadioFormName);
+            this.form.controls['selected'+this.object.metaData.className+this.propertyidentifier+this.selectedRadioFormName].dirty = false;
             
-            debugger;
 //        }else if(this.fieldType == 'checkbox'){
-//            this.object.data[this.propertyIdentifier] = option.value;
-//            this.form[this.propertyIdentifier].$dirty = true;
+//            this.object.data[this.propertyidentifier] = option.value;
+//            this.form[this.propertyidentifier].$dirty = true;
 //        }else if(this.fieldType === 'select'){
 //            this.$log.debug('formfieldchanged');
 //            this.$log.debug(option);
-//            if(this.selectType === 'object' && typeof this.object.data[this.propertyIdentifier].$$getIDName == "function" ){
-//                this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = option.value;
-//                if(angular.isDefined(this.form[this.object.data[this.propertyIdentifier].$$getIDName()])){
-//                    this.form[this.object.data[this.propertyIdentifier].$$getIDName()].$dirty = true;
+//            if(this.selectType === 'object' && typeof this.object.data[this.propertyidentifier].$$getIDName == "function" ){
+//                this.object.data[this.propertyidentifier]['data'][this.object.data[this.propertyidentifier].$$getIDName()] = option.value;
+//                if(angular.isDefined(this.form[this.object.data[this.propertyidentifier].$$getIDName()])){
+//                    this.form[this.object.data[this.propertyidentifier].$$getIDName()].$dirty = true;
 //                }
 //            }else if(this.selectType === 'string' && option && option.value != null){
 //
-//                this.object.data[this.propertyIdentifier] = option.value;
-//                this.form[this.propertyIdentifier].$dirty = true;
+//                this.object.data[this.propertyidentifier] = option.value;
+//                this.form[this.propertyidentifier].$dirty = true;
 //            }
 //
-//            this.observerService.notify(this.object.metaData.className+this.propertyIdentifier.charAt(0).toUpperCase()+this.propertyIdentifier.slice(1)+'OnChange', option);
+//            this.observerService.notify(this.object.metaData.className+this.propertyidentifier.charAt(0).toUpperCase()+this.propertyidentifier.slice(1)+'OnChange', option);
 //        }else{
-//            this.object.data[this.propertyIdentifier] = option.value;
+//            this.object.data[this.propertyidentifier] = option.value;
 //
-//            this.form[this.propertyIdentifier].$dirty = true;
-//            this.form['selected'+this.object.metaData.className+this.propertyIdentifier+this.selectedRadioFormName].$dirty = false;
+//            this.form[this.propertyidentifier].$dirty = true;
+//            this.form['selected'+this.object.metaData.className+this.propertyidentifier+this.selectedRadioFormName].$dirty = false;
         }
 
     };    
     
     public selectStrategy = ()=>{
         //this is specific to the admin because it implies loading of options via api
-        if(angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData[this.propertyIdentifier]) && angular.isDefined(this.object.metaData[this.propertyIdentifier].fieldtype)){
+        if(angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData[this.propertyidentifier]) && angular.isDefined(this.object.metaData[this.propertyidentifier].fieldtype)){
             this.selectType = 'object';
         }else{
             this.selectType = 'string';
@@ -100,9 +99,9 @@ export class SwFormField implements OnInit {
     public getOptions = ()=>{
         if(this.options === undefined){
             
-            if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyIdentifier')){
+            if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyidentifier')){
                 this.optionsArguments={
-                    'propertyIdentifier':this.propertyIdentifier
+                    'propertyIdentifier':this.propertyidentifier
                 };
             }
 
@@ -115,52 +114,52 @@ export class SwFormField implements OnInit {
                 if(this.selectType === 'object'
                 ){
 
-                    if(angular.isUndefined(this.object.data[this.propertyIdentifier])){
-                        this.object.data[this.propertyIdentifier] = this.$hibachi['new'+this.object.metaData[this.propertyIdentifier].cfc]();
+                    if(angular.isUndefined(this.object.data[this.propertyidentifier])){
+                        this.object.data[this.propertyidentifier] = this.$hibachi['new'+this.object.metaData[this.propertyidentifier].cfc]();
                     }
 
-                    if(this.object.data[this.propertyIdentifier].$$getID() === ''){
-                        this.object.data['selected'+this.propertyIdentifier] = this.options[0];
-                        this.object.data[this.propertyIdentifier] = this.$hibachi['new'+this.object.metaData[this.propertyIdentifier].cfc]();
-                        this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = this.options[0].value;
+                    if(this.object.data[this.propertyidentifier].$$getID() === ''){
+                        this.object.data['selected'+this.propertyidentifier] = this.options[0];
+                        this.object.data[this.propertyidentifier] = this.$hibachi['new'+this.object.metaData[this.propertyidentifier].cfc]();
+                        this.object.data[this.propertyidentifier]['data'][this.object.data[this.propertyidentifier].$$getIDName()] = this.options[0].value;
                     }else{
                         var found = false;
                         for(var i in this.options){
                             if(angular.isObject(this.options[i].value)){
-                                if(this.options[i].value === this.object.data[this.propertyIdentifier]){
-                                    this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-                                    this.object.data[this.propertyIdentifier] = this.options[i].value;
+                                if(this.options[i].value === this.object.data[this.propertyidentifier]){
+                                    this.object.data['selected'+this.propertyidentifier] = this.options[i];
+                                    this.object.data[this.propertyidentifier] = this.options[i].value;
                                     found = true;
                                     break;
                                 }
                             }else{
-                                if(this.options[i].value === this.object.data[this.propertyIdentifier].$$getID()){
-                                    this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-                                    this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = this.options[i].value;
+                                if(this.options[i].value === this.object.data[this.propertyidentifier].$$getID()){
+                                    this.object.data['selected'+this.propertyidentifier] = this.options[i];
+                                    this.object.data[this.propertyidentifier]['data'][this.object.data[this.propertyidentifier].$$getIDName()] = this.options[i].value;
                                     found = true;
                                     break;
                                 }
                             }
                             if(!found){
-                                this.object.data['selected'+this.propertyIdentifier] = this.options[0];
+                                this.object.data['selected'+this.propertyidentifier] = this.options[0];
                             }
                         }
 
                     }
                 } else if(this.selectType === 'string'){
-                    if(this.object.data[this.propertyIdentifier] !== null){
+                    if(this.object.data[this.propertyidentifier] !== null){
                         for(var i in this.options){
-                            if(this.options[i].value === this.object.data[this.propertyIdentifier]){
-                                this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-                                this.object.data[this.propertyIdentifier] = this.options[i].value;
+                            if(this.options[i].value === this.object.data[this.propertyidentifier]){
+                                this.object.data['selected'+this.propertyidentifier] = this.options[i];
+                                this.object.data[this.propertyidentifier] = this.options[i].value;
                                 
                             }
                         }
 
                     } else{
 
-                        this.object.data['selected'+this.propertyIdentifier] = this.options[0];
-                        this.object.data[this.propertyIdentifier] = this.options[0].value;
+                        this.object.data['selected'+this.propertyidentifier] = this.options[0];
+                        this.object.data[this.propertyidentifier] = this.options[0].value;
                     }
 
                 }
@@ -174,11 +173,11 @@ export class SwFormField implements OnInit {
         //format value
 
         this.selectedRadioFormName = this.utilityService.createID(26);
-//        this.object.data[this.propertyIdentifier] = (
-//            this.object.data[this.propertyIdentifier]
-//            && this.object.data[this.propertyIdentifier].length
-//            && this.object.data[this.propertyIdentifier].toLowerCase().trim() === 'yes'
-//        ) || this.object.data[this.propertyIdentifier] == 1 ? 1 : 0;
+//        this.object.data[this.propertyidentifier] = (
+//            this.object.data[this.propertyidentifier]
+//            && this.object.data[this.propertyidentifier].length
+//            && this.object.data[this.propertyidentifier].toLowerCase().trim() === 'yes'
+//        ) || this.object.data[this.propertyidentifier] == 1 ? 1 : 0;
 
         
         this.object.data['activeFlag'] = (
@@ -212,7 +211,7 @@ export class SwFormField implements OnInit {
 
   
 //        setTimeout(()=>{
-//            this.form[this.propertyIdentifier].$dirty = this.isDirty;
+//            this.form[this.propertyidentifier].$dirty = this.isDirty;
 //        });
     }    
 }
