@@ -40,7 +40,7 @@
 
             </sw-listing-controls>
             <span ng-if="swListingDisplay.multiSlot && swListingDisplay.customListingControls">
-                <div  ng-transclude="customListingControls"></div>
+                <div  ng-transclude="customListingControls" id="customListingControls"></div>
             </span>
             <div class="s-detail-notifications s-detail-hidden-content" data-ng-if="swListingDisplay.hasActionBar !== false">
                 <div class="row">
