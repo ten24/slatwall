@@ -18,7 +18,7 @@
 							<li>
 								
 								<a 
-									href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL('#optionBuildUrl#')#" 
+									href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL(queryAddition='#optionBuildUrl#',delimiter='||')#" 
 									<cfif isFilterApplied>
 										class="remove" 
 										data-toggle="tooltip" 

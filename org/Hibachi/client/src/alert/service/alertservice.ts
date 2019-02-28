@@ -23,12 +23,14 @@ export class AlertService {
     };
 
     addAlert(alert:any):void{
-        this.alerts.push(alert);
-        setTimeout(()=> {
-            if(!alert.dismissable){
-                this.removeAlert(alert);
-            }
-        }, 3500);
+        if(alert.msg){
+            this.alerts.push(alert);
+            setTimeout(()=> {
+                if(!alert.dismissable){
+                    this.removeAlert(alert);
+                }
+            }, 3500);
+        }
     };
 
     addAlerts(alerts:Alert[]):void{

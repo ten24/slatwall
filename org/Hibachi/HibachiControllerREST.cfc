@@ -50,6 +50,8 @@ component output="false" accessors="true" extends="HibachiController" {
     public any function before( required struct rc ) {
 
         arguments.rc.apiRequest = true;
+        
+        request.layout = false;
 
         getFW().setView("public:main.blank");
         arguments.rc.headers["Content-Type"] = "application/json";
@@ -670,13 +672,6 @@ component output="false" accessors="true" extends="HibachiController" {
             handle accessing collections by id
         */
         param name="arguments.rc.propertyIdentifiers" default="";
-		
-		if(structKeyExists(arguments.rc, "p:show")){
-			var globalAPIPageShowLimit = getService("SettingService").getSettingValue("globalAPIPageShowLimit");
-			if(arguments.rc["p:show"] > globalAPIPageShowLimit){
-				arguments.rc["p:show"] = globalAPIPageShowLimit; 
-			}	
-		}
        
 		if(!structKeyExists(arguments.rc, "dirtyReadFlag")){
  			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 

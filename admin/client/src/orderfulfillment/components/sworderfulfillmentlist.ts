@@ -33,10 +33,23 @@ class SWOrderFulfillmentListController {
     public formData:{};
     public processObject:any;
     public addSelection:Function;
+    public FulfillmentsList=FulfillmentsList;
     private state:any;
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
+    constructor(
+            private $hibachi, 
+            private $timeout, 
+            private collectionConfigService, 
+            private observerService, 
+            private utilityService, 
+            private $location, 
+            private $http, 
+            private $window, 
+            private typeaheadService, 
+            private orderFulfillmentService,
+            private listingService
+        ){
 
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": false, "available": false , "paid": false};
@@ -183,11 +196,15 @@ class SWOrderFulfillmentListController {
      private createOrderFulfillmentCollection = ():void => {
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderType.systemCode", "Order Type");
+        this.orderFulfillmentCollection.addDisplayProperty("fulfillmentMethod.fulfillmentMethodType", "Fulfillment Method Type");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
+        this.orderFulfillmentCollection.addDisplayProperty("order.account.calculatedFullName", "Full Name");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+        this.orderFulfillmentCollection.addDisplayProperty("estimatedShippingDate");
         //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
         //this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
@@ -364,6 +381,11 @@ class SWOrderFulfillmentListController {
     private createOrderItemCollection = ():void => {
         this.orderItemCollection = this.collectionConfigService.newCollectionConfig("OrderItem");
         this.orderItemCollection.addDisplayProperty("orderItemID");
+        this.orderItemCollection.addDisplayProperty("sku.skuCode");
+        this.orderItemCollection.addDisplayProperty("sku.calculatedSkuDefinition");
+        this.orderItemCollection.addDisplayProperty("sku.calculatedQOH");
+        this.orderItemCollection.addDisplayProperty("stock.location.locationName");
+        this.orderItemCollection.addDisplayProperty("orderFulfillment.fulfillmentMethod.fulfillmentMethodType","Fulfillment Method Type");
         this.orderItemCollection.addDisplayProperty("quantity");
         this.orderItemCollection.addDisplayProperty("order.orderNumber");
         this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime");

@@ -13,6 +13,7 @@ import {RbKeyService} from "../../core/services/rbkeyservice";
 import {SelectionService} from "../../core/services/selectionservice";
 import {UtilityService} from "../../core/services/utilityservice";
 import {$Hibachi} from "../../core/services/hibachiservice";
+import {LocalStorageService} from "../../core/services/localstorageservice";
 
 @Injectable()
 export class ListingService{
@@ -31,7 +32,8 @@ export class ListingService{
                 private rbkeyService : RbKeyService,
                 private selectionService : SelectionService,
                 private utilityService : UtilityService,
-                private $hibachi : $Hibachi
+                private $hibachi : $Hibachi,
+                private localStorageService : LocalStorageService
             ){
         //Setup a store so that controllers can listing for state changes and fire action requests.
         //To create a store, we instantiate it using the object that holds the state variables,
@@ -1080,5 +1082,20 @@ export class ListingService{
         }
     };
     //End Expandable Functions
+    
+    //Begin Personal Collections Functions
+    
+    public hasPersonalCollectionSelected=(baseEntityName:string):boolean=>{
+        return this.localStorageService.hasItem('selectedPersonalCollection') 
+            && this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
+    }
+     public getPersonalCollectionByBaseEntityName=(baseEntityName:string):any=>{
+        var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
+        personalCollection.setDisplayProperties('collectionConfig');
+        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
+        return personalCollection;
+    }
+        
+    //End Personal Collections Functions
 
 }

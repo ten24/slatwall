@@ -32,4 +32,26 @@ component extends="framework.aop" {
    private any function missingBean( string beanName, string resolvingBeanName = "", boolean dependency = true ){
         return super.missingBean(argumentCollection=arguments);
    }
+   
+   // Override limits this method to be invoked only once during request
+   // NOTE: Once this method is invoked all singleton metadata is cached and missing singletons as setters are disregarded and pruned from dependency metadata.
+   //       Because when getBean() is invoked for a singleton bean (or indirectly through load() method), its property metadata about the dependency bean if and 
+   //       whether it can be located in the beanFactory will be cached and this cannot be easily reset even if at a later declarations the beanFactory can locate the bean.
+   //       It is a multi-statement race condition so to speak that has to be carefully managed.
+   //       That means after a successful reloading of all singleton beans occurs, any of the singleton beans declared afterwards of load()/getBean() cannot be 
+   //       injected in previously declared singleton beans because the setterInfo is missing from the previously declared singleton bean's metadata via pruning.
+   //       That's a few ways of saying the same thing, but making sure comment is understandable.
+   public any function load() {
+      if (!structKeyExists(variables, 'loadExecutedOnce')) {
+         
+         super.load();
+         variables.loadExecutedOnce = true;
+         
+         return this;
+      } else {
+         throw("Avoid calling this method more than once. Defer invokation until after all beanFactory configuration is complete. This is just a precaution to prevent unintended behavior and rediscovering framework quirks, but can be removed if not possible to avoid.");
+      }
+      
+      return this;
+   }
 }

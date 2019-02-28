@@ -3,13 +3,25 @@
 		jQuery(document).ready(function() {
 			jQuery('body').on('click', '##ApplyBtn', function(e){
 				e.preventDefault();
-				jQuery("input[name='slatAction']").val('#slatAction#');
+				jQuery("input[name='slatAction']").val('#rc.slatAction#');
 				jQuery('##revrecognition').submit();
 			});
+			
 			jQuery('body').on('click', '##ExportBtn', function(e){
 				e.preventDefault();
-				jQuery("input[name='slatAction']").val('#slatAction#export');
-				jQuery('##revrecognition').submit();
+				
+				//creates a hidden form based on current form and alters for export
+				if(jQuery('##revrecognitionexport')){
+					jQuery('##revrecognitionexport').remove();
+				}
+				
+				var exportForm = jQuery('##revrecognition').clone();
+				exportForm.children('input[name="slatAction"]').val(jQuery("input[name='slatAction']").val()+'export');
+				exportForm.attr('id','revrecognitionexport');
+				exportForm.hide();
+				jQuery(document.body).append(exportForm);
+				exportForm.submit();
+				
 			});
 		});
 		
@@ -17,7 +29,7 @@
 
 	
 	<form id="revrecognition" action="?s=1" method="post">
-		<input type="hidden" name="slatAction" value="#slatAction#"/>
+		<input type="hidden" name="slatAction" value="#rc.slatAction#"/>
 		<div id="u119_state0" class="panel_state" data-label="State1" style="">
 		    <div id="u119_state0_content" class="panel_state_content">
 		        <div class="col-xl-3 col-md-4">

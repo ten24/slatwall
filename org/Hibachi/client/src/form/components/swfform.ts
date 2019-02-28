@@ -17,6 +17,7 @@ class SWFFormController {
     public loading:boolean;
     public errors:any;
     public fileFlag:boolean = false;
+    public errorToDisplay:string; //very first error returned from call
     
     // @ngInject
     constructor(
@@ -118,6 +119,9 @@ class SWFFormController {
         this.successfulActions = result.successfulActions;
         this.failureActions = result.failureActions;
         this.errors = result.errors;
+        if(result.errors && Object.keys(result.errors).length){
+            this.errorToDisplay = result.errors[Object.keys(result.errors)[0]][0]; //getting first key in object and first error in array
+        }
         if(result.successfulActions.length)
         {
             //if we have an array of actions and they're all complete, or if we have just one successful action

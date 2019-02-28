@@ -240,7 +240,7 @@
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
 				}
 	        }
-	        
+
 	        // Return the entity
 	        return arguments.entity;
 	    }
@@ -416,6 +416,8 @@
 					return onMissingGetSmartListMethod( missingMethodName, missingMethodArguments );
 				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
 					return onMissingGetCollectionListMethod( missingMethodName, missingMethodArguments );
+				} else if(right(lCaseMissingMethodName,6) == "struct"){
+					return onMissingGetEntityStructMethod( missingMethodName, missingMethodArguments );
 				} else {
 					return onMissingGetMethod( missingMethodName, missingMethodArguments );
 				}
@@ -530,7 +532,18 @@
 			
 			return getCollectionList(entityName=entityName, data=data);
 		} 
-		 
+
+
+		private function onMissingGetEntityStructMethod( required string missingMethodName, required struct missingMethodArguments ){
+			var entityNameLength = len(arguments.missingMethodName) - 9;
+			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityID = missingMethodArguments[ 1 ]; 
+			
+			var collection = getCollectionList(entityName=entityName); 
+			collection.addFilter(getPrimaryIDPropertyNameByEntityName(entityName), entityID);
+			collection.setPageRecordsShow(1);
+			return collection.getPageRecords(formatRecords=false)[1];
+		}
 	
 		/**
 		 * Provides dynamic list methods, by convention, on missing method:
@@ -848,7 +861,7 @@
 		// ===================== START: Cached Entity Meta Data Methods ===========================
 		
 		public any function getEntitiesMetaData() {
-			if(!structCount(variables.entitiesMetaData)) {
+			if(!structKeyExists(variables, 'entitiesMetaData') || !structCount(variables.entitiesMetaData)) {
 				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 				var allMD = {};
 				for(var entityName in entityNamesArr) {
@@ -961,10 +974,10 @@
 			
 			if(!structKeyExists(variables,cacheKey)){
 				var propertyMetaData = getPropertiesStructByEntityName(
-					getLastEntityNameInPropertyIdentifier(
+				getLastEntityNameInPropertyIdentifier(
 						arguments.entityName,
 						arguments.propertyIdentifier
-					)
+					)	
 				)[listLast(arguments.propertyIdentifier, ".")];
 				variables[cacheKey] = !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
 			}
@@ -1020,7 +1033,7 @@
 
 		public struct function getEntitiesProcessContexts(){
 			var serviceBeanInfo = getBeanFactory().getBeanInfo(regex="\w+Service").beanInfo;
-
+			
 			if(!structCount(variables.entitiesProcessContexts)) {
 				//get processes form the services
 
@@ -1269,11 +1282,22 @@
 		
 		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(
-			required any collectionList, required string entityName, required string propertyIdentifier
+			required any collectionList, required string entityName, required string propertyIdentifier, string inversePropertyIdentifier
 		){
-			var entityCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
-			
-			return entityCollectionList.getRecords();
+			var cacheKey = 'getOptionsByEntityNameAndPropertyIdentifier'&hash(serializeJson(arguments.collectionList.getCollectionConfigStruct()),'md5');
+			cacheKey &=arguments.entityName&arguments.propertyIdentifier;
+			if(structKeyExists(arguments,'inversePropertyIdentifier')){
+				cacheKey&= arguments.inversePropertyIdentifier;
+			}
+			if(!structKeyExists(variables,cacheKey)){
+				var entityCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+				variables[cacheKey]={
+					hql=entityCollectionList.getHQL(),
+					params=entityCollectionList.getHQLParams()
+				};
+				
+			}
+			return ormExecuteQuery(variables[cacheKey].hql,variables[cacheKey].params);
 		}
 		
 		public struct function getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty(required any collectionList, required string entityName, required string propertyIdentifier, required string discriminatorProperty, required string inversePropertyIdentifier){
@@ -1286,12 +1310,24 @@
 			var discriminatorRecords = getOptionsByEntityName(propertyMetaData.cfc);
 			var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 			var optionData = {};
+			var cacheKey = 'getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty'&hash(serializeJson(arguments.collectionList.getCollectionConfigStruct()),'md5');
+			cacheKey &=arguments.entityName&arguments.propertyIdentifier&arguments.discriminatorProperty&arguments.inversePropertyIdentifier;
 			for(var record in discriminatorRecords){
-				var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
-				optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
-				optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+				var recordCacheKey = cacheKey&record['value'];
+				if(!structKeyExists(variables,recordCacheKey)){
+					var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+					optionsCollectionList.setInlistDelimiter(arguments.collectionList.getInlistDelimiter());
+					optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
+					optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+					
+					var cacheData = {
+						hql= optionsCollectionList.getHQL(),
+						params=optionsCollectionList.getHQLParams()
+					};
+					variables[recordCacheKey]=cacheData;
+				}
+				var optionsCollectionRecords = ormExecuteQuery(variables[recordCacheKey].hql,variables[recordCacheKey].params);
 				
-				var optionsCollectionRecords = optionsCollectionList.getRecords();
 				
 				optionData[record['name']] = optionsCollectionRecords;
 			}
@@ -1324,7 +1360,8 @@
 		public any function getOptionsCollectionListByEntityNameAndPropertyIdentifier(required any collectionList, required string entityName, required string propertyIdentifier, required string inversePropertyIdentifier){
 			
 			var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
-		
+			entityCollectionList.setInlistDelimiter(arguments.collectionList.getInlistDelimiter());
+			
 			var displayProperties = '';
 			var propertyMetaData = {};
 			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
@@ -1474,9 +1511,10 @@
 			return attributeCacheKey;
 		}
 		
-		public array function getSelectedOptionsByApplyData(required string entityName, required string propertyIdentifier){
+		public array function getSelectedOptionsByApplyData(required any collectionList, required string entityName, required string propertyIdentifier){
 			var entityCollectionList = getService('HibachiService').getCollectionList(arguments.entityName);
 			entityCollectionList.setDistinct(true);
+			entityCollectionList.setInlistDelimiter(arguments.collectionList.getInlistDelimiter());
 			var displayProperties = '';
 			var propertyMetaData = {};
 			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);

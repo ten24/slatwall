@@ -15,15 +15,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if(
-			!setting("globalDisableRecordLevelPermissions") 
+		if( !setting("globalDisableRecordLevelPermissions")
 			&& !this.getNewFlag() 
-			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
+			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
 			try{
 				var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
-				var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+				var entityService = this.getEntityService();
 				var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
 				entityCollectionList.setDisplayProperties(primaryIDName);
 				entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
@@ -75,6 +74,22 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return super.init();
 	}
+
+	public any function getEntityService(){ 
+		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
+	} 
+
+	public struct function getStructRepresentation(){
+		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+	}
+
+	public string function getJsonRepresentation(){
+		return serializeJson(this.getStructRepresentation()); 
+	} 
+
+	public string function getEncodedJsonRepresentation(){ 
+		return encodeForHTML(this.getJsonRepresentation()); 
+	} 
 
 	public string function getTableName(){
 		return getService('hibachiService').getTableNameByEntityName(getClassName());
@@ -145,8 +160,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
     }
 
     public string function getParentPropertyName(){
-    	getService('hibachiService').getParentPropertyByEntityName(getClassName());
+    	return getService('hibachiService').getParentPropertyByEntityName(getClassName());
     }
+
 
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
@@ -656,6 +672,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#CollectionList";
 
 		if(!structKeyExists(variables, cacheKey) || ((structKeyExists(arguments, 'isNew') && !isNull(arguments.isNew) && arguments.isNew))) {
+			var propertyMetaData = getPropertyMetaData(arguments.propertyName); 
 
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
 			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
@@ -664,14 +681,23 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
 
 			// If its a one-to-many, then add filter
-			if(getPropertyMetaData( arguments.propertyName ).fieldtype == "one-to-many") {
+			if(propertyMetaData.fieldtype == "one-to-many") {
 				// Loop over the properties in the example entity to
 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
-					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fieldType == 'many-to-one' && exampleEntity.getProperties()[i].fkcolumn == propertyMetaData.fkcolumn ) {
 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						break; 
 					}
-				}
-			}
+ 				}	
+ 			} else if(propertyMetaData.fieldtype == "many-to-many"){
+ 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
+ 					if( structKeyExists(exampleEntity.getProperties()[i], "inversejoincolumn") && exampleEntity.getProperties()[i].inversejoincolumn == propertyMetaData.fkcolumn ) {
+ 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+ 						break; 
+ 					}
+ 				}
+ 			}
+
 
 			variables[ cacheKey ] = collectionList;
 		}

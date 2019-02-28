@@ -54,10 +54,6 @@ Notes:
 <cfparam name="rc.baseProductType" type="string" default="" />
 <cfparam name="rc.edit" default="false" >
 
-<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
-<cfset sites.addFilter('activeFlag', 1) /> 
-<cfset rc.sitesArray = sites.getRecords() />
-
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.productType#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.productType#" edit="#rc.edit#" />

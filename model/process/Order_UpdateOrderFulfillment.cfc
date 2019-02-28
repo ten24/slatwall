@@ -65,14 +65,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(isNull(variables.order) && !isNull(getOrderID())){
 			variables.order = getService('orderService').getOrder(getOrderID());
 		}
-		return variables.order;
+		if(structKeyExists(variables,'order')){
+			return variables.order;
+		}
 	}
 	
 	public any function getOrderFulfillment() {
 		if(isNull(variables.orderFulfillment) && !isNull(getOrderFulfillmentID())){
 			variables.orderFulfillment = getService('orderService').getOrderFulfillment(getOrderFulfillmentID());
 		}
-		return variables.orderFulfillment;
+		if(structKeyExists(variables,'orderFulfillment')){
+			return variables.orderFulfillment;
+		}
 	}
 	
 	public any function getOrderItems() {

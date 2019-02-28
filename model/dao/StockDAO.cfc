@@ -427,6 +427,12 @@ Notes:
 			return entityLoad("SlatwallStock", {location=arguments.location, sku=arguments.sku}, true);
 		}
 		
+		public any function findStockBySkuIDAndLocationID(required string skuID, required string locationID) {
+			var params = {skuID=arguments.skuID, locationID=arguments.locationID};
+			var q= "FROM SlatwallStock where sku.skuID = :skuID AND location.locationID= :locationID";
+			return ormExecuteQuery(q, params, true);
+		}
+		
 		public any function getStockAdjustmentItemForSku(required any sku, required any stockAdjustment) {
 			var params = [arguments.sku.getSkuID(), arguments.stockAdjustment.getStockAdjustmentID()];
 			

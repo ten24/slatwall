@@ -436,6 +436,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			productImageMediumHeight = {fieldType="text", defaultValue="300", formatType="pixels", validate={dataType="numeric", required=true}},
 			productImageLargeWidth = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
 			productImageLargeHeight = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
+			productImageXLargeWidth = {fieldType="text", defaultValue="800", formatType="pixels", validate={dataType="numeric", required=true}},
+			productImageXLargeHeight = {fieldType="text", defaultValue="800", formatType="pixels", validate={dataType="numeric", required=true}},
+			productListingImageHeight = {fieldType="text", defaultValue="263", formatType="pixels", validate={dataType="numeric", required=true}},
+			productListingImageWidth = {fieldType="text", defaultValue="212", formatType="pixels", validate={dataType="numeric", required=true}},
 			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
 
 		};
