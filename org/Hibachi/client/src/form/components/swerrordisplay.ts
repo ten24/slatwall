@@ -97,3 +97,26 @@ export{
     SWErrorDisplay,
     SWErrorDisplayController
 }
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+
+@Component({
+    selector : 'sw-error-display-upgraded',
+    templateUrl : '/org/Hibachi/client/src/form/components/errordisplay_upgraded.html'    
+})
+export class SwErrorDisplay  implements OnInit {
+        
+    @Input() public control;
+
+    constructor() {
+        
+    }
+    
+    ngOnInit() {
+        
+    }
+    
+}

@@ -67,7 +67,8 @@ class SWFormFieldController {
 
 			this.form[this.propertyIdentifier].$dirty = true;
 			this.form['selected'+this.object.metaData.className+this.propertyIdentifier+this.selectedRadioFormName].$dirty = false;
-		}else if(this.fieldType == 'checkbox'){
+		   
+        }else if(this.fieldType == 'checkbox'){
 			this.object.data[this.propertyIdentifier] = option.value;
 			this.form[this.propertyIdentifier].$dirty = true;
 		}else if(this.fieldType === 'select'){
@@ -320,7 +321,6 @@ class SWFormField{
 		 hibachiPathBuilder
 	){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+'formfield.html';
-
 	}
 
 	public link= (scope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) =>{

@@ -1,0 +1,38 @@
+	<div  class="col-md-6 s-header-left">
+		<div class="s-header-detail">
+			
+			
+				<sw-property-display-upgraded 
+					[form]="form"
+					[object]="object"
+					[propertyidentifier]="'workflowName'"
+					[editing]="true"
+					[editable]="true"
+					[context]="context"
+					[name]="name"
+				>
+				</sw-property-display-upgraded>
+				  
+				<sw-property-display-upgraded
+					[form]="form"
+					[object]="object"
+					[optionsArguments]="{property:'workflowObject'}"
+					[eagerLoadOptions]="true"
+					[propertyidentifier]="'workflowObject'"
+					[editing]="true"
+					[editable]="!object.$$isPersisted()"
+				>
+				</sw-property-display-upgraded>
+				
+				<sw-property-display-upgraded   
+						[form]="form"
+						[object]="object"
+						[propertyidentifier]="'activeFlag'"
+						[editing]="true"
+						[editable]="true"
+				>
+				</sw-property-display-upgraded>
+				 	
+			
+		</div>
+	</div>

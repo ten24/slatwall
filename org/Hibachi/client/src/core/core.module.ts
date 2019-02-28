@@ -25,6 +25,7 @@ import { RbKeyService } from "./services/rbkeyservice";
 import { TypeaheadService } from "./services/typeaheadservice";
 import { $Hibachi } from "./services/hibachiservice";
 import { HistoryService } from "./services/historyservice";
+import { CurrencyService } from "./services/currencyservice";
 import { LocalStorageService } from "./services/localstorageservice";
 import { HibachiServiceDecorator } from "./services/hibachiservicedecorator";
 import { HibachiScope } from "./services/hibachiscope";
@@ -60,7 +61,7 @@ import { SWCollectionOrderBy } from "./components/swcollectionorderby";
 import { SWCollectionColumn } from "./components/swcollectioncolumn";
 import { SWActionCallerDropdown } from "./components/swactioncallerdropdown";
 import { SWColumnSorter } from "./components/swcolumnsorter";
-import { SWConfirm } from "./components/swconfirm";
+import { SWConfirm, SwConfirm } from "./components/swconfirm";
 import { SWDraggable } from "./components/swdraggable";
 import { SWDraggableContainer } from "./components/swdraggablecontainer";
 import { SWEntityActionBar } from "./components/swentityactionbar";
@@ -72,18 +73,19 @@ import { SWLogin } from "./components/swlogin";
 import { SWModalLauncher } from "./components/swmodallauncher";
 import { SWModalWindow } from "./components/swmodalwindow";
 import { SWNumbersOnly } from "./components/swnumbersonly";
-import { SWLoading } from "./components/swloading";
+import { SWLoading, SwLoading } from "./components/swloading";
 import { SWScrollTrigger } from "./components/swscrolltrigger";
 import { SWTabGroup } from "./components/swtabgroup";
 import { SWTabContent } from "./components/swtabcontent";
-import { SWTooltip } from "./components/swtooltip";
-import { SWRbKey } from "./components/swrbkey";
+import { SWTooltip, SwTooltip } from "./components/swtooltip";
+import { SWRbKey, SwRbKey } from "./components/swrbkey";
 import { SWOptions } from "./components/swoptions";
 import { SWSelection } from "./components/swselection";
 import { SWClickOutside } from "./components/swclickoutside";
 import { SWDirective } from "./components/swdirective";
 import { SWExportAction } from "./components/swexportaction";
 import { SWHref } from "./components/swhref";
+import { SwInit } from "./components/swinit";
 import { SWProcessCaller } from "./components/swprocesscaller";
 import { SWSortable } from "./components/swsortable";
 import { SWOrderByControls } from "./components/sworderbycontrols";
@@ -96,7 +98,7 @@ import { DialogModule } from '../dialog/dialog.module';
 
 import { NgModule, Inject, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UpgradeModule, downgradeInjectable } from '@angular/upgrade/static';
+import { UpgradeModule, downgradeInjectable, downgradeComponent } from '@angular/upgrade/static';
 
 
 import { BaseObject } from "./model/baseobject";
@@ -130,7 +132,14 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
 //}
 
 @NgModule({
-    declarations: [SWRbKeyDirective],
+    declarations: [
+        SWRbKeyDirective, 
+        SwRbKey, 
+        SwConfirm, 
+        SwLoading,
+        SwInit,
+        SwTooltip    
+    ],
     providers: [
         AppProvider,
         AppConfig,
@@ -154,6 +163,7 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
         RequestService,
         HibachiScope,
         $Hibachi,
+        CurrencyService,
         TypeaheadService,
         EntityService,
         CartService,        
@@ -177,7 +187,18 @@ import { AppProvider, AppConfig, ResourceBundles, AttributeMetaData } from "../.
         CommonModule,
         UpgradeModule,
         HttpModule
-
+    ],
+    exports: [
+        SwRbKey,
+        SwConfirm,
+        SwLoading,
+        SwInit,
+        SwTooltip
+    ],
+    entryComponents: [
+        SwConfirm,
+        SwLoading,
+        SwTooltip
     ]
 })
 
@@ -301,11 +322,12 @@ var coremodule = angular.module('hibachi.core', [
     .service('expandableService', downgradeInjectable(ExpandableService))
     .service('filterService', downgradeInjectable(FilterService))
     .service('formService', downgradeInjectable(FormService))
-    .service('historyService', downgradeInjectable(HistoryService))
+    .service('historyService', downgradeInjectable(HistoryService))   
     .service('metadataService', downgradeInjectable(MetaDataService))
     .service('rbkeyService', downgradeInjectable(RbKeyService))
     .service('typeaheadService', downgradeInjectable(TypeaheadService))
     .service('$hibachi', downgradeInjectable($Hibachi))
+    .service('currencyService',downgradeInjectable(CurrencyService))
     //.decorator('$hibachi',HibachiServiceDecorator)
     .service('hibachiInterceptor', downgradeInjectable(HibachiInterceptor))
     .service('hibachiScope', downgradeInjectable(HibachiScope))
@@ -356,11 +378,13 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swLoading', SWLoading.Factory())
     .directive('swScrollTrigger', SWScrollTrigger.Factory())
     .directive('swRbkey', SWRbKey.Factory())
+//    .directive('swRbkey',downgradeComponent({ component: SwRbKey }) as angular.IDirectiveFactory)
     .directive('swOptions', SWOptions.Factory())
     .directive('swSelection', SWSelection.Factory())
     .directive('swTabGroup', SWTabGroup.Factory())
     .directive('swTabContent', SWTabContent.Factory())
-    .directive('swTooltip', SWTooltip.Factory())
+//    .directive('swTooltip', SWTooltip.Factory())
+    .directive('swTooltip',downgradeComponent({ component: SwTooltip }) as angular.IDirectiveFactory)
     .directive('swClickOutside', SWClickOutside.Factory())
     .directive('swDirective', SWDirective.Factory())
     .directive('swExportAction', SWExportAction.Factory())

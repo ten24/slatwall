@@ -7,21 +7,31 @@ import {CoreModule} from '../core/core.module';
 
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+import { UpgradeModule, downgradeInjectable, downgradeComponent } from '@angular/upgrade/static';
+import { FormsModule } from '@angular/forms';
 
 //services
 import {PaginationService} from "./services/paginationservice";
-import {SWPaginationBar} from "./components/swpaginationbar";
+import {SWPaginationBar,SwPaginationBar} from "./components/swpaginationbar";
 
 @NgModule({
-    declarations: [],
+    declarations: [
+        SwPaginationBar
+    ],
     providers: [
         PaginationService
     ],  
     imports: [
         CoreModule,
         CommonModule,
+        FormsModule,
         UpgradeModule
+    ],
+    exports: [
+        SwPaginationBar
+    ],
+    entryComponents: [
+        SwPaginationBar
     ]  
 })
 
@@ -37,7 +47,8 @@ var paginationmodule = angular.module('hibachi.pagination', [coremodule.name])
 }])
 //services
 .service('paginationService', downgradeInjectable(PaginationService))
-.directive('swPaginationBar', SWPaginationBar.Factory())
+//.directive('swPaginationBar', SWPaginationBar.Factory())
+.directive('swPaginationBar', downgradeComponent({ component: SwPaginationBar }) as angular.IDirectiveFactory)
 //constants
 .constant('partialsPath','pagination/components/')
 ;
@@ -45,7 +56,3 @@ var paginationmodule = angular.module('hibachi.pagination', [coremodule.name])
 export{
 	paginationmodule
 }
-
-
-
-

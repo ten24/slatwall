@@ -1,3 +1,4 @@
+ 
 <sw-form 	ng-name="{{entityName+'.'+detailTab.tabName.toLowerCase()}}" 
 			data-object="workflow"
 >
@@ -6,3 +7,11 @@
 	>
 	</span>
 </sw-form>
+
+<sw-form-upgrade [name]="entityName+'.'+detailTab.tabName.toLowerCase()" [object] ="workflow" >
+		<sw-workflow-basic-upgrade 
+			[object]="workflow" 
+			[name]="entityName+'.'+detailTab.tabName.toLowerCase()" 
+			[context]="'save'"
+		></sw-workflow-basic-upgrade>
+</sw-form-upgraded>

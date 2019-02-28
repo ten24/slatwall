@@ -38,3 +38,23 @@ class SWLoading{
 export{
     SWLoading
 }
+
+
+import { Component, Input, OnInit } from "@angular/core";
+
+@Component({
+    selector:  '[sw-loading]',
+    template:  `<ng-content *ngIf="swloading" ></ng-content>
+                <div class="s-loading-icon-fullwidth">
+                    <i [hidden]="swloading" class="fa fa-refresh fa-spin"></i>
+                </div>`  
+})
+export class SwLoading implements OnInit{
+    @Input() swloading: any;
+    
+    constructor() {}
+    
+    ngOnInit() {
+          
+    }
+}

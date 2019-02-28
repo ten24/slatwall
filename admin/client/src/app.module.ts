@@ -3,7 +3,6 @@ import {NgModule, Injectable} from '@angular/core';
 import { HttpClientModule } from "@angular/common/http";
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
-import {HeroDetailComponent} from './slatwall/components/herodetail.component';
 import {slatwalladminmodule} from './slatwall/slatwalladmin.module';
 import {BaseBootstrap} from "../../../org/Hibachi/client/src/basebootstrap.module";
 
@@ -12,6 +11,9 @@ import {LoggerModule} from "../../../org/Hibachi/client/src/logger/logger.module
 import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider } from "./ajs-upgraded-providers";  
 import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
 import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.provider";
+
+import { SwRbKey } from "../../../org/Hibachi/client/src/core/components/swrbkey";
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 
 @NgModule({
@@ -35,15 +37,16 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
     HttpClientModule,
     BrowserModule,
     UpgradeModule,
+    ModalModule.forRoot(),
     CoreModule,
     LoggerModule,
     SlatwallAdminModule
   ],
   declarations:[
-      HeroDetailComponent
+
   ],
   entryComponents: [
-    HeroDetailComponent
+      
   ]
 })
 export class AppModule extends BaseBootstrap { 

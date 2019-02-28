@@ -54,3 +54,79 @@ class SWCurrency{
 
 }
 export {SWCurrency};
+
+
+import { ChangeDetectorRef, OnDestroy, Pipe, PipeTransform, WrappedValue } from '@angular/core';
+import { $Hibachi } from '../../../../../org/Hibachi/client/src/core/services/hibachiservice';
+import { CurrencyService } from '../../../../../org/Hibachi/client/src/core/services/currencyservice';
+
+@Pipe({name: 'swcurrency', pure: false})
+export class SwCurrency implements PipeTransform {
+        
+    private value: any = '-';
+    private data = null;
+    private currentValue: any;
+    private currentCurrencyCode: string;
+    private currentDecimalPlace: any;
+    
+    constructor( 
+        private $hibachi: $Hibachi, 
+        private currencyService: CurrencyService,
+        private changeDetectorRef: ChangeDetectorRef) {
+        
+    }
+    
+
+    transform(value, currencyCode, decimalPlace, returnStringFlag=true): any {
+        if(
+            this.currentValue === value && 
+            this.currentCurrencyCode === currencyCode &&
+            this.currentDecimalPlace === decimalPlace ) {
+            return this.value;    
+        } else {
+            this.currentValue = value;
+            this.currentCurrencyCode = currencyCode;
+            this.currentDecimalPlace = decimalPlace;    
+        }
+        if( this.currencyService.hasCurrencySymbols() ) {
+            this.data = this.currencyService.getCurrencySymbol(currencyCode);
+            return this.realFilter(value, decimalPlace,this.data, returnStringFlag);
+        } else  {
+          this.currencyService.getCurrencySymbolsPromise().then((currencies) => {
+            let currencySymbols = currencies.data;
+            this.currencyService.setCurrencySymbols(currencySymbols);  
+            this.data = this.currencyService.getCurrencySymbol(currencyCode);
+            this.value = this.realFilter(value, decimalPlace,this.data, returnStringFlag);  
+            this.changeDetectorRef.markForCheck(); 
+          });   
+          if(this.data !== null) {
+            this.changeDetectorRef.detach();    
+          } 
+          return WrappedValue.wrap(this.value);
+        }
+    }
+
+    realFilter(value,decimalPlace,data,returnStringFlag=true) {
+        // REAL FILTER LOGIC, DISREGARDING PROMISES
+        if(!angular.isDefined(data)){
+            data="$";
+        }
+        if(!value || value.toString().trim() == ''){
+            value = 0;
+        }
+        if(angular.isDefined(value)){
+            if(angular.isDefined(decimalPlace)){
+                //value = $filter('number')(value.toString(), decimalPlace);
+                value = parseFloat(value).toFixed(decimalPlace);
+            } else {
+                //value = $filter('number')(value.toString(), 2);
+                value = parseFloat(value).toFixed(2);
+            }
+        }
+        if(returnStringFlag){
+            return data + value;
+        } else { 
+            return value;
+        }   
+    }
+}

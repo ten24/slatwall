@@ -164,3 +164,47 @@ class SWConfirm{
 export{
     SWConfirm
 }
+
+
+import { Component, OnInit } from "@angular/core";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { RbKeyService } from "../services/rbkeyservice";
+
+@Component({
+  selector: 'modal-content',
+  template: `
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">{{confirmText}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      {{messageText}}
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-sm btn-default btn-inverse" (click)="bsModalRef.hide()">{{noText}}</button>
+      <button class="btn btn-sm btn-default btn-primary" (click)="callback()">{{yesText}}</button>
+    </div>
+  `
+})
+export class SwConfirm implements OnInit {
+    useRbKey: string;
+    confirmText: string;
+    //closeBtnName: string;
+    messageText: string;
+    callback: any;
+    yesText: string;
+    noText: string;
+ 
+    constructor(public bsModalRef: BsModalRef, private rbKeyService: RbKeyService) {}
+ 
+    ngOnInit() {
+        if(this.useRbKey == 'true') {
+            this.confirmText = this.rbKeyService.getRBKey(this.confirmText);
+            this.messageText = this.rbKeyService.getRBKey(this.messageText);
+            this.yesText = this.rbKeyService.getRBKey(this.yesText);
+            this.noText = this.rbKeyService.getRBKey(this.noText);
+        }
+    }
+}

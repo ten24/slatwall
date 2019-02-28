@@ -41,7 +41,7 @@
             </tr>
         </tbody>
 	</table>
-    <sw-pagination-bar data-paginator="swFormResponseListing.paginator"></sw-pagination-bar>
+    <sw-pagination-bar [paginator]="swFormResponseListing.paginator"></sw-pagination-bar>
 </div>
 <div ng-if="!swFormResponseListing.columns.length && !swFormResponseListing.pageRecords.length">
     <div class="alert alert-info" role="alert">

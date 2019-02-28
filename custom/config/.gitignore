@@ -7,3 +7,5 @@ password.txt.cfm
 config.json
 resourceBundles/*.json
 dbDataChecksums.txt.cfm
+configApplication.cfm
+configFramework.cfm

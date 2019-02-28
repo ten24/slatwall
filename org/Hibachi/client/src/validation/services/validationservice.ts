@@ -24,6 +24,7 @@ export class ValidationService{
         //key won't be set  so ensure that we have
         //key and propertyName before checking with the server
         if (object && property) {
+            
             this.$hibachi.checkUniqueValue(object, property, value)
             .then((unique)=> {
                 if (unique) {

@@ -1,0 +1,28 @@
+				<div *ngIf="object" class="form-group" [hidden]="isHidden">
+					<label class="control-label" *ngIf="showLabel">
+						<span [textContent]="title"></span>:
+						<span *ngIf="object.validations.properties[propertyIdentifier] && object.validations.properties[propertyIdentifier][0].required && fieldType === 'text'">*</span>
+					    <span *ngIf="hint" >
+					        <span sw-tooltip class="j-tool-tip-item"					              
+					              [text]="hint"
+					              [position]="'right'"
+					                >
+					            <i class="fa fa-question-circle"></i>
+					        </span>
+				        </span>
+					</label>
+					<div [ngClass]="{ 's-form-input' : !inListingDisplay, 's-input-group' : inListingDisplay, 's-edit' : edited }">
+						<sw-form-field-upgraded
+							[form]="form"
+							[propertyidentifier]="propertyIdentifier"
+							[labelText]="labelText"
+							[fieldType]="fieldType"
+							[object]="object"
+							[context]="context"
+							[name]="name"
+							[optionsArguments]="optionsArguments"
+						></sw-form-field-upgraded>
+					</div>
+					
+					<sw-error-display-upgraded [control] = "form.controls[propertyIdentifier]" ></sw-error-display-upgraded>
+				</div>

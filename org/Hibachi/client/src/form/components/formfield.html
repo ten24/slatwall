@@ -37,7 +37,7 @@
 					ng-model="swFormField.selected"
 					ng-show="swFormField.edit"
 					ng-value="option"
-					ng-click="swFormField.formFieldChanged(swFormField.selected)"
+					ng-click="swFormField.formFieldChanged(option)"
 			>
 			<label for="{{swFormField.object.metaData.className+'.'+ swFormField.propertyIdentifier + swFormField.selectedRadioFormName + $index}}">
 				<span ng-bind="option.name"></span>

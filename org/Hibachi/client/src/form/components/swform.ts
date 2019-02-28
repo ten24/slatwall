@@ -107,6 +107,7 @@ class SWFormController {
     }
 
     public $onInit=()=>{
+        
         if(this.object && this.parseObjectErrors){
             this.$timeout(()=>{
                 this.parseErrors(this.object.errors)
@@ -364,3 +365,4 @@ export{
     SWForm,
     SWFormController
 }
+

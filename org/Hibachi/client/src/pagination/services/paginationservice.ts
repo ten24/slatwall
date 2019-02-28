@@ -193,7 +193,7 @@ export class PaginationService implements IPaginationService{
         
     }
 
-    public createPagination (id):Pagination{
+    public createPagination (id?):Pagination{
         var uuid = this.utilityService.createID(10);
         if(angular.isDefined(id)){
             uuid = id;

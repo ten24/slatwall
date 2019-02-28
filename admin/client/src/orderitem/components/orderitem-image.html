@@ -1,6 +1,6 @@
-<span ng-if="!orderItem.imagePath" >
+<span *ngIf="!orderitem.imagePath" >
 	<i class="fa fa-refresh fa-spin"></i>
 </span>
-<span ng-if="orderItem.imagePath">
-	<img ng-Src="{{ orderItem.imagePath }}"/>
+<span *ngIf="orderitem.imagePath">
+	<img src="{{ orderitem.imagePath }}"/>
 </span>

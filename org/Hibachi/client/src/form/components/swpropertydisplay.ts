@@ -87,6 +87,7 @@ class SWPropertyDisplayController {
 	}
 
     public $onInit=()=>{
+       
         var bindToControllerProps = this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
         for(var i in bindToControllerProps){
 
@@ -221,6 +222,8 @@ class SWPropertyDisplayController {
             this.swInputOnChangeEvent = this.swForm.name + this.name + 'change';
             this.observerService.attach(this.onChange, this.swInputOnChangeEvent);
         }
+        
+        
 
 	}
 
@@ -447,3 +450,5 @@ export{
     SWPropertyDisplay,
     SWPropertyDisplayController
 }
+
+

@@ -4,7 +4,7 @@
 //modules
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+import {UpgradeModule,downgradeInjectable,downgradeComponent} from '@angular/upgrade/static';
 
 //controllers
 import {AlertController} from "./controllers/alertcontroller";
@@ -12,8 +12,13 @@ import {AlertController} from "./controllers/alertcontroller";
 //services
 import {AlertService} from "./service/alertservice";
 
+//components
+import {SwAlert} from './component/swalert';
+
 @NgModule({
-  declarations: [],
+  declarations: [
+    SwAlert
+  ],
   providers: [
     // Register an Angular provider whose value is the "upgraded" AngularJS service
     AlertService
@@ -23,6 +28,12 @@ import {AlertService} from "./service/alertservice";
   imports: [
     CommonModule, 
     UpgradeModule
+  ],
+  exports: [
+    SwAlert
+  ],
+  entryComponents: [
+    SwAlert
   ]
 })
 export class AlertModule{
@@ -32,6 +43,8 @@ export class AlertModule{
 }
 
 var alertmodule = angular.module('hibachi.alert',[])
+//components
+.directive('swAlert', downgradeComponent({ component: SwAlert }) as angular.IDirectiveFactory)  
 //controllers
 .controller('alertController',AlertController)
 //services

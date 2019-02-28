@@ -1,7 +1,8 @@
-<span ng-mouseenter="swTooltip.show()" ng-mouseleave="swTooltip.hide()">
-<span ng-transclude></span>
-<div class="tooltip" ng-class="{fade:swTooltip.showTooltip, in:swTooltip.showTooltip, {{swTooltip.position}}:swTooltip.showTooltip}" ng-show="swTooltip.showTooltip">
-    <div class="tooltip-arrow"></div>    
-    <div class="tooltip-inner"><span ng-bind="swTooltip.text"></span></div>
-</div> 
+
+<span (mouseenter)="show()" (mouseleave)="hide()" class="tooltip_icon">
+<ng-content></ng-content>
 </span>
+<div class="tooltip" [ngClass]="{'fade':showtooltip, 'in':showtooltip, position:showtooltip}" [hidden]="!showtooltip">
+    <div class="tooltip-arrow"></div>    
+    <div class="tooltip-inner"><span [textContent]="text"></span></div>
+</div> 

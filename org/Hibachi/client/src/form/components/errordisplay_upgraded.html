@@ -1,0 +1,9 @@
+
+<div 
+	class="error help-block" 
+	*ngIf="control.errors?.required && !control.value && !control.untouched" 
+	sw-rbkey [swrbkey]="'validation.define.required'"></div>
+	
+<div class="error help-block"
+	*ngIf="control.errors?.pattern && control.invalid && !control.untouched" 
+	sw-rbkey [swrbkey]="'validation.define.regex'"></div>

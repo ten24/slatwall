@@ -1,4 +1,4 @@
-<div class="s-filter-content-table-view">
+<div *swinit="orderitems as order_items" class="s-filter-content-table-view">
 	<!-- <div class="s-table-header-nav">
 		<div class="s-header-nav">
 			<div class="col-xs-6" style="padding-left:0px;">
@@ -45,38 +45,39 @@
 			</div>
 		</div>
 	</div> --->
-	<sw-pagination-bar data-paginator="paginator"></sw-pagination-bar>
 	
-	<div sw-loading="orderItems">
-		{{paginator.getRecordsCount}}
+	<sw-pagination-bar [paginator]="paginator"></sw-pagination-bar>
+
+	<div sw-loading [swloading]="order_items">
+		{{paginator.getRecordsCount()}}
 		<div class="table-responsive">
 			<table class="table table-bordered s-order-item-table">
 				<thead>
 					<tr>
-						<th sw-rbkey="'define.image'"></th>
-						<th sw-rbkey="'define.title'"></th>
-						<th sw-rbkey="'entity.sku'"></th>
-						<th sw-rbkey="'admin.orderdetail.orderitems.details'"></th>
-						<th ng-show="attributes.length" sw-rbkey="'admin.orderdetail.orderitems.customization'"></th><!-- Only show when we have attributes -->
-						<th sw-rbkey="'define.price'"></th>
-						<th sw-rbkey="'define.qty'"></th>
-						<th sw-rbkey="'define.discount'"></th>
-						<th sw-rbkey="'define.subtotal'"></th>
-						<th sw-rbkey="'define.tax'"></th>
-						<th sw-rbkey="'define.total'"></th>
-						<th sw-rbkey="'define.fulfillment'"></th>
-						<th sw-rbkey="'entity.location.locationName'"></th>
+						<th sw-rbkey [swrbkey]="'define.image'"></th>
+						<th sw-rbkey [swrbkey]="'define.title'"></th>
+						<th sw-rbkey [swrbkey]="'entity.sku'"></th>
+						<th sw-rbkey [swrbkey]="'admin.orderdetail.orderitems.details'"></th>
+						<th [hidden]="!attributes.length" sw-rbkey  [swrbkey]="'admin.orderdetail.orderitems.customization'"></th><!-- Only show when we have attributes -->
+						<th sw-rbkey [swrbkey]="'define.price'"></th>
+						<th sw-rbkey [swrbkey]="'define.qty'"></th>
+						<th sw-rbkey [swrbkey]="'define.discount'"></th>
+						<th sw-rbkey [swrbkey]="'define.subtotal'"></th>
+						<th sw-rbkey [swrbkey]="'define.tax'"></th>
+						<th sw-rbkey [swrbkey]="'define.total'"></th>
+						<th sw-rbkey [swrbkey]="'define.fulfillment'"></th>
+						<th sw-rbkey [swrbkey]="'entity.location.locationName'"></th>
 						<th></th>
 					</tr>
 				</thead>
-				<tbody ng-repeat="orderItem in orderItems | unique:'orderItemID'" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId" ng-show="paginator.getRecordsCount()">
+				<tbody *ngFor="let orderitem of order_items" sw-order-item [orderitem]="orderitem" [attributes]="attributes" [orderid]="orderid" [hidden]="!paginator.getRecordsCount()">
 					<!-- Begin Merchandise Row -->
 				</tbody>
 
-				<tbody ng-hide="paginator.getRecordsCount()">
+				<tbody [hidden]="paginator.getRecordsCount()">
 					<tr>
 						<td colspan="100" style="text-align: center;">
-							<em sw-rbkey="'admin.entity.ordertabs.orderitems.noresults'"><!-- Text created via rb key --></em>
+							<em sw-rbkey [swrbkey]="'admin.entity.ordertabs.orderitems.noresults'"><!-- Text created via rb key --></em>
 						</td>
 					</tr>
 				</tbody>

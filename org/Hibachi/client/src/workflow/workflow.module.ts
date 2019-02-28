@@ -27,7 +27,9 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 
 
 @NgModule({
-	declarations : [],
+	declarations : [
+        //SwWorkflowBasic
+    ],
 	providers : [
 		ScheduleService,
 		WorkflowConditionService
@@ -36,7 +38,10 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 	imports : [
 		CommonModule,
 		UpgradeModule
-	]
+	],
+    exports: [
+        //SwWorkflowBasic
+    ]
 })
 
 export class WorkflowModule{
