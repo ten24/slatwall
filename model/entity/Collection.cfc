@@ -2318,7 +2318,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 						}else{
 							HQL = getHQL();
-							
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
@@ -2397,6 +2396,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
+			this.setExcludeOrderBy(true);
 			//check cache key
 			var reportCacheKey = "";
 			if(!this.getNewFlag()){
@@ -3211,8 +3211,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									|| column.ormtype eq 'integer'
 									|| column.ormtype eq 'float'
 									|| column.ormtype eq 'double'
-									&& !getDisableAveragesAndSumsFlag()
-									)
+									) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
 								){
 									addTotalAvgAggregate(column);
 									addTotalSumAggregate(column);
@@ -3458,7 +3457,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-		if(arguments.excludeOrderBy || (isReport() && hasPeriodColumn())){
+		if(arguments.excludeOrderBy){
 			this.setExcludeOrderBy(true);
 		}
 
@@ -3581,7 +3580,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
-
 
 		}
 
