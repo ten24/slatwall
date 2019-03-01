@@ -24,10 +24,10 @@ var productbundlemodule = angular.module('hibachi.productbundle',[coremodule.nam
 //controllers
 .controller('create-bundle-controller',CreateBundleController)
 //directives
-//.directive('swProductBundleGroupType',SWProductBundleGroupType.Factory())
-//.directive('swProductBundleGroups',SWProductBundleGroups.Factory())
-//.directive('swProductBundleGroup',SWProductBundleGroup.Factory())
-//.directive('swProductBundleCollectionFilterItemTypeahead',SWProductBundleCollectionFilterItemTypeahead.Factory())
+.directive('swProductBundleGroupType',SWProductBundleGroupType.Factory())
+.directive('swProductBundleGroups',SWProductBundleGroups.Factory())
+.directive('swProductBundleGroup',SWProductBundleGroup.Factory())
+.directive('swProductBundleCollectionFilterItemTypeahead',SWProductBundleCollectionFilterItemTypeahead.Factory())
 //filters
 
 ;
