@@ -504,7 +504,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var modifiedURL = "?";
 	
 		variables.dataKeyDelimiter = ":";
-		variables.valuedelimiter = ",";
+		variables.valuedelimiter = arguments.valueDelimiter;
 		
 		// Turn the old query string into a struct
 		var oldQueryKeys = {};

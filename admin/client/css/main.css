@@ -1653,6 +1653,11 @@ table tr th .glyphicon {
   vertical-align: middle;
   margin-top: 18px;
 }
+
+.s-property.form-horizontal .actionbar-title {
+  margin: 0px 0px 15px 0px;
+  color: #000000;
+}
 .s-toggle-panels {
   padding: 0px;
   margin-bottom: 3px;
@@ -7870,7 +7875,7 @@ table tr td .s-loading-icon {
   transition: all 0.4s ease;
 }
 .s-results-listing .dropdown-menu {
-  background-color: #F7F7F7;
+	background-color: #F7F7F7;
 }
 .s-results-listing .table-responsive {
   border-top: 1px solid #E9E9E9;
