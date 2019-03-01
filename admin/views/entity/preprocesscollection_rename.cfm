@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,7 +45,24 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.slatwallcms.BaseApplication"{
-	
-}
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<cfparam name="rc.collection" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#" fredirectAction="entity.preprocesscollection" fRedirectQS="collectionID=#rc.collection.getCollectionID()#&processContext=rename">
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.collection#">
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<!--- General Details --->
+				<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
+</cfoutput>
