@@ -161,7 +161,7 @@ class SWWorkflowTasks{
 					scope.workflowTasks.selectedTask = undefined;
 					
 					let workflowObject = scope.workflow.data.workflowObject;
-					let workflowObjectAlias = "_" + workflowObject.toLowerCase();
+					let workflowObjectAlias = "_" + scope.workflow.data.workflowObject.charAt(0).toLowerCase() + scope.workflow.data.workflowObject.slice(1);
 					
 					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(workflowObject, true);
 					filterPropertiesPromise.then(function(value){

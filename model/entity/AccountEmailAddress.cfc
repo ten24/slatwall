@@ -78,6 +78,7 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	// Non Persistent
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
 	property name="primaryFlag" persistent="false";
+	property name="primaryEmailChangedFlag" persistent="false" default="0";
 	
 	// Deprecated Properties
 	
@@ -87,6 +88,17 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public void function setPrimaryEmailChangedFlag(required boolean primaryEmailChangedFlag){
+		variables.primaryEmailChangedFlag = arguments.primaryEmailChangedFlag;
+	}
+	
+	public boolean function getPrimaryEmailChangedFlag(){
+		if(structKeyExists(variables,'primaryEmailChangedFlag')){
+			return variables.primaryEmailChangedFlag;
+		}
+		return false;
+	}
 	
 	public boolean function getPrimaryEmailAddressNotInUseFlag() {
 		if(!structKeyExists(variables, "primaryEmailAddressNotInUseFlag")) {
@@ -112,6 +124,19 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 		}
 		
 		return variables.primaryFlag;
+	}
+	
+	public void function setEmailAddress(any emailAddress){
+		if(structKeyExists(arguments,'emailAddress')){
+			//if email address changed for a primary then set the state
+			if(structKeyExists(variables,'emailAddress') && variables.emailAddress != arguments.emailAddress && getPrimaryFlag()){
+				setPrimaryEmailChangedFlag(true);
+			}
+			
+			variables.emailAddress = arguments.emailAddress;
+		}else{
+			structDelete(variables,'emailAddress');
+		}
 	}
 	
 	
