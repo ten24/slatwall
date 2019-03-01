@@ -20,6 +20,7 @@ appConfig.module.rules=[
 ];
 appConfig.plugins =  [
     new ForceCaseSensitivityPlugin(),
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /us/),
     new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"}),
     new CompressionPlugin({
       asset: "[path].gz[query]",
