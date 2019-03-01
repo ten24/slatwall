@@ -12,12 +12,12 @@ var PATHS = {
 appConfig.watch=false;
 appConfig.context=PATHS.app;
 appConfig.devtool= 'source-map';
-appConfig.module.rules.push(
+appConfig.module.rules=[
     {
         test: /\.ts?$/,
         loader: 'ng-annotate-loader?ngAnnotate=ng-annotate-patched!ts-loader'
     }
-)
+];
 appConfig.plugins =  [
     new ForceCaseSensitivityPlugin(),
     new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"}),

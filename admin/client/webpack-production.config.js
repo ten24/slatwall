@@ -17,12 +17,12 @@ devConfig.context = PATHS.app;
 devConfig.watch = false;
 // Turn on sourcemaps
 devConfig.devtool= 'source-map';
-devConfig.module.rules.push(
+devConfig.module.rules.push=[
     {
         test: /\.ts?$/,
         loader: 'ng-annotate-loader?ngAnnotate=ng-annotate-patched!ts-loader'
     }
-)
+];
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     new CompressionPlugin({

@@ -18,12 +18,12 @@ devConfig.output.path = PATHS.app;
 devConfig.context = PATHS.app;
 devConfig.watch = false;
 devConfig.devtool= 'source-map';
-devConfig.module.rules.push(
+devConfig.module.rules=[
     {
         test: /\.ts?$/,
         loader: 'ng-annotate-loader?ngAnnotate=ng-annotate-patched!ts-loader'
     }
-)
+];
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     new webpack.DefinePlugin({
