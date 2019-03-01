@@ -38,7 +38,7 @@ devConfig.plugins =  [
       threshold: 10240,
       minRatio: 0.8
     }),
-    
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /us/),
     new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
