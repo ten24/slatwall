@@ -117,6 +117,55 @@
 						</div><!--- panel-collapse collapse in --->
 					</div><!--- j-panel panel-default --->
 				</cfloop>
+				
+				<cfif isObject(attributes.object)>
+					<cfset emailTemplateCollectionList = attributes.hibachiScope.getService("emailService").getEmailTemplateCollectionList() />
+					<cfset emailTemplateCollectionList.addFilter('emailTemplateObject', "#attributes.object.getClassName()#") />
+					<cfif emailTemplateCollectionList.getRecordsCount() gt 0 >
+						<!---emails tab --->
+						<div class="j-panel panel panel-default">
+							<a data-toggle="collapse" href="##tabEmail">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<span>#attributes.hibachiScope.rbKey('define.email')#</span>
+										<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+									</h4>
+								</div>
+							</a>
+							<div id="tabEmail" class="panel-collapse collapse">
+								<content class="s-body-box">
+									<cfoutput>
+										<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabEmail">
+	
+											<sw-listing-display
+											    data-collection="'Email'"
+											    data-edit="false"
+											    data-has-search="true"
+											    record-edit-action="admin:entity.editemail"
+											    record-edit-query-string="redirectAction=admin:entity.listemail"
+											    record-detail-action="admin:entity.detailemail"
+											    data-is-angular-route="false"
+											    data-angular-links="false"
+											    data-has-action-bar="false"
+											    data-multi-slot="true"
+											>
+											    <sw-listing-column data-property-identifier="emailID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+											    <sw-listing-column data-property-identifier="emailSubject" search="true" tdclass="primary" ></sw-listing-column>
+											    <sw-listing-column data-property-identifier="emailTo" search="true" ></sw-listing-column>
+											    <sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
+											    <sw-listing-filter data-property-identifier="relatedObjectID" data-comparison-operator="=" data-comparison-value="#attributes.object.getPrimaryIDValue()#" data-hidden="true"></sw-listing-filter>
+											    <sw-listing-filter data-property-identifier="relatedObject" data-comparison-operator="=" data-comparison-value="#attributes.object.getClassName()#" data-hidden="true"></sw-listing-filter>
+											</sw-listing-display>
+										</div>
+									</cfoutput>
+								</content><!--- s-body-box --->
+							</div>
+						</div><!--- panel panel-default --->
+					</cfif>
+				</cfif>
+				
+				
+				
 				<cfif isObject(attributes.object)>
 					<!---system tab --->
 					<div class="j-panel panel panel-default">
@@ -165,6 +214,7 @@
 
 					</div><!--- panel panel-default --->
 				</cfif>
+				
 			</div>
 		<cfelse>
 			<cfloop array="#thistag.tabs#" index="tab">
