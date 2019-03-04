@@ -86517,10 +86517,9 @@ var hibachimodule = angular.module('hibachi', [
 ]).config([function () {
     }])
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
-        console.log(isAdmin, 'isAdmin');
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if ($hibachi.newAccount) {
+        if (!isAdmin && $hibachi.newAccount) {
             $rootScope.hibachiScope.getAccount();
         }
         if (!isAdmin && $hibachi.newOrder) {
@@ -88800,6 +88799,7 @@ var SWListingSearchController = /** @class */ (function () {
             });
         };
         this.savePersonalCollection = function (collectionName) {
+            console.log('test');
             if (_this.localStorageService.hasItem('selectedPersonalCollection') &&
                 _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] &&
                 (angular.isUndefined(_this.personalCollectionIdentifier) ||
