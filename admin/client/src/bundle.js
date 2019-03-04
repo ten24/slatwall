@@ -64691,13 +64691,12 @@ var CollectionFilterItem = /** @class */ (function () {
     return CollectionFilterItem;
 }());
 var SWProductBundleGroupController = /** @class */ (function () {
-    // @ngInject
-    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
+    //@ngInject
+    function SWProductBundleGroupController($log, $timeout, collectionConfigService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
         var _this = this;
         this.$log = $log;
         this.$timeout = $timeout;
         this.collectionConfigService = collectionConfigService;
-        this.productBundleService = productBundleService;
         this.metadataService = metadataService;
         this.utilityService = utilityService;
         this.formService = formService;
@@ -64822,16 +64821,8 @@ var SWProductBundleGroupController = /** @class */ (function () {
     return SWProductBundleGroupController;
 }());
 var SWProductBundleGroup = /** @class */ (function () {
-    // @ngInject
-    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
-        this.$log = $log;
-        this.$timeout = $timeout;
-        this.collectionConfigService = collectionConfigService;
-        this.productBundleService = productBundleService;
-        this.metadataService = metadataService;
-        this.utilityService = utilityService;
-        this.formService = formService;
-        this.$hibachi = $hibachi;
+    //@ngInject
+    function SWProductBundleGroup(productBundlePartialsPath, slatwallPathBuilder) {
         this.productBundlePartialsPath = productBundlePartialsPath;
         this.restrict = "EA";
         this.scope = {};
@@ -64851,9 +64842,9 @@ var SWProductBundleGroup = /** @class */ (function () {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
     }
     SWProductBundleGroup.Factory = function () {
-        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) { return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder); };
+        var directive = function (productBundlePartialsPath, slatwallPathBuilder) { return new SWProductBundleGroup(productBundlePartialsPath, slatwallPathBuilder); };
         directive.$inject = [
-            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
+            "productBundlePartialsPath",
             "slatwallPathBuilder"
         ];
         return directive;
@@ -64922,7 +64913,8 @@ var SWProductBundleGroupsController = /** @class */ (function () {
 }());
 exports.SWProductBundleGroupsController = SWProductBundleGroupsController;
 var SWProductBundleGroups = /** @class */ (function () {
-    function SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
+    //@ngInject
+    function SWProductBundleGroups(productBundlePartialsPath, slatwallPathBuilder) {
         this.restrict = 'EA';
         this.scope = {
             sku: "=",
@@ -64937,14 +64929,9 @@ var SWProductBundleGroups = /** @class */ (function () {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html";
     }
     SWProductBundleGroups.Factory = function () {
-        var directive = function ($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) { return new SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder); };
+        var directive = function (productBundlePartialsPath, slatwallPathBuilder) { return new SWProductBundleGroups(productBundlePartialsPath, slatwallPathBuilder); };
         directive.$inject = [
-            '$http',
-            '$log',
-            '$hibachi',
-            'metadataService',
             'productBundlePartialsPath',
-            'productBundleService',
             'slatwallPathBuilder'
         ];
         return directive;
@@ -64964,7 +64951,8 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWProductBundleGroupType = /** @class */ (function () {
-    function SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
+    //@ngInject
+    function SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, slatwallPathBuilder) {
         return {
             restrict: 'A',
             templateUrl: slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegrouptype.html",
@@ -65111,7 +65099,7 @@ var SWProductBundleGroupType = /** @class */ (function () {
         };
     }
     SWProductBundleGroupType.Factory = function () {
-        var directive = function ($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) { return new SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder); };
+        var directive = function ($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, slatwallPathBuilder) { return new SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, slatwallPathBuilder); };
         directive.$inject = [
             '$http',
             '$log',
@@ -65119,7 +65107,6 @@ var SWProductBundleGroupType = /** @class */ (function () {
             'formService',
             'collectionConfigService',
             'productBundlePartialsPath',
-            'productBundleService',
             'slatwallPathBuilder'
         ];
         return directive;
@@ -65141,7 +65128,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var CreateBundleController = /** @class */ (function () {
     //@ngInject
     function CreateBundleController($scope, $location, $log, $rootScope, $window, $hibachi, dialogService, alertService, productBundleService, formService, productBundlePartialsPath) {
+        var _this = this;
+        this.$scope = $scope;
+        this.$location = $location;
+        this.$log = $log;
+        this.$rootScope = $rootScope;
+        this.$window = $window;
+        this.$hibachi = $hibachi;
+        this.dialogService = dialogService;
+        this.alertService = alertService;
+        this.productBundleService = productBundleService;
+        this.formService = formService;
+        this.productBundlePartialsPath = productBundlePartialsPath;
+        this.$inject = [
+            '$scope',
+            '$location',
+            '$log',
+            '$rootScope',
+            '$window',
+            '$hibachi',
+            'dialogService',
+            'alertService',
+            'productBundleService',
+            'formService',
+            'productBundlePartials'
+        ];
         $scope.productBundlePartialsPath = productBundlePartialsPath;
+        this.productBundleService = productBundleService;
         var getParameterByName = function (name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
@@ -65188,7 +65201,7 @@ var CreateBundleController = /** @class */ (function () {
                         $scope.product = productPromise.value;
                         angular.forEach($scope.product.data.skus[0].data.productBundleGroups, function (productBundleGroup) {
                             productBundleGroup.$$getProductBundleGroupType();
-                            productBundleService.decorateProductBundleGroup(productBundleGroup);
+                            _this.productBundleService.decorateProductBundleGroup(productBundleGroup);
                             productBundleGroup.data.$$editing = false;
                         });
                     });
@@ -65251,7 +65264,7 @@ exports.productbundlemodule = productbundlemodule;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var ProductBundleService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function ProductBundleService($log, $hibachi, utilityService) {
         var _this = this;
         this.$log = $log;
@@ -79006,7 +79019,7 @@ exports.CartService = CartService;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var DraggableService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function DraggableService() {
         this.isDropAllowed = function (event) {
             //todo implement
@@ -79071,7 +79084,7 @@ exports.EntityService = EntityService;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var ExpandableService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function ExpandableService() {
         var _this = this;
         this.recordStates = {};
@@ -79115,7 +79128,7 @@ exports.ExpandableService = ExpandableService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var FilterService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function FilterService() {
         this.filterMatch = function (valueToCompareAgainst, comparisonOperator, comparisonValue) {
             switch (comparisonOperator) {
@@ -81075,7 +81088,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var HistoryService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function HistoryService() {
         var _this = this;
         this.histories = {};
@@ -83134,7 +83147,7 @@ exports.RequestService = RequestService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ScopeService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function ScopeService() {
         var _this = this;
         this.getRootParentScope = function (scope, targetScopeName) {
@@ -85802,7 +85815,7 @@ var SWFormSubscriberController = /** @class */ (function () {
     return SWFormSubscriberController;
 }());
 var SWFormSubscriber = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function SWFormSubscriber() {
         this.restrict = "A";
         this.require = {
@@ -86173,7 +86186,7 @@ var SWInputController = /** @class */ (function () {
     return SWInputController;
 }());
 var SWInput = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function SWInput($compile, $timeout, $parse, fileService) {
         var _this = this;
         this.$compile = $compile;
@@ -88799,7 +88812,6 @@ var SWListingSearchController = /** @class */ (function () {
             });
         };
         this.savePersonalCollection = function (collectionName) {
-            console.log('test');
             if (_this.localStorageService.hasItem('selectedPersonalCollection') &&
                 _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] &&
                 (angular.isUndefined(_this.personalCollectionIdentifier) ||

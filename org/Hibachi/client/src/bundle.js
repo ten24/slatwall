@@ -69367,7 +69367,7 @@ exports.CartService = CartService;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var DraggableService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function DraggableService() {
         this.isDropAllowed = function (event) {
             //todo implement
@@ -69432,7 +69432,7 @@ exports.EntityService = EntityService;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var ExpandableService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function ExpandableService() {
         var _this = this;
         this.recordStates = {};
@@ -69476,7 +69476,7 @@ exports.ExpandableService = ExpandableService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var FilterService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function FilterService() {
         this.filterMatch = function (valueToCompareAgainst, comparisonOperator, comparisonValue) {
             switch (comparisonOperator) {
@@ -71436,7 +71436,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var HistoryService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function HistoryService() {
         var _this = this;
         this.histories = {};
@@ -73495,7 +73495,7 @@ exports.RequestService = RequestService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ScopeService = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function ScopeService() {
         var _this = this;
         this.getRootParentScope = function (scope, targetScopeName) {
@@ -76243,7 +76243,7 @@ var SWFormSubscriberController = /** @class */ (function () {
     return SWFormSubscriberController;
 }());
 var SWFormSubscriber = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function SWFormSubscriber() {
         this.restrict = "A";
         this.require = {
@@ -76614,7 +76614,7 @@ var SWInputController = /** @class */ (function () {
     return SWInputController;
 }());
 var SWInput = /** @class */ (function () {
-    //ngInject
+    //@ngInject
     function SWInput($compile, $timeout, $parse, fileService) {
         var _this = this;
         this.$compile = $compile;
@@ -76960,7 +76960,7 @@ var hibachimodule = angular.module('hibachi', [
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if ($hibachi.newAccount) {
+        if (!isAdmin && $hibachi.newAccount) {
             $rootScope.hibachiScope.getAccount();
         }
         if (!isAdmin && $hibachi.newOrder) {
