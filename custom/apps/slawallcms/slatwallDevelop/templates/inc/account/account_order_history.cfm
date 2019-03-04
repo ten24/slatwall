@@ -6,10 +6,10 @@
 	<article>
 		<div class="pt-1 pb-5">
 			<cfif $.slatwall.content().getUrlTitle() EQ "order-history">
-				<h4 class="float-left">Total Orders:#local.ordersCollection.getRecordsCount()#</h4>
+				<h4 class="float-left">Total Orders: #local.ordersCollection.getRecordsCount()#</h4>
 				<a href="javascript:window.print();" class="btn btn-primary float-right"><i class="fa fa-print"></i> Print Orders List</a>
 			<cfelse>
-			    <h4 class="float-left">Total Quotes:#local.ordersCollection.getRecordsCount()#</h4>
+			    <h4 class="float-left">Total Quotes: #local.ordersCollection.getRecordsCount()#</h4>
 			    <a href="javascript:window.print();" class="btn btn-primary float-right"><i class="fa fa-print"></i> Print Quotes List</a>
 			</cfif>		
 		</div>
