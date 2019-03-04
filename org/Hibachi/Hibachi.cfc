@@ -24,7 +24,7 @@ component extends="framework.one" {
 	// =============== configFramework
 
 	// Defaults
-
+ 
 	// FW1 Setup
 	variables.framework=structNew();
 	variables.framework.applicationKey = 'Hibachi';
