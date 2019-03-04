@@ -30,7 +30,6 @@ var hibachimodule = angular.module('hibachi',[
 
 }])
 .run(['$rootScope','publicService','$hibachi','localStorageService','isAdmin', ($rootScope, publicService, $hibachi, localStorageService, isAdmin)=> {
-    console.log(isAdmin,'isAdmin');
     $rootScope.hibachiScope = publicService;
     $rootScope.hasAccount = publicService.hasAccount;
     if($hibachi.newAccount){
