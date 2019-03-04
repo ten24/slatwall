@@ -394,6 +394,19 @@ component extends="HibachiService" accessors="true" output="false" {
 			case 'export' :
 				// TODO: Impliment This
 				break;
+				
+			//EXPORT
+			case 'webhook' :
+				
+				var req = new http();
+		        req.setMethod("POST"); 
+		        req.setUrl(workflowTaskAction.getWebhookURL());
+		        req.addParam(type="header",name="Content-Type", value="application/json");
+		        req.addParam(type="body", value="#arguments.entity.getJsonRepresentation()#"); 
+		        var res = req.send().getPrefix();
+		        actionSuccess = left(res.status_code, 1) == "2";
+
+				break;
 
 			//DELETE
 			case 'delete' :
