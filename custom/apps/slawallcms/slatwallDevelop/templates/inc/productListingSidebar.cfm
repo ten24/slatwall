@@ -17,7 +17,7 @@
     		</div>
     		<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="##accordion">
     			<div class="card-body">
-                    <input type="text" id="searchBox" name="search" class="form-control form-control-sm">
+                    <input type="text" id="searchBox" name="search" class="form-control form-control-sm" value="#structKeyExists(url,'keywords') ? url.keywords : ''#">
                     <a href="##" id="searchButton" class="btn btn-sm btn-block btn-secondary mt-3">Search</a>
                     <cfif structKeyExists(url,'keywords')>
 						<a href="#$.slatwall.getService('hibachiCollectionService').buildURL('keywords=#url[listFirst('keywords=','=')]#')#">Clear Search</a>
