@@ -195,6 +195,7 @@ var coremodule = angular.module('hibachi.core',[
 }])
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
+.constant('isAdmin',false)
 //services
 .service('cacheService', CacheService)
 .service('publicService',PublicService)

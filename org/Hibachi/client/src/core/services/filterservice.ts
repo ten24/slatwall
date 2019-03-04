@@ -2,7 +2,7 @@ import {BaseService} from "./baseservice";
 
 class FilterService { 
 
-    //ngInject
+    //@ngInject
     constructor(){
 
     }

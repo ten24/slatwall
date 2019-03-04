@@ -5,7 +5,7 @@ class ExpandableService{
     
     public recordStates = {};
     
-    //ngInject
+    //@ngInject
     constructor(
         
     ){
