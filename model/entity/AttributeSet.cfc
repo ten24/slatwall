@@ -85,6 +85,10 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	public string function getAttributeSetObjectPrimaryIDPropertyName(){
 		return getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getAttributeSetObject());
 	}
+	//checks whether we have an attribute that has been migrated
+	public boolean function notHasMigratedAttribute(){
+	
+	}
 	
 	public array function getAttributes(orderby, sortType="text", direction="asc") {
 		if(!structKeyExists(arguments, "orderby")) {
