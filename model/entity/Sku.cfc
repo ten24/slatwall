@@ -665,47 +665,59 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// START: Quantity Helper Methods
 
 	public numeric function getQuantity(required string quantityType, string locationID, string stockID, string currencyCode) {
-
-
-		// Request for calculated quantity
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
-			// If this is a calculated quantity and locationID exists, then delegate
-			if( structKeyExists(arguments, "locationID") ) {
-				
-				// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
-				if (arguments.quantityType == 'MQATSBOM' ){
-					var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
-
-					
-					return stock.getQuantity(arguments.quantityType);
-					
-				}else{
-					//Need to get location and all children of location
-					var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
-					var totalQuantity = 0;
-					
-					for(var i=1;i<=arraylen(locations);i++) {
-						var location = getService('locationService').getLocation(locations[i]['value']);
-						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
-							var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
-							totalQuantity += stock.getQuantity(arguments.quantityType);
-							
-						}  
-				}
-				
-				return totalQuantity;
-
-				}
-
-			// If this is a calculated quantity and stockID exists, then delegate
-			} else if ( structKeyExists(arguments, "stockID") ) {
-				var stock = getService("stockService").getStock(arguments.stockID);
-				return stock.getQuantity(arguments.quantityType);
-			}
+		var cacheKey = arguments.quantityType;
+		if(structKeyExists(arguments,'locationID')){
+			cacheKey &= arguments.locationID;
 		}
+		
+		if(structKeyExists(arguments,'stockID')){
+			cacheKey &= arguments.stockID;
+		}
+		
+		if(structKeyExists(arguments,'currencyCode')){
+			cacheKey &= arguments.currencyCode;
+		}
+		if( !structKeyExists(variables, cacheKey) ) {
+			// Request for calculated quantity
+			if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
+				// If this is a calculated quantity and locationID exists, then delegate
+				if( structKeyExists(arguments, "locationID") ) {
+					
+					// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
+					if (arguments.quantityType == 'MQATSBOM' ){
+						var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
+	
+						variables[cacheKey]=stock.getQuantity(arguments.quantityType);
+						return variables[cacheKey];
+						
+					}else{
+						//Need to get location and all children of location
+						var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+						var totalQuantity = 0;
+						
+						for(var i=1;i<=arraylen(locations);i++) {
+							var location = getService('locationService').getLocation(locations[i]['value']);
+							if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+								var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
+								totalQuantity += stock.getQuantity(arguments.quantityType);
+								
+							}  
+					}
+					variables[cacheKey]=totalQuantity;
+					return totalQuantity;
+	
+					}
+	
+				// If this is a calculated quantity and stockID exists, then delegate
+				} else if ( structKeyExists(arguments, "stockID") ) {
+					var stock = getService("stockService").getStock(arguments.stockID);
+					variables[cacheKey] = stock.getQuantity(arguments.quantityType);
+					return variables[cacheKey];
+				}
+			}
 
-		// Standard Logic
-		if( !structKeyExists(variables, arguments.quantityType) ) {
+			// Standard Logic
+		
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
 				return getProduct().getQuantity(argumentCollection=arguments);
