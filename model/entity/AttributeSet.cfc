@@ -87,8 +87,20 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	}
 	//checks whether we have an attribute that has been migrated
 	public boolean function notHasMigratedAttribute(){
+	for(var attr in this.getAttributes()) {
+			if(attr.getIsMigratedFlag()){
+				return false;
+			}
+		}
+		return true;
 	
+	 
 	}
+	
+	
+	
+	   
+	
 	
 	public array function getAttributes(orderby, sortType="text", direction="asc") {
 		if(!structKeyExists(arguments, "orderby")) {
