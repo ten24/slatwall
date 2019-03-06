@@ -136,8 +136,29 @@
 								<content class="s-body-box">
 									<cfoutput>
 										<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabEmail">
-	
-											<sw-listing-display
+											<cfset emailCollection = attributes.hibachiScope.getService('emailService').getEmailCollectionList()/>
+											<cfset emailCollection.setDisplayProperties(
+												"emailSubject,emailTo",
+												{isSearchable=true} 
+											) />
+											<cfset emailCollection.addDisplayProperty(
+												displayProperty="createdDateTime",
+												 columnsConfig={}
+											) />
+											<cfset emailCollection.addDisplayProperty(displayProperty="emailID",columnConfig={isVisible=false,isDeletable=false} ) />
+											
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue())/>
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName())/>
+											
+											<hb:HibachiListingDisplay 
+												collectionList="#emailCollection#"
+												usingPersonalCollection="false"
+												recordEditAction="admin:entity.editemail"
+												recordEditQueryString="redirectAction=admin:entity.listemail"
+												recordDetailAction="admin:entity.detailemail"
+											>
+											</hb:HibachiListingDisplay>
+											<!---<sw-listing-display
 											    data-collection="'Email'"
 											    data-edit="false"
 											    data-has-search="true"
@@ -155,7 +176,7 @@
 											    <sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
 											    <sw-listing-filter data-property-identifier="relatedObjectID" data-comparison-operator="=" data-comparison-value="#attributes.object.getPrimaryIDValue()#" data-hidden="true"></sw-listing-filter>
 											    <sw-listing-filter data-property-identifier="relatedObject" data-comparison-operator="=" data-comparison-value="#attributes.object.getClassName()#" data-hidden="true"></sw-listing-filter>
-											</sw-listing-display>
+											</sw-listing-display>--->
 										</div>
 									</cfoutput>
 								</content><!--- s-body-box --->
