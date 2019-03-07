@@ -12,12 +12,14 @@ var appConfig = {
     mode:'development',
     context:PATHS.app,
     entry: {
-        bundle:['./bootstrap.ts']
+        bundle:['./bootstrap.ts'],
+        vendor:['../lib/vendor.ts']
     },
     watch:true,
     output: {
         path: PATHS.app,
-        filename: '[name].js'
+        filename: '[name].js',
+        chunkFilename: '[name].bundle.js'
     },
     // Turn on sourcemaps
     //devtool: 'source-map',
@@ -25,16 +27,24 @@ var appConfig = {
         extensions: ['.webpack.js', '.web.js', '.ts', '.js']
     },
     module: {
-    	noParse: [ /bower_components/ ],
-	    rules: [
-	      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-	      { test: /\.tsx?$/, loader: 'ts-loader' }
-	    ]
-	},
+        rules: [
+          {
+            test: /\.tsx?$/,
+            use: [
+              {
+                loader: 'ts-loader',
+                options: {
+                  transpileOnly: true
+                }
+              }
+            ]
+          }
+        ]
+      }
     /*plugins: [
         new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"})
     ]*/
-    optimization: {
+    /*optimization: {
         splitChunks: {
             chunks: 'async',
             minSize: 30000,
@@ -50,7 +60,7 @@ var appConfig = {
                 }
             }
         }
-    }
+    }*/
    
 
 };
