@@ -16,7 +16,8 @@
 		"attributeCode":		[{"contexts":"save","required":true,"unique":true,"method":"isValidAttributeCode"}],
 		"attributeType":		[{"contexts":"save","required":true}],
 		"relatedObject":		[{"contexts":"save","conditions":"attributeInputTypeRequiresObject","required":true}],
-		"typeSet":				[{"contexts":"save","conditions":"attributeInputTypeRequiresTypeSet","required":true}]
+		"typeSet":				[{"contexts":"save","conditions":"attributeInputTypeRequiresTypeSet","required":true}],
+		"isMigratedFlag":		[{"contexts":"delete","eq":false}]
 		
 	}
 }
