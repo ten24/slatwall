@@ -5,6 +5,7 @@ var CompressionPlugin = require("compression-webpack-plugin");
 var path = require('path');
 var PATHS = {
     app: path.join(__dirname, '/src'),
+    dist: path.join(__dirname,'/dist'),
     lib: path.join(__dirname, '/lib')
 };
 
@@ -17,9 +18,8 @@ var appConfig = {
     },
     watch:true,
     output: {
-        path: PATHS.app,
-        filename: '[name].js',
-        chunkFilename: '[name].bundle.js'
+        path: PATHS.dist,
+        filename: '[name].[contenthash].js',
     },
     // Turn on sourcemaps
     //devtool: 'source-map',
@@ -40,7 +40,31 @@ var appConfig = {
             ]
           }
         ]
-      }
+      },
+    plugins: [
+        new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
+      ],
+      optimization: {
+        runtimeChunk: 'single',
+        splitChunks: {
+          chunks: 'all',
+          maxInitialRequests: Infinity,
+          minSize: 0,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name(module) {
+                // get the name. E.g. node_modules/packageName/not/this/part.js
+                // or node_modules/packageName
+                const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+    
+                // npm package names are URL-safe, but some servers don't like @ symbols
+                return `npm.${packageName.replace('@', '')}`;
+              },
+            },
+          },
+        },
+      },
     /*plugins: [
         new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"})
     ]*/
