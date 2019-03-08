@@ -22,6 +22,7 @@ var appConfig = {
     output: {
         path: PATHS.dist,
         filename: '[name].[contenthash].js',
+        publicPath:'#request.slatwallScope.getBaseURL()#/admin/client/dist/'
     },
     // Turn on sourcemaps
     //devtool: 'source-map',
@@ -46,7 +47,16 @@ var appConfig = {
     plugins: [
         new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
         new HtmlWebpackPlugin({
-          template:path.join(PATHS.app,'/template.html')
+          template:path.join(PATHS.app,'/template.html'),
+          inject:false,
+          templateParameters: function(compilation, assets, options) {
+            return {
+              files: assets,
+              options: options,
+              webpackConfig: compilation.options,
+              webpack: compilation.getStats().toJson()
+            }
+          }
        }),
        // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
         new CleanWebpackPlugin(),
