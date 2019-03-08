@@ -1,13 +1,14 @@
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 import "angular";
-import "../lib//angular-lazy-bootstrap/bootstrap.js";
-import "../lib/angular-ui-bootstrap/ui.bootstrap.min.js";
+
 import "angular-resource";
 import "angular-cookies";
 import "angular-route";
 import "angular-animate";
 import "angular-sanitize";
+import "../lib//angular-lazy-bootstrap/bootstrap.js";
+import "../lib/angular-ui-bootstrap/ui.bootstrap.min.js";
 import "../lib/metismenu/metismenu.js";
 import "../lib/angularjs-datetime-picker/angularjs-datetime-picker.js";
 import "../..//HibachiAssets/js/jquery-typewatch-2.0.js";

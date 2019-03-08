@@ -27,19 +27,7 @@ devConfig.plugins =  [
     
     new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-	    mangle: false,
-	    minimize: true,
-	    compress: {
-	         // remove warnings
-	            warnings: false,
-	
-	         // Drop console statements
-	            drop_console: true
-	       },
-	    output: {
-        	comments: false
-    	}
-	})
-];   
+   
+]; 
+devConfig.optimization.minimize=true;
 module.exports = devConfig;

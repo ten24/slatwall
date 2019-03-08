@@ -15,8 +15,7 @@ var appConfig = {
     mode:'development',
     context:PATHS.app,
     entry: {
-        bundle:['./bootstrap.ts'],
-        vendor:['../lib/vendor.ts']
+        bundle:['./bootstrap.ts']
     },
     watch:true,
     output: {
