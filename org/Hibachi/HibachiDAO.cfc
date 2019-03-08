@@ -132,6 +132,7 @@
 				// Loop over the modifiedEntities to call updateCalculatedProperties
 		    	for(var entity in modifiedEntities){
 		    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+		    			entity.clearDataCache();
 		    			entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
 		    		}
 		    	}
@@ -145,6 +146,7 @@
 					// Loop over the modifiedEntities to call updateCalculatedProperties
 			    	for(var entity in modifiedEntities){
 			    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+			    			entity.clearDataCache();
 			    			entity.updateCalculatedProperties(runAgain=true);
 			    		}
 			    	}
@@ -217,6 +219,7 @@
 									// Loop over the modifiedEntities to call updateCalculatedProperties
 							    	for(var entity in modifiedEntities){
 							    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+							    			entity.clearDataCache();
 							    			entity.updateCalculatedProperties(runAgain=true);
 							    		}
 							    	}
