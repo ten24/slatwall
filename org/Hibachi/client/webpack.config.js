@@ -20,8 +20,7 @@ var appConfig = {
         filename: 'bundle.js',
         library: 'hibachi'
     },
-    // Turn on sourcemaps
-    //devtool: 'source-map',
+    
     resolve: {
         extensions: ['.webpack.js', '.web.js', '.ts', '.js']
     },
