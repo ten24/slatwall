@@ -106,6 +106,8 @@ component extends="framework.one" {
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
+	variables.framewurk.hibachi.runMigrateAttributeValuesOnServerStartup = false;
+	variables.framework.hibachi.runCreateJsonOnServerStartup = true;	
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
 	variables.framework.hibachi.availableEnvironments = ['local','development','production'];
@@ -837,8 +839,10 @@ component extends="framework.one" {
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 						
 						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
-						
-						getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
+					
+						if(variables.framework.hibachi.runMigrateAttributeValuesOnServerStartup){	
+							getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
+						}
 
 						onUpdateRequest();
 
@@ -855,7 +859,9 @@ component extends="framework.one" {
 
 					//==================== START: JSON BUILD SETUP ========================
 
-					getBeanFactory().getBean('HibachiJsonService').createJson();
+					if(variables.framework.hibachi.runCreateJsonOnServerStartup){
+						getBeanFactory().getBean('HibachiJsonService').createJson();
+					}
 
 					//===================== END: JSON BUILD SETUP =========================
 
