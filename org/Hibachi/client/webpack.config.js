@@ -68,7 +68,7 @@ var appConfig = {
           chunks: 'all',
           maxInitialRequests: Infinity,
           minSize: 0,
-          cacheGroups: {
+          /*cacheGroups: {
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name(module) {
@@ -80,7 +80,7 @@ var appConfig = {
                 return `npm.${packageName.replace('@', '')}`;
               },
             },
-          },
+          },*/
         },
       },
     /*plugins: [
