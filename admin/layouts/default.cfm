@@ -416,7 +416,6 @@ Notes:
 		<!-- code split vendor bundle before the other bundles because its common among them. -->
  		
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/runtime.bf0159c4d24ed37b45c3.js "></script>
- 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.rxjs.942edada134d7ca4169c.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.moment.b819a33611423da398aa.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.chart.js.65e0fc66e70a196c0a30.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.chartjs-color.f341b968243932fb633c.js "></script>
@@ -426,11 +425,10 @@ Notes:
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.color-name.80ab8391035fbd4a61b1.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.crypt.7f42298e9752691b2c86.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.is-buffer.a063c0c0afae390abbb9.js "></script>
- 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.md5.f58dfa7085890901b1f2.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.process.1432f59578d99c803be5.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.setimmediate.62a7ee5eca81e13aadb8.js "></script>
  		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/npm.timers-browserify.4e8fa4c0d497f0106b83.js "></script>
- 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/bundle.9208a1103ae9fcab3b95.js"></script>
+ 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/bundle.0f9d9ad14ac7dd604679.js"></script>
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>

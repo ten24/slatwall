@@ -1,6 +1,8 @@
 var webpack = require('webpack');
 var ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
 var CompressionPlugin = require("compression-webpack-plugin");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var path = require('path');
 var PATHS = {
@@ -43,6 +45,11 @@ var appConfig = {
       },
     plugins: [
         new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
+         new HtmlWebpackPlugin({
+         title: 'Output Management'
+       }),
+       // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
+        new CleanWebpackPlugin(),
       ],
       optimization: {
         runtimeChunk: 'single',
