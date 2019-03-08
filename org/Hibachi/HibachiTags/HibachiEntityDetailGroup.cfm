@@ -137,18 +137,12 @@
 									<cfoutput>
 										<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabEmail">
 											<cfset emailCollection = attributes.hibachiScope.getService('emailService').getEmailCollectionList()/>
-											<cfset emailCollection.setDisplayProperties(
-												"emailSubject,emailTo",
-												{isSearchable=true} 
-											) />
-											<cfset emailCollection.addDisplayProperty(
-												displayProperty="createdDateTime",
-												 columnsConfig={}
-											) />
+											<cfset emailCollection.setDisplayProperties("emailSubject,emailTo",{isVisible=true,isSearchable=true} ) />
+											<cfset emailCollection.addDisplayProperty(displayProperty="createdDateTime",columnConfig={isVisible=true} ) />
 											<cfset emailCollection.addDisplayProperty(displayProperty="emailID",columnConfig={isVisible=false,isDeletable=false} ) />
 											
-											<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue())/>
-											<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName())/>
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue() )/>
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName() )/>
 											
 											<hb:HibachiListingDisplay 
 												collectionList="#emailCollection#"
@@ -158,25 +152,6 @@
 												recordDetailAction="admin:entity.detailemail"
 											>
 											</hb:HibachiListingDisplay>
-											<!---<sw-listing-display
-											    data-collection="'Email'"
-											    data-edit="false"
-											    data-has-search="true"
-											    record-edit-action="admin:entity.editemail"
-											    record-edit-query-string="redirectAction=admin:entity.listemail"
-											    record-detail-action="admin:entity.detailemail"
-											    data-is-angular-route="false"
-											    data-angular-links="false"
-											    data-has-action-bar="false"
-											    data-multi-slot="true"
-											>
-											    <sw-listing-column data-property-identifier="emailID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-											    <sw-listing-column data-property-identifier="emailSubject" search="true" tdclass="primary" ></sw-listing-column>
-											    <sw-listing-column data-property-identifier="emailTo" search="true" ></sw-listing-column>
-											    <sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
-											    <sw-listing-filter data-property-identifier="relatedObjectID" data-comparison-operator="=" data-comparison-value="#attributes.object.getPrimaryIDValue()#" data-hidden="true"></sw-listing-filter>
-											    <sw-listing-filter data-property-identifier="relatedObject" data-comparison-operator="=" data-comparison-value="#attributes.object.getClassName()#" data-hidden="true"></sw-listing-filter>
-											</sw-listing-display>--->
 										</div>
 									</cfoutput>
 								</content><!--- s-body-box --->
