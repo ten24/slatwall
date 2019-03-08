@@ -45,13 +45,14 @@ var appConfig = {
       },
     plugins: [
         new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
-         new HtmlWebpackPlugin({
-         title: 'Output Management'
+        new HtmlWebpackPlugin({
+          template:path.join(PATHS.app,'/template.html')
        }),
        // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
         new CleanWebpackPlugin(),
       ],
       optimization: {
+        usedExports: true,
         runtimeChunk: 'single',
         splitChunks: {
           chunks: 'all',
