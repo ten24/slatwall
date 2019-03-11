@@ -66,6 +66,9 @@ class SWDisplayOptions{
                     }
 
                 };
+                this.selectedPropertyChanged = function(selectedProperty, aggregate?){
+                    $scope.selectedPropertyChanged(selectedProperty,aggregate);
+                }
             }],
             link: (scope,element,$attrs,controllers,observerService)=>{
 
@@ -259,7 +262,6 @@ class SWDisplayOptions{
 
                 scope.selectedPropertyChanged = function(selectedProperty, aggregate?){
                     // drill down or select field?
-
 
                     if(!aggregate){
                         scope.selectedProperty = selectedProperty;

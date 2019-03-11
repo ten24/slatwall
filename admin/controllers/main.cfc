@@ -103,7 +103,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.orderSmartList.setPageRecordsShow(10);
 		
 		rc.orderCollectionList = getOrderService().getOrderCollectionList();
-		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal');
+		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
 		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
 		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
 		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');

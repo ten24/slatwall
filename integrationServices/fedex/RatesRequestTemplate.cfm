@@ -47,7 +47,9 @@
 	
 --->
 <cfoutput>
-	<ns:RateRequest xmlns:ns="http://fedex.com/ws/rate/v7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://fedex.com/ws/rate/v22">
+	<SOAP-ENV:Body>
+	<ns:RateRequest>
 	    <ns:WebAuthenticationDetail>
 	        <ns:UserCredential>
 	            <ns:Key>#trim(setting('transactionKey'))#</ns:Key>
@@ -60,7 +62,7 @@
 	    </ns:ClientDetail>
 	    <ns:Version>
 	        <ns:ServiceId>crs</ns:ServiceId>
-	        <ns:Major>7</ns:Major>
+	        <ns:Major>22</ns:Major>
 	        <ns:Intermediate>0</ns:Intermediate>
 	        <ns:Minor>0</ns:Minor>
 	    </ns:Version>
@@ -100,19 +102,70 @@
 	            </ns:Address>
 	        </ns:Recipient>
 	        <ns:RateRequestTypes>LIST</ns:RateRequestTypes>
-	        <ns:PackageCount>1</ns:PackageCount>
-	        <ns:PackageDetail>INDIVIDUAL_PACKAGES</ns:PackageDetail>
-	        <ns:RequestedPackageLineItems>
-	            <ns:SequenceNumber>1</ns:SequenceNumber>
-	            <ns:InsuredValue>
-	                <ns:Currency>USD</ns:Currency>
-	                <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
-	            </ns:InsuredValue>
-	            <ns:Weight>
-	                <ns:Units>LB</ns:Units>
-	                <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
-	            </ns:Weight>
-	        </ns:RequestedPackageLineItems>
+	        <cfif !structKeyExists(local,'containers') OR isNull(local.containers)>
+		        <ns:PackageCount>1</ns:PackageCount>
+		        <ns:RequestedPackageLineItems>
+					<ns:SequenceNumber>1</ns:SequenceNumber>
+					<ns:GroupPackageCount>1</ns:GroupPackageCount>
+		            <ns:InsuredValue>
+		                <ns:Currency>USD</ns:Currency>
+		                <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
+		            </ns:InsuredValue>
+		            <ns:Weight>
+		                <ns:Units>LB</ns:Units>
+		                <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
+					</ns:Weight>
+					<cfif setting('specialServiceAlcoholFlag')>
+					<ns:SpecialServicesRequested>
+							<ns:SpecialServiceTypes>ALCOHOL</ns:SpecialServiceTypes>
+							<ns:SpecialServiceTypes>SIGNATURE_OPTION</ns:SpecialServiceTypes>
+							<ns:SignatureOptionDetail>
+								<ns:OptionType>ADULT</ns:OptionType>
+							</ns:SignatureOptionDetail>
+							<ns:AlcoholDetail>
+								<ns:RecipientType>CONSUMER</ns:RecipientType>
+							</ns:AlcoholDetail>
+					</ns:SpecialServicesRequested>
+					</cfif>
+		        </ns:RequestedPackageLineItems>
+	        <cfelse>
+	        	<ns:PackageCount>#local.containers.packageCount#</ns:PackageCount>
+	        	<cfset local.sequenceNo = 0 />
+	        	<cfloop collection="#local.containers#" item="size">
+	        		<cfif isArray(local.containers[size])>
+		        		<cfloop array="#local.containers[size]#" item="container">
+		        			<cfset local.sequenceNo++ />
+					        <ns:RequestedPackageLineItems>
+								<ns:SequenceNumber>#local.sequenceNo#</ns:SequenceNumber>
+								<ns:GroupNumber>#local.sequenceNo#</ns:GroupNumber>
+								<ns:GroupPackageCount>1</ns:GroupPackageCount>
+					            <ns:InsuredValue>
+					                <ns:Currency>USD</ns:Currency>
+					                <ns:Amount>#container.value#</ns:Amount>
+					            </ns:InsuredValue>
+					            <ns:Weight>
+					                <ns:Units>LB</ns:Units>
+					                <ns:Value>#container.weight#</ns:Value>
+								</ns:Weight>
+								<cfif setting('specialServiceAlcoholFlag')>
+									<ns:SpecialServicesRequested>
+											<ns:SpecialServiceTypes>ALCOHOL</ns:SpecialServiceTypes>
+											<ns:SpecialServiceTypes>SIGNATURE_OPTION</ns:SpecialServiceTypes>
+											<ns:SignatureOptionDetail>
+												<ns:OptionType>ADULT</ns:OptionType>
+											</ns:SignatureOptionDetail>
+											<ns:AlcoholDetail>
+												<ns:RecipientType>CONSUMER</ns:RecipientType>
+											</ns:AlcoholDetail>
+									</ns:SpecialServicesRequested>
+								</cfif>
+					        </ns:RequestedPackageLineItems>
+				        </cfloop>
+			        </cfif>
+		        </cfloop>
+	        </cfif>
 	    </ns:RequestedShipment>
 	</ns:RateRequest>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 </cfoutput>

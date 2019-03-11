@@ -73,7 +73,7 @@ component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
-			arguments.includesList = 'workflowName,workflowObject,activeFlag';
+			arguments.includesList = 'workflowID,workflowName,workflowObject,activeFlag';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 	

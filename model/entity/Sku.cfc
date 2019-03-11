@@ -216,6 +216,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
+	
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -664,57 +665,75 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// START: Quantity Helper Methods
 
 	public numeric function getQuantity(required string quantityType, string locationID, string stockID, string currencyCode) {
-
-
-		// Request for calculated quantity
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
-			// If this is a calculated quantity and locationID exists, then delegate
-			if( structKeyExists(arguments, "locationID") ) {
-				
-				// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
-				if (arguments.quantityType == 'MQATSBOM' ){
-					var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
-
-					
-					return stock.getQuantity(arguments.quantityType);
-					
-				}else{
-					//Need to get location and all children of location
-					var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
-					var totalQuantity = 0;
-					
-					for(var i=1;i<=arraylen(locations);i++) {
-						var location = getService('locationService').getLocation(locations[i]['value']);
-						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
-							var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
-							totalQuantity += stock.getQuantity(arguments.quantityType);
-							
-						}  
-				}
-				
-				return totalQuantity;
-
-				}
-
-			// If this is a calculated quantity and stockID exists, then delegate
-			} else if ( structKeyExists(arguments, "stockID") ) {
-				var stock = getService("stockService").getStock(arguments.stockID);
-				return stock.getQuantity(arguments.quantityType);
-			}
+		//DataCache prefix means this cache will be cleared whenever an orm flush occurs
+		var cacheKey = arguments.quantityType;
+		if(structKeyExists(arguments,'locationID')){
+			cacheKey &= arguments.locationID;
 		}
+		
+		if(structKeyExists(arguments,'stockID')){
+			cacheKey &= arguments.stockID;
+		}
+		
+		if(structKeyExists(arguments,'currencyCode')){
+			cacheKey &= arguments.currencyCode;
+		}
+		if( !structKeyExists(variables, cacheKey) ) {
+			// Request for calculated quantity
+			if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
+				// If this is a calculated quantity and locationID exists, then delegate
+				if( structKeyExists(arguments, "locationID") ) {
+					
+					// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
+					if (arguments.quantityType == 'MQATSBOM' ){
+						var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
+						var totalQuantity = stock.getQuantity(arguments.quantityType);
+						setDataCache(cacheKey,totalQuantity);
+						return totalQuantity;
+						
+					}else{
+						//Need to get location and all children of location
+						var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+						var totalQuantity = 0;
+						
+						for(var i=1;i<=arraylen(locations);i++) {
+							var location = getService('locationService').getLocation(locations[i]['value']);
+							if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+								var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
+								totalQuantity += stock.getQuantity(arguments.quantityType);
+								
+							}  
+					}
+					setDataCache(cacheKey,totalQuantity);
+					return totalQuantity;
+	
+					}
+	
+				// If this is a calculated quantity and stockID exists, then delegate
+				} else if ( structKeyExists(arguments, "stockID") ) {
+					var stock = getService("stockService").getStock(arguments.stockID);
+					var totalQuantity = stock.getQuantity(arguments.quantityType);
+					setDataCache(cacheKey,totalQuantity);
+					return totalQuantity;
+				}
+			}
 
-		// Standard Logic
-		if( !structKeyExists(variables, arguments.quantityType) ) {
+			// Standard Logic
+		
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
-				return getProduct().getQuantity(argumentCollection=arguments);
+				var totalQuantity = getProduct().getQuantity(argumentCollection=arguments);
+				setDataCache(cacheKey,totalQuantity);
+				return totalQuantity;
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType)) {
-				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
+				var totalQuantity = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
+				setDataCache(cacheKey,totalQuantity);
+				return totalQuantity;
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
 			}
 		}
-		return variables[ arguments.quantityType ];
+		return variables[ cacheKey ];
 	}
 
 	// END: Quantity Helper Methods

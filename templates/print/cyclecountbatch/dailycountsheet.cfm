@@ -70,8 +70,8 @@ Notes:
 <cfparam name="printData" type="struct" default="#structNew()#" />
 <cfparam name="cycleCountBatch" type="any" />
 
-<cfset cyclecountbatch.getCycleCountBatchItemsSmartList().addOrder('stock.sku.skuCode')>
-<cfset cyclecountbatch.getCycleCountBatchItemsSmartList().addOrder('stock.location.locationName')>
+<cfset isNull(printData.countDay) ? printData['countDay'] = cycleCountBatch.getNextDayNumber() - cycleCountBatch.getPhysicalsCount() : '' />
+<cfset cycleCountBatchItems = cycleCountBatch.getItemsToCountByDay(printData['countDay'],false) />
 
 <cfoutput>
 	<div id="container" style="width: 625px; font-family: arial; font-size: 12px;background:##fff;">
@@ -83,14 +83,14 @@ Notes:
 			<thead>
 				<tr>
 					<th style="background: ##f9f9f9; border: 0px solid; padding: 10px 60px; width: 180px;">Counter</th>
-					<th style="width: 200px;"> </th>
+					<th style="background: ##f9f9f9; border: 0px solid; padding: 10px 60px; width: 180px;">Location</th>
 					<th style="background: ##f9f9f9; border: 0px solid; padding: 10px 60px; width: 180px;">Count Date</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td style="border-bottom: 1px solid ##d8d8d8; padding: 20px 60px;"> </td>
-					<td> </td>
+					<td style="border-bottom: 1px solid ##d8d8d8; padding: 20px 60px;">#cycleCountBatch.getLocation().getLocationName()# </td>
 					<td style="border-bottom: 1px solid ##d8d8d8; padding: 20px 60px;"> </td>
 				</tr>
 			</tbody>
@@ -101,19 +101,35 @@ Notes:
 				<tr>
 					<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 10px 20px;">Sku Code</th>
 					<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 10px 20px;">Description</th>
-					<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 10px 20px;">Location</th>
+					<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 10px 20px;">Shelf Number</th>
+					<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 10px 20px;">Alt Shelf</th>
+					<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 10px 20px;">Expected QOH</th>
 					<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 10px 20px;">Actual QOH</th>
 				</tr>
 			</thead>
 			<tbody>
-				<cfloop array="#cycleCountBatch.getCycleCountBatchItemsSmartList().getRecords()#" index="local.item">
+				<cfloop array="#cycleCountBatchItems#" index="local.item">
+					<cfset local.stock = getService('stockService').getStockBySkuIDAndLocationID(item.skuID,cycleCountBatch.getLocation().getLocationID()) />
 					<tr>
-						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.item.getStock().getSku().getSkuCode()#</td>
+						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.item.skuCode#</td>
 						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">
-							#local.item.getStock().getSku().getProduct().getTitle()#<br>
-							#local.item.getStock().getSku().getCalculatedSkuDefinition()#
+							#!isNull(local.item.skuName) ? local.item.skuName : local.stock.getSku().getProduct().getTitle()#
 						</td>
-						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.item.getStock().getLocation().getLocationName()#</td>
+						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.stock.getShelfNumber()#</td>
+						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">
+							<cfset local.skuAltShelfList = '' />
+                            <cfif !isNull(local.stock.getAltShelf2()) && len(trim(local.stock.getAltShelf2())) && local.stock.getAltShelf2() NEQ 0>
+                                <cfset local.skuAltShelfList = listAppend(local.skuAltShelfList,local.stock.getAltShelf2(),'/') />
+                            </cfif>
+                            <cfif !isNull(local.stock.getAltShelf3()) && len(trim(local.stock.getAltShelf3())) && local.stock.getAltShelf3() NEQ 0>
+                                <cfset local.skuAltShelfList = listAppend(local.skuAltShelfList,local.stock.getAltShelf3(),'/') />
+                            </cfif>
+                            <cfif !isNull(local.stock.getAltShelf4()) && len(trim(local.stock.getAltShelf4())) && local.stock.getAltShelf4() NEQ 0>
+                                <cfset local.skuAltShelfList = listAppend(local.skuAltShelfList,local.stock.getAltShelf4(),'/') />
+                            </cfif>
+                            #local.skuAltShelfList#
+						</td>
+						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.stock.getQOH()#</td>
 						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;"></td> 
 					</tr>
 				</cfloop>
@@ -121,5 +137,3 @@ Notes:
 		</table>
 	</div>
 </cfoutput>
-
-<cfabort>

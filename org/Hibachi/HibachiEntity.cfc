@@ -9,6 +9,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="persistableErrors" type="array" persistent="false";
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
+	property name="dataCacheProperties" type="array" persistent="false";
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
@@ -49,6 +50,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
+		setDataCacheProperties([]);
 		
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")){
 			var properties = getService('HibachiService').getToManyPropertiesByEntityName(getClassName());
@@ -1110,6 +1112,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	}
 	
+	public void function postInsert(){
+		clearDataCache();
+	}
+	
+	public void function postUpdate(){
+		clearDataCache();
+	}
+	
+	public void function clearDataCache(){
+		var dataCacheProperties = getDataCacheProperties();
+		var dataCachePropertiesCount = arrayLen(dataCacheProperties);
+		for(var i=dataCachePropertiesCount; i!=0;i--){
+			var dataCacheProperty = dataCacheProperties[i];
+			structDelete(variables,dataCacheProperty);
+			arrayDeleteAt(dataCacheProperties,i);
+		}
+	}
+	
+	public void function setDataCache(required string cacheKey,any value){
+		
+		variables[arguments.cacheKey]= arguments.value;
+		addDataCacheProperty((arguments.cacheKey));
+	}
+	
+	public void function addDataCacheProperty(required string cacheKey){
+		arrayAppend(getDataCacheProperties(),arguments.cacheKey);
+	}
 		
 	public void function runCalculatedProperties(){
 		getService("hibachiService").updateCalculatedPropertiesByEntityName(this);

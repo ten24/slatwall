@@ -9,7 +9,6 @@ import * as actions from '../actions/fulfillmentbatchactions';
 class SWFulfillmentBatchDetailController  {
     
     public state;
-    public orderItem = {};
     public fulfillmentBatchId: string;
     
     // @ngInject
@@ -29,9 +28,12 @@ class SWFulfillmentBatchDetailController  {
                 stateChanges.action.type == actions.UPDATE_BATCHDETAIL || 
                 stateChanges.action.type == actions.SETUP_BATCHDETAIL || 
                 stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||
-                stateChanges.action.type == actions.TOGGLE_LOADER)){
+                stateChanges.action.type == actions.TOGGLE_LOADER ||
+                stateChanges.action.type == actions.UPDATE_BOX_DIMENSIONS ||
+                stateChanges.action.type == actions.ADD_BOX ||
+                stateChanges.action.type == actions.REMOVE_BOX ||
+                stateChanges.action.type == actions.SET_DELIVERY_QUANTITIES)){
                 //set the new state.
-                this.orderItem = {};
                 this.state = stateChanges;
             }
 
@@ -102,8 +104,7 @@ class SWFulfillmentBatchDetailController  {
     public userCaptureAndFulfill = () => {
         //request the fulfillment process.
         this.state.loading = true;
-        this.state.orderItem = this.orderItem;
-        
+
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.CREATE_FULFILLMENT_REQUESTED,
             payload: { viewState:this.state }
@@ -138,6 +139,60 @@ class SWFulfillmentBatchDetailController  {
             type: actions.EMAIL_LIST_REQUESTED,
             payload: {}
         });
+    }
+    
+    /** Populates box dimensions with dimensions from container preset */
+    public userUpdatingBoxPreset = (box) => {
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.UPDATE_BOX_DIMENSIONS,
+            payload: {box}
+        })
+    }
+    
+    /** Adds an additional box to the shipment */
+    public userAddingNewBox = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.ADD_BOX,
+            payload: {}
+        });
+    }
+    
+    public userRemovingBox = (index) => {
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.REMOVE_BOX,
+            payload: {index:index}
+        });
+    }
+    
+    /** Sets delivery quantities and gets delivery process object information */
+    public userSettingDeliveryQuantities = () =>{
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type:actions.SET_DELIVERY_QUANTITIES,
+            payload:{}
+        })
+    }
+    
+    /**Updates quantity for a container item */
+    public userUpdatingContainerItemQuantity = (containerItem, newValue) =>{
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type:actions.UPDATE_CONTAINER_ITEM_QUANTITY,
+            payload:{
+                containerItem:containerItem,
+                newValue:newValue
+            }
+        })
+    }
+    
+    /**Sets container for unassigned item */
+    public userSettingUnassignedItemContainer = (skuCode,container) =>{
+        console.log('container',container);
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type:actions.SET_UNASSIGNED_ITEM_CONTAINER,
+            payload:{
+                skuCode:skuCode,
+                container:container
+            }
+        })   
     }
 
     /** Todo - Thiswill be for the barcode search which is currently commented out. */

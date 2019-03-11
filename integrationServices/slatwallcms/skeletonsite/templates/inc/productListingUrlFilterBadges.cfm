@@ -4,24 +4,24 @@
   <!--- for every property in the url struct...--->
   <cfset local.counter = 0 />
   <cfloop collection="#url#" item="local.queryParam">
-  
-    	<cfif isStruct(url[local.queryParam]) >
+  	
+  	<!--- lucee groups query params that have dots in them in structs. Let's skip that --->
+  	<cfif isStruct(url[local.queryParam]) >
   		<cfcontinue>
   	</cfif>
-
   	<!--- We don't want property names that start with p:, for pagination, among other stuff. Let's
   	define only the ones we want --->
   	<cfif findNoCase("r:",local.queryParam) OR findNoCase("f:",local.queryParam) OR findNoCase("keywords",local.queryParam)>
   		<cfset local.counter++ />
   		<!--- some values will be comma separated such as r:defaultSku.price:10^20,100^ --->
-	  	<cfset local.queryValuesSeparatedWithCommas = url[local.queryParam] />
+	  	<cfset local.queryValuesSeparatedWithPipes = url[local.queryParam] />
 	  	<!--- If this is not the first filter, let's add & between them ---->
 	  	<cfif local.counter GT 1>
 	  		<cfset local.allFiltersAndValues = local.allFiltersAndValues & '&' />
 	  	</cfif>
-	  	<cfset local.allFiltersAndValues = local.allFiltersAndValues & local.queryParam & '=' & local.queryValuesSeparatedWithCommas />
+	  	<cfset local.allFiltersAndValues = local.allFiltersAndValues & local.queryParam & '=' & local.queryValuesSeparatedWithPipes />
 		<!--- let's split them, since we want one badge for each value ---->
-		<cfset local.values = listToArray(local.queryValuesSeparatedWithCommas) />
+		<cfset local.values = listToArray(local.queryValuesSeparatedWithPipes,"||") />
 		<cfloop array="#local.values#" index="local.value">
 			
 			<!---- let's create a unique id to use in the <a> tag and keep track of it---->
