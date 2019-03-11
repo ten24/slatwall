@@ -113,7 +113,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.productReviewSmartList.setPageRecordsShow(10);
 		
 		rc.productReviewCollectionList = getProductService().getProductReviewCollectionList();
-		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle');
+		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true});
 		rc.productReviewCollectionList.addDisplayProperty('productReviewID',javacast('null',''),{hidden=true});
 		rc.productReviewCollectionList.addFilter('activeFlag',0);
 
