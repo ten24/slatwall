@@ -81,8 +81,8 @@ Notes:
 	</div>
 	
 	<div class="col-md-6">
-		<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
-	<!---	<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />--->
+		<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
+		<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
 	</div>
 	
 
