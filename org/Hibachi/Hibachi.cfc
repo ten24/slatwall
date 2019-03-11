@@ -106,8 +106,8 @@ component extends="framework.one" {
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
-	variables.framewurk.hibachi.runMigrateAttributeValuesOnServerStartup = false;
-	variables.framework.hibachi.runCreateJsonOnServerStartup = true;	
+	variables.framewurk.hibachi.skipMigrateAttributeValuesOnServerStartup = true;
+	variables.framework.hibachi.skipCreateJsonOnServerStartup = false;	
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
 	variables.framework.hibachi.availableEnvironments = ['local','development','production'];
@@ -840,7 +840,7 @@ component extends="framework.one" {
 						
 						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
 					
-						if(variables.framework.hibachi.runMigrateAttributeValuesOnServerStartup){	
+						if(!variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup){	
 							getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
 						}
 
@@ -859,7 +859,7 @@ component extends="framework.one" {
 
 					//==================== START: JSON BUILD SETUP ========================
 
-					if(variables.framework.hibachi.runCreateJsonOnServerStartup){
+					if(!variables.framework.hibachi.skipCreateJsonOnServerStartup){
 						getBeanFactory().getBean('HibachiJsonService').createJson();
 					}
 
