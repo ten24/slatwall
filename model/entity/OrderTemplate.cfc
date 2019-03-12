@@ -53,7 +53,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateName" ormtype="string";
 	
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
-	property name="scheduleOrderDayOfTheMonth" ormtype="integer"
+	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
 
 	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
 	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID";
