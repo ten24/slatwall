@@ -989,6 +989,4 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 
-
-	
 }

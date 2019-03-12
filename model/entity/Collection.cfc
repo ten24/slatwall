@@ -1820,6 +1820,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(structKeyExists(variables,'groupBys')){
 			groupByList = variables.groupBys;
 		}
+		
 
 		if(!len(trim(groupByList)) && (!isReport() || !hasPeriodColumn())){
 			return '';
@@ -1827,9 +1828,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var groupByArray = listToArray(groupByList);
 		
-		for(var i=1;i <=arraylen(groupByArray);i++){
+		for(var i=1;i < arraylen(groupByArray);i++){
 			groupByArray[i] = getPropertyIdentifierAlias(groupByArray[i]);
 		}
+		
 		groupByList = arrayToList(groupByArray);
 		
 		groupByHQL = ' GROUP BY ' & groupByList;
@@ -1891,7 +1893,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return orderByStruct;
 	}
 
-	private string function getOrderByHQL(array orderBy=getOrderBys()){
+	private string function getOrderByHQL(array orderBy=[]){
 		if(structKeyExists(variables, 'orderByRequired') && !variables.orderByRequired){
 			return '';
 		}
@@ -2317,7 +2319,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}else{
 							HQL = getHQL();
 							HQLParams = getHQLParams();
-							
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 								variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -2594,7 +2595,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getRecordsCount(boolean refresh=false) {
-		
+
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
@@ -3394,7 +3395,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					)
 				)
 			){
-				var groupByOverride="";
 				var groupByList = "";
 				var collectionConfig = getCollectionConfigStruct();
 				if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
@@ -3412,22 +3412,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
 							|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
 						) continue;
+						
 						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
-							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
-						}else if(Find(column.propertyIdentifier,getOrderByHQL())){
-							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
-							
+							//if we have the collection objects primary id property as a column exclude all others group bys for better performance
+							variables.groupBys = column.propertyIdentifier;
+							return variables.groupBys; 							
 						}else{
 							groupByList = listAppend(groupByList, column.propertyIdentifier);
 						}
 					}
 				}
-				//if we have the collection objects primary id property as a column exclude all others group bys for better performance
-				if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
-					variables.groupBys = groupByOverride;
-					return variables.groupBys;
-				}
-				
+	
 				if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
 					if(getApplyOrderBysToGroupBys()){
 						for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
@@ -3583,10 +3578,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
-			
-			
+
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
-		
 
 		}
 
