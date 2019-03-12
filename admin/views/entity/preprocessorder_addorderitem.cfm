@@ -192,7 +192,6 @@ Notes:
 									<br>
 								</cfloop>
 							</cfif>
-
 							<!--- Order Item Custom Attributes --->
 							<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
 								<hr />
