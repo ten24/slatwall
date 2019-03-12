@@ -966,6 +966,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public string function getSimpleRepresentation() {
 		return getFullName();
 	}
+	
+	public string function getSimpleRepresentationPropertyName(){
+		return 'calculatedFullName';
+	}
 
 	// ==================  END:  Overridden Methods ========================
 

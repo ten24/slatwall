@@ -285,27 +285,40 @@
 						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
 				</div>--->
-
-				<cfset lastEntity = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property)/>
-				<cfset simpleRepresentationPropertyName = attributes.hibachiScope.getSimpleRepresentationPropertyNameByEntityName(lastEntity)/>
-				<cfif isNull(simpleRepresentationPropertyName)>
-					<cfdump var="#attributes#" top=2><cfabort>
+				<cfscript>
+					lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
+					propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
+					relatedEntity = listLast(attributes.property,'.');
+					propertyMetaData = propsStruct[relatedEntity];
+				
+					if (attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
+						primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+						simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+					}else{
+					}
+					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
+				</cfscript>
+				
+				
+				<cfif isNull(simpleRepresentationName)>
+					<cfdump var="#attributes.property#">
+					<cfdump var="#attributes.object.getClassName()#" top=2><cfabort>
 				</cfif>
 				<sw-typeahead-input-field
-					data-entity-name="#lastEntity#"
+					data-entity-name="#propertyMetaData.cfc#"
 			        data-property-to-save="#attributes.object.getPrimaryIDPropertyName()#"
-			        data-property-to-show="#simpleRepresentationPropertyName#"
-			        data-properties-to-load="simpleRepresentationPropertyName"
+			        data-property-to-show="#simpleRepresentationName#"
+			        data-properties-to-load="#simpleRepresentationName#"
 			        data-show-add-button="true"
 			        data-show-view-button="true"
-			        data-placeholder-rb-key="#simpleRepresentationPropertyName#"
-			        data-placeholder-text="Search #simpleRepresentationPropertyName#"
+			        data-placeholder-rb-key="#propertynamerbkey#"
+			        data-placeholder-text="Search #propertynamerbkey#"
 			        data-multiselect-mode="false"
 			        data-filter-flag="false"
 			        data-selected-format-string="##"
-			        data-field-name="#simpleRepresentationPropertyName#"
+			        data-field-name="#simpleRepresentationName#"
 			        data-max-records="100"
-			        data-order-by-list="#simpleRepresentationPropertyName#|ASC">
+			        data-order-by-list="#simpleRepresentationName#|ASC">
 
 			    <!---<sw-collection-config
 			            data-entity-name="Location"
@@ -340,7 +353,7 @@
 			    	</cfif>
 			    </sw-collection-config>--->
 
-				<span sw-typeahead-search-line-item data-property-identifier="locationName" is-searchable="true"></span><br>
+				<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
 
 			</sw-typeahead-input-field>
 			</cfoutput>
