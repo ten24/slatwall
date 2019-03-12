@@ -165,7 +165,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}		
 			}
 
-			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Started');
+			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Started',true);
 			
 			try {
 				if(splitShipmentFlag){
@@ -198,7 +198,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				responseBeans[ arguments.integrations[i].getIntegrationID() ] = rateResponseBean; 
 			
 			} catch(any e) {
-
 				logHibachi('An error occured with the #arguments.integrations[i].getIntegrationName()# integration when trying to call getRates()', true);
 				logHibachiException(e);
 
@@ -324,7 +323,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return chargeAmount;
 	}
 	
-	
+	public numeric function getChargeAmountByNumberOfContainersAndRatePerContainer(required numeric defaultAmount, required numeric packageCount, required numeric ratePerContainer){
+		return val(getService('HibachiUtilityService').precisionCalculate(arguments.defaultAmount + ((arguments.packageCount-1) * arguments.ratePerContainer)));
+	}
 	
 	public array function getQualifiedRateOptionsByOrderFulfillmentAndShippingMethodRatesAndShippingMethodRatesResponseBeans(
 		required any orderFulfillment,
@@ -335,7 +336,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var shippingMethodRatesCount = arraylen(arguments.shippingMethodRates);
 		for(var r=1; r<=shippingMethodRatesCount; r++) {
 			var shippingMethodRate = arguments.shippingMethodRates[r];
-
 			// If this rate is a manual one, then use the default amount
 			if(isNull(shippingMethodRate.getShippingIntegration())) {
 				
@@ -362,7 +362,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				//if handling fee setting is on,let's add it to the charge
 				if(shippingMethodRate.setting('shippingMethodRateHandlingFeeFlag')){
-					
 					switch(shippingMethodRate.setting('shippingMethodRateHandlingFeeType')){
 						case 'amount':
 							chargeAmount += shippingMethodRate.setting('shippingMethodRateHandlingFeeAmount');
@@ -372,6 +371,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						break;
 					}
 				}
+				
+				var containerStruct = arguments.orderFulfillment.getContainerStruct();
+				if(!structKeyExists(containerStruct,'packageCount')){
+					containerStruct['packageCount'] = 0;
+				}
+				
+				chargeAmount = getChargeAmountByNumberOfContainersAndRatePerContainer(
+					nullReplace(shippingMethodRate.getDefaultAmount(),0),
+					containerStruct.packageCount,
+					nullReplace(shippingMethodRate.getRatePerContainer(),0)
+				);
 				
 				//make sure the manual rate is usable
 				var priceGroups = [];
@@ -637,9 +647,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.orderFulfillment.removeFulfillmentShippingMethodOption( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c] );
 		
 					// Else if this method option is the same shipping method that the user previously selected, then we can just update the fulfillmentCharge, as long as this wasn't set manually.
-					} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && 
-							   arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && 
-							   !arguments.orderFulfillment.getManualFulfillmentChargeFlag()
+					} else if (
+						!isNull(arguments.orderFulfillment.getShippingMethod()) 
+						&& arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() 
+						&& !arguments.orderFulfillment.getManualFulfillmentChargeFlag() 
+						&& !len(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())
 					) {
 						arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
 					}
@@ -652,7 +664,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
 		
 					// If the fulfillmentCharge wasn't done manually then this can be updated
-					if(!arguments.orderFulfillment.getManualFulfillmentChargeFlag()) {
+					if(!arguments.orderFulfillment.getManualFulfillmentChargeFlag() && !len(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())) {
 						arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getTotalCharge() );
 					}
 				}

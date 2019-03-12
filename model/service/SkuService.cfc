@@ -100,7 +100,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var skus = getSkuDAO().getProductSkus(product=arguments.product, fetchOptions=arguments.fetchOptions, joinType=arguments.joinType);
 
 		if(arguments.sorted && arrayLen(skus) gt 1 && arrayLen(skus[1].getOptions())) {
-			var sortedSkuIDQuery = getSkuDAO().getSortedProductSkusID( productID = arguments.product.getProductID() );
+			var sortedSkuIDQuery = getSkuDAO().getSortedProductSkusID( productID = arguments.product.getProductID() , joinType=arguments.joinType );
 			var sortedArray = arrayNew(1);
 			var sortedArrayReturn = arrayNew(1);
 

@@ -209,6 +209,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public any function validate(required any object, string context="", boolean setErrors=true) {
+		
+		
 		// Setup an error bean
 		if(setErrors) {
 			var errorBean = arguments.object.getHibachiErrors();
@@ -217,7 +219,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 
 		// If the context was 'false' then we don't do any validation
-		if(!isBoolean(arguments.context) || arguments.context) {
+		if(
+			(!isBoolean(arguments.context) || arguments.context)
+			//don't validate delete context if the object is new. Just skip this logic
+			&& !(arguments.context == 'delete' && arguments.object.isNew())
+		) {
 
 			// Get the valdiations for this context
 			var contextValidations = getValidationsByContext(object=arguments.object, context=arguments.context);

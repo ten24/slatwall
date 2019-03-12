@@ -50,12 +50,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entities
 	property name="cycleCountBatch";
+	property name="cycleCountBatchName" hb_rbKey="entity.CycleCountBatch.cycleCountBatchName";
 	property name="cycleCountGroups" hb_rbKey="entity.CycleCountGroup_plural" cfc="CycleCountGroup";
+	property name="location" hb_rbKey="entity.Location" cfc="Location";
 
 	// Data Properties
-	property name="cycleCountBatchDate" hb_formFieldType="datetime";
-	
+	property name="locationID" hb_rbKey="entity.Location" hb_formFieldType="select";
 	// Cached Properties
+	property name="locationIDOptions";
 
 	public any function getCycleCountGroupSmartList() {
 		if(!structKeyExists(variables, "cycleCountGroupSmartList")) {
@@ -71,6 +73,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		return true;
+	}
+	
+	public any function getLocation(){
+		if(!structKeyExists(variables,'location') && structKeyExists(variables, 'locationID')){
+			variables.location = getService('locationService').getLocation(variables.locationID);
+		}
+		if(structKeyExists(variables,'location')){
+			return variables.location;
+		}
+	}
+	
+	public array function getLocationIDOptions(){
+		if(!structKeyExists(variables,'locationIDOptions')){
+			var locationCollection = getService('locationService').getLocationCollectionList();
+			variables.locationIDOptions = locationCollection.getRecordOptions(false);
+		}
+		return variables.locationIDOptions;
 	}
 	
 

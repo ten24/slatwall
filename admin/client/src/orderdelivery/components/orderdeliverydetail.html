@@ -1,0 +1,133 @@
+<div class="s-body">
+ 	<div class="s-content-wrapper">
+        <div class="row">
+          <div class="col-xs-3">
+                <label class="s-strong" style="margin-top: 4px;">Print Labels Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+            </div>
+         
+            <div class="col-xs-9">
+                <div class="row s-ladel-options">
+                    <div class="col-xs-4 radio" ng-if="swOrderDeliveryDetailController.hasIntegration">
+                        <input id="GenerateShippingLabel" type="radio" name="printOption" value="1" ng-model="swOrderDeliveryDetailController.useShippingIntegrationForTrackingNumber" ng-init="swOrderDeliveryDetailController.useShippingIntegrationForTrackingNumber = true">
+                        <label for="GenerateShippingLabel" title="helper text should go here to describe item">Generate Shipping Label(s)</label>
+                    </div>
+                    <div class="col-xs-4 radio">
+                        <input id="ManualShipment" type="radio" name="printOption" value="0" ng-model="swOrderDeliveryDetailController.useShippingIntegrationForTrackingNumber">
+                        <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
+                    </div>
+                </div>
+            </div>
+ 			
+ 			<div class="col-xs-12">
+                <div class="s-add-box-wrapper">
+                            
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Boxes</th>
+                                <th>Type</th>
+                                <th>Height (in)</th>
+                                <th>Width (in)</th>
+                                <th>Depth (in)</th>
+                                <th>Weight (lb)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+						
+					    <tbody ng-repeat="box in swOrderDeliveryDetailController.boxes track by $index">
+				            <input type="hidden" name="containers[{{$index+1}}].containerID" value='' />
+				            <input type="hidden" name="containers[{{$index+1}}].containerPresetID" value='{{box.containerPresetID}}'/>
+				            <tr>     
+                                <td><strong>{{$index+1}}</strong></td>
+                                <td>
+                                    <select class="form-control" name="containerPresets" ng-model="box.containerPreset" ng-options="container as container.containerName for container in swOrderDeliveryDetailController.containerPresetCollection track by container.containerPresetID" ng-change="swOrderDeliveryDetailController.userUpdatingBoxPreset(box)">
+                                        <option value="">Custom</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="containers[{{$index+1}}].height" onkeyup="this.value=this.value.replace(/[^\d]/,'')"  placeholder="H" ng-model="box.height">    
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="containers[{{$index+1}}].width" onkeyup="this.value=this.value.replace(/[^\d]/,'')"  placeholder="W" ng-model="box.width"> 
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="containers[{{$index+1}}].depth" onkeyup="this.value=this.value.replace(/[^\d]/,'')"  placeholder="D" ng-model="box.depth"> 
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="containers[{{$index+1}}].weight" onkeyup="this.value=this.value.replace(/[^\d]/,'')" required="true" placeholder="Weight" ng-model="box.weight">    
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-default btn-xs s-remove" ng-click="swOrderDeliveryDetailController.userRemovingBox($index)">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </td>
+						    </tr>
+                            
+						    <tr ng-if="swOrderDeliveryDetailController.useShippingIntegrationForTrackingNumber == 0">
+                                <td colspan="2"><strong>Tracking Number:</strong></td>
+                                <td colspan="4"><input type="text" class="form-control" style="max-width:100%" name="containers[{{$index+1}}].trackingNumber" ng-model="box.trackingNumber" /></td>
+                            </tr>
+                            
+                            <tr ng-show="box.containerItems && box.containerItems.length">
+                                <th></th>
+                                <th><strong>Items</strong></th>
+                                <th colspan="2">Order Item</th>
+                                <th colspan="2">Sku</th>
+                                <th>Qty</th>
+                            </tr>
+                            <tr ng-repeat="containerItem in box.containerItems track by $index" style="font-size:10px">
+                                <input type="hidden" name="containers[{{$parent.$index+1}}].containerItems[{{$index+1}}].containerItemID" value='' />
+                                <input type="hidden" name="containers[{{$parent.$index+1}}].containerItems[{{$index+1}}].sku.skuID" value='{{containerItem.sku.skuID}}' />
+                                <input type="hidden" name="containers[{{$parent.$index+1}}].containerItems[{{$index+1}}].item.orderItemID" value='{{containerItem.item.orderItemID}}' />
+                                <input type="hidden" name="containers[{{$parent.$index+1}}].containerItems[{{$index+1}}].item.quantity" value='{{containerItem.item.quantity}}' />
+                                <td></td>
+                                <td><strong>{{$index+1}}</strong></td>
+                                <td colspan="2">{{containerItem.item.skuCode + ' - ' + containerItem.item.skuName}}</td>
+                                <td colspan="2">{{containerItem.sku.skuCode + ' - ' + containerItem.sku.skuName}}</td>
+                                <td><input type="text" name="containers[{{$parent.$index+1}}].containerItems[{{$index+1}}].packagedQuantity" class="form-control"
+                                    ng-model="containerItem.newQuantity" 
+                                    ng-change="swOrderDeliveryDetailController.updateContainerItemQuantity(containerItem,containerItem.newQuantity)"
+                                    ng-model-options={debounce:500} ng-value="containerItem.packagedQuantity" /></td>
+                            </tr>
+                            
+						</tbody>
+                            
+                        <tbody>
+                            <tr>
+                                <td colspan="6">
+                                    <a role="button" ng-click="swOrderDeliveryDetailController.userAddingNewBox()"><i class="fa fa-plus"></i> Add Box</span>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <thead>
+                            <tr>
+                                <th>
+                                    <strong>Unassigned Items</strong>
+                                </th>
+                                <th>Order Item</th>
+                                <th colspan="2">Sku</th>
+                                <th colspan="2">Quantity</th>
+                                <th>Container</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                        	<!--- TODO add ability to get unassignedContainer Items --->
+                            <tr ng-repeat="(key,value) in swOrderDeliveryDetailController.unassignedContainerItems track by $index">
+                                <td><strong>{{$index+1}}</strong></td>
+                                <td>{{value.item.skuCode}} - {{value.item.skuName}}</td>
+                                <td colspan="2">{{value.sku.skuCode}} - {{value.sku.skuName}}</td>
+                                <td>{{value.quantity}}</td>
+                                <td colspan="2">
+                                	<!--- TODO make sure we have the same logic on the here as on the table --->
+                                    <select ng-model="container" ng-options="container as container.containerName for container in swOrderDeliveryDetailController.boxes" ng-change="swOrderDeliveryDetailController.userSettingUnassignedItemContainer(key,container)"></select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

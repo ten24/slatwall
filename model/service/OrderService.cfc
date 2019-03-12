@@ -2264,6 +2264,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderDelivery;
 	}
 	
+	public any function addOrderDeliveryItemsToOrderDeliveryByContainer(required any orderDelivery, required any processObject){
+		// Loop over delivery items from processObject and add them with stock to the orderDelivery
+		
+		for(var i=1; i<=arrayLen(arguments.processObject.getContainers()); i++) {
+			var containerStruct = arguments.processObject.getContainers()[i];
+			arguments.orderDelivery = getService('containerService').populateContainerFromContainerStructAndOrderDelivery(containerStruct,arguments.orderDelivery);
+		}
+		return arguments.orderDelivery;
+	}
+	
+	public any function processOrderDelivery_getContainerDetails(required any orderDelivery,required any processObject){
+		var containerStruct = getService('containerService').getContainerDetails(arguments.processObject,true);
+		arguments.data.apiResponse.content['containerStruct'] = containerStruct;
+		return arguments.orderDelivery;
+	}
+	
 	private any function generateInvoiceNumber(required any processObject){
 		var orderDeliveryCollectionList = this.getOrderDeliveryCollectionList();
 
@@ -2376,8 +2392,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				addOrderFulfillmentItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 
 			} else {
-				// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
-				addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
+				
+				if(!arrayLen(arguments.processObject.getContainers())){
+					// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
+					arguments.orderDelivery = addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
+				}else{
+					arguments.orderDelivery = addOrderDeliveryItemsToOrderDeliveryByContainer(arguments.orderDelivery,arguments.processObject);
+				}
 			}
 
 			// Beyond this point orderDelivery.getOrderDeliveryItems() has populated with orderDeliveryItem data from the processObject
@@ -2826,6 +2847,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(arguments.orderFulfillment.hasErrors()) {
 			arguments.orderFulfillment.setManualFulfillmentChargeFlag( false );
+		}
+
+		return arguments.orderFulfillment;
+	}
+	
+	// Process: Order Fulfillment
+	public any function processOrderFulfillment_manualHandlingFee(required any orderFulfillment, struct data={}) {
+
+		arguments.orderFulfillment.setManualHandlingFeeFlag( true );
+		arguments.orderFulfillment = this.saveOrderFulfillment(arguments.orderFulfillment, arguments.data);
+
+		if(arguments.orderFulfillment.hasErrors()) {
+			arguments.orderFulfillment.setManualHandlingFeeFlag( false );
 		}
 
 		return arguments.orderFulfillment;

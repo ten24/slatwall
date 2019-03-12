@@ -4,7 +4,7 @@ class HistoryService {
 
     private histories = {}; 
 
-    //ngInject
+    //@ngInject
     constructor(){
 
     }

@@ -93,12 +93,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.fulf
 	            arguments.container[dimension] = 1;
 	        }
 	    }
-	    if(isNull(variables.containers)){
-	    	variables.containers = [];
-	    }
-	    var containers = variables.containers;
-	    arrayAppend(containers,arguments.container);
-	    this.setContainers(containers);
 	}
 
     public void function populateShippingItemsWithOrderDelivery_Create(required any processObject, boolean clear=false){

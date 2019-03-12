@@ -382,6 +382,7 @@ Notes:
 
 	<cffunction name="getSortedProductSkusID">
 		<cfargument name="productID" type="string" required="true" />
+		<cfargument name="joinType" type="string" default="INNER" />
 		
 		<cfset var sorted = "" />
 		<cfset var nextOptionGroupSortOrder = getHibachiCacheService().getOrCacheFunctionValue("skuDAO_getNextOptionGroupSortOrder", this, "getNextOptionGroupSortOrder") />
@@ -392,11 +393,11 @@ Notes:
 				SwSku.skuID
 			FROM
 				SwSku
-			  INNER JOIN
+			  #arguments.joinType# JOIN
 				SwSkuOption on SwSku.skuID = SwSkuOption.skuID
-			  INNER JOIN
+			  #arguments.joinType# JOIN
 				SwOption on SwSkuOption.optionID = SwOption.optionID
-			  INNER JOIN
+			  #arguments.joinType# JOIN
 				SwOptionGroup on SwOption.optionGroupID = SwOptionGroup.optionGroupID
 			WHERE
 				SwSku.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />

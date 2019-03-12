@@ -50,7 +50,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="reportFlag" ormtype="boolean" default="0";
 	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
 	property name="softDeleteFlag" ormtype="boolean" default="0";
-
+	property name="publicFlag" ormtype="boolean" default="0";
 
 	// Calculated Properties
 
@@ -142,6 +142,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="exportFileName" type="string" persistent="false";
 	
 
+	
+
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function init(){
@@ -184,6 +186,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiUtilityService(getService('HibachiUtilityService'));
 
 	}
+	//if we are public then we can't have an account owner
+	public void function setPublicFlag(boolean publicFlagValue){
+		if(structKeyExists(arguments,'publicFlagValue')){
+			if(arguments.publicFlagValue){
+				setAccountOwner(javacast('null',''));
+				
+			}
+			variables.publicFlag = arguments.publicFlagValue;
+		}
+	}
+	//if we have an account owner then we can't be public
+	public void function setAccountOwner(any accountOwner){
+		if(!structKeyExists(arguments,'accountOwner')){
+			structDelete(variables,'accountOwner');
+		}else{
+			variables.accountOwner = arguments.accountOwner;
+			setPublicFlag(false);
+		}
+	}
+	
 	
 	public void function setInlistDelimiter(delimiter=","){
 		variables.inlistDelimiter = arguments.delimiter;
@@ -1931,15 +1953,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			setPageRecordsShow(25);
 		}
 	}
-
+	//there are two types of alias. One on the collection config in this format _product_defaultSku.skuID
+	//and another on the record output formatted like defaultSku_skuID
 	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
 		var cacheKey = 'convertAliasToPropertyIdentifier'&arguments.propertyIdentifierWithAlias;
 
 		var convertedAlias = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedAlias)){
+			//assume collection config format
 			if(left(arguments.propertyIdentifierWithAlias,1) == '_'){
 	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
 	 			arguments.propertyIdentifierWithAlias = listRest(right(arguments.propertyIdentifierWithAlias,len(arguments.propertyIdentifierWithAlias)-1),'.');
+			//assume output format
+			}else{
+	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
 	 		}
 	 		convertedAlias = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifierWithAlias);
 	 		setCollectionCacheValue(cacheKey,convertedAlias);
@@ -2228,10 +2255,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			clearRecordsCache();
 		}
 		
-		if(isReport()){
-			setIgnorePeriodInterval(true);
-		}
-
 		applyPermissions();
 		if(arguments.formatRecords){
 			//If we are caching this (someone set setCacheable(true) on the collectionList)
@@ -2373,10 +2396,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
+			this.setExcludeOrderBy(true);
 			//check cache key
 			var reportCacheKey = "";
 			if(!this.getNewFlag()){
 				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
+				reportCacheKey &= getIgnorePeriodInterval();
 			}
 			
 			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
@@ -2478,6 +2503,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
+		}
+		if(getIgnorePeriodInterval()){
+			return variables.records;
 		}
 		//backfill missing data intervals
 		if(isReport() && hasPeriodColumn()){
@@ -2636,7 +2664,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public string function getPrimaryIDList(){
 		var primaryIDList = "";
-		var primaryIDRecords = getPrimaryIDs();
+		var primaryIDRecords = getPrimaryIDs(this.getRecordsCount());
 		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
 		for(var primaryIDRecord in primaryIDRecords){
 			primaryIDList = listAppend(primaryIDList,primaryIDRecord[primaryIDName]);
@@ -3183,8 +3211,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									|| column.ormtype eq 'integer'
 									|| column.ormtype eq 'float'
 									|| column.ormtype eq 'double'
-									&& !getDisableAveragesAndSumsFlag()
-									)
+									) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
 								){
 									addTotalAvgAggregate(column);
 									addTotalSumAggregate(column);
@@ -3430,7 +3457,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-		if(arguments.excludeOrderBy || (isReport() && hasPeriodColumn())){
+		if(arguments.excludeOrderBy){
 			this.setExcludeOrderBy(true);
 		}
 
@@ -3553,7 +3580,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
-
 
 		}
 

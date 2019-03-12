@@ -62,10 +62,19 @@ class SWDisplayItemAggregate{
                     }
                 };
 
+
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
+                    var breadCrumb = {
+							entityAlias:scope.selectedProperty.name,
+							cfc:scope.selectedProperty.cfc,
+							propertyIdentifier:scope.selectedProperty.propertyIdentifier
+					};
+					scope.breadCrumbs.push(breadCrumb);
+					
                     selectedDisplayOption.aggregate = scope.aggregate.selectedAggregate;
                     selectedDisplayOption.aggregateObject = scope.aggregate.currentObject;
                     scope.selectedPropertyChanged({selectedProperty:selectedDisplayOption});
+                    displayOptionsController.selectedPropertyChanged(selectedDisplayOption);
                 };
 
 

@@ -338,7 +338,9 @@
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
 
-			for(var propertyIdentifier in listToArray(arguments.propertyIdentifierList)) {
+			var propertyIdentifierArray = listToArray(arguments.propertyIdentifierList);
+			for(var i=1; i <= arraylen(propertyIdentifierArray);i++) {
+				var propertyIdentifier = propertyIdentifierArray[i];
 				if( listFindNoCase(arguments.availablePropertyIdentifierList, trim(propertyIdentifier)) ) {
 					buildPropertyIdentifierDataStruct(arguments.object, trim(propertyIdentifier), responseData);
 				}
@@ -1043,10 +1045,12 @@
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
 
-					var value = arguments.queryData[colArray[j]][i];
+					var value = replace(arguments.queryData[colArray[j]][i],'"',"'",'all');
+
+					value = '"#value#"'; //let's wrap the whole thing in double quotes to make sure spaces and newlines get preserved
 
 					// create our row
-					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
+					thisRow[j] = replace( value,',','','all');
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));

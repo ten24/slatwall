@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems,manualFulfillmentCharge" {
+component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems,manualFulfillmentCharge,manualHandlingFee" {
 
 	// Persistent Properties
 	property name="orderFulfillmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -54,6 +54,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="currencyCode" ormtype="string" length="3";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="manualFulfillmentChargeFlag" ormtype="boolean" hb_populateEnabled="false";
+	property name="manualHandlingFeeFlag" ormtype="boolean" hb_populateEnabled="false";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="estimatedShippingDate" ormtype="timestamp";
@@ -106,7 +107,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-
+	property name="containerStruct" type="struct" persistent="false";
 	property name="accountAddressOptions" type="array" persistent="false";
 	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
@@ -701,6 +702,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return variables.manualFulfillmentChargeFlag;
 	}
 
+	public struct function getContainerStruct() {
+		if(!structKeyExists(variables,'containerStruct')){
+			variables.containerStruct = getService('containerService').getContainerDetails(this);
+		}
+		return variables.containerStruct;
+	}
+
 	public any function getShippingAddress() {
 		// Check Here
 		if(structKeyExists(variables, "shippingAddress")) {
@@ -736,8 +744,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 					variables.shippingMethod = arguments.shippingMethod;
 
 					// Set the charge
-					if(!getManualfulfillmentChargeFlag()) {
+					if(!getManualfulfillmentChargeFlag() && (isNull(getThirdPartyShippingAccountIdentifier()) || !len(getThirdPartyShippingAccountIdentifier()))) {
 						setFulfillmentCharge( getFulfillmentShippingMethodOptions()[i].getTotalCharge() );
+					}else if(len(getThirdPartyShippingAccountIdentifier())){
+						setFulfillmentCharge(0);
 					}
 				}
 			}

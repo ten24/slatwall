@@ -29,10 +29,15 @@ class SWListingReportController {
     public selectedPeriodPropertyIdentifierArray:string[]=[];
     public selectedPeriodPropertyIdentifier;
     public collectionId:string;
+    public createdByAccountID:string;
+    public swListingDisplay:any;
+    public isPublic:boolean;
+    public accountOwnerID:string;
     
     
     //@ngInject
     constructor(
+        public $filter,
         public $scope,
         public $timeout,
         public $rootScope,
@@ -40,7 +45,7 @@ class SWListingReportController {
         public metadataService,
         public listingService,
         public observerService,
-        public collectionConfigService
+        public collectionConfigService,
     ) {
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
         if(this.collectionId){
@@ -80,11 +85,17 @@ class SWListingReportController {
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
                 'collectionObject':this.collectionConfig.baseEntityName,
-                'accountOwner':{
-                    'accountID':this.$rootScope.slatwall.account.accountID
-                },
                 'reportFlag':1
             }
+            
+            if(!this.isPublic){
+                serializedJSONData['accountOwner']={
+                    'accountID':this.$rootScope.slatwall.account.accountID
+                };
+            }else{
+                serializedJSONData['publicFlag']=1;
+            }
+            
             if(collectionName){
                 serializedJSONData['collectionName'] = collectionName;
             }
@@ -99,6 +110,7 @@ class SWListingReportController {
                 'save'  
             ).then((data)=>{
                 if(this.collectionId){
+                    
                     window.location.reload();    
                 }else{
                     var url = window.location.href;    
@@ -107,6 +119,7 @@ class SWListingReportController {
                     }else{
                        url += '?collectionID='+data.data.collectionID;
                     }
+                    
                    window.location.href = url;
                 }
             });
@@ -150,7 +163,7 @@ class SWListingReportController {
         }
         this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
         this.compareReportCollectionConfig.setReportFlag(1);
-        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
+        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
         this.compareReportCollectionConfig.setAllRecords(true);
         this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
         
@@ -274,6 +287,17 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
+            if(this.swListingDisplay && this.swListingDisplay.collectionData){
+                if(this.swListingDisplay.collectionData.createdByAccountID){
+                    this.createdByAccountID = this.swListingDisplay.collectionData.createdByAccountID;                
+                }
+                if(this.swListingDisplay.collectionData.accountOwner_accountID){
+                    this.accountOwnerID = this.swListingDisplay.collectionData.accountOwner_accountID;
+                    this.isPublic = false;
+                }else if(this.collectionId){
+                    this.isPublic = true;
+                }
+            }
             
             this.startDate = new Date(this.startDate);
             this.startDate.setHours(0,0,0,0)
@@ -305,7 +329,7 @@ class SWListingReportController {
             if(this.hasMetric){
                 this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
                 this.reportCollectionConfig.setReportFlag(1);
-                this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
+                this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
                 this.reportCollectionConfig.setAllRecords(true);
                 this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
                 
@@ -357,7 +381,9 @@ class SWListingReportController {
 		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
 		    pidAliasArray.shift();
 		    var pidAlias = pidAliasArray.join('_');
-		    dates.push(element[pidAlias]);
+		    var value = this.$filter('swdatereporting')(element[pidAlias],this.selectedPeriodInterval.value);
+		    
+		    dates.push(value);
 		});
 		
 		this.reportCollectionConfig.columns.forEach(column=>{
@@ -509,6 +535,7 @@ class SWListingReportController {
             column.propertyIdentifier = this.selectedPeriodPropertyIdentifier;
             column.isPeriod = true;
             column.isVisible = true;
+            column.isExportable = true;
             column.title = column.displayPropertyIdentifier;
             
             
@@ -534,7 +561,7 @@ class SWListingReport  implements ng.IDirective{
     };
     public controller = SWListingReportController;
     public controllerAs = 'swListingReport';
-
+    public require={swListingDisplay:"?^swListingDisplay"};
     //@ngInject
     constructor(
         public scopeService,

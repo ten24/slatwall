@@ -185,7 +185,7 @@ class CollectionConfig {
 
                 for(let filter of filterGroup['filterGroup']){
 
-                    if(!filter.displayPropertyIdentifier){
+                    if(!filter.displayPropertyIdentifier && filter.propertyIdentifier){
                         let convertedPropertyIdentifier = filter.propertyIdentifier.replace(/_/g, '.');
                         if(convertedPropertyIdentifier[0] === "."){
                             convertedPropertyIdentifier = convertedPropertyIdentifier.substr(1);
@@ -196,7 +196,6 @@ class CollectionConfig {
                     if(!filter.displayValue){
                         filter.displayValue = filter.value;
                     }
-
                 }
             }
             

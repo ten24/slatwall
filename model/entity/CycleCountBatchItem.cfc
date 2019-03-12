@@ -56,7 +56,7 @@ component entityname="SlatwallCycleCountBatchItem" table="SwCycleCountBatchItem"
 	// Related Object Properties (many-to-one)
 	property name="cycleCountBatch" cfc="CycleCountBatch" fieldtype="many-to-one" fkcolumn="cycleCountBatchID";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
-
+	property name="cycleCountGroup" cfc="CycleCountGroup" fieldtype="many-to-one" fkcolumn="cycleCountGroupID";
 	// Related Object Properties (one-to-many)
 
 	// Related Object Properties (one-to-one)
@@ -82,7 +82,6 @@ component entityname="SlatwallCycleCountBatchItem" table="SwCycleCountBatchItem"
 	public string function getBatchStatusCode() {
 		return getCycleCountBatch().getCycleCountBatchStatusType().getSystemCode();
 	}
-	
 	
 	// ============  END:  Non-Persistent Property Methods =================
 

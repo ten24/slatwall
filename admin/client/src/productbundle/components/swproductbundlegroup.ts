@@ -57,7 +57,6 @@ class SWProductBundleGroupController {
 	constructor(private $log:ng.ILogService,
                 private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
-				private productBundleService,
                 private metadataService,
                 private utilityService,
                 private formService,
@@ -217,14 +216,7 @@ class SWProductBundleGroup implements ng.IDirective{
 	public controllerAs="swProductBundleGroup";
 
     // @ngInject
-	constructor(private $log:ng.ILogService,
-                private $timeout:ng.ITimeoutService,
-				private collectionConfigService,
-				private productBundleService,
-                private metadataService,
-                private utilityService,
-                private formService,
-				private $hibachi,
+	constructor(
                 private productBundlePartialsPath,
 			    slatwallPathBuilder){
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
@@ -235,14 +227,14 @@ class SWProductBundleGroup implements ng.IDirective{
 
 	public static Factory(){
 		var directive = (
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath,
+            productBundlePartialsPath,
 			slatwallPathBuilder
         )=> new SWProductBundleGroup(
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath,
+            productBundlePartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
-            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
+            "productBundlePartialsPath",
 			"slatwallPathBuilder"
         ];
         

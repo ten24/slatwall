@@ -61,7 +61,8 @@ Notes:
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="cycleCountBatchDate" edit="#rc.edit#" fieldAttributes="autocomplete='off'">
+		    <hb:HibachiPropertyDisplay object="#rc.processObject#" property="cycleCountBatchName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

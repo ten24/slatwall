@@ -70,7 +70,6 @@ Notes:
 			<input type="hidden" name="shippingMethod.shippingMethodID" value="#rc.shippingMethod.getShippingMethodID()#" />
 			<cfif isObject(rc.integration)>
 				<input type="hidden" name="shippingIntegration.integrationID" value="#rc.integration.getIntegrationID()#" />
-			<hr>
 			</cfif>
 		</cfif>
 		
@@ -97,6 +96,8 @@ Notes:
 		        	<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="maximumShipmentItemPrice" edit="#rc.edit#" />
 					
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="defaultAmount" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.defaultAmount' ng-init=""shippingMethodRate.defaultAmount='#rc.shippingMethodRate.getDefaultAmount()#'""">
+					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="rateMultiplierAmount" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.rateMultiplierAmount' ng-init=""shippingMethodRate.rateMultiplierAmount='#rc.shippingMethodRate.getRateMultiplierAmount()#'""">
+					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="ratePerContainer" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.ratePerContainer' ng-init=""shippingMethodRate.ratePerContainer='#rc.shippingMethodRate.getRatePerContainer()#'""">
 					
 					<!--- display a sample of the calculations that will be used with the upcharge --->
 					<div ng-if="shippingMethodRate.rateMultiplierAmount && (shippingMethodRate.minimumShipmentWeight || shippingMethodRate.minimumShipmentQuantity)" class="ng-cloak">
