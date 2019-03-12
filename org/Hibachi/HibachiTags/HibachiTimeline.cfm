@@ -19,7 +19,6 @@
 	<cfelseif isObject(attributes.object) && attributes.object.isPersistent()>
 		<cfset thisTag.mode = "object" />
 		<cfset attributes.auditCollectionList = attributes.object.getAuditCollectionList() />
-		<cfset attributes.auditSmartList = attributes.object.getAuditSmartList()/>
 		
 	<!--- No AuditSmartList was pased in, and no object was passed in so just create a new auditSmartList --->
 	<cfelse>
@@ -157,7 +156,7 @@
 							</td>
 						</tr>
 					</cfloop>
-					<cfif isObject(attributes.object) and attributes.object.hasProperty('createdDateTime') and attributes.object.getCreatedDateTime() lt attributes.auditSmartList.getRecords()[arrayLen(attributes.auditSmartList.getRecords())].getAuditDateTime()>
+					<cfif isObject(attributes.object) and attributes.object.hasProperty('createdDateTime') and attributes.object.getCreatedDateTime() lt attributes.auditCollectionList.getRecords()[arrayLen(attributes.auditCollectionList.getRecords())]['auditDateTime']>
 						<tr><td colspan="#thisTag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.audit.frontEndAndAdmin")#</em></td></tr>
 					</cfif>
 				<cfelseif isObject(attributes.object) and attributes.object.hasProperty('createdDateTime') and attributes.object.hasProperty('modifiedDateTime') and attributes.object.getCreatedDateTime() lt attributes.object.getModifiedDateTime()>
