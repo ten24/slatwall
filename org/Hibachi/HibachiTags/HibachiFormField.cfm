@@ -298,38 +298,6 @@
 			        data-order-by-list="#simpleRepresentationName#|ASC">
 			
 
-				    <!---<sw-collection-config
-				            data-entity-name="Location"
-				            data-collection-config-property="typeaheadCollectionConfig"
-				            data-parent-directive-controller-as-name="swTypeaheadInputField"
-				            data-all-records="true">
-				    	
-				    								<!--- Columns --->
-	 					<sw-collection-columns>
-	 						<sw-collection-column data-property-identifier="locationName" is-searchable="true"></sw-collection-column>
-	 						<sw-collection-column data-property-identifier="locationID" is-searchable="false"></sw-collection-column>
-	 					</sw-collection-columns>
-	 					
-	 					<!--- Order By --->
-	 			    	<sw-collection-order-bys>
-	 			        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
-	 			    	</sw-collection-order-bys>
-	
-				    	<!--- Filters --->
-				    	<cfif attributes.showActiveLocationsFlag EQ true OR attributes.ignoreParentLocationsFlag EQ true>
-					    	<sw-collection-filters>
-	                            <cfif attributes.showActiveLocationsFlag EQ true>	
-	                            	<sw-collection-filter data-property-identifier="activeFlag" data-comparison-operator="=" data-comparison-value="1"></sw-collection-filter>
-	                        	</cfif>
-	                        	<cfif attributes.ignoreParentLocationsFlag EQ true>
-	                        		<sw-collection-filter data-property-identifier="parentLocation" data-comparison-operator="is not" data-comparison-value="null"></sw-collection-filter>
-								</cfif>
-								<cfif len(attributes.topLevelLocationID)>
-									<sw-collection-filter data-property-identifier="locationIDPath" data-comparison-operator="like" data-comparison-value="%#attributes.topLevelLocationID#%"></sw-collection-filter>
-	                        	</cfif>
-	                        </sw-collection-filters>
-				    	</cfif>
-				    </sw-collection-config>--->
 
 					<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
 	
