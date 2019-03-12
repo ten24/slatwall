@@ -35,6 +35,18 @@
                         <option value="">Select From {{selectedProperty.displayPropertyIdentifier}}:</option>
                     </select>
                 </div>
+                <div class="col-sm-12 s-no-paddings s-account-field-select" style="padding-left:5px !important;">
+		          <select ng-model="selectedProperty.selectedDisplayOption" 
+		          		ng-change="selectedDisplayOptionChanged(selectedProperty.selectedDisplayOption)" 
+		          		ng-options="property as property.displayPropertyIdentifier
+		          					for property in propertiesList[selectedProperty.propertyIdentifier].data 
+		          					| orderBy:['displayPropertyIdentifier'] track by property.propertyIdentifier
+		          					"
+		          		class="form-control input-sm">
+		            <option value="">Select From {{selectedProperty.displayPropertyIdentifier}}:</option>
+		          </select>
+		        <div class="clearfix"></div>
+		      </div>
 
             </div>
         </form>

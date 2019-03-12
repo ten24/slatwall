@@ -401,6 +401,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return variables.auditSmartList;
 	}
+	
+	public any function getAuditCollectionList(){
+		if(!structKeyExists(variables,'auditCollectionList')){
+			variables.auditCollectionList = getService('hibachiAuditService').getAuditCollectionListForEntity(entity=this);
+		}	variables.auditCollectionList.setOrderBy('auditDateTime|DESC');
+		return variables.auditCollectionList;
+	}
 
 	// @hint public method that returns the value from the primary ID of this entity
 	public string function getPrimaryIDValue() {
