@@ -42,7 +42,7 @@ class SWDisplayItem{
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
 				scope.showDisplayItem = false;
-
+				
 				scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
 
 					var breadCrumb = {
