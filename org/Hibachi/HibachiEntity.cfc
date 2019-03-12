@@ -406,6 +406,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(!structKeyExists(variables,'auditCollectionList')){
 			variables.auditCollectionList = getService('hibachiAuditService').getAuditCollectionListForEntity(entity=this);
 		}	variables.auditCollectionList.setOrderBy('auditDateTime|DESC');
+		return variables.auditCollectionList;
 	}
 
 	// @hint public method that returns the value from the primary ID of this entity
