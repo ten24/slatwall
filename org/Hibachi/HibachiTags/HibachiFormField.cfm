@@ -256,42 +256,19 @@
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
-				<!---<cfset suggestionsID = reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all') & "-suggestions" />
-				<div class="autoselect-container">
-					<input type="hidden" name="#attributes.fieldName#" value="#attributes.value#" />
-					<input type="text" name="#reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
-					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
-					<div class="autocomplete-options" style="display:none;">
-						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">
-							<cfif len(attributes.value)>
-								<li>
-									<a href="##" class="textautocompleteadd" data-acvalue="#attributes.value#" data-acname="#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#">
-									<cfset thisTag.counter = 0 />
-									<cfloop list="#attributes.autocompletePropertyIdentifiers#" index="pi">
-										<cfset thisTag.counter++ />
-										<cfif thisTag.counter lte 2 and pi neq "adminIcon">
-											<span class="#listLast(pi,".")# first">
-										<cfelse>
-											<span class="#listLast(pi,".")#">
-										</cfif>
-										#attributes.autocompleteSelectedValueDetails[ pi ]#</span>
-									</cfloop>
-									</a>
-								</li>
-							</cfif>
-						</ul>
-					</div>
-					<cfif len(attributes.modalCreateAction)>
-						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
-					</cfif>
-				</div>--->
+			
 				<cfscript>
-					lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
-					propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
+					if(attributes.object.isPersistent()){
+						lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
+						propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
+					}else{
+						lastEntityName = attributes.object.getClassName();
+						propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
+					}
+					
 					relatedEntity = listLast(attributes.property,'.');
 					propertyMetaData = propsStruct[relatedEntity];
-				
-					if (attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
+					if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
 						primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 						simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 					}else{
@@ -299,16 +276,15 @@
 					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
 				</cfscript>
 				
-				
 				<cfif isNull(simpleRepresentationName)>
 					<cfdump var="#attributes.property#">
 					<cfdump var="#attributes.object.getClassName()#" top=2><cfabort>
 				</cfif>
 				<sw-typeahead-input-field
 					data-entity-name="#propertyMetaData.cfc#"
-			        data-property-to-save="#attributes.object.getPrimaryIDPropertyName()#"
+			        data-property-to-save="#primaryIDName#"
 			        data-property-to-show="#simpleRepresentationName#"
-			        data-properties-to-load="#simpleRepresentationName#"
+			        data-properties-to-load="#primaryIDName#,#simpleRepresentationName#"
 			        data-show-add-button="true"
 			        data-show-view-button="true"
 			        data-placeholder-rb-key="#propertynamerbkey#"
@@ -316,46 +292,48 @@
 			        data-multiselect-mode="false"
 			        data-filter-flag="false"
 			        data-selected-format-string="##"
-			        data-field-name="#simpleRepresentationName#"
-			        data-max-records="100"
+			        data-field-name="#attributes.fieldName#"
+			        data-initial-entity-id="#attributes.value#"
+			        data-max-records="20"
 			        data-order-by-list="#simpleRepresentationName#|ASC">
+			
 
-			    <!---<sw-collection-config
-			            data-entity-name="Location"
-			            data-collection-config-property="typeaheadCollectionConfig"
-			            data-parent-directive-controller-as-name="swTypeaheadInputField"
-			            data-all-records="true">
-			    	
-			    								<!--- Columns --->
- 					<sw-collection-columns>
- 						<sw-collection-column data-property-identifier="locationName" is-searchable="true"></sw-collection-column>
- 						<sw-collection-column data-property-identifier="locationID" is-searchable="false"></sw-collection-column>
- 					</sw-collection-columns>
- 					
- 					<!--- Order By --->
- 			    	<sw-collection-order-bys>
- 			        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
- 			    	</sw-collection-order-bys>
+				    <!---<sw-collection-config
+				            data-entity-name="Location"
+				            data-collection-config-property="typeaheadCollectionConfig"
+				            data-parent-directive-controller-as-name="swTypeaheadInputField"
+				            data-all-records="true">
+				    	
+				    								<!--- Columns --->
+	 					<sw-collection-columns>
+	 						<sw-collection-column data-property-identifier="locationName" is-searchable="true"></sw-collection-column>
+	 						<sw-collection-column data-property-identifier="locationID" is-searchable="false"></sw-collection-column>
+	 					</sw-collection-columns>
+	 					
+	 					<!--- Order By --->
+	 			    	<sw-collection-order-bys>
+	 			        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
+	 			    	</sw-collection-order-bys>
+	
+				    	<!--- Filters --->
+				    	<cfif attributes.showActiveLocationsFlag EQ true OR attributes.ignoreParentLocationsFlag EQ true>
+					    	<sw-collection-filters>
+	                            <cfif attributes.showActiveLocationsFlag EQ true>	
+	                            	<sw-collection-filter data-property-identifier="activeFlag" data-comparison-operator="=" data-comparison-value="1"></sw-collection-filter>
+	                        	</cfif>
+	                        	<cfif attributes.ignoreParentLocationsFlag EQ true>
+	                        		<sw-collection-filter data-property-identifier="parentLocation" data-comparison-operator="is not" data-comparison-value="null"></sw-collection-filter>
+								</cfif>
+								<cfif len(attributes.topLevelLocationID)>
+									<sw-collection-filter data-property-identifier="locationIDPath" data-comparison-operator="like" data-comparison-value="%#attributes.topLevelLocationID#%"></sw-collection-filter>
+	                        	</cfif>
+	                        </sw-collection-filters>
+				    	</cfif>
+				    </sw-collection-config>--->
 
-			    	<!--- Filters --->
-			    	<cfif attributes.showActiveLocationsFlag EQ true OR attributes.ignoreParentLocationsFlag EQ true>
-				    	<sw-collection-filters>
-                            <cfif attributes.showActiveLocationsFlag EQ true>	
-                            	<sw-collection-filter data-property-identifier="activeFlag" data-comparison-operator="=" data-comparison-value="1"></sw-collection-filter>
-                        	</cfif>
-                        	<cfif attributes.ignoreParentLocationsFlag EQ true>
-                        		<sw-collection-filter data-property-identifier="parentLocation" data-comparison-operator="is not" data-comparison-value="null"></sw-collection-filter>
-							</cfif>
-							<cfif len(attributes.topLevelLocationID)>
-								<sw-collection-filter data-property-identifier="locationIDPath" data-comparison-operator="like" data-comparison-value="%#attributes.topLevelLocationID#%"></sw-collection-filter>
-                        	</cfif>
-                        </sw-collection-filters>
-			    	</cfif>
-			    </sw-collection-config>--->
-
-				<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
-
-			</sw-typeahead-input-field>
+					<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
+	
+				</sw-typeahead-input-field>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="typeahead">

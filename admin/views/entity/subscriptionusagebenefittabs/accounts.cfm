@@ -49,37 +49,29 @@ Notes:
 <cfparam name="rc.subscriptionUsageBenefit" type="any">
 
 <cfoutput>
-    <sw-listing-display
-            data-collection="SubscriptionUsageBenefitAccount"
-            data-multi-slot="true"
-            data-edit="true"
-            data-has-search="true"
-            data-is-angular-route="false"
-            data-angular-links="false"
-            data-has-action-bar="false"
-            data-record-detail-action="admin:entity.detailSubscriptionUsageBenefitAccount"
-            data-name="subscriptionUsageBenefitAccountListingDisplay">
-
-    <sw-collection-configs>
-    <sw-collection-config
-            data-entity-name="SubscriptionUsageBenefitAccount"
-            parent-directive-controller-as-name="swListingDisplay">
-
-    <sw-collection-filters>
-            <sw-collection-filter data-property-identifier="subscriptionUsageBenefit.subscriptionUsageBenefitID" data-comparison-operator="=" data-comparison-value="#rc.subscriptionUsageBenefit.getSubscriptionUsageBenefitID()#"></sw-collection-filter>
-</sw-collection-filters>
-
-    <sw-collection-columns>
-        <sw-collection-column is-only-keyword-column="false" data-property-identifier="account.firstName" ></sw-collection-column>
-        <sw-collection-column is-only-keyword-column="false" data-property-identifier="account.lastName" ></sw-collection-column>
-        <sw-collection-column is-only-keyword-column="false" data-property-identifier="account.primaryEmailAddress.emailAddress" ></sw-collection-column>
-    </sw-collection-columns>
-</sw-collection-config>
-</sw-collection-configs>
-
-    <sw-listing-column data-title="First Name" data-property-identifier="account.firstName" ></sw-listing-column>
-    <sw-listing-column data-title="Last Name" data-property-identifier="account.lastName" ></sw-listing-column>
-    <sw-listing-column data-title="Email Address" data-property-identifier="account.primaryEmailAddress.emailAddress" ></sw-listing-column>
-
-</sw-listing-display>
+    <cfset subscriptionUsageBenefitAccountCollectionList = rc.subscriptionUsageBenefit.getSubscriptionUsageBenefitAccountsCollectionList()/>
+    <cfset displayPropertyList = ""/>
+	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.primaryEmailAddress.emailAddress'/>
+	<cfset subscriptionUsageBenefitAccountCollectionList.setDisplayProperties(
+		displayPropertyList,
+		{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}
+	)/>
+	<cfset subscriptionUsageBenefitAccountCollectionList.addDisplayProperty(displayProperty='subsUsageBenefitAccountID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	<hb:HibachiListingDisplay 
+		collectionList="#subscriptionUsageBenefitAccountCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(subscriptionUsageBenefitAccountCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(subscriptionUsageBenefitAccountCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
+    
+    
 </cfoutput>
