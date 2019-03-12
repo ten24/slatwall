@@ -34,9 +34,7 @@
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
-            <span sw-tooltip class="tool-tip-item" data-text="Reporting" data-position="bottom">
-                <i class="fas fa-chart-line"></i>
-            </span>
+            <i class="fas fa-chart-line"></i>
         </button>
         <ul class="dropdown-menu pull-right  with-btn autocomplete-options" >
             <li>
@@ -62,9 +60,7 @@
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
-            <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
-                <i class="fas fa-save"></i>
-            </span>
+            <i class="fas fa-save"></i>
         </button>
         <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
             <li style="padding:8px;">
@@ -94,9 +90,7 @@
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 
         >
-            <span sw-tooltip class="tool-tip-item" data-text="All Saved Reports" data-position="bottom">
-                <i  class="fa fa-bookmark"></i>
-            </span>
+            <i  class="fa fa-bookmark"></i>
         </button>
         <ul class="dropdown-menu pull-right with-btn">
             <li>
@@ -113,27 +107,21 @@
         </ul>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
-        <span sw-tooltip class="tool-tip-item" data-text="Filtering" data-position="bottom">
-            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
-                <i class="fa fa-filter"></i>
-            </button>
-        </span>
+        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
+            <i class="fa fa-filter"></i>
+        </button>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleDisplayOptions">
-        <span sw-tooltip class="tool-tip-item" data-text="Display Options" data-position="bottom">
-            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
-                <i class="fa fa-th"></i>
-            </button>
-        </span>
+        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
+            <i class="fa fa-th"></i>
+        </button>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showExport">
-        <span sw-tooltip class="tool-tip-item" data-text="Export" data-position="bottom">
-            <button type="button"
-                    class="btn btn-sm btn-default"
-                    data-ng-click="swListingSearch.swListingControls.exportCollection()">
-                <i class="fa fa-download"></i>
-            </button>
-        </span>
+        <button type="button"
+                class="btn btn-sm btn-default"
+                data-ng-click="swListingSearch.swListingControls.exportCollection()">
+            <i class="fa fa-download"></i>
+        </button>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
         <button type="button"
