@@ -199,7 +199,7 @@ Notes:
 									<hr />
 									<h5>#attributeSet.getAttributeSetName()#</h5>
 									<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
-									</cfif>
+								</cfif>
 							</cfloop> 
 
 							<!--- Order Fulfillment --->
