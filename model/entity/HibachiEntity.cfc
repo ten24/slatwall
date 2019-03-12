@@ -456,6 +456,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
 	}
+	
+	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
+		var propertyCollection = super.getPropertyCountCollectionList(argumentCollection=arguments);
+
+		// Skip record level permissions for these entities, otherwise infinite loop is possible
+		if (getClassName() == 'Account' && listFindNoCase('PermissionGroup,Permission', getPropertiesStruct()[arguments.propertyName].cfc)) {
+			propertyCollection.setPermissionAppliedFlag(true);
+		}
+
+		return propertyCollection;
+	}
 
 	public array function getPrintTemplates() {
 		if(!structKeyExists(variables, "printTemplates")) {

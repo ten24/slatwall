@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwWorkflowTrigger" dependencies="/config/dbdata/SlatwallWorkflow.xml.cfm">
+<Table tableName="SwWorkflowTrigger" dependencies="/config/dbdata/SlatwallWorkflow.xml.cfm,/config/dbdata/SlatwallSchedule.xml.cfm">
 	<Columns>
 		<column name="workflowTriggerID" fieldtype="id" />
 		<column name="triggerType" update="false"/>
