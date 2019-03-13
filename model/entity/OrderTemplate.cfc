@@ -62,9 +62,46 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
 
-
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
-	
+
+	// Account (many-to-one)
+	public any function setAccount(required any account) {
+		variables.account = arguments.account;
+		if(isNew() or !arguments.account.hasOrderTemplate( this )) {
+			arrayAppend(arguments.account.getOrderTemplates(), this);
+		}
+		return this;
+	}
+	public void function removeAccount(any account) {
+		if(!structKeyExists(arguments, "account")) {
+			arguments.account = variables.account;
+		}
+		var index = arrayFind(arguments.account.getOrderTemplates(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.account.getOrderTemplates(), index);
+		}
+		structDelete(variables, "account");
+	}	
+
+	// Account Payment Method(many-to-one)
+	public any function setAccountPaymentMethod(required any accountPaymentMethod) {
+		variables.accountPaymentMethod = arguments.accountPaymentMethod;
+		if(isNew() or !arguments.accountPaymentMethod.hasOrderTemplate( this )) {
+			arrayAppend(arguments.accountPaymentMethod.getOrderTemplates(), this);
+		}
+		return this;
+	}
+	public void function removeAccountPaymentMethod(any accountPaymentMethod) {
+		if(!structKeyExists(arguments, "accountPaymentMethod")) {
+			arguments.accountPaymentMethod = variables.accountPaymentMethod;
+		}
+		var index = arrayFind(arguments.accountPaymentMethod.getOrderTemplates(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.accountPaymentMethod.getOrderTemplates(), index);
+		}
+		structDelete(variables, "accountPaymentMethod");
+	}
+
 	// Order Template Items (one-to-many)
 	public void function addOrderTemplateItem(required any orderTemplateItem) {
 		arguments.orderTemplateItem.setOrderTemplate( this );
@@ -72,4 +109,5 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}	
+
 }
