@@ -55,7 +55,25 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
 
-	// Order (many-to-one)
+	// Order Template (many-to-one)
+	public void function setSku(required any sku) {
+		variables.sku = arguments.orderTemplate;
+		if(isNew() or !arguments.order.hasSku( this )) {
+			arrayAppend(arguments.order.getSkus(), this);
+		}
+	}
+	public void function removeSku(any sku) {
+		if(!structKeyExists(arguments, "sku")) {
+			arguments.sku = variables.orderTemplate;
+		}
+		var index = arrayFind(arguments.order.getSkus(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.order.getSkus(), index);
+		}
+		structDelete(variables, "sku");
+	}	
+
+	// Order Template (many-to-one)
 	public void function setOrderTemplate(required any orderTemplate) {
 		variables.orderTemplate = arguments.orderTemplate;
 		if(isNew() or !arguments.order.hasOrderTemplateItem( this )) {
