@@ -58685,17 +58685,19 @@ var BaseBootStrapper = /** @class */ (function () {
             return deferred.promise;
         };
         this.getResourceBundles = function () {
-            var localeListArray = _this.appConfig.rbLocale.split('_');
-            var rbPromise;
+            var rbLocale = _this.appConfig.rbLocale;
+            if (rbLocale == 'en_us') {
+                rbLocale = 'en';
+            }
+            var localeListArray = rbLocale.split('_');
             var rbPromises = [];
-            rbPromise = _this.getResourceBundle(_this.appConfig.rbLocale);
+            var rbPromise = _this.getResourceBundle(rbLocale);
             rbPromises.push(rbPromise);
             if (localeListArray.length === 2) {
                 rbPromise = _this.getResourceBundle(localeListArray[0]);
                 rbPromises.push(rbPromise);
             }
             if (localeListArray[0] !== 'en') {
-                //this.getResourceBundle('en_us');
                 _this.getResourceBundle('en');
             }
             return _this.$q.all(rbPromises).then(function (data) {
