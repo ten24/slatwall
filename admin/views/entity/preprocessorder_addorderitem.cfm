@@ -195,10 +195,12 @@ Notes:
 
 							<!--- Order Item Custom Attributes --->
 							<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
-								<hr />
-								<h5>#attributeSet.getAttributeSetName()#</h5>
-								<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
-							</cfloop>
+								<cfif not isNull(attributeSet.getAttributeSetName())>
+									<hr />
+									<h5>#attributeSet.getAttributeSetName()#</h5>
+									<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
+								</cfif>
+							</cfloop> 
 
 							<!--- Order Fulfillment --->
 							<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
