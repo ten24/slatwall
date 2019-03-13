@@ -46,30 +46,30 @@
 Notes:
 
 */
-component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="" {
+component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem" table="SwOrderTemplateItem" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="" {
 
-	// Persistent Properties
-	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderTemplateName" ormtype="string";
-	
-	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
-	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
+	property name="orderTemplateItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
-	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
-	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID";
-	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID";
+	property name="quantity" ormtype="integer";
 
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
 
-
-	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
-	
-	// Order Template Items (one-to-many)
-	public void function addOrderTemplateItem(required any orderTemplateItem) {
-		arguments.orderTemplateItem.setOrderTemplate( this );
+	// Order (many-to-one)
+	public void function setOrderTemplate(required any orderTemplate) {
+		variables.orderTemplate = arguments.orderTemplate;
+		if(isNew() or !arguments.order.hasOrderTemplateItem( this )) {
+			arrayAppend(arguments.order.getOrderTemplateItems(), this);
+		}
 	}
-	public void function removeOrderItem(required any orderItem) {
-		arguments.orderItem.removeOrder( this );
+	public void function removeOrderTemplate(any orderTemplate) {
+		if(!structKeyExists(arguments, "orderTemplate")) {
+			arguments.orderTemplate = variables.orderTemplate;
+		}
+		var index = arrayFind(arguments.order.getOrderTemplateItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.order.getOrderTemplateItems(), index);
+		}
+		structDelete(variables, "orderTemplate");
 	}	
 }
