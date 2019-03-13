@@ -338,7 +338,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 								shippingProviderMethod=shippingProviderMethod,
 								totalCharge=totalCharge
 							);
-							logHibachi("FedEx - Rate Reply - #totalCharge# - '#shippingProviderMethod#'",true);
+							logHibachi("FedEx - Rate Reply - #totalCharge# - '#shippingProviderMethod#'");
 						}
 					}catch (any e){
 						responseBean.addError("unknown", "An unexpected error occured when retrieving the shipping rates, please notify system administrator.");

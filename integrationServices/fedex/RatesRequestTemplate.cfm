@@ -134,9 +134,6 @@
 	        	<cfloop collection="#local.containers#" item="size">
 	        		<cfif isArray(local.containers[size])>
 		        		<cfloop array="#local.containers[size]#" index="local.container">
-		        			<!---<cfdump var="#i#" top=2><cfabort>
-		        			<cfdump var="#local.containers[size][i]#" top=2><cfabort>
-		        			<cfset local.container= local.containers[size][i]>--->
 		        			<cfset local.sequenceNo++ />
 					        <ns:RequestedPackageLineItems>
 								<ns:SequenceNumber>#local.sequenceNo#</ns:SequenceNumber>
