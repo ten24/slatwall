@@ -276,10 +276,6 @@
 					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
 				</cfscript>
 				
-				<cfif isNull(simpleRepresentationName)>
-					<cfdump var="#attributes.property#">
-					<cfdump var="#attributes.object.getClassName()#" top=2><cfabort>
-				</cfif>
 				<sw-typeahead-input-field
 					data-entity-name="#propertyMetaData.cfc#"
 			        data-property-to-save="#primaryIDName#"
