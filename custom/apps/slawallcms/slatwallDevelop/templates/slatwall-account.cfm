@@ -69,6 +69,7 @@
                             	<cfcase value = "subscription">
                             		<cfinclude template = "inc/account/account_subscription_details.cfm">
                             	</cfcase>
+                            	
                             </cfswitch>
                         </div>
                     </div>
