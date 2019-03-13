@@ -1527,14 +1527,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		structDelete(variables, "subscriptionTerm");
 	}
 
-	// Order Template Item (one-to-many)
-	public void function addOrderTemplateItem(required any orderTemplateItem) {
-		arguments.orderTemplateItem.setSku( this );
-	}
-	public void function removeOrderTemplateItem(required any orderTemplateItem) {
-		arguments.orderTemplateItem.removeSku( this );
-	}
-
 	// Alternate Sku Codes (one-to-many)
 	public void function addAlternateSkuCode(required any alternateSkuCode) {
 		arguments.alternateSkuCode.setSku( this );
