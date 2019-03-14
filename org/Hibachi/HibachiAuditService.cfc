@@ -566,7 +566,7 @@ component extends="HibachiService" accessors="true" {
 							this.processAudit(audit, 'archive');	
 						}else{
 							//support for processing structures
-							this.processAudit(this.new('Audit'),{audit=audit}, 'archive');	
+							this.processAudit_archive(this.new('Audit'),{audit=audit}, 'archive');	
 						}
 					}
 					
