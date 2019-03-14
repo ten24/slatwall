@@ -74,6 +74,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	/**
+   * @test
+   */
+   public void function accountListingTest(){
+        var myCollection=variables.entityService.newCollection();
+        myCollection.setCollectionObject('Account');
+        myCollection.setCollectionConfig('{"baseEntityName":"Account","baseEntityAlias":"_account","columns":[{"columnID":"CroIUtl9BmVtEZif4xSzxgJ5MVU59Qyy","propertyIdentifier":"_account.accountID","title":"accountID","search":true,"editable":false,"hasCellView":false,"hasHeaderView":false,"isVisible":false,"isDeletable":false,"isSearchable":true,"isExportable":true,"ormtype":"string","type":"none","tooltip":""},{"columnID":"CQ3lw7LjP5TPQagNAuI4scHiiVDYw2Zb","propertyIdentifier":"_account.firstName","title":"First Name","search":true,"editable":false,"hasCellView":false,"hasHeaderView":false,"isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","type":"none","tooltip":""},{"columnID":"CgsfYNxfNBQmYQcvAeUbwl0wUBTf5rbT","propertyIdentifier":"_account.lastName","title":"Last Name","search":true,"editable":false,"hasCellView":false,"hasHeaderView":false,"isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","type":"none","tooltip":""},{"columnID":"Caqy63kbU0ZZ0vLKAWCaMOm2DgHRVSwH","propertyIdentifier":"_account.company","title":"Company","tdclass":"primary","search":true,"editable":false,"hasCellView":false,"hasHeaderView":false,"isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","type":"none","tooltip":""},{"columnID":"Cq8O58XQdLlXyt0K05IdgnrqtkM7OwMR","propertyIdentifier":"_account.primaryPhoneNumber.phoneNumber","title":"Phone Number","search":true,"editable":false,"hasCellView":false,"hasHeaderView":false,"isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","type":"none","tooltip":""},{"columnID":"CB1yeATxXwjYbXjEFEvyBHV3pxc4lFhd","propertyIdentifier":"_account.primaryEmailAddress.emailAddress","title":"Email Address","search":true,"editable":false,"hasCellView":false,"hasHeaderView":false,"isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","type":"email","tooltip":""},{"columnID":"Cvcwhh3BfNescUfpmywvmD9iKvCDoeIU","propertyIdentifier":"_account.organizationFlag","title":"Organization Flag","search":true,"editable":false,"hasCellView":false,"hasHeaderView":false,"isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"boolean","type":"none","tooltip":""}],"filterGroups":[{"filterGroup":[]}],"reportFlag":"0","ISDISTINCT":false}');
+		var HQL = myCollection.getHQL();
+		assert(HQL contains 'GROUP BY ');
+		assert(arrayLen(myCollection.getRecords()) eq 0 || !structKeyExists(myCollection.getRecords()[1],'failedCollection'));
+   }
+	
+	/**
 	* @test
 	*/
 	public void function convertAliasToPropertyIdentifier_OutputFormat(){

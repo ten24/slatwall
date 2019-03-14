@@ -75,6 +75,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 //		assert(!isNull(variables.adminSession.getAccount()));
 
 	}
+	
+	
 
 	/**
 	* @test
