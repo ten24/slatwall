@@ -99,7 +99,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
-	property name="orderTemplateItems" singularname="orderTemplateItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderTemplateItem" inverse="true" lazy="extra";
 	property name="skuPrices" singularname="skuPrice" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuPrice" cascade="all-delete-orphan" lazy="extra";
 	property name="skuCosts" singularname="skuCost" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuCost" cascade="all-delete-orphan";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
