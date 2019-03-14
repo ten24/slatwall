@@ -3759,8 +3759,9 @@ table .s-table-header .table-section a.s-hint {
   vertical-align: top;
 }
 .s-search-wrapper .input-group .s-search:before {
+  font-family: "Font Awesome 5 Free";
   content: "\f002";
-  font-family: FontAwesome;
+  font-weight: 900;
   position: absolute;
   left: 9px;
   top: 6px;
