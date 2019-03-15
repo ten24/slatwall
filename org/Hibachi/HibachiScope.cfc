@@ -350,7 +350,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return getSession().getAccount();
 	}
 
-	public string function generateCSRFToken(string tokenName='hibachiCSRFToken', boolean forceNew=false){  
+	public string function generateCSRFToken(boolean forceNew=false,string tokenName='hibachiCSRFToken' ){  
 		return getService("hibachiSessionService").generateCSRFToken(arguments.tokenName, arguments.forceNew);
 	}
 
