@@ -25,18 +25,25 @@ component output="false" accessors="true" extends="HibachiService"  {
 		return config;
 	}
 	
-	public string function generateCSRFToken(required string tokenName, boolean forceNew=false){ 
+	public string function generateCSRFToken(string tokenName='hibachiCSRFToken', boolean forceNew=false){ 
 		if(arguments.forceNew || !hasSessionValue(arguments.tokenName)){
 			setSessionValue(arguments.tokenName, createUUID());
 		} 
 		return getSessionValue(arguments.tokenName);
 	}
 
+	public boolean function verifyCSRFToken(required string requestToken){
+		if(!hasSessionValue(arguments.tokenName)){
+			return false; 
+		}
+
+		return arguments.requestToken == getSessionValue("hibachiCSRFToken"); 
+	} 
+
 	public any function verifyCSRF(required any rc, required any framework){
 		// Right now this logic only runs if CSRF token is present, not as secure as it could be. 
-		if(structKeyExists(arguments.rc, "csrf")){
-			var validToken = arguments.rc.csrf == getSessionValue("hibachiCSRFToken");
-			if(!validToken){
+		if(structKeyExists(arguments.rc, "csrf") && !this.verifyCSRFToken(arguments.rc.csrf)){
+				
 				this.logHibachi("CSRF FAILED - Expected: " & getSessionValue("hibachiCSRFToken") & ' Recieved: ' & arguments.rc.csrf, true); 
 				getHibachiScope().showMessage(getHibachiScope().rbKey("admin.define.csrfinvalid"),"success");
 	
@@ -57,11 +64,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 					var defaultSubsystemAction = subsystem & ':' & section & '.' & item;  
  					arguments.framework.redirect( action=defaultSubsystemAction, preserve="messages");
 				}	
-			}
 		}
 		
 		//only force a new token if one was passed in
-		arguments.rc.csrf = this.generateCSRFToken("hibachiCSRFToken", structKeyExists(arguments.rc, "csrf")); 
+		arguments.rc.csrf = this.generateCSRFToken(forceNew=structKeyExists(arguments.rc, "csrf")); 
 		
  		return arguments.rc;	
 	}
