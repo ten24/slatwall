@@ -1536,6 +1536,23 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function processCollection_ExportData(required any collection, required any processObject, struct data={}) {
 		//perform export
 		
+		var fileName = arguments.processObject.getFileName();
+		//var filePath = /Users/ramakrishnasripada/Downloads/fileName;
+		filePath = "";
+		var exportStructData = arguments.collection.getCollectionConfigStruct();
+		var exportStructData['data']  = [];
+		exportStructData['data'] = arguments.collection.getRecords(forExport=true, formatRecord=false);
+		
+		var exportJsonData = serializeJson(exportStructData);
+	 //writedump(exportJsonData);
+	 //abort();
+	 
+		getHibachiUtilityService().downloadFile(fileName,filePath,"application/#fileName#.json",true);
+		//getHibachiUtilityService().queryToCsvFile(fileName,filePath,"application/#fileName#",true);
+		//fileWrite("/Users/ramakrishnasripada/Downloads/Ram.json","The text is writen by FileWrite function","utf-8");
+	 
+	 
+
 		return arguments.collection;
 	}
 	
@@ -1543,29 +1560,38 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public any function processCollection_Import(required any collection, required any processObject, struct data={}) {
 		//perform export
-		
-		return arguments.collection;
-	}
-	// =====================  END: Process Methods ============================
-
-	// ====================== START: Status Methods ===========================
-
-	// ======================  END: Status Methods ============================
-
-	// ====================== START: Save Overrides ===========================
-
-	// ======================  END: Save Overrides ============================
-
-	// ==================== START: Smart List Overrides =======================
-
-	// ====================  END: Smart List Overrides ========================
-
-	// ====================== START: Get Overrides ============================
-
-	// ======================  END: Get Overrides =============================
-
-	// ===================== START: Delete Overrides ==========================
-
-	// =====================  END: Delete Overrides ===========================
-
+	//	var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+		var fileReader = new FileReader();
+	 	            fileReader.readAsDataURL(file);
+	 	            fileReader.onload = function (result) {
+	 	            object.data[property] = fileReader.result;
+	 	            deferred.resolve(fileReader.result);
+	 
+	 	       //Collection.importCollectionConfigAsJSON();
+	 	       {
+	"baseentity":"Collection", 
+	"mapping":[
+		{
+			"sourcecolumn" : "permissionID",
+			"key" : true, 
+			"propertyidentifier" : "permissionID"
+		}, 
+		{
+            		"sourcecolumn" : "permissionGroup_permissionGroupID",
+            		"key" : true, 
+            		"propertyidentifier" : "permissionGroup.permissionGroupID"
+        	},
+		{
+			"sourcecolumn" : "permissionGroup_permissionGroupName",
+            		"propertyidentifier" : "permissionGroup.permissionGroupName"
+		}
+		{
+			"sorucecolumn" : "allowActionFlag",
+			"propertyidentifier" : "allowActionFlag"
+		}
+	]
 }
+		        return arguments.collection;
+		        
+	 	            }
+	}
