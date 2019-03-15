@@ -25,12 +25,19 @@ component output="false" accessors="true" extends="HibachiService"  {
 		return config;
 	}
 	
+	public string function generateCSRFToken(required string tokenName, boolean forceNew=false){ 
+		if(arguments.forceNew || !hasSessionValue(arguments.tokenName)){
+			setSessionValue(arguments.tokenName, createUUID());
+		} 
+		return getSessionValue(arguments.tokenName);
+	}
+
 	public any function verifyCSRF(required any rc, required any framework){
 		// Right now this logic only runs if CSRF token is present, not as secure as it could be. 
 		if(structKeyExists(arguments.rc, "csrf")){
-			var validToken = CSRFVerifyToken(arguments.rc.csrf,"hibachiCSRFToken");
+			var validToken = arguments.rc.csrf == getSessionValue("hibachiCSRFToken");
 			if(!validToken){
-				this.logHibachi("CSRF FAILED - Expected: " & CSRFGenerateToken("hibachiCSRFToken",true) & ' Recieved: ' & arguments.rc.csrf, true); 
+				this.logHibachi("CSRF FAILED - Expected: " & getSessionValue("hibachiCSRFToken") & ' Recieved: ' & arguments.rc.csrf, true); 
 				getHibachiScope().showMessage(getHibachiScope().rbKey("admin.define.csrfinvalid"),"success");
 	
 				//If the token is invalid we don't know if the original request was successful or not, right now this logic assumes success (not ideal)
@@ -54,7 +61,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		//only force a new token if one was passed in
-		arguments.rc.csrf = CSRFGenerateToken("hibachiCSRFToken", structKeyExists(arguments.rc, "csrf")); 
+		arguments.rc.csrf = this.generateCSRFToken("hibachiCSRFToken", structKeyExists(arguments.rc, "csrf")); 
 		
  		return arguments.rc;	
 	}
