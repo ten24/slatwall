@@ -824,41 +824,7 @@ component extends="HibachiService" accessors="true" {
 					// Delete audits that have been aggregated into the archive
 					
 					this.deleteAudit(currentAudit);
-					
-					
-					// if (structKeyExists(currentAuditData, 'newPropertyData')) {
-					// 	// Updates archive 'newPropertyData' with most recent versions of property values
-					// 	structAppend(archiveData.newPropertyData, currentAuditData.newPropertyData);
-					// }
-					
-					// if (structKeyExists(currentAuditData, 'oldPropertyData')) {
-					// 	// Update archive 'oldPropertyData' while preserving oldest versions of property values
-					// 	structAppend(archiveData.oldPropertyData, currentAuditData.oldPropertyData, false);
-					// }
-					
-					// mostRecentAuditInArchive = audits[i];
 				}
-				
-				// Commit the new archive
-				// if (!isNull(mostRecentAuditInArchive)) {
-				// 	var archiveAudit = this.newAudit(true);
-				// 	archiveAudit.auditType='archive';
-				// 	archiveAudit.auditDateTime=mostRecentAuditInArchive['auditDateTime'];
-				// 	archiveAudit.auditArchiveStartDateTime=audits[1]['auditDateTime'];
-				// 	archiveAudit.auditArchiveEndDateTime=mostRecentAuditInArchive['auditDateTime'];
-				// 	archiveAudit.auditArchiveCreatedDateTime=now();
-				// 	archiveAudit.baseID=mostRecentAuditInArchive.baseID;
-				// 	archiveAudit.baseObject=mostRecentAuditInArchive['baseObject'];
-				// 	archiveAudit.title=mostRecentAuditInArchive['title'];
-				// 	archiveAudit.data=serializeJSON(archiveData);
-				// 	this.saveAudit(archiveAudit);
-					
-				// 	// Delete audits that have been aggregated into the archive
-				// 	for (var i=1; i<=recordsToAggregate; i++) {
-				// 		this.deleteAudit(audits[i]);
-				// 	}
-				// }
-				
 			}
 		}
 		return arguments.audit;
