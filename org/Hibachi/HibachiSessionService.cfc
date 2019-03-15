@@ -25,14 +25,15 @@ component output="false" accessors="true" extends="HibachiService"  {
 		return config;
 	}
 	
-	public string function generateCSRFToken(string tokenName='hibachiCSRFToken', boolean forceNew=false){ 
+	public string function generateCSRFToken(boolean forceNew=false, string tokenName='hibachiCSRFToken'){ 
 		if(arguments.forceNew || !hasSessionValue(arguments.tokenName)){
 			setSessionValue(arguments.tokenName, createUUID());
+			this.logHibachi('generating new CSRF: #getSessionValue(arguments.tokenName)#');
 		} 
 		return getSessionValue(arguments.tokenName);
 	}
 
-	public boolean function verifyCSRFToken(required string requestToken){
+	public boolean function verifyCSRFToken(required string requestToken,string tokenName='hibachiCSRFToken'){
 		if(!hasSessionValue(arguments.tokenName)){
 			return false; 
 		}
@@ -67,7 +68,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		//only force a new token if one was passed in
-		arguments.rc.csrf = this.generateCSRFToken(forceNew=structKeyExists(arguments.rc, "csrf")); 
+		arguments.rc.csrf = this.generateCSRFToken(structKeyExists(arguments.rc, "csrf")); 
 		
  		return arguments.rc;	
 	}
