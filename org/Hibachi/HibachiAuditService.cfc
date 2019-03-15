@@ -757,7 +757,6 @@ component extends="HibachiService" accessors="true" {
 			arguments.audit = arguments.data['auditData'];
 		}
 		
-		
 		if(isObject(arguments.audit) && !isNull(arguments.audit.getRelatedEntity())){
 			var relatedEntity = arguments.audit.getRelatedEntity();
 		//get relatedEntity by structure
