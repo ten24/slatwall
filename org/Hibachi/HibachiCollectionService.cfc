@@ -1560,38 +1560,18 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public any function processCollection_Import(required any collection, required any processObject, struct data={}) {
 		//perform export
+		
+		writeDump(arguments.processObject.getUploadFile());
+		
+		
+		var fileData =  fileRead( arguments.processObject.getUploadFile());
+		writeDump( fileData );
+		
+		writeDump( deserializeJson(fileData) );
+		abort;
+		
 	//	var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-		var fileReader = new FileReader();
-	 	            fileReader.readAsDataURL(file);
-	 	            fileReader.onload = function (result) {
-	 	            object.data[property] = fileReader.result;
-	 	            deferred.resolve(fileReader.result);
-	 
-	 	       //Collection.importCollectionConfigAsJSON();
-	 	       {
-	"baseentity":"Collection", 
-	"mapping":[
-		{
-			"sourcecolumn" : "permissionID",
-			"key" : true, 
-			"propertyidentifier" : "permissionID"
-		}, 
-		{
-            		"sourcecolumn" : "permissionGroup_permissionGroupID",
-            		"key" : true, 
-            		"propertyidentifier" : "permissionGroup.permissionGroupID"
-        	},
-		{
-			"sourcecolumn" : "permissionGroup_permissionGroupName",
-            		"propertyidentifier" : "permissionGroup.permissionGroupName"
-		}
-		{
-			"sorucecolumn" : "allowActionFlag",
-			"propertyidentifier" : "allowActionFlag"
-		}
-	]
-}
-		        return arguments.collection;
+		return arguments.collection;
 		        
 	 	            }
 	}
