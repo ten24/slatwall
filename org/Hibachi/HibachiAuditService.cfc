@@ -53,6 +53,19 @@ component extends="HibachiService" accessors="true" {
 	
 	// ===================== START: Logical Methods ===========================
 	
+	public void function verifyIntegrity(){
+		var audit = this.newAudit();
+		var auditArchive = this.newAuditArchive();
+		var auditProperties = audit.getPropertiesStruct();
+		var auditArchiveProperties = auditArchive.getPropertiesStruct();
+		
+		for(var auditPropertyKey in auditProperties){
+			if(!structKeyExists(auditArchiveProperties,auditPropertyKey) && auditPropertyKey!='auditID'){
+				throw('auditArchive requires a property of #auditPropertyKey#');
+			}	
+		}
+	}
+	
 	public any function getRelatedEntityForAudit(any audit) {
 		// TODO What if the entity has been deleted? Or perhaps all of the prior related audit logs shouldn't even exist so this would never be a problem?
 		return getRelatedEntityForAuditByBaseObjectAndBaseID(arguments.audit.getBaseObject(),arguments.audit.getBaseID());
@@ -131,7 +144,16 @@ component extends="HibachiService" accessors="true" {
 				
 				var q = new Query();
 				arguments.audit.auditID = createHibachiUUID();
-				var sql = "  INSERT INTO swaudit (auditID,#columnslist#) VALUES ('#arguments.audit.auditID#',#paramsList#)
+				
+				if(arguments.audit['auditType'] == 'archive'){
+					var tableName = 'swauditarchive';
+					var primarycolumnName = 'auditarchiveID';
+				}else{
+					var tableName = 'swaudit';
+					var primarycolumnName = 'auditID';
+				}
+				
+				var sql = "  INSERT INTO #tablename# (#primarycolumnName#,#columnslist#) VALUES ('#arguments.audit.auditID#',#paramsList#)
 				";
 				var paramCount = arrayLen(paramsArray);
 				for(var i=1;i<=paramCount;i++){
@@ -786,40 +808,56 @@ component extends="HibachiService" accessors="true" {
 				
 				// Step through audits sequentially from oldest to newest
 				for (var i=1; i<=recordsToAggregate; i++) {
-					var currentAuditData = deserializeJSON(audits[i].data);
-					
-					if (structKeyExists(currentAuditData, 'newPropertyData')) {
-						// Updates archive 'newPropertyData' with most recent versions of property values
-						structAppend(archiveData.newPropertyData, currentAuditData.newPropertyData);
-					}
-					
-					if (structKeyExists(currentAuditData, 'oldPropertyData')) {
-						// Update archive 'oldPropertyData' while preserving oldest versions of property values
-						structAppend(archiveData.oldPropertyData, currentAuditData.oldPropertyData, false);
-					}
-					
-					mostRecentAuditInArchive = audits[i];
-				}
-				
-				// Commit the new archive
-				if (!isNull(mostRecentAuditInArchive)) {
+					var currentAudit = audits[i];
 					var archiveAudit = this.newAudit(true);
 					archiveAudit.auditType='archive';
-					archiveAudit.auditDateTime=mostRecentAuditInArchive['auditDateTime'];
-					archiveAudit.auditArchiveStartDateTime=audits[1]['auditDateTime'];
-					archiveAudit.auditArchiveEndDateTime=mostRecentAuditInArchive['auditDateTime'];
+					archiveAudit.auditDateTime=currentAudit['auditDateTime'];
+					archiveAudit.auditArchiveStartDateTime=currentAudit['auditDateTime'];
+					archiveAudit.auditArchiveEndDateTime=currentAudit['auditDateTime'];
 					archiveAudit.auditArchiveCreatedDateTime=now();
-					archiveAudit.baseID=mostRecentAuditInArchive.baseID;
-					archiveAudit.baseObject=mostRecentAuditInArchive['baseObject'];
-					archiveAudit.title=mostRecentAuditInArchive['title'];
-					archiveAudit.data=serializeJSON(archiveData);
+					archiveAudit.baseID=currentAudit['baseID'];
+					archiveAudit.baseObject=currentAudit['baseObject'];
+					archiveAudit.title=currentAudit['title'];
+					archiveAudit.data=currentAudit['data'];
 					this.saveAudit(archiveAudit);
 					
 					// Delete audits that have been aggregated into the archive
-					for (var i=1; i<=recordsToAggregate; i++) {
-						this.deleteAudit(audits[i]);
-					}
+					
+					this.deleteAudit(currentAudit);
+					
+					
+					// if (structKeyExists(currentAuditData, 'newPropertyData')) {
+					// 	// Updates archive 'newPropertyData' with most recent versions of property values
+					// 	structAppend(archiveData.newPropertyData, currentAuditData.newPropertyData);
+					// }
+					
+					// if (structKeyExists(currentAuditData, 'oldPropertyData')) {
+					// 	// Update archive 'oldPropertyData' while preserving oldest versions of property values
+					// 	structAppend(archiveData.oldPropertyData, currentAuditData.oldPropertyData, false);
+					// }
+					
+					// mostRecentAuditInArchive = audits[i];
 				}
+				
+				// Commit the new archive
+				// if (!isNull(mostRecentAuditInArchive)) {
+				// 	var archiveAudit = this.newAudit(true);
+				// 	archiveAudit.auditType='archive';
+				// 	archiveAudit.auditDateTime=mostRecentAuditInArchive['auditDateTime'];
+				// 	archiveAudit.auditArchiveStartDateTime=audits[1]['auditDateTime'];
+				// 	archiveAudit.auditArchiveEndDateTime=mostRecentAuditInArchive['auditDateTime'];
+				// 	archiveAudit.auditArchiveCreatedDateTime=now();
+				// 	archiveAudit.baseID=mostRecentAuditInArchive.baseID;
+				// 	archiveAudit.baseObject=mostRecentAuditInArchive['baseObject'];
+				// 	archiveAudit.title=mostRecentAuditInArchive['title'];
+				// 	archiveAudit.data=serializeJSON(archiveData);
+				// 	this.saveAudit(archiveAudit);
+					
+				// 	// Delete audits that have been aggregated into the archive
+				// 	for (var i=1; i<=recordsToAggregate; i++) {
+				// 		this.deleteAudit(audits[i]);
+				// 	}
+				// }
 				
 			}
 		}
