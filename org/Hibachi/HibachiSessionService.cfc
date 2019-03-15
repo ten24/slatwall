@@ -38,7 +38,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			return false; 
 		}
 
-		return arguments.requestToken == getSessionValue("hibachiCSRFToken"); 
+		return arguments.requestToken == getSessionValue(arguments.tokenName); 
 	} 
 
 	public any function verifyCSRF(required any rc, required any framework){
