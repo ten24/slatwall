@@ -847,7 +847,7 @@ component extends="framework.one" {
 						onUpdateRequest();
 
 						if(structKeyExists(server,'Lucee')){
-							SystemCacheClear('component')
+							SystemCacheClear('component');
 						}
 
 						// Write File
