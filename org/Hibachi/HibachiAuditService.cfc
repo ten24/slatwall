@@ -176,17 +176,12 @@ component extends="HibachiService" accessors="true" {
 			if(isObject(arguments.audit)){
 				this.delete(arguments.audit);
 			}else if(isStruct(arguments.audit)){
-				try{
 				var q = new Query();
 				var sql = "  DELETE FROM swaudit where auditID = :auditID
 				";
 				q.addParam(name='auditID',value=arguments.audit['auditID'],cfsqltype="cf_sql_varchar");
 				q.setSQL(sql);
 				q.execute();
-				}catch(any e){
-					writedump(e);
-					writedump(var=arguments.audit,top=2);abort;
-				}
 			}
 		}
 	}
