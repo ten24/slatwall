@@ -1573,38 +1573,21 @@ component output="false" accessors="true" extends="HibachiService" {
 	//import
 	
 	public any function processCollection_Import(required any collection, required any processObject, struct data={}) {
-       // perform import	 
-
-
+ 
+		//perform export
+		
+		writeDump(arguments.processObject.getUploadFile());
+		
+		
 		var fileData =  fileRead( arguments.processObject.getUploadFile());
-	 
-          //writeDump(fileData);
-		 writeDump( deserializeJson(fileData) );
-		 abort;
-//   {
-// 	"baseentity":"Collection", 
-// 	"mapping":[
-// 		{
-// 			"sourcecolumn" : "permissionID",
-// 			"key" : true, 
-// 			"propertyidentifier" : "permissionID"
-// 		}, 
-// 		{
-//             		"sourcecolumn" : "permissionGroup_permissionGroupID",
-//             		"key" : true, 
-//             		"propertyidentifier" : "permissionGroup.permissionGroupID"
-//         	},
-// 		{
-// 			"sourcecolumn" : "permissionGroup_permissionGroupName",
-//             		"propertyidentifier" : "permissionGroup.permissionGroupName"
-// 		}
-// 		{
-// 			"sorucecolumn" : "allowActionFlag",
-// 			"propertyidentifier" : "allowActionFlag"
-// 		}
-// 	]
-// }
- 		        return arguments.collection;
+		writeDump( fileData );
+		
+		writeDump( deserializeJson(fileData) );
+		abort;
+		
+	//	var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+		return arguments.collection;
+ 
 		        
 	 	            }
 	}
