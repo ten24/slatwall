@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="" {
+component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create" {
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -54,6 +54,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
 	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
+
+	property name="currencyCode" ormtype="string" length="3";
 
 	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
 	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID";
