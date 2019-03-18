@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#" fredirectAction="entity.preprocesscollection" fRedirectQS="collectionID=#rc.collection.getCollectionID()#&processContext=import">
+        <hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#" fredirectAction="entity.preprocesscollection" fRedirectQS="collectionID=#rc.collection.getCollectionID()#&processContext=import" enctype="multipart/form-data">
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.collection#">
 		</hb:HibachiEntityActionBar>
 		
@@ -62,6 +62,7 @@ Notes:
 			<hb:HibachiPropertyList>
 				<!--- General Details --->
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="filename" edit="#rc.edit#">
+				    <hb:HibachiPropertyDisplay object="#rc.processObject#" property="uploadFile" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

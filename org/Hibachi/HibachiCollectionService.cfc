@@ -1544,12 +1544,26 @@ component output="false" accessors="true" extends="HibachiService" {
 		exportStructData['data'] = arguments.collection.getRecords(forExport=true, formatRecord=false);
 		
 		var exportJsonData = serializeJson(exportStructData);
+		  
+		 //myFile = expandPath( "somefile.txt" );
+		 
+		 //data = "I'm going to write to direct to file";
+		 //FileWrite(myFile, data);
+		
+		 
+	 
+		  
+		
+		//collectionsExport("exportJsonData");
 	 //writedump(exportJsonData);
 	 //abort();
-	 
+	 //fileWrite( getTempFile( getTempDirectory(), "tempFile"), "My Data" );
+	   
+	   
 		getHibachiUtilityService().downloadFile(fileName,filePath,"application/#fileName#.json",true);
+ 
 		//getHibachiUtilityService().queryToCsvFile(fileName,filePath,"application/#fileName#",true);
-		//fileWrite("/Users/ramakrishnasripada/Downloads/Ram.json","The text is writen by FileWrite function","utf-8");
+		//fileWrite("","The text is writen by FileWrite function","utf-8");
 	 
 	 
 
@@ -1559,39 +1573,38 @@ component output="false" accessors="true" extends="HibachiService" {
 	//import
 	
 	public any function processCollection_Import(required any collection, required any processObject, struct data={}) {
-		//perform export
-	//	var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-		var fileReader = new FileReader();
-	 	            fileReader.readAsDataURL(file);
-	 	            fileReader.onload = function (result) {
-	 	            object.data[property] = fileReader.result;
-	 	            deferred.resolve(fileReader.result);
+       // perform import	 
+
+
+		var fileData =  fileRead( arguments.processObject.getUploadFile());
 	 
-	 	       //Collection.importCollectionConfigAsJSON();
-	 	       {
-	"baseentity":"Collection", 
-	"mapping":[
-		{
-			"sourcecolumn" : "permissionID",
-			"key" : true, 
-			"propertyidentifier" : "permissionID"
-		}, 
-		{
-            		"sourcecolumn" : "permissionGroup_permissionGroupID",
-            		"key" : true, 
-            		"propertyidentifier" : "permissionGroup.permissionGroupID"
-        	},
-		{
-			"sourcecolumn" : "permissionGroup_permissionGroupName",
-            		"propertyidentifier" : "permissionGroup.permissionGroupName"
-		}
-		{
-			"sorucecolumn" : "allowActionFlag",
-			"propertyidentifier" : "allowActionFlag"
-		}
-	]
-}
-		        return arguments.collection;
+          //writeDump(fileData);
+		 writeDump( deserializeJson(fileData) );
+		 abort;
+//   {
+// 	"baseentity":"Collection", 
+// 	"mapping":[
+// 		{
+// 			"sourcecolumn" : "permissionID",
+// 			"key" : true, 
+// 			"propertyidentifier" : "permissionID"
+// 		}, 
+// 		{
+//             		"sourcecolumn" : "permissionGroup_permissionGroupID",
+//             		"key" : true, 
+//             		"propertyidentifier" : "permissionGroup.permissionGroupID"
+//         	},
+// 		{
+// 			"sourcecolumn" : "permissionGroup_permissionGroupName",
+//             		"propertyidentifier" : "permissionGroup.permissionGroupName"
+// 		}
+// 		{
+// 			"sorucecolumn" : "allowActionFlag",
+// 			"propertyidentifier" : "allowActionFlag"
+// 		}
+// 	]
+// }
+ 		        return arguments.collection;
 		        
 	 	            }
 	}
