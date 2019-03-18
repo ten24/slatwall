@@ -846,6 +846,10 @@ component extends="framework.one" {
 
 						onUpdateRequest();
 
+						if(structKeyExists(server,'Lucee')){
+							SystemCacheClear('component');
+						}
+
 						// Write File
 						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/system/lastFullUpdate.txt.cfm', now());
 						updated = true;
