@@ -68,6 +68,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	//calucluated property
 	property name="calculatedFullName" ormtype="string";
+	property name="calculatedGuestAccountFlag" ormtype="boolean";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 
@@ -965,6 +966,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public string function getSimpleRepresentation() {
 		return getFullName();
+	}
+	
+	public string function getSimpleRepresentationPropertyName(){
+		return 'calculatedFullName';
 	}
 
 	// ==================  END:  Overridden Methods ========================
