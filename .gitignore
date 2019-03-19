@@ -17,3 +17,4 @@ WEB-INF
 node_modules
 docker-compose.yml
 dist
+npm-debug.log
