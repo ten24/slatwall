@@ -27,10 +27,11 @@
         ||                ,'   / RPM|
 
 -->
+
 <cfoutput>
-   <% files.js.forEach(function (src) { %>
-    <% if (src.indexOf('head') === -1) { %>
+  <% htmlWebpackPlugin.files.js.forEach(function (src) { %> 
+    <%if(src.indexOf('head') === -1) { %>
       <script src="<%= src %>"></script>
-    <% } %>
+    <% } %> 
   <% }) %>
-  </cfoutput>
+</cfoutput>
