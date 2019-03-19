@@ -27,11 +27,10 @@
         ||                ,'   / RPM|
 
 -->
-
 <cfoutput>
   <% htmlWebpackPlugin.files.js.forEach(function (src) { %> 
     <%if(src.indexOf('head') === -1) { %>
-      <script src="<%= src+'.gz' %>"></script>
+      <script type="text/javascript" src="<%= src %>"></script>
     <% } %> 
   <% }) %>
 </cfoutput>

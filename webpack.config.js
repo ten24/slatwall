@@ -27,12 +27,13 @@ var appConfig = {
     path: PATHS.dist,
     filename: "[name].[contenthash].js",
     chunkFilename: "[name].[contenthash].bundle.js",
-    sourceMapFilename: "sourcemaps/[file].map"
+    sourceMapFilename: "sourcemaps/[file].map",
+    publicPath: "#request.slatwallScope.getBaseURL()#/dist/" 
     //    publicPath: "#request.slatwallScope.getBaseURL()#/admin/client/dist/" //  the url to the output directory resolved relative to the HTML page
   },
 
   // Turn on sourcemaps
-  //devtool: 'source-map',
+  devtool: 'source-map',
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".js"]
   },
@@ -61,14 +62,14 @@ var appConfig = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
-      filename: "include-admin.cfc",
+      filename: "include-admin.cfm",
       inject: false,
       chunks: ["app"],
       chunkSortMode: "dependency"
     }),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
-      filename: "include-frontend.cfc",
+      filename: "include-frontend.cfm",
       inject: false,
       chunks: ["frontend"],
       chunkSortMode: "dependency"

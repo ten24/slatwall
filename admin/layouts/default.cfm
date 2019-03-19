@@ -417,7 +417,7 @@ Notes:
 
 		<!-- code split vendor bundle before the other bundles because its common among them. -->
  		
- 		<cfinclude template="../client/dist/index.html">
+ 		<cfinclude template="../../dist/include-admin.cfm">
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
