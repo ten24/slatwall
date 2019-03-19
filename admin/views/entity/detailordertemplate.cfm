@@ -42,29 +42,18 @@
 
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
-
-Notes:
-
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateStatusType.typeName",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateStatusType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
+<cfparam name="rc.edit" default="false" />
+<cfparam name="rc.orderTemplate" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderTemplate#" edit="#rc.edit#">
+		
+		</hb:HibachiEntityActionBar>
 
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessordertemplate" entity="OrderTemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-
-	<hb:HibachiListingDisplay 
-		collectionList="#rc.orderTemplateCollectionlist#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.editordertemplate"
-		recordDetailAction="admin:entity.detailordertemplate"
-	>
-	</hb:HibachiListingDisplay>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

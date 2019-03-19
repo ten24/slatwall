@@ -52,7 +52,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTemplate";
 
 	property name="newAccountFlag";
-	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
+	property name="accountID" hb_rbKey="entity.account" cfc="Account";
 	property name="firstName" hb_rbKey="entity.account.firstName";
 	property name="lastName" hb_rbKey="entity.account.lastName";
 	property name="company" hb_rbKey="entity.account.company";
@@ -64,8 +64,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="password";
 	property name="passwordConfirm";
 	
-	property name="orderTemplateTypeID" hb_rbKey="entity.orderTemplate.orderTemplateType" hb_formFieldType="select";
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
+	property name="frequencyTermID" hb_rbKey="entity.orderTemplate.frequencyTerm" hb_formFieldType="select";
+	property name="orderTemplateTypeID" hb_rbKey="entity.orderTemplate.orderTemplateType" hb_formFieldType="select";
+	property name="siteID" hb_rbKey="entity.orderTemplate.site" hb_formFieldType="select";  
+	
+	property name="scheduleOrderDayOfTheMonth";
+	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 	
 	public array function getCurrencyCodeOptions() {
 		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
@@ -75,12 +80,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return currencyCodeOptions;
 	}	
 
+	public array function getFrequencyTermIDOptions() {
+		var termCollection = getService('SettingService').getTermCollectionList();
+		termCollection.setDisplayProperties('termID|value,termName|name');
+		return termCollection.getRecords();
+	}
+
 	public array function getOrderTemplateTypeIDOptions() {
 		var typeCollection = getService('TypeService').getTypeCollectionList();
 		typeCollection.setDisplayProperties('typeID|value,typeName|name');
 		typeCollection.addFilter('parentType.systemCode','orderTemplateType');
 		return typeCollection.getRecords();
 	}
+
+	public array function getSiteIDOptions(){
+		var siteCollection = getService('SiteService').getSiteCollectionList();
+		siteCollection.setDisplayProperties('siteID|value,siteName|name');
+		return siteCollection.getRecords(); 
+	} 	
 	
 	public boolean function getNewAccountFlag() {
 		if(!structKeyExists(variables, "newAccountFlag")) {

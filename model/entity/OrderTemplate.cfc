@@ -67,9 +67,18 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 
+	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
+
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 
 	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderID" inverse="true";
+
+	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+
+
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
 
 	// Account (many-to-one)
 	public any function setAccount(required any account) {
