@@ -85,12 +85,13 @@ Notes:
 
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
-			
-			<swa:SlatwallLocationTypeahead locationPropertyName="defaultStockLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" edit="true" showActiveLocationsFlag="true" />
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" edit="#rc.edit#">
 
 			<hr> 
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="scheduleOrderNextPlaceDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" edit="#rc.edit#">
 
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
