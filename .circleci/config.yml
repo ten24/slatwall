@@ -57,7 +57,7 @@ jobs:
       - run: pip install awscli
       - run: npm run buildHibachi:prod
       #- run: cd admin/client && gulp gen-ts-refs
-      - run: npm run buildSlatwall:prod
+      - run: npm run buildAll:prod
       - run: cd admin/client/css && lessc main.less main.css
       - run: meta/ci/version_merge.sh
       
