@@ -73564,6 +73564,15 @@ var CollectionConfig = /** @class */ (function () {
             }
             return propertyIdentifier;
         };
+        this.hasNonPersistentProperty = function () {
+            for (var i in _this.columns) {
+                var column = _this.columns[i];
+                if (angular.isDefined(column.persistent) && column.persistent === false) {
+                    return true;
+                }
+            }
+            return false;
+        };
         this.addColumn = function (column, title, options) {
             if (title === void 0) { title = ''; }
             if (options === void 0) { options = {}; }
@@ -87273,7 +87282,7 @@ var SWListingDisplayController = /** @class */ (function () {
         this.collectionConfigs = [];
         this.collectionObjects = [];
         this.colorFilters = [];
-        this.columns = [];
+        this._columns = [];
         this.disableRules = [];
         this.expandableRules = [];
         this.exampleEntity = "";
@@ -87761,6 +87770,17 @@ var SWListingDisplayController = /** @class */ (function () {
             this.reportAction = 'entity.reportlist' + this.baseEntityName.toLowerCase();
         }
     }
+    Object.defineProperty(SWListingDisplayController.prototype, "columns", {
+        get: function () {
+            return this._columns;
+        },
+        set: function (newArray) {
+            this._columns = newArray;
+            this.columnCount = this._columns.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
