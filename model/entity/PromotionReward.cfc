@@ -66,6 +66,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="maximumUsePerOrder" ormType="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerItem" ormtype="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerQualification" ormtype="integer" hb_nullRBKey="define.unlimited";
+	property name="includedSkusCollectionConfig" ormtype="text";
+	property name="excludedSkusCollectionConfig" ormtype="text";
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -81,6 +83,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoRewardShipAddressZone" fkcolumn="promotionRewardID" inversejoincolumn="addressZoneID";
 	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoRewardShippingMethod" fkcolumn="promotionRewardID" inversejoincolumn="shippingMethodID";
 	
+	// Deprecated Properties
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
 	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
@@ -92,6 +95,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
 	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPromoRewardExclProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
 	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoRewardExclProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
+	// End Deprecated Properties
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -107,7 +111,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
-	property name="isDeletableFlag" type="boolean" persistent="false"; 
+	property name="isDeletableFlag" type="boolean" persistent="false";
+	property name="includedSkusCollection" persistent="false";
+	property name="excludedSkusCollection" persistent="false";
+	property name="skuCollection" persistent="false";
 	
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
@@ -175,6 +182,47 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		//Either no conversion was needed, or we couldn't find a conversion rate.
 		return getAmount();
 	}
+	
+	public any function getIncludedSkusCollection(){
+		if(isNull(variables.includedSkusCollectionConfig)){
+			return;
+		}
+		if(isNull(variables.includedSkusCollection)){
+			variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',variables.includedSkusCollectionConfig);
+		}
+		return variables.includedSkusCollection;
+	}
+	
+	public any function getExcludedSkusCollection(){
+		if(isNull(variables.excludedSkusCollectionConfig)){
+			return;
+		}
+		if(isNull(variables.excludedSkusCollection)){
+			variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',variables.excludedSkusCollectionConfig);
+		}
+		return variables.excludedSkusCollection;
+	}
+	
+	public any function getSkuCollection(){
+		if(isNull(variables.skuCollection)){
+			if(isNull(getExcludedSkusCollection())){
+				return getIncludedSkusCollection();
+			}
+			
+			if(!isNull(getIncludedSkusCollection())){
+				var excludedSkuRecords = getExcludedSkusCollection().getRecords();
+				var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+				
+				var excludedSkuIDs = '';
+				for(var record in excludedSkuRecords){
+					excludedSkuIDs = listAppend(excludedSkuIDs,record['skuID']);
+				}
+				skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
+			}
+			variables.skuCollection = skuCollection;
+		}
+		return variables.skuCollection;
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -237,7 +285,49 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			arrayDeleteAt(arguments.shippingMethod.getPromotionRewards(), thatIndex);    
 		}    
 	}
+	
+	// Collection Skus
+	
+	public boolean function hasSkuBySkuID(required any skuID){
+		var skuCollection = getSkuCollection();
+		skuCollection.addFilter('skuID',arguments.skuID,'=');
+		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
+		skuCollection.removeFilter('skuID',arguments.skuID);
+		return hasSku;
+	}
+	
+	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	public string function getAmountFormatted() {
+		if(getAmountType() == "percentageOff") {
+			return formatValue(getAmount(), "percentage");
+		}
+		
+		return formatValue(getAmount(), "currency");
+	}
+	
+	// ===============  END: Custom Formatting Methods =====================
 
+	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentationPropertyName() {
+		return "rewardType";
+	}
+
+	public boolean function isDeletable() {
+		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
+	}
+	
+	// ==================  END:  Overridden Methods ========================
+
+	// =================== START: ORM Event Hooks  =========================
+	
+	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================= START: Deprecated Methods  ========================
+	
 	// Brands (many-to-many - owner)
 	public void function addBrand(required any brand) {
 		if(arguments.brand.isNew() or !hasBrand(arguments.brand)) {
@@ -438,33 +528,5 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 	}
 	
-	// =============  END:  Bidirectional Helper Methods ===================
-	
-	// =============== START: Custom Formatting Methods ====================
-	
-	public string function getAmountFormatted() {
-		if(getAmountType() == "percentageOff") {
-			return formatValue(getAmount(), "percentage");
-		}
-		
-		return formatValue(getAmount(), "currency");
-	}
-	
-	// ===============  END: Custom Formatting Methods =====================
-
-	// ================== START: Overridden Methods ========================
-	
-	public string function getSimpleRepresentationPropertyName() {
-		return "rewardType";
-	}
-
-	public boolean function isDeletable() {
-		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
-	}
-	
-	// ==================  END:  Overridden Methods ========================
-
-	// =================== START: ORM Event Hooks  =========================
-	
-	// ===================  END:  ORM Event Hooks  =========================
+	// =================  END: Deprecated Methods   ========================
 }
