@@ -66,6 +66,7 @@ class SWListingReportController {
         }
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
+        this.observerService.attach(this.updateReportFromListing,'displayOptionsAction',this.tableId);
     }
     
     public $onInit=()=>{

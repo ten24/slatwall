@@ -7,21 +7,24 @@ class SWDisplayOptions{
             $hibachi,
             hibachiPathBuilder,
             collectionPartialsPath,
-            rbkeyService
+            rbkeyService,
+            observerService
 
         ) => new SWDisplayOptions(
             $log,
             $hibachi,
             hibachiPathBuilder,
             collectionPartialsPath,
-            rbkeyService
+            rbkeyService,
+            observerService
         );
         directive.$inject = [
             '$log',
             '$hibachi',
             'hibachiPathBuilder',
             'collectionPartialsPath',
-            'rbkeyService'
+            'rbkeyService',
+            'observerService'
         ];
         return directive;
     }
@@ -34,7 +37,8 @@ class SWDisplayOptions{
         $hibachi,
         hibachiPathBuilder,
         collectionPartialsPath,
-        rbkeyService
+        rbkeyService,
+        observerService
     ){
 
         return{
@@ -56,7 +60,7 @@ class SWDisplayOptions{
                 listingName:"@?"
             },
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
-            controller:['$scope','$element','$attrs',function($scope,$element,$attrs){
+            controller:['$scope','$element','$attrs','observerService',function($scope,$element,$attrs,observerService){
 
 
                 this.removeColumn = function(columnIndex){
@@ -70,8 +74,8 @@ class SWDisplayOptions{
                     $scope.selectedPropertyChanged(selectedProperty,aggregate);
                 }
             }],
-            link: (scope,element,$attrs,controllers,observerService)=>{
-
+            link: (scope,element,$attrs,controllers)=>{
+            
                 scope.breadCrumbs = [ {
                     entityAlias : scope.baseEntityAlias,
                     cfc : scope.baseEntityAlias,
@@ -132,7 +136,7 @@ class SWDisplayOptions{
                     return title;
                 };
 
-                scope.addColumn = function(closeDialog){
+                scope.addColumn = (closeDialog)=>{
                     var selectedProperty:any = scope.selectedProperty;
                     if(angular.isDefined(scope.selectedAggregate)){
                         selectedProperty = scope.selectedAggregate;
@@ -237,8 +241,11 @@ class SWDisplayOptions{
                                 scope.addDisplayDialog.toggleDisplayDialog();
                                 scope.selectBreadCrumb(0);
                             }
+                            
+                            observerService.notify('displayOptionsAction', {action: 'addColumn',collectionConfig:controllers.swListingControls.collectionConfig,column:column});
                         }
                     }
+                    
                 };
 
                 scope.selectBreadCrumb = function(breadCrumbIndex){

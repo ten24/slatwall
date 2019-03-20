@@ -71927,7 +71927,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWDisplayOptions = /** @class */ (function () {
     //@ngInject
-    function SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService) {
+    function SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService, observerService) {
         return {
             restrict: 'E',
             require: {
@@ -71947,7 +71947,7 @@ var SWDisplayOptions = /** @class */ (function () {
                 listingName: "@?"
             },
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayoptions.html",
-            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+            controller: ['$scope', '$element', '$attrs', 'observerService', function ($scope, $element, $attrs, observerService) {
                     this.removeColumn = function (columnIndex) {
                         if ($scope.columns.length) {
                             $scope.columns.splice(columnIndex, 1);
@@ -71957,7 +71957,7 @@ var SWDisplayOptions = /** @class */ (function () {
                         $scope.selectedPropertyChanged(selectedProperty, aggregate);
                     };
                 }],
-            link: function (scope, element, $attrs, controllers, observerService) {
+            link: function (scope, element, $attrs, controllers) {
                 scope.breadCrumbs = [{
                         entityAlias: scope.baseEntityAlias,
                         cfc: scope.baseEntityAlias,
@@ -72103,6 +72103,7 @@ var SWDisplayOptions = /** @class */ (function () {
                                 scope.addDisplayDialog.toggleDisplayDialog();
                                 scope.selectBreadCrumb(0);
                             }
+                            observerService.notify('displayOptionsAction', { action: 'addColumn', collectionConfig: controllers.swListingControls.collectionConfig, column: column });
                         }
                     }
                 };
@@ -72170,13 +72171,14 @@ var SWDisplayOptions = /** @class */ (function () {
         };
     }
     SWDisplayOptions.Factory = function () {
-        var directive = function ($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService) { return new SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService); };
+        var directive = function ($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService, observerService) { return new SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService, observerService); };
         directive.$inject = [
             '$log',
             '$hibachi',
             'hibachiPathBuilder',
             'collectionPartialsPath',
-            'rbkeyService'
+            'rbkeyService',
+            'observerService'
         ];
         return directive;
     };
@@ -88771,6 +88773,7 @@ var SWListingReportController = /** @class */ (function () {
             this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
         }
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
+        this.observerService.attach(this.updateReportFromListing, 'displayOptionsAction', this.tableId);
     }
     return SWListingReportController;
 }());
