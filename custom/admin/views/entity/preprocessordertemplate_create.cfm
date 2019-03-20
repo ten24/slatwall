@@ -54,6 +54,7 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<cfoutput>
 <hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editordertemplate">
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
 	</hb:HibachiEntityActionBar>
@@ -96,3 +97,17 @@ Notes:
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </hb:HibachiEntityProcessForm>
+
+	<script>
+		//only allow dates that are on or before the 25th of the month and don't allow scheduling more than 2 months out
+		var today = Date.now();
+		var twoMonthsInFuture = Date.parse( "#dateFormat( dateAdd('d', now(), 60), 'yyyy-mm-dd')#" ); 
+
+		$('input[name="scheduleOrderNextPlaceDateTime"]').datepicker({
+			beforeShowDay: function(date){
+				var dayOfMonth = parseInt(jQuery.datepicker.formatDate('dd', date));
+				return [ dayOfMonth <= 25 && date < twoMonthsInFuture ]
+			}
+		});
+	</script> 
+</cfoutput>
