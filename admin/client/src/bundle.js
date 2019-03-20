@@ -72349,7 +72349,6 @@ var SWEditFilterItem = /** @class */ (function () {
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
                     if (scope.filterItem.$$isNew === true) {
-                        observerService.notify('filterItemAction', { action: 'remove', filterItemIndex: scope.filterItemIndex });
                         scope.removeFilterItem({ filterItemIndex: scope.filterItemIndex });
                     }
                     else {
@@ -87059,6 +87058,7 @@ var SWListingControlsController = /** @class */ (function () {
         this.removeFilter = function (array, index, reloadCollection) {
             if (reloadCollection === void 0) { reloadCollection = true; }
             array.splice(index, 1);
+            _this.observerService.notify('filterItemAction', { action: 'remove', filterItemIndex: index, collectionConfig: _this.collectionConfig });
             if (reloadCollection) {
                 _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
             }
