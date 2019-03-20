@@ -14,8 +14,10 @@ class SWListingReportController {
     public selectedPeriodInterval:any;
     public startDate:any;
     public endDate:any;
+    public tempEndDate:any;
     public startDateCompare:any;
     public endDateCompare:any;
+    public tempEndDateCompare:any;
     public compareReportCollectionConfig:any;
     public compareReportingData:any;
     public reportingData:any;
@@ -149,7 +151,11 @@ class SWListingReportController {
         }
         
         if(this.selectedPeriodInterval.value=='hour'){
+            this.tempEndDateCompare= this.endDateCompare
             this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+        }else if (this.tempEndDateCompare){
+            this.endDateCompare = this.tempEndDateCompare;
+            delete this.tempEndDateCompare;
         }
         
         this.compareReportCollectionConfig = this.collectionConfig.clone();
@@ -313,7 +319,11 @@ class SWListingReportController {
             this.reportCollectionConfig = this.getReportCollectionConfig();
             //if the interval is an hour than we should only be able to show data for one day
             if(this.selectedPeriodInterval.value=='hour'){
+                this.tempEndDate = this.endDate;
                 this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+            }else if(this.tempEndDate){
+                this.endDate = this.tempEndDate;
+                delete this.tempEndDate;
             }
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
