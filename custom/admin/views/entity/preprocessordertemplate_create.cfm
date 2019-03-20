@@ -101,7 +101,7 @@ Notes:
 	<script>
 		//only allow dates that are on or before the 25th of the month and don't allow scheduling more than 2 months out
 		var today = Date.now();
-		var twoMonthsInFuture = Date.parse( "#dateFormat( dateAdd('d', now(), 60), 'yyyy-mm-dd')#" ); 
+		var twoMonthsInFuture = Date.parse( "#dateFormat( dateAdd('d', now(), 90), 'yyyy-mm-dd')#" ); 
 
 		$('input[name="scheduleOrderNextPlaceDateTime"]').datepicker({
 			beforeShowDay: function(date){
