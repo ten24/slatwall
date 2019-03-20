@@ -28,17 +28,17 @@ var appConfig = {
     filename: "[name].[contenthash].js",
     chunkFilename: "[name].[contenthash].bundle.js",
     sourceMapFilename: "sourcemaps/[file].map",
-    publicPath: "#request.slatwallScope.getBaseURL()#/dist/" 
+    publicPath: "#request.slatwallScope.getBaseURL()#/dist/"
     //    publicPath: "#request.slatwallScope.getBaseURL()#/admin/client/dist/" //  the url to the output directory resolved relative to the HTML page
   },
 
   // Turn on sourcemaps
   // devtool: 'source-map',
   resolve: {
-    extensions: [".webpack.js", ".web.js", ".ts", ".js"]
+    extensions: [".ts", ".js"]
   },
   externals: {
-    // jquery: 'jQuery'
+    jquery: 'jQuery' // tells that jquery is loaded externally, webpack shouldn't care
   },
   module: {
     rules: [
@@ -85,17 +85,12 @@ var appConfig = {
   ],
   optimization: {
     usedExports: true,
-    // runtimeChunk: {
-    //   name: entrypoint => `runtime~${entrypoint.name}`
-    // },
-    runtimeChunk: 'single',
+    runtimeChunk: "single",
     splitChunks: {
       chunks: "all",
       maxInitialRequests: Infinity,
       minSize: 30000,
       cacheGroups: {
-        // default: false,
-        // vendors: false,
         "vendor-angular": {
           reuseExistingChunk: true,
           name: "vendor-angular",
@@ -107,7 +102,7 @@ var appConfig = {
           reuseExistingChunk: true,
           name: "vendor-all",
           test: /[\\/]node_modules[\\/]/,
-          chunks: "initial",
+          chunks: "all",
           priority: 1
         }
       }
@@ -118,7 +113,6 @@ var appConfig = {
         cache: true,
         parallel: true,
         sourceMap: true,
-        // extractComments: "all",
         terserOptions: {
           warnings: false,
           parse: {},
