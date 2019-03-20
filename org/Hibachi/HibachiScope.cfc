@@ -350,6 +350,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return getSession().getAccount();
 	}
 
+	public string function generateCSRFToken(boolean forceNew=false,string tokenName='hibachiCSRFToken' ){  
+		return getService("hibachiSessionService").generateCSRFToken(arguments.forceNew,arguments.tokenName);
+	}
+
+	public boolean function verifyCSRFToken(required string requestToken){
+		return getService("hibachiSessionService").verifyCSRFToken(arguments.requestToken);
+	} 
+
 	// ==================== REQUEST CACHING METHODS ===========================
 
 	public boolean function hasValue(required string key) {
