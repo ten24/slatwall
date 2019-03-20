@@ -1537,55 +1537,55 @@ component output="false" accessors="true" extends="HibachiService" {
 		//perform export
 		
 		var fileName = arguments.processObject.getFileName();
-		//var filePath = /Users/ramakrishnasripada/Downloads/fileName;
-		filePath = "";
 		var exportStructData = arguments.collection.getCollectionConfigStruct();
 		var exportStructData['data']  = [];
 		exportStructData['data'] = arguments.collection.getRecords(forExport=true, formatRecord=false);
-		
 		var exportJsonData = serializeJson(exportStructData);
-		  
-		 //myFile = expandPath( "somefile.txt" );
-		 
-		 //data = "I'm going to write to direct to file";
-		 //FileWrite(myFile, data);
-		
-		 
-	 
-		  
-		
-		//collectionsExport("exportJsonData");
-	 //writedump(exportJsonData);
-	 //abort();
-	 //fileWrite( getTempFile( getTempDirectory(), "tempFile"), "My Data" );
-	   
-	   
-		getHibachiUtilityService().downloadFile(fileName,filePath,"application/#fileName#.json",true);
- 
-		//getHibachiUtilityService().queryToCsvFile(fileName,filePath,"application/#fileName#",true);
-		//fileWrite("","The text is writen by FileWrite function","utf-8");
-	 
-	 
-
-		return arguments.collection;
+		myFile = expandPath( "#fileName#.json");
+	//myFile =getHibachiUtilityService().downloadFile(fileName,filePath,"application/#fileName#.json",true);
+	  FileWrite(myFile, exportJsonData);
+      return arguments.collection;
 	}
 	
-	//import
+	 
 	
 	public any function processCollection_Import(required any collection, required any processObject, struct data={}) {
  
-		//perform export
+		//perform import
+	var columns=	['collectionId','collectionName','collectionCode','collectionDescription','collectionObject','collectionConfig','dirtyReadFlag','useElasticSearch','reportFlag','disableAveragesAndSumsFlag','softDeleteFlag','publicFlag'];
+	var fileData =  fileRead( arguments.processObject.getUploadFile());
+	var jsonObj= deserializeJson(fileData);
+	// var columns = getExportableColumnsByCollectionConfig(collectionConfig());
+	var importConfig = FileRead(getDirectoryFromPath(getcurrenttemplatepath()) &'../../config/resourceBundles/ImportQuery.json');
+    var query=transformArrayOfStructsToQuery(jsonObj,columns);
+	getService('hibachiDataService').loadDataFromQuery(query, importconfig);
+		 return arguments.collection;
+  }
+		 
+	 	            
+    public any function processCollection_ExportPermissions(required any collection, required any processObject, struct data={}) {
+ 
+		//perform export permissions
 		
-		writeDump(arguments.processObject.getUploadFile());
-		
-		
-		var fileData =  fileRead( arguments.processObject.getUploadFile());
-		writeDump( fileData );
-		
-		writeDump( deserializeJson(fileData) );
-		abort;
-		
-	//	var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+	var fileName = arguments.processObject.getFileName();
+    var importConfig = FileRead(getDirectoryFromPath(getcurrenttemplatepath()) &'../../config/resourceBundles/importPermissions.json');
+	var query=transformArrayOfStructsToQuery(fileData,columns);
+	 getService('hibachiDataService').transformArrayOfStructsToQuery(query, importconfig);
+	 getService('HibachiService').export(collection.getRecords(),listOfColumns,listOfColumnNames,fileName);
+		return arguments.collection;
+ 
+		        
+	 	            }	 	            
+	 	            
+	public any function processCollection_ImportPermissions(required any collection, required any processObject, struct data={}) {
+ 
+		//perform import permissions
+	
+    var importConfig = FileRead(getDirectoryFromPath(getcurrenttemplatepath()) &'../../config/resourceBundles/importPermissions.json');
+	var query=transformArrayOfStructsToQuery(fileData,columns);
+	 getService('hibachiDataService').loadDataFromQuery(query, importconfig);
+	 collection.setDisplayProperties('permissionGroup.permissionGroupID,permissionGroup.permissionGroupName');
+	 getService('HibachiService').export(collection.getRecords(),listOfColumns,listOfColumnNames,nameOfFile);
 		return arguments.collection;
  
 		        
