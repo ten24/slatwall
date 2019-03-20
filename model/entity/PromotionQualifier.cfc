@@ -148,13 +148,9 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 			}
 			
 			if(!isNull(getIncludedSkusCollection())){
-				var excludedSkuRecords = getExcludedSkusCollection().getRecords();
 				var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+				var excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
 				
-				var excludedSkuIDs = '';
-				for(var record in excludedSkuRecords){
-					excludedSkuIDs = listAppend(excludedSkuIDs,record['skuID']);
-				}
 				skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
 			}
 			variables.skuCollection = skuCollection;

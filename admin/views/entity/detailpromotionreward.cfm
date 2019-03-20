@@ -99,13 +99,7 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
 			</cfif>
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/producttypes" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/products" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/brands" />
-				<cfif rc.rewardType eq "merchandise">
-					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/options" />
-				</cfif>
 			<cfelseif rc.rewardType eq "fulfillment">
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />

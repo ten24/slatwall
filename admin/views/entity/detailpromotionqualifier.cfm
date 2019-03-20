@@ -100,4 +100,7 @@ Notes:
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
+	<cfdump var="#rc.promotionQualifier.getIncludedSkusCollection().getRecords()#">
+	<cfdump var="#rc.promotionQualifier.getExcludedSkusCollection().getRecords()#">
+	<cfdump var="#rc.promotionQualifier.getSkuCollection().getRecords()#">
 </cfoutput>

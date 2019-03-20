@@ -66,8 +66,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="maximumUsePerOrder" ormType="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerItem" ormtype="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerQualification" ormtype="integer" hb_nullRBKey="define.unlimited";
-	property name="includedSkusCollectionConfig" ormtype="text";
-	property name="excludedSkusCollectionConfig" ormtype="text";
+	property name="includedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
+	property name="excludedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -184,21 +184,15 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	}
 	
 	public any function getIncludedSkusCollection(){
-		if(isNull(variables.includedSkusCollectionConfig)){
-			return;
-		}
 		if(isNull(variables.includedSkusCollection)){
-			variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',variables.includedSkusCollectionConfig);
+			variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',getIncludedSkusCollectionConfig());
 		}
 		return variables.includedSkusCollection;
 	}
 	
 	public any function getExcludedSkusCollection(){
-		if(isNull(variables.excludedSkusCollectionConfig)){
-			return;
-		}
 		if(isNull(variables.excludedSkusCollection)){
-			variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',variables.excludedSkusCollectionConfig);
+			variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',getExcludedSkusCollectionConfig());
 		}
 		return variables.excludedSkusCollection;
 	}
@@ -210,13 +204,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			}
 			
 			if(!isNull(getIncludedSkusCollection())){
-				var excludedSkuRecords = getExcludedSkusCollection().getRecords();
 				var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+				var excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
 				
-				var excludedSkuIDs = '';
-				for(var record in excludedSkuRecords){
-					excludedSkuIDs = listAppend(excludedSkuIDs,record['skuID']);
-				}
 				skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
 			}
 			variables.skuCollection = skuCollection;
