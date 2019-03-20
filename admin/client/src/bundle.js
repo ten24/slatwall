@@ -71947,17 +71947,21 @@ var SWDisplayOptions = /** @class */ (function () {
                 listingName: "@?"
             },
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayoptions.html",
-            controller: ['$scope', '$element', '$attrs', 'observerService', function ($scope, $element, $attrs, observerService) {
+            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
                     this.removeColumn = function (columnIndex) {
-                        if ($scope.columns.length) {
-                            $scope.columns.splice(columnIndex, 1);
-                        }
+                        $scope.removeColumn(columnIndex);
                     };
                     this.selectedPropertyChanged = function (selectedProperty, aggregate) {
                         $scope.selectedPropertyChanged(selectedProperty, aggregate);
                     };
                 }],
             link: function (scope, element, $attrs, controllers) {
+                scope.removeColumn = function (columnIndex) {
+                    if (scope.columns.length) {
+                        scope.columns.splice(columnIndex, 1);
+                    }
+                    observerService.notify('displayOptionsAction', { action: 'removeColumn', collectionConfig: controllers.swListingControls.collectionConfig });
+                };
                 scope.breadCrumbs = [{
                         entityAlias: scope.baseEntityAlias,
                         cfc: scope.baseEntityAlias,
