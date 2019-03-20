@@ -33,7 +33,7 @@ var appConfig = {
   },
 
   // Turn on sourcemaps
-  devtool: 'source-map',
+  // devtool: 'source-map',
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".js"]
   },
@@ -81,7 +81,7 @@ var appConfig = {
       threshold: 10240,
       minRatio: 0.8
     }),
-    new BundleAnalyzerPlugin()
+    // new BundleAnalyzerPlugin()
   ],
   optimization: {
     usedExports: true,
@@ -131,7 +131,7 @@ var appConfig = {
           toplevel: false,
           nameCache: null,
           ie8: false,
-          keep_classnames: false, // remember angular injection
+          keep_classnames: false,
           keep_fnames: false,
           safari10: false
         }
