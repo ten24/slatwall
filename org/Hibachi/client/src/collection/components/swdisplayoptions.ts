@@ -106,7 +106,16 @@ class SWDisplayOptions{
                     }
                     //if is aggregate of an object
                     if(selectedProperty.aggregate && selectedProperty.cfc){
-                        var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(baseEntityCfcName,actualPropertyIdentifier);
+                        var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(scope.baseEntityName.replace('Slatwall',''),actualPropertyIdentifier);
+                        var pidArray = actualPropertyIdentifier.split('.');
+                        var lastProperty = pidArray[pidArray.length-1];
+                        console.log(actualPropertyIdentifier);
+                            console.log('pp',lastEntityName,lastProperty);
+                        if($hibachi.getPropertyIsObjectByEntityNameAndPropertyIdentifier(lastEntityName,lastProperty)){
+                            var propertyMetaData = $hibachi.getPropertyByEntityNameAndPropertyName(lastEntityName,lastProperty);
+                            lastEntityName = propertyMetaData.cfc;
+                        
+                        }
                         title = rbkeyService.getRBKey(prefix+lastEntityName+'_plural');
                         return title;
                     }
