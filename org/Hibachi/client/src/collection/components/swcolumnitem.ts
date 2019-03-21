@@ -93,7 +93,7 @@ class SWColumnItem{
                 scope.saveDisplayTitle = function(){
                     scope.saveCollection();
                     scope.editingDisplayTitle = false;
-                    controller.swListingDisplay.observerService.notify('displayOptionsAction', {action: 'saveDisplayTitle',collectionConfig:controller.swListingControls.collectionConfig});
+                    controller.swListingDisplay.observerService.notifyById('displayOptionsAction', controller.swListingDisplay.tableID, {action: 'saveDisplayTitle',collectionConfig:controller.swListingControls.collectionConfig});
                 };
                 scope.cancelDisplayTitle = function(){
                     scope.column.displayTitle = scope.previousDisplayTitle;

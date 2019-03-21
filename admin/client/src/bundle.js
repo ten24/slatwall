@@ -69180,7 +69180,7 @@ var SWColumnItem = /** @class */ (function () {
                 scope.saveDisplayTitle = function () {
                     scope.saveCollection();
                     scope.editingDisplayTitle = false;
-                    controller.swListingDisplay.observerService.notify('displayOptionsAction', { action: 'saveDisplayTitle', collectionConfig: controller.swListingControls.collectionConfig });
+                    controller.swListingDisplay.observerService.notifyById('displayOptionsAction', controller.swListingDisplay.tableID, { action: 'saveDisplayTitle', collectionConfig: controller.swListingControls.collectionConfig });
                 };
                 scope.cancelDisplayTitle = function () {
                     scope.column.displayTitle = scope.previousDisplayTitle;
@@ -71961,7 +71961,7 @@ var SWDisplayOptions = /** @class */ (function () {
                     if (scope.columns.length) {
                         scope.columns.splice(columnIndex, 1);
                     }
-                    observerService.notify('displayOptionsAction', { action: 'removeColumn', collectionConfig: controllers.swListingControls.collectionConfig });
+                    observerService.notifyByID('displayOptionsAction', controllers.swListingDisplay.tableID, { action: 'removeColumn', collectionConfig: controllers.swListingControls.collectionConfig });
                 };
                 scope.breadCrumbs = [{
                         entityAlias: scope.baseEntityAlias,
@@ -72114,7 +72114,7 @@ var SWDisplayOptions = /** @class */ (function () {
                                 scope.addDisplayDialog.toggleDisplayDialog();
                                 scope.selectBreadCrumb(0);
                             }
-                            observerService.notify('displayOptionsAction', { action: 'addColumn', collectionConfig: controllers.swListingControls.collectionConfig, column: column });
+                            observerService.notifyById('displayOptionsAction', controllers.swListingDisplay.tableID, { action: 'addColumn', collectionConfig: controllers.swListingControls.collectionConfig, column: column });
                         }
                     }
                 };
@@ -87071,7 +87071,7 @@ var SWListingControlsController = /** @class */ (function () {
         this.removeFilter = function (array, index, reloadCollection) {
             if (reloadCollection === void 0) { reloadCollection = true; }
             array.splice(index, 1);
-            _this.observerService.notify('filterItemAction', { action: 'remove', filterItemIndex: index, collectionConfig: _this.collectionConfig });
+            _this.observerService.notifyById('filterItemAction', _this.swListingDisplay.tableID, { action: 'remove', filterItemIndex: index, collectionConfig: _this.collectionConfig });
             if (reloadCollection) {
                 _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
             }

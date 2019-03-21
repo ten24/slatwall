@@ -78,7 +78,7 @@ class SWDisplayOptions{
                         scope.columns.splice(columnIndex, 1);
                     }
                     
-                    observerService.notify('displayOptionsAction', {action: 'removeColumn',collectionConfig:controllers.swListingControls.collectionConfig});
+                    observerService.notifyByID('displayOptionsAction',controllers.swListingDisplay.tableID, {action: 'removeColumn',collectionConfig:controllers.swListingControls.collectionConfig});
                 };
             
                 scope.breadCrumbs = [ {
@@ -254,7 +254,7 @@ class SWDisplayOptions{
                                 scope.selectBreadCrumb(0);
                             }
                             
-                            observerService.notify('displayOptionsAction', {action: 'addColumn',collectionConfig:controllers.swListingControls.collectionConfig,column:column});
+                            observerService.notifyById('displayOptionsAction',controllers.swListingDisplay.tableID, {action: 'addColumn',collectionConfig:controllers.swListingControls.collectionConfig,column:column});
                         }
                     }
                     
