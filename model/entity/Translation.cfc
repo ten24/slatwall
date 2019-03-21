@@ -4,6 +4,7 @@ component displayname="Translation" entityname="SlatwallTranslation" table="SwTr
     property name="translationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     property name="baseObject" ormtype="string" index="EI_BASEOBJECT";
     property name="baseID" ormtype="string" length="32" index="EI_BASEID";
+    property name="basePropertyName" ormtype="string";
     property name="locale" ormtype="string";
     property name="value" ormtype="string";
     
