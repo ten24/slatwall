@@ -69137,7 +69137,7 @@ var SWColumnItem = /** @class */ (function () {
                 orderBy: "="
             },
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
-            link: function (scope, element, attrs, controller, observerService) {
+            link: function (scope, element, attrs, controller) {
                 scope.getReportLabelColor = function (chart) {
                     if (scope.column.aggregate && chart.config.data.datasets) {
                         for (var i = 0; i < chart.config.data.datasets.length; i++) {
@@ -69180,6 +69180,7 @@ var SWColumnItem = /** @class */ (function () {
                 scope.saveDisplayTitle = function () {
                     scope.saveCollection();
                     scope.editingDisplayTitle = false;
+                    controller.swListingDisplay.observerService.notifyById('displayOptionsAction', controller.swListingDisplay.tableID, { action: 'saveDisplayTitle', collectionConfig: controller.swListingControls.collectionConfig });
                 };
                 scope.cancelDisplayTitle = function () {
                     scope.column.displayTitle = scope.previousDisplayTitle;
@@ -71927,7 +71928,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWDisplayOptions = /** @class */ (function () {
     //@ngInject
-    function SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService) {
+    function SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService, observerService) {
         return {
             restrict: 'E',
             require: {
@@ -71949,15 +71950,19 @@ var SWDisplayOptions = /** @class */ (function () {
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayoptions.html",
             controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
                     this.removeColumn = function (columnIndex) {
-                        if ($scope.columns.length) {
-                            $scope.columns.splice(columnIndex, 1);
-                        }
+                        $scope.removeColumn(columnIndex);
                     };
                     this.selectedPropertyChanged = function (selectedProperty, aggregate) {
                         $scope.selectedPropertyChanged(selectedProperty, aggregate);
                     };
                 }],
-            link: function (scope, element, $attrs, controllers, observerService) {
+            link: function (scope, element, $attrs, controllers) {
+                scope.removeColumn = function (columnIndex) {
+                    if (scope.columns.length) {
+                        scope.columns.splice(columnIndex, 1);
+                    }
+                    observerService.notifyById('displayOptionsAction', controllers.swListingDisplay.tableID, { action: 'removeColumn', collectionConfig: controllers.swListingControls.collectionConfig });
+                };
                 scope.breadCrumbs = [{
                         entityAlias: scope.baseEntityAlias,
                         cfc: scope.baseEntityAlias,
@@ -71986,7 +71991,13 @@ var SWDisplayOptions = /** @class */ (function () {
                     }
                     //if is aggregate of an object
                     if (selectedProperty.aggregate && selectedProperty.cfc) {
-                        var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(baseEntityCfcName, actualPropertyIdentifier);
+                        var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(scope.baseEntityName.replace('Slatwall', ''), actualPropertyIdentifier);
+                        var pidArray = actualPropertyIdentifier.split('.');
+                        var lastProperty = pidArray[pidArray.length - 1];
+                        if ($hibachi.getPropertyIsObjectByEntityNameAndPropertyIdentifier(lastEntityName, lastProperty)) {
+                            var propertyMetaData = $hibachi.getPropertyByEntityNameAndPropertyName(lastEntityName, lastProperty);
+                            lastEntityName = propertyMetaData.cfc;
+                        }
                         title = rbkeyService.getRBKey(prefix + lastEntityName + '_plural');
                         return title;
                     }
@@ -72103,6 +72114,7 @@ var SWDisplayOptions = /** @class */ (function () {
                                 scope.addDisplayDialog.toggleDisplayDialog();
                                 scope.selectBreadCrumb(0);
                             }
+                            observerService.notifyById('displayOptionsAction', controllers.swListingDisplay.tableID, { action: 'addColumn', collectionConfig: controllers.swListingControls.collectionConfig, column: column });
                         }
                     }
                 };
@@ -72170,13 +72182,14 @@ var SWDisplayOptions = /** @class */ (function () {
         };
     }
     SWDisplayOptions.Factory = function () {
-        var directive = function ($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService) { return new SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService); };
+        var directive = function ($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService, observerService) { return new SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService, observerService); };
         directive.$inject = [
             '$log',
             '$hibachi',
             'hibachiPathBuilder',
             'collectionPartialsPath',
-            'rbkeyService'
+            'rbkeyService',
+            'observerService'
         ];
         return directive;
     };
@@ -72349,7 +72362,6 @@ var SWEditFilterItem = /** @class */ (function () {
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
                     if (scope.filterItem.$$isNew === true) {
-                        observerService.notify('filterItemAction', { action: 'remove', filterItemIndex: scope.filterItemIndex });
                         scope.removeFilterItem({ filterItemIndex: scope.filterItemIndex });
                     }
                     else {
@@ -87059,6 +87071,7 @@ var SWListingControlsController = /** @class */ (function () {
         this.removeFilter = function (array, index, reloadCollection) {
             if (reloadCollection === void 0) { reloadCollection = true; }
             array.splice(index, 1);
+            _this.observerService.notifyById('filterItemAction', _this.swListingDisplay.tableID, { action: 'remove', filterItemIndex: index, collectionConfig: _this.collectionConfig });
             if (reloadCollection) {
                 _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
             }
@@ -88386,74 +88399,6 @@ var SWListingReportController = /** @class */ (function () {
             var o = Math.round, r = Math.random, s = 255;
             return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 1 + ')';
         };
-        this.updateComparePeriod = function () {
-            _this.startDateCompare = new Date(_this.startDateCompare);
-            _this.startDateCompare.setHours(0, 0, 0, 0);
-            _this.endDateCompare = new Date(_this.endDateCompare);
-            _this.endDateCompare.setHours(23, 59, 59, 999);
-            //if date is in the wrong format then update those dates
-            if (_this.startDateCompare.indexOf && _this.startDateCompare.indexOf('000Z') != -1) {
-                _this.startDateCompare = new Date(_this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
-                _this.endDateCompare = new Date(_this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
-            }
-            if (_this.selectedPeriodInterval.value == 'hour') {
-                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
-            }
-            _this.compareReportCollectionConfig = _this.collectionConfig.clone();
-            for (var i in _this.compareReportCollectionConfig.columns) {
-                var column = _this.compareReportCollectionConfig.columns[i];
-                if (column.aggregate) {
-                    column.isMetric = true;
-                }
-                else {
-                    column.isVisible = false;
-                }
-            }
-            _this.compareReportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
-            _this.compareReportCollectionConfig.setReportFlag(1);
-            _this.compareReportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false, isExportable: true });
-            _this.compareReportCollectionConfig.setAllRecords(true);
-            _this.compareReportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
-            //TODO:should add as a filterGroup
-            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDateCompare, '>=', 'AND', true, true, false, 'dates');
-            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDateCompare, '<=', 'AND', true, true, false, 'dates');
-            _this.compareReportCollectionConfig.getEntity().then(function (reportingData) {
-                /*this.compareReportingData = reportingData;
-                this.compareReportingData.records.forEach(element=>{
-                    if(!this.chart.data.labels.includes(element[this.selectedPeriodColumn.name])){
-                       this.chart.data.labels.push(element[this.selectedPeriodColumn.name]);
-                    }
-                });
-                 this.reportCollectionConfig.columns.forEach(column=>{
-                     if(column.isMetric){
-                         let color = this.random_rgba();
-                         let title = `${column.title} (${this.startDateCompare.toDateString()} - ${new Date(this.endDateCompare).toDateString()})`;
-                         let metrics = [];
-                         this.compareReportingData.records.forEach(element=>{
-                              metrics.push(
-                                     {
-                                         y:element[column.aggregate.aggregateAlias],
-                                         x:element[this.selectedPeriodColumn.name]
-                                     }
-                           )
-                         });
-                         this.chart.data.datasets.push(
-                             {
-                             label:title,
-                             data:metrics,
-                             backgroundColor:color,
-                             borderColor:color,
-                             borderWidth: 2,
-                             fill:false
-                             }
-                         );
-                     }
-                 });
-                 this.chart.update();*/
-                var ctx = $("#myChartCompare");
-                _this.renderReport(reportingData, ctx);
-            });
-        };
         //decides if report comes from persisted collection or transient
         this.getReportCollectionConfig = function () {
             var reportCollectionConfig = _this.collectionConfig.clone();
@@ -88543,7 +88488,12 @@ var SWListingReportController = /** @class */ (function () {
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
                 //if the interval is an hour than we should only be able to show data for one day
                 if (_this.selectedPeriodInterval.value == 'hour') {
+                    _this.tempEndDate = _this.endDate;
                     _this.endDate = new Date(_this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                }
+                else if (_this.tempEndDate) {
+                    _this.endDate = _this.tempEndDate;
+                    delete _this.tempEndDate;
                 }
                 for (var i = _this.reportCollectionConfig.columns.length - 1; i >= 0; i--) {
                     var column = _this.reportCollectionConfig.columns[i];
@@ -88594,10 +88544,58 @@ var SWListingReportController = /** @class */ (function () {
                 }
             }
         };
+        this.updateComparePeriod = function () {
+            _this.startDateCompare = new Date(_this.startDateCompare);
+            _this.startDateCompare.setHours(0, 0, 0, 0);
+            _this.endDateCompare = new Date(_this.endDateCompare);
+            _this.endDateCompare.setHours(23, 59, 59, 999);
+            //if date is in the wrong format then update those dates
+            if (_this.startDateCompare.indexOf && _this.startDateCompare.indexOf('000Z') != -1) {
+                _this.startDateCompare = new Date(_this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+                _this.endDateCompare = new Date(_this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
+            }
+            if (_this.selectedPeriodInterval.value == 'hour') {
+                _this.tempEndDateCompare = _this.endDateCompare;
+                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+            }
+            else if (_this.tempEndDateCompare) {
+                _this.endDateCompare = _this.tempEndDateCompare;
+                delete _this.tempEndDateCompare;
+            }
+            _this.compareReportCollectionConfig = _this.collectionConfig.clone();
+            for (var i in _this.compareReportCollectionConfig.columns) {
+                var column = _this.compareReportCollectionConfig.columns[i];
+                if (column.aggregate) {
+                    column.isMetric = true;
+                }
+                else {
+                    column.isVisible = false;
+                }
+            }
+            _this.compareReportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
+            _this.compareReportCollectionConfig.setReportFlag(1);
+            _this.compareReportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false, isExportable: true });
+            _this.compareReportCollectionConfig.setAllRecords(true);
+            _this.compareReportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
+            //TODO:should add as a filterGroup
+            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDateCompare, '>=', 'AND', true, true, false, 'dates');
+            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDateCompare, '<=', 'AND', true, true, false, 'dates');
+            _this.compareReportCollectionConfig.getEntity().then(function (reportingData) {
+                var ctx = $("#myChartCompare");
+                _this.renderReport(reportingData, ctx);
+            });
+        };
         this.renderReport = function (reportingData, ctx) {
             _this.reportingData = reportingData;
             var dates = [];
             var datasets = [];
+            if (ctx.is($("#myChartCompare"))) {
+                var chart = _this.compareChart;
+                _this.compareReportingData = reportingData;
+            }
+            else {
+                var chart = _this.chart;
+            }
             _this.reportingData.records.forEach(function (element) {
                 var pidAliasArray = _this.selectedPeriodColumn.propertyIdentifier.split('.');
                 pidAliasArray.shift();
@@ -88608,7 +88606,7 @@ var SWListingReportController = /** @class */ (function () {
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
                     var color = _this.random_rgba();
-                    var title = "" + column.title;
+                    var title = column.displayTitle || column.title;
                     var metrics_1 = [];
                     _this.reportingData.records.forEach(function (element) {
                         metrics_1.push({
@@ -88627,10 +88625,10 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             //used to clear old rendered charts before adding new ones
-            if (_this.chart != null) {
-                _this.chart.destroy();
+            if (chart != null) {
+                chart.destroy();
             }
-            _this.chart = new chart_js_1.Chart(ctx, {
+            chart = new chart_js_1.Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: dates,
@@ -88664,16 +88662,28 @@ var SWListingReportController = /** @class */ (function () {
                     hover: {
                         intersect: true,
                         mode: 'nearest',
+                        onHover: function (e) {
+                            var point = this.getElementAtEvent(e);
+                            if (point.length)
+                                e.target.style.cursor = 'pointer';
+                            else
+                                e.target.style.cursor = 'default';
+                        }
                     },
                     elements: {
                         line: {
                             tension: 0
                         }
+                    },
+                    legend: {
+                        onHover: function (e) {
+                            e.target.style.cursor = 'pointer';
+                        }
                     }
                 }
             });
-            _this.chart.draw();
-            _this.observerService.notifyById('swListingReport_DrawChart', _this.tableId, _this.chart);
+            chart.draw();
+            _this.observerService.notifyById('swListingReport_DrawChart', _this.tableId, chart);
         };
         this.popObjectPath = function () {
             if (_this.objectPath.length > 1) {
@@ -88761,6 +88771,7 @@ var SWListingReportController = /** @class */ (function () {
             this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
         }
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
+        this.observerService.attach(this.updateReportFromListing, 'displayOptionsAction', this.tableId);
     }
     return SWListingReportController;
 }());
