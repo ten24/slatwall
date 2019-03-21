@@ -400,7 +400,7 @@ class SWListingReportController {
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
 		        let color = this.random_rgba();
-		        let title = `${column.title}`;
+		        let title = column.displayTitle || column.title;
 		        let metrics = [];
 		        this.reportingData.records.forEach(element=>{
 		            metrics.push(

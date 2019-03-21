@@ -45,7 +45,7 @@ class SWColumnItem{
 				orderBy:"="
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
-			link: function(scope, element,attrs,controller,observerService){
+			link: function(scope, element,attrs,controller){
 				
 				scope.getReportLabelColor=(chart)=>{
 					if(scope.column.aggregate && chart.config.data.datasets){
@@ -93,6 +93,7 @@ class SWColumnItem{
                 scope.saveDisplayTitle = function(){
                     scope.saveCollection();
                     scope.editingDisplayTitle = false;
+                    controller.swListingDisplay.observerService.notify('displayOptionsAction', {action: 'saveDisplayTitle',collectionConfig:controller.swListingControls.collectionConfig});
                 };
                 scope.cancelDisplayTitle = function(){
                     scope.column.displayTitle = scope.previousDisplayTitle;

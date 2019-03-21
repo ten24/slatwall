@@ -69137,7 +69137,7 @@ var SWColumnItem = /** @class */ (function () {
                 orderBy: "="
             },
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
-            link: function (scope, element, attrs, controller, observerService) {
+            link: function (scope, element, attrs, controller) {
                 scope.getReportLabelColor = function (chart) {
                     if (scope.column.aggregate && chart.config.data.datasets) {
                         for (var i = 0; i < chart.config.data.datasets.length; i++) {
@@ -69180,6 +69180,7 @@ var SWColumnItem = /** @class */ (function () {
                 scope.saveDisplayTitle = function () {
                     scope.saveCollection();
                     scope.editingDisplayTitle = false;
+                    controller.swListingDisplay.observerService.notify('displayOptionsAction', { action: 'saveDisplayTitle', collectionConfig: controller.swListingControls.collectionConfig });
                 };
                 scope.cancelDisplayTitle = function () {
                     scope.column.displayTitle = scope.previousDisplayTitle;
@@ -88632,7 +88633,7 @@ var SWListingReportController = /** @class */ (function () {
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
                     var color = _this.random_rgba();
-                    var title = "" + column.title;
+                    var title = column.displayTitle || column.title;
                     var metrics_1 = [];
                     _this.reportingData.records.forEach(function (element) {
                         metrics_1.push({
