@@ -3162,6 +3162,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
 					addingColumn = true;
 				}
+				
+				if(
+					!structKeyExists(column,'aggregate')
+					&& structKeyExists(column, 'ormtype') 
+					&& (
+						column.ormtype eq 'big_decimal'
+						|| column.ormtype eq 'integer'
+						|| column.ormtype eq 'float'
+						|| column.ormtype eq 'double'
+					) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
+				){
+					addTotalAvgAggregate(column);
+					addTotalSumAggregate(column);
+				}
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
 					columnsHQL &= ',';
