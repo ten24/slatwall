@@ -78,7 +78,7 @@ class SWDisplayOptions{
                         scope.columns.splice(columnIndex, 1);
                     }
                     
-                    observerService.notifyByID('displayOptionsAction',controllers.swListingDisplay.tableID, {action: 'removeColumn',collectionConfig:controllers.swListingControls.collectionConfig});
+                    observerService.notifyById('displayOptionsAction',controllers.swListingDisplay.tableID, {action: 'removeColumn',collectionConfig:controllers.swListingControls.collectionConfig});
                 };
             
                 scope.breadCrumbs = [ {
