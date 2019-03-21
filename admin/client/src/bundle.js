@@ -88689,10 +88689,22 @@ var SWListingReportController = /** @class */ (function () {
                     hover: {
                         intersect: true,
                         mode: 'nearest',
+                        onHover: function (e) {
+                            var point = this.getElementAtEvent(e);
+                            if (point.length)
+                                e.target.style.cursor = 'pointer';
+                            else
+                                e.target.style.cursor = 'default';
+                        }
                     },
                     elements: {
                         line: {
                             tension: 0
+                        }
+                    },
+                    legend: {
+                        onHover: function (e) {
+                            e.target.style.cursor = 'pointer';
                         }
                     }
                 }
