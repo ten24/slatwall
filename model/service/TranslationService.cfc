@@ -10,6 +10,33 @@ component extends="HibachiService" accessors="true" output="false" {
     
     // ===================== START: Process Methods ===========================
     
+    public any function processTranslation_updateProperty(required any entity, required struct data, required any processObject) {
+
+        if (isArray(arguments.processObject.getTranslationData())) {
+            for (var translationData in arguments.processObject.getTranslationData()) {
+                var translation = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData.locale], true);
+                
+                if (translation.getNewFlag()) {
+                    translation.setBaseObject(arguments.processObject.getBaseObject());
+                    translation.setBaseID(arguments.processObject.getBaseID());
+                    translation.setBasePropertyName(arguments.processObject.getBasePropertyName());
+                    translation.setLocale(translationData.locale);
+                }
+                
+                // Delete existing translation that are set to an empty value
+                if (!translation.getNewFlag() && !len(translationData.value)) {
+                    this.deleteTranslation(translation);
+                
+                } else if (len(translationData.value)) {
+                    translation.setValue(translationData.value);
+                    this.saveTranslation(translation);
+                }
+            }
+        }
+
+        return arguments.entity;
+    }
+
     // =====================  END: Process Methods ============================
     
     // ====================== START: Status Methods ===========================
