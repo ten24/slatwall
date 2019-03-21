@@ -59,7 +59,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
 	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID";
-	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID";
+	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID" hb_formFieldType="select";
 
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
@@ -125,5 +125,16 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}	
+	//CUSTOM FUNCTIONS BEGIN
 
+public array function getFrequencyTermOptions(){
+		var termCollection = getService('SettingService').getTermCollectionList();
+		termCollection.setDisplayProperties('termName|name,termID|value');
+		termCollection.addFilter('termHours','null','is');
+		termCollection.addFilter('termDays','null','is');
+		termCollection.addFilter('termYears','null','is');
+		termCollection.addfilter('termMonths','1,2','in');	
+		return termCollection.getRecords(); 
+	}
+//CUSTOM FUNCTIONS END
 }

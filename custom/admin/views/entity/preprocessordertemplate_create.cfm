@@ -92,7 +92,8 @@ Notes:
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="scheduleOrderNextPlaceDateTime" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" edit="#rc.edit#">
+
+			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="frequencyTerm" valueOptions="#rc.orderTemplate.getFrequencyTermOptions()#" fieldtype="select" edit="#rc.edit#">
 
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
