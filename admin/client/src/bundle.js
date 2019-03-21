@@ -71994,8 +71994,6 @@ var SWDisplayOptions = /** @class */ (function () {
                         var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(scope.baseEntityName.replace('Slatwall', ''), actualPropertyIdentifier);
                         var pidArray = actualPropertyIdentifier.split('.');
                         var lastProperty = pidArray[pidArray.length - 1];
-                        console.log(actualPropertyIdentifier);
-                        console.log('pp', lastEntityName, lastProperty);
                         if ($hibachi.getPropertyIsObjectByEntityNameAndPropertyIdentifier(lastEntityName, lastProperty)) {
                             var propertyMetaData = $hibachi.getPropertyByEntityNameAndPropertyName(lastEntityName, lastProperty);
                             lastEntityName = propertyMetaData.cfc;
@@ -88583,38 +88581,6 @@ var SWListingReportController = /** @class */ (function () {
             _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDateCompare, '>=', 'AND', true, true, false, 'dates');
             _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDateCompare, '<=', 'AND', true, true, false, 'dates');
             _this.compareReportCollectionConfig.getEntity().then(function (reportingData) {
-                /*this.compareReportingData = reportingData;
-                this.compareReportingData.records.forEach(element=>{
-                    if(!this.chart.data.labels.includes(element[this.selectedPeriodColumn.name])){
-                       this.chart.data.labels.push(element[this.selectedPeriodColumn.name]);
-                    }
-                });
-                 this.reportCollectionConfig.columns.forEach(column=>{
-                     if(column.isMetric){
-                         let color = this.random_rgba();
-                         let title = `${column.title} (${this.startDateCompare.toDateString()} - ${new Date(this.endDateCompare).toDateString()})`;
-                         let metrics = [];
-                         this.compareReportingData.records.forEach(element=>{
-                              metrics.push(
-                                     {
-                                         y:element[column.aggregate.aggregateAlias],
-                                         x:element[this.selectedPeriodColumn.name]
-                                     }
-                           )
-                         });
-                         this.chart.data.datasets.push(
-                             {
-                             label:title,
-                             data:metrics,
-                             backgroundColor:color,
-                             borderColor:color,
-                             borderWidth: 2,
-                             fill:false
-                             }
-                         );
-                     }
-                 });
-                 this.chart.update();*/
                 var ctx = $("#myChartCompare");
                 _this.renderReport(reportingData, ctx);
             });
