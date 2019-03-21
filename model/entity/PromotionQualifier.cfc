@@ -122,21 +122,26 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	}
 	
 	public any function getIncludedSkusCollection(){
-		if(isNull(variables.includedSkusCollectionConfig)){
-			return;
-		}
 		if(isNull(variables.includedSkusCollection)){
-			variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',variables.includedSkusCollectionConfig);
+			var collectionConfig = getIncludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+			}
 		}
 		return variables.includedSkusCollection;
 	}
 	
 	public any function getExcludedSkusCollection(){
-		if(isNull(variables.excludedSkusCollectionConfig)){
-			return;
-		}
 		if(isNull(variables.excludedSkusCollection)){
-			variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',variables.excludedSkusCollectionConfig);
+			var collectionConfig = getExcludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
+			}
 		}
 		return variables.excludedSkusCollection;
 	}

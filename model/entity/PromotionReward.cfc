@@ -185,14 +185,25 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	
 	public any function getIncludedSkusCollection(){
 		if(isNull(variables.includedSkusCollection)){
-			variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+			var collectionConfig = getIncludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+			}
 		}
 		return variables.includedSkusCollection;
 	}
 	
 	public any function getExcludedSkusCollection(){
 		if(isNull(variables.excludedSkusCollection)){
-			variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection('Sku',getExcludedSkusCollectionConfig());
+			var collectionConfig = getExcludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
+			}
 		}
 		return variables.excludedSkusCollection;
 	}
