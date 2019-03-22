@@ -5937,35 +5937,35 @@ a.disabled > i.hibachi-ui-radio-checked {
   color: #5E5E5E;
 }
 
-#reporting-top #revrecognition .flex .col.larger {
+#reporting-top #subreport .flex .col.larger {
   margin-right: 20px;
   margin-top: 22px;
 }
-#reporting-top #revrecognition .content-right>.col {
+#reporting-top #subreport .content-right>.col {
   margin-left: 10px;
 }
-#reporting-top #revrecognition .btn-secondary {
+#reporting-top #subreport .btn-secondary {
   border: 1px solid #DDDDDD;
 }
-#reporting-top #revrecognition .btn-secondary:hover {
+#reporting-top #subreport .btn-secondary:hover {
   background: #DDDDDD;
 }
-#reporting-top #revrecognition .row {
+#reporting-top #subreport .row {
   margin: 15px 0 0 0;
 }
-#reporting-top #revrecognition h3 {
+#reporting-top #subreport h3 {
   margin-top: auto;
   margin-bottom: 0;
 }
-#reporting-top #revrecognition .ax_default button {
+#reporting-top #subreport .ax_default button {
   height: 34px;
   margin-left: 7x;
 }
-#reporting-top #revrecognition .ax_default .single-select {
+#reporting-top #subreport .ax_default .single-select {
   margin-top: 20px;
   margin-left: 10px;
 }
-#reporting-top #revrecognition .report-select {
+#reporting-top #subreport .report-select {
   margin-top: 20px;
 }
 

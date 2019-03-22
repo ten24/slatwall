@@ -4,20 +4,20 @@
 			jQuery('body').on('click', '##ApplyBtn', function(e){
 				e.preventDefault();
 				jQuery("input[name='slatAction']").val('#rc.slatAction#');
-				jQuery('##revrecognition').submit();
+				jQuery('##subreport').submit();
 			});
 			
 			jQuery('body').on('click', '##ExportBtn', function(e){
 				e.preventDefault();
 				
 				//creates a hidden form based on current form and alters for export
-				if(jQuery('##revrecognitionexport')){
-					jQuery('##revrecognitionexport').remove();
+				if(jQuery('##subreportexport')){
+					jQuery('##subreportexport').remove();
 				}
 				
-				var exportForm = jQuery('##revrecognition').clone();
+				var exportForm = jQuery('##subreport').clone();
 				exportForm.children('input[name="slatAction"]').val(jQuery("input[name='slatAction']").val()+'export');
-				exportForm.attr('id','revrecognitionexport');
+				exportForm.attr('id','subreportexport');
 				exportForm.hide();
 				jQuery(document.body).append(exportForm);
 				exportForm.submit();
@@ -28,7 +28,7 @@
 	</script>
 
 	<div id="reporting-top">
-		<form id="revrecognition" action="?s=1" method="post">
+		<form id="subreport" action="?s=1" method="post">
 			<input type="hidden" name="slatAction" value="#rc.slatAction#"/>
 			<div id="u119_state0" class="panel_state" data-label="State1" style="">
 				<div class="flex flex-space-bettween align-items-end">
