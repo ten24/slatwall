@@ -39,10 +39,10 @@
 					
                     <!-- Button (Rectangle) -->
 					<div class="col flex flex-end">	
-						<div class="multi-select">
-	                        <label>Reports</label>
+						<div class="report-select">
 	                        <!--- BACKEND TODO: Wireup subscription report dropdown --->
-	                        <select name="report" class="selectpicker" data-live-search="true" data-width="auto" multiple>
+	                        <select name="report" data-live-search="true" data-width="auto">
+	                        	<option value="##">Subscription Reports ...</option>
 	                        	 <option value="##">Deferred Revenue Report</option>
 	                        	 <option value="##">Earned Revenue Report</option>
 	                        	 <option value="##">New Subscription Orders Report</option>

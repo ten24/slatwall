@@ -5965,6 +5965,9 @@ a.disabled > i.hibachi-ui-radio-checked {
   margin-top: 20px;
   margin-left: 10px;
 }
+#reporting-top #revrecognition .report-select {
+  margin-top: 20px;
+}
 
 #get-started-report {
   background: #fff;
