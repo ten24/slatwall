@@ -5825,7 +5825,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   font-weight: 600;
 }
 #reporting-top {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 #reporting-top label {
   display: block;
@@ -5935,6 +5935,35 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-color: #fff;
   border: 1px solid #DDDDDD;
   color: #5E5E5E;
+}
+
+#reporting-top #revrecognition .flex .col.larger {
+  margin-right: 20px;
+  margin-top: 22px;
+}
+#reporting-top #revrecognition .content-right>.col {
+  margin-left: 10px;
+}
+#reporting-top #revrecognition .btn-secondary {
+  border: 1px solid #DDDDDD;
+}
+#reporting-top #revrecognition .btn-secondary:hover {
+  background: #DDDDDD;
+}
+#reporting-top #revrecognition .row {
+  margin: 15px 0 0 0;
+}
+#reporting-top #revrecognition h3 {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+#reporting-top #revrecognition .ax_default button {
+  height: 34px;
+  margin-left: 7x;
+}
+#reporting-top #revrecognition .ax_default .single-select {
+  margin-top: 20px;
+  margin-left: 10px;
 }
 
 #get-started-report {
