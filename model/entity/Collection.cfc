@@ -3436,6 +3436,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 				}
+				
 				//if we have the collection objects primary id property as a column exclude all others group bys for better performance
 				if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
 					variables.groupBys = groupByOverride;
