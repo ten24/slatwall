@@ -22,7 +22,10 @@ var appConfig = {
     },
     
     resolve: {
-        extensions: ['.webpack.js', '.web.js', '.ts', '.js']
+        extensions: ['.webpack.js', '.web.js', '.ts', '.js','.html'],
+        alias: {
+          
+        }
     },
     module: {
     	noParse: [ /bower_components/ ],
