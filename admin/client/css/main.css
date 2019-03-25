@@ -5931,7 +5931,6 @@ a.disabled > i.hibachi-ui-radio-checked {
   border: 1px solid #DDDDDD;
   color: #5E5E5E;
 }
-
 #get-started-report {
   background: #fff;
 }
@@ -5960,14 +5959,12 @@ a.disabled > i.hibachi-ui-radio-checked {
   padding-right: 8px;
 }
 #get-started-report em {
-  color:#000;
+  color: #000;
   font-weight: 600;
 }
 #get-started-report .close {
   padding: 6px 10px;
 }
-
-
 /*-- Slideout Sidebar --*/
 .s-slide-main-content {
   text-align: center;
@@ -8572,4 +8569,15 @@ table.s-detail-content-table tbody tr.s-done {
 .currency {
   text-align: right;
   float: right;
+}
+.tooltip-inner {
+  white-space: nowrap;
+  max-width: none;
+}
+.tooltip.bottom .tooltip-arrow {
+  left: 1rem !important;
+}
+.tooltip.right {
+  position: absolute;
+  display: inline-block;
 }
