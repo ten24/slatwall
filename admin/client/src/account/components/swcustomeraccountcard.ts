@@ -3,6 +3,9 @@
 class SWCustomerAccountCardController{
 
     public title:string="Customer Account";
+    public fullNameTitle:string="Customer Account";
+    public emailTitle:string="Customer Email";
+    public phoneTitle:string="Customer Phone";
 	public account;
 
 	constructor(){

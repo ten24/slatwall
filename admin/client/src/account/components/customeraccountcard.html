@@ -2,9 +2,29 @@
 	<div class="panel-heading">
 		<h4 class="panel-title" ng-bind="swCustomerAccountCard.title"></h4>
 	</div>
-	<content class="s-body-box">
-		<!--<hb:HibachiPropertyDisplay object="#rc.orderTemplate.getAccount()#" property="calculatedFullName" edit="false">
-		<hb:HibachiPropertyDisplay object="#rc.orderTemplate.getAccount()#" property="emailAddress" edit="false">
-		<hb:HibachiPropertyDisplay object="#rc.orderTemplate.getAccount()#" property="phoneNumber" edit="false">-->
+	<content class="s-body-box" ng-if="swCustomerAccountCard.account">
+		<ul class="list-unstyled">
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.fullNameTitle"></div>
+					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.account.calculatedFullName"></div>
+				</div>
+			</li>
+	
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.emailTitle"></div>
+					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.account.primaryEmailAddress_emailAddress"></div>
+				</div>
+			</li>
+			
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.phoneTitle"></div>
+					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.account.primaryPhoneNumber_phoneNumber"></div>
+				</div>
+			</li>
+	
+		</ul>
 	</content>
 </div>

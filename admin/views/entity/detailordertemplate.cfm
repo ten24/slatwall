@@ -55,13 +55,9 @@
 		
 		</hb:HibachiEntityActionBar>
 
-		<cfdump var="#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#">
-		<cfdump var="#esapiEncode('html',rc.orderTemplate.getAccount().getJsonRepresentation())#">
-		<cfdump var="#encodeForHTML(rc.orderTemplate.getAccount().getJsonRepresentation())#">
-
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-4">
-				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' data-account='#encodeForHTML(rc.orderTemplate.getAccount().getJsonRepresentation())#'>
+				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
 				</sw-customer-account-card> 
 			</div>
 

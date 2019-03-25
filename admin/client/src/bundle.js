@@ -93440,6 +93440,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SWCustomerAccountCardController = /** @class */ (function () {
     function SWCustomerAccountCardController() {
         this.title = "Customer Account";
+        this.fullNameTitle = "Customer Account";
+        this.emailTitle = "Customer Email";
+        this.phoneTitle = "Customer Phone";
     }
     return SWCustomerAccountCardController;
 }());
