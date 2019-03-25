@@ -95,6 +95,8 @@ Notes:
 			<cfif len(noQualRequiredList)>
 				<cfset hql &= " OR spr.rewardType IN (:noQualRequiredList)" />
 			</cfif>
+			
+			<cfset hql &= " OR spr.includedSkusCollectionConfig IS NOT NULL" />
 
 			<!--- Close out the qualifications aspect of the query --->
 			<cfset hql &= " )" />
@@ -766,6 +768,8 @@ Notes:
                 INNER JOIN
                   SwPromotionPeriod ppGlobal on prGlobal.promotionPeriodID = ppGlobal.promotionPeriodID
               WHERE
+              		prGlobal.includedSkusCollectionConfig IS NULL
+              	AND
                   prGlobal.rewardType IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="merchandise,subscription,contentAccess" list="true">)
                 AND
                   NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardSku WHERE SwPromoRewardSku.promotionRewardID = prGlobal.promotionRewardID)

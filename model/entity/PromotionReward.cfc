@@ -190,6 +190,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
 				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.includedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 		}
 		return variables.includedSkusCollection;
@@ -210,7 +211,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	
 	public any function getSkuCollection(){
 		if(isNull(variables.skuCollection)){
-			if(isNull(getExcludedSkusCollection())){
+			if(isNull(getExcludedSkusCollectionConfig())){
+				if(isNull(getIncludedSkusCollectionConfig())){
+					return;
+				}
 				return getIncludedSkusCollection();
 			}
 			
@@ -295,6 +299,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
 		skuCollection.removeFilter('skuID',arguments.skuID);
 		return hasSku;
+	}
+	
+	public boolean function hasOrderItemSku(required any orderItem){
+		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
