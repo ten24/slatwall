@@ -55,18 +55,14 @@
 		
 		</hb:HibachiEntityActionBar>
 
+		<cfdump var="#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#">
+		<cfdump var="#esapiEncode('html',rc.orderTemplate.getAccount().getJsonRepresentation())#">
+		<cfdump var="#encodeForHTML(rc.orderTemplate.getAccount().getJsonRepresentation())#">
+
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-4">
-				<div class="j-panel panel panel-default">
-					<div class="panel-heading">
-						<h4 class="panel-title">#getHibachiScope().rbkey('entity.orderTemplate.account')#</h4>
-					</div>
-					<content class="s-body-box">
-						<hb:HibachiPropertyDisplay object="#rc.orderTemplate.getAccount()#" property="calculatedFullName" edit="false">
-						<hb:HibachiPropertyDisplay object="#rc.orderTemplate.getAccount()#" property="emailAddress" edit="false">
-						<hb:HibachiPropertyDisplay object="#rc.orderTemplate.getAccount()#" property="phoneNumber" edit="false">
-					</content>
-				</div> 
+				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' data-account='#encodeForHTML(rc.orderTemplate.getAccount().getJsonRepresentation())#'>
+				</sw-customer-account-card> 
 			</div>
 
 			<div class="col-md-4">
