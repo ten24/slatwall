@@ -1,5 +1,12 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
+try{
+    const pricingmanagerHTML = require("html-loader!./test.html");
+}catch(err){
+    const pricingmanagerHTML = require("html-loader!./pricingmanager.html");
+}
+
 class SWPricingManagerController{
     
     public productId;
@@ -31,7 +38,7 @@ class SWPricingManagerController{
 }
 
 class SWPricingManager implements ng.IDirective{
-    public templateUrl;
+    public template;
     public restrict = 'EA';
     public priority = 1000;
     public scope = {}; 
@@ -66,7 +73,7 @@ class SWPricingManager implements ng.IDirective{
 		private skuPartialsPath,
 	    private slatwallPathBuilder
     ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"pricingmanager.html";
+        this.template = pricingmanagerHTML;
     }
     
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
