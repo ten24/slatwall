@@ -1535,59 +1535,57 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public any function processCollection_ExportData(required any collection, required any processObject, struct data={}) {
 		//perform export
-		
-		var fileName = arguments.processObject.getFileName();
+		var fileNameWithExt = "#arguments.processObject.getFileName()#.json";
 		var exportStructData = arguments.collection.getCollectionConfigStruct();
+		//var permissions = arguments.collection.Permissions;
+		//permissions = arguments.collection.getPermissionService().getPermissions();
+	// var permission = arguments.collection;getObjectPermissionList
 		var exportStructData['data']  = [];
 		exportStructData['data'] = arguments.collection.getRecords(forExport=true, formatRecord=false);
 		var exportJsonData = serializeJson(exportStructData);
-		myFile = expandPath( "#fileName#.json");
-	//myFile =getHibachiUtilityService().downloadFile(fileName,filePath,"application/#fileName#.json",true);
-	  FileWrite(myFile, exportJsonData);
-      return arguments.collection;
+
+        if(structKeyExists(application,"tempDir")){
+           var filePath = application.tempDir & "/" & fileNameWithExt;
+             } else {
+            var filePath = GetTempDirectory() & fileNameWithExt;
+              }
+
+        FileWrite(filePath, exportJsonData);
+        getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/json",true);
+	    
+	    return arguments.collection;
 	}
 	
 	 
 	
-	public any function processCollection_Import(required any collection, required any processObject, struct data={}) {
+	public any function processCollection_ImportData(required any collection, required any processObject, struct data={}) {
  
 		//perform import
-	var columns=	['collectionId','collectionName','collectionCode','collectionDescription','collectionObject','collectionConfig','dirtyReadFlag','useElasticSearch','reportFlag','disableAveragesAndSumsFlag','softDeleteFlag','publicFlag'];
 	var fileData =  fileRead( arguments.processObject.getUploadFile());
 	var jsonObj= deserializeJson(fileData);
-	// var columns = getExportableColumnsByCollectionConfig(collectionConfig());
-	var importConfig = FileRead(getDirectoryFromPath(getcurrenttemplatepath()) &'../../config/resourceBundles/ImportQuery.json');
-    var query=transformArrayOfStructsToQuery(jsonObj,columns);
-	getService('hibachiDataService').loadDataFromQuery(query, importconfig);
+    var columns = jsonObj.columns;
+    var columnproperties =getEntityNameProperties(jsonObj.baseEntityName);
+    var propertyset = {};
+for (var column in columnproperties) {
+ 	
+    var propertyset = columnproperties.PropertyIdentifier;
+ }
+ writedump(propertyset);
+ abort;
+	var importConfig = {}; 
+importConfig.baseentity = jsonObj.baseEntityName;
+importConfig.mapping = [];
+for (var column in jsonObj.columns) {
+     var propertyStruct = {};
+     propertyStruct.sourceColumn = column.propertyIdentifier;
+     propertyStruct.propertyidentifier = column.propertyidentifier;
+
+    arrayappend(importConfig.mapping, propertyStruct);
+}
+     var importConfigJson = serializeJson(importConfig);
+     var query=transformArrayOfStructsToQuery(jsonObj.data,columns);
+	 getService('hibachiDataService').loadDataFromQuery(query, importConfigJson);
 		 return arguments.collection;
   }
-		 
-	 	            
-    public any function processCollection_ExportPermissions(required any collection, required any processObject, struct data={}) {
- 
-		//perform export permissions
-		
-	var fileName = arguments.processObject.getFileName();
-    var importConfig = FileRead(getDirectoryFromPath(getcurrenttemplatepath()) &'../../config/resourceBundles/importPermissions.json');
-	var query=transformArrayOfStructsToQuery(fileData,columns);
-	 getService('hibachiDataService').transformArrayOfStructsToQuery(query, importconfig);
-	 getService('HibachiService').export(collection.getRecords(),listOfColumns,listOfColumnNames,fileName);
-		return arguments.collection;
- 
-		        
-	 	            }	 	            
-	 	            
-	public any function processCollection_ImportPermissions(required any collection, required any processObject, struct data={}) {
- 
-		//perform import permissions
-	
-    var importConfig = FileRead(getDirectoryFromPath(getcurrenttemplatepath()) &'../../config/resourceBundles/importPermissions.json');
-	var query=transformArrayOfStructsToQuery(fileData,columns);
-	 getService('hibachiDataService').loadDataFromQuery(query, importconfig);
-	 collection.setDisplayProperties('permissionGroup.permissionGroupID,permissionGroup.permissionGroupName');
-	 getService('HibachiService').export(collection.getRecords(),listOfColumns,listOfColumnNames,nameOfFile);
-		return arguments.collection;
- 
-		        
-	 	            }
+  
 	}

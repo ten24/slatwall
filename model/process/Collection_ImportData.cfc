@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// New Properties
 
 	// Data Properties
-    property name="uploadFile" hb_formFieldType="file" hb_fileAcceptMIMEType="application/json" hb_fileAcceptExtension=".json";
+    property name="uploadFile" hb_formFieldType="file" hb_fileAcceptMIMEType="application/json" hb_fileAcceptExtension=".json" hb_rbKey="processObject.MinMaxSetup_UploadImport.uploadFile";
 
 	
 

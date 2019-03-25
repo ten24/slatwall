@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// New Properties
 
 	// Data Properties
-	property name="fileName" ;
+	property name="filename" ;
 
 	
 

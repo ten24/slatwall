@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#" fredirectAction="entity.preprocesscollection" fRedirectQS="collectionID=#rc.collection.getCollectionID()#&processContext=export">
+	<hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#" fredirectAction="entity.preprocesscollection" fRedirectQS="collectionID=#rc.collection.getCollectionID()#&processContext=exportdata">
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.collection#">
 		</hb:HibachiEntityActionBar>
 		
