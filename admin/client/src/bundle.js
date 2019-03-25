@@ -37717,7 +37717,7 @@ var __extends = (this && this.__extends) || (function () {
 /// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
 var basebootstrap_1 = __webpack_require__(733);
-var slatwalladmin_module_1 = __webpack_require__(727);
+var slatwalladmin_module_1 = __webpack_require__(726);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -66243,77 +66243,6 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-/*var pricingmanagerHTML='';
-try{
-    pricingmanagerHTML = require("html-loader!Custom/test.html");
-}catch(err){
-    pricingmanagerHTML = require("html-loader!Admin/sku/components/pricingmanager.html");
-}*/
-var pricingmanagerHTML = __webpack_require__(361);
-var SWPricingManagerController = /** @class */ (function () {
-    //@ngInject
-    function SWPricingManagerController(collectionConfigService) {
-        var _this = this;
-        this.collectionConfigService = collectionConfigService;
-        this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product");
-        this.productCollectionConfig.addFilter("productID", this.productId, "=", 'AND', true);
-        this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
-        this.productCollectionConfig.getEntity().then(function (response) {
-            _this.product = response.pageRecords[0];
-        }, function (reason) {
-        });
-    }
-    return SWPricingManagerController;
-}());
-exports.SWPricingManagerController = SWPricingManagerController;
-var SWPricingManager = /** @class */ (function () {
-    // @ngInject
-    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
-        this.$hibachi = $hibachi;
-        this.skuPartialsPath = skuPartialsPath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.restrict = 'EA';
-        this.priority = 1000;
-        this.scope = {};
-        this.bindToController = {
-            productId: "@",
-            trackInventory: "=?"
-        };
-        this.controller = SWPricingManagerController;
-        this.controllerAs = "swPricingManager";
-        this.compile = function (element, attrs) {
-            return {
-                pre: function ($scope, element, attrs) {
-                },
-                post: function ($scope, element, attrs) {
-                }
-            };
-        };
-        this.template = pricingmanagerHTML;
-    }
-    SWPricingManager.Factory = function () {
-        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
-        directive.$inject = [
-            '$hibachi',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    };
-    return SWPricingManager;
-}());
-exports.SWPricingManager = SWPricingManager;
-
-
-/***/ }),
-/* 714 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 var SWSkuCodeEditController = /** @class */ (function () {
     //@ngInject
     function SWSkuCodeEditController(historyService, listingService, observerService, skuPriceService, utilityService, $hibachi, $filter, $timeout) {
@@ -66415,7 +66344,7 @@ exports.SWSkuCodeEdit = SWSkuCodeEdit;
 
 
 /***/ }),
-/* 715 */
+/* 714 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66491,7 +66420,7 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 
 /***/ }),
-/* 716 */
+/* 715 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66680,7 +66609,7 @@ exports.SWSkuPriceEdit = SWSkuPriceEdit;
 
 
 /***/ }),
-/* 717 */
+/* 716 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66823,7 +66752,7 @@ exports.SWSkuPriceQuantityEdit = SWSkuPriceQuantityEdit;
 
 
 /***/ }),
-/* 718 */
+/* 717 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66954,7 +66883,7 @@ exports.SWSkuPricesEdit = SWSkuPricesEdit;
 
 
 /***/ }),
-/* 719 */
+/* 718 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67121,7 +67050,7 @@ exports.SWSkuStockAdjustmentModalLauncher = SWSkuStockAdjustmentModalLauncher;
 
 
 /***/ }),
-/* 720 */
+/* 719 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67180,7 +67109,7 @@ exports.SWSkuThumbnail = SWSkuThumbnail;
 
 
 /***/ }),
-/* 721 */
+/* 720 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67231,7 +67160,7 @@ exports.DefaultSkuService = DefaultSkuService;
 
 
 /***/ }),
-/* 722 */
+/* 721 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67573,7 +67502,7 @@ exports.SkuPriceService = SkuPriceService;
 
 
 /***/ }),
-/* 723 */
+/* 722 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67584,23 +67513,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(8);
 //services
-var defaultskuservice_1 = __webpack_require__(721);
-var skupriceservice_1 = __webpack_require__(722);
+var defaultskuservice_1 = __webpack_require__(720);
+var skupriceservice_1 = __webpack_require__(721);
 //controllers
 //directives
-var swpricingmanager_1 = __webpack_require__(713);
+var swpricingmanager_1 = __webpack_require__(729);
 var swimagedetailmodallauncher_1 = __webpack_require__(712);
 var swaddskupricemodallauncher_1 = __webpack_require__(708);
 var swdeleteskupricemodallauncher_1 = __webpack_require__(710);
 var sweditskupricemodallauncher_1 = __webpack_require__(711);
-var swskustockadjustmentmodallauncher_1 = __webpack_require__(719);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(718);
 var swdefaultskuradio_1 = __webpack_require__(709);
-var swskucurrencyselector_1 = __webpack_require__(715);
-var swskupriceedit_1 = __webpack_require__(716);
-var swskucodeedit_1 = __webpack_require__(714);
-var swskupricesedit_1 = __webpack_require__(718);
-var swskupricequantityedit_1 = __webpack_require__(717);
-var swskuthumbnail_1 = __webpack_require__(720);
+var swskucurrencyselector_1 = __webpack_require__(714);
+var swskupriceedit_1 = __webpack_require__(715);
+var swskucodeedit_1 = __webpack_require__(713);
+var swskupricesedit_1 = __webpack_require__(717);
+var swskupricequantityedit_1 = __webpack_require__(716);
+var swskuthumbnail_1 = __webpack_require__(719);
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -67628,7 +67557,7 @@ exports.skumodule = skumodule;
 
 
 /***/ }),
-/* 724 */
+/* 723 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67691,7 +67620,7 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
-/* 725 */
+/* 724 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67755,7 +67684,7 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
-/* 726 */
+/* 725 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67789,7 +67718,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 
 
 /***/ }),
-/* 727 */
+/* 726 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67810,14 +67739,14 @@ var fulfillmentbatchdetail_module_1 = __webpack_require__(670);
 var orderdeliverydetail_module_1 = __webpack_require__(686);
 var product_module_1 = __webpack_require__(700);
 var productbundle_module_1 = __webpack_require__(706);
-var sku_module_1 = __webpack_require__(723);
-var subscriptionusage_module_1 = __webpack_require__(729);
+var sku_module_1 = __webpack_require__(722);
+var subscriptionusage_module_1 = __webpack_require__(728);
 //constant
-var slatwallpathbuilder_1 = __webpack_require__(726);
+var slatwallpathbuilder_1 = __webpack_require__(725);
 //directives
-var swcurrencyformatter_1 = __webpack_require__(724);
+var swcurrencyformatter_1 = __webpack_require__(723);
 //filters
-var swcurrency_1 = __webpack_require__(725);
+var swcurrency_1 = __webpack_require__(724);
 var slatwalladminmodule = angular.module('slatwalladmin', [
     //custom modules
     hibachi_module_1.hibachimodule.name,
@@ -68033,7 +67962,7 @@ exports.slatwalladminmodule = slatwalladminmodule;
 
 
 /***/ }),
-/* 728 */
+/* 727 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68126,7 +68055,7 @@ exports.SWScheduledDeliveriesCard = SWScheduledDeliveriesCard;
 
 
 /***/ }),
-/* 729 */
+/* 728 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68140,7 +68069,7 @@ var core_module_1 = __webpack_require__(8);
 //controllers
 //filters
 //directives
-var swscheduleddeliveriescard_1 = __webpack_require__(728);
+var swscheduleddeliveriescard_1 = __webpack_require__(727);
 var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('subscriptionUsagePartialsPath', 'subscriptionusage/components/')
@@ -68150,6 +68079,72 @@ var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [core_
     //directives
     .directive('swScheduledDeliveriesCard', swscheduleddeliveriescard_1.SWScheduledDeliveriesCard.Factory());
 exports.subscriptionusagemodule = subscriptionusagemodule;
+
+
+/***/ }),
+/* 729 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var pricingmanagerHTML = __webpack_require__(361);
+var SWPricingManagerController = /** @class */ (function () {
+    //@ngInject
+    function SWPricingManagerController(collectionConfigService) {
+        var _this = this;
+        this.collectionConfigService = collectionConfigService;
+        console.log('this is overrident');
+        this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product");
+        this.productCollectionConfig.addFilter("productID", this.productId, "=", 'AND', true);
+        this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
+        this.productCollectionConfig.getEntity().then(function (response) {
+            _this.product = response.pageRecords[0];
+        }, function (reason) {
+        });
+    }
+    return SWPricingManagerController;
+}());
+exports.SWPricingManagerController = SWPricingManagerController;
+var SWPricingManager = /** @class */ (function () {
+    // @ngInject
+    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.priority = 1000;
+        this.scope = {};
+        this.bindToController = {
+            productId: "@",
+            trackInventory: "=?"
+        };
+        this.controller = SWPricingManagerController;
+        this.controllerAs = "swPricingManager";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = pricingmanagerHTML;
+    }
+    SWPricingManager.Factory = function () {
+        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWPricingManager;
+}());
+exports.SWPricingManager = SWPricingManager;
 
 
 /***/ }),
