@@ -1,11 +1,8 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var pricingmanagerHTML='';
-try{
-    pricingmanagerHTML = require("html-loader!Custom/test.html");
-}catch(err){
-    pricingmanagerHTML = require("html-loader!Admin/sku/components/pricingmanager.html");
-}
+
+var pricingmanagerHTML = require("html-loader!sku/components/pricingmanager");
+
 
 class SWPricingManagerController{
     
