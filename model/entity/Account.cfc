@@ -64,9 +64,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="verifiedAccountFlag" ormtype="boolean" default="false";
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
+	property name="accountCreateIPAddress" ormtype="string";
 
 	//calucluated property
 	property name="calculatedFullName" ormtype="string";
+	property name="calculatedGuestAccountFlag" ormtype="boolean";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 
@@ -151,6 +153,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 
+	
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
@@ -964,6 +967,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public string function getSimpleRepresentation() {
 		return getFullName();
 	}
+	
+	public string function getSimpleRepresentationPropertyName(){
+		return 'calculatedFullName';
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -987,4 +994,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 
+
+	
 }

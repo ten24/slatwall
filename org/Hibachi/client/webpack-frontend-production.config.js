@@ -17,6 +17,13 @@ delete devConfig.entry.vendor; //remove the vendor info from this version.
 devConfig.output.path = PATHS.app;
 devConfig.context = PATHS.app;
 devConfig.watch = false;
+devConfig.devtool= 'source-map';
+devConfig.module.rules=[
+    {
+        test: /\.ts?$/,
+        loader: 'ng-annotate-loader?ngAnnotate=ng-annotate-patched!ts-loader'
+    }
+];
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     new webpack.DefinePlugin({
@@ -31,7 +38,7 @@ devConfig.plugins =  [
       threshold: 10240,
       minRatio: 0.8
     }),
-    
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /us/),
     new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({

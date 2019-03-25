@@ -336,16 +336,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.account;
 	}
-	public any function saveAccount(required any account, struct data={}, string context="save"){
-		
-		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
-			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
-				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
-				arguments.account.setAccountCode(accountCode);
-			}
-		}
-		return super.save(entity=arguments.account,data=arguments.data);
-	}
 	
 	public any function processAccountRelationship_Approval(required accountRelationship){
 		
@@ -372,7 +362,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
 		if(arguments.account.getNewFlag()){
-		
+			arguments.account.setAccountCreateIPAddress( getRemoteAddress() );
 			// Populate the account with the correct values that have been previously validated
 			arguments.account.setFirstName( processObject.getFirstName() );
 			arguments.account.setLastName( processObject.getLastName() );
@@ -471,6 +461,20 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.account;
 	}
+	
+	public any function processAccount_updatePrimaryEmailAddress(required any account, required any processObject, struct data={}) {
+
+		var primaryEmailAddressObject = arguments.account.getPrimaryEmailAddress();
+		primaryEmailAddressObject.setEmailAddress(arguments.processObject.getEmailAddress());
+		primaryEmailAddressObject = this.saveAccountEmailAddress(primaryEmailAddressObject);
+		arguments.account = this.saveAccount(arguments.account);
+		
+		if (!arguments.account.hasErrors()) {
+			getService('emailService').generateAndSendFromEntityAndEmailTemplateID(arguments.account.getPrimaryEmailAddress(), "2c928084690cc18d01690ce5f0d4003e");
+		}
+		
+		return arguments.account;
+	} 
 
 	public any function processAccount_clone(required any account, required any processObject, struct data={}) {
 
@@ -1549,6 +1553,50 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveAccount(required any account, struct data={}, string context="save"){
+		
+		if (StructKeyExists(arguments.data, 'primaryEmailAddress.accountEmailAddressID') && len(arguments.data.primaryEmailAddress.accountEmailAddressID)) {
+			var currentPrimaryEmailAddress = arguments.account.getPrimaryEmailAddress();
+			var newPrimaryEmailAddress = this.getAccountEmailAddress(arguments.data.primaryEmailAddress.accountEmailAddressID);
+			
+			// send email if primary address is different
+			if (!isNull(newPrimaryEmailAddress) && currentPrimaryEmailAddress.getEmailAddress() != newPrimaryEmailAddress.getEmailAddress()) {
+				arguments.account.setPrimaryEmailAddress(newPrimaryEmailAddress);
+				getService('emailService').generateAndSendFromEntityAndEmailTemplateID(newPrimaryEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+			}
+		}
+
+		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
+			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
+				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
+				arguments.account.setAccountCode(accountCode);
+			}
+		}
+				
+		return super.save(entity=arguments.account,data=arguments.data);
+	}
+	
+	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
+		
+		if (StructKeyExists(arguments.data,'emailAddress') && len(arguments.data.emailAddress) ) {
+
+			// save
+			arguments.accountEmailAddress = super.save(entity=arguments.accountEmailAddress, data=arguments.data);
+			
+			if(!arguments.accountEmailAddress.hasErrors()){
+				if(arguments.accountEmailAddress.getPrimaryEmailChangedFlag()){
+					
+					//send email because the primary changed
+					getService('emailService').generateAndSendFromEntityAndEmailTemplateID(arguments.accountEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+				}
+			}
+			
+		}
+		
+		return arguments.accountEmailAddress;
+		
+	}
 	
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
 		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);

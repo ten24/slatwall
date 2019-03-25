@@ -95,6 +95,7 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Attribute Values (one-to-many)
+	
 	public void function addAttributeValue(required any attributeValue) {
 		arguments.attributeValue.setCategory( this );
 	}
