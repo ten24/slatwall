@@ -7,14 +7,21 @@
 			<li>
 				<div class="row s-line-item">
 					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.fullNameTitle"></div>
-					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.account.calculatedFullName"></div>
+					<div class="col-xs-6 s-value">
+						<a  href="/Slatwall/?slatAction=admin:entity.detailaccount&accountID={{swCustomerAccountCard.account.accountID}}" 
+							ng-bind="swCustomerAccountCard.account.calculatedFullName"></a>
+					</div>
 				</div>
 			</li>
 	
 			<li>
 				<div class="row s-line-item">
 					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.emailTitle"></div>
-					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.account.primaryEmailAddress_emailAddress"></div>
+					<div class="col-xs-6 s-value">
+						<a  href="mailto:{{swCustomerAccountCard.account.primaryEmailAddress_emailAddress}}" 
+							ng-bind="swCustomerAccountCard.account.primaryEmailAddress_emailAddress">
+						</a>
+					</div>
 				</div>
 			</li>
 			
