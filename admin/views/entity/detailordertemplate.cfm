@@ -62,23 +62,13 @@
 			</div>
 
 			<div class="col-md-4">
-				<div class="j-panel panel panel-default">
-					<div class="panel-heading">
-						<h4 class="panel-title">#getHibachiScope().rbkey('define.shipping')#</h4>
-					</div>
-					<content class="s-body-box">
-					</content>
-				</div> 
+				<sw-order-shipping-method-card data-title="#getHibachiScope().rbkey('define.shipping')#">
+				</sw-order-shipping-method-card>
 			</div>
 
 			<div class="col-md-4">
-				<div class="j-panel panel panel-default">
-					<div class="panel-heading">
-						<h4 class="panel-title">#getHibachiScope().rbkey('define.billing')#</h4>
-					</div>
-					<content class="s-body-box">
-					</content>
-				</div> 
+				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#">
+				</sw-customer-account-payment-method-card>
 			</div>		
 		</div>
 
