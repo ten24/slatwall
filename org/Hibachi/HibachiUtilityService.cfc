@@ -710,7 +710,7 @@
 				return "";
 			}
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				var sanitizedString = htmlEditFormat(arguments.html);
+				var sanitizedString = esapiEncode('html', arguments.html);
 			}else{
 				var sanitizedString = encodeForHTML(arguments.html);
 			}

@@ -99,7 +99,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			"physical",
 			"location",
 			"integration",
-			"order"
+			"order",
+			"orderTemplate"
 		];
 	}
 
@@ -295,6 +296,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			//Order
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
+
+			//Order Template
+			orderTemplateEligibleTerms = {
+				fieldType="listingMultiselect",
+				listingMultiselectEntityName="Term"
+			},		
 
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},

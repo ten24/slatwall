@@ -45,7 +45,6 @@
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="orderShowUnpublishedSkusFlag" />
+		<swa:SlatwallSetting settingName="orderTemplateEligibleTerms" />
 	</swa:SlatwallSettingTable>
-	
 </cfoutput>
