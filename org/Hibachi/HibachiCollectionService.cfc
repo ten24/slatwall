@@ -1536,14 +1536,13 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function processCollection_ExportData(required any collection, required any processObject, struct data={}) {
 		//perform export
 		var fileNameWithExt = "#arguments.processObject.getFileName()#.json";
-		var exportStructData = arguments.collection.getCollectionConfigStruct();
-		//var permissions = arguments.collection.Permissions;
-		//permissions = arguments.collection.getPermissionService().getPermissions();
-	// var permission = arguments.collection;getObjectPermissionList
-		var exportStructData['data']  = [];
+		 //collection.setCollectionObject('Permission');
+		 //var records=collection.getRecords();
+	    var exportStructData = arguments.collection.getCollectionConfigStruct();
+	    var exportStructData['data']  = [];
 		exportStructData['data'] = arguments.collection.getRecords(forExport=true, formatRecord=false);
 		var exportJsonData = serializeJson(exportStructData);
-
+ 
         if(structKeyExists(application,"tempDir")){
            var filePath = application.tempDir & "/" & fileNameWithExt;
              } else {
@@ -1555,37 +1554,38 @@ component output="false" accessors="true" extends="HibachiService" {
 	    
 	    return arguments.collection;
 	}
-	
 	 
-	
-	public any function processCollection_ImportData(required any collection, required any processObject, struct data={}) {
- 
-		//perform import
-	var fileData =  fileRead( arguments.processObject.getUploadFile());
-	var jsonObj= deserializeJson(fileData);
-    var columns = jsonObj.columns;
-    var columnproperties =getEntityNameProperties(jsonObj.baseEntityName);
-    var propertyset = {};
-for (var column in columnproperties) {
- 	
-    var propertyset = columnproperties.PropertyIdentifier;
- }
- writedump(propertyset);
- abort;
-	var importConfig = {}; 
-importConfig.baseentity = jsonObj.baseEntityName;
-importConfig.mapping = [];
-for (var column in jsonObj.columns) {
-     var propertyStruct = {};
-     propertyStruct.sourceColumn = column.propertyIdentifier;
-     propertyStruct.propertyidentifier = column.propertyidentifier;
-
-    arrayappend(importConfig.mapping, propertyStruct);
-}
-     var importConfigJson = serializeJson(importConfig);
-     var query=transformArrayOfStructsToQuery(jsonObj.data,columns);
-	 getService('hibachiDataService').loadDataFromQuery(query, importConfigJson);
-		 return arguments.collection;
-  }
   
+  public any function processCollection_ImportData(required any collection, required any processObject, struct data={}) {
+ 
+ 	//perform import
+        var fileData =  fileRead( arguments.processObject.getUploadFile());
+		var jsonObj= deserializeJson(fileData);
+	    var columnproperties = jsonObj.columns;
+	    var propertyset = {};
+	    var propertyName=[];
+         
+		for (var column in columnproperties) {
+             var propertysetitem = column.propertyIdentifier ;
+		     var propertyName.add(arguments.collection.convertAliasToPropertyIdentifier(propertysetitem));
+		 }
+		 
+		     var importConfig = {}; 
+		     importConfig.baseentity = jsonObj.baseEntityName;
+		     importConfig.mapping = [];
+		     var i =1;
+		for (var column in jsonObj.columns) {
+		     var propertyStruct = {};
+		     propertyStruct.sourceColumn = propertyName[i];
+		     propertyStruct.propertyidentifier =column.propertyidentifier;
+		     arrayappend(importConfig.mapping, propertyStruct);
+		    i++;
+		}
+		var importConfigJson = serializeJson(importConfig);
+		writeDump(importConfigJson);
+		var query=transformArrayOfStructsToQuery(jsonObj.data,columnproperties);
+	    getService('hibachiDataService').loadDataFromQuery(query, importConfigJson);
+
+		return arguments.collection;
+	  }
 	}
