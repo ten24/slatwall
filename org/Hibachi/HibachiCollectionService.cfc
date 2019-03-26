@@ -1562,6 +1562,8 @@ component output="false" accessors="true" extends="HibachiService" {
         var fileData =  fileRead( arguments.processObject.getUploadFile());
 		var jsonObj= deserializeJson(fileData);
 	    var columnproperties = jsonObj.columns;
+	    var columnNamesArray=[];
+	    
 	    var propertyset = {};
 	    var propertyName=[];
          
@@ -1569,7 +1571,7 @@ component output="false" accessors="true" extends="HibachiService" {
              var propertysetitem = column.propertyIdentifier ;
 		     var propertyName.add(arguments.collection.convertAliasToPropertyIdentifier(propertysetitem));
 		 }
-		 
+		  
 		     var importConfig = {}; 
 		     importConfig.baseentity = jsonObj.baseEntityName;
 		     importConfig.mapping = [];
@@ -1582,8 +1584,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		    i++;
 		}
 		var importConfigJson = serializeJson(importConfig);
-		writeDump(importConfigJson);
-		var query=transformArrayOfStructsToQuery(jsonObj.data,columnproperties);
+	 
+		var query=transformArrayOfStructsToQuery(jsonObj.data,propertyName);
+		
 	    getService('hibachiDataService').loadDataFromQuery(query, importConfigJson);
 
 		return arguments.collection;
