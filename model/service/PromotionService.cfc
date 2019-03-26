@@ -102,8 +102,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	private void function setupOrderItemQualifiedDiscounts(required any order, required struct orderItemQualifiedDiscounts){
 		
+		
 		// Loop over orderItems and add Sale Prices to the qualified discounts
-
 		for(var orderItem in arguments.order.getOrderItems()) {
 			var salePriceDetails = orderItem.getSalePrice();
 
@@ -964,7 +964,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var skuCollection = reward.getSkuCollection();
 		if(!isNull(skuCollection)){
 			return reward.hasOrderItemSku(arguments.orderItem);
-		//BEGIN DEPRECATED LOGIC
+		/*========BEGIN DEPRECATED LOGIC========*/
 		}else{
 			// START: Check Exclusions
 			var hasExcludedProductType = false;
@@ -1029,6 +1029,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			return false;
 		}
+		/*==========END DEPRECATED LOGIC=========*/
 	}
 
 	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode) {
@@ -1084,7 +1085,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getSalePriceDetailsForProductSkus(required string productID, string currencyCode='') {
 		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getSalePricePromotionRewardsQuery(productID = arguments.productID,currencyCode = arguments.currencyCode), "skuID");
-
+		
 		for(var key in priceDetails) {
 			if(priceDetails[key].roundingRuleID != "") {
 				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
@@ -1095,8 +1096,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public struct function getSalePriceDetailsForOrderItem(required any orderItem) {
-		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getOrderItemSalePricePromotionRewardsQuery(orderItem = arguments.orderItem), "orderItemID");
-
+		
+		var priceDetails = getOrderItemSalePricesBySkuCollection(arguments.orderItem);
+		writeDump(priceDetails);abort;
+		// var priceDetails = {};
+		//Get values for deprecated promotions
+		structAppend(priceDetails,getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getOrderItemSalePricePromotionRewardsQuery(orderItem = arguments.orderItem), "orderItemID"));
+		writeDump('next up is price details');
 		for(var key in priceDetails) {
 			if(priceDetails[key].roundingRuleID != "") {
 				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
@@ -1104,6 +1110,52 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return priceDetails;
+	}
+	
+	public struct function getOrderItemSalePricesBySkuCollection(required any orderItem){
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true );
+		var discountAmount = 0;
+		var originalPrice = arguments.orderItem.getPrice();
+		
+		var priceDetails = {
+			originalPrice:originalPrice,
+			promotionID:'',
+			roundingRuleID:'',
+			salePrice:originalPrice,
+			salePriceDiscountType:'',
+			salePriceExpirationDateTime:''
+		};
+		
+		for( var promoReward in activePromotionRewardsWithSkuCollection ){
+			if( getOrderItemInReward( promoReward, arguments.orderItem ) ){
+				var promoDiscountAmount = getDiscountAmount( 
+															promoReward, 
+															originalPrice, 
+															1, 
+															arguments.orderItem.getCurrencyCode());
+				if(promoDiscountAmount > discountAmount){
+					discountAmount = promoDiscountAmount;
+					priceDetails.promotionID = promoReward.getPromotionPeriod().getPromotion().getPromotionID();
+					priceDetails.roundingRuleID = promoReward.getRoundingRule().getRoundingRuleID();
+					priceDetails.salePriceExpirationDateTime = promoReward.getPromotionPeriod().getEndDateTime();
+					var amountType = promoReward.getAmountType();
+					priceDetails.salePriceDiscountType = amountType;
+					switch(amountType){
+						case 'percentageOff':
+							priceDetails.salePrice = originalPrice - (originalPrice * (discountAmount / 100));
+							break;
+						case 'amount':
+							priceDetails.salePrice = discountAmount;
+							break;
+						case 'amountOff':
+							priceDetails.salePrice = originalPrice - discountAmount;
+							break;
+					}
+				}
+			}
+		}
+		
+		return {'#arguments.orderItem.getOrderItemID()#':priceDetails};
 	}
 
 	public struct function getShippingMethodOptionsDiscountAmountDetails(required any shippingMethodOption) {

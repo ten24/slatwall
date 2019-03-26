@@ -53,6 +53,8 @@ Notes:
 		<cfargument name="promotionCodeList" required="true" type="string" />
 		<cfargument name="qualificationRequired" type="boolean" default="false" />
 		<cfargument name="promotionEffectiveDateTime" type="date" default="#now()#" />
+		<cfargument name="onlyRewardsWithSkuCollections" type="boolean" default="false" />
+		<cfargument name="excludeRewardsWithQualifiers" type="boolean" default="false" />
 
 		<cfset var noQualRequiredList = "" />
 		<cfif listFindNoCase(arguments.rewardTypeList,"fulfillment")>
@@ -95,11 +97,17 @@ Notes:
 			<cfif len(noQualRequiredList)>
 				<cfset hql &= " OR spr.rewardType IN (:noQualRequiredList)" />
 			</cfif>
-			
-			<cfset hql &= " OR spr.includedSkusCollectionConfig IS NOT NULL" />
 
 			<!--- Close out the qualifications aspect of the query --->
 			<cfset hql &= " )" />
+		<cfelseif arguments.excludeRewardsWithQualifiers>
+			<!--- Either a promotionQualifier exists --->
+			<cfset hql &= " AND NOT EXISTS( SELECT pq.promotionQualifierID FROM SlatwallPromotionQualifier pq WHERE pq.promotionPeriod.promotionPeriodID = spp.promotionPeriodID )" />
+		</cfif>
+
+		<!--- If this is for the newer Promotion Rewards that use sku collections, add that requirement --->
+		<cfif arguments.onlyRewardsWithSkuCollections>
+			<cfset hql &= " AND spr.includedSkusCollectionConfig is not null" />
 		</cfif>
 
 		<!--- Regardless of if qualifications are required, we need to make sure that the promotion reward either doesn't need a promo code, or that the promo code used is ok --->
