@@ -75,6 +75,14 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
 
+	// Remote properties
+	property name="remoteID" ormtype="string";
+
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
