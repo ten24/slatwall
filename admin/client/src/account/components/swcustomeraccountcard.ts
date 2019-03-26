@@ -2,14 +2,24 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCustomerAccountCardController{
 
+	public account;
+	
+	public detailAccountLink:string;
+	
     public title:string="Customer Account";
     public fullNameTitle:string="Customer Account";
     public emailTitle:string="Customer Email";
     public phoneTitle:string="Customer Phone";
-	public account;
 
-	constructor(){
 
+	constructor(public $hibachi,
+				public rbkeyService
+	){
+		this.fullNameTitle = rbkeyService.rbKey('entity.account.calculatedFullName');
+		this.emailTitle = rbkeyService.rbKey('entity.AccountEmailAddress.emailAddress');
+		this.phoneTitle = rbkeyService.rbKey('entity.AccountPhoneNumber.phoneNumber');
+		
+		this.detailAccountLink = $hibachi.buildUrl('admin:entity.detailaccount','accountID=' + this.account.accountID);
 	}
 
 }
@@ -20,28 +30,38 @@ class SWCustomerAccountCard implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-	    title:"@?",
-		account:"<"
+		account:"<",
+	    title:"@?"
 	};
 	public controller=SWCustomerAccountCardController;
 	public controllerAs="swCustomerAccountCard";
 
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
-		    giftCardPartialsPath,
-			slatwallPathBuilder
+		    accountPartialsPath,
+			slatwallPathBuilder,
+			$hibachi,
+			rbkeyService
         ) => new SWCustomerAccountCard(
-			giftCardPartialsPath,
-			slatwallPathBuilder
+			accountPartialsPath,
+			slatwallPathBuilder,
+			$hibachi,
+			rbkeyService
         );
         directive.$inject = [
 			'accountPartialsPath',
-			'slatwallPathBuilder'
+			'slatwallPathBuilder',
+			'$hibachi',
+			'rbkeyService'
         ];
         return directive;
     }
 
-	constructor(private accountPartialsPath, private slatwallPathBuilder){
+	constructor(private accountPartialsPath, 
+				private slatwallPathBuilder, 
+				private $hibachi,
+				private rbkeyService
+	){
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(accountPartialsPath) + "/customeraccountcard.html";
 		this.restrict = "EA";
 	}
