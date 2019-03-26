@@ -1160,11 +1160,11 @@
 			
 			if(!structKeyExists(variables,cacheKey)){
 				if(listLen(arguments.propertyIdentifier, ".") gt 1) {
-					var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
-					if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
+					var propertiesStruct = getPropertiesStructByEntityName( arguments.entityName );
+					if( !structKeyExists(propertiesStruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesStruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
 						throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
 					}
-					return getLastEntityNameInPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
+					return getLastEntityNameInPropertyIdentifier( entityName=listLast(propertiesStruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
 				}
 				variables[cacheKey] = arguments.entityName;
 			}
@@ -1174,25 +1174,31 @@
 		}
 		
 		public string function hasToManyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
+			var cacheKey = 'hasToManyByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
 			
-			if(listLen(arguments.propertyIdentifier, ".") gt 1) {
-				var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
-				if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
-					throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
-				}
-				if(
-					structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "fieldtype") 
-					&& (
-						propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'one-to-many'
-						|| propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'many-to-many'
-					)
-				){
-					return true;
-				}
+			if(!structKeyExists(variables,cacheKey)){
+			
+				variables[cacheKey] = false;
 				
-				return hasToManyByEntityNameAndPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
+				if(listLen(arguments.propertyIdentifier, ".") >= 1){
+					
+					var propertyIdentifierParts = listToArray(arguments.propertyIdentifier, '.');
+					var current_object = getPropertiesStructByEntityName(arguments.entityName);
+					
+					for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+						if( structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc') ){
+							if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
+								variables[cacheKey] = true;
+								break;
+							}else{
+								current_object = getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
+							}
+						}
+					}
+				}
 			}
-			return false;
+			
+			return variables[cacheKey];
 			
 		}
 		
