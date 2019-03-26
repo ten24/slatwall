@@ -67,6 +67,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="promotionService";
 	property name="settingService";
 	property name="shippingService";
+	property name="siteService";
 	property name="skuService";
 	property name="stockService";
 	property name="subscriptionService";
@@ -1126,6 +1127,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return this.newOrder();
+	}
+	
+	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
+
+			// Setup Account
+		if(arguments.processObject.getNewAccountFlag()) {
+			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+		} else {
+			var account = getAccountService().getAccount(processObject.getAccountID());
+		}
+
+		if(account.hasErrors()) {
+			arguments.order.addError('create', account.getErrors());
+		} else {
+			arguments.orderTemplate.setAccount(account);
+			arguments.orderTemplate.setOrderTemplateType( getTypeService().getType( processObject.getOrderTemplateTypeID() ) );
+			arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstDraft'))
+			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			arguments.orderTemplate.setSite( getSiteService().getSite( processObject.getSiteID()));
+			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+
+			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		}
+
+		return arguments.orderTemplate;
 	}
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {

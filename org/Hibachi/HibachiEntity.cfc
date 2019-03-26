@@ -90,7 +90,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	} 
 
 	public string function getEncodedJsonRepresentation(){ 
-		return encodeForHTML(this.getJsonRepresentation()); 
+		return getService('hibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation()); 
 	} 
 
 	public string function getTableName(){
