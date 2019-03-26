@@ -79,7 +79,10 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	// Non-Persistent Properties
 	property name="hasValidQuantityConfiguration" persistent="false"; 
  	
- 	public boolean function hasValidQuantityConfiguration(){
+	//CUSTOM PROPERTIES BEGIN
+	property name="personalVolume" ormtype="big_decimal";
+    property name="taxableAmount" ormtype="big_decimal";	//CUSTOM PROPERTIES END
+	public boolean function hasValidQuantityConfiguration(){
  		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
 			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
 				return false; 
