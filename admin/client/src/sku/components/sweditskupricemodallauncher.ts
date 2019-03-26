@@ -1,5 +1,7 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var swEditSkuPriceModalLauncherHTML = require("html-loader!sku/components/editskupricemodallauncher");
+
 class SWEditSkuPriceModalLauncherController{
     
     public pageRecord:any; 
@@ -200,7 +202,7 @@ class SWEditSkuPriceModalLauncherController{
 }
 
 class SWEditSkuPriceModalLauncher implements ng.IDirective{
-    public templateUrl;
+    public template;
     public restrict = 'EA';
     public scope = {}; 
     public skuData = {}; 
@@ -259,7 +261,7 @@ class SWEditSkuPriceModalLauncher implements ng.IDirective{
         private skuPartialsPath,
         private slatwallPathBuilder
     ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"editskupricemodallauncher.html";
+        this.template = swEditSkuPriceModalLauncherHTML;
     }
     
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
