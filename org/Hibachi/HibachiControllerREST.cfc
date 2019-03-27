@@ -455,8 +455,8 @@ component output="false" accessors="true" extends="HibachiController" {
 			var dataFormatted = [];
 			for(var i=1; i <= dataCount; i++){
 				var value = {
-					name = data[i],
-					value = data[i]
+					'name' = data[i],
+					'value' = data[i]
 				};
 				arrayAppend(dataFormatted, value);
 			}
@@ -467,7 +467,7 @@ component output="false" accessors="true" extends="HibachiController" {
         var emptyValue = javacast('null','');
         var emptyValueIndex = 0;
         for(var i = 1; i <= dataCount; i++){
-            if(structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
+            if(structKeyExists(data[i],'value') && data[i]['value'] == ''){
                 emptyValue = data[i];
                 emptyValueIndex = i;
 				break;
