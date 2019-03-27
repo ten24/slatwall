@@ -1913,9 +1913,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getOrderByHQL(array orderBy=getOrderBys()){
-		if(structKeyExists(variables, 'orderByRequired') && !variables.orderByRequired){
-			return '';
-		}
+	
 		var orderByHQL = ' ORDER BY ';
 
 		var orderByCount = arraylen(arguments.orderBy);
