@@ -1,5 +1,6 @@
 var webpack = require("webpack");
 const CompressionPlugin = require("compression-webpack-plugin");
+var LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
 
 var ForceCaseSensitivityPlugin = require("force-case-sensitivity-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
@@ -67,6 +68,7 @@ var appConfig = {
       chunks: ["app"],
       chunkSortMode: "dependency"
     }),
+    new LinkTypePlugin(),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
       filename: "include-frontend.cfm",
@@ -74,6 +76,7 @@ var appConfig = {
       chunks: ["frontend"],
       chunkSortMode: "dependency"
     }),
+    new LinkTypePlugin(),
     new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
