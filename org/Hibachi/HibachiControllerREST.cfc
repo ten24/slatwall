@@ -462,7 +462,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				arrayAppend(propertyDisplayOptionsFormatted, value);
 			}
 			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
-		} else if (!arrayIsEmpty(propertyDisplayOptions) && find(structKeyList('NAME'),propertyDisplayOptions[1]))){
+		} else if (!arrayIsEmpty(propertyDisplayOptions) && find(structKeyList('NAME'),propertyDisplayOptions[1])){
 			//keep casing consistent for client side
 			for(var i=1; i <= propertyDisplayOptionsCount; i++){
 				propertyDisplayOptions[i]['name'] = propertyDisplayOptions[i]['NAME']; 
