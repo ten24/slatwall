@@ -449,7 +449,8 @@ component output="false" accessors="true" extends="HibachiController" {
         }
         
 		var propertyDisplayOptionsCount = arrayLen(propertyDisplayOptions);
-       
+      
+ 
 		//if not an array of structs format for consistency
 		if(!arrayIsEmpty(propertyDisplayOptions) && !isStruct(propertyDisplayOptions[1])){
 			var propertyDisplayOptionsFormatted = [];
@@ -461,7 +462,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				arrayAppend(propertyDisplayOptionsFormatted, value);
 			}
 			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
-		} else if (!arrayIsEmpty(propertyDisplayOptions) && find(structKeyList(propertyDisplayOptions[1]),'NAME')){
+		} else if (!arrayIsEmpty(propertyDisplayOptions) && find(structKeyList('NAME',propertyDisplayOptions[1]))){
 			//keep casing consistent for client side
 			for(var i=1; i <= propertyDisplayOptionsCount; i++){
 				propertyDisplayOptions[i]['name'] = propertyDisplayOptions[i]['NAME']; 
