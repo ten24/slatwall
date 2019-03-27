@@ -7,29 +7,59 @@ class SWAccountPaymentMethodModalController{
 	//Order or Order Template
 	public baseEntityName;
 	public baseEntity;
+	public baseEntityPrimaryID:string;
+		
+	public swCustomerAccountPaymentMethodCard;
 	
 	public title:string="Edit Billing Information";
 	public uniqueName:string = 'accountPaymentMethodModal';
 	public formName:string = 'accountPaymentMethodModal';
 	
-	public swCustomerAccountPaymentMethodCard;
+	public newAccountAddress;
+	public newAccountPaymentMethod;
+	
+	public showCreateBillingAddress:boolean=false; 
+	public showCreateAccountPaymentMethod:boolean=false;
+	
+	public createBillingAddressTitle:string = 'Add a new address';
+	public createAccountPaymentMethodTitle:string = 'Add a new payment method';
 
-	constructor(public $hibachi,
-				public rbkeyService
+	constructor( public $timeout,
+	             public $hibachi,
+	             public entityService,
+				 public rbkeyService
 	){
-
-	    console.log('customerAccountCard', this.swCustomerAccountPaymentMethodCard);
-
-		if(this.swCustomerAccountPaymentMethodCard != null){
+		
+	}
+	
+	public $onInit = () =>{
+	    if(this.swCustomerAccountPaymentMethodCard != null){
 			
 			this.baseEntityName = this.swCustomerAccountPaymentMethodCard.baseEntityName;
-			this.baseEntity = this.swCustomerAccountPaymentMethodCard.baseEntity;
+			this.baseEntityPrimaryID = this.swCustomerAccountPaymentMethodCard.baseEntity[this.baseEntityName + 'ID'];
+			
+			this.baseEntity = this.entityService.loadEntity( this.baseEntityName,
+			                                                 this.baseEntityPrimaryID,
+			                                                 this.swCustomerAccountPaymentMethodCard.baseEntity);
 			
 			if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){
 				this.accountPaymentMethod = this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
 			}
 			
 		}
+	}
+	
+	public toggleCreateBillingAddress = () =>{
+	    if(this.newAccountAddress == null){
+	        this.newAccountAddress = this.entityService.newEntity('AccountAddress');
+	        this.newAccountAddress.data.address = this.entityService.newEntity('Address');
+	    }
+	}
+	
+	public toggleCreateAccountPaymentMethod = () =>{
+	    if(this.newAccountPaymentMethod == null){
+	        this.newAccountPaymentMethod = this.entityService.newEntity('AccountPaymentMethod');
+	    }
 	}
 }
 
@@ -42,10 +72,12 @@ class SWAccountPaymentMethodModal implements ng.IDirective {
 		accountPaymentMethod:"<?",
 		baseEntityName:"@?",
 		baseEntity:"<?",
-	    title:"@?"
+	    title:"@?",
+	    createBillingAddressTitle:"@?",
+	    createAccountPaymentMethodTitle:"@?"
 	};
 	public require = {
-		swCustomerAccountPaymentMethodCard:"^?swCustomerAccountPaymentMethodCard"
+		swCustomerAccountPaymentMethodCard:"^^swCustomerAccountPaymentMethodCard"
 	};
 	
 	public controller=SWAccountPaymentMethodModalController;

@@ -12,10 +12,136 @@
                  data-object="swAccountPaymentMethodModal.baseEntity"    
                  data-context="save"
                  >
-            <div class="row">
-                   
-                <h1>testing 1234</h1>
+            
+            <div class="col-md-6">
+                
+                <sw-property-display data-object="swAccountPaymentMethodModal.baseEntity" 
+                                     data-property-identifier="billingAccountAddress"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                ></sw-property-display>
+                                    
+                <label class="control-label">
+                    <input type="checkbox" 
+                        name="createBillingAddress" 
+                        ng-change="swAccountPaymentMethodModal.toggleCreateBillingAddress()"
+                        ng-model="swAccountPaymentMethodModal.showCreateBillingAddress" />
+                    
+                    <span ng-bind="swAccountPaymentMethodModal.createBillingAddressTitle"></span>
+                </label>
+                
+                <div ng-if="swAccountPaymentMethodModal.showCreateBillingAddress"> 
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress" 
+                                     data-property-identifier="accountAddressName"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
+                                     data-property-identifier="streetAddress"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
+                                     data-property-identifier="street2Address"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
+                                     data-property-identifier="city"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
+                                     data-property-identifier="stateCode"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
+                                     data-property-identifier="postalCode"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                </div>
             </div>
+            
+            <div class="col-md-6">
+                
+                <sw-property-display data-object="swAccountPaymentMethodModal.baseEntity" 
+                                     data-property-identifier="accountPaymentMethod"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                ></sw-property-display>
+                
+                <label class="control-label">
+                    <input type="checkbox" 
+                            name="createAccountPaymentMethod" 
+                            ng-change="swAccountPaymentMethodModal.toggleCreateAccountPaymentMethod()"
+                            ng-model="swAccountPaymentMethodModal.showCreateAccountPaymentMethod" />
+                            
+                    <span ng-bind="swAccountPaymentMethodModal.createAccountPaymentMethodTitle"></span>
+                </label>
+                
+                
+                <div ng-if="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"> 
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
+                                     data-property-identifier="accountPaymentMethodName"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                   
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
+                                     data-property-identifier="creditCardNumber"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
+                                     data-property-identifier="nameOnCreditCard"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
+                                     data-property-identifier="expirationMonth"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
+                                     data-property-identifier="expirationYear"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                    
+                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
+                                     data-property-identifier="securityCode"
+                                     data-editing="true"
+                                     data-editable="true"
+                                     data-is-dirty="true" 
+                    ></sw-property-display>
+                </div>
+            </div>
+            
         </sw-form>
     </sw-modal-content> 
 </sw-modal-launcher>

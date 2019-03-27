@@ -40,6 +40,22 @@ abstract class BaseEntityService extends BaseObject{
 
         return this.newObject('Entity',baseObjectName,objectName);
     }
+    
+    public loadEntity = (baseObjectName:string, entityID:string, data?:any, objectName?:string) =>{
+        if(!objectName){
+            objectName = baseObjectName;
+        }
+        
+        var loadedEntity = this.newEntity(baseObjectName,objectName);
+        
+        loadedEntity.data[objectName + 'ID'] = entityID; 
+        
+        for(var key in data){
+            loadedEntity.data[key] = data[key];
+        }
+        
+        return loadedEntity;
+    }
 
     public newProcessObject = (baseObjectName:string,objectName?:string)=>{
         if(!objectName){
