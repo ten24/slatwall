@@ -3192,7 +3192,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				
 				if(
-					!structKeyExists(column,'aggregate')
+					!(
+						structKeyExists(column,'aggregate')
+						&& structKeyExists(column.aggregate,'aggregateFunction')
+						&& len(column.aggregate.aggregateFunction)
+					)
 					&& structKeyExists(column, 'ormtype') 
 					&& (
 						column.ormtype eq 'big_decimal'
