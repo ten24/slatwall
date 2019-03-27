@@ -1579,7 +1579,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		for (var column in jsonObj.columns) {
 		     var propertyStruct = {};
 		     propertyStruct.sourceColumn = propertyName[i];
-		     propertyStruct.propertyidentifier =column.propertyidentifier;
+		     propertyStruct.propertyidentifier =propertyName[i];//column.propertyidentifier;
 		     arrayappend(importConfig.mapping, propertyStruct);
 		    i++;
 		}
