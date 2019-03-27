@@ -374,6 +374,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		assertFalse(collectionEntity.getHQL() contains 'GROUP BY ', 'Group By should be ignored if specified on the collection config');
 		var pageRecords = collectionEntity.getPageRecords();
 
 		assert(isArray(pageRecords));
@@ -2882,6 +2884,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
         };
         var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
+        
+        assertFalse(collectionEntity2.getHQL() contains 'GROUP BY ', 'Group By should be ignored if specified on the collection config');
         var joinsHQL = trim(collectionEntity2.getJoinHQL());
 
         assert(joinsHQL == "left join _account.primaryEmailAddress as _account_primaryEmailAddress", 'Bad Join HQL: "#joinsHQL#", expected: "left join _account.primaryEmailAddress as _account_primaryEmailAddress"');
@@ -3161,6 +3165,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		var deserializedCollectionConfig = collectionEntity.deserializeCollectionConfig();
+		
+		assertFalse(collectionEntity.getHQL() contains 'GROUP BY ', 'Group By should be ignored if specified on the collection config');
+		
 		assertFalse(isJSON(deserializedCollectionConfig));
 		assertTrue(isStruct(deserializedCollectionConfig));
 	}
