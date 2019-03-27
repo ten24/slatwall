@@ -225,7 +225,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return true;
 		}
 		
-		return false
+		return false;
 	}
 	
 	//if we are public then we can't have an account owner
@@ -1547,7 +1547,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 
 
-						if (structKeyExists(filter, 'aggregate') && isnull(filter.attributeID)){
+						if (
+							(
+								structKeyExists(filter,'aggregate')
+								&& structKeyExists(filter.aggregate,'aggregateFunction')
+								&& len(filter.aggregate.aggregateFunction)
+							)
+							&& isnull(filter.attributeID)
+						){
 							addAggregateFilter(filter);
 							arrayDeleteAt(reverseFilterGroup,i);
 							continue;
@@ -2267,7 +2274,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
 		isReportAndHasNonPersistent();
-		
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
@@ -2413,6 +2419,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
+		
 		if(isReport()){
 			this.setExcludeOrderBy(true);
 			//check cache key
@@ -3157,7 +3164,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						structKeyExists(column,'isMetric') 
 						&& column.isMetric
 					)
-					|| structKeyExists(column,'aggregate')
+					|| (
+						structKeyExists(column,'aggregate')
+						&& structKeyExists(column.aggregate,'aggregateFunction')
+						&& len(column.aggregate.aggregateFunction)
+					)
 				){
 					if(structKeyExists(column,'isDistinct') && column.isDistinct){
 						columnsHQL &= ' COALESCE(#column['aggregate']['aggregateFunction']#(DISTINCT #column.propertyIdentifier#),0) as #columnAlias#';
@@ -3299,7 +3310,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(structKeyExists(column,'attributeID')){
 			return listLast(column.propertyIdentifier,'.');
 		}else{
-			if(structKeyExists(column,'aggregate')){
+			if(
+				structKeyExists(column,'aggregate')
+				&& structKeyExists(column.aggregate,'aggregateFunction')
+				&& len(column.aggregate.aggregateFunction)
+			){
 				return column.aggregate.aggregateAlias;
 			}else{
 
@@ -3371,7 +3386,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var propertyIdentifier = convertAliasToPropertyIdentifier(column.propertyIdentifier);
 					
 					if(
-						!structKeyExists(column,'aggregate')
+						!(
+							structKeyExists(column,'aggregate')
+							&& structKeyExists(column.aggregate,'aggregateFunction')
+							&& len(column.aggregate.aggregateFunction)
+						)
 						&& !structKeyExists(column,'persistent')
 						&& hasPropertyByPropertyIdentifier(propertyIdentifier)
 						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
@@ -3409,7 +3428,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
 							}
 		
-							if (structKeyExists(column, 'aggregate')
+							if (
+								(
+									structKeyExists(column,'aggregate')
+									&& structKeyExists(column.aggregate,'aggregateFunction')
+									&& len(column.aggregate.aggregateFunction)
+								)
 								|| structKeyExists(column, 'attributeID')
 								|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
 								|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
