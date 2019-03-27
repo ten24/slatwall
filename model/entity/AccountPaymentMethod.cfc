@@ -371,7 +371,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	public void function addOrderTemplate(required any orderTemplate) {
 		arguments.orderTemplate.setAccountPaymentMethod( this );
 	}
-	public void function removePaymentTransaction(required any orderTemplate) {
+	public void function removeOrderTemplate(required any orderTemplate) {
 		arguments.orderTemplate.removeAccountPaymentMethod( this );
 	}
 

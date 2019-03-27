@@ -69,12 +69,20 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
 
-	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
 
-	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderID" inverse="true";
+	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
 
+	// Remote properties
+	property name="remoteID" ormtype="string";
+
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
