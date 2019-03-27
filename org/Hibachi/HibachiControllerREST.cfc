@@ -462,11 +462,17 @@ component output="false" accessors="true" extends="HibachiController" {
 			}
 			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
 		} else if (!arrayIsEmpty(propertyDisplayOptions) && find(structKeyList(propertyDisplayOptions[1]),'NAME')){
+			
 			//keep casing consistent for client side
+			var propertyDisplayOptionsFormatted = [];
 			for(var i=1; i <= propertyDisplayOptionsCount; i++){
-				propertyDisplayOptions[i]['name'] = propertyDisplayOptions[i]['NAME']; 
-				propertyDisplayOptions[i]['value'] = propertyDisplayOptions[i]['VALUE'];  
+				var value = {
+					'name' = propertyDisplayOptions[i]['NAME'],
+					'value' = propertyDisplayOptions[i]['VALUE']
+				};
+				arrayAppend(propertyDisplayOptionsFormatted, value);
 			}
+			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
 		}  
 
         //if it contains an empty value make it the first item
