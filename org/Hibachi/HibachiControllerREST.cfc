@@ -454,7 +454,7 @@ component output="false" accessors="true" extends="HibachiController" {
         var dataCount = arrayLen(data);
         var emptyValueIndex = 0;
         for(var i = 1; i <= dataCount; i++){
-            if(structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
+            if(isStruct(data[i]) && structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
                 emptyValue = data[i];
                 emptyValueIndex = i;
             }
