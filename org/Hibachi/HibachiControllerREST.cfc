@@ -461,7 +461,13 @@ component output="false" accessors="true" extends="HibachiController" {
 				arrayAppend(dataFormatted, value);
 			}
 			data = dataFormatted; 
-		} 
+		} else if (find(structKeyList(data[i]),'NAME')){
+			//keep casing consistent for client side
+			for(var i=1; i <= dataCount; i++){
+				data[i]['name'] = data[i]['NAME']; 
+				data[i]['value'] = data[i]['VALUE'];  
+			}
+		}  
 
         //if it contains an empty value make it the first item
         var emptyValue = javacast('null','');
