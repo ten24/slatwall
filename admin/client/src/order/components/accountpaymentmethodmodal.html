@@ -18,7 +18,7 @@
                 <sw-property-display data-object="swAccountPaymentMethodModal.baseEntity" 
                                      data-property-identifier="billingAccountAddress"
                                      data-editing="true"
-                                     data-editable="true"
+                                     data-editable="!swAccountPaymentMethodModal.showCreateBillingAddress"
                                      data-is-dirty="true" 
                 ></sw-property-display>
                                     
@@ -80,9 +80,8 @@
             <div class="col-md-6">
                 
                 <sw-property-display data-object="swAccountPaymentMethodModal.baseEntity" 
-                                     data-property-identifier="accountPaymentMethod"
                                      data-editing="true"
-                                     data-editable="true"
+                                     data-editable="!swAccountPaymentMethodModal.showCreateAccountPaymentMethod"
                                      data-is-dirty="true" 
                 ></sw-property-display>
                 

@@ -60216,8 +60216,7 @@ exports.SWCustomerAccountCard = SWCustomerAccountCard;
 
 
 /***/ }),
-/* 608 */,
-/* 609 */
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60279,7 +60278,7 @@ exports.SWAssignedProducts = SWAssignedProducts;
 
 
 /***/ }),
-/* 610 */
+/* 609 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60356,7 +60355,7 @@ exports.SWContentBasic = SWContentBasic;
 
 
 /***/ }),
-/* 611 */
+/* 610 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60417,7 +60416,7 @@ exports.SWContentEditor = SWContentEditor;
 
 
 /***/ }),
-/* 612 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60657,7 +60656,7 @@ exports.SWContentList = SWContentList;
 
 
 /***/ }),
-/* 613 */
+/* 612 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60800,7 +60799,7 @@ exports.SWContentNode = SWContentNode;
 
 
 /***/ }),
-/* 614 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60942,7 +60941,7 @@ exports.SWSiteSelector = SWSiteSelector;
 
 
 /***/ }),
-/* 615 */
+/* 614 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60955,12 +60954,12 @@ var core_module_1 = __webpack_require__(6);
 //services
 //filters
 //directives
-var swcontentbasic_1 = __webpack_require__(610);
-var swcontenteditor_1 = __webpack_require__(611);
-var swcontentlist_1 = __webpack_require__(612);
-var swcontentnode_1 = __webpack_require__(613);
-var swassignedproducts_1 = __webpack_require__(609);
-var swsiteselector_1 = __webpack_require__(614);
+var swcontentbasic_1 = __webpack_require__(609);
+var swcontenteditor_1 = __webpack_require__(610);
+var swcontentlist_1 = __webpack_require__(611);
+var swcontentnode_1 = __webpack_require__(612);
+var swassignedproducts_1 = __webpack_require__(608);
+var swsiteselector_1 = __webpack_require__(613);
 var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('contentPartialsPath', 'content/components/')
@@ -60977,7 +60976,7 @@ exports.contentmodule = contentmodule;
 
 
 /***/ }),
-/* 616 */
+/* 615 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61081,7 +61080,7 @@ exports.SWFormResponseListing = SWFormResponseListing;
 
 
 /***/ }),
-/* 617 */
+/* 616 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61093,7 +61092,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
-var swformresponselisting_1 = __webpack_require__(616);
+var swformresponselisting_1 = __webpack_require__(615);
 //models
 var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.name])
     .config([function () {
@@ -61108,7 +61107,7 @@ exports.formbuildermodule = formbuildermodule;
 
 
 /***/ }),
-/* 618 */
+/* 617 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61341,7 +61340,7 @@ exports.SWFulfillmentBatchDetail = SWFulfillmentBatchDetail;
 
 
 /***/ }),
-/* 619 */
+/* 618 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61355,7 +61354,7 @@ var core_module_1 = __webpack_require__(6);
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
-var swfulfillmentbatchdetail_1 = __webpack_require__(618);
+var swfulfillmentbatchdetail_1 = __webpack_require__(617);
 //models 
 var fulfillmentbatchdetailmodule = angular.module('fulfillmentbatchdetail', [core_module_1.coremodule.name])
     .config([function () {
@@ -61372,7 +61371,7 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 
 
 /***/ }),
-/* 620 */
+/* 619 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61380,7 +61379,7 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var giftrecipient_1 = __webpack_require__(630);
+var giftrecipient_1 = __webpack_require__(629);
 var SWAddOrderItemRecipientController = /** @class */ (function () {
     //@ngInject
     function SWAddOrderItemRecipientController($hibachi, collectionConfigService, entityService, observerService) {
@@ -61539,7 +61538,7 @@ exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
 
 
 /***/ }),
-/* 621 */
+/* 620 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61618,7 +61617,7 @@ exports.SWGiftCardBalance = SWGiftCardBalance;
 
 
 /***/ }),
-/* 622 */
+/* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61677,7 +61676,7 @@ exports.SWGiftCardDetail = SWGiftCardDetail;
 
 
 /***/ }),
-/* 623 */
+/* 622 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61807,7 +61806,7 @@ exports.SWGiftCardHistory = SWGiftCardHistory;
 
 
 /***/ }),
-/* 624 */
+/* 623 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61867,7 +61866,7 @@ exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
 
 
 /***/ }),
-/* 625 */
+/* 624 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61908,7 +61907,7 @@ exports.SWGiftCardOverview = SWGiftCardOverview;
 
 
 /***/ }),
-/* 626 */
+/* 625 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61954,7 +61953,7 @@ exports.SWGiftCardRecipientInfo = SWGiftCardRecipientInfo;
 
 
 /***/ }),
-/* 627 */
+/* 626 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62062,7 +62061,7 @@ exports.SWOrderItemGiftRecipientRow = SWOrderItemGiftRecipientRow;
 
 
 /***/ }),
-/* 628 */
+/* 627 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62108,7 +62107,7 @@ exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
 
 
 /***/ }),
-/* 629 */
+/* 628 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62119,16 +62118,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //controllers
-var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(628);
+var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(627);
 //directives
-var swaddorderitemgiftrecipient_1 = __webpack_require__(620);
-var swgiftcardbalance_1 = __webpack_require__(621);
-var swgiftcarddetail_1 = __webpack_require__(622);
-var swgiftcardhistory_1 = __webpack_require__(623);
-var swgiftcardoverview_1 = __webpack_require__(625);
-var swgiftcardorderinfo_1 = __webpack_require__(624);
-var swgiftcardrecipientinfo_1 = __webpack_require__(626);
-var sworderitemgiftrecipientrow_1 = __webpack_require__(627);
+var swaddorderitemgiftrecipient_1 = __webpack_require__(619);
+var swgiftcardbalance_1 = __webpack_require__(620);
+var swgiftcarddetail_1 = __webpack_require__(621);
+var swgiftcardhistory_1 = __webpack_require__(622);
+var swgiftcardoverview_1 = __webpack_require__(624);
+var swgiftcardorderinfo_1 = __webpack_require__(623);
+var swgiftcardrecipientinfo_1 = __webpack_require__(625);
+var sworderitemgiftrecipientrow_1 = __webpack_require__(626);
 var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -62150,7 +62149,7 @@ exports.giftcardmodule = giftcardmodule;
 
 
 /***/ }),
-/* 630 */
+/* 629 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62179,7 +62178,7 @@ exports.GiftRecipient = GiftRecipient;
 
 
 /***/ }),
-/* 631 */
+/* 630 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62351,7 +62350,7 @@ exports.SWAddOptionGroup = SWAddOptionGroup;
 
 
 /***/ }),
-/* 632 */
+/* 631 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62427,7 +62426,7 @@ exports.SWOptionsForOptionGroup = SWOptionsForOptionGroup;
 
 
 /***/ }),
-/* 633 */
+/* 632 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62439,8 +62438,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
-var swaddoptiongroup_1 = __webpack_require__(631);
-var swoptionsforoptiongroup_1 = __webpack_require__(632);
+var swaddoptiongroup_1 = __webpack_require__(630);
+var swoptionsforoptiongroup_1 = __webpack_require__(631);
 var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -62455,7 +62454,7 @@ exports.optiongroupmodule = optiongroupmodule;
 
 
 /***/ }),
-/* 634 */
+/* 633 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62542,7 +62541,7 @@ exports.SWAccountPaymentMethodModal = SWAccountPaymentMethodModal;
 
 
 /***/ }),
-/* 635 */
+/* 634 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62594,6 +62593,58 @@ exports.SWAccountShippingAddressCard = SWAccountShippingAddressCard;
 
 
 /***/ }),
+/* 635 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
+    function SWCustomerAccountPaymentMethodCardController($hibachi, rbkeyService) {
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.title = "Billing";
+    }
+    return SWCustomerAccountPaymentMethodCardController;
+}());
+var SWCustomerAccountPaymentMethodCard = /** @class */ (function () {
+    function SWCustomerAccountPaymentMethodCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.orderPartialsPath = orderPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.restrict = "EA";
+        this.scope = {};
+        this.bindToController = {
+            accountPaymentMethod: "<",
+            baseEntityName: "@?",
+            baseEntity: "<",
+            title: "@?"
+        };
+        this.controller = SWCustomerAccountPaymentMethodCardController;
+        this.controllerAs = "swCustomerAccountPaymentMethodCard";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/customeraccountpaymentmethodcard.html";
+    }
+    SWCustomerAccountPaymentMethodCard.Factory = function () {
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWCustomerAccountPaymentMethodCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        directive.$inject = [
+            'orderPartialsPath',
+            'slatwallPathBuilder',
+            '$hibachi',
+            'rbkeyService'
+        ];
+        return directive;
+    };
+    return SWCustomerAccountPaymentMethodCard;
+}());
+exports.SWCustomerAccountPaymentMethodCard = SWCustomerAccountPaymentMethodCard;
+
+
+/***/ }),
 /* 636 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -62604,9 +62655,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
-var swaccountpaymentmethodmodal_1 = __webpack_require__(634);
-var swaccountshippingaddresscard_1 = __webpack_require__(635);
-var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(890);
+var swaccountpaymentmethodmodal_1 = __webpack_require__(633);
+var swaccountshippingaddresscard_1 = __webpack_require__(634);
+var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(635);
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -68466,13 +68517,13 @@ var hibachi_module_1 = __webpack_require__(835);
 var workflow_module_1 = __webpack_require__(304);
 var entity_module_1 = __webpack_require__(302);
 var account_module_1 = __webpack_require__(606);
-var content_module_1 = __webpack_require__(615);
-var formbuilder_module_1 = __webpack_require__(617);
-var giftcard_module_1 = __webpack_require__(629);
-var optiongroup_module_1 = __webpack_require__(633);
+var content_module_1 = __webpack_require__(614);
+var formbuilder_module_1 = __webpack_require__(616);
+var giftcard_module_1 = __webpack_require__(628);
+var optiongroup_module_1 = __webpack_require__(632);
 var orderitem_module_1 = __webpack_require__(647);
 var orderfulfillment_module_1 = __webpack_require__(640);
-var fulfillmentbatchdetail_module_1 = __webpack_require__(619);
+var fulfillmentbatchdetail_module_1 = __webpack_require__(618);
 var orderdeliverydetail_module_1 = __webpack_require__(638);
 var order_module_1 = __webpack_require__(636);
 var product_module_1 = __webpack_require__(652);
@@ -78609,6 +78660,7 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         angular.copy(this.searchableColumns, this.initialSearchableColumnsState);
         this.typeaheadService.setTypeaheadState(this.typeaheadDataKey, this);
         this.observerService.attach(this.clearSearch, this.typeaheadDataKey + 'clearSearch');
+        this.$http = $http;
     }
     return SWTypeaheadSearchController;
 }());
@@ -78677,7 +78729,6 @@ var SWTypeaheadSearch = /** @class */ (function () {
                     else if (angular.isUndefined(attrs.showViewButton)) {
                         $scope.swTypeaheadSearch.showViewButton = false;
                     }
-                    console.log('placeholder end of pre compile', $scope.swTypeaheadSearch.placeholderText);
                 },
                 post: function ($scope, element, attrs) {
                     var target = element.find(".dropdown-menu");
@@ -78714,7 +78765,6 @@ var SWTypeaheadSearch = /** @class */ (function () {
                             target.append(_this.$compile(searchAllListItemTemplate)($scope));
                         }
                     });
-                    console.log('placeholder end of post compile', $scope.swTypeaheadSearch.placeholderText);
                 }
             };
         };
@@ -93663,58 +93713,6 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(305);
-
-
-/***/ }),
-/* 890 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
-    function SWCustomerAccountPaymentMethodCardController($hibachi, rbkeyService) {
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.title = "Billing";
-    }
-    return SWCustomerAccountPaymentMethodCardController;
-}());
-var SWCustomerAccountPaymentMethodCard = /** @class */ (function () {
-    function SWCustomerAccountPaymentMethodCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.orderPartialsPath = orderPartialsPath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.restrict = "EA";
-        this.scope = {};
-        this.bindToController = {
-            accountPaymentMethod: "<",
-            baseEntityName: "@?",
-            baseEntity: "<",
-            title: "@?"
-        };
-        this.controller = SWCustomerAccountPaymentMethodCardController;
-        this.controllerAs = "swCustomerAccountPaymentMethodCard";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/customeraccountpaymentmethodcard.html";
-    }
-    SWCustomerAccountPaymentMethodCard.Factory = function () {
-        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWCustomerAccountPaymentMethodCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
-        directive.$inject = [
-            'orderPartialsPath',
-            'slatwallPathBuilder',
-            '$hibachi',
-            'rbkeyService'
-        ];
-        return directive;
-    };
-    return SWCustomerAccountPaymentMethodCard;
-}());
-exports.SWCustomerAccountPaymentMethodCard = SWCustomerAccountPaymentMethodCard;
 
 
 /***/ })
