@@ -451,13 +451,13 @@ component output="false" accessors="true" extends="HibachiController" {
 		var dataCount = arrayLen(data);
        
 		//if not an array of structs format for consistency
-		if(!arrayIsEmpty(data) && !isStruct(data[i])){
+		if(!arrayIsEmpty(data) && !isStruct(data[1])){
 			var dataFormatted = [];
 			for(var i=1; i <= dataCount; i++){
 				var value = {
 					name = data[i],
 					value = data[i]
-				}
+				};
 				arrayAppend(dataFormatted, value);
 			}
 			data = dataFormatted; 
@@ -467,7 +467,7 @@ component output="false" accessors="true" extends="HibachiController" {
         var emptyValue = javacast('null','');
         var emptyValueIndex = 0;
         for(var i = 1; i <= dataCount; i++){
-            if(isStruct(data[i]) && structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
+            if(structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
                 emptyValue = data[i];
                 emptyValueIndex = i;
 				break;
