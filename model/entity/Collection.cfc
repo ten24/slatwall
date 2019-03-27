@@ -826,17 +826,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier);
 
 		if(isObject){
-			//check if count is on a one-to-many
-			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.propertyIdentifier);
-			var isOneToMany = structKeyExists(getService('hibachiService').getPropertiesStructByEntityName(lastEntityName)[listLast(arguments.propertyIdentifier,'.')],'singularname');
-
-			//if is a one-to-many propertyKey then add a groupby
-			if(isOneToMany){
-				//need to specify all possible non-aggregate selects and orderbys in groupby
-
-
-			}
-
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = column.propertyIdentifier;
@@ -3797,9 +3786,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfig = trim(arguments.collectionConfig);
 		//reinflate collectionConfigStruct if the collectionConfig is modified directly
 		variables.collectionConfigStruct = deserializeCollectionConfig();
-		if(!isReport()){
-			structDelete(variables.collectionConfigStruct,'groupBys');
-		}
 	}
 
 	public string function getCollectionConfig(){
@@ -3809,10 +3795,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getCollectionConfigStruct(){
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = deserializeCollectionConfig();
-			
-			if(!isReport()){
-				structDelete(variables.collectionConfigStruct,'groupBys');
-			}
 		}
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = {};
@@ -3829,9 +3811,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setCollectionConfigStruct(required struct collectionConfigStruct){
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
-		// if(!isReport()){
-		// 	structDelete(variables.collectionConfigStruct,'groupBys');
-		// }
 		if(structKeyExists(variables.collectionConfigStruct,'filterGroups')){
 			prepareAliasForFilterGroups(variables.collectionConfigStruct['filterGroups']);
 		}

@@ -575,7 +575,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productName','ProductUnitTest');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 		
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
 
@@ -584,7 +588,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductActiveCollection.addFilter('productName','ProductUnitTest');
 		myProductActiveCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myProductActiveCollection.addFilter('activeFlag','YES');
+		
+		var recordsCount = myProductActiveCollection.getRecordsCount();
 		var pageRecords = myProductActiveCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+		
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
@@ -617,7 +626,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
+		
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
 
@@ -626,9 +639,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup");
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
-		debug(myProductCollection.getHQL());
-		debug(myProductCollection.getCollectionConfigStruct());
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+		
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
 
 		myProductCollection = variables.entityService.getProductCollectionList();
@@ -636,7 +651,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2", "OR");
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
 
@@ -645,7 +663,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 		
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
 
@@ -716,9 +737,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 		assertEquals(myProductCollection.getRecordsCount(),1);
 		
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
 
-
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+		
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 	}
 	
@@ -767,7 +790,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertEquals(5, myProductCollection.getRecordsCount());
 		
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 		
 		assertTrue(arrayLen(pageRecords) == 5, "Wrong amount of products returned! Expecting 5 record but returned #arrayLen(pageRecords)#");
 		
@@ -820,7 +846,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertEquals(5, myProductCollection.getRecordsCount());
 		
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 	
 		assertTrue(arrayLen(pageRecords) == 5, "Wrong amount of products returned! Expecting 5 record but returned #arrayLen(pageRecords)#");
 		
@@ -872,7 +901,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertEquals(5, myProductCollection.getRecordsCount());
 		
+		var recordsCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 		
 		assertTrue(arrayLen(pageRecords) == 5, "Wrong amount of products returned! Expecting 5 record but returned #arrayLen(pageRecords)#");
 	}
@@ -1072,7 +1104,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.setOrderBy('productName|asc');
 
+		var recordsCount = myCollection.getRecordsCount();
 		var pageRecords = myCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
@@ -1179,8 +1214,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		mySkuCollection.addFilter('activeFlag','YES');
 		mySkuCollection.addFilter('product.activeFlag','YES');
 		mySkuCollection.addFilter('product.productDescription',uniqueNumberForDescription);
+		
+		var recordsCount = mySkuCollection.getRecordsCount();
 		var pageRecords = mySkuCollection.getPageRecords();
-		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of skus returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+		
+		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of skus returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
 	}
 
@@ -1204,8 +1244,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productID,productName');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
 		var pageRecords = myProductCollection.getPageRecords();
+		
+		var recordsCount = myProductCollection.getRecordsCount();
+		var pageRecords = myProductCollection.getPageRecords();
 
-
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+	
 		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 		assertTrue(structKeyExists(pageRecords[1], 'productDescription'), "The collection didn't return productDescription property");
@@ -1242,9 +1286,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mySkuCollection = variables.entityService.getSkuCollectionList();
 		mySkuCollection.setDisplayProperties('skuID,skuCode,product.productName');
 		mySkuCollection.addFilter('product.productDescription',uniqueNumberForDescription);
+		var recordsCount = mySkuCollection.getRecordsCount();
 		var pageRecords = mySkuCollection.getPageRecords();
 
-		assertTrue(arraylen(pageRecords) == 2,  "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of skus returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+	
+		assertTrue(arraylen(pageRecords) == 2,  "Wrong amount of skus returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
 
 		assertTrue(structKeyExists(pageRecords[1], 'product_productName'), "The collection didn't requested property");
 
@@ -2138,6 +2185,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var recordCount = myProductCollection.getRecordsCount();
 		assert(recordCount > 0);
 		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == recordCount, "Wrong amount of products returned! Expecting #recordCount# records but returned #arrayLen(pageRecords)#");
+	
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
 	}
 
@@ -2204,7 +2254,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName');
 		myProductCollection.addFilter('skus.price','25', '=', 'AND', 'AVG');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var recordCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == recordCount, "Wrong amount of products returned! Expecting #recordCount# records but returned #arrayLen(pageRecords)#");
+	
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
 
@@ -2270,7 +2324,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName');
 		myProductCollection.addFilter('skus.price','5', '=', 'AND', 'MIN');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var recordCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == recordCount, "Wrong amount of products returned! Expecting #recordCount# records but returned #arrayLen(pageRecords)#");
+	
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
 
@@ -2331,7 +2389,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName');
 		myProductCollection.addFilter('skus.price','20', '=', 'AND', 'MAX');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var recordCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == recordCount, "Wrong amount of products returned! Expecting #recordCount# records but returned #arrayLen(pageRecords)#");
+	
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
 	}
 
@@ -2397,7 +2459,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.setDisplayProperties('productName');
 		myProductCollection.addFilter('skus','4', '=', 'AND', 'COUNT');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		var recordCount = myProductCollection.getRecordsCount();
 		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == recordCount, "Wrong amount of products returned! Expecting #recordCount# records but returned #arrayLen(pageRecords)#");
 
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
