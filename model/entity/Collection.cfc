@@ -3181,6 +3181,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
 					addingColumn = true;
 				}
+				
+				if(
+					!structKeyExists(column,'aggregate')
+					&& structKeyExists(column, 'ormtype') 
+					&& (
+						column.ormtype eq 'big_decimal'
+						|| column.ormtype eq 'integer'
+						|| column.ormtype eq 'float'
+						|| column.ormtype eq 'double'
+					) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
+				){
+					addTotalAvgAggregate(column);
+					addTotalSumAggregate(column);
+				}
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
 					columnsHQL &= ',';
@@ -3412,11 +3426,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								groupByList = listAppend(groupByList, column.propertyIdentifier);
 							}
 						}
+						
+						
 					}
+			
 					//if we have the collection objects primary id property as a column exclude all others group bys for better performance
 					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
+						if(arraylen(getOrderBys()) == 0){
+							groupByOverride = listAppend(groupByOverride,convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier));
+						}
 						variables.groupBys = groupByOverride;
 						return variables.groupBys;
+					}
+					
+					if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
+						if(getApplyOrderBysToGroupBys()){
+							for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
+								if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
+								groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
+							}
+
+						}
 					}
 					
 					if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){

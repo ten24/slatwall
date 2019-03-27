@@ -53,9 +53,26 @@ component extends="HibachiService" accessors="true" {
 	
 	// ===================== START: Logical Methods ===========================
 	
+	public void function verifyIntegrity(){
+		var audit = this.newAudit();
+		var auditArchive = this.newAuditArchive();
+		var auditProperties = audit.getPropertiesStruct();
+		var auditArchiveProperties = auditArchive.getPropertiesStruct();
+		
+		for(var auditPropertyKey in auditProperties){
+			if(!structKeyExists(auditArchiveProperties,auditPropertyKey) && auditPropertyKey!='auditID'){
+				throw('auditArchive requires a property of #auditPropertyKey#');
+			}	
+		}
+	}
+	
 	public any function getRelatedEntityForAudit(any audit) {
 		// TODO What if the entity has been deleted? Or perhaps all of the prior related audit logs shouldn't even exist so this would never be a problem?
-		return getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod('get#arguments.audit.getBaseObject()#', {1=arguments.audit.getBaseID()});
+		return getRelatedEntityForAuditByBaseObjectAndBaseID(arguments.audit.getBaseObject(),arguments.audit.getBaseID());
+	}
+	
+	public any function getRelatedEntityForAuditByBaseObjectAndBaseID(required string baseObject, required string baseID){
+		return getServiceByEntityName(arguments.baseObject).invokeMethod('get#arguments.baseObject#', {1=arguments.baseID});
 	}
 	
 	public any function getAuditSmartListForEntity(any entity, string auditTypeList="") {
@@ -127,7 +144,16 @@ component extends="HibachiService" accessors="true" {
 				
 				var q = new Query();
 				arguments.audit.auditID = createHibachiUUID();
-				var sql = "  INSERT INTO swaudit (auditID,#columnslist#) VALUES ('#arguments.audit.auditID#',#paramsList#)
+				
+				if(arguments.audit['auditType'] == 'archive'){
+					var tableName = 'swauditarchive';
+					var primarycolumnName = 'auditarchiveID';
+				}else{
+					var tableName = 'swaudit';
+					var primarycolumnName = 'auditID';
+				}
+				
+				var sql = "  INSERT INTO #tablename# (#primarycolumnName#,#columnslist#) VALUES ('#arguments.audit.auditID#',#paramsList#)
 				";
 				var paramCount = arrayLen(paramsArray);
 				for(var i=1;i<=paramCount;i++){
@@ -150,14 +176,12 @@ component extends="HibachiService" accessors="true" {
 			if(isObject(arguments.audit)){
 				this.delete(arguments.audit);
 			}else if(isStruct(arguments.audit)){
-				
 				var q = new Query();
 				var sql = "  DELETE FROM swaudit where auditID = :auditID
 				";
-				q.addParam('auditID',audit['auditID']);
+				q.addParam(name='auditID',value=arguments.audit['auditID'],cfsqltype="cf_sql_varchar");
 				q.setSQL(sql);
 				q.execute();
-				
 			}
 		}
 	}
@@ -555,7 +579,12 @@ component extends="HibachiService" accessors="true" {
 			if (getHibachiScope().setting('globalAuditCommitMode') == 'thread' && !getHibachiUtilityService().isInThread()) {
 				thread name="archiveThread-#createHibachiUUID()#" action="run" archiveCandidates="#archiveCandidates#" {
 					for (var audit in attributes.archiveCandidates) {
-						this.processAudit(audit, 'archive');
+						if(isObject(audit)){
+							this.processAudit(audit, 'archive');	
+						}else{
+							//support for processing structures
+							this.processAudit_archive(this.new('Audit'),{audit=audit}, 'archive');	
+						}
 					}
 					
 					if (!getHibachiScope().getORMHasErrors()) {
@@ -564,8 +593,15 @@ component extends="HibachiService" accessors="true" {
 				}
 			// Non-threaded process of audits that may need to be archived
 			} else {
+				
 				for (var audit in archiveCandidates) {
-					this.processAudit(audit, 'archive');
+					if(isObject(audit)){
+						this.processAudit(audit, 'archive');	
+					}else{
+						//support for processing structures
+						this.processAudit_archive(this.new('Audit'),{auditData=audit}, 'archive');	
+					}
+					
 				}
 				
 				if (!getHibachiScope().getORMHasErrors()) {
@@ -732,15 +768,24 @@ component extends="HibachiService" accessors="true" {
 		return arguments.audit;
 	}
 	
-	public any function processAudit_archive(required any audit) {
-		if (!isNull(arguments.audit.getRelatedEntity())) {
+	public any function processAudit_archive(required any audit, any data) {
+		
+		if(arguments.audit.getNewFlag() && structKeyExists(data,'auditData')){
+			arguments.audit = arguments.data['auditData'];
+		}
+		
+		if(isObject(arguments.audit) && !isNull(arguments.audit.getRelatedEntity())){
+			var relatedEntity = arguments.audit.getRelatedEntity();
+		//get relatedEntity by structure
+		}else if(!isObject(arguments.audit)){
+			var relatedEntity = getRelatedEntityForAuditByBaseObjectAndBaseID(arguments.audit['baseObject'],arguments.audit['baseID']);
+		}
+		
+		if (!isNull(relatedEntity)) {
 			var autoArchiveVersionLimit = getHibachiScope().setting('globalAuditAutoArchiveVersionLimit');
 			
 			// We will aggregate any auditTypes of update, rollback, archive
-			//var auditSmartList = getAuditSmartListForEntity(entity=audit.getRelatedEntity(), auditTypeList='update,rollback,archive');
-			//auditSmartList.addOrder("auditDateTime|ASC");
-			
-			var auditCollectionList = getAuditCollectionListForEntity(entity=audit.getRelatedEntity(), auditTypeList='update,rollback,archive');
+			var auditCollectionList = getAuditCollectionListForEntity(entity=relatedEntity, auditTypeList='update,rollback,archive');
 			
 			var archiveData = {'newPropertyData'={}, 'oldPropertyData'={}};
 			
@@ -758,41 +803,23 @@ component extends="HibachiService" accessors="true" {
 				
 				// Step through audits sequentially from oldest to newest
 				for (var i=1; i<=recordsToAggregate; i++) {
-					var currentAuditData = deserializeJSON(audits[i].data);
-					
-					if (structKeyExists(currentAuditData, 'newPropertyData')) {
-						// Updates archive 'newPropertyData' with most recent versions of property values
-						structAppend(archiveData.newPropertyData, currentAuditData.newPropertyData);
-					}
-					
-					if (structKeyExists(currentAuditData, 'oldPropertyData')) {
-						// Update archive 'oldPropertyData' while preserving oldest versions of property values
-						structAppend(archiveData.oldPropertyData, currentAuditData.oldPropertyData, false);
-					}
-					
-					mostRecentAuditInArchive = audits[i];
-				}
-				
-				// Commit the new archive
-				if (!isNull(mostRecentAuditInArchive)) {
+					var currentAudit = audits[i];
 					var archiveAudit = this.newAudit(true);
 					archiveAudit.auditType='archive';
-					archiveAudit.auditDateTime=mostRecentAuditInArchive['auditDateTime'];
-					archiveAudit.auditArchiveStartDateTime=audits[1]['auditDateTime'];
-					archiveAudit.auditArchiveEndDateTime=mostRecentAuditInArchive['auditDateTime'];
+					archiveAudit.auditDateTime=currentAudit['auditDateTime'];
+					archiveAudit.auditArchiveStartDateTime=currentAudit['auditDateTime'];
+					archiveAudit.auditArchiveEndDateTime=currentAudit['auditDateTime'];
 					archiveAudit.auditArchiveCreatedDateTime=now();
-					archiveAudit.baseID=mostRecentAuditInArchive.baseID;
-					archiveAudit.baseObject=mostRecentAuditInArchive['baseObject'];
-					archiveAudit.title=mostRecentAuditInArchive['title'];
-					archiveAudit.data=serializeJSON(archiveData);
+					archiveAudit.baseID=currentAudit['baseID'];
+					archiveAudit.baseObject=currentAudit['baseObject'];
+					archiveAudit.title=currentAudit['title'];
+					archiveAudit.data=currentAudit['data'];
 					this.saveAudit(archiveAudit);
 					
 					// Delete audits that have been aggregated into the archive
-					for (var i=1; i<=recordsToAggregate; i++) {
-						this.deleteAudit(audits[i]);
-					}
+					
+					this.deleteAudit(currentAudit);
 				}
-				
 			}
 		}
 		return arguments.audit;

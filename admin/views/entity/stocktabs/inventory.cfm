@@ -49,7 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.stock" type="any" />
-<cfparam name="rc.sku" type="any">
+
 
 <cfset activeCurrencies=listToArray(getHibachiScope().getService('currencyService').getAllActiveCurrencyIDList())>
 
