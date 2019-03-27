@@ -57,7 +57,8 @@
 
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-4">
-				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
+				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
+										data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
 				</sw-customer-account-card> 
 			</div>
 
@@ -67,7 +68,9 @@
 			</div>
 
 			<div class="col-md-4">
-				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#">
+				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#" 
+														data-base-entity-name="OrderTemplate" 
+														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#">
 				</sw-customer-account-payment-method-card>
 			</div>		
 		</div>

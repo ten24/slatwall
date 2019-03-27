@@ -1,10 +1,13 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWCustomerAccountPaymentMethodCardController{
+class SWAccountShippingAddressCardController{
 
-	public accountPaymentMethod;
-	public title:string="Billing";
-
+	public accountShippingAddress;
+	public title:string="Shipping";
+	
+	//entity that account payment method will be set on
+	public baseEntityName:string;
+	public baseEntity;
 
 	constructor(public $hibachi,
 				public rbkeyService
@@ -14,17 +17,19 @@ class SWCustomerAccountPaymentMethodCardController{
 	}
 }
 
-class SWCustomerAccountPaymentMethodCard implements ng.IDirective {
+class SWAccountShippingAddressCard implements ng.IDirective {
 
 	public restrict:string;
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-		accountPaymentMethod:"<",
+		accountShippingAddress:"<",
+		baseEntityName:"@?",
+		baseEntity:"<",
 	    title:"@?"
 	};
-	public controller=SWCustomerAccountPaymentMethodCardController;
-	public controllerAs="swCustomerAccountCard";
+	public controller=SWAccountShippingAddressCardController;
+	public controllerAs="swAccountShippingAddressCard";
 
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
@@ -32,7 +37,7 @@ class SWCustomerAccountPaymentMethodCard implements ng.IDirective {
 			slatwallPathBuilder,
 			$hibachi,
 			rbkeyService
-        ) => new SWCustomerAccountPaymentMethodCard(
+        ) => new SWAccountShippingAddressCard(
 			accountPartialsPath,
 			slatwallPathBuilder,
 			$hibachi,
@@ -63,6 +68,6 @@ class SWCustomerAccountPaymentMethodCard implements ng.IDirective {
 }
 
 export {
-	SWCustomerAccountPaymentMethodCard
+	SWAccountShippingAddressCard
 };
 
