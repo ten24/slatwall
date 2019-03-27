@@ -252,7 +252,14 @@ Notes:
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
 								<li ng-controller="globalSearch">
+									<!--CUSTOM ALTERATIONS BY ANIRUDH-->
+									<!--TEST AREA-->
+									
+									<!--CUSTOM ALTERATIONS BY ANIRUDH-->
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
+										<!-- CUSTOM ALTERATIONS BY ANIRUDH-->
+										<cfif $.slatwall.setting('globalDisableSearchSettings')==0>
+											<!-- CUSTOM ALTERATIONS BY ANIRUDH-->
 										<!--- Start of Search --->
 										<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 											<div class="form-group">
@@ -281,6 +288,9 @@ Notes:
 											</div>
 										</form>
 										<!--- End of Search --->
+										<!-- CUSTOM ALTERATIONS BY ANIRUDH-->
+										</cfif>
+										<!-- CUSTOM ALTERATIONS BY ANIRUDH-->
 									</cfif>
 								</li>
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">

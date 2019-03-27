@@ -191,6 +191,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Global
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
+			globalDisableSearchSettings={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},

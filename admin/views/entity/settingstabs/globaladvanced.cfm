@@ -72,6 +72,8 @@ Notes:
 		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
 		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
+		<swa:SlatwallSetting settingName="globalDisableSearchSettings"/>
+		
 	</swa:SlatwallSettingTable>
 </cfoutput>
 
