@@ -15,6 +15,22 @@ class SWAccountPaymentMethodModalController{
 	public uniqueName:string = 'accountPaymentMethodModal';
 	public formName:string = 'accountPaymentMethodModal';
 	
+	//account address labels
+	public accountAddressNameTitle:string = 'Nickname';
+	public streetAddressTitle:string = "Street Address"; 
+	public street2AddressTitle:string = "Street Address 2";
+	public cityTitle:string = 'City'; 
+	public stateCodeTitle:string = 'State Code';
+	
+	//account payment method labels
+	public accountPaymentMethodNameTitle:string = 'Nickname';
+	public creditCardNumberTitle:string = "Credit Card"; 
+	public nameOnCreditCardTitle:string = "Name on Credit Card"; 
+	public expirationMonthTitle:string = "Expiration Month";
+	public expirationYearTitle:string = "Expiration Year"; 
+	
+	public processContext:string = 'updateBilling';
+	
 	public newAccountAddress;
 	public newAccountPaymentMethod;
 	
@@ -27,38 +43,58 @@ class SWAccountPaymentMethodModalController{
 	constructor( public $timeout,
 	             public $hibachi,
 	             public entityService,
-				 public rbkeyService
+	             public observerService,
+				 public rbkeyService,
+				 public requestService
 	){
 		
 	}
 	
 	public $onInit = () =>{
-	    if(this.swCustomerAccountPaymentMethodCard != null){
 			
-			this.baseEntityName = this.swCustomerAccountPaymentMethodCard.baseEntityName;
-			this.baseEntityPrimaryID = this.swCustomerAccountPaymentMethodCard.baseEntity[this.baseEntityName + 'ID'];
-			
-			this.baseEntity = this.entityService.loadEntity( this.baseEntityName,
-			                                                 this.baseEntityPrimaryID,
-			                                                 this.swCustomerAccountPaymentMethodCard.baseEntity);
-			
-			if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){
-				this.accountPaymentMethod = this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
-			}
-			
+		this.baseEntityName = this.swCustomerAccountPaymentMethodCard.baseEntityName;
+		this.baseEntityPrimaryID = this.swCustomerAccountPaymentMethodCard.baseEntity[this.baseEntityName + 'ID'];
+		
+		this.baseEntity = this.swCustomerAccountPaymentMethodCard.baseEntity;
+		
+		if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){
+			this.accountPaymentMethod = this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
 		}
+		
+	}
+	
+	public save = () =>{
+		/*this.observerService.notify('updateBindings');
+		
+		//build url
+		//var queryString = 'processContext=' + this.processContext + '&' + this.baseEntityName + 'ID=' + this.baseEntityPrimaryID;
+		//var requestUrl = this.$hibachi.buildUrl('admin:entity.process' + this.baseEntityName, queryString);
+		
+		//structure data
+		if(this.newAccountPaymentMethod == null){
+			this.baseEntity.$$setAccountPaymentMethod(this.newAccountPaymentMethod);
+		}
+		
+		if(this.newAccountAddress == null){
+			this.baseEntity.$$setBillingAccountAddress(this.newAccountAddress); 
+		}
+		
+		return this.baseEntity.$$save();*/
+		
+		
 	}
 	
 	public toggleCreateBillingAddress = () =>{
 	    if(this.newAccountAddress == null){
-	        this.newAccountAddress = this.entityService.newEntity('AccountAddress');
-	        this.newAccountAddress.data.address = this.entityService.newEntity('Address');
+	        this.newAccountAddress = {
+	        	address:{}
+	        }
 	    }
 	}
 	
 	public toggleCreateAccountPaymentMethod = () =>{
 	    if(this.newAccountPaymentMethod == null){
-	        this.newAccountPaymentMethod = this.entityService.newEntity('AccountPaymentMethod');
+	        this.newAccountPaymentMethod = {};
 	    }
 	}
 }
@@ -72,9 +108,20 @@ class SWAccountPaymentMethodModal implements ng.IDirective {
 		accountPaymentMethod:"<?",
 		baseEntityName:"@?",
 		baseEntity:"<?",
+		processContext:"@?",
 	    title:"@?",
 	    createBillingAddressTitle:"@?",
-	    createAccountPaymentMethodTitle:"@?"
+	    createAccountPaymentMethodTitle:"@?",
+	    accountAddressNameTitle:"@?",
+		streetAddressTitle:"@?",
+		street2AddressTitle:"@?",
+		cityTitle:"@?", 
+		stateCodeTitle:"@?",
+		accountPaymentMethodNameTitle:"@?",
+		creditCardNumberTitle:"@?",
+		nameOnCreditCardTitle:"@?",
+		expirationMonthTitle:"@?",
+		expirationYearTitle:"@?"
 	};
 	public require = {
 		swCustomerAccountPaymentMethodCard:"^^swCustomerAccountPaymentMethodCard"

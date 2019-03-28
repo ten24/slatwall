@@ -62463,15 +62463,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountPaymentMethodModalController = /** @class */ (function () {
-    function SWAccountPaymentMethodModalController($timeout, $hibachi, entityService, rbkeyService) {
+    function SWAccountPaymentMethodModalController($timeout, $hibachi, entityService, observerService, rbkeyService, requestService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
+        this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.requestService = requestService;
         this.title = "Edit Billing Information";
         this.uniqueName = 'accountPaymentMethodModal';
         this.formName = 'accountPaymentMethodModal';
+        this.processContext = 'updateBilling';
         this.showCreateBillingAddress = false;
         this.showCreateAccountPaymentMethod = false;
         this.createBillingAddressTitle = 'Add a new address';
@@ -62485,6 +62488,20 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                     _this.accountPaymentMethod = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
                 }
             }
+        };
+        this.save = function () {
+            _this.observerService.notify('updateBindings');
+            //build url
+            //var queryString = 'processContext=' + this.processContext + '&' + this.baseEntityName + 'ID=' + this.baseEntityPrimaryID;
+            //var requestUrl = this.$hibachi.buildUrl('admin:entity.process' + this.baseEntityName, queryString);
+            //structure data
+            if (_this.newAccountPaymentMethod == null) {
+                _this.baseEntity.$$setAccountPaymentMethod(_this.newAccountPaymentMethod);
+            }
+            if (_this.newAccountAddress == null) {
+                _this.baseEntity.$$setBillingAccountAddress(_this.newAccountAddress);
+            }
+            return _this.baseEntity.$$save();
         };
         this.toggleCreateBillingAddress = function () {
             if (_this.newAccountAddress == null) {
@@ -62511,6 +62528,7 @@ var SWAccountPaymentMethodModal = /** @class */ (function () {
             accountPaymentMethod: "<?",
             baseEntityName: "@?",
             baseEntity: "<?",
+            processContext: "@?",
             title: "@?",
             createBillingAddressTitle: "@?",
             createAccountPaymentMethodTitle: "@?"

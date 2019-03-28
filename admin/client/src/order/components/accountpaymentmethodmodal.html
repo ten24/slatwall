@@ -9,18 +9,13 @@
     <sw-modal-content> 
         
         <sw-form name="{{swAccountPaymentMethodModal.formName}}" 
-                 data-object="swAccountPaymentMethodModal.baseEntity"    
+                 ng-model="swAccountPaymentMethodModal.baseEntity"    
                  data-context="save"
                  >
             
             <div class="col-md-6">
                 
-                <sw-property-display data-object="swAccountPaymentMethodModal.baseEntity" 
-                                     data-property-identifier="billingAccountAddress"
-                                     data-editing="true"
-                                     data-editable="!swAccountPaymentMethodModal.showCreateBillingAddress"
-                                     data-is-dirty="true" 
-                ></sw-property-display>
+                <input ng-model="swAccountPaymentMethodModal.baseEntity.billingAccountAddress">
                                     
                 <label class="control-label">
                     <input type="checkbox" 
@@ -33,57 +28,49 @@
                 
                 <div ng-if="swAccountPaymentMethodModal.showCreateBillingAddress"> 
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress" 
-                                     data-property-identifier="accountAddressName"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="accountAddressName" ng-bind="swAccountPaymentMethodModal.accountAddressNameTitle"></label>
+                        <input type="text" class="form-control" name="accountAddressName" ng-model="swAccountPaymentMethodModal.newAccountAddress.accountAddressName">
+                    </div>
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
-                                     data-property-identifier="streetAddress"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="streetAddress" ng-bind="swAccountPaymentMethodModal.streetAddressTitle"></label>
+                        <input type="text" class="form-control" name="streetAddress" ng-model="swAccountPaymentMethodModal.newAccountAddress.address.streetAddress">
+                    </div>
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
-                                     data-property-identifier="street2Address"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="street2Address" ng-bind="swAccountPaymentMethodModal.street2AddressTitle"></label>
+                        <input type="text" class="form-control" name="street2Address" ng-model="swAccountPaymentMethodModal.newAccountAddress.address.street2Address">
+                    </div>
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
-                                     data-property-identifier="city"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="street2Address" ng-bind="swAccountPaymentMethodModal.cityTitle"></label>
+                        <input type="text" class="form-control" ng-model="swAccountPaymentMethodModal.newAccountAddress.address.city">
+                    </div>
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
-                                     data-property-identifier="stateCode"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                     <div class="form-group">
+                        <label class="form-label" for="stateCode" ng-bind="swAccountPaymentMethodModal.stateCodeTitle"></label>
+                        
+                        <select name="stateCode" ng-model="swAccountPaymentMethodModal.newAccountAddress.address.stateCode">
+                            
+                        </select>
+                    </div> 
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountAddress.data.address" 
-                                     data-property-identifier="postalCode"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="postalCode" ng-bind="swAccountPaymentMethodModal.postalCodeTitle"></label>
+                        <input type="text" class="form-control" name="postalCode" ng-model="swAccountPaymentMethodModal.newAccountAddress.address.postalCode">
+                    </div>
                 </div>
             </div>
             
             <div class="col-md-6">
                 
-                <sw-property-display data-object="swAccountPaymentMethodModal.baseEntity" 
-                                     data-editing="true"
-                                     data-editable="!swAccountPaymentMethodModal.showCreateAccountPaymentMethod"
+                <input ng-model="swAccountPaymentMethodModal.baseEntity" 
+                                     data-property-identifier="accountPaymentMethod"
+                                     input
+                                     data-editable="true"
                                      data-is-dirty="true" 
-                ></sw-property-display>
+                >
                 
                 <label class="control-label">
                     <input type="checkbox" 
@@ -97,47 +84,38 @@
                 
                 <div ng-if="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"> 
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
-                                     data-property-identifier="accountPaymentMethodName"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
-                   
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
-                                     data-property-identifier="creditCardNumber"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="accountPaymentMethodName" ng-bind="swAccountPaymentMethodModal.accountPaymentMethodNameTitle"></label>
+                        <input type="text" class="form-control" name="accountPaymentMethodName" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName">
+                    </div> 
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
-                                     data-property-identifier="nameOnCreditCard"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
-                                     data-property-identifier="expirationMonth"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="creditCardNumber" ng-bind="swAccountPaymentMethodModal.creditCardNumberTitle"></label>
+                        <input type="text" class="form-control" name="creditCardNumber" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.creditCardNumber">
+                    </div>
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
-                                     data-property-identifier="expirationYear"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="nameOnCreditCard" ng-bind="swAccountPaymentMethodModal.nameOnCreditCardTitle"></label>
+                        <input type="text" class="form-control" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard">
+                    </div> 
                     
-                    <sw-property-display data-object="swAccountPaymentMethodModal.newAccountPaymentMethod" 
-                                     data-property-identifier="securityCode"
-                                     data-editing="true"
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                    ></sw-property-display>
+                    <div class="form-group">
+                        <label class="form-label" for="expirationMonth" ng-bind="swAccountPaymentMethodModal.expirationMonthTitle"></label>
+                        <select class="form-control" name="expirationMonth" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationMonth">
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="expirationMonth" ng-bind="swAccountPaymentMethodModal.expirationYearTitle"></label>
+                        <select class="form-control" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationYear">
+                        </select> 
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="securityCode" ng-bind="swAccountPaymentMethodModal.securityCodeTitle"></label>
+                        <input type="text" class="form-control" name="securityCode" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.securityCode">
+                    </div>
                 </div>
             </div>
             
