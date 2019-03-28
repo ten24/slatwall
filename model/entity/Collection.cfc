@@ -225,7 +225,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return true;
 		}
 		
-		return false
+		return false;
 	}
 	
 	//if we are public then we can't have an account owner
