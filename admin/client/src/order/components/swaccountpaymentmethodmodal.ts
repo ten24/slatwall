@@ -113,23 +113,30 @@ class SWAccountPaymentMethodModalController{
 	}
 	
 	public save = () =>{
+		var formDataToPost:any = {
+			entityName: this.baseEntityName,
+			context: this.processContext
+		};
 		
-		this.observerService.notifyById('submit','updateBilling');
+		if(this.showCreateBillingAddress){
+			formDataToPost.newAccountAddress = this.newAccountAddress;
+		} else {
+			formDataToPost.billingAccountAddress = this.baseEntity.billingAccountAddress;
+		}
 		
-		return new Promise((resolve,reject)=>[]);
+		if(this.showCreateAccountPaymentMethod){
+			formDataToPost.newAccountPaymentMethod = this.newAccountPaymentMethod;
+		} else {
+			formDataToPost.accountPaymentMethod = this.baseEntity.accountPaymentMethod;
+		}
 		
-	}
-	
-	public toggleCreateBillingAddress = () =>{
-	    if(this.newAccountAddress == null){
-	        
-	    }
-	}
-	
-	public toggleCreateAccountPaymentMethod = () =>{
-	    if(this.newAccountPaymentMethod == null){
-	        
-	    }
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		console.log('admin request', adminRequest);
+		
+		return adminRequest.promise;
 	}
 }
 

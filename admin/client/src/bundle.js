@@ -62530,16 +62530,26 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             };
         };
         this.save = function () {
-            _this.observerService.notifyById('submit', 'updateBilling');
-            return new Promise(function (resolve, reject) { return []; });
-        };
-        this.toggleCreateBillingAddress = function () {
-            if (_this.newAccountAddress == null) {
+            var formDataToPost = {
+                entityName: _this.baseEntityName,
+                context: _this.processContext
+            };
+            if (_this.showCreateBillingAddress) {
+                formDataToPost.newAccountAddress = _this.newAccountAddress;
             }
-        };
-        this.toggleCreateAccountPaymentMethod = function () {
-            if (_this.newAccountPaymentMethod == null) {
+            else {
+                formDataToPost.billingAccountAddress = _this.baseEntity.billingAccountAddress;
             }
+            if (_this.showCreateAccountPaymentMethod) {
+                formDataToPost.newAccountPaymentMethod = _this.newAccountPaymentMethod;
+            }
+            else {
+                formDataToPost.accountPaymentMethod = _this.baseEntity.accountPaymentMethod;
+            }
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            console.log('admin request', adminRequest);
+            return adminRequest.promise;
         };
     }
     return SWAccountPaymentMethodModalController;
@@ -85573,8 +85583,6 @@ var SWFFormController = /** @class */ (function () {
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
-            console.log('this.form', _this.form);
-            _this.observerService.attach(_this.submitForm, 'submit', _this.form.$name);
         };
         this.getFormData = function () {
             var formData = {};

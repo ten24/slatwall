@@ -7,197 +7,214 @@
     </sw-modal-button>
     
     <sw-modal-content> 
-        
-        <form swf-form data-method="updateBilling" name="updateBilling">
+        <div class="col-md-6">
             
-            <div class="col-md-6">
-                
-                <div class="form-group" ng-if="!swAccountPaymentMethodModal.hideSelectAccountAddress">
-                        <label class="form-label" 
-                                for="billingAccountAddress" 
-                                ng-bind="swAccountPaymentMethodModal.billingAccountAddressTitle">
-                        </label>
-                        
-                        <select name="billingAccountAddress" 
-                                class="form-control"
-                                ng-disabled="swAccountPaymentMethodModal.showCreateBillingAddress"
-                                ng-model="swAccountPaymentMethodModal.baseEntity.billingAccountAddress"
-                                ng-options="accountAddress as accountAddress.name for accountAddress in swAccountPaymentMethodModal.accountAddressOptions track by accountAddress.value">
-                        </select> 
-                </div>
-                                    
-                <label class="control-label">
-                    <input type="checkbox" 
-                        name="createBillingAddress" 
-                        ng-disabled="swAccountPaymentMethodModal.hideSelectAccountAddress"
-                        ng-change="swAccountPaymentMethodModal.toggleCreateBillingAddress()"
-                        ng-model="swAccountPaymentMethodModal.showCreateBillingAddress" />
-                    
-                    <span ng-bind="swAccountPaymentMethodModal.createBillingAddressTitle"></span>
-                </label>
-                
-                <div ng-if="swAccountPaymentMethodModal.showCreateBillingAddress"> 
-                    
-                    <div class="form-group">
-                        <label class="form-label" 
-                                for="accountAddressName" 
-                                ng-bind="swAccountPaymentMethodModal.accountAddressNameTitle">
-                        </label>
-                        
-                        <input type="text"
-                                class="form-control" 
-                                name="accountAddressName" 
-                                required 
-                                ng-model="swAccountPaymentMethodModal.newAccountAddress.accountAddressName">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="streetAddress" ng-bind="swAccountPaymentMethodModal.streetAddressTitle"></label>
-                        <input type="text" 
-                                class="form-control" 
-                                name="streetAddress" 
-                                required 
-                                ng-model="swAccountPaymentMethodModal.newAccountAddress.address.streetAddress">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="street2Address" ng-bind="swAccountPaymentMethodModal.street2AddressTitle"></label>
-                        <input type="text" 
-                                class="form-control" 
-                                name="street2Address" 
-                                ng-model="swAccountPaymentMethodModal.newAccountAddress.address.street2Address">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="street2Address" ng-bind="swAccountPaymentMethodModal.cityTitle"></label>
-                        <input type="text" 
-                                class="form-control" 
-                                required 
-                                ng-model="swAccountPaymentMethodModal.newAccountAddress.address.city">
-                    </div>
-                    
-                     <div class="form-group">
-                        <label class="form-label" for="stateCode" ng-bind="swAccountPaymentMethodModal.stateCodeTitle"></label>
-                        
-                        <select name="stateCode" 
-                                class="form-control"
-                                ng-model="swAccountPaymentMethodModal.newAccountAddress.address.stateCode"
-                                ng-options="state.name for state in swAccountPaymentMethodModal.stateCodeOptions track by state.value">
-                            
-                        </select>
-                    </div> 
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="postalCode" ng-bind="swAccountPaymentMethodModal.postalCodeTitle"></label>
-                        <input type="text" class="form-control" name="postalCode" required ng-model="swAccountPaymentMethodModal.newAccountAddress.address.postalCode">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6">
-                
-                 <div class="form-group" ng-if="!swAccountPaymentMethodModal.hideSelectAccountPaymentMethod">
+            <div class="form-group" ng-if="!swAccountPaymentMethodModal.hideSelectAccountAddress">
                     <label class="form-label" 
                             for="billingAccountAddress" 
-                            ng-bind="swAccountPaymentMethodModal.accountPaymentMethodTitle">
+                            ng-bind="swAccountPaymentMethodModal.billingAccountAddressTitle">
                     </label>
-                        
-                    <select class="form-control"
-                            name="accountPaymentMethod"
-                            ng-disabled="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"
-                            ng-model="swAccountPaymentMethodModal.baseEntity.accountPaymentMethod"
-                            ng-options="accountPaymentMethod as accountPaymentMethod.name for accountPaymentMethod in swAccountPaymentMethodModal.accountPaymentMethodOptions track by accountPaymentMethod.value">
-                    </select>
+                    
+                    <select name="billingAccountAddress" 
+                            class="form-control"
+                            ng-disabled="swAccountPaymentMethodModal.showCreateBillingAddress"
+                            ng-model="swAccountPaymentMethodModal.baseEntity.billingAccountAddress"
+                            ng-options="accountAddress as accountAddress.name for accountAddress in swAccountPaymentMethodModal.accountAddressOptions track by accountAddress.value">
+                    </select> 
+            </div>
+                                
+            <label class="control-label">
+                <input type="checkbox" 
+                    name="createBillingAddress" 
+                    ng-disabled="swAccountPaymentMethodModal.hideSelectAccountAddress"
+                    ng-change="swAccountPaymentMethodModal.toggleCreateBillingAddress()"
+                    ng-model="swAccountPaymentMethodModal.showCreateBillingAddress" />
+                
+                <span ng-bind="swAccountPaymentMethodModal.createBillingAddressTitle"></span>
+            </label>
+            
+            <div ng-if="swAccountPaymentMethodModal.showCreateBillingAddress"> 
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="accountAddressName" 
+                            ng-bind="swAccountPaymentMethodModal.accountAddressNameTitle">
+                    </label>
+                    
+                    <input type="text"
+                            class="form-control" 
+                            name="accountAddressName" 
+                            required 
+                            ng-model="swAccountPaymentMethodModal.newAccountAddress.accountAddressName">
                 </div>
-                    
-                <label class="control-label">
-                    <input type="checkbox" 
-                            name="createAccountPaymentMethod" 
-                            ng-disabled="swAccountPaymentMethodModal.hideSelectAccountPaymentMethod"
-                            ng-change="swAccountPaymentMethodModal.toggleCreateAccountPaymentMethod()"
-                            ng-model="swAccountPaymentMethodModal.showCreateAccountPaymentMethod" />
-                            
-                    <span ng-bind="swAccountPaymentMethodModal.createAccountPaymentMethodTitle"></span>
-                </label>
                 
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="streetAddress" 
+                            ng-bind="swAccountPaymentMethodModal.streetAddressTitle">
+                    </label>
+                    <input type="text" 
+                            class="form-control" 
+                            name="streetAddress" 
+                            required 
+                            ng-model="swAccountPaymentMethodModal.newAccountAddress.address.streetAddress">
+                </div>
                 
-                <div ng-if="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"> 
-                    
-                    <div class="form-group">
-                        <label class="form-label" 
-                                for="accountPaymentMethodName"
-                                ng-bind="swAccountPaymentMethodModal.accountPaymentMethodNameTitle">
-                        </label>
-                        <input type="text" 
-                               class="form-control" 
-                               name="accountPaymentMethodName"
-                               required 
-                               ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName">
-                    </div> 
-                    
-                    
-                    <div class="form-group">
-                        <label class="form-label" 
-                                for="creditCardNumber" 
-                                ng-bind="swAccountPaymentMethodModal.creditCardNumberTitle">
-                        </label>
-                        <input type="text" 
-                               class="form-control" 
-                               name="creditCardNumber" 
-                               required 
-                               ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.creditCardNumber">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" 
-                                for="nameOnCreditCard" 
-                                ng-bind="swAccountPaymentMethodModal.nameOnCreditCardTitle">
-                        </label>
-                        <input type="text" 
-                               class="form-control" 
-                               required 
-                               ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard">
-                    </div> 
-                    
-                    <div class="form-group">
-                        <label class="form-label" 
-                                for="expirationMonth" 
-                                ng-bind="swAccountPaymentMethodModal.expirationMonthTitle">
-                        </label>
-                        <select class="form-control" 
-                                name="expirationMonth" 
-                                required
-                                ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
-                                ng-options="month for month in swAccountPaymentMethodModal.expirationMonthOptions">
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" 
-                                for="expirationMonth" 
-                                ng-bind="swAccountPaymentMethodModal.expirationYearTitle">
-                        </label>
-                        <select class="form-control" 
-                                required
-                                ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationYear"
-                                ng-options="year.NAME for year in swAccountPaymentMethodModal.expirationYearOptions track by year.VALUE">
-                        </select> 
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" 
-                                for="securityCode" 
-                                ng-bind="swAccountPaymentMethodModal.securityCodeTitle">
-                        </label>
-                        <input type="text" 
-                               class="form-control" 
-                               name="securityCode" 
-                               required 
-                               ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.securityCode">
-                    </div>
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="street2Address" 
+                            ng-bind="swAccountPaymentMethodModal.street2AddressTitle">
+                    </label>
+                    <input type="text" 
+                            class="form-control" 
+                            name="street2Address" 
+                            ng-model="swAccountPaymentMethodModal.newAccountAddress.address.street2Address">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="city" 
+                            ng-bind="swAccountPaymentMethodModal.cityTitle">
+                    </label>
+                    <input type="text" 
+                            class="form-control" 
+                            required 
+                            name="city"
+                            ng-model="swAccountPaymentMethodModal.newAccountAddress.address.city">
+                </div>
+                
+                 <div class="form-group">
+                    <label class="form-label" 
+                            for="stateCode"
+                            ng-bind="swAccountPaymentMethodModal.stateCodeTitle">
+                    </label>
+                    <select name="stateCode" 
+                            class="form-control"
+                            ng-model="swAccountPaymentMethodModal.newAccountAddress.address.stateCode"
+                            ng-options="state.name for state in swAccountPaymentMethodModal.stateCodeOptions track by state.value">
+                        
+                    </select>
+                </div> 
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="postalCode" 
+                            ng-bind="swAccountPaymentMethodModal.postalCodeTitle">
+                    </label>
+                    <input type="text" 
+                            class="form-control" 
+                            name="postalCode"
+                            required 
+                            ng-model="swAccountPaymentMethodModal.newAccountAddress.address.postalCode">
                 </div>
             </div>
+        </div>
+        
+        <div class="col-md-6">
             
-        </sw-form>
+             <div class="form-group" ng-if="!swAccountPaymentMethodModal.hideSelectAccountPaymentMethod">
+                <label class="form-label" 
+                        for="billingAccountAddress" 
+                        ng-bind="swAccountPaymentMethodModal.accountPaymentMethodTitle">
+                </label>
+                    
+                <select class="form-control"
+                        name="accountPaymentMethod"
+                        ng-disabled="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"
+                        ng-model="swAccountPaymentMethodModal.baseEntity.accountPaymentMethod"
+                        ng-options="accountPaymentMethod as accountPaymentMethod.name for accountPaymentMethod in swAccountPaymentMethodModal.accountPaymentMethodOptions track by accountPaymentMethod.value">
+                </select>
+            </div>
+                
+            <label class="control-label">
+                <input type="checkbox" 
+                        name="createAccountPaymentMethod" 
+                        ng-disabled="swAccountPaymentMethodModal.hideSelectAccountPaymentMethod"
+                        ng-change="swAccountPaymentMethodModal.toggleCreateAccountPaymentMethod()"
+                        ng-model="swAccountPaymentMethodModal.showCreateAccountPaymentMethod" />
+                        
+                <span ng-bind="swAccountPaymentMethodModal.createAccountPaymentMethodTitle"></span>
+            </label>
+            
+            
+            <div ng-if="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"> 
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="accountPaymentMethodName"
+                            ng-bind="swAccountPaymentMethodModal.accountPaymentMethodNameTitle">
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           name="accountPaymentMethodName"
+                           required 
+                           ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName">
+                </div> 
+                
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="creditCardNumber" 
+                            ng-bind="swAccountPaymentMethodModal.creditCardNumberTitle">
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           name="creditCardNumber" 
+                           required 
+                           ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.creditCardNumber">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="nameOnCreditCard" 
+                            ng-bind="swAccountPaymentMethodModal.nameOnCreditCardTitle">
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           name="nameOnCreditCard"
+                           required 
+                           ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard">
+                </div> 
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="expirationMonth" 
+                            ng-bind="swAccountPaymentMethodModal.expirationMonthTitle">
+                    </label>
+                    <select class="form-control" 
+                            name="expirationMonth" 
+                            required
+                            ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
+                            ng-options="month for month in swAccountPaymentMethodModal.expirationMonthOptions">
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="expirationYear" 
+                            ng-bind="swAccountPaymentMethodModal.expirationYearTitle">
+                    </label>
+                    
+                    <select class="form-control" 
+                            name="expirationYear" 
+                            required
+                            ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationYear"
+                            ng-options="year.NAME for year in swAccountPaymentMethodModal.expirationYearOptions track by year.VALUE">
+                    </select> 
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" 
+                            for="securityCode" 
+                            ng-bind="swAccountPaymentMethodModal.securityCodeTitle">
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           name="securityCode" 
+                           required 
+                           ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.securityCode">
+                </div>
+            </div>
+        </div>
     </sw-modal-content> 
 </sw-modal-launcher>

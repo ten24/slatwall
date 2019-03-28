@@ -1154,6 +1154,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate;
 	}
 
+	public any function processOrderTemplate_updateBilling(required any orderTemplate, required any processObject, required struct data={}){
+
+		
+
+		return arguments.orderTemplate; 
+	} 
+
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 		//Setup Site Origin if using slatwall cms
 		if(!isNull(getHibachiScope().getCurrentRequestSite()) && getHibachiScope().getCurrentRequestSite().isSlatwallCMS()){
