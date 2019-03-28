@@ -1546,12 +1546,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					if(structKeyExists(filter,'comparisonOperator') && len(filter.comparisonOperator)){
 						var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 
-
 						if (
 							(
 								structKeyExists(filter,'aggregate')
-								&& structKeyExists(filter.aggregate,'aggregateFunction')
-								&& len(filter.aggregate.aggregateFunction)
 							)
 							&& isnull(filter.attributeID)
 						){
