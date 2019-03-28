@@ -87915,7 +87915,6 @@ var SWListingDisplayCellController = /** @class */ (function () {
             if (_this.expandable || (_this.swListingDisplay.expandable && _this.column.tdclass && _this.column.tdclass === 'primary')) {
                 templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplayselectablecellexpandable.html';
             }
-            console.log('test', _this.column.ormtype);
             if (!_this.swListingDisplay.expandable || !_this.column.tdclass || _this.column.tdclass !== 'primary') {
                 if (_this.column.ormtype === 'timestamp') {
                     templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycelldate.html';
