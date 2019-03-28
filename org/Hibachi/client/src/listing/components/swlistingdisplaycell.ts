@@ -83,7 +83,6 @@ class SWListingDisplayCellController{
             templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplayselectablecellexpandable.html';
         }
         
-        console.log('test',this.column.ormtype);
 
         if(!this.swListingDisplay.expandable || !this.column.tdclass || this.column.tdclass !== 'primary'){
             if(this.column.ormtype === 'timestamp'){
