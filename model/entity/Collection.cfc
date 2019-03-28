@@ -113,6 +113,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionEntityObject" type="any" persistent="false";
 	property name="hasAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
+	property name="hasManyRelationColumn" type="boolean" persistent="false";
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="filterByLeafNodesFlag" type="boolean" persistent="false" default="0";
@@ -221,7 +222,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 				
 				
-		if(getHasManyRelationFilter()){
+		if(
+			getHasManyRelationFilter() 
+		){
 			return true;
 		}
 		
@@ -487,6 +490,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			propertyIdentifierAliasData = {
 				joins=[],
 				hasManyRelationFilter=false,
+				hasManyRelationColumn=false,
 				'_propertyIdentifier'=""
 			};
 
@@ -498,8 +502,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
 				if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
-					if(arguments.aliastype=='filter' && structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
-						propertyIdentifierAliasData.hasManyRelationFilter=true;
+					if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
+						if(arguments.aliastype=='filter'){
+							propertyIdentifierAliasData.hasManyRelationFilter=true;
+						}else if(arguments.aliastype=='column'){
+							propertyIdentifierAliasData.hasManyRelationColumn=true;
+						}
 					}
 					current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
 					_propertyIdentifier &= '_' & propertyIdentifierParts[i];
@@ -507,6 +515,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1' ),1,1),
 						'alias' = alias & _propertyIdentifier
 					};
+					if(propertyIdentifierAliasData.hasManyRelationColumn){
+						join['toMany']=true;
+					}
 					addJoin(join);
 					arrayAppend(propertyIdentifierAliasData.joins,join);
 				}else{
@@ -518,9 +529,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			setCollectionCacheValue(cacheKey,propertyIdentifierAliasData);
  		}
 
-	    if(propertyIdentifierAliasData.hasManyRelationFilter) {
+	    if(arguments.aliastype=='filter' && propertyIdentifierAliasData.hasManyRelationFilter) {
 		    setHasManyRelationFilter(propertyIdentifierAliasData.hasManyRelationFilter);
 	    }
+	    
+	    if(arguments.aliastype=='column' && propertyIdentifierAliasData.hasManyRelationColumn) {
+		    setHasManyRelationColumn(propertyIdentifierAliasData.hasManyRelationColumn);
+	    }
+	    
 		for(var join in propertyIdentifierAliasData.joins){
 			addJoin(join);
 		}
@@ -1686,14 +1702,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return fromHQL;
 	}
 
-	public string function getJoinHQL(){
+	public string function getJoinHQL(toManyOnly=false){
 		var joinHQL = '';
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
             var allAliases = getAllAliases();
 			for(var join in getCollectionConfigStruct()["joins"]){
-                if(listFind(allAliases, join.alias)){
-                    joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
-                }
+				if(
+					!arguments.toManyOnly 
+					|| (
+						arguments.toManyOnly 
+						&& structKeyExists(join,'toMany')
+						&& join.toMany
+					)
+				){
+	                if(listFind(allAliases, join.alias)){
+	                    joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
+	                }
+				}
 			}
 		}
 		return joinHQL;
@@ -3000,8 +3025,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			hasAggregateFilter() 
 			|| hasGroupBys()
 		){
+			
 			var countHQLSelections = "SELECT NEW MAP(COUNT(tempAlias.id) as recordsCount ";
-			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true)# )';
+			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias 
+									#replace(getJoinHQL(toManyOnly=true),'#getBaseEntityAlias()#.','tempAlias.','All')#
+									WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true)# )';
  		}else{
  			var countHQLSelections = 'SELECT NEW MAP(COUNT(#getBaseEntityAlias()#.id) as recordsCount ';
  			var countHQLSuffix = getHQL(true);
