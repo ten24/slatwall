@@ -197,17 +197,16 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public array function getStateCodeOptions() {
 		if(!structKeyExists(variables, "stateCodeOptions")) {
-			var smartList = getService("addressService").getStateSmartList();
-			smartList.addSelect(propertyIdentifier="stateName", alias="name");
-			smartList.addSelect(propertyIdentifier="stateCode", alias="value");
+			var collectionList = getService("addressService").getStateCollectionList();
+			collectionList.setDisplayProperties('stateName|name, stateCode|value')
 			if(!isNull(getCountryCode())) {
-				smartList.addFilter("countryCode", getCountryCode());	
+				collectionList.addFilter("countryCode", getCountryCode());	
 			} else {
-				smartList.addFilter("countryCode", 'US');
+				collectionList.addFilter("countryCode", 'US');
 			}
-			smartList.addOrder("stateName|ASC");
-			variables.stateCodeOptions = smartList.getRecords();
-			arrayPrepend(variables.stateCodeOptions, {value="", name=rbKey('define.select')});
+			collectionList.addOrderBy("stateName|ASC");
+			variables.stateCodeOptions = collectionList.getRecords();
+			arrayPrepend(variables.stateCodeOptions, {'value'="", 'name'=rbKey('define.select')});
 		}
 		return variables.stateCodeOptions;
 	}
