@@ -270,7 +270,10 @@ Notes:
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
 								<li ng-controller="globalSearch">
+									
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
+										<cfif $.slatwall.setting('globalDisableSearchSettings') eq 0>
+										
 										<!--- Start of Search --->
 										<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 											<div class="form-group">
@@ -299,6 +302,9 @@ Notes:
 											</div>
 										</form>
 										<!--- End of Search --->
+										
+										</cfif>
+										
 									</cfif>
 								</li>
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">

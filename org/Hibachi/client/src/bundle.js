@@ -63826,6 +63826,15 @@ var CollectionConfig = /** @class */ (function () {
             }
             return propertyIdentifier;
         };
+        this.hasNonPersistentProperty = function () {
+            for (var i in _this.columns) {
+                var column = _this.columns[i];
+                if (angular.isDefined(column.persistent) && column.persistent === false) {
+                    return true;
+                }
+            }
+            return false;
+        };
         this.addColumn = function (column, title, options) {
             if (title === void 0) { title = ''; }
             if (options === void 0) { options = {}; }
@@ -67577,10 +67586,8 @@ var SWTooltip = /** @class */ (function () {
                         tooltipStyle.left = (-1 * (elementPosition.left + element[0].offsetLeft - 5)) + "px";
                         element.find(".tooltip-inner")[0].style.maxWidth = "none";
                         break;
-                    default:
-                        //right is the default
-                        tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5) + "px";
-                        tooltipStyle.left = (elementPosition.left + element[0].offsetWidth - 5) + "px";
+                    case 'right':
+                        break;
                 }
             }
         };
@@ -73408,10 +73415,12 @@ var RbKeyService = /** @class */ (function () {
                     }
                     return keyValue;
                 }
-                var bundle = _this.resourceBundles[locale];
-                if (angular.isDefined(bundle[key])) {
-                    //$log.debug('rbkeyfound:'+bundle[key]);
-                    return bundle[key];
+                if (_this.resourceBundles[locale]) {
+                    var bundle = _this.resourceBundles[locale];
+                    if (angular.isDefined(bundle[key])) {
+                        //$log.debug('rbkeyfound:'+bundle[key]);
+                        return bundle[key];
+                    }
                 }
                 var checkedKeysListArray = checkedKeys.split(',');
                 checkedKeysListArray.push(key + '_' + locale + '_missing');
@@ -77547,7 +77556,7 @@ var SWListingDisplayController = /** @class */ (function () {
         this.collectionConfigs = [];
         this.collectionObjects = [];
         this.colorFilters = [];
-        this.columns = [];
+        this._columns = [];
         this.disableRules = [];
         this.expandableRules = [];
         this.exampleEntity = "";
@@ -78035,6 +78044,17 @@ var SWListingDisplayController = /** @class */ (function () {
             this.reportAction = 'entity.reportlist' + this.baseEntityName.toLowerCase();
         }
     }
+    Object.defineProperty(SWListingDisplayController.prototype, "columns", {
+        get: function () {
+            return this._columns;
+        },
+        set: function (newArray) {
+            this._columns = newArray;
+            this.columnCount = this._columns.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
