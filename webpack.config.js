@@ -1,6 +1,7 @@
-var webpack = require("webpack");
+const webpack = require("webpack");
 const CompressionPlugin = require("compression-webpack-plugin");
-var ForceCaseSensitivityPlugin = require("force-case-sensitivity-webpack-plugin");
+const LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
+const ForceCaseSensitivityPlugin = require("force-case-sensitivity-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
 const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
@@ -31,7 +32,7 @@ var appConfig = {
   },
 
   // Turn on sourcemaps
-  devtool: "source-map",
+  // devtool: "source-map",
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".js"]
   },
@@ -55,16 +56,17 @@ var appConfig = {
   },
   plugins: [
     new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
-    new ForceCaseSensitivityPlugin(),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+    new ForceCaseSensitivityPlugin(),
     new CleanWebpackPlugin(),
+    new LinkTypePlugin(),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
       filename: "include-admin.cfm",
       inject: false,
       chunks: ["app"],
       chunkSortMode: "dependency",
-            excluding: "guydtsh"
+      excluding: "chart"
     }),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
