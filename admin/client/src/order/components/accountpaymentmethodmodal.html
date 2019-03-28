@@ -8,14 +8,20 @@
     
     <sw-modal-content> 
         
-        <sw-form name="{{swAccountPaymentMethodModal.formName}}" 
-                 ng-model="swAccountPaymentMethodModal.baseEntity"    
-                 data-context="save"
-                 >
+        <form ng-model="swAccountPaymentMethodModal.processObject" swf-form data-method="updateBilling" name="updateBilling">
             
             <div class="col-md-6">
                 
-                <input ng-model="swAccountPaymentMethodModal.baseEntity.billingAccountAddress">
+                <div class="form-group">
+                        <label class="form-label" for="billingAccountAddress" ng-bind="swAccountPaymentMethodModal.billingAccountAddressTitle"></label>
+                        
+                        <select name="billingAccountAddress" 
+                                class="form-control"
+                                ng-disabled="swAccountPaymentMethodModal.showCreateBillingAddress"
+                                ng-model="swAccountPaymentMethodModal.baseEntity.billingAccountAddress"
+                                ng-options="accountAddress as accountAddress.name for accountAddress in swAccountPaymentMethodModal.accountAddressOptions track by accountAddress.value">
+                        </select> 
+                </div>
                                     
                 <label class="control-label">
                     <input type="checkbox" 
@@ -51,7 +57,10 @@
                      <div class="form-group">
                         <label class="form-label" for="stateCode" ng-bind="swAccountPaymentMethodModal.stateCodeTitle"></label>
                         
-                        <select name="stateCode" ng-model="swAccountPaymentMethodModal.newAccountAddress.address.stateCode">
+                        <select name="stateCode" 
+                                class="form-control"
+                                ng-model="swAccountPaymentMethodModal.newAccountAddress.address.stateCode"
+                                ng-options="state.name for state in swAccountPaymentMethodModal.stateCodeOptions track by state.value">
                             
                         </select>
                     </div> 
@@ -65,13 +74,16 @@
             
             <div class="col-md-6">
                 
-                <input ng-model="swAccountPaymentMethodModal.baseEntity" 
-                                     data-property-identifier="accountPaymentMethod"
-                                     input
-                                     data-editable="true"
-                                     data-is-dirty="true" 
-                >
-                
+                 <div class="form-group">
+                    <label class="form-label" for="billingAccountAddress" ng-bind="swAccountPaymentMethodModal.accountPaymentMethodTitle"></label>
+                        
+                    <select class="form-control"
+                            ng-disabled="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"
+                            ng-model="swAccountPaymentMethodModal.baseEntity.accountPaymentMethod"
+                            ng-options="accountPaymentMethod as accountPaymentMethod.name for accountPaymentMethod in swAccountPaymentMethodModal.accountPaymentMethodOptions track by accountPaymentMethod.value">
+                    </select>
+                </div>
+                    
                 <label class="control-label">
                     <input type="checkbox" 
                             name="createAccountPaymentMethod" 
@@ -102,13 +114,18 @@
                     
                     <div class="form-group">
                         <label class="form-label" for="expirationMonth" ng-bind="swAccountPaymentMethodModal.expirationMonthTitle"></label>
-                        <select class="form-control" name="expirationMonth" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationMonth">
+                        <select class="form-control" 
+                                name="expirationMonth" 
+                                ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
+                                ng-options="month for month in swAccountPaymentMethodModal.expirationMonthOptions">
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label" for="expirationMonth" ng-bind="swAccountPaymentMethodModal.expirationYearTitle"></label>
-                        <select class="form-control" ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationYear">
+                        <select class="form-control" 
+                                ng-model="swAccountPaymentMethodModal.newAccountPaymentMethod.expirationYear"
+                                ng-options="year.NAME for year in swAccountPaymentMethodModal.expirationYearOptions track by year.VALUE">
                         </select> 
                     </div>
                     

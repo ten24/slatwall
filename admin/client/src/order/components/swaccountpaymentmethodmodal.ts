@@ -4,9 +4,17 @@ class SWAccountPaymentMethodModalController{
 
 	public accountPaymentMethod;
 	
+	//Options
+	public accountAddressOptions;
+	public accountPaymentMethodOptions;
+	public expirationMonthOptions;
+	public expirationYearOptions;
+	public stateCodeOptions;
+	
 	//Order or Order Template
 	public baseEntityName;
 	public baseEntity;
+	public processObject;
 	public baseEntityPrimaryID:string;
 		
 	public swCustomerAccountPaymentMethodCard;
@@ -15,12 +23,16 @@ class SWAccountPaymentMethodModalController{
 	public uniqueName:string = 'accountPaymentMethodModal';
 	public formName:string = 'accountPaymentMethodModal';
 	
+	public billingAccountAddressTitle:string = 'Select Billing Address';
+	public accountPaymentMethodTitle:string = 'Select Account Payment Method';
+	
 	//account address labels
 	public accountAddressNameTitle:string = 'Nickname';
 	public streetAddressTitle:string = "Street Address"; 
 	public street2AddressTitle:string = "Street Address 2";
 	public cityTitle:string = 'City'; 
-	public stateCodeTitle:string = 'State Code';
+	public stateCodeTitle:string = 'State';
+	public postalCodeTitle:string = 'Postal Code'
 	
 	//account payment method labels
 	public accountPaymentMethodNameTitle:string = 'Nickname';
@@ -28,6 +40,7 @@ class SWAccountPaymentMethodModalController{
 	public nameOnCreditCardTitle:string = "Name on Credit Card"; 
 	public expirationMonthTitle:string = "Expiration Month";
 	public expirationYearTitle:string = "Expiration Year"; 
+	public securityCodeTitle:string = "Security Code"
 	
 	public processContext:string = 'updateBilling';
 	
@@ -55,7 +68,17 @@ class SWAccountPaymentMethodModalController{
 		this.baseEntityName = this.swCustomerAccountPaymentMethodCard.baseEntityName;
 		this.baseEntityPrimaryID = this.swCustomerAccountPaymentMethodCard.baseEntity[this.baseEntityName + 'ID'];
 		
+		this.accountAddressOptions = this.swCustomerAccountPaymentMethodCard.accountAddressOptions;
+		this.accountPaymentMethodOptions = this.swCustomerAccountPaymentMethodCard.accountPaymentMethodOptions;
+
+		this.expirationMonthOptions = this.swCustomerAccountPaymentMethodCard.expirationMonthOptions;
+		this.expirationYearOptions = this.swCustomerAccountPaymentMethodCard.expirationYearOptions;
+		this.stateCodeOptions = this.swCustomerAccountPaymentMethodCard.stateCodeOptions;
+
 		this.baseEntity = this.swCustomerAccountPaymentMethodCard.baseEntity;
+
+		this.baseEntity.billingAccountAddress = this.accountAddressOptions[0];
+		this.baseEntity.accountPaymentMethod = this.accountPaymentMethodOptions[0];
 		
 		if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){
 			this.accountPaymentMethod = this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
@@ -87,14 +110,19 @@ class SWAccountPaymentMethodModalController{
 	public toggleCreateBillingAddress = () =>{
 	    if(this.newAccountAddress == null){
 	        this.newAccountAddress = {
-	        	address:{}
+	        	address:{
+	        		stateCode: this.stateCodeOptions[0]
+	        	}
 	        }
 	    }
 	}
 	
 	public toggleCreateAccountPaymentMethod = () =>{
 	    if(this.newAccountPaymentMethod == null){
-	        this.newAccountPaymentMethod = {};
+	        this.newAccountPaymentMethod = {
+	        	expirationMonth: this.expirationMonthOptions[0],
+	        	expirationYear: this.expirationYearOptions[0]
+	        };
 	    }
 	}
 }
@@ -106,6 +134,8 @@ class SWAccountPaymentMethodModal implements ng.IDirective {
 	public scope = {};
 	public bindToController = {
 		accountPaymentMethod:"<?",
+		accountPaymentMethodOptions: "<?",
+		accountAddressOptions: "<?",
 		baseEntityName:"@?",
 		baseEntity:"<?",
 		processContext:"@?",

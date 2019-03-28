@@ -62474,44 +62474,75 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
         this.title = "Edit Billing Information";
         this.uniqueName = 'accountPaymentMethodModal';
         this.formName = 'accountPaymentMethodModal';
+        this.billingAccountAddressTitle = 'Select Billing Address';
+        this.accountPaymentMethodTitle = 'Select Account Payment Method';
+        //account address labels
+        this.accountAddressNameTitle = 'Nickname';
+        this.streetAddressTitle = "Street Address";
+        this.street2AddressTitle = "Street Address 2";
+        this.cityTitle = 'City';
+        this.stateCodeTitle = 'State';
+        this.postalCodeTitle = 'Postal Code';
+        //account payment method labels
+        this.accountPaymentMethodNameTitle = 'Nickname';
+        this.creditCardNumberTitle = "Credit Card";
+        this.nameOnCreditCardTitle = "Name on Credit Card";
+        this.expirationMonthTitle = "Expiration Month";
+        this.expirationYearTitle = "Expiration Year";
+        this.securityCodeTitle = "Security Code";
         this.processContext = 'updateBilling';
         this.showCreateBillingAddress = false;
         this.showCreateAccountPaymentMethod = false;
         this.createBillingAddressTitle = 'Add a new address';
         this.createAccountPaymentMethodTitle = 'Add a new payment method';
         this.$onInit = function () {
-            if (_this.swCustomerAccountPaymentMethodCard != null) {
-                _this.baseEntityName = _this.swCustomerAccountPaymentMethodCard.baseEntityName;
-                _this.baseEntityPrimaryID = _this.swCustomerAccountPaymentMethodCard.baseEntity[_this.baseEntityName + 'ID'];
-                _this.baseEntity = _this.entityService.loadEntity(_this.baseEntityName, _this.baseEntityPrimaryID, _this.swCustomerAccountPaymentMethodCard.baseEntity);
-                if (_this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null) {
-                    _this.accountPaymentMethod = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
-                }
+            _this.baseEntityName = _this.swCustomerAccountPaymentMethodCard.baseEntityName;
+            _this.baseEntityPrimaryID = _this.swCustomerAccountPaymentMethodCard.baseEntity[_this.baseEntityName + 'ID'];
+            _this.accountAddressOptions = _this.swCustomerAccountPaymentMethodCard.accountAddressOptions;
+            _this.accountPaymentMethodOptions = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethodOptions;
+            _this.expirationMonthOptions = _this.swCustomerAccountPaymentMethodCard.expirationMonthOptions;
+            _this.expirationYearOptions = _this.swCustomerAccountPaymentMethodCard.expirationYearOptions;
+            _this.stateCodeOptions = _this.swCustomerAccountPaymentMethodCard.stateCodeOptions;
+            _this.baseEntity = _this.swCustomerAccountPaymentMethodCard.baseEntity;
+            _this.baseEntity.billingAccountAddress = _this.accountAddressOptions[0];
+            _this.baseEntity.accountPaymentMethod = _this.accountPaymentMethodOptions[0];
+            if (_this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null) {
+                _this.accountPaymentMethod = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
             }
         };
         this.save = function () {
-            _this.observerService.notify('updateBindings');
+            /*this.observerService.notify('updateBindings');
+            
             //build url
             //var queryString = 'processContext=' + this.processContext + '&' + this.baseEntityName + 'ID=' + this.baseEntityPrimaryID;
             //var requestUrl = this.$hibachi.buildUrl('admin:entity.process' + this.baseEntityName, queryString);
+            
             //structure data
-            if (_this.newAccountPaymentMethod == null) {
-                _this.baseEntity.$$setAccountPaymentMethod(_this.newAccountPaymentMethod);
+            if(this.newAccountPaymentMethod == null){
+                this.baseEntity.$$setAccountPaymentMethod(this.newAccountPaymentMethod);
             }
-            if (_this.newAccountAddress == null) {
-                _this.baseEntity.$$setBillingAccountAddress(_this.newAccountAddress);
+            
+            if(this.newAccountAddress == null){
+                this.baseEntity.$$setBillingAccountAddress(this.newAccountAddress);
             }
-            return _this.baseEntity.$$save();
+            
+            return this.baseEntity.$$save();*/
         };
         this.toggleCreateBillingAddress = function () {
             if (_this.newAccountAddress == null) {
-                _this.newAccountAddress = _this.entityService.newEntity('AccountAddress');
-                _this.newAccountAddress.data.address = _this.entityService.newEntity('Address');
+                _this.newAccountAddress = {
+                    address: {
+                        stateCode: _this.stateCodeOptions[0]
+                    }
+                };
             }
         };
         this.toggleCreateAccountPaymentMethod = function () {
             if (_this.newAccountPaymentMethod == null) {
-                _this.newAccountPaymentMethod = _this.entityService.newEntity('AccountPaymentMethod');
+                _this.newAccountPaymentMethod = {
+                    expirationMonth: _this.expirationMonthOptions[0],
+                    expirationYear: _this.expirationYearOptions[0]
+                };
             }
         };
     }
@@ -62526,12 +62557,24 @@ var SWAccountPaymentMethodModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             accountPaymentMethod: "<?",
+            accountPaymentMethodOptions: "<?",
+            accountAddressOptions: "<?",
             baseEntityName: "@?",
             baseEntity: "<?",
             processContext: "@?",
             title: "@?",
             createBillingAddressTitle: "@?",
-            createAccountPaymentMethodTitle: "@?"
+            createAccountPaymentMethodTitle: "@?",
+            accountAddressNameTitle: "@?",
+            streetAddressTitle: "@?",
+            street2AddressTitle: "@?",
+            cityTitle: "@?",
+            stateCodeTitle: "@?",
+            accountPaymentMethodNameTitle: "@?",
+            creditCardNumberTitle: "@?",
+            nameOnCreditCardTitle: "@?",
+            expirationMonthTitle: "@?",
+            expirationYearTitle: "@?"
         };
         this.require = {
             swCustomerAccountPaymentMethodCard: "^^swCustomerAccountPaymentMethodCard"
@@ -62636,9 +62679,14 @@ var SWCustomerAccountPaymentMethodCard = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
+            accountAddressOptions: "<",
             accountPaymentMethod: "<",
+            accountPaymentMethodOptions: "<",
             baseEntityName: "@?",
             baseEntity: "<",
+            expirationMonthOptions: "<",
+            expirationYearOptions: "<",
+            stateCodeOptions: "<",
             title: "@?"
         };
         this.controller = SWCustomerAccountPaymentMethodCardController;

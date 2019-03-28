@@ -68,7 +68,12 @@
 			</div>
 
 			<div class="col-md-4">
-				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#" 
+				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#"
+														data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressesOptions()))#"
+														data-account-payment-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountPaymentMethodsOptions()))#"
+														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getStateCodeOptions()))#"
+														data-expiration-month-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationMonthOptions()))#"
+														data-expiration-year-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationYearOptions()))#"
 														data-base-entity-name="OrderTemplate" 
 														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#">
 				</sw-customer-account-payment-method-card>

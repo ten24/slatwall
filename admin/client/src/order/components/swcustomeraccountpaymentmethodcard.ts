@@ -5,9 +5,17 @@ class SWCustomerAccountPaymentMethodCardController{
 	public accountPaymentMethod;
 	public title:string="Billing";
 	
+	public accountAddressOptions;
+	public accountPaymentMethodOptions;
+	
 	//entity that account payment method will be set on
 	public baseEntityName:string;
 	public baseEntity;
+	
+	public expirationMonthOptions;
+	public expirationYearOptions;
+	
+	public stateCodeOptions;
 	
 	constructor(public $hibachi,
 				public rbkeyService
@@ -23,9 +31,14 @@ class SWCustomerAccountPaymentMethodCard implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
+		accountAddressOptions: "<",
 		accountPaymentMethod:"<",
+		accountPaymentMethodOptions:"<",
 		baseEntityName:"@?",
 		baseEntity:"<",
+		expirationMonthOptions:"<",
+		expirationYearOptions:"<",
+		stateCodeOptions:"<",
 	    title:"@?"
 	};
 
