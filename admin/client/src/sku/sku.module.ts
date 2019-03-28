@@ -9,11 +9,11 @@ import {SkuPriceService} from "./services/skupriceservice";
 //controllers
 
 //directives
-import {SWPricingManager} from "./components/swpricingmanager";
+import {SWPricingManager} from "sku/components/swpricingmanager";
 import {SWImageDetailModalLauncher} from "./components/swimagedetailmodallauncher";
 import {SWAddSkuPriceModalLauncher} from "sku/components/swaddskupricemodallauncher";
 import {SWDeleteSkuPriceModalLauncher} from "./components/swdeleteskupricemodallauncher";
-import {SWEditSkuPriceModalLauncher} from "./components/sweditskupricemodallauncher";
+import {SWEditSkuPriceModalLauncher} from "sku/components/sweditskupricemodallauncher";
 import {SWSkuStockAdjustmentModalLauncher} from "./components/swskustockadjustmentmodallauncher";
 import {SWDefaultSkuRadio} from "./components/swdefaultskuradio"; 
 import {SWSkuCurrencySelector} from "./components/swskucurrencyselector";
