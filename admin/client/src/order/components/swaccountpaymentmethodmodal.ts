@@ -47,6 +47,9 @@ class SWAccountPaymentMethodModalController{
 	public newAccountAddress;
 	public newAccountPaymentMethod;
 	
+	public hideSelectAccountAddress:boolean=false;
+	public hideSelectAccountPaymentMethod:boolean=false;
+	
 	public showCreateBillingAddress:boolean=false; 
 	public showCreateAccountPaymentMethod:boolean=false;
 	
@@ -77,52 +80,55 @@ class SWAccountPaymentMethodModalController{
 
 		this.baseEntity = this.swCustomerAccountPaymentMethodCard.baseEntity;
 
-		this.baseEntity.billingAccountAddress = this.accountAddressOptions[0];
-		this.baseEntity.accountPaymentMethod = this.accountPaymentMethodOptions[0];
+
+		this.hideSelectAccountAddress = this.accountAddressOptions.length === 0;
+		this.showCreateBillingAddress = this.hideSelectAccountAddress;
+		
+		this.hideSelectAccountPaymentMethod = this.accountPaymentMethodOptions.length === 0;
+		this.showCreateAccountPaymentMethod = this.hideSelectAccountPaymentMethod;
+
+		if(!this.hideSelectAccountAddress){
+			this.baseEntity.billingAccountAddress = this.accountAddressOptions[0];
+		}
+		
+		if(!this.hideSelectAccountPaymentMethod){
+			this.baseEntity.accountPaymentMethod = this.accountPaymentMethodOptions[0];
+		}
 		
 		if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){
 			this.accountPaymentMethod = this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
 		}
 		
+		this.newAccountPaymentMethod = {
+        	expirationMonth: this.expirationMonthOptions[0],
+        	expirationYear: this.expirationYearOptions[0]
+        };
+        
+        this.newAccountAddress = {
+        	address:{
+        		stateCode: this.stateCodeOptions[0]
+        	}
+	    };
+		
 	}
 	
 	public save = () =>{
-		/*this.observerService.notify('updateBindings');
 		
-		//build url
-		//var queryString = 'processContext=' + this.processContext + '&' + this.baseEntityName + 'ID=' + this.baseEntityPrimaryID;
-		//var requestUrl = this.$hibachi.buildUrl('admin:entity.process' + this.baseEntityName, queryString);
+		this.observerService.notifyById('submit','updateBilling');
 		
-		//structure data
-		if(this.newAccountPaymentMethod == null){
-			this.baseEntity.$$setAccountPaymentMethod(this.newAccountPaymentMethod);
-		}
-		
-		if(this.newAccountAddress == null){
-			this.baseEntity.$$setBillingAccountAddress(this.newAccountAddress); 
-		}
-		
-		return this.baseEntity.$$save();*/
-		
+		return new Promise((resolve,reject)=>[]);
 		
 	}
 	
 	public toggleCreateBillingAddress = () =>{
 	    if(this.newAccountAddress == null){
-	        this.newAccountAddress = {
-	        	address:{
-	        		stateCode: this.stateCodeOptions[0]
-	        	}
-	        }
+	        
 	    }
 	}
 	
 	public toggleCreateAccountPaymentMethod = () =>{
 	    if(this.newAccountPaymentMethod == null){
-	        this.newAccountPaymentMethod = {
-	        	expirationMonth: this.expirationMonthOptions[0],
-	        	expirationYear: this.expirationYearOptions[0]
-	        };
+	        
 	    }
 	}
 }

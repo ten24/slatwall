@@ -62491,6 +62491,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
         this.expirationYearTitle = "Expiration Year";
         this.securityCodeTitle = "Security Code";
         this.processContext = 'updateBilling';
+        this.hideSelectAccountAddress = false;
+        this.hideSelectAccountPaymentMethod = false;
         this.showCreateBillingAddress = false;
         this.showCreateAccountPaymentMethod = false;
         this.createBillingAddressTitle = 'Add a new address';
@@ -62504,45 +62506,39 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             _this.expirationYearOptions = _this.swCustomerAccountPaymentMethodCard.expirationYearOptions;
             _this.stateCodeOptions = _this.swCustomerAccountPaymentMethodCard.stateCodeOptions;
             _this.baseEntity = _this.swCustomerAccountPaymentMethodCard.baseEntity;
-            _this.baseEntity.billingAccountAddress = _this.accountAddressOptions[0];
-            _this.baseEntity.accountPaymentMethod = _this.accountPaymentMethodOptions[0];
+            _this.hideSelectAccountAddress = _this.accountAddressOptions.length === 0;
+            _this.showCreateBillingAddress = _this.hideSelectAccountAddress;
+            _this.hideSelectAccountPaymentMethod = _this.accountPaymentMethodOptions.length === 0;
+            _this.showCreateAccountPaymentMethod = _this.hideSelectAccountPaymentMethod;
+            if (!_this.hideSelectAccountAddress) {
+                _this.baseEntity.billingAccountAddress = _this.accountAddressOptions[0];
+            }
+            if (!_this.hideSelectAccountPaymentMethod) {
+                _this.baseEntity.accountPaymentMethod = _this.accountPaymentMethodOptions[0];
+            }
             if (_this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null) {
                 _this.accountPaymentMethod = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
             }
+            _this.newAccountPaymentMethod = {
+                expirationMonth: _this.expirationMonthOptions[0],
+                expirationYear: _this.expirationYearOptions[0]
+            };
+            _this.newAccountAddress = {
+                address: {
+                    stateCode: _this.stateCodeOptions[0]
+                }
+            };
         };
         this.save = function () {
-            /*this.observerService.notify('updateBindings');
-            
-            //build url
-            //var queryString = 'processContext=' + this.processContext + '&' + this.baseEntityName + 'ID=' + this.baseEntityPrimaryID;
-            //var requestUrl = this.$hibachi.buildUrl('admin:entity.process' + this.baseEntityName, queryString);
-            
-            //structure data
-            if(this.newAccountPaymentMethod == null){
-                this.baseEntity.$$setAccountPaymentMethod(this.newAccountPaymentMethod);
-            }
-            
-            if(this.newAccountAddress == null){
-                this.baseEntity.$$setBillingAccountAddress(this.newAccountAddress);
-            }
-            
-            return this.baseEntity.$$save();*/
+            _this.observerService.notifyById('submit', 'updateBilling');
+            return new Promise(function (resolve, reject) { return []; });
         };
         this.toggleCreateBillingAddress = function () {
             if (_this.newAccountAddress == null) {
-                _this.newAccountAddress = {
-                    address: {
-                        stateCode: _this.stateCodeOptions[0]
-                    }
-                };
             }
         };
         this.toggleCreateAccountPaymentMethod = function () {
             if (_this.newAccountPaymentMethod == null) {
-                _this.newAccountPaymentMethod = {
-                    expirationMonth: _this.expirationMonthOptions[0],
-                    expirationYear: _this.expirationYearOptions[0]
-                };
             }
         };
     }
@@ -85564,7 +85560,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 */
 var SWFFormController = /** @class */ (function () {
     // @ngInject
-    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService) {
+    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, observerService, hibachiValidationService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
@@ -85572,10 +85568,13 @@ var SWFFormController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.$element = $element;
         this.validationService = validationService;
+        this.observerService = observerService;
         this.hibachiValidationService = hibachiValidationService;
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
+            console.log('this.form', _this.form);
+            _this.observerService.attach(_this.submitForm, 'submit', _this.form.$name);
         };
         this.getFormData = function () {
             var formData = {};
@@ -85613,6 +85612,7 @@ var SWFFormController = /** @class */ (function () {
             return file;
         };
         this.submitForm = function () {
+            console.log('submittingForm', _this.form.$valid);
             if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
