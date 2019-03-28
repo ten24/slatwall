@@ -272,7 +272,7 @@ Notes:
 								<li ng-controller="globalSearch">
 									
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
-										<cfif $.slatwall.setting('globalDisableSearchSettings')==0>
+										<cfif $.slatwall.setting('globalDisableSearchSettings') eq 0>
 										
 										<!--- Start of Search --->
 										<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
