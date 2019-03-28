@@ -52,16 +52,16 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="skuPriceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="minQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.minQuantity.null";
 	property name="maxQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.maxQuantity.null";
-	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select";
-	property name="price" ormtype="big_decimal";
-	property name="listPrice" ormtype="big_decimal";
-	property name="renewalPrice" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select" index="PI_CURRENCY_CODE";
+	property name="price" ormtype="big_decimal" hb_formatType="currency";
+	property name="listPrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="expiresDateTime" ormtype="timestamp";
 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true";
 	//temporarily omitted
 	//property name="priceRule" cfc="PriceRule" fieldtype="many-to-one" fkcolumn="priceRuleID";
 	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
@@ -80,11 +80,44 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="hasValidQuantityConfiguration" persistent="false"; 
  	
  	public boolean function hasValidQuantityConfiguration(){
- 		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity())) && (isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity()))){ 
- 			return false; 
- 		} else if(this.getMinQuantity() >= this.getMaxQuantity()){
- 			return false;
- 		} 
+ 		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
+			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
+				return false; 
+			} else if(this.getMinQuantity() > this.getMaxQuantity()){
+				return false;
+			} 
+		}
  		return true; 
  	} 
+ 	
+ 	public any function getPriceGroupOptions(){
+		var options = getPropertyOptions("priceGroup");
+		arrayAppend(options, {"name"=rbKey('define.none'), "value"=''});
+		return options;
+ 	}
+ 	
+ 	public string function getSimpleRepresentation() {
+		if(
+			!isNull(getSku()) 
+			&& !isNull(getSku().getSkuCode())
+		){
+			return getSku().getSkuCode() & " - " & getCurrencyCode(); 
+		} else {
+			return '';
+		}
+	}
+	
+	// =================== START: ORM Event Hooks  =========================	
+	public void function preUpdate(struct oldData) {
+		
+		if (arguments.oldData.price NEQ getPrice() && getSku().hasStock()){
+			for (var stock in getSku().getStocks()){
+				getHibachiScope().addModifiedEntity(stock);
+			}
+		}
+		
+		super.preUpdate(arguments.oldData);
+	}
+    
+	// ===================  END:  ORM Event Hooks  =========================
 }

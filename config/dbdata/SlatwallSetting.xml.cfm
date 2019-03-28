@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwSetting">
+<Table tableName="SwSetting" dependencies="/config/dbdata/SlatwallProductType.xml.cfm">
 	<Columns>
 		<column name="settingID" fieldtype="id" />
 		<column name="settingName" />

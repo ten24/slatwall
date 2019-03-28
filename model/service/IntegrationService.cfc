@@ -153,7 +153,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function updateIntegrationsFromDirectory() {
-		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
+		var dirList = directoryList( expandPath("/Slatwall") & '/integrationServices' );
 		var integrationList = this.listIntegration();
 		var installedIntegrationList = "";
 		
@@ -222,9 +222,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// If this integration is active lets register all of its event handlers, and decorate the getBeanFactory() with it
 				if( integration.getEnabledFlag() ) {
+					var beanFactory = getBeanFactory();
 					
 					for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
-						getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
+					
+						var beanComponentPath = integrationCFC.getEventHandlers()[e];
+						var beanName = listLast(beanComponentPath,'.');
+						if(!(
+								len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage
+							)
+						) {
+							beanName=integrationPackage&beanName;
+						}
+						if(!beanFactory.containsBean(beanName)){
+							beanFactory.declareBean( beanName, beanComponentPath, true );
+							if(len(beanName) < len('Handler') || right(beanName,len('Handler'))!='Handler'){
+								beanFactory.addAlias(beanName&'Handler',beanName);
+							}
+						}
 					}
 					
 					if(arrayLen(integrationCFC.getEventHandlers())) {
@@ -232,7 +247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
-						var beanFactory = getBeanFactory();
+						
 						//if we have entities then copy them into root model/entity
 						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model/entity")){
 							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
@@ -247,9 +262,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 						
-						var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
+						var integrationBF = new framework.hibachiaop("/Slatwall/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
-							exclude=["entity"]
+							exclude=["entity"],
+							omitDirectoryAliases = getApplicationValue("hibachiConfig").beanFactoryOmitDirectoryAliases
 						});
 						
 						var integrationBFBeans = integrationBF.getBeanInfo();
@@ -268,7 +284,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 						}
-						setBeanFactory(beanFactory);
 					}
 
 				}
@@ -332,7 +347,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			isl.addFilter('installedFlag', 1);
 			
 			for(var integration in isl.getRecords()) {
-				if(integration.getEnabledFlag()) {
+				var integrationPath = expandPath("/Slatwall/integrationServices")&'/#integration.getIntegrationPackage()#';
+				if(integration.getEnabledFlag() && directoryExists(integrationPath)) {
 					additions &= integration.getIntegrationCFC().getJSObjectAdditions();
 				}
 			}
@@ -380,7 +396,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				structDelete(variables, "activeFW1Subsystems");
 			}
 			
-			getHibachiAuthenticationService().clearActionPermissionDetails();
+			getHibachiCacheService().resetCachedKey('actionPermissionDetails');
 			
 			if(arguments.entity.getEnabledFlag()){
 				getHibachiScope().setApplicationValue("initialized",false);
@@ -391,7 +407,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.entity;
 	}
 	
-	public any function processIntegration_pullData(required any integration, required any processObject) {
+	public any function processIntegration_pullData(required any integration, any processObject) {
 		
 		if(arguments.integration.getActiveFlag()){
 			integration.getIntegrationCFC('data').pullData();	
@@ -400,7 +416,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.integration;
 	}
 	
-	public any function processIntegration_pushData(required any integration, required any processObject) {
+	public any function processIntegration_pushData(required any integration, any processObject) {
 		
 		if(arguments.integration.getActiveFlag()){
 			integration.getIntegrationCFC('data').pushData();	

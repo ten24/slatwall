@@ -38,16 +38,20 @@ if( url.opt_run ){
 		}
 		if( isSimpleValue( results ) ){
 			switch( lcase(url.reporter) ){
+			
 				case "xml" : case "text" : case "tap" : {
 					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );break;
 				}
 				case "junit":  {
+					getPageContext().clear();
+					writeOutput("#trim(results)#" );abort;
 					xmlReport = xmlParse( results );
-
-
+					
+					
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
 				     }
+					
 				     break;
 				}
 				case "antjunit": {

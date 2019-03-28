@@ -1,44 +1,54 @@
-//webpack --config webpack-production.config.js -p
+var devConfig = require('../../org/Hibachi/client/webpack.config');
+var CompressionPlugin = require("compression-webpack-plugin");
+var webpack = require('webpack');
+var path = require('path');
+var customPath = __dirname;
+var PATHS = {
+    app: path.join(customPath, '/src'),
+    lib: path.join(customPath, '/lib')
+};
 
-var WebpackStrip = require('strip-loader');
-var devConfig = require('./webpack.config');
-var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
-
-var stripConsolelogs = {
-	exlude: /node_modules/,
-	loader: WebpackStrip.loader('console.log')
+if(typeof bootstrap !== 'undefined'){
+    devConfig.entry.app[this.entry.app.length - 1] = bootstrap;
 }
-//extend and override the devconfig
-devConfig.module.loaders.push(stripConsolelogs);
-
-var stripLogDebugs = {
-	exlude: /node_modules/,
-	loader: WebpackStrip.loader('$log.debug')
-}
-//extend and override the devconfig
-devConfig.module.loaders.push(stripLogDebugs);
-
-
-devConfig.plugins= [
-  	new ngAnnotatePlugin({
-        add: true,
-        // other ng-annotate options here
-    }),
-    function()
-    {
-        /*this.plugin("done", function(stats)
-        {
-            if (stats.compilation.errors && stats.compilation.errors.length)
-            {
-            	console.error(stats.compilation.errors);
-                
-                process.exit(1);
-            }
-            
-        });*/
-    }
-  ];
+delete devConfig.entry.vendor; //remove the vendor info from this version.
+devConfig.output.path = PATHS.app;
+devConfig.context = PATHS.app;
 devConfig.watch = false;
-//change output filename
-//devConfig.output.filename = "bundle.min.js";
+// Turn on sourcemaps
+devConfig.devtool= 'source-map';
+devConfig.module.rules.push=[
+    {
+        test: /\.ts?$/,
+        loader: 'ng-annotate-loader?ngAnnotate=ng-annotate-patched!ts-loader'
+    }
+];
+//don't need the vendor bundle generated here because we include the vendor bundle already.
+devConfig.plugins =  [
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /us/),
+    new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+	    mangle: false,
+	    minimize: true,
+	    sourceMap: true,
+	    compress: {
+	         // remove warnings
+	            warnings: false,
+	
+	         // Drop console statements
+	            drop_console: true
+	       },
+	    output: {
+        	comments: false
+    	}
+	})
+];   
 module.exports = devConfig;

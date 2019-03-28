@@ -8,6 +8,10 @@ component accessors="true" output="false" persistent="false" {
 		return this;
 	}
 	
+	public any function getApplicationKey(){
+		return getBeanFactory().getBean('applicationKey');
+	}
+	
 	// @help Public method to determine if this is a persistent object (an entity)
 	public any function isPersistent() {
 		var metaData = getThisMetaData();
@@ -35,50 +39,58 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		return application[ getApplicationValue('applicationKey') ].factory;
+		
+		// Attempts to prevent concurrent requests on same server from interfering with each other while reloading beanFactory
+		if (!structKeyExists(variables, 'beanFactory')) {
+			lock scope="Application" timeout="2400" type="readonly" {
+				if (isNull(application[ getApplicationValue('applicationKey') ].factory)) {
+					throw("The beanFactory is expected to exist at this stage. Readonly application lock is applied. It is possible another concurrent request reloaded server and is interfering. Further investigation into this issue is required.");
+				}
+				
+				variables.beanFactory = application[ getApplicationValue('applicationKey') ].factory;
+			}
+		}
+		return variables.beanFactory;
+	}
+	
+	public any function getCustom(){
+		return this;
 	}
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
-	public any function getBean(required string beanName) {
-		return getBeanFactory().getBean( arguments.beanName );
+	public any function getBean(required string beanName, struct constructorArgs = { }) {
+		return getBeanFactory().getBean( argumentCollection=arguments);
 	}
 	
 	// @hint has a bean out of whatever the fw1 bean factory is
 	public any function hasBean(required string beanName) {
 		return getBeanFactory().containsBean( arguments.beanName );
 	}
-	// @hint sets bean factory
+	// @hint sets bean factory, this probably should not ever be invoked outside of  initialization. Application.cfc should take care of this.
 	public void function setBeanFactory(required any beanFactory) {
-		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+		lock name="application_#getHibachiInstanceApplicationScopeKey()#_beanFactory" timeout="10" {
+			application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+		}
 	}
 
 	// @hint whether or not we have a bean
 	public boolean function hasService(required string serviceName){
-		if(!hasApplicationValue("service_#arguments.serviceName#")){
-			return hasBean(arguments.serviceName);
-		}
-		return true;
+		return hasBean(arguments.serviceName);
 	} 
 	
 	// @hint returns an application scope cached version of the service
 	public any function getService(required string serviceName) {
-		if( !hasApplicationValue("service_#arguments.serviceName#") ) {
-			setApplicationValue("service_#arguments.serviceName#", getBean(arguments.serviceName) );
-		}
-		return getApplicationValue("service_#arguments.serviceName#");
+		return getBean(arguments.serviceName) ;
 	}
 	
 	// @hint returns an application scope cached version of the service
 	public any function getDAO(required string daoName) {
-		if( !hasApplicationValue("dao_#arguments.daoName#") ) {
-			setApplicationValue("dao_#arguments.daoName#", getBean(arguments.daoName) );
-		}
-		return getApplicationValue("dao_#arguments.daoName#");
+		return getBean(arguments.daoName);
 	}
 	
 	// @hint returns a new transient bean
-	public any function getTransient(required string transientName) {
-		return getBean(arguments.transientName);
+	public any function getTransient(required string transientName, struct constructorArgs = { } ) {
+		return getBean(arguments.transientName, arguments.constructorArgs);
 	}
 	
 	// @hint returns an application specfic virtual filesystem
@@ -171,6 +183,11 @@ component accessors="true" output="false" persistent="false" {
 		return replace(lcase(createUUID()), '-', '', 'all');
 	}
 	
+	//Dump & Die, shortcut
+	public any function dd(required any data, numeric top = 2){
+		writeDump(var="#data#", top=arguments.top, abort=true);
+	}
+	
 	// ===========================  END:  UTILITY METHODS ===========================================
 	// ==================== START: INTERNALLY CACHED META VALUES ====================================
 	
@@ -185,6 +202,16 @@ component accessors="true" output="false" persistent="false" {
 	// ====================  END: INTERNALLY CACHED META VALUES =====================================
 	// ========================= START: DELIGATION HELPERS ==========================================
 	
+	public void function addCheckpoint(string description="", string tags, string blockName, any object) {
+		
+		// If no label provided, use the component filename by default
+		if (!structKeyExists(arguments, 'blockName')) {
+			arguments.blockName = listLast(getThisMetaData().path, '/');
+		}
+		
+		getHibachiScope().getProfiler().addCheckpoint(argumentCollection=arguments);
+	}
+	
 	public string function encryptValue(string value) {
 		return getService("hibachiUtilityService").encryptValue(argumentcollection=arguments);
 	}
@@ -193,8 +220,12 @@ component accessors="true" output="false" persistent="false" {
 		return getService("hibachiUtilityService").decryptValue(argumentcollection=arguments);
 	}
 	
+	public string function getIdentityHashCode() {
+		return getService("hibachiUtilityService").getIdentityHashCode(this);
+	}
+	
 	public void function logHibachi(required string message, boolean generalLog=false){
-		getService("hibachiUtilityService").logMessage(message=arguments.message, generalLog=arguments.generalLog);		
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
 	public void function logHibachiException(required any exception){
@@ -221,9 +252,10 @@ component accessors="true" output="false" persistent="false" {
 	// ========================= START: APPLICATION VAUES ===========================================
 	
 	// @hint setups an application scope value that will always be consistent
-	private any function getHibachiInstanceApplicationScopeKey() {
-		if(!structKeyExists(variables, "hibachiInstanceApplicationScopeKey")) {
+	public any function getHibachiInstanceApplicationScopeKey() {
+		if(!structKeyExists(variables, "hibachiInstanceApplicationScopeKey") || isNull(variables.hibachiInstanceApplicationScopeKey)) {
 			var metaData = getThisMetaData();
+			
 			do {
 				var filePath = metaData.path;
 				metaData = metaData.extends;
@@ -234,6 +266,7 @@ component accessors="true" output="false" persistent="false" {
 			
 			variables.hibachiInstanceApplicationScopeKey = appKey;	
 		}
+		
 		return variables.hibachiInstanceApplicationScopeKey;
 	}
 	
@@ -289,20 +322,29 @@ component accessors="true" output="false" persistent="false" {
 		}
 	}
 	
-	// @hint facade method to check the application scope for a value
+	// @hint facade method to check the session scope for a value
+	public void function clearSessionValue(required any key) {
+		getHibachiScope().clearSessionValue(arguments.key);
+	}
+	
+	// @hint facade method to check the session scope for a value
 	public boolean function hasSessionValue(required any key) {
-		getHibachiScope().hasSessionValue(arguments.key);
+		return getHibachiScope().hasSessionValue(arguments.key);
 	}
 	
-	// @hint facade method to get values from the application scope
+	// @hint facade method to get values from the session scope
 	public any function getSessionValue(required any key) {
-		getHibachiScope().getSessionValue(arguments.key);
+		return getHibachiScope().getSessionValue(arguments.key);
 	}
 	
-	// @hint facade method to set values in the application scope 
+	// @hint facade method to set values in the session scope 
 	public void function setSessionValue(required any key, required any value) {
 		getHibachiScope().setSessionValue(arguments.key,arguments.value);
 	}
 	
-	// ========================= START: APPLICATION VAUES ===========================================
+	public void function clearVariablesKey(required string key){
+		structDelete(variables,arguments.key);
+	}
+
+	// ========================= END: APPLICATION VAUES ===========================================
 }

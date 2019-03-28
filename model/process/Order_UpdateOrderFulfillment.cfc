@@ -55,7 +55,29 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderItemIDList";
 	
+	// Lazy Load Entities
+	property name="orderID";
+	property name="orderFulfillmentID";
+	
 	property name="orderItems" hb_populateEnabled="false";
+	
+	public any function getOrder() {
+		if(isNull(variables.order) && !isNull(getOrderID())){
+			variables.order = getService('orderService').getOrder(getOrderID());
+		}
+		if(structKeyExists(variables,'order')){
+			return variables.order;
+		}
+	}
+	
+	public any function getOrderFulfillment() {
+		if(isNull(variables.orderFulfillment) && !isNull(getOrderFulfillmentID())){
+			variables.orderFulfillment = getService('orderService').getOrderFulfillment(getOrderFulfillmentID());
+		}
+		if(structKeyExists(variables,'orderFulfillment')){
+			return variables.orderFulfillment;
+		}
+	}
 	
 	public any function getOrderItems() {
 		if(!structKeyExists(variables, "orderItems")) {

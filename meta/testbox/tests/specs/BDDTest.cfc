@@ -6,7 +6,7 @@ component extends="testbox.system.BaseSpec"{
 /*********************************** LIFE CYCLE Methods ***********************************/
 
 	function beforeAll(){
-		print( "<h1>BDD Testing is Awesome!</h1>" );
+		// print( "<h1>BDD Testing is Awesome!</h1>" );
 		console( "Executed beforeAll() at #now()# " );
 		application.salvador = 1;
 	}
@@ -133,8 +133,8 @@ component extends="testbox.system.BaseSpec"{
 			});
 
             it( "can test a collection", function(){
-                expectAll( [ 2, 4, 6, 8] ).toSatisfy( function(x){ return 0 == x%2; });
-                expectAll( { a:2, b:4, c:6} ).toSatisfy( function(x){ return 0 == x%2; });
+                expectAll( [ 2, 4, 6, 8] ).toSatisfy( function(x){ return 0 == x%2; } );
+                expectAll( { a:2, b:4, c:6} ).toSatisfy( function(x){ return 0 == x%2; } );
                 // and we can chain matchers
                 expectAll( [ 2, 4, 6, 8 ] )
                     .toBeGTE( 2 )

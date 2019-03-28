@@ -46,14 +46,16 @@
 Notes:
 
 */
-component displayname="Category" entityname="SlatwallCategory" table="SwCategory" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentCategory" {
+component displayname="Category" entityname="SlatwallCategory" table="SwCategory" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_childPropertyName="childCategories" hb_parentPropertyName="parentCategory" {
 	
 	// Persistent Properties
 	property name="categoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="categoryIDPath" ormtype="string" length="4000";
 	property name="categoryName" ormtype="string";
+	property name="categoryNamePath" ormtype="string" length="4000";
 	property name="categoryDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="urlTitle" ormtype="string";
+	property name="urlTitlePath" ormtype="string" length="4000";
 	property name="restrictAccessFlag" ormtype="boolean";
 	property name="allowProductAssignmentFlag" ormtype="boolean";
 	
@@ -66,7 +68,8 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	
 	// Related Object Properties (one-to-many)
 	property name="childCategories" singularname="childCategory" cfc="Category" type="array" fieldtype="one-to-many" fkcolumn="parentCategoryID" cascade="all-delete-orphan" inverse="true";
-	
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="categoryID" inverse="true" cascade="all-delete-orphan";
+
 	// Related Object Properties (many-to-many - inverse)
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="categoryID" inversejoincolumn="productID" inverse="true";
 	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwContentCategory" fkcolumn="categoryID" inversejoincolumn="contentID" inverse="true";
@@ -91,7 +94,16 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 		
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Child Categories (one-to-many)    
+	// Attribute Values (one-to-many)
+	
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setCategory( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeCategory( this );
+	}
+
+	// Child Categories (one-to-many)
 	public void function addChildCategory(required any childCategory) {    
 		arguments.childCategory.setParentCategory( this );    
 	}    
@@ -131,9 +143,137 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 		structDelete(variables, "parentCategory");
 	}
 	
+	public void function setCategoryName(required string categoryName){
+		//look up all children via lineage
+		var previousCategoryNamePath = '';
+		if(!isNull(this.getCategoryNamePath())){
+			previousCategoryNamePath = this.getCategoryNamePath();
+		}
+
+		var allDescendants = arrayToList(getAllDescendants());
+		//set CategoryName
+		variables.CategoryName = arguments.CategoryName;
+		//update CategoryNamePath
+		var newCategoryNamePath = this.createCategoryNamePath();
+		if(previousCategoryNamePath != newCategoryNamePath && len(allDescendants)){
+			getDao('contentDao').updateAllDescendantsCategoryNamePathByUrlTitle(allDescendants,previousCategoryNamePath,newCategoryNamePath);
+		}
+
+	}
+	
+	public string function getSimpleRepresentationPropertyName() {
+    		return "categoryName";
+    }	
+	public string function createCategoryNamePath(){
+
+		var CategoryName = '';
+		if(!isNull(getCategoryName())){
+			CategoryName = getCategoryName();
+		}
+
+		var CategoryNamePath = '';
+		if(!isNull(getParentCategory())){
+			CategoryNamePath = getParentCategory().getCategoryNamePath();
+			if(isNull(CategoryNamePath)){
+				CategoryNamePath = '';
+			}
+		}
+
+		var CategoryNamePathString = '';
+		if(len(CategoryNamePath)){
+			CategoryNamePathString = CategoryNamePath & ' > ' & CategoryName;
+		}else{
+			CategoryNamePathString = CategoryName;
+		}
+
+		setCategoryNamePath(CategoryNamePathString);
+		return CategoryNamePathString;
+	}
+
+	public string function setUrlTitle(required string urlTitle){
+
+		//look up all children via lineage
+		var previousURLTitlePath = '';
+		if(!isNull(this.getURLTitlePath())){
+			previousURLTitlePath = this.getURLTitlePath();
+		}
+
+		var allDescendants = arrayToList(getAllDescendants());
+		//set url title
+		variables.UrlTitle = arguments.urlTitle;
+		//update url titlePath
+		var newURLTitlePath = this.createUrlTitlePath();
+		if(previousURLTitlePath != newURLTitlePath && len(allDescendants)){
+			getDao('contentDao').updateAllDescendantsUrlTitlePathByUrlTitleByCategoryIDs(allDescendants,previousURLTitlePath,newUrlTitlePath);
+		}
+	}
+	
+	public array function getAllDescendants(){
+		return getDao('contentDao').getCategoryDescendants(this);
+	}
+	
+	public string function createURLTitlePath(){
+
+		var urlTitle = '';
+		if(!isNull(getURLtitle())){
+			urlTitle = getURLtitle();
+		}
+
+		var urlTitlePath = '';
+		if(!isNull(getParentCategory())){
+			urlTitlePath = getParentCategory().getURLTitlePath();
+			if(isNull(urlTitlePath)){
+				urlTitlePath = '';
+			}
+		}
+
+		var urlTitlePathString = '';
+		if(len(urlTitlePath)){
+			urlTitlePathString = urlTitlePath & '/' & urlTitle;
+		}else{
+			urlTitlePathString = urlTitle;
+		}
+
+		var addon = 1;
+		if(!isNull(getSite())){
+			var categoryEntity = getDao('contentDao').getCategoryBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
+			while(!isNull(categoryEntity) && this.getCategoryID() != categoryEntity.getCategoryID()) {
+				urlTitle = '#urlTitle#-#addon#';
+				urlTitlePathString = "#urlTitlePathString#-#addon#";
+				addon++;
+				contentEntity = getDao('contentDao').getCategoryBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
+			}
+		}
+		
+		variables.urlTitle = urlTitle;
+		setUrlTitlePath(urlTitlePathString);
+		return urlTitlePathString;
+	}
+	
+	public string function isUniqueUrlTitlePathBySite(){
+		var category = getDao('contentDAO').getCategoryByUrlTitlePathBySite( this.getSite(), this.getURLTitlePath() );
+		//if no content with the url title exists then the content is unique
+		if(isNull(category)){
+			return true;
+		//if on already does exist, check to see if it is the content that we are currently working with
+		}else if(!isNull(category.getCateogryID()) && !isNull(this.getCategoryID())){
+			return category.getCategoryID() == this.getCategoryID();
+		}
+		return false;
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public array function getParentCategoryOptions(){
+		if(!structKeyExists(variables, 'parentCategoryOptions')){
+			var parentCategoryOptions = super.getParentCategoryOptions();
+			arrayPrepend(parentCategoryOptions,{"value":"","name":"None"});
+			variables.parentCategoryOptions = parentCategoryOptions;
+		}
+		return variables.parentCategoryOptions;
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
@@ -142,11 +282,13 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	public void function preInsert(){
 		super.preInsert();
 		setCategoryIDPath( buildIDPathList( "parentCategory" ) );
+		setCategoryNamePath(createCategoryNamePath());
 	}
 	
 	public void function preUpdate(struct oldData){
 		super.preUpdate(argumentcollection=arguments);
 		setCategoryIDPath( buildIDPathList( "parentCategory" ) );
+		setCategoryNamePath(createCategoryNamePath());
 	}
 	
 	public any function getChildCategoriesSmartList(){

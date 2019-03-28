@@ -106,7 +106,7 @@ class SWEditFilterItem{
                                                 {
                                                     rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
                                                     entityAlias:scope.collectionConfig.baseEntityAlias,
-                                                    cfc:scope.collectionConfig.baseEntityAlias,
+                                                    cfc:scope.collectionConfig.baseEntityName,
                                                     propertyIdentifier:scope.collectionConfig.baseEntityAlias
                                                 }
                                             ];
@@ -231,7 +231,6 @@ class SWEditFilterItem{
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
                     if(scope.filterItem.$$isNew === true){
-                        observerService.notify('filterItemAction', {action: 'remove',filterItemIndex:scope.filterItemIndex});
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
                         observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
@@ -305,7 +304,9 @@ class SWEditFilterItem{
                                 filterItem.displayValue = filterItem.value;
                             break;
                             case 'string':
-
+                            case 'big_decimal':
+                            case 'integer':
+                            case 'float':
                                 if(angular.isDefined(selectedFilterProperty.attributeID)){
                                     filterItem.attributeID = selectedFilterProperty.attributeID;
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
@@ -385,26 +386,8 @@ class SWEditFilterItem{
                                 }
 
                                 break;
-                            case 'big_decimal':
-                            case 'integer':
-                            case 'float':
-                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-                                //is null, is not null
-                                if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-                                }else{
-                                    if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)){
-                                        filterItem.value = selectedFilterProperty.criteriaValue;
-                                    }else{
-                                        var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                        filterItem.value = decimalValueString;
-                                    }
-                                }
-                                if(angular.isDefined(selectedFilterProperty.aggregate)){
-                                    filterItem.aggregate = selectedFilterProperty.aggregate;
-                                }
-                                filterItem.displayValue = filterItem.value;
-                                break;
+                            
+                            
 
                         }
 

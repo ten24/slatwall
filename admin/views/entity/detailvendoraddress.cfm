@@ -66,8 +66,12 @@ Notes:
 			
 		<input type="hidden" name="vendor.vendorID" value="#rc.vendor.getVendorID()#" />
 		<input type="hidden" name="vendorID" value="#rc.vendor.getVendorID()#" />
-		
-		<swa:SlatwallAdminAddressDisplay address="#rc.vendorAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.vendorAddress#" property="vendorAddressName" edit="#rc.edit#">
+				<swa:SlatwallAdminAddressDisplay address="#rc.vendorAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" showEmailAddress="true" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

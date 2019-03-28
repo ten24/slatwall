@@ -1,0 +1,17 @@
+<span ng-bind="swScheduledDeliveriesCard.numerator"></span> <span ng-if="swScheduledDeliveriesCard.denominator">/</span> <span ng-bind="swScheduledDeliveriesCard.denominator"></span> delivered
+<br>
+<span ng-bind="swScheduledDeliveriesCard.earned"></span> earned
+<br/>
+Select Subscription Period
+<select id="u18_input" style="-webkit-appearance: menulist-button;" ng-model="swScheduledDeliveriesCard.selectedSubscriptionPeriod" ng-change="swScheduledDeliveriesCard.selectSubscriptionPeriod()">
+  <option value="All Deliveries">All Deliveries</option>
+  <option value="Current Term">Current Term</option>
+  
+  <!---<option value="January 2017 - December 2017">January 2017 - December 2017</option>--->
+</select>
+
+<sw-listing-display
+  ng-if="swScheduledDeliveriesCard.subscriptionOrderDeliveryItemsCollectionList"
+    data-collection-config="swScheduledDeliveriesCard.subscriptionOrderDeliveryItemsCollectionList"
+>
+</sw-listing-display>

@@ -2,12 +2,12 @@
 	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+	 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+	 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -86,12 +86,9 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		
 		// SET Database Type
 		request.slatwallScope.setApplicationValue("databaseType", this.ormSettings.dialect);
-		
 		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
-		var beanFactory = getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory( getBeanFactory() );
 		
-		setBeanFactory( beanFactory );
-		
+		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
 		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
 	}
 	
@@ -122,6 +119,11 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	}
 	
 	public void function onFirstRequestPostUpdate() {
+	}
+	
+	// Allows EncryptionService to setup encryption key during application initialization
+	public void function onBeanFactoryLoadComplete() {
+		getBeanFactory().getBean('encryptionService').verifyEncryptionKeyExists();
 	}
 	
 	// ===================================== END: HIBACHI HOOKS
@@ -166,7 +168,12 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			
 		} else if(arguments.type eq "layout" && arguments.pathInfo.subsystem neq "common") {
 			if(arguments.pathInfo.path eq "default" && !fileExists(expandPath(arguments.fullPath))) {
-				arguments.fullPath = left(arguments.fullPath, findNoCase("/integrationServices/", arguments.fullPath)) & 'admin/layouts/default.cfm';
+				var rootPath = left(arguments.fullPath, findNoCase("/integrationServices/", arguments.fullPath));
+				if(fileExists(expandPath(rootPath) & "/custom/admin/layouts/default.cfm")) {
+					arguments.fullPath = rootPath & '/custom/admin/layouts/default.cfm';
+				} else {
+					arguments.fullPath = rootPath & 'admin/layouts/default.cfm';
+				}
 			}
 		}
 		

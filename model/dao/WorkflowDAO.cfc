@@ -53,11 +53,17 @@ Notes:
 		
 		<!--- TODO: This needs to query DB and return an array of ALL workflow events --->
 		<!--- ['onOrderSaveSuccess','onOrderProcess_placeOrderSuccess'] --->
-		<cfreturn ORMExecuteQuery('SELECT triggerEvent
+		<cfreturn ORMExecuteQuery("SELECT wt.triggerEvent
 									FROM
-										SlatwallWorkflowTrigger
+										SlatwallWorkflowTrigger wt
+										LEFT JOIN wt.workflow w
 									WHERE
-										triggerType = :triggerType'
+										wt.triggerType = :triggerType
+									AND
+										w.activeFlag = 1
+									GROUP BY 
+										wt.triggerEvent
+									"
 									,{triggerType="Event"}) 
 									/>
 	</cffunction>
@@ -67,7 +73,14 @@ Notes:
 		
 		<!--- TODO: This needs to query DB and return an array of workflowTrigger objects with workflows and tasks fetched for performance
 		but it should only be unique workflows that have a workflowTrigger with the eventName passed in --->
-		<cfreturn ORMExecuteQuery('FROM SlatwallWorkflowTrigger where triggerEvent = :triggerEvent',{triggerEvent=arguments.eventName})/>
+		<cfreturn ORMExecuteQuery("
+			SELECT wt FROM SlatwallWorkflowTrigger wt 
+			LEFT JOIN wt.workflow w  
+			WHERE wt.triggerEvent = :triggerEvent
+			AND w.activeFlag = 1
+			GROUP BY wt"
+			,{triggerEvent=arguments.eventName}
+		)/>
 	</cffunction>
 
 	<cffunction name="getRunningWorkflows" access="public" returntype="array"> 
@@ -77,16 +90,27 @@ Notes:
 								   WHERE runningFlag=true') />
 
 	</cffunction> 
+	
+	<cffunction name="resetExpiredWorkflows">
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			UPDATE swWorkflowTrigger 
+			SET runningFlag = 0
+			WHERE runningFlag=true AND DATE_ADD(nextRunDateTime, INTERVAL timeout MINUTE) < NOW()
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="getDueWorkflows" access="public" returntype="array">
 		<cfreturn ORMExecuteQuery('FROM
 										SlatwallWorkflowTrigger
 									WHERE
+										workflow.activeFlag = true
+									AND
 										triggerType = :triggerType
 									AND
 										(runningFlag is NULL or runningFlag = false)
 									AND
-										(nextRunDateTime IS NULL OR nextRunDateTime <= CURRENT_TIMESTAMP())
+										nextRunDateTime <= CURRENT_TIMESTAMP()
 								',{triggerType='Schedule'})/>
 
 	</cffunction>

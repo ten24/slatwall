@@ -13,8 +13,10 @@ component accessors=true output=false persistent=false {
 		for (var item in metaData){
 			if(findNoCase(".cfc",item,0) == 0 && findNoCase(".cfm",item,0) == 0){ //condition to remove .cfc and .cfm files in unit folder
 				arrayAppend(arrayFolders, item);
-				}
 			}
+		}
+		
+		arraySort(arrayFolders,'text');
 
 		var objResponse='{"TestFolders":'&SerializeJSON(arrayFolders)&'}';
 		return objResponse;
@@ -26,9 +28,12 @@ component accessors=true output=false persistent=false {
 		var arrayFiles =[];
 		for (var item in metaData){
 			if(findNoCase(".cfc",item,0) > 0 ){ // condition to add only the files that have .cfc extension in the testFiles array
-					arrayAppend(arrayFiles, item.left(len(item)-4));
-				}
+				arrayAppend(arrayFiles, left(item, len(item)-4));
 			}
+		}
+		
+		arraySort(arrayFiles,'text');
+		
 		var objResponse='{"TestFiles":'&SerializeJSON(arrayFiles)&'}';
 		return objResponse;
 	}
@@ -54,6 +59,8 @@ component accessors=true output=false persistent=false {
 			}
 			metaData = metaData.extends;
 		}
+		
+		arraySort(arrayMethods,'text');
 
 		var objResponse = '{"TestMethods":'&SerializeJSON(arrayMethods)&',"TestFunctionsCount":'&arraylen(arrayMethods)&'}';
 	    return objResponse;

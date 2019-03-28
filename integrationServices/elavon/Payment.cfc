@@ -76,6 +76,9 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 	public any function processCreditCard(required any requestBean){
 		var requestData = getRequestData(requestBean);
 		var rawResponse = postRequest(requestData);
+		if(arguments.requestBean.getTransactionType() eq "void"){
+			response = postRequest(requestData, "PUT");
+		}
 		return getResponseBean(rawResponse, requestData, requestBean);
 	}
 	
@@ -102,7 +105,7 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 		}
 		
 		// If this is a credit, then we want to use the originalAuthorizationID
-		if(arguments.requestBean.getTransactionType() eq "credit") {
+		if(arguments.requestBean.getTransactionType() eq "credit" || arguments.requestBean.getTransactionType() eq "void") {
 			requestData["ssl_txn_id"] = requestBean.getOriginalProviderTransactionID();
 			
 		// If this is a delayed capture we want to use the preAuthorizationTransactionID, or originalChargeProviderTransactionID
@@ -158,10 +161,10 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 		return pin;
 	}
 	
-	private any function postRequest(required struct requestData){
+	private any function postRequest(required struct requestData, string method="POST"){
 		
 		var httpRequest = new http();
-		httpRequest.setMethod("POST");
+		httpRequest.setMethod(arguments.method);
 		if( setting('liveModeFlag') ) {
 			httpRequest.setUrl( setting("liveGatewayURL") );
 		} else {

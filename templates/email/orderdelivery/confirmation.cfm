@@ -77,126 +77,310 @@ Notes:
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>
-		<div id="container" style="width: 625px; font-family: arial; font-size: 12px;background:##fff;">
+		<cfinclude template="../inc/header.cfm" />
+		
+		<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+		<tbody>
+			<tr>
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
+					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+							<tbody>
+								<tr>
+									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainerAccent#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;line-height: inherit;min-width: 0 !important;">
+										<!-- col-6 -->
+										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td width="600" style="width:600px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+											<div class="col_6" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+													<tbody>
+														<tr>
+															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
+																
+																
+																<!------- MAIN HEADER ------->
+																<h1 class="mb_xxs" style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 25px;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 32px;line-height: 42px;">Order Delivery Confirmation</h1>
+															
+																<!------- ORDER NUMBER ------->
+																<h4 class="mb_xxs mte" style="color: #colorAccent#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 19px;line-height: 25px;">Order &##35;#orderDelivery.getOrder().getOrderNumber()#</h4>
+																
+																<!------- ORDER PLACED DATE ------->
+																<p class="small tm" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">Placed on #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "m/d/yyyy")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-			<!--- Add Logo Here  --->
-			<!--- <img src="http://Full_URL_Path_To_Company_Logo/logo.jpg" border="0" style="float: right;"> --->
+	<!------- TABLE HEADER ------->
+	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+		<tbody>
+			<tr>
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
+					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+							<tbody>
+								<tr>
+									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;line-height: inherit;min-width: 0 !important; padding: 25px 16px 0;">
+										<!-- col-6 -->
+										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="400" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+											<div class="col_3" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 300px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+													<tbody>
+														<tr>
+															<td class="column_cell px pt_0 pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
+																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Order Summary</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+											<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+													<tbody>
+														<tr>
+															<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
+																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Options</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+											<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+													<tbody>
+														<tr>
+															<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
+																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Price</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+											<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+													<tbody>
+														<tr>
+															<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
+																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Total</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- order_product_small -->
+	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+		<tbody>
+			<tr>
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
+					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+							<tbody>
+								<tr>
+									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
+										
+										
+										<!------- ORDER ITEM LOOP ------->
+										<cfloop array="#orderDelivery.getOrderDeliveryItems()#" index="local.orderDeliveryItem">
+											<!-- col-6 -->
+											<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important; border-top: 1px solid #colorRule#; padding:16px 0;">
+											<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+												
+												<!--[if (mso)|(IE)]></td><td width="300" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+												<div class="col_3" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 300px;line-height: inherit;min-width: 0 !important;">
+													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+														<tbody>
+															<tr>
+																<td class="column_cell px pt_0 pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
+																	
+																	<!------- PRODUCT TITLE AND QUANTITY ------->
+																	<h5 class="mt_xs mb_xxs" style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 8px;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 16px;line-height: 21px;">#local.orderDeliveryItem.getOrderItem().getSku().getProduct().getTitle()# <span class="tm" style="color: #colorLighterText#;line-height: inherit;">x #NumberFormat(local.orderDeliveryItem.getOrderItem().getQuantity())# </span></h5>
+																	
+																	<!------- PRODUCT SKU ------->
+																	<p class="small tm mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">SKU: #local.orderDeliveryItem.getOrderItem().getSku().getSkuCode()#</p>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+												<div class="col_1" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
+													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+														<tbody>
+															<tr>
+																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: right;padding-left: 0;">
+																	
+																	<!------- ITEM OPTIONS ------->
+																	<cfif len(local.orderDeliveryItem.getOrderItem().getSku().displayOptions())>
+																		<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 15px;line-height: 22px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">#local.orderDeliveryItem.getOrderItem().getSku().displayOptions()#</p>
+																	</cfif>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+												<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
+													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+														<tbody>
+															<tr>
+																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: right;padding: 0 16px;">
+																	
+																	<!------- ITEM PRICE ------->
+																	<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">#local.orderDeliveryItem.getOrderItem().getFormattedValue('price', 'currency')#</p>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+												<div class="col_1" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
+													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+														<tbody>
+															<tr>
+																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;">
+																	
+																	<!------- ITEM TOTAL ------->
+																	<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;"><cfif local.orderDeliveryItem.getOrderItem().getDiscountAmount() GT 0>
+																		<span style="text-decoration:line-through; color:##cc0000;">#local.orderDeliveryItem.getOrderItem().getFormattedValue('extendedPrice', 'currency')#</span><br />
+																		#local.orderDeliveryItem.getOrderItem().getFormattedValue('extendedPriceAfterDiscount', 'currency')#
+																	<cfelse>
+																		#local.orderDeliveryItem.getOrderItem().getFormattedValue('extendedPrice', 'currency')#
+																	</cfif></p>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+											</div>
+										</cfloop>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-			<div id="top" style="width: 325px; margin: 0; padding: 0;">
-				<h1 style="font-size: 20px;">Order Delivery Confirmation</h1>
 
-				<table id="orderInfo" style="border-spacing: 0px; border-collapse: collapse; border: 1px solid ##d8d8d8; text-align: left; font-size: 12px; width: 350px;">
-					<tbody>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Order Number</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getOrder().getOrderNumber()#</td>
-						</tr>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Order Placed</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "DD/MM/YYYY")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#</td>
-						</tr>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Customer</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getOrder().getAccount().getFirstName()# #orderDelivery.getOrder().getAccount().getLastName()#</td>
-						</tr>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Email</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> <a href="mailto:#orderDelivery.getOrder().getAccount().getEmailAddress()#">#orderDelivery.getOrder().getAccount().getEmailAddress()#</a></td>
-						</tr>
-						<cfif len(orderDelivery.getOrder().getAccount().getPhoneNumber())>
-							<tr>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Phone</strong></td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getOrder().getAccount().getPhoneNumber()#</td>
-							</tr>
-						</cfif>
-					</tbody>
-				</table>
-			</div>
-
-			<br style="clear:both;" />
-
-            <div id="fulfillmentDetails" style="margin-top: 15px; float: left; clear: both; width: 600px;">
-            	<h2 style="font-size: 18px;">Delivery Details</h2>
-
-                <table id="fulfillment" style="border-spacing: 0px; border-collapse: collapse; border: 1px solid ##d8d8d8; text-align: left; font-size: 12px; width:600px;">
-                	<tr>
-						<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Delivered Via:</strong></td>
-						<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getFulfillmentMethod().getFulfillmentMethodName()#</td>
-					</tr>
-					<cfif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "email">
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Delivery Email</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getOrderFulfillment().getEmailAddress()#</td>
-						</tr>
-					<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "pickup">
-			       		<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Picked Up From</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getLocation().getLocationName()#</td>
-						</tr>
-					<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "shipping">
-						<cfif not isNull(orderDelivery.getTrackingNumber()) and len(orderDelivery.getTrackingNumber())>
-							<tr>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Tracking Number</strong></td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getTrackingNumber()#</td>
-							</tr>
-						</cfif>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Shipping Method</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getShippingMethod().getShippingMethodName()#</td>
-						</tr>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Shipping Address</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">
-								<cfif len(orderDelivery.getShippingAddress().getName())>#orderDelivery.getShippingAddress().getName()#</cfif>
-								<cfif len(orderDelivery.getShippingAddress().getStreetAddress())>#orderDelivery.getShippingAddress().getStreetAddress()#</cfif>
-								<cfif len(orderDelivery.getShippingAddress().getStreet2Address())>#orderDelivery.getShippingAddress().getStreet2Address()#</cfif>
-								#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
-								#orderDelivery.getShippingAddress().getCountryCode()#
-							</td>
-						</tr>
-			       	</cfif>
-                </table>
-	        </div>
-
-			<br style="clear:both;" />
-
-			<div id="orderItems" style="margin-top: 15px; float: left; clear: both; width: 600px;">
-				<table id="styles" style="border-spacing: 0px; border-collapse: collapse; border: 1px solid ##d8d8d8; text-align: left; font-size: 12px; width:600px;">
-					<thead>
-						<tr>
-							<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Sku Code</th>
-							<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Product</th>
-							<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Options</th>
-							<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Price</th>
-							<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Qty</th>
-							<th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Total</th>
-						</tr>
-					</thead>
-					<tbody>
-						<cfloop array="#orderDelivery.getOrderDeliveryItems()#" index="local.orderDeliveryItem">
-							<tr>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#local.orderDeliveryItem.getOrderItem().getSku().getSkuCode()#</td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#local.orderDeliveryItem.getOrderItem().getSku().getProduct().getTitle()#</td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><cfif len(local.orderDeliveryItem.getOrderItem().getSku().displayOptions())>#local.orderDeliveryItem.getOrderItem().getSku().displayOptions()#</cfif></td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#local.orderDeliveryItem.getOrderItem().getFormattedValue('price', 'currency')# </td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#NumberFormat(local.orderDeliveryItem.getOrderItem().getQuantity())# </td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">
-									<cfif local.orderDeliveryItem.getOrderItem().getDiscountAmount() GT 0>
-										<span style="text-decoration:line-through; color:##cc0000;">#local.orderDeliveryItem.getOrderItem().getFormattedValue('extendedPrice', 'currency')#</span><br />
-										#local.orderDeliveryItem.getOrderItem().getFormattedValue('extendedPriceAfterDiscount', 'currency')#
-									<cfelse>
-										#local.orderDeliveryItem.getOrderItem().getFormattedValue('extendedPrice', 'currency')#
-									</cfif>
-								</td>
-							</tr>
-						</cfloop>
-					</tbody>
-				</table>
-			</div>
-
-		</div>
+	<!-- order_total_alt -->
+	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+		<tbody>
+			<tr>
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
+					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+							<tbody>
+								<tr>
+									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
+										<!-- col-6 -->
+										<div class="email_row tr" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: right;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td width="600" style="width:600px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+											<div class="col_6" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+													<tbody>
+														<tr>
+															<td class="column_cell px tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 16px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
+															
+																	<table class="ncard" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt; margin-bottom: 16px;">
+																		<tbody>
+																			<tr>
+																				<td class="ncard_c px pt light_b" style="box-sizing: border-box;vertical-align: top;color: #colorText#;overflow: hidden;border-radius: 4px;background-color: #colorContainerAccent#;line-height: inherit;font-family: Helvetica, Arial, sans-serif;padding:16px;">
+																					
+																					<!------- DELIVERY METHOD ------->
+																					<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Delivery Via: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;">#orderDelivery.getFulfillmentMethod().getFulfillmentMethodName()#</span></h6>
+																					
+																					<!------- DELIVERY VIA EMAIL ------->
+																					<cfif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "email">
+																						<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Delivery Email: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;">#orderDelivery.getOrderFulfillment().getEmailAddress()#</span></h6>
+																						
+																					<!------- PICKUP ------->
+																					<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "pickup">
+																						<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Picked Up From: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;">#orderDelivery.getLocation().getLocationName()#</span></h6>
+																						
+																					<!------- SHIPPING ------->
+																					<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "shipping">
+																					
+																					<!------- TRACKING NUMBER ------->
+																					<cfif not isNull(orderDelivery.getTrackingNumber()) and len(orderDelivery.getTrackingNumber())>
+																						<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Tracking Number: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;">#orderDelivery.getTrackingNumber()#</span></h6>
+																					</cfif>
+																					
+																					<!------- SHIPPING METHOD ------->
+																					<cfif not isNull(orderDelivery.getShippingMethod())>
+																						<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Method: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;">#orderDelivery.getShippingMethod().getShippingMethodName()#</span></h6>
+																					</cfif>
+																					
+																					<!------- SHIPPING ADDRESS ------->
+																					<h6 style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Address: &nbsp;<span style="color: #colorLighterText#; font-weight:400; font-size:14px;"><cfif len(orderDelivery.getShippingAddress().getName())>#orderDelivery.getShippingAddress().getName()#, </cfif>
+																					<cfif len(orderDelivery.getShippingAddress().getStreetAddress())>#orderDelivery.getShippingAddress().getStreetAddress()#, </cfif>
+																					<cfif len(orderDelivery.getShippingAddress().getStreet2Address())>#orderDelivery.getShippingAddress().getStreet2Address()#, </cfif>
+																					#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
+																					#orderDelivery.getShippingAddress().getCountryCode()#</span></h6>
+																						
+																					</cfif>
+																				</td>
+																			</tr>
+																		</tbody>
+																	</table>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
+				</td>
+			</tr>
+		</tbody>
+	</table>
+		
+	<cfinclude template="../inc/footer.cfm" />
 	</cfoutput>
 </cfsavecontent>
+
 <cfsavecontent variable="emailData.emailBodyText">
 	<cfoutput>
         Order Delivery Confirmation
@@ -217,6 +401,7 @@ Notes:
 		<cfif not isNull(orderDelivery.getTrackingNumber()) and len(orderDelivery.getTrackingNumber())>
 		Tracking Number : #orderDelivery.getTrackingNumber()#
 		</cfif>
+		<cfif not isNull(orderDelivery.getShippingMethod())>
 		Shipping Method : #orderDelivery.getShippingMethod().getShippingMethodName()#
         Ship-To Address:
         <cfif len(orderDelivery.getShippingAddress().getName())>#orderDelivery.getShippingAddress().getName()#</cfif>
@@ -225,7 +410,7 @@ Notes:
 		#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
 		#orderDelivery.getShippingAddress().getCountryCode()#
 		</cfif>
-
+		</cfif>
 		Items Delivered:
 		===========================================================================
 		<cfloop array="#orderDelivery.getOrderDeliveryItems()#" index="local.orderDeliveryItem">

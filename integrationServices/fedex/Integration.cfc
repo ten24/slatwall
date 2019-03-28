@@ -74,7 +74,21 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			shipperCountryCode = {fieldType="text"},
 			contactPersonName = {fieldType="text"},
 			contactCompany = {fieldType="text"},
-			contactPhoneNumber = {fieldType="text"}
+			contactPhoneNumber = {fieldType="text"},
+			labelImageType =  {fieldType="select",  defaultValue="PDF",
+				valueOptions=[
+				{name="DIB", value="DIB"},
+				{name="DOC", value="DOC"},
+				{name="DPL", value="DPL"},
+				{name="EPL2", value="EPL2"},
+				{name="GIF", value="GIF"},
+				{name="PDF",value="PDF"},
+				{name="PNG",value="PNG"},
+				{name="RTF",value="RTF"},
+				{name="TEXT",value="TEXT"},
+				{name="ZPLII", value="ZPLII"}
+			]},
+			specialServiceAlcoholFlag = {fieldType="yesno", defaultValue="0"}
 		};
 		
 		return settings;

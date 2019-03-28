@@ -2,10 +2,8 @@ $(document).ready(function(e){
 	$('body').on('change', '.slatwall-address-countryCode', function(e){
 		
 		var country = $.slatwall.getEntity('Country', jQuery(this).val() );
-		
 		// Loop over the keys in the country to show/hide fields and also to update the labels
 		for (var key in country) {
-			
 			if (country.hasOwnProperty(key)) {
 				
 				if ( key.substring(key.length - 5, key.length) === "Label" ) {
@@ -14,9 +12,11 @@ $(document).ready(function(e){
 					jQuery( this ).closest('.slatwall-address-container').find( classSelector ).closest('.control-group').find('label').html(country[key]);
 					
 				} else if ( key.substring(key.length - 8, key.length) === "ShowFlag" ) {
-					
+					if(typeof country[key] == "string" && country[key].trim().toLowerCase() == "no"){
+						country[key] = false;
+					}
 					var classSelector = '.slatwall-address-' + key.substring(0, key.length - 8);
-					var block = jQuery( this ).closest('.slatwall-address-container').find( classSelector ).closest('.control-group');
+					var block = jQuery( this ).closest('.slatwall-address-container').find( classSelector ).closest('.form-group');
 					if( country[key] && jQuery(block).hasClass('hide') ) {
 						jQuery(block).removeClass('hide');
 					} else if ( !country[key] && !jQuery(block).hasClass('hide') ) {
@@ -24,13 +24,15 @@ $(document).ready(function(e){
 					}
 					
 				} else if ( key.substring(key.length - 12, key.length) === "RequiredFlag" ) {
-					
+					if(typeof country[key] == "string" && country[key].trim().toLowerCase() == "no"){
+						country[key] = false;
+					}
 					var classSelector = '.slatwall-address-' + key.substring(0, key.length - 12);
 					var input = jQuery( this ).closest('.slatwall-address-container').find( classSelector );
-					if( !country[key] && jQuery(block).hasClass('required') ) {
-						jQuery(block).removeClass('required');
-					} else if ( country[key] && !jQuery(block).hasClass('required') ) {
-						jQuery(block).addClass('required');
+					if( !country[key] && jQuery(input).hasClass('required') ) {
+						jQuery(input).removeClass('required');
+					} else if ( country[key] && !jQuery(input).hasClass('required') ) {
+						jQuery(input).addClass('required');
 					}
 					
 				}
@@ -119,7 +121,12 @@ $(document).ready(function(e){
 			if (invDataArr.length) {
 				for(var i=0;i<invDataArr.length;i++) {
 					var invData = invDataArr[i];
-					var newTR = ["<tr class='stock' data-parentlocationid='"+parentLocationID+"' data-parentlocationidpath='"+parentLocationIDPath+"'>", 
+					var rowClass = 'stock';
+					if (invData.ExcludedLocation){
+						rowClass = "'stock s-disabled'"
+					}
+					
+					var newTR = ["<tr class=" + rowClass + " data-parentlocationid='"+parentLocationID+"' data-parentlocationidpath='"+parentLocationIDPath+"'>", 
 						"<td><a href='#' class='update-inventory-plus depth"+newDepth+"' data-depth='"+newDepth+"' data-locationid='"+invData.locationID+"' data-locationidpath='path"+invData.locationIDPath+"' data-skuid='"+invData.skuID+"'><i class='glyphicon glyphicon-plus'></i></a> <strong>"+invData.locationName+"</strong></td>",
 						"<td>"+invData.QOH+"</td>",
 						"<td>"+invData.QOSH+"</td>",
@@ -131,10 +138,28 @@ $(document).ready(function(e){
 						"<td><a href='?slatAction=entity.liststockadjustmentitem&F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.sku.skuID="+invData.skuID+"'>"+invData.QNROSA+"</a></td>",
 						"<td>"+invData.QC+"</td>",
 						"<td>"+invData.QE+"</td>",
-						"<td>"+invData.QNC+"</td>",
-						"<td>"+invData.QATS+"</td>",
-						"<td>"+invData.QIATS+"</td>",
-					"</tr>"].join('\n');
+						"<td>"+invData.QNC+"</td>"];
+					if(invData.MQATSBOM != undefined){
+						newTR.push("<td>"+invData.MQATSBOM+"</td>");
+					}
+					newTR.push.apply(newTR,["<td>"+invData.QATS+"</td>",
+						"<td>"+invData.QIATS+"</td>"
+					]);
+					
+					var currencyArray = [];
+					var currencyCodeArray = invData.activeCurrencies.split(',');
+					for(var jj in currencyCodeArray){
+						var currencyCode = currencyCodeArray[jj];
+						newTR.push.apply(newTR,[
+							"<td>"+parseFloat(invData['averageCost'+currencyCode]).toFixed(2)+"</td>",
+							"<td>"+parseFloat(invData['averageLandedCost'+currencyCode]).toFixed(2)+"</td>"
+						]);
+					}
+					
+					
+					newTR.push("</tr>");
+					
+					newTR = newTR.join('\n');
 					$(currentTableRow).after(newTR);
 				}
 			}

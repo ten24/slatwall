@@ -5,6 +5,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	property name="lineBreak" type="string";
 	property name="metaData" type="any";
 	property name="fileContent" type="string";
+	property name="entityName" type="string";
 
 	public void function init(){
 		//declared custom strings
@@ -15,12 +16,39 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		variables.customFunctionEndString = '//CUSTOM FUNCTIONS END';
 		variables.lineBreak = getHibachiScope().getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
 	}
-
+	
+	public void function setCustomPropertyBeginString(required customPropertyBeginString){
+		variables.customPropertyBeginString = arguments.customPropertyBeginString;
+	}
+	
+	public void function setCustomPropertyEndString(required customPropertyEndString){
+		variables.customPropertyEndString = arguments.customPropertyEndString;
+	}
+	
+	public void function setCustomFunctionBeginString(required customFunctionBeginString){
+		variables.customFunctionBeginString = arguments.customFunctionBeginString;
+	}
+	
+	public void function setCustomFunctionEndString(required customFunctionEndString){
+		variables.customFunctionEndString = arguments.customFunctionEndString;
+	}
+	
 	public string function getFileContent(){
 		if(!structKeyExists(variables,'fileContent')){
-			variables.fileContent =fileRead( "#ExpandPath('/#getDao('hibachiDAO').getApplicationKey()#/')#" & getFilePath());
+			if(fileExists("#ExpandPath('/#getDao('hibachiDAO').getApplicationKey()#/')#" & getFilePath())){
+				variables.fileContent = fileRead( ("#ExpandPath('/#getDao('hibachiDAO').getApplicationKey()#/')#" & getFilePath()) );
+			}else{
+				variables.fileContent = '';
+			}
+
 		}
 		return variables.fileContent;
+	}
+
+	public string function getFilePath(){
+		if(!isNull(variables.filePath)){
+			return variables.filePath;
+		}
 	}
 
 	public void function setFileContent(required string fileContent){
@@ -55,8 +83,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return variables.customFunctionBeginString & variables.lineBreak & chr(9) & getFunctionString() & variables.lineBreak & chr(9) & variables.customFunctionEndString & variables.lineBreak;
 	}
 
-	public string function getCustomPropertyStringByPropertyString(){
-		return variables.customPropertyBeginString & variables.lineBreak & chr(9) & getPropertyString() & chr(9) & variables.customPropertyEndString & variables.lineBreak;
+	public string function getCustomPropertyStringByPropertyString(propertyString=getPropertyString()){
+		return variables.customPropertyBeginString & variables.lineBreak & chr(9) & arguments.propertyString & chr(9) & variables.customPropertyEndString & variables.lineBreak;
 	}
 
 	//if there is no componentPath but there is a file path then create one
@@ -172,4 +200,90 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return getFileContent().lastIndexOf("}");
 	}
 
+
+	public string function getPropertyStringByAttributeData(required struct attributeData){
+
+ 		var lineBreak = getHibachiScope().getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue('lineBreakStyle'));
+		var propertyString = '#lineBreak# property name="#arguments.attributeData.attributeCode#"';
+ 		var inputType = arguments.attributeData['attributeInputType'];
+ 		var ORMType = '';
+ 		var hbFormatType = '';
+ 		var hbFormFieldType = '';
+ 		switch(inputType){
+ 			case 'yesNo':
+ 				ORMType = 'boolean';
+ 				hbFormatType = 'yesno';
+ 				break;
+ 			case 'select':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'select';
+ 				break;
+ 			case 'checkbox':
+ 				ORMType = 'boolean';
+ 				break;
+ 			case 'textArea':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'textarea';
+ 				break;
+ 			case 'email':
+ 				ORMType = 'string';
+ 				hbFormatType = 'email';
+ 				break;
+ 			case 'date':
+ 				ORMType = 'timestamp';
+ 				hbFormatType = 'date';
+ 				break;
+ 			case 'dateTime':
+ 				ORMType = 'timestamp';
+ 				break;
+ 			case 'time':
+ 				ORMType = 'timestamp';
+ 				HbFormatType = 'time';
+ 				break;
+ 			case 'wysiwyg':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'wysiwyg';
+ 				propertyString &= ' length="4000" ';
+ 				break;
+ 			case 'file':
+ 				ORMType = 'string';
+ 				hbFormFieldType = 'file';
+ 				propertyString &= ' hb_fileUpload="true" hb_fileAcceptMIMEType="*/*"';
+ 				break;
+ 			case 'typeSelect':
+ 				propertyString &= ' cfc="Type" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
+ 				if(len(arguments.attributeData.typeSetID)){
+ 					propertyString &= ' hb_optionsSmartListData="f:parentType.typeID=#arguments.attributeData.typeSetID#"';
+ 				}
+ 				break;
+ 			case 'text':
+ 			case 'multiselect':
+ 			case 'checkboxGroup':
+ 			case 'radioGroup':
+ 				ORMType = 'string';
+ 				break;
+ 			case 'relatedObjectSelect':
+ 				propertyString &= ' cfc="#arguments.attributeData.relatedObject#" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
+ 				break;
+ 			default:
+ 				return '';
+ 		}
+ 
+ 
+ 		if(len(ORMType)){
+ 			propertyString &= ' ormtype="#ORMType#"';
+ 		}
+ 		if(len(hbFormatType)){
+ 			propertyString &= ' hb_formatType="#hbFormatType#"';
+ 		}
+		if(len(hbFormFieldType)){
+			propertyString &= ' hb_formFieldType="#hbFormFieldType#"';
+		}
+		
+		if(len(arguments.attributeData.defaultValue)){
+			propertyString &= ' default="#arguments.attributeData.defaultValue#"';
+		}
+ 		propertyString &= ';';
+  		return propertyString;
+ 	}
 }

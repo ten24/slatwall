@@ -71,6 +71,13 @@ component extends="HibachiService" output="false" accessors="true"{
 		}
 	}
 	
+	public any function getDateByWeek(required numeric year, required numeric week){
+		var firstDayOfYear = createDateTime(arguments.year,1,1,0,0,0);
+		var firstDayOfCalendarYear = (firstDayOfYear - DayOfWeek(firstDayOfYear)+1);
+		var firstDayOfWeek = firstDayOfYear + ((arguments.week-1)*7);
+		return DateFormat(firstDayOfWeek,'yyyy-mm-dd');
+	}
+	
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================

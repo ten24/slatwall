@@ -26,7 +26,7 @@ class SWSkuCurrencySelectorController{
         if(angular.isDefined(this.baseEntityName) && angular.isDefined(this.baseEntityId)){
             this.baseEntityCollectionConfig = this.collectionConfigService.newCollectionConfig(this.baseEntityName);
             this.baseEntityCollectionConfig.addDisplayProperty("eligibleCurrencyCodeList");
-            this.baseEntityCollectionConfig.addFilter("productID",this.baseEntityId,"=");
+            this.baseEntityCollectionConfig.addFilter("productID",this.baseEntityId,"=",'AND',true);
             this.baseEntityCollectionConfig.getEntity().then(
                 (response)=>{
                     this.product = this.$hibachi.populateEntity(this.baseEntityName,response.pageRecords[0]); 

@@ -17,6 +17,23 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         arguments.rc.requestHeaderData = getHTTPRequestData();
         arguments.rc['ajaxRequest'] = true;
         arguments.rc.headers["Content-Type"] = 'application/json';
+        request.layout = false;
+        if ( arguments.rc.jsonRequest == true && structKeyExists( arguments.rc, 'deserializedJSONData') ){
+           	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
+        }
+        
+        if(structKeyExists(arguments.rc,'cmsSiteID')){
+            getHibachiScope().setCurrentRequestSite(getService('siteService').getSiteByCMSSiteID(arguments.rc.cmsSiteID));
+            getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
+        }
+        //if we have a get request there is nothing to persist because nothing changed
+        if(
+            structKeyExists(arguments.rc,'context') 
+            && len(arguments.rc.context) >= 3 
+            && left(arguments.rc.context,3) == 'GET'
+        ){
+            getHibachiScope().setPersistSessionFlag(false);
+        }
     }
 
     public any function get( required struct rc ) {
@@ -49,7 +66,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 actions = listToArray(arguments.rc.context);
             }
             if (!arrayLen(actions)){
-                publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+                publicService.invokeMethod(
+                    "#arguments.rc.context#", 
+                    {data=arguments.rc}
+                );
             }else{
                 //iterate through all the actions calling the method.
                 for (var eachAction in actions){

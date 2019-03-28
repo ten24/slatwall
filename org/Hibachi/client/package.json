@@ -1,4 +1,3 @@
-
 {
   "name": "Slatwall",
   "private": true,
@@ -7,29 +6,39 @@
   "repository": "https://github.com/ten24/Slatwall",
   "license": "MIT",
   "dependencies": {
-      "ts-loader": "^0.6.0",
-      "blueimp-md5": "^1.1.0",
-      "md5":"^2.0.0"
+    "ts-loader": "^0.6.0",
+    "blueimp-md5": "^1.1.0",
+    "md5": "^2.0.0"
   },
   "devDependencies": {
-    "angular": "*",
-    "bower": "*",
-    "gulp": "*",
+    "angular": "^1.6.4",
+    "angular-mocks": "^1.6.4",
+    "bower": "^1.8.0",
+    "compression-webpack-plugin": "^1.1.3",
+    "force-case-sensitivity-webpack-plugin": "^0.1.1", 
+    "gulp": "^3.9.1",
     "gulp-chmod": "^1.3.0",
-    "gulp-inject": "*",
-    "gulp-util":"*",
-    "ng-annotate-webpack-plugin": "*",
-    "run-sequence": "^1.1.4",
-    "strip-loader": "^0.1.0",
+
+    "gulp-inject": "^4.2.0",
+    "gulp-util": "^3.0.8",
+    "i": "^0.3.6",
+    "jasmine": "^2.5.2",
+    "jasmine-core": "^2.8.0",
+    "json-loader": "^0.5.4",
+    "less": "*",
+    "ng-annotate-webpack-plugin": "0.2.0",
+    "run-sequence": "1.1.4",
+    "rxjs": "^5.4.3",
+    "strip-loader": "^0.1.2",
     "tsify": "*",
-    "typescript": "^1.6.2",
+    "typescript": "*",
     "vinyl-source-stream": "^1.1.0",
     "webpack": "*",
     "webpack-dev-server": "^3.1.11",
     "webpack-stream": "*"
   },
   "scripts": {
-    "postbuild":"bower install",
+    "postbuild": "bower install",
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000",
     "pretest": "npm install",

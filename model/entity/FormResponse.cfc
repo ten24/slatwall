@@ -82,7 +82,7 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	public any function getFormEmailConfirmationValue(){
  		var attributeValueCollectionList = getService("HibachiCollectionService").getAttributeValueCollectionList(); 
  		attributeValueCollectionList.addFilter('attribute.formEmailConfirmationFlag', 1); 
- 		attributeValueCollectionList.addDisplayProperty('attribute.formEmailConfirmationFlag');
+ 		attributeValueCollectionList.setDisplayProperties('attribute.formEmailConfirmationFlag');
  		var attributeValueCollectionListRecords = attributeValueCollectionList.getPageRecords(); 
  		if (!isNull(attributeValueCollectionListRecords)){
  			var attributeValueCollectionListRecord = attributeValueCollectionListRecords[1];

@@ -14,11 +14,11 @@
 						
 						<cfif (option['count'] gt 0 AND len(trim(option['name']))) OR isFilterApplied>
 							
-							<cfset optionBuildUrl = attributes.baseBuildUrl & "#option['value']#"/>
+							<cfset optionBuildUrl = attributes.baseBuildUrl & "#urlEncodedFormat(option['value'])#"/>
 							<li>
 								
 								<a 
-									href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL('#optionBuildUrl#')#" 
+									href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL(queryAddition='#optionBuildUrl#',delimiter='||')#" 
 									<cfif isFilterApplied>
 										class="remove" 
 										data-toggle="tooltip" 

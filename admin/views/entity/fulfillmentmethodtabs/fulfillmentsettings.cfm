@@ -62,6 +62,7 @@ Notes:
 		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
 			<swa:SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" settingObject="#rc.fulfillmentMethod#" />
 		</cfif>
+    <swa:SlatwallSetting settingName="fulfillmentMethodTaxCategory" settingObject="#rc.fulfillmentMethod#" />
 
 	</swa:SlatwallSettingTable>
 </cfoutput>

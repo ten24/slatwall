@@ -61,11 +61,13 @@ Notes:
 					backAction="admin:entity.detailproduct"
 					backQueryString="productID=#rc.product.getProductID()#"
 					deleteQueryString="redirectAction=admin:entity.detailproduct&productID=#rc.product.getProductID()#">
-			<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="move" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="move" type="list" modal="false" />
 			<cfif rc.sku.getBundleFlag() eq true>
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="makeupBundledSkus" type="list" modal="true" />
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="breakupBundledSkus" type="list" modal="true" />
 				<li class="divider"></li>
+			<cfelse>
+				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="createBOM" type="list" modal="false" />
 			</cfif>
 			<hb:HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 			<cfif rc.product.getBaseProductType() EQ "event">
@@ -87,6 +89,7 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.sku#">
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/accountinginfo" />
 			<cfif rc.product.getBaseProductType() EQ "subscription">
 				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/subscription" />
 			<cfelseif rc.product.getBaseProductType() eq "event">
@@ -102,6 +105,7 @@ Notes:
 				<hb:HibachiEntityDetailItem property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">
 				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/inventory" />
+				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/stocks" />
 				<cfif rc.sku.getBundleFlag() eq true>
 					<hb:HibachiEntityDetailItem view="admin:entity/skutabs/bundledskus" />
 				<cfelse>
@@ -110,6 +114,8 @@ Notes:
 			</cfif>
 			<hb:HibachiEntityDetailItem property="skuDescription" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/saleshistory" />
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/vendorskus" />			
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/vendororderhistory" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/currencies" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/alternateskucodes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/skusettings" />

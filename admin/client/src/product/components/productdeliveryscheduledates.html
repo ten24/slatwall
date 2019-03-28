@@ -1,0 +1,52 @@
+
+<div class="col-md-6">
+    <div class="form-group form-group-sm">
+        <div class="col-sm-12 s-no-paddings">
+            <table class="table table-bordered s-detail-content-table">
+                <thead>
+                    <tr>
+                        <th>
+                            Delivery Date
+                        </th>
+                        <th></th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    <tr ng-repeat="deliverScheduleDate in swProductDeliveryScheduleDates.deliverScheduleDates">
+                        <td >
+                            <span ng-bind="deliverScheduleDate.deliveryScheduleDateValue"></span><br/>
+                        </td>
+                        <td>
+                            <a ng-if="deliverScheduleDate.formattedDate > swProductDeliveryScheduleDates.currentDateTime && swProductDeliveryScheduleDates.edit===true" class="btn  s-remove j-tool-tip-item" title="Remove" ng-click="swProductDeliveryScheduleDates.removeDeliveryScheduleDate($index)">
+                            	<i class="fa fa-times"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <span ng-repeat="deliverScheduleDate in swProductDeliveryScheduleDates.deliverScheduleDates" class="hidden">
+                
+                <input type="text" name="deliveryScheduleDates[{{$index+1}}].deliveryScheduleDateID" ng-model="deliverScheduleDate.deliveryScheduleDateID"/>
+                <input type="text" name="deliveryScheduleDates[{{$index+1}}].deliveryScheduleDateValue" ng-model="deliverScheduleDate.deliveryScheduleDateValue"/>
+                <input type="text" name="deliveryScheduleDates[{{$index+1}}].productID" value="{{swProductDeliveryScheduleDates.productId}}" />
+                <br>
+            </span>
+            <br/>
+            <p ng-show="swProductDeliveryScheduleDates.edit===true" class="input-group s-datepicker">
+                <input class="form-control" 
+              		datepicker-popup="MMM dd, yyyy hh:mm a" 
+              		close-text="Close" 
+              		is-open="openedCalendarStart" 
+              		type="text"
+              		ng-model="swProductDeliveryScheduleDates.newDeliverScheduleDate.deliveryScheduleDateValue"/>
+                <span class="input-group-btn" >
+                    <button type="button" class="btn btn-primary btn-sm" ng-click="openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </p>
+        </div>
+        
+        <button ng-show="swProductDeliveryScheduleDates.edit===true" type="button" class="btn btn-primary" ng-click="swProductDeliveryScheduleDates.addDate(swProductDeliveryScheduleDates.newDeliverScheduleDate)">Add Date</button>
+    </div>
+</div>

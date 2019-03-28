@@ -196,13 +196,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function processOrderItemRewards(required any order, required any promotionPeriodQualifications, required any promotionRewardUsageDetails, required any orderItemQualifiedDiscounts, required any promotionReward){
 		// Loop over all the orderItems
 		for(var orderItem in arguments.order.getOrderItems()) {
-
 			// Verify that this is an item being sold
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
-
 				// Make sure that this order item is in the acceptable fulfillment list
 				if(arrayFind(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
-
 					// Now that we know the fulfillment is ok, lets check and cache then number of times this orderItem qualifies based on the promotionPeriod
 					if(!structKeyExists(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems, orderItem.getOrderItemID())) {
 						arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ] = getPromotionPeriodOrderItemQualificationCount(promotionPeriod=arguments.promotionReward.getPromotionPeriod(), orderItem=orderItem, order=arguments.order);
@@ -210,21 +207,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// If the qualification count for this order item is > 0 then we can try to apply the reward
 					if(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ]) {
-
 						// Check the reward settings to see if this orderItem applies
 						if( getOrderItemInReward(arguments.promotionReward, orderItem) ) {
 							var qualificationQuantity = arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ];
 							if((qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification) lt arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder) {
 								arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder = (qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification);
 							}
-
 							// setup the discountQuantity based on the qualification quantity.  If there were no qualification constrints than this will just be the orderItem quantity
 							var discountQuantity = qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification;
 							// If the discountQuantity is > the orderItem quantity then just set it to the orderItem quantity
 							if(discountQuantity > orderItem.getQuantity()) {
 								discountQuantity = orderItem.getQuantity();
 							}
-
 							// If the discountQuantity is > than maximumUsePerItem then set it to maximumUsePerItem
 							if(discountQuantity > arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerItem) {
 								discountQuantity = arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerItem;
@@ -246,7 +240,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 
 							// If the discountAmount is gt 0 then we can add the details in order to the potential orderItem discounts
-
 							if(discountAmount > 0) {
 
 								// First thing that we are going to want to do is add this orderItem to the orderItemQualifiedDiscounts if it doesn't already exist
@@ -266,7 +259,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											promotion = arguments.promotionReward.getPromotionPeriod().getPromotion(),
 											discountAmount = discountAmount
 										});
-
 										discountAdded = true;
 										break;
 									}
@@ -314,7 +306,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									});
 
 								}
-
 							}
 
 						} // End OrderItem in reward IF
@@ -324,6 +315,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} // End orderItem fulfillment in qualifiedFulfillment list
 
 			} // END Sale Item If
+											
+			//Now add the order item to the modified entities to recalculate.
+			getHibachiScope().addModifiedEntity(orderItem);
 
 		} // End Order Item For Loop
 	}
@@ -365,78 +359,109 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
+		
+		if(arguments.order.isOrderPaidFor()){
+			return;
+		}
 
 		// Set up a promotionEffectiveDateTime in case this is an order that has already been placed
 		var promotionEffectiveDateTime = now();
 		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
+		
+		var orderItemIDList="";
+ 		for(var orderItem in arguments.order.getOrderItems()){
+ 			orderItemIDList = listAppend(orderItemIDList,orderItem.getSku().getSkuID());
+ 		}
+ 		for(var promotionCode in arguments.order.getPromotionCodes()){
+ 			orderItemIDList = listAppend(orderItemIDList,promotionCode.getPromotionCodeID());
+ 		}
+ 		
+ 		var orderFulfillmentList ="";
+ 		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
+ 			if(!isNull(orderFulfillment.getShippingAddress())){
+ 				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
+ 				if(!isNull(orderFulfillment.getSelectedShippingMethodOption())){
+ 					orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getSelectedShippingMethodOption().getShippingMethodOptionID());
+ 				}
+ 			}
+ 			if(!isNull(orderFulfillment.getPickupLocation())){
+ 				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getPickupLocation().getLocationID());
+ 			}
+ 		}
+ 		
+ 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity(),'md5');
+		
+		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
+			arguments.order.setPromotionCacheKey(promotionCacheKey);
 
-		// Sale & Exchange Orders
-		if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-
-			clearPreviouslyAppliedPromotions(arguments.order);
-
-			// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
-			var promotionPeriodQualifications = {};
-
-			// This is a structure of promotionRewards that will hold information reguarding maximum usages, and the amount of usages applied
-			var promotionRewardUsageDetails = {};
-
-			// This is a structure of orderItems with all of the potential discounts that apply to them
-			var orderItemQualifiedDiscounts = {};
-
-			setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
-
-			// Loop over all Potential Discounts that require qualifications
-			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
-			var orderRewards = false;
-
-			for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
-				var reward = promotionRewards[pr];
-				// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
-				setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
-
-				// Setup the boolean for if the promotionPeriod is okToApply based on general use count
-				if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
-					promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order);
-				}
-
-				// If this promotion period is ok to apply based on general useCount
-				if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
-					// =============== Order Item Reward ==============
-					if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
-						processOrderItemRewards(arguments.order, promotionPeriodQualifications, promotionRewardUsageDetails, orderItemQualifiedDiscounts, reward);
-
-					// =============== Fulfillment Reward ======================
-					} else if (!orderRewards and reward.getRewardType() eq "fulfillment" ) {
-						processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
-					// ================== Order Reward =========================
-					} else if (orderRewards and reward.getRewardType() eq "order" ) {
-						processOrderRewards(arguments.order, reward);
-					} // ============= END ALL REWARD TYPES
-
-				} // END Promotion Period OK IF
-
-				// This forces the loop to repeat looking for "order" discounts
-				if(!orderRewards and pr == arrayLen(promotionRewards)) {
-					pr = 0;
-					orderRewards = true;
-				}
-
-			} // END of PromotionReward Loop
-
-			// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-			removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-
-			// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-			applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
-
-		} // END of Sale or Exchange Loop
-
-		// Return & Exchange Orders
-		if( listFindNoCase("otReturnOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-			// TODO [issue #1766]: In the future allow for return Items to have negative promotions applied.  This isn't import right now because you can determine how much you would like to refund ordersItems
+			// Sale & Exchange Orders
+			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
+	
+				clearPreviouslyAppliedPromotions(arguments.order);
+	
+				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
+				var promotionPeriodQualifications = {};
+	
+				// This is a structure of promotionRewards that will hold information reguarding maximum usages, and the amount of usages applied
+				var promotionRewardUsageDetails = {};
+	
+				// This is a structure of orderItems with all of the potential discounts that apply to them
+				var orderItemQualifiedDiscounts = {};
+	
+				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
+	
+				// Loop over all Potential Discounts that require qualifications
+				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
+				var orderRewards = false;
+	
+				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
+					var reward = promotionRewards[pr];
+					// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
+					setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
+	
+					// Setup the boolean for if the promotionPeriod is okToApply based on general use count
+					if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
+						promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order);
+					}
+	
+					// If this promotion period is ok to apply based on general useCount
+					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
+						// =============== Order Item Reward ==============
+						if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
+							processOrderItemRewards(arguments.order, promotionPeriodQualifications, promotionRewardUsageDetails, orderItemQualifiedDiscounts, reward);
+	
+						// =============== Fulfillment Reward ======================
+						} else if (!orderRewards and reward.getRewardType() eq "fulfillment" ) {
+							processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
+						// ================== Order Reward =========================
+						} else if (orderRewards and reward.getRewardType() eq "order" ) {
+							processOrderRewards(arguments.order, reward);
+						} // ============= END ALL REWARD TYPES
+	
+					} // END Promotion Period OK IF
+	
+					// This forces the loop to repeat looking for "order" discounts
+					if(!orderRewards and pr == arrayLen(promotionRewards)) {
+						pr = 0;
+						orderRewards = true;
+					}
+	
+				} // END of PromotionReward Loop
+	
+				// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
+				removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
+	
+				// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
+				applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
+	
+			} // END of Sale or Exchange Loop
+	
+			// Return & Exchange Orders
+			if( listFindNoCase("otReturnOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
+				// TODO [issue #1766]: In the future allow for return Items to have negative promotions applied.  This isn't import right now because you can determine how much you would like to refund ordersItems
+			}
 		}
 
 	}
@@ -521,13 +546,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var orderItem = arguments.order.getOrderItems()[i];
 			// If the orderItemID exists in the qualifiedDiscounts, and the discounts have at least 1 value we can apply that top 1 discount
-
 			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
 				var newAppliedPromotion = this.newPromotionApplied();
 				newAppliedPromotion.setAppliedType('orderItem');
 				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
 				newAppliedPromotion.setOrderItem( orderItem );
 				newAppliedPromotion.setDiscountAmount( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
+			
+				//making sure calculated props run
+				getHibachiScope().addModifiedEntity(orderItem);
 			}
 
 		}
@@ -740,7 +767,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 
-			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifierDetails);
+			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifier);
 
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {

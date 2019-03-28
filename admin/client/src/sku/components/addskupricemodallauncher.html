@@ -9,7 +9,8 @@
     
     <sw-modal-content> 
         
-        <sw-form name="{{swAddSkuPriceModalLauncher.formName}}" 
+        <sw-form ng-if="swAddSkuPriceModalLauncher.skuPrice"
+                 name="{{swAddSkuPriceModalLauncher.formName}}" 
                  data-object="swAddSkuPriceModalLauncher.skuPrice"    
                  data-context="save"
                  >
@@ -37,7 +38,7 @@
                                             name="currencyCode"
                                             ng-model="swAddSkuPriceModalLauncher.skuPrice.data.currencyCode"
                                             ng-options="item as item for item in swAddSkuPriceModalLauncher.currencyCodeOptions track by item"
-                                            ng-disabled="swAddSkuPriceModalLauncher.disableAllFieldsButPrice || swAddSkuPriceModalLauncher.defaultCurrencyOnly"
+                                            ng-disabled="(swAddSkuPriceModalLauncher.disableAllFieldsButPrice || swAddSkuPriceModalLauncher.defaultCurrencyOnly) && !swAddSkuPriceModalLauncher.currencyCodeEditable"
                                             >
                                     </select>
                                 </div>
@@ -65,13 +66,12 @@
                             </div>
                         </div>
                         <!-- BEGIN HIDDEN FIELDS -->
-                         <sw-property-display data-object="swAddSkuPriceModalLauncher.skuPrice"
-                                data-property-identifier="sku"
+                         <sw-property-display data-object="swAddSkuPriceModalLauncher.sku"
+                                data-property-identifier="skuID"
                                 data-is-dirty="true"
                                 data-is-hidden="true"
                                 data-editing="true"   
                                 data-editable="true"
-                                data-options-arguments="{property:'sku'}"   
                         >
                         </sw-property-display>
                         <!-- END HIDDEN FIELDS -->

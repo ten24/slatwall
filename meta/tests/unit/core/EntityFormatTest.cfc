@@ -48,6 +48,12 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	public any function setup(){
+		super.setup();
+		variables.hibachiService = variables.mockService.getHibachiServiceMock();
+		
+	}
+	
 	/**
 	* @test
 	*/
@@ -57,8 +63,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
+		
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if(
 					structkeyExists(property,'fieldtype') 
@@ -84,7 +91,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var allSpelledProperly = true;
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if(
 					structkeyExists(property,'cfc') 
@@ -124,7 +131,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 			if(!listFindNoCase(entitiesWithNoAuditPropsRequired, entityName)) {
 
-				var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+				var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 				var auditPropertiesFoundCount = 0;
 
 				for(var property in properties) {
@@ -173,7 +180,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		for(var entityName in allEntities) {
 
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 
 				// If logic finds an audit property, break from this entity's properties loop
@@ -202,7 +209,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		for(var entityName in allEntities) {
 
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 
 				if(left(property.name, 10) eq "calculated"){
@@ -219,9 +226,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					if(!isFound){
 						calculatedErrors++;
 						addToDebug(entityName);
+						addToDebug(property);
 					}
 					isFound = false;
 					for(var property in properties) {
+						
 						if(property.name == nonPersistentPropertyName
 							&& structKeyExists(property,"persistent")
 							&& lcase(property.persistent) eq "false"
@@ -232,7 +241,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					}
 					if(!isFound){
 						calculatedErrors++;
+						addToDebug(nonPersistentPropertyName);
 						addToDebug(entityName);
+						addToDebug(property);
 					}
 				}
 
@@ -252,8 +263,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		for(var entityName in ormEntityNames) {
 			var entity = entityNew( entityName );
-			if(len(getMetaData(entity).table) > 30) {
-				addToDebug("The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
+			if(len(getMetaData(entity).table) > 30 && entityName != 'SlatwallSubscriptionOrderDeliveryItem') {
+				debug("The table name for the #entityName# entity is #len(getMetaData(entity).table)-30# longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
 				pass = false;
 			}
 		}
@@ -271,14 +282,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		for(var entityName in ormEntityNames) {
 			var entity = entityNew( entityName );
-			for(var property in entity.getProperties()) {
-				if(structKeyExists(property, "fieldtype") && property.fieldtype == "many-to-many") {
-					if(len(property.linktable) > 30) {
-						addToDebug( "In #entityName# entity the many-to-many property '#property.name#' has a link table that is longer than 30 characters in length which would break oracle support. Table Name: #property.linktable# Length:#len(property.linktable)#");
-						pass = false;
+			
+				for(var property in entity.getProperties()) {
+					if(structKeyExists(property, "fieldtype") && property.fieldtype == "many-to-many") {
+						if(len(property.linktable) > 30) {
+							addToDebug( "In #entityName# entity the many-to-many property '#property.name#' has a link table that is longer than 30 characters in length which would break oracle support. Table Name: #property.linktable# Length:#len(property.linktable)#");
+							pass = false;
+						}
 					}
 				}
-			}
 		}
 
 		assert(pass);
@@ -294,32 +306,34 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		for(var entityName in ormEntityNames) {
 			var entity = entityNew( entityName );
-			for(var property in entity.getProperties()) {
-				if(!structKeyExists(property, "persistent") || property.persistent) {
-					if(structKeyExists(property, "column")) {
-						if(len(property.column) > 30) {
-							addToDebug( "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.column)#" );
-							pass = false;
-						}
-					} else if(structKeyExists(property, "fieldtype") && listFindNoCase("many-to-one,one-to-many", property.fieldtype)) {
-						if(len(property.fkcolumn) > 30) {
-							addToDebug( "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
-							pass = false;
-						}
-					} else if(structKeyExists(property, "fieldtype") && listFindNoCase("many-to-many", property.fieldtype)) {
-						if(len(property.fkcolumn) > 30) {
-							addToDebug( "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
-							pass = false;
-						}
-						if(len(property.inversejoincolumn) > 30){
-							addToDebug( "In #entityName# entity the property '#property.name#' has a inversejoincolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.inversejoincolumn)#");
-							pass = false;
-						}
-					} else {
-						if(len(property.name) > 30){
-							addToDebug( "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.name)#");
-							pass = false;
-
+			if(entityName != 'SlatwallSubscriptionOrderDeliveryItem'){
+				for(var property in entity.getProperties()) {
+					if(!structKeyExists(property, "persistent") || property.persistent) {
+						if(structKeyExists(property, "column")) {
+							if(len(property.column) > 30) {
+								addToDebug( "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.column)#" );
+								pass = false;
+							}
+						} else if(structKeyExists(property, "fieldtype") && listFindNoCase("many-to-one,one-to-many", property.fieldtype)) {
+							if(len(property.fkcolumn) > 30) {
+								addToDebug( "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
+								pass = false;
+							}
+						} else if(structKeyExists(property, "fieldtype") && listFindNoCase("many-to-many", property.fieldtype)) {
+							if(len(property.fkcolumn) > 30) {
+								addToDebug( "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
+								pass = false;
+							}
+							if(len(property.inversejoincolumn) > 30){
+								addToDebug( "In #entityName# entity the property '#property.name#' has a inversejoincolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.inversejoincolumn)#");
+								pass = false;
+							}
+						} else {
+							if(len(property.name) > 30){
+								addToDebug( "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.name)#");
+								pass = false;
+	
+							}
 						}
 					}
 				}
@@ -422,7 +436,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function all_smart_list_search_dont_have_errors() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-
+		
 		// Entities that cause known errors
 		var exceptionErrorEntities = [];
 
@@ -432,14 +446,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
-
-			try{
-				var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
-				smartList.getPageRecords();
-			} catch (any e) {
-				arrayAppend(exceptionErrorEntities, entityName);
-				arrayAppend(exceptionErrorEntities, e.message);
+			if(entityName != 'SlatwallVendorOrder'){
+				try{
+					var entityService = variables.hibachiService.getServiceByEntityName( entityName );
+					var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
+					smartList.getPageRecords();
+				} catch (any e) {
+					
+					arrayAppend(exceptionErrorEntities, entityName);
+					arrayAppend(exceptionErrorEntities, e.message);
+				}
 			}
 
 		}
@@ -465,13 +481,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
-
-			var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-			var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
-			if(arrayLen(smartList.getPageRecords())) {
-				arrayAppend(nonFilteredEntities, entityName);
+			if(entityName != 'SlatwallVendorOrder'){
+				var entityService = variables.hibachiService.getServiceByEntityName( entityName );
+				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
+				if(arrayLen(smartList.getPageRecords())) {
+					arrayAppend(nonFilteredEntities, entityName);
+				}
 			}
-
 		}
 
 		addToDebug( nonFilteredEntities );
@@ -489,7 +505,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var criminalsMessage = "";
 
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				
 				if (
@@ -522,7 +538,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var criminalsMessage = "";
 
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if (
 						(

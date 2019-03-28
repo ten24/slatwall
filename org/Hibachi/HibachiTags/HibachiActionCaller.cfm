@@ -48,6 +48,8 @@
 		<cfset actionItemEntityName = right( actionItem, len(actionItem)-6) />
 	<cfelseif left(actionItem, 6) eq "delete" and len(actionItem) gt 6>
 		<cfset actionItemEntityName = right( actionItem, len(actionItem)-6) />
+	<cfelseif left(actionItem, 6) eq "export" and len(actionItem) gt 6>
+		<cfset actionItemEntityName = right( actionItem, len(actionItem)-6) />
 	</cfif>
 	
 	<cfif attributes.text eq "" and not attributes.iconOnly>
@@ -112,8 +114,13 @@
 		<cfset attributes.text = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.text)/>
 		<cfset attribtues.title = attributes.hibachiScope.hibachiHTMLEditFormat(attributes.title)/>
 	</cfif>
+	
+	<cfset authenticateAction = attributes.action />
+	<cfif structKeyExists(attributes, 'processContext') AND len(attributes.processContext)>
+		<cfset authenticateAction &= '_#attributes.processContext#' />
+	</cfif>
 
-	<cfif attributes.hibachiScope.authenticateAction(action=attributes.action) || (attributes.type eq "link" && attributes.iconOnly)>
+	<cfif attributes.hibachiScope.authenticateAction(action=authenticateAction) || (attributes.type eq "link" && attributes.iconOnly)>
 		<cfif attributes.type eq "link">
 			<cfoutput>
 				<a  title="#attributes.title#" 

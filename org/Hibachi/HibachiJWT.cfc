@@ -56,30 +56,37 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(listLen(getTokenString(),".") neq 3){
 			throw(type="Invalid Token", message="Token should contain 3 segments");
 		}
-		setHeader(deserializeJSON(base64UrlDecode(listGetAt(getTokenString(),1,"."))));
-		setPayload(deserializeJSON(base64UrlDecode(listGetAt(getTokenString(),2,"."))));
-		setSignature(listGetAt(getTokenString(),3,"."));
+		
+		var tokenArray = listToArray(getTokenString(),'.');
+		
+		setHeader(deserializeJSON(base64UrlDecode(tokenArray[1])));
+		setPayload(deserializeJSON(base64UrlDecode(tokenArray[2])));
+		setSignature(tokenArray[3]);
 		
 		/*Make sure the algorithm listed in the header is supported*/
 		if(listFindNoCase(structKeyList(getAlgorithmMap()),getHeader().alg) == false){
 			throw(type="Invalid Token", message="Algorithm not supported");
 		}
 		/*Verify signature*/
-		var signInput = listGetAt(getTokenString(),1,".") & "." & listGetAt(getTokenString(),2,".");
+		var signInput = tokenArray[1] & "." & tokenArray[2];
 		if(signature != sign(signInput,getAlgorithmMap()[getHeader().alg])){
 			throw(type="Invalid Token", message="signature verification failed"); 
 		}
 		/*need valid iat*/
 		if(!structKeyExists(getPayload(),'iat')){
-			throw(type="No Valid issue at time date"); 
+			throw(type="No Valid issue at time date",message="No Valid issue at time date"); 
+		}
+		/*need valid iat*/
+		if(!structKeyExists(getPayload(),'issuer')){
+			throw(type="No Valid issuer",message="No Valid issuer"); 
 		}
 		/*need valid exp*/
 		if(!structKeyExists(getPayload(),'exp')){
-			throw(type="No Valid expiration time date"); 
+			throw(type="No Valid expiration time date",message="No Valid expiration time date"); 
 		}
 		/*need valid account*/
 		if(!structKeyExists(getPayload(), 'accountID')){
-			throw(type="No Account ID");
+			throw(type="No Account ID",message="No Account ID");
 		}
 
 		/*if has session then verify session account against token*/
@@ -88,29 +95,34 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			&& !getHibachiScope().getSession().getAccount().getNewFlag()
 			&& getHibachiScope().getSession().getAccount().getAccountID() != getPayload().accountID
 		){
-			throw(type='AccountID is not valid');
+			throw(type='AccountID is not valid',message='AccountID is not valid');
 		}
 
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		if(currentTime lt getPayload().iat || currentTime gt getPayload().exp){
-			throw(type="Token is expired"); 
+			throw(type="Token is expired",message="Token is expired"); 
+		}
+		
+		var serverName = CGI['server_name'];
+		if(getPayload().issuer != serverName){
+			throw(type="Invalid token issuer",message="Invalid token issuer");
 		}
 		return this;
 	}
 	
 	public any function encode(required struct payload, string algorithm="HS"){
 		var hashAlgorithm = "HS";
-		var segments = "";
+		var segments = [];
 		/*Make sure only supported algorithms are used*/
 		if(listFindNoCase(structKeyList(getAlgorithmMap()),arguments.algorithm)){
 			hashAlgorithm = arguments.algorithm;
 		}
 		/*Add Header - typ and alg fields*/
-		segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON({ "typ" =  "JWT", "alg" = hashAlgorithm }),'UTF-8')),".");
+		arrayAppend(segments, base64UrlEscape(toBase64(serializeJSON({ "typ" =  "JWT", "alg" = hashAlgorithm }),'UTF-8')));
 		/*Add payload*/
-		segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON(arguments.payload),'UTF-8')),".");
-		segments = listAppend(segments, sign(segments,getAlgorithmMap()[hashAlgorithm]),".");
-		return segments;
+		arrayAppend(segments, base64UrlEscape(toBase64(serializeJSON(arguments.payload),'UTF-8')));
+		arrayAppend(segments, sign(arrayToList(segments,'.'),getAlgorithmMap()[hashAlgorithm]));
+		return arrayToList(segments,'.');
 	}
 	
 	public boolean function verify(){

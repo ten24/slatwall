@@ -9,13 +9,29 @@ class SWSkuThumbnailController{
    
     //@ngInject
     constructor(
+        private fileService, 
+        private $hibachi,
+        private $http,
+        private appConfig
     ){
         if(!angular.isDefined(this.skuData)){
             throw("You must provide a sku to the SWSkuThumbnailController");
         }
-        if(angular.isDefined(this.skuData.imagePath)){
-            this.image = this.skuData.imagePath;
-        }
+
+        fileService.imageExists(this.skuData.imagePath).then(
+            ()=>{
+                //Do nothing
+            },
+            ()=>{
+                this.skuData.imagePath = this.appConfig.baseURL+'assets/images/image-placeholder.jpg';
+            }
+        ).finally(
+            ()=>{
+                if(angular.isDefined(this.skuData.imagePath)){
+                    this.image = this.appConfig.baseURL+this.skuData.imagePath;
+                }
+            }
+        )
     }   
 }
 
@@ -35,23 +51,24 @@ class SWSkuThumbnail implements ng.IDirective{
     public static Factory(){
         var directive = (
             skuPartialsPath,
-			slatwallPathBuilder
+            slatwallPathBuilder
         )=> new SWSkuThumbnail(
             skuPartialsPath,
-			slatwallPathBuilder
+            slatwallPathBuilder
         );
         directive.$inject = [
             'skuPartialsPath',
-			'slatwallPathBuilder'
+            'slatwallPathBuilder'
         ];
         return directive;
     }
     constructor(
-		skuPartialsPath,
-	    slatwallPathBuilder
+        skuPartialsPath,
+        slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skuthumbnail.html";
     }
+     
 }
 export{
     SWSkuThumbnail,

@@ -59,9 +59,9 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	property name="authorizationCode" ormtype="string";
 	property name="authorizationCodeUsed" ormtype="string";
 	property name="authorizationCodeInvalidFlag" ormtype="boolean";
-	property name="amountAuthorized" notnull="true" dbdefault="0" ormtype="big_decimal";
-	property name="amountReceived" notnull="true" dbdefault="0" ormtype="big_decimal";
-	property name="amountCredited" notnull="true" dbdefault="0" ormtype="big_decimal";
+	property name="amountAuthorized" notnull="true" dbdefault="0" ormtype="big_decimal" hb_formatType="currency";
+	property name="amountReceived" notnull="true" dbdefault="0" ormtype="big_decimal" hb_formatType="currency";
+	property name="amountCredited" notnull="true" dbdefault="0" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="securityCodeMatchFlag" ormtype="boolean";
 	property name="avsCode" ormtype="string";				// @hint this is whatever the avs code was that got returned
@@ -89,7 +89,7 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Deperecated Properties
-	property name="amountCharged" notnull="true" dbdefault="0" ormtype="big_decimal";
+	property name="amountCharged" notnull="true" dbdefault="0" ormtype="big_decimal" hb_formatType="currency";
 
 	// Non-Persistent Properties
 

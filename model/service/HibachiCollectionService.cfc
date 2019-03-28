@@ -44,6 +44,14 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
 		return arguments.accountCollection; 
 	}
 
+    public any function processCollection_Rename(required any collection, any processObject, struct data={}) {
+        arguments.collection.setCollectionName(arguments.data.collectionName);
+        
+        this.saveCollection(arguments.collection);
+        
+        return arguments.collection;
+    }
+
     public any function processCollection_Clone(required any collection, required any processObject, struct data={}) {
 
         var newCollection = this.newCollection();

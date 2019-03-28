@@ -50,7 +50,7 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.sku" type="any" />
-<cfparam name="rc.product" type="any">
+<!---<cfparam name="rc.product" type="any">--->
 
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartList()#"  
@@ -59,11 +59,15 @@ Notes:
 							recordEditModal=true
 							recordDeleteAction="admin:entity.deleteskubundle"
 							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabbundledskus"
-							edit="#rc.edit#">
+							edit="#rc.edit#"
+							sortProperty="sortOrder"
+						    sortContextIDColumn="skuID"
+						    sortContextIDValue="#rc.sku.getSkuID()#">
 							
 		<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
 		<hb:HibachiListingColumn propertyIdentifier="bundledQuantity" />
+		<hb:HibachiListingColumn propertyIdentifier="measurementUnit.unitCode" title="Measurement Unit"/>
 		
 	</hb:HibachiListingDisplay>	
 	

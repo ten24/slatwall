@@ -61,11 +61,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";
 	property name="giftCardID" hb_rbKey="entity.giftCard" hb_formFieldType="select";
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
+	property name="orderTypeCode" hb_rbKey="entity.order.orderType";
 	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
 
 	// Data Properties (Inputs)
-	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
-	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName";
+	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
+	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 
 	property name="saveGiftCardToAccountFlag" hb_formFieldType="yesno";
 
@@ -98,6 +99,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function setupDefaults() {
 		variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
 		variables.copyFromType = '';
+		variables.orderTypeCode = 'otSalesOrder';
 		if(arrayLen(getAccountPaymentMethodIDOptions())){
 			variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
 			variables.copyFromType = 'accountPaymentMethod';
@@ -130,9 +132,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public any function getGiftCard(){
 		if(!isNull(getNewOrderPayment().getGiftCardNumber()) && len(getNewOrderPayment().getGiftCardNumber())){
-			return getService("GiftCardService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumber()));
+		
+			return getService("GiftCardService").getGiftCardByGiftCardCode(newOrderPayment.getGiftCardNumber());
+		
 		} else if(!isNull(getGiftCardID())){
+			
 			return getService("GiftCardService").getGiftCard(getGiftCardID());
+		
 		}
 	}
 
@@ -141,6 +147,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.accountAddressID = "";
 		}
 		return variables.accountAddressID;
+	}
+
+	public string function getOrderTypeCode(){
+		if(!structKeyExists(variables,"orderTypeCode")){
+			variables.orderTypeCode="otSalesOrder";
+		}
+		return variables.orderTypeCode;
 	}
 
 	public boolean function getSaveAccountPaymentMethodFlag() {
@@ -186,7 +199,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				};
 				arrayAppend(variables.copyFromTypeOptions,accountPaymentMethodOption);
 			}
-			if(arrayLen(getPreviousOrderPaymentIDOptions())){
+			if(arrayLen(getPreviousOrderPaymentIDOptions()) && getOrderTypeCode() != "otReturnOrder"){
 				var previousOrderPaymentOption = {
 					name=rbKey('entity.previousOrderPayment'),
 					value="previousOrderPayment"
@@ -237,25 +250,37 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					arrayAppend(variables.accountAddressIDOptions, {name=aaArr[i].getSimpleRepresentation(), value=aaArr[i].getAccountAddressID()});
 				}
 			}
-			arrayAppend(variables.accountAddressIDOptions, {name=rbKey('define.new'), value=""});
+			arrayPrepend(variables.accountAddressIDOptions, {name=rbKey('define.new'), value=""});
 		}
 		return variables.accountAddressIDOptions;
 	}
 
 	public array function getPaymentMethodIDOptions() {
+		var paymentMethodIDOptions = [];
 		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
 			variables.paymentMethodIDOptions = [];
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
 			for(var paymentDetail in epmDetails) {
 				arrayAppend(variables.paymentMethodIDOptions, {
-					name = paymentDetail.getPaymentMethod().getPaymentMethodName(),
-					value = paymentDetail.getPaymentMethod().getPaymentMethodID(),
-					paymentmethodtype = paymentDetail.getPaymentMethod().getPaymentMethodType(),
-					allowsaveflag = paymentDetail.getPaymentMethod().getAllowSaveFlag()
+					name = paymentDetail.paymentMethod.getPaymentMethodName(),
+					value = paymentDetail.paymentMethod.getPaymentMethodID(),
+					paymentmethodtype = paymentDetail.paymentMethod.getPaymentMethodType(),
+					allowsaveflag = paymentDetail.paymentMethod.getAllowSaveFlag()
 					});
 			}
 		}
-		return variables.paymentMethodIDOptions;
+		if(getHibachiScope().getAccount().getAdminAccountFlag()){
+			paymentMethodIDOptions = duplicate(variables.paymentMethodIDOptions);
+			arrayAppend(paymentMethodIDOptions, {
+				name = 'None',
+				value = 'none',
+				paymentmethodtype = 'none',
+				allowsaveflag = false
+			});
+		}else{
+			paymentMethodIDOptions = variables.paymentMethodIDOptions;
+		}
+		return paymentMethodIDOptions;
 	}
 
 	public array function getPaymentTermIDOptions() {
@@ -329,9 +354,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public boolean function giftCardNotAlreadyApplied(){
+
 		if(this.hasGiftCard()){
 			var cardID = this.getGiftCard().getGiftCardID();
+			
 			for(var payment in this.getOrder().getOrderPayments()){
+
 				if(!isNull(payment.getGiftCard()) && payment.getGiftCard().getGiftCardID() == cardID){
 					return false;
 				}
@@ -365,6 +393,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 		return false;
 
+	}
+	
+	public void function setHibachiErrors( required any errorBean ) {
+		if ( !isNull(this.getGiftCardID()) && !isNull(errorBean.getErrors()) && !structIsEmpty(errorBean.getErrors())){
+			getHibachiScope().setORMHasErrors( true );			
+		}
+		
+		super.setHibachiErrors(errorBean);
 	}
 
 	// =====================  END: Helper Methods ==========================

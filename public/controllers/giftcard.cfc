@@ -47,10 +47,33 @@ Notes:
 
 */
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+    
+    public void function init( required any fw ) {
+	    setFW( arguments.fw );
+	}
+
+	public void function before() {
+		getFW().setView("public:main.blank");
+	}
+
+	public void function after( required struct rc ) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions())) {
+			getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(getHibachiScope().getFailureActions())) {
+			getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL );
+		} else if (structKeyExists(arguments.rc, "redirectURL")) {
+			getFW().redirectExact( redirectLocation=arguments.rc.redirectURL );
+		}
+	}
 
 	public any function redeemToAccount(required struct rc){
-
 		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
+		
+		if(isNull(giftCardToRedeem)){
+		    arguments.rc.$.slatwall.addActionResult("public:giftCard.redeemForAccount", true);
+		    return;
+		}
+		
 		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
 
 		if(isNull(giftCardToRedeem.getOwnerAccount())){

@@ -73,8 +73,20 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	// Non-Persistent Properties
 	property name="permissionsByDetails" persistent="false"; 
 	
+	public string function getPermissionsByDetailsCacheKey(){
+		if(structKeyExists(variables,'permissionGroupID') && len(variables.permissionGroupID)){
+			return 'PermissionGroup.'&variables.permissionGroupID & 'permissionByDetails';	
+		}else{
+			"";
+		}
+	}
+	
 	public struct function getPermissionsByDetails() {
-		if(!structKeyExists(variables, "permissionsByDetails")) {
+		
+		var cacheKey = getPermissionsByDetailsCacheKey();
+		if(getService("HibachiCacheService").hasCachedValue(cacheKey)) {
+			variables.permissionsByDetails = getService("hibachiCacheService").getCachedValue(cacheKey);
+		}else{
 			
 			// Create the start of the structure
 			variables.permissionsByDetails = {
@@ -88,10 +100,10 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 			
 			// Get all of the permissions & the arrayLen
 			var permissions = getPermissions(); 
-			var l = arrayLen(permissions);
+			var permissionsLength = arrayLen(permissions);  		
 			
 			// Loop over each permission
-			for(var p=1; p<=l; p++) {
+			for(var p=1; p<=permissionsLength; p++) {
 				
 				// setup a local variable for the permission
 				var thisPermission = permissions[p];
@@ -143,6 +155,9 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 						variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].permission = thisPermission;
 					}
 				}
+			}
+			if(structKeyExists(variables,'permissionGroupID') && len(variables.permissionGroupID)){
+				getService("hibachiCacheService").setCachedValue(cacheKey,variables.permissionsByDetails);
 			}
 		}
 		return variables.permissionsByDetails;

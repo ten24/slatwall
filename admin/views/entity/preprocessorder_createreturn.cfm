@@ -110,6 +110,7 @@ Notes:
 				
 				<hb:HibachiDisplayToggle selector="select[name='refundOrderPaymentID']" showValues="" loadVisable="#!len(rc.processObject.getRefundOrderPaymentID())#">
 					<cfset rc.addOrderPaymentProcessObject = rc.order.getProcessObject("addOrderPayment") />
+					<cfset rc.addOrderPaymentProcessObject.setOrderTypeCode('otReturnOrder') />
 					<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
 				</hb:HibachiDisplayToggle>
 				

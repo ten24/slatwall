@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
-
+	property name="settingService" type="any";
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================

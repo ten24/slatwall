@@ -8,6 +8,10 @@
 	        "dataType":"numeric", 
 	        "minValue":"0"
 	    }],
+	    "listPrice": [{
+	        "contexts":"save",
+	        "dataType":"numeric"
+	    }],
 	    "minQuantity" : [{
 	        "contexts":"save",
 	        "required":"false",

@@ -99,12 +99,14 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 		}
 	}
 	public void function removeProduct(any product) {
-		if(!structKeyExists(arguments, "product")) {
+		if(!structKeyExists(arguments, "product") && structKeyExists(variables,"product")) {
 			arguments.product = variables.product;
 		}
-		var index = arrayFind(arguments.product.getListingPages(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.product.getListingPages(), index);
+		if(structKeyExists(arguments,"product")){
+			var index = arrayFind(arguments.product.getListingPages(), this);
+			if(index > 0) {
+				arrayDeleteAt(arguments.product.getListingPages(), index);
+			}	
 		}
 		structDelete(variables, "product");
 	}	
@@ -117,14 +119,18 @@ component displayname="ProductListingPage" entityname="SlatwallProductListingPag
 		}
 	}
 	public void function removeContent(any content) {
-		if(!structKeyExists(arguments, "content")) {
+		if(!structKeyExists(arguments, "content") && structKeyExists(variables,"content")) {
 			arguments.content = variables.content;
 		}
-		var index = arrayFind(arguments.content.getListingPages(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.content.getListingPages(), index);
+		if(structKeyExists(arguments,"content")){
+			var index = arrayFind(arguments.content.getListingPages(), this);
+			if(index > 0) {
+				arrayDeleteAt(arguments.content.getListingPages(), index);
+			}
 		}
-		structDelete(variables, "content");
+		if(!isNull(variables.content)){
+			structDelete(variables, "content");
+		}
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

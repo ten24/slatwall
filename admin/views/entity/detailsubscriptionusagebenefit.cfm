@@ -61,21 +61,24 @@ Notes:
 		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionUsageBenefit#" edit="#rc.edit#" 
 									backAction="admin:entity.detailSubscriptionUsage" 
 								    backQueryString="subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#"
-								    deleteQueryString="redirectAction=admin:entity.detailSubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#" />
-									
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="subscriptionBenefit" edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="maxUseCount" edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="accessType" edit="false">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
+								    deleteQueryString="redirectAction=admin:entity.detailSubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#" >
+			<hb:HibachiProcessCaller entity="#rc.subscriptionUsage#"
+									action="admin:entity.preprocesssubscriptionusagebenefitaccount"
+									processContext="addUsageBenefitAccount"
+									queryString="subscriptionUsageBenefitID=#rc.subscriptionUsageBenefit.getSubscriptionUsageBenefitID()#"
+									type="list"
+									modal="true" />
+		</hb:HibachiEntityActionBar>
+
 		
-		<hb:HibachiTabGroup object="#rc.subscriptionUsageBenefit#">
-			<hb:HibachiTab view="admin:entity/subscriptionusagebenefittabs/categories" />
-			<hb:HibachiTab view="admin:entity/subscriptionusagebenefittabs/contents" />
-			<hb:HibachiTab view="admin:entity/subscriptionusagebenefittabs/pricegroups" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionUsageBenefit#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagebenefittabs/basic" open="true" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagebenefittabs/accounts" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagebenefittabs/categories" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagebenefittabs/contents" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionusagebenefittabs/pricegroups" />
+		</hb:HibachiEntityDetailGroup>
 		
 		<!---
 		<hb:HibachiTabGroup object="#rc.subscriptionUsage#">

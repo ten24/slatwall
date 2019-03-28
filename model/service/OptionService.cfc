@@ -62,7 +62,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		return sortedOptions;
 	}
 
-
+	public void function removeDefaultImageFromOption(required string optionID){
+		var option = this.getOptionByOptionID(arguments.optionID);
+		option.setDefaultImage(javacast("null",""));
+	}
+	
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================

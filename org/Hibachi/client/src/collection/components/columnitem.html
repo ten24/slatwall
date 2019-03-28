@@ -1,4 +1,3 @@
-
   <div class="row" ng-if="column">
     <div class="col-xs-5 col-md-8 s-pannel-name" j-column-index="{{columnIndex}}" data-test="$index">
       <span ng-bind="columnIndex + 1"></span>
@@ -18,9 +17,9 @@
               </span>      
       </span>
     </div>
+    <span ng-style="column.style"></span>
     </div>
     <div class="col-xs-7 col-md-4 s-pannel-body">
-
       <div class="btn-group">
        <span class="s-sort-num">
          <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" 

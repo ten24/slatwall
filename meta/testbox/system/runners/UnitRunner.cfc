@@ -60,10 +60,7 @@ component extends="testbox.system.runners.BaseRunner" implements="testbox.system
 				);
 
 				for ( var beforeAllMethod in beforeAllAnnotationMethods ){
-					// We use evalute here for two reasons:
-					// 1. We want the scopes to be the target class, not this one.
-					// 2. We want this code to be cross-platform ( hence no cfinvoke() )
-					Evaluate( "arguments.target.#beforeAllMethod.name#()" );
+					invoke( arguments.target, "#beforeAllMethod.name#" );
 				}
 
 				if( structKeyExists( arguments.target, "beforeTests" ) ){ arguments.target.beforeTests(); }
@@ -100,10 +97,7 @@ component extends="testbox.system.runners.BaseRunner" implements="testbox.system
 				);
 
 				for ( var afterAllMethod in afterAllAnnotationMethods ){
-					// We use evalute here for two reasons:
-					// 1. We want the scopes to be the target class, not this one.
-					// 2. We want this code to be cross-platform ( hence no cfinvoke() )
-					Evaluate( "arguments.target.#afterAllMethod.name#()" );
+					invoke( arguments.target, "#afterAllMethod.name#" );
 				}
 
 				if( structKeyExists( arguments.target, "afterTests" ) ){ arguments.target.afterTests(); }
@@ -153,7 +147,6 @@ component extends="testbox.system.runners.BaseRunner" implements="testbox.system
 
 		// Verify we can execute the incoming suite via skipping or labels
 		if( !arguments.suite.skip &&
-			canRunLabel( arguments.suite.labels, arguments.testResults ) &&
 			canRunSuite( arguments.suite, arguments.testResults )
 		){
 
@@ -170,14 +163,16 @@ component extends="testbox.system.runners.BaseRunner" implements="testbox.system
 				// is this async or not?
 				if( arguments.suite.asyncAll ){
 					// prepare thread name
-					var thisThreadName = variables.testBox.getUtility().slugify( "tb-" & thisSpec.name & "-#createUUID()#" );
+					var thisThreadName = variables.testBox.getUtility().slugify( "tb-" & thisSpec.name & "-#hash( getTickCount() + randRange( 1, 10000000 ) )#" );
 					// append to used thread names
 					arrayAppend( threadNames, thisThreadName );
 					// thread it
 					thread  name="#thisThreadName#"
 							thisSpec="#thisSpec#"
 							suite="#arguments.suite#"
-							threadName="#thisThreadName#"{
+							threadName="#thisThreadName#"
+							callbacks="#arguments.callbacks#"
+					{
 
 						// verify call backs
 						if( structKeyExists( attributes.callbacks, "onSpecStart" ) ){
@@ -273,7 +268,7 @@ component extends="testbox.system.runners.BaseRunner" implements="testbox.system
 
 		// skip constraint for suite?
 		if( !isBoolean( suite.skip ) && isCustomFunction( arguments.target[ suite.skip ] ) ){
-			suite.skip = evaluate( "arguments.target.#suite.skip#()" );
+			suite.skip = invoke( arguments.target, "#suite.skip#" );
 		}
 
 		// check them.
@@ -313,7 +308,7 @@ component extends="testbox.system.runners.BaseRunner" implements="testbox.system
 
 				// skip constraint?
 				if( !isBoolean( spec.skip ) && isCustomFunction( arguments.target[ spec.skip ] ) ){
-					spec.skip = evaluate( "arguments.target.#spec.skip#()" );
+					spec.skip = invoke( arguments.target, "#spec.skip#" );
 				}
 
 				// do we have labels applied?
