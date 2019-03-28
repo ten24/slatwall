@@ -29,8 +29,7 @@
 -->
 <cfoutput>
   <% htmlWebpackPlugin.files.js.forEach(function (src) { %> 
-    <%if(src.indexOf('head') === -1) { %>
-      <script type="text/javascript" src="<%= src %>"></script>
-    <% } %> 
+    <% if(htmlWebpackPlugin.options.excluding && src.indexOf(htmlWebpackPlugin.options.excluding) !== -1 ) return; %>
+    <script type="text/javascript" src="<%= src %>"></script>
   <% }) %>
 </cfoutput>

@@ -1,6 +1,5 @@
 var webpack = require("webpack");
 const CompressionPlugin = require("compression-webpack-plugin");
-
 var ForceCaseSensitivityPlugin = require("force-case-sensitivity-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
 const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
@@ -28,17 +27,16 @@ var appConfig = {
     filename: "[name].[contenthash].js",
     chunkFilename: "[name].[contenthash].bundle.js",
     sourceMapFilename: "sourcemaps/[file].map",
-    publicPath: "#request.slatwallScope.getBaseURL()#/dist/" 
-    //    publicPath: "#request.slatwallScope.getBaseURL()#/admin/client/dist/" //  the url to the output directory resolved relative to the HTML page
+    publicPath: "#request.slatwallScope.getBaseURL()#/dist/"
   },
 
   // Turn on sourcemaps
-  devtool: 'source-map',
+  devtool: "source-map",
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".js"]
   },
   externals: {
-    // jquery: 'jQuery'
+    jquery: "jQuery"
   },
   module: {
     rules: [
@@ -65,14 +63,16 @@ var appConfig = {
       filename: "include-admin.cfm",
       inject: false,
       chunks: ["app"],
-      chunkSortMode: "dependency"
+      chunkSortMode: "dependency",
+            excluding: "guydtsh"
     }),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
       filename: "include-frontend.cfm",
       inject: false,
       chunks: ["frontend"],
-      chunkSortMode: "dependency"
+      chunkSortMode: "dependency",
+      excluding: "chart"
     }),
     new CompressionPlugin({
       asset: "[path].gz[query]",
@@ -85,22 +85,24 @@ var appConfig = {
   ],
   optimization: {
     usedExports: true,
-    // runtimeChunk: {
-    //   name: entrypoint => `runtime~${entrypoint.name}`
-    // },
-    runtimeChunk: 'single',
+    runtimeChunk: "single",
     splitChunks: {
       chunks: "all",
       maxInitialRequests: Infinity,
       minSize: 30000,
       cacheGroups: {
-        // default: false,
-        // vendors: false,
         "vendor-angular": {
           reuseExistingChunk: true,
           name: "vendor-angular",
           test: /[\\/]node_modules[\\/]angular.*?[\\/]/,
           chunks: "initial",
+          priority: 2
+        },
+        "vendor-chart": {
+          reuseExistingChunk: true,
+          name: "vendor-chart",
+          test: /[\\/]node_modules[\\/]chart.*?[\\/]/,
+          chunks: "all",
           priority: 2
         },
         "vendor-all": {
@@ -120,7 +122,7 @@ var appConfig = {
         sourceMap: true,
         // extractComments: "all",
         terserOptions: {
-          warnings: false,
+          warnings: true,
           parse: {},
           compress: true,
           mangle: true, // Note `mangle.properties` is `false` by default.

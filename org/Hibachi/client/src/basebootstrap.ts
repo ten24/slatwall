@@ -32,6 +32,7 @@ export class BaseBootStrapper{
     
 
     constructor(myApplication){
+        console.log("ffrfr");
         this.myApplication = myApplication;
         return angular.lazy(this.myApplication).resolve(['$http','$q', ($http,$q)=> {
             this.$http = $http;
