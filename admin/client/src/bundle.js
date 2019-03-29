@@ -62499,13 +62499,13 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
         this.createAccountPaymentMethodTitle = 'Add a new payment method';
         this.$onInit = function () {
             _this.baseEntityName = _this.swCustomerAccountPaymentMethodCard.baseEntityName;
-            _this.baseEntityPrimaryID = _this.swCustomerAccountPaymentMethodCard.baseEntity[_this.baseEntityName + 'ID'];
+            _this.baseEntity = _this.swCustomerAccountPaymentMethodCard.baseEntity;
+            _this.baseEntityPrimaryID = _this.baseEntity[_this.$hibachi.getPrimaryIDPropertyNameByEntityName(_this.baseEntityName)];
             _this.accountAddressOptions = _this.swCustomerAccountPaymentMethodCard.accountAddressOptions;
             _this.accountPaymentMethodOptions = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethodOptions;
             _this.expirationMonthOptions = _this.swCustomerAccountPaymentMethodCard.expirationMonthOptions;
             _this.expirationYearOptions = _this.swCustomerAccountPaymentMethodCard.expirationYearOptions;
             _this.stateCodeOptions = _this.swCustomerAccountPaymentMethodCard.stateCodeOptions;
-            _this.baseEntity = _this.swCustomerAccountPaymentMethodCard.baseEntity;
             _this.hideSelectAccountAddress = _this.accountAddressOptions.length === 0;
             _this.showCreateBillingAddress = _this.hideSelectAccountAddress;
             _this.hideSelectAccountPaymentMethod = _this.accountPaymentMethodOptions.length === 0;
@@ -62531,6 +62531,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
         };
         this.save = function () {
             var formDataToPost = {
+                entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext
             };

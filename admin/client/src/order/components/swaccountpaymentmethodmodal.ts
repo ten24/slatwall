@@ -69,7 +69,8 @@ class SWAccountPaymentMethodModalController{
 	public $onInit = () =>{
 			
 		this.baseEntityName = this.swCustomerAccountPaymentMethodCard.baseEntityName;
-		this.baseEntityPrimaryID = this.swCustomerAccountPaymentMethodCard.baseEntity[this.baseEntityName + 'ID'];
+		this.baseEntity = this.swCustomerAccountPaymentMethodCard.baseEntity;
+		this.baseEntityPrimaryID = this.baseEntity[this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.baseEntityName)];
 		
 		this.accountAddressOptions = this.swCustomerAccountPaymentMethodCard.accountAddressOptions;
 		this.accountPaymentMethodOptions = this.swCustomerAccountPaymentMethodCard.accountPaymentMethodOptions;
@@ -77,8 +78,6 @@ class SWAccountPaymentMethodModalController{
 		this.expirationMonthOptions = this.swCustomerAccountPaymentMethodCard.expirationMonthOptions;
 		this.expirationYearOptions = this.swCustomerAccountPaymentMethodCard.expirationYearOptions;
 		this.stateCodeOptions = this.swCustomerAccountPaymentMethodCard.stateCodeOptions;
-
-		this.baseEntity = this.swCustomerAccountPaymentMethodCard.baseEntity;
 
 
 		this.hideSelectAccountAddress = this.accountAddressOptions.length === 0;
@@ -114,6 +113,7 @@ class SWAccountPaymentMethodModalController{
 	
 	public save = () =>{
 		var formDataToPost:any = {
+			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext
 		};

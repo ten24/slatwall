@@ -1156,7 +1156,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrderTemplate_updateBilling(required any orderTemplate, required any processObject, required struct data={}){
 
+		var account = arguments.orderTemplate.getAccount(); 
+
+		if(!isNull(processObject.getNewAccountAddress())){
+			var accountAddress = getAccountService().newAccountAddress();
+			accountAddress.populate(processObject.getNewAccountAddress());
+			
+			var address = getAddressService().newAddress();
+			address.populate(processObject.getNewAccountAddress().address)
 		
+			accountAddress.setAddress(address); 
+			accountAddress.setAccount(account); 
+
+			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+
+
+			orderTemplate.setBillingAccountAddress(accountAddress);
+		} else if (!isNull(processObject.getBillingAccountAddress())) {  
+			
+		}
+
+		if(!isNull(processObject.getNewAccountPaymentMethod())){
+			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
+			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
+
+			accountPaymentMethod.setAccount(account); 
+
+			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
+			
+		} 
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate; 
 	} 

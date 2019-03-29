@@ -796,7 +796,8 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
 	        // PROCESS
 	        } else {
-	            entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});
+				//call process method by way of hibachiservice process so that process object gets inflated
+	            entity = entityService.invokeMethod("process", {1=entity, 2=structuredData, 3=arguments.rc.context});
 	        }
 
 	        // respond with data
