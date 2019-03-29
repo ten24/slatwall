@@ -825,11 +825,14 @@ component output="false" accessors="true" extends="HibachiController" {
 	                    pageRecords = getService('hibachiCollectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
 	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = pageRecords;
 	                }else{*/
-	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
+						var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier)  
+						if(isObject(value)){
+							value = value.getStructRepresentation();
+						}
+						arguments.rc.apiResponse.content['data'][propertyIdentifier] = value;
 	                //}
 	            }
 	        }
-
 	        if(entity.hasErrors()){
 	            arguments.rc.apiResponse.content.success = false;
 	            var context = getPageContext();
