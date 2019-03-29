@@ -9,7 +9,7 @@ import {SkuPriceService} from "./services/skupriceservice";
 //controllers
 
 //directives
-import {SWPricingManager} from "./components/swpricingmanager";
+import {SWPricingManager} from "sku/components/swpricingmanager";
 import {SWImageDetailModalLauncher} from "./components/swimagedetailmodallauncher";
 import {SWAddSkuPriceModalLauncher} from "./components/swaddskupricemodallauncher";
 import {SWDeleteSkuPriceModalLauncher} from "./components/swdeleteskupricemodallauncher";
