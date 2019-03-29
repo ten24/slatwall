@@ -50,9 +50,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="orderTemplate";
 
-	property name="newAccountAddress"; 
-	property name="newAccountPaymentMethod";
+	property name="newAccountAddress" fieldType="struct" hb_populateStruct="true"; 
+	property name="newAccountPaymentMethod" fieldType="struct" hb_populateStruct="true";
 
-	property name="billingAccountAddress";
-	property name="accountPaymentMethod"; 
+	property name="billingAccountAddress" fieldType="struct" hb_populateStruct="true";
+	property name="accountPaymentMethod" fieldType="struct" hb_populateStruct="true"; 
 }
