@@ -134,8 +134,6 @@ class SWAccountPaymentMethodModalController{
 		
 		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
 		
-		console.log('admin request', adminRequest);
-		
 		return adminRequest.promise;
 	}
 }

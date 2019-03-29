@@ -1173,7 +1173,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
-			
+			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
 		}
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
@@ -1184,7 +1184,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
-			
+			orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
 		} 
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
