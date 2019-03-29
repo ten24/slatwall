@@ -28,7 +28,8 @@ var appConfig = {
     filename: "[name].[contenthash].js",
     chunkFilename: "[name].[contenthash].bundle.js",
     sourceMapFilename: "sourcemaps/[file].map",
-    publicPath: "#request.slatwallScope.getBaseURL()#/dist/"
+    publicPath: "/dist/", // we have to do more work on this one
+    // publicPath: "#request.slatwallScope.getBaseURL()#/dist/"
   },
 
   // Turn on sourcemaps
