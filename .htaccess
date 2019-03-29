@@ -1,5 +1,5 @@
-<FilesMatch "\bundle.js$">
+<FilesMatch "\.bundle.js$">
 	Header unset Last-Modified
 	Header unset Etag
-	Header set Cache-Control "max-age=31536000"
+	Header set Cache-Control "max-age=31557600"
 </FilesMatch>
