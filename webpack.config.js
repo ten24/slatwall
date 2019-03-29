@@ -47,10 +47,12 @@ var appConfig = {
           {
             loader: "ts-loader",
             options: {
-              transpileOnly: true
+                happyPackMode: true // IMPORTANT! use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
+              // transpileOnly: true
             }
           }
-        ]
+        ],
+        exclude: /node_modules/
       }
     ]
   },
@@ -66,7 +68,7 @@ var appConfig = {
       inject: false,
       chunks: ["app"],
       chunkSortMode: "dependency",
-      excluding: "chart"
+      excluding: "hgfdg"
     }),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
@@ -91,7 +93,7 @@ var appConfig = {
     splitChunks: {
       chunks: "all",
       maxInitialRequests: Infinity,
-      minSize: 30000,
+      minSize: 3000,
       cacheGroups: {
         "vendor-angular": {
           reuseExistingChunk: true,
@@ -100,20 +102,20 @@ var appConfig = {
           chunks: "initial",
           priority: 2
         },
-        "vendor-chart": {
-          reuseExistingChunk: true,
-          name: "vendor-chart",
-          test: /[\\/]node_modules[\\/]chart.*?[\\/]/,
-          chunks: "all",
-          priority: 2
-        },
-        "vendor-all": {
-          reuseExistingChunk: true,
-          name: "vendor-all",
-          test: /[\\/]node_modules[\\/]/,
-          chunks: "initial",
-          priority: 1
-        }
+        // "vendor-chart": {
+        //   reuseExistingChunk: true,
+        //   name: "vendor-chart",
+        //   test: /[\\/]node_modules[\\/]chart.*?[\\/]/,
+        //   chunks: "all",
+        //   priority: 2
+        // },
+        // "vendor-all": {
+        //   reuseExistingChunk: true,
+        //   name: "vendor-all",
+        //   test: /[\\/]node_modules[\\/]/,
+        //   chunks: "initial",
+        //   priority: 1
+        // }
       }
     },
     mangleWasmImports: true, //  tells webpack to reduce the size of WASM by changing imports to shorter strings. It mangles module and export names.

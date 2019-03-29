@@ -1,6 +1,8 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-// import { Chart, ChartData, Point } from 'chart.js';
+
+// import { Chart, ChartData, Point } from "chart.js";
+
 class SWListingReportController {
     public selectedCollectionID:string;
     public collectionName:string;
@@ -69,11 +71,9 @@ class SWListingReportController {
     
     private loadChartJs() {
         
-     return import(/* webpackChunkName: "chartJs" */ 'chart.js').then(({ default: Chart }) => {
-         
-            console.log(Chart);
-
-       }).catch(error => 'An error occurred while loading the component');
+     return import(/* webpackChunkName: "chartjs" */ "chart.js")
+        .then( (Chart) =>  Chart)
+        .catch(error => 'An error occurred while lazy loading the chartjs');
     }
    
     
