@@ -47,8 +47,8 @@ var appConfig = {
           {
             loader: "ts-loader",
             options: {
-                happyPackMode: true // IMPORTANT! use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
-              // transpileOnly: true
+                // happyPackMode: true // IMPORTANT! use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
+              transpileOnly: true
             }
           }
         ],
@@ -68,7 +68,6 @@ var appConfig = {
       inject: false,
       chunks: ["app"],
       chunkSortMode: "dependency",
-      excluding: "hgfdg"
     }),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
@@ -76,7 +75,6 @@ var appConfig = {
       inject: false,
       chunks: ["frontend"],
       chunkSortMode: "dependency",
-      excluding: "chart"
     }),
     new CompressionPlugin({
       asset: "[path].gz[query]",
@@ -102,20 +100,11 @@ var appConfig = {
           chunks: "initial",
           priority: 2
         },
-        // "vendor-chart": {
-        //   reuseExistingChunk: true,
-        //   name: "vendor-chart",
-        //   test: /[\\/]node_modules[\\/]chart.*?[\\/]/,
-        //   chunks: "all",
-        //   priority: 2
-        // },
-        // "vendor-all": {
-        //   reuseExistingChunk: true,
-        //   name: "vendor-all",
-        //   test: /[\\/]node_modules[\\/]/,
-        //   chunks: "initial",
-        //   priority: 1
-        // }
+        "async": {
+          enforce:true,
+          chunks: "async",
+          priority: 2
+        },
       }
     },
     mangleWasmImports: true, //  tells webpack to reduce the size of WASM by changing imports to shorter strings. It mangles module and export names.
