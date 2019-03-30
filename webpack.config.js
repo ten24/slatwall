@@ -6,6 +6,8 @@ const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
 const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
+const VisualizerPlugin = require('webpack-visualizer-plugin');
+
 const TerserPlugin = require("terser-webpack-plugin"); //minimizer
 
 var path = require("path");
@@ -21,7 +23,7 @@ var appConfig = {
   context: __dirname, //where thi dist/ folder goes
   entry: {
     app: path.join(PATHS.app, "/bootstrap.ts"),
-    frontend: path.join(PATHS.hibachi, "/frontend/bootstrap.ts")
+    frontend: path.join(PATHS.hibachi, "/frontend/bootstrap.ts"),
   },
   output: {
     path: PATHS.dist,
@@ -48,7 +50,6 @@ var appConfig = {
           {
             loader: "ts-loader",
             options: {
-                // happyPackMode: true // IMPORTANT! use happyPackMode mode to speed-up compilation and reduce errors reported to webpack
               transpileOnly: true
             }
           }
@@ -84,6 +85,9 @@ var appConfig = {
       threshold: 10240,
       minRatio: 0.8
     }),
+    new VisualizerPlugin({
+      filename: 'bundle-stats.html'
+    }),
     // new BundleAnalyzerPlugin()
   ],
   optimization: {
@@ -102,7 +106,7 @@ var appConfig = {
           priority: 2
         },
         "async": {
-          enforce:true,
+          enforce: true,
           chunks: "async",
           priority: 2
         },

@@ -59,18 +59,22 @@ class SWListingReportController {
     }
 
     public $onInit = () => {
-        this.loadChartJs()
-        .then( (chart: Chart) => {
-            console.log("chart loaded");
-        });
+        this.loadChartJs();
     }
 
-// TODO for the first load we're getting a console error, will have to do more work on that one
+    // TODO for the first load we're getting a console error, will have to do more work on that one
     private loadChartJs() {
         // commonjs -------  require.ensure([], function(require) { require('someModule'); })
-        return require.ensure([], function (require) {
-            return require('chart.js');
-        }, 'chartjs');
+        return require.ensure([],
+            (require) => {
+                require('chart.js')
+                console.log("async chunk, chartjs loaded :");
+            },
+            (err) => {
+                console.log("unable to load chartjs err: " + err)
+            },
+            "chartjs" // chunk-name
+        );
     }
 
 
@@ -404,9 +408,9 @@ class SWListingReportController {
             data: {
                 labels: dates,
                 datasets: datasets,
-                spanGaps: true
             },
             options: {
+                spanGaps: true, // this is the right plsce
                 responsive: true,
                 title: {
                     display: true,
@@ -442,7 +446,7 @@ class SWListingReportController {
             }
         });
 
-        this.chart.draw();
+        this.chart.draw(); // this.chart.render(); //possible fix...?
         this.observerService.notifyById('swListingReport_DrawChart', this.tableId, this.chart);
     }
 
