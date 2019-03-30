@@ -1,5 +1,3 @@
-// import { Chart, ChartData, Point } from "chart.js";
-
 class SWListingReportController {
     public selectedCollectionID: string;
     public collectionName: string;
@@ -61,29 +59,18 @@ class SWListingReportController {
     }
 
     public $onInit = () => {
-        this.loadChartJs().then((chart: Chart) => {
-            console.log(chart);
+        this.loadChartJs()
+        .then( (chart: Chart) => {
+            console.log("chart loaded");
         });
     }
 
+// TODO for the first load we're getting a console error, will have to do more work on that one
     private loadChartJs() {
-
-        // return import(/* webpackChunkName: "chartjs" */ "chart.js")
-        //     .then((Chart) => {
-        //         console.log(Chart);
-        //         return Chart;
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //         return 'An error occurred while lazy loading the chart.js'
-        //     });
-
-
         // commonjs -------  require.ensure([], function(require) { require('someModule'); })
         return require.ensure([], function (require) {
             return require('chart.js');
         }, 'chartjs');
-
     }
 
 

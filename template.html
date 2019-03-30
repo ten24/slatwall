@@ -29,7 +29,6 @@
 -->
 <cfoutput>
   <% htmlWebpackPlugin.files.js.forEach(function (src) { %> 
-    <% if(htmlWebpackPlugin.options.excluding && src.indexOf(htmlWebpackPlugin.options.excluding) !== -1 ) return; %>
-    <script type="text/javascript" src="<%= src %>"></script>
+    <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#<%= src %>"></script>
   <% }) %>
 </cfoutput>
