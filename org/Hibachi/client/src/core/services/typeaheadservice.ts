@@ -1,6 +1,4 @@
 /// <reference path="../../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import * as TypeaheadStore from '../prototypes/swstore';
 import { Subject } from 'rxjs/Subject';

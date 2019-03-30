@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 //Displays an address form. Pass in an address object to bind to.
 declare var hibachiConfig:any;
 

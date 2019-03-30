@@ -1,5 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+
 class SWContentListController{
     public getCollection:Function;
     public openRoot:boolean;

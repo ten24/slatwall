@@ -1,5 +1,4 @@
-/// <reference path='../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
+
 //import alertmodule = require('./alert/alert.module');
 import {alertmodule} from "../alert/alert.module";
 import {cardmodule} from "../card/card.module";

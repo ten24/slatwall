@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * SwValidationLTE: Validates true if the user value <= to the constraint value.
  * @usage <input type='number' swvalidationlte='5000' /> will validate false if the user enters

@@ -1,5 +1,3 @@
-/// <reference path='../typings/hibachiTypescript.d.ts' />
-/// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
 import {BaseBootStrapper} from "./basebootstrap";
 import {hibachimodule} from "./hibachi/hibachi.module";

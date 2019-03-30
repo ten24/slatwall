@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 interface SWScope extends ng.IScope{
     ngModel:any,
     currencyCode:string

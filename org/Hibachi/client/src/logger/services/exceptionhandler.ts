@@ -1,5 +1,4 @@
-/// <reference path="../../../typings/tsd.d.ts" />
-/// <reference path="../../../typings/hibachiTypescript.d.ts" />
+
 //depends on alert module
 import {Alert} from "../../alert/model/alert";
 import {AlertService} from "../../alert/service/alertservice";

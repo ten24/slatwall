@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 /* SWListingExpandableRule
  * defines a filter, by which to determine what will be expanded

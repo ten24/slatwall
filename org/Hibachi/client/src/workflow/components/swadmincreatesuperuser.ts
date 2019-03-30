@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 class SWAdminCreateSuperUser{
 	public static Factory(){
 		var directive = (

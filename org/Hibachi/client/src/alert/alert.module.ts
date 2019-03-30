@@ -1,5 +1,4 @@
-/// <reference path='../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
+
 //controllers
 import {AlertController} from "./controllers/alertcontroller";
 //services

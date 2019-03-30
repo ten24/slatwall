@@ -1,6 +1,4 @@
 /// <reference path="../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import * as FluxStore from   '../../../../../org/Hibachi/client/src/core/prototypes/swstore';
 import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actions/fulfillmentbatchactions';
