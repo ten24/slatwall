@@ -61,6 +61,8 @@ class SWEditSkuPriceModalLauncherController extends EditSkuPriceModalLauncherCon
 
 class SWEditSkuPriceModalLauncher extends EditSkuPriceModalLauncher implements ng.IDirective{
     
+    public controller = SWEditSkuPriceModalLauncherController;
+    
     public static Factory(){
         var directive = (
             $hibachi,
@@ -109,20 +111,6 @@ class SWEditSkuPriceModalLauncher extends EditSkuPriceModalLauncher implements n
             skuPartialsPath,
             slatwallPathBuilder
         );
-        
-        let swEditSkuPriceModalLauncher = new EditSkuPriceModalLauncher(
-            $hibachi, 
-            entityService,
-            observerService,
-            scopeService, 
-            collectionConfigService, 
-            skuPartialsPath,
-            slatwallPathBuilder
-        );
-            
-        swEditSkuPriceModalLauncher.controller = SWEditSkuPriceModalLauncherController;
-        swEditSkuPriceModalLauncher.controllerAs="swEditSkuPriceModalLauncher";
-        return swEditSkuPriceModalLauncher;
     }
 }
 
