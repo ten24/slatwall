@@ -799,7 +799,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertTrue(arrayLen(pageRecords) == 5, "Wrong amount of products returned! Expecting 5 record but returned #arrayLen(pageRecords)#");
 		
-		assert(myCollection.getHQL() contains 'GROUP BY ');
+		assertFalse(myProductCollection.getHQL() contains 'GROUP BY ');
 	}
 	
 	
