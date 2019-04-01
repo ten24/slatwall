@@ -227,6 +227,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							setPropertySessionDefault(currentProperty.name, trim(arguments.data[ currentProperty.name ]));
 						}
 					}
+				// ( POPULATE-STRUCT )
+				} else if( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "struct"  && structKeyExists(currentProperty, "hb_populateStruct") && currentProperty.hb_populateStruct && isStruct( arguments.data[ currentProperty.name ] ) ) {
+					
+					_setProperty(currentProperty.name, arguments.data[ currentProperty.name ] );
 
 				// ( POPULATE-ARRAY )
 				} else if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && structKeyExists(currentProperty, "hb_populateArray") && currentProperty.hb_populateArray && isArray( arguments.data[ currentProperty.name ] ) ) {

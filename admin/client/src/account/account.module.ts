@@ -5,6 +5,7 @@ import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 
 import {SWCustomerAccountCard} from "./components/swcustomeraccountcard";
 
+
 var accountmodule = angular.module('account',[coremodule.name])
 .config([()=>{
 

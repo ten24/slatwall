@@ -12,6 +12,7 @@ import {orderitemmodule} from "../orderitem/orderitem.module";
 import {orderfulfillmentmodule} from "../orderfulfillment/orderfulfillment.module";
 import {fulfillmentbatchdetailmodule} from "../fulfillmentbatch/fulfillmentbatchdetail.module";
 import {orderdeliverydetailmodule} from "../orderdelivery/orderdeliverydetail.module";
+import {ordermodule} from "../order/order.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {skumodule} from "../sku/sku.module";
@@ -42,6 +43,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   orderfulfillmentmodule.name,
   fulfillmentbatchdetailmodule.name,
   orderdeliverydetailmodule.name,
+  ordermodule.name,
   productmodule.name,
   productbundlemodule.name,
   skumodule.name,

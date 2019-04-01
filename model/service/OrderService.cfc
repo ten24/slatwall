@@ -1154,6 +1154,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate;
 	}
 
+	public any function processOrderTemplate_updateBilling(required any orderTemplate, required any processObject, required struct data={}){
+
+		var account = arguments.orderTemplate.getAccount(); 
+
+		if(!isNull(processObject.getNewAccountAddress())){
+			var accountAddress = getAccountService().newAccountAddress();
+			accountAddress.populate(processObject.getNewAccountAddress());
+			
+			var address = getAddressService().newAddress();
+			address.populate(processObject.getNewAccountAddress().address)
+		
+			accountAddress.setAddress(address); 
+			accountAddress.setAccount(account); 
+
+			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+
+
+			orderTemplate.setBillingAccountAddress(accountAddress);
+		} else if (!isNull(processObject.getBillingAccountAddress())) {  
+			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
+		}
+
+		if(!isNull(processObject.getNewAccountPaymentMethod())){
+			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
+			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
+
+			accountPaymentMethod.setAccount(account); 
+
+			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
+			orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
+		} 
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate; 
+	} 
+
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 		//Setup Site Origin if using slatwall cms
 		if(!isNull(getHibachiScope().getCurrentRequestSite()) && getHibachiScope().getCurrentRequestSite().isSlatwallCMS()){

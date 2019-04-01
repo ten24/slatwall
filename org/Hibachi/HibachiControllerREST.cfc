@@ -433,38 +433,64 @@ component output="false" accessors="true" extends="HibachiController" {
             property
             argumentsCollection
         */
-        var data = [];
+        var propertyDisplayOptions = [];
         var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
         
         if(entity.hasAttributeCode(arguments.rc.property)){
         	var attribute = getService('attributeService').getAttributeByAttributeCode(arguments.rc.property);
         	
-        	data = attribute.getAttributeOptionsOptions();
+        	propertyDisplayOptions = attribute.getAttributeOptionsOptions();
         }else{
         	if(isNull(arguments.rc.argument1)){
-	            data = entity.invokeMethod('get#arguments.rc.property#Options');
+	            propertyDisplayOptions = entity.invokeMethod('get#arguments.rc.property#Options');
 	        }else{
-	            data = entity.invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+	            propertyDisplayOptions = entity.invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
 	        }
         }
         
+		var propertyDisplayOptionsCount = arrayLen(propertyDisplayOptions);
+      
+ 
+		//if not an array of structs format for consistency
+		if(!arrayIsEmpty(propertyDisplayOptions) && !isStruct(propertyDisplayOptions[1])){
+			var propertyDisplayOptionsFormatted = [];
+			for(var i=1; i <= propertyDisplayOptionsCount; i++){
+				var value = {
+					'name' = propertyDisplayOptions[i],
+					'value' = propertyDisplayOptions[i]
+				};
+				arrayAppend(propertyDisplayOptionsFormatted, value);
+			}
+			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
+		} else if (!arrayIsEmpty(propertyDisplayOptions) && find('NAME',structKeyList(propertyDisplayOptions[1]))){
+			//keep casing consistent for client side
+			var propertyDisplayOptionsFormatted = [];
+			for(var i=1; i <= propertyDisplayOptionsCount; i++){
+				var value = {
+					'name' = propertyDisplayOptions[i]['NAME'],
+					'value' = propertyDisplayOptions[i]['VALUE']  
+				}
+				arrayAppend(propertyDisplayOptionsFormatted, value);
+			}
+			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
+		}  
 
         //if it contains an empty value make it the first item
         var emptyValue = javacast('null','');
-        var dataCount = arrayLen(data);
         var emptyValueIndex = 0;
-        for(var i = 1; i <= dataCount; i++){
-            if(structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
-                emptyValue = data[i];
+        for(var i = 1; i <= propertyDisplayOptionsCount; i++){
+            if(structKeyExists(propertyDisplayOptions[i],'value') && propertyDisplayOptions[i]['value'] == ''){
+                emptyValue = propertyDisplayOptions[i];
                 emptyValueIndex = i;
+				break;
             }
         }
         if(!isNull(emptyValue) && emptyValueIndex > 0){
-            ArrayPrepend(data,emptyValue);
-            ArrayDeleteAt(data,emptyValueIndex+1);
+            ArrayPrepend(propertyDisplayOptions,emptyValue);
+            ArrayDeleteAt(propertyDisplayOptions,emptyValueIndex+1);
         }
 
-        arguments.rc.apiResponse.content['data'] = data;
+        arguments.rc.apiResponse.content['data'] = propertyDisplayOptions;
     }
     /* pass in an entity name and recieve validation*/
     public any function getValidation(required struct rc){
@@ -770,7 +796,8 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
 	        // PROCESS
 	        } else {
-	            entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});
+				//call process method by way of hibachiservice process so that process object gets inflated
+	            entity = entityService.invokeMethod("process", {1=entity, 2=structuredData, 3=arguments.rc.context});
 	        }
 
 	        // respond with data
@@ -798,11 +825,14 @@ component output="false" accessors="true" extends="HibachiController" {
 	                    pageRecords = getService('hibachiCollectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
 	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = pageRecords;
 	                }else{*/
-	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
+						var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier)  
+						if(isObject(value)){
+							value = value.getStructRepresentation();
+						}
+						arguments.rc.apiResponse.content['data'][propertyIdentifier] = value;
 	                //}
 	            }
 	        }
-
 	        if(entity.hasErrors()){
 	            arguments.rc.apiResponse.content.success = false;
 	            var context = getPageContext();

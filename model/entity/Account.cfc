@@ -553,6 +553,20 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.termOrderPaymentsByDueDateSmartList;
 	}
 
+	public any function getAccountAddressOptions() {
+		var accountAddressCollectionList = getService('AccountService').getAccountAddressCollectionList();
+		accountAddressCollectionList.setDisplayProperties('accountAddressName|name, accountAddressID|value');
+		accountAddressCollectionList.addFilter('account.accountID', getAccountID());
+		return accountAddressCollectionList.getRecords(); 	
+	} 
+
+	public any function getAccountPaymentMethodOptions() {
+		var accountPaymentMethodCollectionList = getService('AccountService').getAccountPaymentMethodCollectionList(); 
+		accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName|name, accountPaymentMethodID|value');
+		accountPaymentMethodCollectionList.addFilter('account.accountID', getAccountID());
+		return accountPaymentMethodCollectionList.getRecords();
+	} 
+
 	public any function getUnenrolledAccountLoyaltyOptions() {
 		if(!structKeyExists(variables, "unenrolledAccountLoyaltyOptions")) {
 			variables.unenrolledAccountLoyaltyOptions = [];
