@@ -44,8 +44,9 @@ class SWEditSkuPriceModalLauncherController{
         let currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
         if(angular.isDefined(currentScope.pageRecord)){ 
             this.pageRecord = currentScope.pageRecord;
+            console.log(this.pageRecord);
             //sku record case
-            if(angular.isDefined(currentScope.pageRecord["sku_skuID"]) && angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
+            if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
                 let skuData = {
                     skuID:currentScope.pageRecord["sku_skuID"],
                     skuCode:currentScope.pageRecord["sku_skuCode"],

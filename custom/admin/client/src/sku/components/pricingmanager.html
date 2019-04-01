@@ -126,7 +126,7 @@
            </sw-tab-content>
            <sw-tab-content data-name="Pricing">  
                <!-- Attempting to incorporate needs into existing listing -->
-                <sw-listing-display
+                <!--<sw-listing-display
                         data-multi-slot="true"
                         data-edit="true"
                         data-has-search="true"
@@ -261,6 +261,46 @@
                                 </a>
                             </sw-edit-sku-price-modal-launcher>
                         </sw-listing-delete-action>  
+                </sw-listing-display>-->
+                <sw-listing-display
+                        data-multi-slot="true"
+                        data-edit="true"
+                        data-has-search="true"
+                        data-is-angular-route="false"
+                        data-angular-links="false"
+                        data-has-action-bar="false"
+                        data-base-entity-name="SkuPrice"
+                        data-collection-config="swPricingManager.skuPriceCollectionConfig"
+                        data-administrative-count="1">
+                    
+                    <!--<sw-listing-columns>
+                        <sw-listing-column 
+                                data-property-identifier="sku.skuCode" 
+                                data-fallback-property-identifiers="skuCode,sku_skuCode" 
+                                tdclass="primary">
+                        </sw-listing-column>
+                    </sw-listing-columns>-->
+                    
+                    <sw-listing-save-action>
+                        <sw-listing-row-save>
+                        </sw-listing-row-save>
+                    </sw-listing-save-action>
+                    <sw-listing-add-action>
+                        <sw-add-sku-price-modal-launcher data-default-currency-only="true">
+                            <a href="#" title="Add Price" class="btn btn-default btn-xs" data-target="#">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </sw-add-sku-price-modal-launcher>
+                    </sw-listing-add-action>  
+                    <sw-listing-delete-action>
+                        <sw-delete-sku-price-modal-launcher>
+                        </sw-delete-sku-price-modal-launcher>
+                        <sw-edit-sku-price-modal-launcher>
+                            <a href="#" title="Edit Price" class="btn btn-default btn-xs" data-target="#">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </sw-edit-sku-price-modal-launcher>
+                    </sw-listing-delete-action> 
                 </sw-listing-display>
            </sw-tab-content>
        </sw-tab-group>

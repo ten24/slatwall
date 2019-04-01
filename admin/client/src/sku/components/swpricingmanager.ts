@@ -8,6 +8,7 @@ class SWPricingManagerController{
     public product; 
     public productCollectionConfig;
     public trackInventory; 
+    public skuPriceCollectionConfig;
     
     //temporary var
     public singleEditTest; 
@@ -15,7 +16,7 @@ class SWPricingManagerController{
     
     //@ngInject
     constructor(
-        private collectionConfigService
+        public collectionConfigService
     ){
         this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product"); 
         this.productCollectionConfig.addFilter("productID", this.productId, "=",'AND',true);
@@ -28,6 +29,10 @@ class SWPricingManagerController{
 
             }
         );
+        
+        this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode")
+        this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
     }    
 
 }
@@ -64,9 +69,9 @@ class SWPricingManager implements ng.IDirective{
     
     // @ngInject
     constructor(
-        private $hibachi, 
-		private skuPartialsPath,
-	    private slatwallPathBuilder
+        public $hibachi, 
+		public skuPartialsPath,
+	    public slatwallPathBuilder
     ){
         this.template = swPricingManagerHTML;
     }

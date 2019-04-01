@@ -29,7 +29,7 @@ class SWEditSkuPriceModalLauncherController extends EditSkuPriceModalLauncherCon
 
         if(angular.isDefined(this.pageRecord)){ 
             //sku record case
-            if(angular.isDefined(this.pageRecord["sku_skuID"]) && angular.isDefined(this.pageRecord.skuPriceID) && this.pageRecord.skuPriceID.length){
+            if(angular.isDefined(this.pageRecord.skuPriceID) && this.pageRecord.skuPriceID.length){
             
                 this.skuPrice.personalVolume = this.pageRecord.personalVolume;
                 this.skuPrice.taxableAmount = this.pageRecord.taxableAmount;
