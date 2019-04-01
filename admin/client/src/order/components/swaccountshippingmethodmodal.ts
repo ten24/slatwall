@@ -63,12 +63,15 @@ class SWAccountShippingMethodModalController{
 		this.shippingMethodOptions = this.swAccountShippingAddressCard.shippingMethodOptions;
 		this.stateCodeOptions = this.swAccountShippingAddressCard.stateCodeOptions;
 
+        console.log('countryCode', this.countryCodeOptions);
+
         this.baseEntity.shippingAccountAddress = this.accountAddressOptions[0];
         this.baseEntity.shippingMethod = this.shippingMethodOptions[0];
 	
 	    this.newAccountAddress = {
         	address:{
-        		stateCode: this.stateCodeOptions[0]
+        		stateCode: this.stateCodeOptions[0],
+        		countryCode: this.countryCodeOptions[0]
         	}
 	    };	
 	}

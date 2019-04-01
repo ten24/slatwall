@@ -81,7 +81,7 @@ class SWAccountPaymentMethodModalController{
 		} else {
 			for(var i=0; i<this.accountAddressOptions.length; i++){
 				var option = this.accountAddressOptions[i];
-				if(option['value'] == this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID){
+				if(option['value'] === this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID){
 					this.baseEntity.billingAccountAddress = option;
 					break;
 				}
@@ -93,15 +93,11 @@ class SWAccountPaymentMethodModalController{
 		} else {
 			for(var i=0; i<this.accountPaymentMethodOptions.length; i++){
 				var option = this.accountPaymentMethodOptions[i];
-                if(option['value'] == this.swCustomerAccountPaymentMethodCard.accountPaymentMethod.accountPaymentMethodID){
+                if(option['value'] === this.swCustomerAccountPaymentMethodCard.accountPaymentMethod.accountPaymentMethodID){
                 	this.baseEntity.accountPaymentMethod = option;
                 	break;
                 }
             }
-		}
-		
-		for(var i=0; i<this.countryCodeOptions.length; i++){
-			
 		}
 		
 		if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){
@@ -113,9 +109,20 @@ class SWAccountPaymentMethodModalController{
         	expirationYear: this.expirationYearOptions[0]
         };
         
+       
+    	var defaultCountry =  this.countryCodeOptions[0];
+       
+        for(var i=0; i<this.countryCodeOptions.length; i++){
+			var country = this.countryCodeOptions[i];
+			if(country['value'] === this.defaultCountryCode){
+				defaultCountry = country;
+                break;
+			}
+		}
+        
         this.newAccountAddress = {
         	address:{
-        		countryCode: this.countryCodeOptions[0],
+        		countryCode: defaultCountry,
         		stateCode: this.stateCodeOptions[0]
         	}
 	    };
