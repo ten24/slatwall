@@ -446,7 +446,8 @@ class SWListingReportController {
             }
         });
 
-        this.chart.draw(); // this.chart.render(); //possible fix...?
+        this.chart.render();
+        
         this.observerService.notifyById('swListingReport_DrawChart', this.tableId, this.chart);
     }
 

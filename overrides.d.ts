@@ -11,5 +11,9 @@
 
 declare global {
     const angular: ng.IAngularStatic;
+    const Chart: typeof Chart;
+    interface Function {
+        $inject?: ReadonlyArray<string>;
+    }
   }
   export {};
