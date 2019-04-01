@@ -19,10 +19,10 @@ declare global {
     }
 
 
-    // namespace angular {
-    //     interface Function {
-    //     }
-    // }
+    namespace angular {
+        interface Function {
+        }
+    }
 }
 
 
