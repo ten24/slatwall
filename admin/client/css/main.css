@@ -5770,6 +5770,9 @@ a.disabled > i.hibachi-ui-radio-checked {
 #reporting-top label {
   display: block;
 }
+#reporting-top .input-group .form-control {
+  max-width: 110px;
+}
 #reporting-top .flex {
   display: flex;
 }
@@ -5827,21 +5830,24 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 #reporting-top .flex.flex-col-right {
   align-items: flex-end;
-  flex-direction: column;
+  flex-direction: row;
 }
 #reporting-top .flex.flex-space-between {
   justify-content: space-between;
   margin-bottom: 10px;
 }
 #reporting-top .save-btn {
-  display: inherit;
+  display: block;
   margin-top: 7px;
+  margin-left: 50px;
+  border: 0;
 }
 #reporting-top .save-btn button {
   height: 34px;
+  border: 0;
 }
 #reporting-top .save-btn .dropdown-menu {
-  right: -60px;
+  right: 0;
   top: 35px;
   border-radius: 0;
 }
@@ -5856,6 +5862,18 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 #reporting-top .flex-cal .btn-default:hover {
   background-color: #fff;
+}
+#reporting-top .flex.compare {
+  position: relative;
+  padding-left: 20px;
+}
+#reporting-top .flex.compare:before {
+  content: '-';
+  position: absolute;
+  left: 15px;
+  top: 10px;
+  margin: auto;
+  font-size: 35px;
 }
 #reporting-top .flex select {
   width: 100%;
@@ -5872,14 +5890,13 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-image: url(data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%20%3C%21DOCTYPE%20svg%20PUBLIC%20%22-//W3C//DTD%20SVG%201.1//EN%22%20%22http%3A//www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd%22%3E%20%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2214px%22%20height%3D%2212px%22%20viewBox%3D%220%200%2014%2012%22%20enable-background%3D%22new%200%200%2014%2012%22%20xml%3Aspace%3D%22preserve%22%3E%20%3Cpolygon%20points%3D%223.862%2C7.931%200%2C4.069%207.725%2C4.069%20%22/%3E%3C/svg%3E);
 }
 #reporting-top .flex.flex-col-left .col {
-  margin-right: 10px;
+  margin-right: 50px;
 }
 #reporting-top .flex.flex-col-left .col:last-child {
   flex: 1 0 50%;
-  margin-right: 0;
 }
 #reporting-top .flex.flex-col-left {
-  margin: 15px 0 10px;
+  margin-bottom: 20px;
   justify-content: flex-start;
 }
 #reporting-top .col-cal {
@@ -5913,6 +5930,40 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-color: #fff;
   border: 1px solid #DDDDDD;
   color: #5E5E5E;
+}
+#get-started-report {
+  background: #fff;
+}
+#get-started-report .text {
+  max-width: 550px;
+  margin: 0 auto;
+  padding: 10px 10px 30px;
+}
+#get-started-report h2 {
+  padding-left: 38px;
+}
+#get-started-report ol {
+  font-size: 14px;
+  line-height: 1.8;
+  list-style: none;
+  counter-reset: item;
+}
+#get-started-report ol li {
+  counter-increment: item;
+}
+#get-started-report ol li:before {
+  content: counter(item);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 15px;
+  padding-right: 8px;
+}
+#get-started-report em {
+  color: #000;
+  font-weight: 600;
+}
+#get-started-report .close {
+  padding: 6px 10px;
 }
 /*-- Slideout Sidebar --*/
 .s-slide-main-content {
@@ -7624,6 +7675,7 @@ table tr td .s-loading-icon {
 .s-detail-content-table tbody tr td {
   position: relative;
   font-weight: 500;
+  border: 1px solid #ddd!important;
 }
 .s-detail-content-table tbody tr td .form-group {
   margin-bottom: 0px;
@@ -8517,4 +8569,15 @@ table.s-detail-content-table tbody tr.s-done {
 .currency {
   text-align: right;
   float: right;
+}
+.tooltip-inner {
+  white-space: nowrap;
+  max-width: none;
+}
+.tooltip.bottom .tooltip-arrow {
+  left: 1rem !important;
+}
+.tooltip.right {
+  position: absolute;
+  display: inline-block;
 }
