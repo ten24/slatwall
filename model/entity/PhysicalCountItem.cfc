@@ -58,7 +58,7 @@ component entityname="SlatwallPhysicalCountItem" table="SwPhysicalCountItem" per
 
 	// Related Object Properties (many-to-one)
 	property name="physicalCount" cfc="PhysicalCount" fieldtype="many-to-one" fkcolumn="physicalCountID";
-	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID" hb_cascadeCalculate="true";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -110,6 +110,11 @@ component entityname="SlatwallPhysicalCountItem" table="SwPhysicalCountItem" per
 			arrayDeleteAt(arguments.physicalCount.getPhysicalCountItems(), index);
 		}
 		structDelete(variables, "physicalCount");
+	}
+	
+	public void function setCycleCountBatchItem(required any cycleCountBatchItem){
+		variables.cycleCountBatchItem = arguments.cycleCountBatchItem;
+		arguments.cycleCountBatchItem.setPhysicalCountItem(this);
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

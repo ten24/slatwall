@@ -67,7 +67,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			var itemName = 'default';
 		}
 		
-		if(structKeyExists(arguments, 'processContext') && len(arguments.processContext)){
+		if( (left(itemname,10) == 'preprocess'  || left(itemname,7) == 'process' )
+			&& structKeyExists(arguments, 'processContext') 
+			&& len(arguments.processContext)
+		){
 			itemName &= '_#arguments.processContext#';
 		}
 		

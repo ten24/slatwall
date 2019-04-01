@@ -1,22 +1,36 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class CreateBundleController{
+	
+	public $inject=[
+		'$scope',
+		'$location',
+		'$log',
+		'$rootScope',
+		'$window',
+		'$hibachi',
+		'dialogService',
+		'alertService',
+		'productBundleService',
+		'formService',
+		'productBundlePartials'
+	];
 	//@ngInject
 	constructor(
-		$scope,
-		$location,
-		$log,
-		$rootScope,
-		$window,
-		$hibachi,
-		dialogService,
-		alertService,
-		productBundleService,
-		formService,
-		productBundlePartialsPath
+		public $scope,
+		public $location,
+		public $log,
+		public $rootScope,
+		public $window,
+		public $hibachi,
+		public dialogService,
+		public alertService,
+		public productBundleService,
+		public formService,
+		public productBundlePartialsPath
 	){
 		$scope.productBundlePartialsPath = productBundlePartialsPath;
-
+		this.productBundleService=productBundleService;
 		var getParameterByName = (name) =>{
 		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -70,15 +84,15 @@ class CreateBundleController{
 		if(angular.isDefined(productID) && productID !== ''){
 			var productPromise = $hibachi.getProduct({id:productID});
 
-			productPromise.promise.then(function(){
+			productPromise.promise.then(()=>{
 				$log.debug(productPromise.value);
-				productPromise.value.$$getSkus().then(function(){
-					productPromise.value.data.skus[0].$$getProductBundleGroups().then(function(){
+				productPromise.value.$$getSkus().then(()=>{
+					productPromise.value.data.skus[0].$$getProductBundleGroups().then(()=>{
 
 						$scope.product = productPromise.value;
-						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,function(productBundleGroup){
+						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,(productBundleGroup)=>{
 							productBundleGroup.$$getProductBundleGroupType();
-							productBundleService.decorateProductBundleGroup(productBundleGroup);
+							this.productBundleService.decorateProductBundleGroup(productBundleGroup);
 							productBundleGroup.data.$$editing = false;
 						});
 					});

@@ -117,6 +117,51 @@
 						</div><!--- panel-collapse collapse in --->
 					</div><!--- j-panel panel-default --->
 				</cfloop>
+				
+				<cfif isObject(attributes.object)>
+					<cfset emailTemplateCollectionList = attributes.hibachiScope.getService("emailService").getEmailTemplateCollectionList() />
+					<cfset emailTemplateCollectionList.addFilter('emailTemplateObject', "#attributes.object.getClassName()#") />
+					<cfif emailTemplateCollectionList.getRecordsCount() gt 0 >
+						<!---emails tab --->
+						<div class="j-panel panel panel-default">
+							<a data-toggle="collapse" href="##tabEmail">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<span>#attributes.hibachiScope.rbKey('define.email')#</span>
+										<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+									</h4>
+								</div>
+							</a>
+							<div id="tabEmail" class="panel-collapse collapse">
+								<content class="s-body-box">
+									<cfoutput>
+										<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabEmail">
+											<cfset emailCollection = attributes.hibachiScope.getService('emailService').getEmailCollectionList()/>
+											<cfset emailCollection.setDisplayProperties("emailSubject,emailTo",{isVisible=true,isSearchable=true} ) />
+											<cfset emailCollection.addDisplayProperty(displayProperty="createdDateTime",columnConfig={isVisible=true} ) />
+											<cfset emailCollection.addDisplayProperty(displayProperty="emailID",columnConfig={isVisible=false,isDeletable=false} ) />
+											
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue() )/>
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName() )/>
+											
+											<hb:HibachiListingDisplay 
+												collectionList="#emailCollection#"
+												usingPersonalCollection="false"
+												recordEditAction="admin:entity.editemail"
+												recordEditQueryString="redirectAction=admin:entity.listemail"
+												recordDetailAction="admin:entity.detailemail"
+											>
+											</hb:HibachiListingDisplay>
+										</div>
+									</cfoutput>
+								</content><!--- s-body-box --->
+							</div>
+						</div><!--- panel panel-default --->
+					</cfif>
+				</cfif>
+				
+				
+				
 				<cfif isObject(attributes.object)>
 					<!---system tab --->
 					<div class="j-panel panel panel-default">
@@ -165,6 +210,7 @@
 
 					</div><!--- panel panel-default --->
 				</cfif>
+				
 			</div>
 		<cfelse>
 			<cfloop array="#thistag.tabs#" index="tab">

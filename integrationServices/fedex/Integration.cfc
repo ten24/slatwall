@@ -87,7 +87,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 				{name="RTF",value="RTF"},
 				{name="TEXT",value="TEXT"},
 				{name="ZPLII", value="ZPLII"}
-			]}
+			]},
+			specialServiceAlcoholFlag = {fieldType="yesno", defaultValue="0"}
 		};
 		
 		return settings;

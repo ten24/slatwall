@@ -101,6 +101,18 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		//save message
 		if(structKeyExists(responseBean.getData(),'ShipmentResponse')){
 			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['ShipmentResponse']['Response']['ResponseStatus']));
+<<<<<<< HEAD
+		}else if(structKeyExists(responseBean.getData(),'Fault')){
+			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['Fault']['detail']['Errors']));
+			arguments.processObject.getOrderDelivery().addError('containerLabel',serializeJSON(responseBean.getData()['Fault']['detail']['Errors']));
+		}else{
+			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()));
+			arguments.processObject.getOrderDelivery().addError('containerLabel',serializeJSON(responseBean.getData()));
+		}
+		arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastStatusCode(responseBean.getStatusCode());
+		arguments.processObject.getOrderDelivery().setTrackingNumber(responseBean.getTrackingNumber());
+		arguments.processObject.getOrderDelivery().setContainerLabel(responseBean.getContainerLabel());
+=======
 			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastStatusCode(responseBean.getStatusCode());
 			arguments.processObject.getOrderDelivery().setTrackingNumber(responseBean.getTrackingNumber());
 			arguments.processObject.getOrderDelivery().setContainerLabel(responseBean.getContainerLabel());
@@ -110,6 +122,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			arguments.processObject.getOrderDelivery().addError('containerLabel',serializeJSON(responseBean.getData()));
 		}
 		
+>>>>>>> 88191d7fc8... most recent version
 	}
 	
 	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){

@@ -126,11 +126,10 @@ component  accessors="true" output="false"
         var skuSmartList = getService('skuService').getSkuSmartList();
         skuSmartList.addInFilter('skuID',data.skuIDs);
         
-        if( skuSmartList.getRecordsCount() > 0){
-            var skus = skuSmartList.getRecords();
-            
-            for  (var sku in skus){
-                arguments.data.ajaxResponse['resizedImagePaths'][sku.getSkuID()] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
+        for (var skuID in data.skuIDs){
+            var sku = getService('SkuService').getSku(skuID);
+            if(!isNull(sku)){
+                arguments.data.ajaxResponse['resizedImagePaths'][skuID] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
             }
         }
         arguments.data.returnJsonObjects = "";
@@ -233,6 +232,22 @@ component  accessors="true" output="false"
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
+    }
+    
+    public any function updatePrimaryEmailAddress(required struct data) {
+        var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'updatePrimaryEmailAddress');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('updatePrimaryEmailAddress').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.updatePrimaryAccountEmailAddress",account.hasErrors());
+    }
+    
+    public any function updatePassword(requried struct data) {
+        var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'updatePassword');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('updatePassword').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.updatePassword",account.hasErrors());
     }
     
     /**

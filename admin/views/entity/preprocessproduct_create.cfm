@@ -232,8 +232,11 @@ Notes:
 
 			<cfelseif rc.baseProductType eq "subscription">
 
-			<hb:HibachiPropertyList divClass="col-md-6">
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
+			<hb:HibachiPropertyList divClass="col-md-12">
+					<div class="col-md-6">
+						<h1 class="actionbar-title">Renewal Settings</h1>
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
+					</div> 
 			</hb:HibachiPropertyList>
 
 			<hb:HibachiPropertyList divClass="col-md-12">

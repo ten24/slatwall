@@ -72,6 +72,26 @@ export const ADD_BOX  = "ADD_BOX";
 export const REMOVE_BOX  = "REMOVE_BOX";
 
 /**
+ * This will update the dimensions of a box on a shipment.
+ */
+export const UPDATE_BOX_DIMENSIONS  = "UPDATE_BOX_DIMENSIONS";
+
+/**
+ * This will set delivery quantities on a shipment.
+ */
+export const SET_DELIVERY_QUANTITIES  = "SET_DELIVERY_QUANTITIES";
+
+/**
+ * This will update the quantity on a container item.
+ */
+export const UPDATE_CONTAINER_ITEM_QUANTITY = "UPDATE_CONTAINER_ITEM_QUANTITIES";
+
+/**
+ * This will set the container for an unassigned container item.
+ */
+export const SET_UNASSIGNED_ITEM_CONTAINER = "SET_UNASSIGNED_ITEM_CONTAINER";
+
+/**
  * This will fire when the current page records selected on a table are updated.
  */
 export const CURRENT_PAGE_RECORDS_SELECTED  = "CURRENT_PAGE_RECORDS_SELECTED";

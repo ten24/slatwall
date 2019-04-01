@@ -52,7 +52,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
-	property name="containerLabel" ormtype="clob";
+	property name="containerLabel" ormtype="text";
 	// Related Object Properties (Many-To-One)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
@@ -64,6 +64,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	// Related Object Properties (One-To-Many)
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderDeliveryID" cascade="all-delete-orphan" inverse="true";
+	property name="containers" cfc="Container" singularname="container" fieldtype="one-to-many" inverse="true" fkcolumn="orderDeliveryID";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="shippingLabelFiles" singularname="shippingLabelFile" cfc="File" fieldtype="many-to-many" linktable="SwOrderDeliveryShipLabelFile" fkcolumn="orderDeliveryID" inversejoincolumn="fileID";
