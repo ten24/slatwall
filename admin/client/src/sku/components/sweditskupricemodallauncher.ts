@@ -28,15 +28,15 @@ class SWEditSkuPriceModalLauncherController{
     
     //@ngInject
     constructor(
-        private $hibachi,
-        private entityService,
-        private formService,
-        private listingService,
-        private observerService, 
-        private skuPriceService,
-        private utilityService,
-        private scopeService,
-        private $scope
+        public $hibachi,
+        public entityService,
+        public formService,
+        public listingService,
+        public observerService, 
+        public skuPriceService,
+        public utilityService,
+        public scopeService,
+        public $scope
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "editSkuPrice" + this.utilityService.createID(16);
@@ -253,13 +253,13 @@ class SWEditSkuPriceModalLauncher implements ng.IDirective{
         return directive;
     }
     constructor(
-        private $hibachi, 
-        private entityService,
-        private observerService,
-        private scopeService, 
-        private collectionConfigService, 
-        private skuPartialsPath,
-        private slatwallPathBuilder
+        public $hibachi, 
+        public entityService,
+        public observerService,
+        public scopeService, 
+        public collectionConfigService, 
+        public skuPartialsPath,
+        public slatwallPathBuilder
     ){
         this.template = swEditSkuPriceModalLauncherHTML;
     }
