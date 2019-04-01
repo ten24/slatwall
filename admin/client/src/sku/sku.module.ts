@@ -11,7 +11,7 @@ import {SkuPriceService} from "./services/skupriceservice";
 //directives
 import {SWPricingManager} from "./components/swpricingmanager";
 import {SWImageDetailModalLauncher} from "./components/swimagedetailmodallauncher";
-import {SWAddSkuPriceModalLauncher} from "./components/swaddskupricemodallauncher";
+import {SWAddSkuPriceModalLauncher} from "sku/components/swaddskupricemodallauncher";
 import {SWDeleteSkuPriceModalLauncher} from "./components/swdeleteskupricemodallauncher";
 import {SWEditSkuPriceModalLauncher} from "./components/sweditskupricemodallauncher";
 import {SWSkuStockAdjustmentModalLauncher} from "./components/swskustockadjustmentmodallauncher";
