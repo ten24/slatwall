@@ -69,6 +69,12 @@
 
 			<div class="col-md-4">
 				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#"
+														<cfif not isNull(rc.orderTemplate.getAccountPaymentMethod())>
+															data-account-payment-method="#rc.orderTemplate.getAccountPaymentMethod().getEncodedJsonRepresentation()#"
+														</cfif> 
+														<cfif not isNull(rc.orderTemplate.getBillingAccountAddress())>
+															data-billing-account-address="#rc.orderTemplate.getBillingAccountAddress().getEncodedJsonRepresentation()#"
+														</cfif> 	
 														data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
 														data-account-payment-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountPaymentMethodOptions()))#"
 														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getStateCodeOptions()))#"

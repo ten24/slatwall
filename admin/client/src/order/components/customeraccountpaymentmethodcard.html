@@ -9,7 +9,13 @@
 			
 			<ul class="list-unstyled">
 				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressName"></li>
-				<!--<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress."></li>-->
+				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_streetAddress"></li>
+				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_street2Address"></li>
+				<li>
+					<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_city"></span>
+					<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_stateCode"></span>
+					<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_postalCode"></span>
+				</li>
 			</ul>
 		</div>
 		
@@ -22,7 +28,7 @@
 			</ul>
 		</div>
 		
-		<sw-account-payment-method-modal>
+		<sw-account-payment-method-modal data-modal-button-text="{{swCustomerAccountPaymentMethodCard.modalButtonText}}">
 		</sw-account-payment-method-modal>
 	</content>
 </div>

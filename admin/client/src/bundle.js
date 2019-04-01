@@ -62472,6 +62472,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.title = "Edit Billing Information";
+        this.modalButtonText = "Add Billing Information";
         this.uniqueName = 'accountPaymentMethodModal';
         this.formName = 'accountPaymentMethodModal';
         this.billingAccountAddressTitle = 'Select Billing Address';
@@ -62570,6 +62571,7 @@ var SWAccountPaymentMethodModal = /** @class */ (function () {
             baseEntity: "<?",
             processContext: "@?",
             title: "@?",
+            modalButtonText: "@?",
             createBillingAddressTitle: "@?",
             createAccountPaymentMethodTitle: "@?",
             accountAddressNameTitle: "@?",
@@ -62684,6 +62686,12 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
             _this.accountPaymentMethod = data.accountPaymentMethod;
         };
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
+        if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
+            this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
+        }
+        else {
+            this.modalButtonText = this.rbkeyService.rbKey('define.add') + ' ' + this.title;
+        }
     }
     return SWCustomerAccountPaymentMethodCardController;
 }());

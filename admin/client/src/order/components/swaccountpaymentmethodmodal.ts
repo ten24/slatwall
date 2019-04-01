@@ -20,6 +20,7 @@ class SWAccountPaymentMethodModalController{
 	public swCustomerAccountPaymentMethodCard;
 	
 	public title:string="Edit Billing Information";
+	public modalButtonText:string="Add Billing Information";
 	public uniqueName:string = 'accountPaymentMethodModal';
 	public formName:string = 'accountPaymentMethodModal';
 	
@@ -152,6 +153,7 @@ class SWAccountPaymentMethodModal implements ng.IDirective {
 		baseEntity:"<?",
 		processContext:"@?",
 	    title:"@?",
+	    modalButtonText:"@?",
 	    createBillingAddressTitle:"@?",
 	    createAccountPaymentMethodTitle:"@?",
 	    accountAddressNameTitle:"@?",

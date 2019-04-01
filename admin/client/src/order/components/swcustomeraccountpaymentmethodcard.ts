@@ -4,6 +4,7 @@ class SWCustomerAccountPaymentMethodCardController{
 
 	public title:string="Billing";
 	public billingAddressTitle:string="Billing Address";
+	public modalButtonText:string;
 	public paymentTitle:string="Payment";
 
 	public billingAccountAddress;
@@ -25,7 +26,13 @@ class SWCustomerAccountPaymentMethodCardController{
 				public observerService,
 				public rbkeyService
 	){
-		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess')
+		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
+		
+		if(this.billingAccountAddress != null && this.accountPaymentMethod != null){
+			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
+		} else {
+			this.modalButtonText = this.rbkeyService.rbKey('define.add')  + ' ' + this.title; 
+		}
 	}
 	
 	public updateBillingInfo = (data) =>{
