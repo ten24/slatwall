@@ -10,11 +10,13 @@ class SWAccountShippingAddressCardController{
 	public baseEntity;
 
 	constructor(public $hibachi,
+				public observerService,
 				public rbkeyService
 	){
 
-		
 	}
+	
+
 }
 
 class SWAccountShippingAddressCard implements ng.IDirective {

@@ -62618,8 +62618,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountShippingAddressCardController = /** @class */ (function () {
-    function SWAccountShippingAddressCardController($hibachi, rbkeyService) {
+    function SWAccountShippingAddressCardController($hibachi, observerService, rbkeyService) {
         this.$hibachi = $hibachi;
+        this.observerService = observerService;
         this.rbkeyService = rbkeyService;
         this.title = "Shipping";
     }
@@ -62670,10 +62671,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
-    function SWCustomerAccountPaymentMethodCardController($hibachi, rbkeyService) {
+    function SWCustomerAccountPaymentMethodCardController($hibachi, observerService, rbkeyService) {
+        var _this = this;
         this.$hibachi = $hibachi;
+        this.observerService = observerService;
         this.rbkeyService = rbkeyService;
         this.title = "Billing";
+        this.billingAddressTitle = "Billing Address";
+        this.paymentTitle = "Payment";
+        this.updateBillingInfo = function (data) {
+            _this.billingAccountAddress = data.billingAccountAddress;
+            _this.accountPaymentMethod = data.accountPaymentMethod;
+        };
+        this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
     }
     return SWCustomerAccountPaymentMethodCardController;
 }());
@@ -62689,6 +62699,7 @@ var SWCustomerAccountPaymentMethodCard = /** @class */ (function () {
             accountAddressOptions: "<",
             accountPaymentMethod: "<",
             accountPaymentMethodOptions: "<",
+            billingAccountAddress: "<?",
             baseEntityName: "@?",
             baseEntity: "<",
             expirationMonthOptions: "<",

@@ -2,8 +2,12 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCustomerAccountPaymentMethodCardController{
 
-	public accountPaymentMethod;
 	public title:string="Billing";
+	public billingAddressTitle:string="Billing Address";
+	public paymentTitle:string="Payment";
+
+	public billingAccountAddress;
+	public accountPaymentMethod; 
 	
 	public accountAddressOptions;
 	public accountPaymentMethodOptions;
@@ -18,9 +22,15 @@ class SWCustomerAccountPaymentMethodCardController{
 	public stateCodeOptions;
 	
 	constructor(public $hibachi,
+				public observerService,
 				public rbkeyService
 	){
-
+		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess')
+	}
+	
+	public updateBillingInfo = (data) =>{
+		this.billingAccountAddress = data.billingAccountAddress; 
+		this.accountPaymentMethod = data.accountPaymentMethod; 
 	}
 }
 
@@ -34,6 +44,7 @@ class SWCustomerAccountPaymentMethodCard implements ng.IDirective {
 		accountAddressOptions: "<",
 		accountPaymentMethod:"<",
 		accountPaymentMethodOptions:"<",
+		billingAccountAddress:"<?",
 		baseEntityName:"@?",
 		baseEntity:"<",
 		expirationMonthOptions:"<",

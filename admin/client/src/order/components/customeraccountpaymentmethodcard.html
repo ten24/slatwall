@@ -3,6 +3,25 @@
 		<h4 class="panel-title" ng-bind="swCustomerAccountPaymentMethodCard.title"></h4>
 	</div>
 	<content class="s-body-box">
+		
+		<div ng-if="swCustomerAccountPaymentMethodCard.billingAccountAddress">
+			<h5 ng-bind="swCustomerAccountPaymentMethodCard.billingAddressTitle"></h5>
+			
+			<ul class="list-unstyled">
+				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressName"></li>
+				<!--<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress."></li>-->
+			</ul>
+		</div>
+		
+		<div ng-if="swCustomerAccountPaymentMethodCard.accountPaymentMethod"> 
+			<h5 ng-bind="swCustomerAccountPaymentMethodCard.paymentTitle"></h5>
+			
+			<ul class="list-unstyled">
+				<li ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.accountPaymentMethodName"></li>
+				<li><span ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.creditCardType"></span> *<span ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.creditCardLastFour"></span></li>
+			</ul>
+		</div>
+		
 		<sw-account-payment-method-modal>
 		</sw-account-payment-method-modal>
 	</content>
