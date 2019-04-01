@@ -4,7 +4,6 @@
         "module": "commonjs", //commonjs     esnext  
         "lib": [
             "dom",
-            "js",
             "es5",
             "scripthost",
             "es2015.promise"
@@ -46,6 +45,7 @@
             "./node_modules/@types"
         ], /* List of folders to include type definitions from. */
         "types": [
+            "angular",
             "angularjs",
             "bootstrap",
             "chart.js",
