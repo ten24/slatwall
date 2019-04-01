@@ -58,13 +58,21 @@
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-4">
 				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
-										data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
+											data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
 				</sw-customer-account-card> 
 			</div>
 
 			<div class="col-md-4">
-				<sw-order-shipping-method-card data-title="#getHibachiScope().rbkey('define.shipping')#">
-				</sw-order-shipping-method-card>
+				<sw-account-shipping-address-card data-title="#getHibachiScope().rbkey('define.shipping')#"
+													data-base-entity-name="OrderTemplate" 
+													data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+													data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
+													data-shipping-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getShippingMethodOptions()))#" 
+													data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getStateCodeOptions()))#"
+													data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getCountryCodeOptions()))#"	
+													data-default-country-code="US"
+													>
+				</sw-account-shipping-address-card>
 			</div>
 
 			<div class="col-md-4">
@@ -77,11 +85,14 @@
 														</cfif> 	
 														data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
 														data-account-payment-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountPaymentMethodOptions()))#"
+														data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getCountryCodeOptions()))#"	
 														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getStateCodeOptions()))#"
 														data-expiration-month-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationMonthOptions()))#"
 														data-expiration-year-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationYearOptions()))#"
 														data-base-entity-name="OrderTemplate" 
-														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#">
+														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+														data-default-country-code="US"
+														>
 				</sw-customer-account-payment-method-card>
 			</div>		
 		</div>

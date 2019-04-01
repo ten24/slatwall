@@ -7,6 +7,7 @@ class SWAccountPaymentMethodModalController{
 	//Options
 	public accountAddressOptions;
 	public accountPaymentMethodOptions;
+	public countryCodeOptions;
 	public expirationMonthOptions;
 	public expirationYearOptions;
 	public stateCodeOptions;
@@ -16,7 +17,9 @@ class SWAccountPaymentMethodModalController{
 	public baseEntity;
 	public processObject;
 	public baseEntityPrimaryID:string;
-		
+	
+	public defaultCountryCode:string;	
+	
 	public swCustomerAccountPaymentMethodCard;
 	
 	public title:string="Edit Billing Information";
@@ -26,22 +29,6 @@ class SWAccountPaymentMethodModalController{
 	
 	public billingAccountAddressTitle:string = 'Select Billing Address';
 	public accountPaymentMethodTitle:string = 'Select Account Payment Method';
-	
-	//account address labels
-	public accountAddressNameTitle:string = 'Nickname';
-	public streetAddressTitle:string = "Street Address"; 
-	public street2AddressTitle:string = "Street Address 2";
-	public cityTitle:string = 'City'; 
-	public stateCodeTitle:string = 'State';
-	public postalCodeTitle:string = 'Postal Code'
-	
-	//account payment method labels
-	public accountPaymentMethodNameTitle:string = 'Nickname';
-	public creditCardNumberTitle:string = "Credit Card"; 
-	public nameOnCreditCardTitle:string = "Name on Credit Card"; 
-	public expirationMonthTitle:string = "Expiration Month";
-	public expirationYearTitle:string = "Expiration Year"; 
-	public securityCodeTitle:string = "Security Code"
 	
 	public processContext:string = 'updateBilling';
 	
@@ -64,7 +51,6 @@ class SWAccountPaymentMethodModalController{
 				 public rbkeyService,
 				 public requestService
 	){
-		
 	}
 	
 	public $onInit = () =>{
@@ -73,9 +59,12 @@ class SWAccountPaymentMethodModalController{
 		this.baseEntity = this.swCustomerAccountPaymentMethodCard.baseEntity;
 		this.baseEntityPrimaryID = this.baseEntity[this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.baseEntityName)];
 		
+		this.accountPaymentMethodTitle = this.rbkeyService.rbKey('entity.' + this.baseEntityName + '.accountPaymentMethod');
+		
 		this.accountAddressOptions = this.swCustomerAccountPaymentMethodCard.accountAddressOptions;
 		this.accountPaymentMethodOptions = this.swCustomerAccountPaymentMethodCard.accountPaymentMethodOptions;
 
+		this.countryCodeOptions = this.swCustomerAccountPaymentMethodCard.countryCodeOptions;
 		this.expirationMonthOptions = this.swCustomerAccountPaymentMethodCard.expirationMonthOptions;
 		this.expirationYearOptions = this.swCustomerAccountPaymentMethodCard.expirationYearOptions;
 		this.stateCodeOptions = this.swCustomerAccountPaymentMethodCard.stateCodeOptions;
@@ -122,6 +111,7 @@ class SWAccountPaymentMethodModalController{
         
         this.newAccountAddress = {
         	address:{
+        		countryCode: this.countryCodeOptions[0],
         		stateCode: this.stateCodeOptions[0]
         	}
 	    };

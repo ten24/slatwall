@@ -3,11 +3,18 @@
 class SWAccountShippingAddressCardController{
 
 	public accountShippingAddress;
+	
+	public accountAddressOptions;
+	public shippingMethodOptions;
+	public stateCodeOptions;
+	
 	public title:string="Shipping";
 	
 	//entity that account payment method will be set on
 	public baseEntityName:string;
 	public baseEntity;
+	
+	public defaultCountryCode:string;
 
 	constructor(public $hibachi,
 				public observerService,
@@ -25,9 +32,13 @@ class SWAccountShippingAddressCard implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
+		accountAddressOptions: "<",
 		accountShippingAddress:"<",
 		baseEntityName:"@?",
 		baseEntity:"<",
+		defaultCountryCode: "@?",
+		shippingMethodOptions: "<",
+		stateCodeOptions: "<",
 	    title:"@?"
 	};
 	public controller=SWAccountShippingAddressCardController;
@@ -35,18 +46,18 @@ class SWAccountShippingAddressCard implements ng.IDirective {
 
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
-		    accountPartialsPath,
+		    orderPartialsPath,
 			slatwallPathBuilder,
 			$hibachi,
 			rbkeyService
         ) => new SWAccountShippingAddressCard(
-			accountPartialsPath,
+			orderPartialsPath,
 			slatwallPathBuilder,
 			$hibachi,
 			rbkeyService
         );
         directive.$inject = [
-			'accountPartialsPath',
+			'orderPartialsPath',
 			'slatwallPathBuilder',
 			'$hibachi',
 			'rbkeyService'
@@ -54,12 +65,12 @@ class SWAccountShippingAddressCard implements ng.IDirective {
         return directive;
     }
 
-	constructor(private accountPartialsPath, 
+	constructor(private orderPartialsPath, 
 				private slatwallPathBuilder, 
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = slatwallPathBuilder.buildPartialsPath(accountPartialsPath) + "/customeraccountpaymentmethodcard.html";
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/accountshippingaddresscard.html";
 		this.restrict = "EA";
 	}
 

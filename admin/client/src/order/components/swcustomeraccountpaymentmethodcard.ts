@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCustomerAccountPaymentMethodCardController{
 
-	public title:string="Billing";
+	public title:string;
 	public billingAddressTitle:string="Billing Address";
 	public modalButtonText:string;
 	public paymentTitle:string="Payment";
@@ -10,12 +10,17 @@ class SWCustomerAccountPaymentMethodCardController{
 	public billingAccountAddress;
 	public accountPaymentMethod; 
 	
-	public accountAddressOptions;
-	public accountPaymentMethodOptions;
-	
 	//entity that account payment method will be set on
 	public baseEntityName:string;
 	public baseEntity;
+	
+	public defaultCountryCode:string;
+	
+	//options
+	public accountAddressOptions;
+	public accountPaymentMethodOptions;
+	
+	public countryCodeOptions;
 	
 	public expirationMonthOptions;
 	public expirationYearOptions;
@@ -27,6 +32,8 @@ class SWCustomerAccountPaymentMethodCardController{
 				public rbkeyService
 	){
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
+		
+		this.title = this.rbkeyService.rbKey('define.billing');
 		
 		if(this.billingAccountAddress != null && this.accountPaymentMethod != null){
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
@@ -54,6 +61,8 @@ class SWCustomerAccountPaymentMethodCard implements ng.IDirective {
 		billingAccountAddress:"<?",
 		baseEntityName:"@?",
 		baseEntity:"<",
+		countryCodeOptions:"<",
+		defaultCountryCode: "@?",
 		expirationMonthOptions:"<",
 		expirationYearOptions:"<",
 		stateCodeOptions:"<",

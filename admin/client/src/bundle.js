@@ -62477,20 +62477,6 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
         this.formName = 'accountPaymentMethodModal';
         this.billingAccountAddressTitle = 'Select Billing Address';
         this.accountPaymentMethodTitle = 'Select Account Payment Method';
-        //account address labels
-        this.accountAddressNameTitle = 'Nickname';
-        this.streetAddressTitle = "Street Address";
-        this.street2AddressTitle = "Street Address 2";
-        this.cityTitle = 'City';
-        this.stateCodeTitle = 'State';
-        this.postalCodeTitle = 'Postal Code';
-        //account payment method labels
-        this.accountPaymentMethodNameTitle = 'Nickname';
-        this.creditCardNumberTitle = "Credit Card";
-        this.nameOnCreditCardTitle = "Name on Credit Card";
-        this.expirationMonthTitle = "Expiration Month";
-        this.expirationYearTitle = "Expiration Year";
-        this.securityCodeTitle = "Security Code";
         this.processContext = 'updateBilling';
         this.hideSelectAccountAddress = false;
         this.hideSelectAccountPaymentMethod = false;
@@ -62502,8 +62488,10 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             _this.baseEntityName = _this.swCustomerAccountPaymentMethodCard.baseEntityName;
             _this.baseEntity = _this.swCustomerAccountPaymentMethodCard.baseEntity;
             _this.baseEntityPrimaryID = _this.baseEntity[_this.$hibachi.getPrimaryIDPropertyNameByEntityName(_this.baseEntityName)];
+            _this.accountPaymentMethodTitle = _this.rbkeyService.rbKey('entity.' + _this.baseEntityName + '.accountPaymentMethod');
             _this.accountAddressOptions = _this.swCustomerAccountPaymentMethodCard.accountAddressOptions;
             _this.accountPaymentMethodOptions = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethodOptions;
+            _this.countryCodeOptions = _this.swCustomerAccountPaymentMethodCard.countryCodeOptions;
             _this.expirationMonthOptions = _this.swCustomerAccountPaymentMethodCard.expirationMonthOptions;
             _this.expirationYearOptions = _this.swCustomerAccountPaymentMethodCard.expirationYearOptions;
             _this.stateCodeOptions = _this.swCustomerAccountPaymentMethodCard.stateCodeOptions;
@@ -62544,6 +62532,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             };
             _this.newAccountAddress = {
                 address: {
+                    countryCode: _this.countryCodeOptions[0],
                     stateCode: _this.stateCodeOptions[0]
                 }
             };
@@ -62647,29 +62636,33 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
     return SWAccountShippingAddressCardController;
 }());
 var SWAccountShippingAddressCard = /** @class */ (function () {
-    function SWAccountShippingAddressCard(accountPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.accountPartialsPath = accountPartialsPath;
+    function SWAccountShippingAddressCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.orderPartialsPath = orderPartialsPath;
         this.slatwallPathBuilder = slatwallPathBuilder;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
+            accountAddressOptions: "<",
             accountShippingAddress: "<",
             baseEntityName: "@?",
             baseEntity: "<",
+            defaultCountryCode: "@?",
+            shippingMethodOptions: "<",
+            stateCodeOptions: "<",
             title: "@?"
         };
         this.controller = SWAccountShippingAddressCardController;
         this.controllerAs = "swAccountShippingAddressCard";
         this.link = function (scope, element, attrs) {
         };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(accountPartialsPath) + "/customeraccountpaymentmethodcard.html";
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/accountshippingaddresscard.html";
         this.restrict = "EA";
     }
     SWAccountShippingAddressCard.Factory = function () {
-        var directive = function (accountPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWAccountShippingAddressCard(accountPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWAccountShippingAddressCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
         directive.$inject = [
-            'accountPartialsPath',
+            'orderPartialsPath',
             'slatwallPathBuilder',
             '$hibachi',
             'rbkeyService'
@@ -62696,7 +62689,6 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
-        this.title = "Billing";
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
         this.updateBillingInfo = function (data) {
@@ -62704,6 +62696,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
             _this.accountPaymentMethod = data.accountPaymentMethod;
         };
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
+        this.title = this.rbkeyService.rbKey('define.billing');
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
             this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
         }
@@ -62728,6 +62721,8 @@ var SWCustomerAccountPaymentMethodCard = /** @class */ (function () {
             billingAccountAddress: "<?",
             baseEntityName: "@?",
             baseEntity: "<",
+            countryCodeOptions: "<",
+            defaultCountryCode: "@?",
             expirationMonthOptions: "<",
             expirationYearOptions: "<",
             stateCodeOptions: "<",
@@ -62767,6 +62762,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 var swaccountpaymentmethodmodal_1 = __webpack_require__(633);
 var swaccountshippingaddresscard_1 = __webpack_require__(634);
+var swaccountshippingmethodmodal_1 = __webpack_require__(890);
 var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(635);
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
@@ -62777,6 +62773,7 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     //controllers
     .directive('swAccountPaymentMethodModal', swaccountpaymentmethodmodal_1.SWAccountPaymentMethodModal.Factory())
     .directive('swAccountShippingAddressCard', swaccountshippingaddresscard_1.SWAccountShippingAddressCard.Factory())
+    .directive('swAccountShippingMethodModal', swaccountshippingmethodmodal_1.SWAccountShippingMethodModal.Factory())
     .directive('swCustomerAccountPaymentMethodCard', swcustomeraccountpaymentmethodcard_1.SWCustomerAccountPaymentMethodCard.Factory());
 exports.ordermodule = ordermodule;
 
@@ -93825,6 +93822,98 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(305);
+
+
+/***/ }),
+/* 890 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var SWAccountShippingMethodModalController = /** @class */ (function () {
+    function SWAccountShippingMethodModalController($timeout, $hibachi, entityService, observerService, rbkeyService, requestService) {
+        var _this = this;
+        this.$timeout = $timeout;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.requestService = requestService;
+        this.processContext = 'updateShipping';
+        this.uniqueName = 'shippingMethodModal';
+        this.formName = 'shippingMethodModal';
+        //rb key properties
+        this.title = "Edit Shipping Information";
+        this.shippingMethodTitle = "Shipping Method";
+        this.modalButtonText = "Add Shipping Information";
+        this.createShippingAddressTitle = 'Add new shipping address';
+        this.shippingAccountAddressTitle = 'Shipping account address';
+        //view state properties
+        this.hideSelectAccountAddress = false;
+        this.showCreateShippingAddress = false;
+        this.$onInit = function () {
+            _this.baseEntityName = _this.swAccountShippingAddressCard.baseEntityName;
+            _this.baseEntity = _this.swAccountShippingAddressCard.baseEntity;
+            _this.baseEntityPrimaryID = _this.baseEntity[_this.$hibachi.getPrimaryIDPropertyNameByEntityName(_this.baseEntityName)];
+            _this.accountAddressOptions = _this.swAccountShippingAddressCard.accountAddressOptions;
+            _this.shippingMethodOptions = _this.swAccountShippingAddressCard.shippingMethodOptions;
+            _this.stateCodeOptions = _this.swAccountShippingAddressCard.stateCodeOptions;
+            _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
+            _this.baseEntity.shippingMethod = _this.shippingMethodOptions[0];
+            _this.newAccountAddress = {
+                address: {
+                    stateCode: _this.stateCodeOptions[0]
+                }
+            };
+        };
+        this.save = function () {
+            var formDataToPost = {
+                entityID: _this.baseEntityPrimaryID,
+                entityName: _this.baseEntityName,
+                context: _this.processContext,
+                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod'
+            };
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            return adminRequest.promise;
+        };
+    }
+    return SWAccountShippingMethodModalController;
+}());
+var SWAccountShippingMethodModal = /** @class */ (function () {
+    function SWAccountShippingMethodModal(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.orderPartialsPath = orderPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {};
+        this.require = {
+            swAccountShippingAddressCard: "^^swAccountShippingAddressCard"
+        };
+        this.controller = SWAccountShippingMethodModalController;
+        this.controllerAs = "swAccountShippingMethodModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/accountshippingmethodmodal.html";
+        this.restrict = "EA";
+    }
+    SWAccountShippingMethodModal.Factory = function () {
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWAccountShippingMethodModal(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        directive.$inject = [
+            'orderPartialsPath',
+            'slatwallPathBuilder',
+            '$hibachi',
+            'rbkeyService'
+        ];
+        return directive;
+    };
+    return SWAccountShippingMethodModal;
+}());
+exports.SWAccountShippingMethodModal = SWAccountShippingMethodModal;
 
 
 /***/ })
