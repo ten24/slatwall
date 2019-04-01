@@ -62533,7 +62533,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             var formDataToPost = {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
-                context: _this.processContext
+                context: _this.processContext,
+                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod'
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -62549,7 +62550,6 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             }
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
-            console.log('admin request', adminRequest);
             return adminRequest.promise;
         };
     }
@@ -79676,7 +79676,7 @@ var AdminRequest = /** @class */ (function (_super) {
         _this.promise.then(function (result) {
             //identify that it is an object save
             if (url.indexOf('api:main.post') != -1 && data.entityName) {
-                var eventNameBase = data.entityName + data.context.charAt(0).toUpperCase() + data.context.slice(0);
+                var eventNameBase = data.entityName + data.context.charAt(0).toUpperCase() + data.context.slice(1);
                 if (result.errors) {
                     _this.observerService.notify(eventNameBase + 'Failure', result.data);
                 }

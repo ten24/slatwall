@@ -115,7 +115,8 @@ class SWAccountPaymentMethodModalController{
 		var formDataToPost:any = {
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
-			context: this.processContext
+			context: this.processContext,
+			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod'
 		};
 		
 		if(this.showCreateBillingAddress){
