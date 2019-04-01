@@ -154,13 +154,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 	
-<<<<<<< HEAD
-	//CUSTOM PROPERTIES BEGIN
-	property name="mynewcustomproperty";
-	
-	//CUSTOM PROPERTIES END
-=======
->>>>>>> 3a6b01e79e384ce38045ba72e513a490d7cba79b
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
