@@ -10,6 +10,7 @@ class SWAccountShippingMethodModalController{
 	
 	//Options
 	public accountAddressOptions;
+	public countryCodeOptions;
     public shippingMethodOptions;
     public stateCodeOptions;
 	
@@ -58,6 +59,7 @@ class SWAccountShippingMethodModalController{
 		this.baseEntityPrimaryID = this.baseEntity[this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.baseEntityName)];
 		
 		this.accountAddressOptions = this.swAccountShippingAddressCard.accountAddressOptions;
+		this.countryCodeOptions = this.swAccountShippingAddressCard.countryCodeOptions;
 		this.shippingMethodOptions = this.swAccountShippingAddressCard.shippingMethodOptions;
 		this.stateCodeOptions = this.swAccountShippingAddressCard.stateCodeOptions;
 

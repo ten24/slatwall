@@ -50,6 +50,18 @@
                 
                 <div class="form-group">
                     <label class="form-label" 
+                            for="countryCode" 
+                            sw-rbkey="'entity.address.countryCode'">
+                    </label>
+                    <select name="countryCode" 
+                            class="form-control"
+                            ng-model="swAccountShippingMethodModal.newAccountAddress.address.countryCode"
+                            ng-options="country.name for country in swAccountShippingMethodModal.countryCodeOptions track by country.value">
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" 
                             for="streetAddress" 
                             sw-rbkey="'entity.address.streetAddress'">
                     </label>

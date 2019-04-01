@@ -18,7 +18,7 @@ class SWAccountPaymentMethodModalController{
 	public processObject;
 	public baseEntityPrimaryID:string;
 	
-	public defaultCountryCode:string;	
+	public defaultCountryCode:string='US';	
 	
 	public swCustomerAccountPaymentMethodCard;
 	
@@ -98,6 +98,10 @@ class SWAccountPaymentMethodModalController{
                 	break;
                 }
             }
+		}
+		
+		for(var i=0; i<this.countryCodeOptions.length; i++){
+			
 		}
 		
 		if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){

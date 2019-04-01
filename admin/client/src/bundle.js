@@ -62471,6 +62471,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
+        this.defaultCountryCode = 'US';
         this.title = "Edit Billing Information";
         this.modalButtonText = "Add Billing Information";
         this.uniqueName = 'accountPaymentMethodModal';
@@ -62522,6 +62523,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                         break;
                     }
                 }
+            }
+            for (var i = 0; i < _this.countryCodeOptions.length; i++) {
             }
             if (_this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null) {
                 _this.accountPaymentMethod = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
@@ -93859,6 +93862,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             _this.baseEntity = _this.swAccountShippingAddressCard.baseEntity;
             _this.baseEntityPrimaryID = _this.baseEntity[_this.$hibachi.getPrimaryIDPropertyNameByEntityName(_this.baseEntityName)];
             _this.accountAddressOptions = _this.swAccountShippingAddressCard.accountAddressOptions;
+            _this.countryCodeOptions = _this.swAccountShippingAddressCard.countryCodeOptions;
             _this.shippingMethodOptions = _this.swAccountShippingAddressCard.shippingMethodOptions;
             _this.stateCodeOptions = _this.swAccountShippingAddressCard.stateCodeOptions;
             _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
