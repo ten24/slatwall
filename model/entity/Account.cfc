@@ -152,7 +152,25 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="secondaatrcd" ormtype="string";
+ property name="nestcode" ormtype="string";
+ property name="TestcO" ormtype="string";
+ property name="TestcOdsfdas" ormtype="string";
+ property name="adfdad" ormtype="string";
+ property name="vhufv" ormtype="string" default="bidw";
+ property name="hqcgiy" ormtype="string" default="hdgiy";
+ property name="hfig" ormtype="string";
+ property name="dsads" ormtype="string";
+ property name="dads" ormtype="string";
+ property name="dasd" ormtype="string";
+ property name="ada" ormtype="string";
+ property name="asda" ormtype="string";
+ property name="dasda" ormtype="string";
+ property name="tht" ormtype="string";
+ property name="ttrgdfsa" ormtype="string";
+ property name="attricode" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
