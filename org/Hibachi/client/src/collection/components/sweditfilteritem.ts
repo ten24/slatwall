@@ -322,7 +322,6 @@ class SWEditFilterItem{
 							    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
                                     filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
                                 }
-                                //filterItem.value = filterItem.rangeMin + '-' + filterItem.rangeMax;
                                 filterItem.displayValue = filterItem.value;
                                  
                                              
