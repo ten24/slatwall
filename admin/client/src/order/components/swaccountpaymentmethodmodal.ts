@@ -87,12 +87,28 @@ class SWAccountPaymentMethodModalController{
 		this.hideSelectAccountPaymentMethod = this.accountPaymentMethodOptions.length === 0;
 		this.showCreateAccountPaymentMethod = this.hideSelectAccountPaymentMethod;
 
-		if(!this.hideSelectAccountAddress){
+		if(!this.hideSelectAccountAddress  && this.swCustomerAccountPaymentMethodCard.billingAccountAddress == null){
 			this.baseEntity.billingAccountAddress = this.accountAddressOptions[0];
+		} else {
+			for(var i=0; i<this.accountAddressOptions.length; i++){
+				var option = this.accountAddressOptions[i];
+				if(option['value'] == this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID){
+					this.baseEntity.billingAccountAddress = option;
+					break;
+				}
+			}
 		}
 		
-		if(!this.hideSelectAccountPaymentMethod){
+		if(!this.hideSelectAccountPaymentMethod  && this.swCustomerAccountPaymentMethodCard.accountPaymentMethod == null){
 			this.baseEntity.accountPaymentMethod = this.accountPaymentMethodOptions[0];
+		} else {
+			for(var i=0; i<this.accountPaymentMethodOptions.length; i++){
+				var option = this.accountPaymentMethodOptions[i];
+                if(option['value'] == this.swCustomerAccountPaymentMethodCard.accountPaymentMethod.accountPaymentMethodID){
+                	this.baseEntity.accountPaymentMethod = option;
+                	break;
+                }
+            }
 		}
 		
 		if(this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null){

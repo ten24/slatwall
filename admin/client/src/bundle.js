@@ -62511,11 +62511,29 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             _this.showCreateBillingAddress = _this.hideSelectAccountAddress;
             _this.hideSelectAccountPaymentMethod = _this.accountPaymentMethodOptions.length === 0;
             _this.showCreateAccountPaymentMethod = _this.hideSelectAccountPaymentMethod;
-            if (!_this.hideSelectAccountAddress) {
+            if (!_this.hideSelectAccountAddress && _this.swCustomerAccountPaymentMethodCard.billingAccountAddress == null) {
                 _this.baseEntity.billingAccountAddress = _this.accountAddressOptions[0];
             }
-            if (!_this.hideSelectAccountPaymentMethod) {
+            else {
+                for (var i = 0; i < _this.accountAddressOptions.length; i++) {
+                    var option = _this.accountAddressOptions[i];
+                    if (option['value'] == _this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID) {
+                        _this.baseEntity.billingAccountAddress = option;
+                        break;
+                    }
+                }
+            }
+            if (!_this.hideSelectAccountPaymentMethod && _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod == null) {
                 _this.baseEntity.accountPaymentMethod = _this.accountPaymentMethodOptions[0];
+            }
+            else {
+                for (var i = 0; i < _this.accountPaymentMethodOptions.length; i++) {
+                    var option = _this.accountPaymentMethodOptions[i];
+                    if (option['value'] == _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod.accountPaymentMethodID) {
+                        _this.baseEntity.accountPaymentMethod = option;
+                        break;
+                    }
+                }
             }
             if (_this.swCustomerAccountPaymentMethodCard.accountPaymentMethod != null) {
                 _this.accountPaymentMethod = _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod;
