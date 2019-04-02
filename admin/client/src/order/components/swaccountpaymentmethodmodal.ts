@@ -110,19 +110,10 @@ class SWAccountPaymentMethodModalController{
         };
         
        
-    	var defaultCountry =  this.countryCodeOptions[0];
-       
-        for(var i=0; i<this.countryCodeOptions.length; i++){
-			var country = this.countryCodeOptions[i];
-			if(country['value'] === this.defaultCountryCode){
-				defaultCountry = country;
-                break;
-			}
-		}
+    	
         
         this.newAccountAddress = {
         	address:{
-        		countryCode: defaultCountry,
         		stateCode: this.stateCodeOptions[0]
         	}
 	    };

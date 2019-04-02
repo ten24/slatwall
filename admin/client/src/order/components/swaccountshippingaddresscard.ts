@@ -34,9 +34,9 @@ class SWAccountShippingAddressCard implements ng.IDirective {
 	public bindToController = {
 		accountAddressOptions: "<",
 		accountShippingAddress:"<",
-		countryCodeOptions:"<",
 		baseEntityName:"@?",
 		baseEntity:"<",
+		countryCodeOptions:"<",
 		defaultCountryCode: "@?",
 		shippingMethodOptions: "<",
 		stateCodeOptions: "<",

@@ -60253,6 +60253,17 @@ var SWAddressFormPartialController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.defaultCountry = this.countryCodeOptions[0];
+        if (this.address.stateCode == null) {
+            this.address.stateCode = this.stateCodeOptions[0];
+        }
+        for (var i = 0; i < this.countryCodeOptions.length; i++) {
+            var country = this.countryCodeOptions[i];
+            if (country['value'] === this.defaultCountryCode) {
+                this.address.countryCode = country;
+                break;
+            }
+        }
     }
     return SWAddressFormPartialController;
 }());
@@ -60266,6 +60277,7 @@ var SWAddressFormPartial = /** @class */ (function () {
         this.bindToController = {
             address: "=",
             countryCodeOptions: "<",
+            defaultCountryCode: "@?",
             stateCodeOptions: "<"
         };
         this.controller = SWAddressFormPartialController;
@@ -62606,17 +62618,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                 expirationMonth: _this.expirationMonthOptions[0],
                 expirationYear: _this.expirationYearOptions[0]
             };
-            var defaultCountry = _this.countryCodeOptions[0];
-            for (var i = 0; i < _this.countryCodeOptions.length; i++) {
-                var country = _this.countryCodeOptions[i];
-                if (country['value'] === _this.defaultCountryCode) {
-                    defaultCountry = country;
-                    break;
-                }
-            }
             _this.newAccountAddress = {
                 address: {
-                    countryCode: defaultCountry,
                     stateCode: _this.stateCodeOptions[0]
                 }
             };
@@ -62729,9 +62732,9 @@ var SWAccountShippingAddressCard = /** @class */ (function () {
         this.bindToController = {
             accountAddressOptions: "<",
             accountShippingAddress: "<",
-            countryCodeOptions: "<",
             baseEntityName: "@?",
             baseEntity: "<",
+            countryCodeOptions: "<",
             defaultCountryCode: "@?",
             shippingMethodOptions: "<",
             stateCodeOptions: "<",
@@ -62793,18 +62796,15 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             _this.baseEntityName = _this.swAccountShippingAddressCard.baseEntityName;
             _this.baseEntity = _this.swAccountShippingAddressCard.baseEntity;
             _this.baseEntityPrimaryID = _this.baseEntity[_this.$hibachi.getPrimaryIDPropertyNameByEntityName(_this.baseEntityName)];
+            _this.defaultCountryCode = _this.swAccountShippingAddressCard.defaultCountryCode;
             _this.accountAddressOptions = _this.swAccountShippingAddressCard.accountAddressOptions;
             _this.countryCodeOptions = _this.swAccountShippingAddressCard.countryCodeOptions;
             _this.shippingMethodOptions = _this.swAccountShippingAddressCard.shippingMethodOptions;
             _this.stateCodeOptions = _this.swAccountShippingAddressCard.stateCodeOptions;
-            console.log('countryCode', _this.countryCodeOptions);
             _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
             _this.baseEntity.shippingMethod = _this.shippingMethodOptions[0];
             _this.newAccountAddress = {
-                address: {
-                    stateCode: _this.stateCodeOptions[0],
-                    countryCode: _this.countryCodeOptions[0]
-                }
+                address: {}
             };
         };
         this.save = function () {

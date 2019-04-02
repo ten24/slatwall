@@ -3,14 +3,30 @@
 class SWAddressFormPartialController{
 
 	public address;
+    public defaultCountry;
+    public defaultCountryCode:string;
 	public countryCodeOptions;
 	public stateCodeOptions;
+	
+
 
 	constructor(public $hibachi,
 				public observerService,
 				public rbkeyService
 	){
-
+        this.defaultCountry =  this.countryCodeOptions[0];
+        
+        if(this.address.stateCode == null){
+            this.address.stateCode = this.stateCodeOptions[0]
+        }
+       
+        for(var i=0; i<this.countryCodeOptions.length; i++){
+			var country = this.countryCodeOptions[i];
+			if(country['value'] === this.defaultCountryCode){
+				this.address.countryCode = country;
+                break;
+			}
+		}
 	}
 	
 
@@ -24,6 +40,7 @@ class SWAddressFormPartial implements ng.IDirective {
 	public bindToController = {
 		address: "=",
 		countryCodeOptions: "<",
+		defaultCountryCode: "@?",
 		stateCodeOptions: "<"
 	};
 	public controller=SWAddressFormPartialController;
