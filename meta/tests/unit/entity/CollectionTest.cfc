@@ -748,10 +748,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	
-	
-	
-	
-	
 	/**
 	* @test
 	*/
@@ -802,6 +798,64 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
 		
 		assertTrue(arrayLen(pageRecords) == 5, "Wrong amount of products returned! Expecting 5 record but returned #arrayLen(pageRecords)#");
+		
+		assertFalse(myProductCollection.getHQL() contains 'GROUP BY ');
+	}
+	
+	
+	/**
+	* @test
+	*/
+	public void function oneToManyPropertyWithOneToManyFilterShouldDuplicateRecordsTest(){
+
+		var uniqueNumberForDescription = createUUID();
+		//skus will default as active
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= 'aa'&createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= 'ab'&createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= 'ac'&createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= 'ad'&createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= 'ae'&createUUID(),
+					activeFlag = 'false'
+				}
+			]
+		};
+		//By default Active flag is true.
+		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
+		
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productID,productDescription,skus.skuCode');
+		myProductCollection.addFilter('productDescription',trim(uniqueNumberForDescription));
+		myProductCollection.addFilter('skus.price',0);
+
+		assertEquals(5, myProductCollection.getRecordsCount());
+		
+		var recordsCount = myProductCollection.getRecordsCount();
+		var pageRecords = myProductCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+	
+		assertTrue(arrayLen(pageRecords) == 5, "Wrong amount of products returned! Expecting 5 record but returned #arrayLen(pageRecords)#");
+		
+		assertFalse(myProductCollection.getHQL() contains 'GROUP BY ');
 	}
 	
 	
@@ -5601,6 +5655,113 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
+	}
+	
+	/**
+	* @test
+	*/
+	public void function testReportCollection_productsByPurchaseEndDateTime(){
+		
+		var uniqueProductName = createUUID();
+		/*
+		Jan - 4 products
+		Feb - 1 product
+		Mar - 0 products
+		Apr - 7 products
+		May - 5 products
+		Jun - 2 products (But 1 out of the filter range)
+		*/
+		var purchaseEndDateTimes = [
+			CreateDateTime(2019, 01, 02, 00, 00, 00),
+			CreateDateTime(2019, 01, 03, 00, 00, 00),
+			CreateDateTime(2019, 01, 05, 00, 00, 00),
+			CreateDateTime(2019, 01, 10, 00, 00, 00),
+			CreateDateTime(2019, 02, 02, 00, 00, 00),
+			CreateDateTime(2019, 04, 02, 00, 00, 00),
+			CreateDateTime(2019, 04, 02, 00, 00, 00),
+			CreateDateTime(2019, 04, 02, 00, 00, 00),
+			CreateDateTime(2019, 04, 02, 00, 00, 00),
+			CreateDateTime(2019, 04, 03, 00, 00, 00),
+			CreateDateTime(2019, 04, 03, 00, 00, 00),
+			CreateDateTime(2019, 04, 20, 00, 00, 00),
+			CreateDateTime(2019, 05, 01, 00, 00, 00),
+			CreateDateTime(2019, 05, 02, 00, 00, 00),
+			CreateDateTime(2019, 05, 03, 00, 00, 00),
+			CreateDateTime(2019, 05, 04, 00, 00, 00),
+			CreateDateTime(2019, 05, 05, 00, 00, 00),
+			CreateDateTime(2019, 06, 01, 00, 00, 00),
+			CreateDateTime(2019, 06, 22, 00, 00, 00)
+		];
+		
+		for(var purchaseEndDateTime in purchaseEndDateTimes){
+			var uniqueSkuCode = createUUID();
+			var productWithActiveSkusData = {
+	            productID = '',
+	            productName = 'Product #purchaseEndDateTime#',
+	            productDescription = uniqueProductName,
+	            purchaseEndDateTime = purchaseEndDateTime,
+	            skus = [
+		            {
+		                skuID = '',
+		                skuName = 'TestSKu',
+		                skuCode = 'sku_code_1#uniqueSkuCode#',
+		                activeFlag = true
+		            },
+		            {
+		                skuID = '',
+		                skuName = 'TestSKu',
+		                skuCode = 'sku_code_2#uniqueSkuCode#',
+		                activeFlag = true
+		            },
+		            {
+		                skuID = '',
+		                skuName = 'TestSKu',
+		                skuCode = 'sku_code_3#uniqueSkuCode#',
+		                activeFlag = true
+		            },
+		            {
+		                skuID = '',
+		                skuName = 'TestSKu',
+		                skuCode = 'sku_code_4#uniqueSkuCode#',
+		                activeFlag = false
+		            },
+		            {
+		                skuID = '',
+		                skuName = 'TestSKu',
+		                skuCode = 'sku_code_5#uniqueSkuCode#',
+		                activeFlag = false
+		            }
+	            ]
+        	};
+	
+        	var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+        
+		}
+		
+        var myProductCollection = variables.entityService.getProductCollectionList();
+        
+        myProductCollection.setReportFlag(true);
+        
+        myProductCollection.setDisplayProperties('productName',{'isVisible': true});
+        myProductCollection.addDisplayAggregate('skus',"COUNT",'skusCount');
+        myProductCollection.addDisplayProperty(displayProperty='purchaseEndDateTime',columnConfig={'isPeriod' : true, 'isVisible': true});
+        
+        myProductCollection.addFilter('productDescription', uniqueProductName);
+        
+        myProductCollection.addFilter('purchaseEndDateTime', '2019-01-01T05:00:00.000Z', '>=');
+        myProductCollection.addFilter('purchaseEndDateTime', '2019-06-01T03:59:59.999Z', '<=');
+        
+        myProductCollection.setPeriodInterval('month');
+        
+        myProductCollection.addOrderBy('purchaseEndDateTime|ASC');
+       
+    	var recordsCount = myProductCollection.getRecordsCount();
+		var pageRecords = myProductCollection.getPageRecords();
+		
+		assertTrue(arrayLen(pageRecords) == recordsCount, "Wrong amount of products returned! Expecting #recordsCount# records but returned #arrayLen(pageRecords)#");
+		
+		assertTrue(arrayLen(pageRecords) == 5, "Wrong amount of products returned! Expecting 5 records but returned #arrayLen(pageRecords)#");
+		
 	}
 
 	/*public void function getCollectionObjectParentChildTest(){
