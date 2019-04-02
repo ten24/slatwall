@@ -1153,7 +1153,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate;
 	}
+	
+	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
+		
+		var account = arguments.orderTemplate.getAccount(); 
 
+		
+
+		return arguments.orderTemplate;
+	}
+	
 	public any function processOrderTemplate_updateBilling(required any orderTemplate, required any processObject, required struct data={}){
 
 		var account = arguments.orderTemplate.getAccount(); 
