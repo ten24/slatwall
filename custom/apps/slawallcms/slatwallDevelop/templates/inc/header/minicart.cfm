@@ -1,7 +1,7 @@
 
 <!---- form element stops modal from closing ----->
 <form> 
-    <div style="min-width: 300px;" class="px-2">
+    <div style="min-width: 300px;">
         <swf-alert data-alert-trigger="removeOrderItemSuccess" data-alert-type="success small" data-message="Item removed from cart" data-duration="3"></swf-alert>
         <swf-alert data-alert-trigger="removeOrderItemFailure" data-alert-type="danger small" data-message="Item removed failure" data-duration="3"></swf-alert>
         <swf-alert data-alert-trigger="updateOrderItemSuccess" data-alert-type="success small" data-message="Quantity Updated" data-duration="3"></swf-alert>
@@ -68,3 +68,4 @@
         <hr ng-repeat-end ng-if="!$last">
     </div>
 </form>
+<div class="alert alert-info mb-0 small" ng-if="!slatwall.cart.orderItems.length">There are no items in your cart</div>
