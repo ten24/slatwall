@@ -52,9 +52,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTemplate";
 
 	property name="newAccountAddress" fieldType="struct" hb_populateStruct="true"; 
-	property name="newAccountPaymentMethod" fieldType="struct" hb_populateStruct="true";
 
 	property name="billingAccountAddress" fieldType="struct" hb_populateStruct="true";
-	property name="accountPaymentMethod" fieldType="struct" hb_populateStruct="true"; 
+	property name="shippingMethod" fieldType="struct" hb_populateStruct="true"; 
 
 }
