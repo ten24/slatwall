@@ -58,25 +58,7 @@ class SWListingReportController {
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
     }
 
-    public $onInit = () => {
-        this.loadChartJs();
-    }
-
-    // TODO for the first load we're getting a console error, will have to do more work on that one
-    private loadChartJs() {
-        // commonjs -------  require.ensure([], function(require) { require('someModule'); })
-        return require.ensure([],
-            (require) => {
-                require('chart.js')
-                console.log("async chunk, chartjs loaded :");
-            },
-            (err) => {
-                console.log("unable to load chartjs err: " + err)
-            },
-            "chartjs" // chunk-name
-        );
-    }
-
+    public $onInit =  () => {}
 
     public updateReportFromListing = (params) => {
         if (params.collectionConfig) {
@@ -362,8 +344,15 @@ class SWListingReportController {
 
         }
     }
+    
+    private loadChartJsChunk = async () => {
+     return await require.ensure([], 
+        (require) => require('chart.js'),
+        (err) => console.log(err),
+        "chartjs");
+    }
 
-    public renderReport = (reportingData, ctx) => {
+    public renderReport = async (reportingData, ctx) => {
         this.reportingData = reportingData;
         var dates = [];
         var datasets = [];
@@ -402,7 +391,13 @@ class SWListingReportController {
         //used to clear old rendered charts before adding new ones
         if (this.chart != null) {
             this.chart.destroy();
+            console.log("not loading chartjs chunk");
+        } else {
+            console.log("waitingt to load chartjs chunk");
+            await this.loadChartJsChunk();
+            console.log(" chartjs chunk loaded ");
         }
+        
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
