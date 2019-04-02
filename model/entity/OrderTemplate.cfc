@@ -87,8 +87,23 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	property name="lastOrderPlacedDateTime" persistent="false";
+
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
+
+	public string function getLastOrderPlacedDateTime(){
+		var orderCollectionList = getService('OrderService').getOrderCollectionList(); 
+		orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
+		orderCollectionList.addOrderBy('createdDateTime|DESC');
+		var records = orderCollectionList.getPageRecords();
+
+		if(!arrayIsEmpty(records)){
+			return records[1]['createdDateTime'];
+		} else { 
+			return '';
+		}
 	}
 
 	// Account (many-to-one)
@@ -136,16 +151,5 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}	
-	//CUSTOM FUNCTIONS BEGIN
 
-public array function getFrequencyTermOptions(){
-		var termCollection = getService('SettingService').getTermCollectionList();
-		termCollection.setDisplayProperties('termName|name,termID|value');
-		termCollection.addFilter('termHours','null','is');
-		termCollection.addFilter('termDays','null','is');
-		termCollection.addFilter('termYears','null','is');
-		termCollection.addfilter('termMonths','1,2','in');	
-		return termCollection.getRecords(); 
-	}
-//CUSTOM FUNCTIONS END
 }
