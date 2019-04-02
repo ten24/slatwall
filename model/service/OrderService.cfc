@@ -1147,6 +1147,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 			arguments.orderTemplate.setSite( getSiteService().getSite( processObject.getSiteID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 
 			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		}

@@ -62985,6 +62985,7 @@ var swaccountpaymentmethodmodal_1 = __webpack_require__(637);
 var swaccountshippingaddresscard_1 = __webpack_require__(638);
 var swaccountshippingmethodmodal_1 = __webpack_require__(639);
 var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(640);
+var swordertemplatefrequencycard_1 = __webpack_require__(896);
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -62995,7 +62996,8 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .directive('swAccountPaymentMethodModal', swaccountpaymentmethodmodal_1.SWAccountPaymentMethodModal.Factory())
     .directive('swAccountShippingAddressCard', swaccountshippingaddresscard_1.SWAccountShippingAddressCard.Factory())
     .directive('swAccountShippingMethodModal', swaccountshippingmethodmodal_1.SWAccountShippingMethodModal.Factory())
-    .directive('swCustomerAccountPaymentMethodCard', swcustomeraccountpaymentmethodcard_1.SWCustomerAccountPaymentMethodCard.Factory());
+    .directive('swCustomerAccountPaymentMethodCard', swcustomeraccountpaymentmethodcard_1.SWCustomerAccountPaymentMethodCard.Factory())
+    .directive('swOrderTemplateFrequencyCard', swordertemplatefrequencycard_1.SWOrderTemplateFrequencyCard.Factory());
 exports.ordermodule = ordermodule;
 
 
@@ -94076,6 +94078,55 @@ var AddressService = /** @class */ (function () {
     return AddressService;
 }());
 exports.AddressService = AddressService;
+
+
+/***/ }),
+/* 896 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var SWOrderTemplateFrequencyCardController = /** @class */ (function () {
+    function SWOrderTemplateFrequencyCardController($hibachi, observerService, rbkeyService) {
+        this.$hibachi = $hibachi;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+    }
+    return SWOrderTemplateFrequencyCardController;
+}());
+var SWOrderTemplateFrequencyCard = /** @class */ (function () {
+    function SWOrderTemplateFrequencyCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.orderPartialsPath = orderPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            frequencyTerm: '<'
+        };
+        this.controller = SWOrderTemplateFrequencyCardController;
+        this.controllerAs = "swOrderTemplateFrequencyCard";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/ordertemplatefrequencycard.html";
+        this.restrict = "EA";
+    }
+    SWOrderTemplateFrequencyCard.Factory = function () {
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWOrderTemplateFrequencyCard(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        directive.$inject = [
+            'orderPartialsPath',
+            'slatwallPathBuilder',
+            '$hibachi',
+            'rbkeyService'
+        ];
+        return directive;
+    };
+    return SWOrderTemplateFrequencyCard;
+}());
+exports.SWOrderTemplateFrequencyCard = SWOrderTemplateFrequencyCard;
 
 
 /***/ })

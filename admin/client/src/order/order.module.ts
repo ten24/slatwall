@@ -7,6 +7,7 @@ import {SWAccountPaymentMethodModal} from "./components/swaccountpaymentmethodmo
 import {SWAccountShippingAddressCard} from "./components/swaccountshippingaddresscard";
 import {SWAccountShippingMethodModal} from "./components/swaccountshippingmethodmodal";
 import {SWCustomerAccountPaymentMethodCard} from "./components/swcustomeraccountpaymentmethodcard";
+import {SWOrderTemplateFrequencyCard} from "./components/swordertemplatefrequencycard";
 
 var ordermodule = angular.module('order',[coremodule.name])
 .config([()=>{
@@ -21,6 +22,7 @@ var ordermodule = angular.module('order',[coremodule.name])
 .directive('swAccountShippingAddressCard', SWAccountShippingAddressCard.Factory())
 .directive('swAccountShippingMethodModal', SWAccountShippingMethodModal.Factory())
 .directive('swCustomerAccountPaymentMethodCard',SWCustomerAccountPaymentMethodCard.Factory())
+.directive('swOrderTemplateFrequencyCard', SWOrderTemplateFrequencyCard.Factory())
 ;
 export{
 	ordermodule
