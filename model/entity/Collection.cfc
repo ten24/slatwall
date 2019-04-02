@@ -195,7 +195,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return false;
 		}
 		
-		if(getHasAggregate()){
+		if(hasAggregateFilter()){
 			return true;
 		}
 		
