@@ -11,9 +11,8 @@ class SWAddressFormPartialController{
 	public stateSelect:boolean = true;
 
 	constructor(public $hibachi,
-	            public collectionConfigService,
+	            public addressService,
 				public observerService,
-				public requestService,
 				public rbkeyService
 	){
         this.defaultCountry =  this.countryCodeOptions[0];
@@ -32,19 +31,10 @@ class SWAddressFormPartialController{
 	}
 	
 	public updateStateCodes = () =>{
-	    //load appropriate state codes, or update UI
 	    
-	    console.log('country', this.address.countryCode);
+	    var stateCodePromise = this.addressService.getStateCodeOptionsByCountryCode(this.address.countryCode.countryCode)
 	    
-	    var queryString = 'entityName=State&f:countryCode=' + 
-	    				     this.address.countryCode.countryCode + 
-	    				  '&allRecords=true&propertyIdentifiers=stateCode,stateName';
-	    
-	    var processUrl = this.$hibachi.buildUrl('api:main.get',queryString);
-		
-		var adminRequest = this.requestService.newAdminRequest(processUrl);
-		
-		adminRequest.promise.then(
+	    stateCodePromise.then(
 			(response)=>{
 				this.stateSelect = response.records.length !== 0;
 				

@@ -60228,6 +60228,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 var swaddressformpartial_1 = __webpack_require__(611);
+var addressservice_1 = __webpack_require__(895);
 var addressmodule = angular.module('address', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -60235,7 +60236,9 @@ var addressmodule = angular.module('address', [core_module_1.coremodule.name])
     //constants
     .constant('addressPartialsPath', 'address/components/')
     //components
-    .directive('swAddressFormPartial', swaddressformpartial_1.SWAddressFormPartial.Factory());
+    .directive('swAddressFormPartial', swaddressformpartial_1.SWAddressFormPartial.Factory())
+    //services
+    .service('addressService', addressservice_1.AddressService);
 exports.addressmodule = addressmodule;
 
 
@@ -60249,23 +60252,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAddressFormPartialController = /** @class */ (function () {
-    function SWAddressFormPartialController($hibachi, collectionConfigService, observerService, requestService, rbkeyService) {
+    function SWAddressFormPartialController($hibachi, addressService, observerService, rbkeyService) {
         var _this = this;
         this.$hibachi = $hibachi;
-        this.collectionConfigService = collectionConfigService;
+        this.addressService = addressService;
         this.observerService = observerService;
-        this.requestService = requestService;
         this.rbkeyService = rbkeyService;
         this.stateSelect = true;
         this.updateStateCodes = function () {
-            //load appropriate state codes, or update UI
-            console.log('country', _this.address.countryCode);
-            var queryString = 'entityName=State&f:countryCode=' +
-                _this.address.countryCode.countryCode +
-                '&allRecords=true&propertyIdentifiers=stateCode,stateName';
-            var processUrl = _this.$hibachi.buildUrl('api:main.get', queryString);
-            var adminRequest = _this.requestService.newAdminRequest(processUrl);
-            adminRequest.promise.then(function (response) {
+            var stateCodePromise = _this.addressService.getStateCodeOptionsByCountryCode(_this.address.countryCode.countryCode);
+            stateCodePromise.then(function (response) {
                 _this.stateSelect = response.records.length !== 0;
                 if (_this.stateSelect) {
                     _this.stateCodeOptions = response.records;
@@ -94027,6 +94023,35 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(305);
+
+
+/***/ }),
+/* 895 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var AddressService = /** @class */ (function () {
+    //@ngInject
+    function AddressService($hibachi, requestService) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.requestService = requestService;
+        this.getStateCodeOptionsByCountryCode = function (countryCode) {
+            var queryString = 'entityName=State&f:countryCode=' +
+                countryCode +
+                '&allRecords=true&propertyIdentifiers=stateCode,stateName';
+            var processUrl = _this.$hibachi.buildUrl('api:main.get', queryString);
+            var adminRequest = _this.requestService.newAdminRequest(processUrl);
+            return adminRequest.promise;
+        };
+    }
+    return AddressService;
+}());
+exports.AddressService = AddressService;
 
 
 /***/ })
