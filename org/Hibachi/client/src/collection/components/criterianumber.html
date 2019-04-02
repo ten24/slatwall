@@ -17,8 +17,11 @@
     <div class="form-group form-group-sm" ng-show="selectedFilterProperty.showCriteriaValue">
       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Value:</label>
       <div class="col-sm-12 s-no-paddings">
-        <input 	ng-model="filterItem.value"  
-        		style="" type="number" class="form-control" 
+        <input 	ng-model="filterItem.RangeStart"  
+        		style="" type="number" placeholder="Range-start" class="form-control" 
+        		/>
+        <input 	ng-model="filterItem.RangeEnd"  
+        		style="" type="number" placeholder="Range-end" class="form-control" 
         		/>
       </div>
 	  <div class="clearfix"></div>

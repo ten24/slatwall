@@ -128,8 +128,8 @@ class SWCriteriaNumber{
 			    scope.conditionOptions = getNumberOptions(scope.comparisonType);
 
 			    scope.inListArray = [];
-    			if(angular.isDefined(scope.filterItem.value)){
-    				scope.inListArray = scope.filterItem.value.toString().split(',');
+    			if(angular.isDefined(scope.filterItem.RangeStart || scope.filterItem.RangeEnd)){
+    					var inListArray = scope.filterItem.RangeStart +','+scope.filterItem.RangeEnd;
     			}
 
     			scope.newListItem = '';
