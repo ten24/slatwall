@@ -69,7 +69,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.type#">
 			<hb:HibachiEntityDetailItem view="admin:entity/typetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cfif isNull(rc.type.getParentType())>
-				<hb:HibachiEntityDetailItem property="childTypes" />
+				<hb:HibachiEntityDetailItem property="childTypes" count="#rc.type.getChildTypesCount()#"/>
 			</cfif>
 
 			<!--- Custom Attributes --->

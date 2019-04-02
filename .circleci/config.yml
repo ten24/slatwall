@@ -51,13 +51,13 @@ jobs:
       - run: git config --global user.email "info@slatwallcommerce.com"
       - run: git config --global user.name "ten24 (Slatwall Robot)"
       - run: git config --global push.default current
-      - run: npm install -g webpack@3.3.0 gulp less webpack-cli
-      - run: npm install --only=dev
+      - run: npm install -g webpack@3.3.0 gulp less webpack-cli #TODO need to change this
+      - run: npm install 
       - run: npm link
       - run: pip install awscli
-      - run: npm run buildHibachi:prod
+      # - run: npm run buildHibachi:prod
       #- run: cd admin/client && gulp gen-ts-refs
-      - run: npm run buildSlatwall:prod
+      - run: npm run buildAll:prod
       - run: cd admin/client/css && lessc main.less main.css
       - run: meta/ci/version_merge.sh
       
