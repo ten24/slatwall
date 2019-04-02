@@ -1157,7 +1157,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
 		
 		var account = arguments.orderTemplate.getAccount(); 
-
+			
 		if(!isNull(processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
@@ -1172,13 +1172,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 			orderTemplate.setShippingAccountAddress(accountAddress);
-		} else if (!isNull(processObject.getShippingAccountAddress())) {  
+		} else if (!isNull(processObject.getShippingAccountAddress())) { 
+
 			orderTemplate.setShippingAccountAddress(getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value));	
 		}
 
 		var shippingMethod = getShippingService().getShippingMethod(processObject.getShippingMethod().shippingMethodID); 
 
 		orderTemplate.setShippingMethod(shippingMethod);	
+		
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate;
 	}
