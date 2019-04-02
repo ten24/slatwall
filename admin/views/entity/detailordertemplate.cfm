@@ -69,6 +69,12 @@
 
 			<div class="col-md-4">
 				<sw-account-shipping-address-card data-title="#getHibachiScope().rbkey('define.shipping')#"
+													<cfif not isNull(rc.orderTemplate.getShippingMethod())>
+														data-shipping-method="#rc.orderTemplate.getShippingMethod().getEncodedJsonRepresentation()#"
+													</cfif> 
+													<cfif not isNull(rc.orderTemplate.getShippingAccountAddress())>
+														data-shipping-account-address="#rc.orderTemplate.getShippingAccountAddress().getEncodedJsonRepresentation()#"
+													</cfif>
 													data-base-entity-name="OrderTemplate" 
 													data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 													data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"

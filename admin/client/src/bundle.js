@@ -62732,10 +62732,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountShippingAddressCardController = /** @class */ (function () {
     function SWAccountShippingAddressCardController($hibachi, observerService, rbkeyService) {
+        var _this = this;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
         this.title = "Shipping";
+        this.shippingAddressTitle = 'Shipping Address';
+        this.shippingMethodTitle = 'Shipping Method';
+        this.updateShippingInfo = function (data) {
+            _this.shippingAccountAddress = data.shippingAccountAddress;
+            _this.shippingMethod = data.shippingMethod;
+        };
+        this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
+        if (this.shippingAccountAddress != null && this.shippingMethod != null) {
+            this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
+        }
+        else {
+            this.modalButtonText = this.rbkeyService.rbKey('define.add') + ' ' + this.title;
+        }
     }
     return SWAccountShippingAddressCardController;
 }());
@@ -62748,11 +62762,12 @@ var SWAccountShippingAddressCard = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             accountAddressOptions: "<",
-            accountShippingAddress: "<",
+            shippingAccountAddress: "<",
             baseEntityName: "@?",
             baseEntity: "<",
             countryCodeOptions: "<",
             defaultCountryCode: "@?",
+            shippingMethod: "<",
             shippingMethodOptions: "<",
             stateCodeOptions: "<",
             title: "@?"
@@ -62852,7 +62867,9 @@ var SWAccountShippingMethodModal = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
         this.scope = {};
-        this.bindToController = {};
+        this.bindToController = {
+            modalButtonText: "@?"
+        };
         this.require = {
             swAccountShippingAddressCard: "^^swAccountShippingAddressCard"
         };

@@ -103,7 +103,7 @@ class SWAccountShippingMethodModal implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-
+		modalButtonText:"@?"
 	};
 	public require = {
 		swAccountShippingAddressCard:"^^swAccountShippingAddressCard"
