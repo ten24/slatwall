@@ -29,6 +29,9 @@ class SWAddressFormPartialController{
 		}
 	}
 	
+	public updateStateCodes = () =>{
+	    //load appropriate state codes, or update UI
+	}
 
 }
 

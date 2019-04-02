@@ -109,13 +109,8 @@ class SWAccountPaymentMethodModalController{
         	expirationYear: this.expirationYearOptions[0]
         };
         
-       
-    	
-        
         this.newAccountAddress = {
-        	address:{
-        		stateCode: this.stateCodeOptions[0]
-        	}
+        	address:{}
 	    };
 		
 	}

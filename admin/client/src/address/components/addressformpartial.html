@@ -41,6 +41,7 @@
     <select name="countryCode" 
             class="form-control"
             required
+            ng-change="swAddressFormPartial.updateStateCodes()"
             ng-model="swAddressFormPartial.address.countryCode"
             ng-options="country.name for country in swAddressFormPartial.countryCodeOptions track by country.value">
     </select>

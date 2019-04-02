@@ -60253,6 +60253,9 @@ var SWAddressFormPartialController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.updateStateCodes = function () {
+            //load appropriate state codes, or update UI
+        };
         this.defaultCountry = this.countryCodeOptions[0];
         if (this.address.stateCode == null) {
             this.address.stateCode = this.stateCodeOptions[0];
@@ -62619,9 +62622,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                 expirationYear: _this.expirationYearOptions[0]
             };
             _this.newAccountAddress = {
-                address: {
-                    stateCode: _this.stateCodeOptions[0]
-                }
+                address: {}
             };
         };
         this.save = function () {
