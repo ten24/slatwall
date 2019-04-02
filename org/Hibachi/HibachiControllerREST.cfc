@@ -469,7 +469,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				var value = {
 					'name' = propertyDisplayOptions[i]['NAME'],
 					'value' = propertyDisplayOptions[i]['VALUE']  
-				}
+				};
 				arrayAppend(propertyDisplayOptionsFormatted, value);
 			}
 			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
@@ -814,7 +814,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	            //respond with data
 	            arguments.rc.apiResponse.content['data'] = {};
 	            var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
-	            for(propertyIdentifier in propertyIdentifiersArray){
+	            for(var propertyIdentifier in propertyIdentifiersArray){
 	                //check if method exists before trying to retrieve a property
 	                /*if(propertyIdentifier == 'pageRecords'){
 	                    var pageRecords = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier,format=true);
@@ -825,7 +825,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	                    pageRecords = getService('hibachiCollectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
 	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = pageRecords;
 	                }else{*/
-						var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier)  
+						var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
 						if(isObject(value)){
 							value = value.getStructRepresentation();
 						}
