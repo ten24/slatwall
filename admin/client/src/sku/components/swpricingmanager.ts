@@ -31,9 +31,18 @@ class SWPricingManagerController{
         );
         
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
-        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode")
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode");
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
-    }    
+        
+        for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
+            if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.price"){
+                this.skuPriceCollectionConfig.columns[i].hasCellView="true";
+                this.skuPriceCollectionConfig.columns[i].cellView="swSkuPricesEdit";
+            }
+        }
+        
+        console.log(this.skuPriceCollectionConfig);
+    }
 
 }
 

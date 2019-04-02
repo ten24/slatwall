@@ -126,7 +126,7 @@
            </sw-tab-content>
            <sw-tab-content data-name="Pricing">  
                <!-- Attempting to incorporate needs into existing listing -->
-                <sw-listing-display
+                <!--<sw-listing-display
                         data-multi-slot="true"
                         data-edit="true"
                         data-has-search="true"
@@ -220,6 +220,13 @@
                                             <sw-collection-column data-property-identifier="sku.calculatedSkuDefinition"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="minQuantity"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="maxQuantity"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="personalVolume"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="taxableAmount"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="commissionableVolume"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sponsorVolume"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="productPackVolume"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="retailValueVolume"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="handlingFee"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="price"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="currencyCode"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="priceGroup.priceGroupCode"></sw-collection-column>
@@ -254,6 +261,60 @@
                                 </a>
                             </sw-edit-sku-price-modal-launcher>
                         </sw-listing-delete-action>  
+                </sw-listing-display>-->
+                <sw-listing-display
+                        data-has-search="true"
+                        data-is-angular-route="false"
+                        data-angular-links="false"
+                        data-has-action-bar="false"
+                        data-base-entity-name="SkuPrice"
+                        data-collection-config="swPricingManager.skuPriceCollectionConfig">
+                    
+                    <!--<sw-listing-columns>
+                        <sw-listing-column 
+                                data-property-identifier="sku.skuCode" 
+                                tdclass="primary">
+                        </sw-listing-column>
+                        <sw-listing-column 
+                                data-property-identifier="sku.calculatedSkuDefinition">
+                        </sw-listing-column>
+                        <sw-listing-column 
+                                data-property-identifier="minQuantity">
+                        </sw-listing-column>
+                        <sw-listing-column 
+                                data-property-identifier="maxQuantity">
+                        </sw-listing-column>
+                        <sw-listing-column 
+                                data-property-identifier="price">
+                        </sw-listing-column>
+                        <sw-listing-column 
+                                data-property-identifier="priceGroup">
+                        </sw-listing-column>
+                        <sw-listing-column 
+                                data-property-identifier="priceGroupCode">
+                        </sw-listing-column>
+                    </sw-listing-columns>-->
+                    
+                    <!--<sw-listing-save-action>
+                        <sw-listing-row-save>
+                        </sw-listing-row-save>
+                    </sw-listing-save-action>
+                    <sw-listing-add-action>
+                        <sw-add-sku-price-modal-launcher data-default-currency-only="true">
+                            <a href="#" title="Add Price" class="btn btn-default btn-xs" data-target="#">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </sw-add-sku-price-modal-launcher>
+                    </sw-listing-add-action>  
+                    <sw-listing-delete-action>
+                        <sw-delete-sku-price-modal-launcher>
+                        </sw-delete-sku-price-modal-launcher>
+                        <sw-edit-sku-price-modal-launcher>
+                            <a href="#" title="Edit Price" class="btn btn-default btn-xs" data-target="#">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </sw-edit-sku-price-modal-launcher>
+                    </sw-listing-delete-action>--> 
                 </sw-listing-display>
            </sw-tab-content>
        </sw-tab-group>

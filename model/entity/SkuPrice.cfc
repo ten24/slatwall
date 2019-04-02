@@ -115,6 +115,15 @@ property name="personalVolume" ormtype="big_decimal";
 		}
 	}
 	
+	// ================== START: Overridden Methods ========================
+	
+	public any function getDefaultCollectionProperties(){
+		var includesList = getService("SkuPriceService").getDefaultCollectionPropertiesList();
+		return super.getDefaultCollectionProperties(includesList,"");
+	}
+	
+	// ================== END: Overridden Methods ==========================
+	
 	// =================== START: ORM Event Hooks  =========================	
 	public void function preUpdate(struct oldData) {
 		
