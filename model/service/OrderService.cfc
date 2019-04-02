@@ -1143,7 +1143,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			arguments.orderTemplate.setAccount(account);
 			arguments.orderTemplate.setOrderTemplateType( getTypeService().getType( processObject.getOrderTemplateTypeID() ) );
-			arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstDraft'))
+			arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstDraft'));
 			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 			arguments.orderTemplate.setSite( getSiteService().getSite( processObject.getSiteID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
@@ -1163,7 +1163,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
 			var address = getAddressService().newAddress();
-			address.populate(processObject.getNewAccountAddress().address)
+			address.populate(processObject.getNewAccountAddress().address);
 		
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
