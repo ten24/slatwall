@@ -1158,7 +1158,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var account = arguments.orderTemplate.getAccount(); 
 
+		if(!isNull(processObject.getNewAccountAddress())){
+			var accountAddress = getAccountService().newAccountAddress();
+			accountAddress.populate(processObject.getNewAccountAddress());
+			
+			var address = getAddressService().newAddress();
+			address.populate(processObject.getNewAccountAddress().address)
 		
+			accountAddress.setAddress(address); 
+			accountAddress.setAccount(account); 
+
+			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+
+
+			orderTemplate.setShippingAccountAddress(accountAddress);
+		} else if (!isNull(processObject.getShippingAccountAddress())) {  
+			orderTemplate.setShippingAccountAddress(getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value));	
+		}
+
+		var shippingMethod = getShippingService().getShippingMethod(processObject.getShippingMethod().shippingMethodID); 
+
+		orderTemplate.setShippingMethod(shippingMethod);	
 
 		return arguments.orderTemplate;
 	}
@@ -1167,7 +1187,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var account = arguments.orderTemplate.getAccount(); 
 
-		if(!isNull(processObject.getNewAccountAddress())){
+	if(!isNull(processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1183,7 +1203,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
 			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
-		}
+		}	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();

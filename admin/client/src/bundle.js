@@ -62831,6 +62831,13 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
                 context: _this.processContext,
                 propertyIdentifiersList: 'shippingAccountAddress,shippingMethod'
             };
+            if (_this.showCreateShippingAddress) {
+                formDataToPost.newAccountAddress = _this.newAccountAddress;
+            }
+            else {
+                formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
+            }
+            formDataToPost.shippingMethod = _this.baseEntity.shippingMethod;
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;

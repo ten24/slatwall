@@ -53,7 +53,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	property name="newAccountAddress" fieldType="struct" hb_populateStruct="true"; 
 
-	property name="billingAccountAddress" fieldType="struct" hb_populateStruct="true";
+	property name="shippingAccountAddress" fieldType="struct" hb_populateStruct="true";
 	property name="shippingMethod" fieldType="struct" hb_populateStruct="true"; 
 
 }
