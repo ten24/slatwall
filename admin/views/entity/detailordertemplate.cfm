@@ -49,6 +49,11 @@
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.orderTemplate" type="any" />
 
+<cfset defaultCountryCode = 'US' />
+<cfset stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
+<cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
+<cfset stateCollectionList.addOrderBy('stateName|ASC') />
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderTemplate#" edit="#rc.edit#">
@@ -68,8 +73,8 @@
 													data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 													data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
 													data-shipping-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getShippingMethodOptions()))#" 
-													data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getStateCodeOptions()))#"
-													data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getCountryCodeOptions()))#"	
+													data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(stateCollectionList.getRecords()))#"
+													data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').getCountryCollectionList().getRecords()))#"	
 													data-default-country-code="US"
 													>
 				</sw-account-shipping-address-card>
@@ -85,8 +90,8 @@
 														</cfif> 	
 														data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
 														data-account-payment-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountPaymentMethodOptions()))#"
-														data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getCountryCodeOptions()))#"	
-														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAddress().getStateCodeOptions()))#"
+														data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').getCountryCollectionList().getRecords()))#"	
+														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(stateCollectionList.getRecords()))#"
 														data-expiration-month-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationMonthOptions()))#"
 														data-expiration-year-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationYearOptions()))#"
 														data-base-entity-name="OrderTemplate" 

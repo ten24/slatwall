@@ -1,5 +1,19 @@
 <div class="form-group">
     <label class="form-label" 
+            for="countryCode" 
+            sw-rbkey="'entity.address.countryCode'">
+    </label>
+    <select name="countryCode" 
+            class="form-control"
+            required
+            ng-change="swAddressFormPartial.updateStateCodes()"
+            ng-model="swAddressFormPartial.address.countryCode"
+            ng-options="country.countryName for country in swAddressFormPartial.countryCodeOptions track by country.countryCode">
+    </select>
+</div>
+
+<div class="form-group" ng-if="swAddressFormPartial.address.countryCode.streetAddressShowFlag">
+    <label class="form-label" 
             for="streetAddress" 
             sw-rbkey="'entity.address.streetAddress'">
     </label>
@@ -10,7 +24,7 @@
             ng-model="swAddressFormPartial.address.streetAddress">
 </div>
 
-<div class="form-group">
+<div class="form-group" ng-if="swAddressFormPartial.address.countryCode.street2AddressShowFlag">
     <label class="form-label" 
             for="street2Address" 
             sw-rbkey="'entity.address.street2Address'">
@@ -21,7 +35,7 @@
             ng-model="swAddressFormPartial.address.street2Address">
 </div>
 
-<div class="form-group">
+<div class="form-group" ng-if="swAddressFormPartial.address.countryCode.cityShowFlag">
     <label class="form-label" 
             for="city" 
             sw-rbkey="'entity.address.city'">
@@ -33,34 +47,39 @@
             ng-model="swAddressFormPartial.address.city">
 </div>
 
-<div class="form-group">
+<div class="form-group" ng-if="swAddressFormPartial.address.countryCode.localityShowFlag">
     <label class="form-label" 
-            for="countryCode" 
-            sw-rbkey="'entity.address.countryCode'">
+            for="locality"
+            sw-rbkey="'entity.address.locality'">
     </label>
-    <select name="countryCode" 
+    
+    <input type="text"
             class="form-control"
-            required
-            ng-change="swAddressFormPartial.updateStateCodes()"
-            ng-model="swAddressFormPartial.address.countryCode"
-            ng-options="country.name for country in swAddressFormPartial.countryCodeOptions track by country.value">
-    </select>
-</div>
+            name="locality"
+            ng-model="swAddressFormPartial.address.locality">
+</div> 
 
-<div class="form-group">
+<div class="form-group" ng-if="swAddressFormPartial.address.countryCode.stateCodeShowFlag">
     <label class="form-label" 
             for="stateCode"
             sw-rbkey="'entity.address.stateCode'">
     </label>
     <select name="stateCode" 
             class="form-control"
+            ng-if="swAddressFormPartial.stateSelect"
             ng-model="swAddressFormPartial.address.stateCode"
-            ng-options="state.name for state in swAddressFormPartial.stateCodeOptions track by state.value">
+            ng-options="state.stateName for state in swAddressFormPartial.stateCodeOptions track by state.stateCode">
         
     </select>
+    
+    <input type="text"
+            class="form-control"
+            name="stateCode"
+            ng-if="!swAddressFormPartial.stateSelect"
+            ng-model="swAddressFormPartial.address.stateCode">
 </div> 
 
-<div class="form-group">
+<div class="form-group" ng-if="swAddressFormPartial.address.countryCode.postalCodeShowFlag">
     <label class="form-label" 
             for="postalCode" 
             sw-rbkey="'entity.address.postalCode'">

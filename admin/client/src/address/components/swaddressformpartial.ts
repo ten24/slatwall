@@ -8,10 +8,12 @@ class SWAddressFormPartialController{
 	public countryCodeOptions;
 	public stateCodeOptions;
 	
-
+	public stateSelect:boolean = true;
 
 	constructor(public $hibachi,
+	            public collectionConfigService,
 				public observerService,
+				public requestService,
 				public rbkeyService
 	){
         this.defaultCountry =  this.countryCodeOptions[0];
@@ -22,7 +24,7 @@ class SWAddressFormPartialController{
        
         for(var i=0; i<this.countryCodeOptions.length; i++){
 			var country = this.countryCodeOptions[i];
-			if(country['value'] === this.defaultCountryCode){
+			if(country['countryCode'] === this.defaultCountryCode){
 				this.address.countryCode = country;
                 break;
 			}
@@ -31,6 +33,29 @@ class SWAddressFormPartialController{
 	
 	public updateStateCodes = () =>{
 	    //load appropriate state codes, or update UI
+	    
+	    console.log('country', this.address.countryCode);
+	    
+	    var queryString = 'entityName=State&f:countryCode=' + 
+	    				     this.address.countryCode.countryCode + 
+	    				  '&allRecords=true&propertyIdentifiers=stateCode,stateName';
+	    
+	    var processUrl = this.$hibachi.buildUrl('api:main.get',queryString);
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl);
+		
+		adminRequest.promise.then(
+			(response)=>{
+				this.stateSelect = response.records.length !== 0;
+				
+				if(this.stateSelect){
+					this.stateCodeOptions = response.records;
+					this.address.stateCode = this.stateCodeOptions[0];
+				} else {
+					delete this.address.stateCode;
+				}
+			}	
+		)
 	}
 
 }
