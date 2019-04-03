@@ -1,0 +1,25 @@
+<sw-modal-launcher data-modal-name="{{swOrderTemplateFrequencyModal.uniqueName}}" 
+                   data-title="{{swOrderTemplateFrequencyModal.title}}" 
+                   data-save-action="swOrderTemplateFrequencyModal.save">
+    
+    <sw-modal-button>
+        <a class="fa fa-edit"></a>
+    </sw-modal-button>
+    
+    <sw-modal-content> 
+        <div class="col-md-12">
+            <div class="form-group">
+                    <label class="form-label" 
+                            for="frequencyTerm" 
+                            sw-rbkey="'entity.orderTemplate.frequencyTerm'">
+                    </label>
+                    
+                    <select name="frequencyTerm" 
+                            class="form-control"
+                            ng-model="swOrderTemplateFrequencyModal.orderTemplate.frequencyTerm"
+                            ng-options="frequencyTerm as frequencyTerm.name for frequencyTerm in swOrderTemplateFrequencyModal.frequencyTermOptions track by frequencyTerm.value">
+                    </select> 
+            </div>
+        </div>
+    </sw-modal-content>
+</sw-modal-launcher>

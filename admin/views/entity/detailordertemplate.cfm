@@ -110,6 +110,7 @@
 
 		<hb:HibachiEntityDetailGroup object="#rc.orderTemplate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic.orderTemplate')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/ordertemplateitems" open="false" />
 
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>

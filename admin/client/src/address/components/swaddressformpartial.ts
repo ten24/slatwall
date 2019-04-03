@@ -15,12 +15,10 @@ class SWAddressFormPartialController{
 				public observerService,
 				public rbkeyService
 	){
-        this.defaultCountry =  this.countryCodeOptions[0];
+		if(this.countryCodeOptions.length){
+        	this.defaultCountry =  this.countryCodeOptions[0];
+		}
         
-        if(this.address.stateCode == null){
-            this.address.stateCode = this.stateCodeOptions[0]
-        }
-       
         for(var i=0; i<this.countryCodeOptions.length; i++){
 			var country = this.countryCodeOptions[i];
 			if(country['countryCode'] === this.defaultCountryCode){
@@ -28,6 +26,10 @@ class SWAddressFormPartialController{
                 break;
 			}
 		}
+        
+        if(this.address.stateCode == null && this.stateCodeOptions.length){
+            this.address.stateCode = this.stateCodeOptions[0]
+        }
 	}
 	
 	public updateStateCodes = () =>{

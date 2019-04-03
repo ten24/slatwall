@@ -20,6 +20,8 @@
 			
 			<div class="col-md-2">
 				<sw-order-template-frequency-card 
+						data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+						data-frequency-term-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getFrequencyTermOptions()))#"
 					<cfif not isNull(rc.orderTemplate.getFrequencyTerm())>
 						data-frequency-term="#rc.orderTemplate.getFrequencyTerm().getEncodedJsonRepresentation()#"
 					</cfif>

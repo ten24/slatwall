@@ -88,6 +88,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	property name="lastOrderPlacedDateTime" persistent="false";
+	property name="scheduledOrderDates" persistent="false";
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -118,6 +119,13 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 		return replaceNoCase(scheduledOrderDates,',',', ', 'all');
 	}
+
+	public array function getFrequencyTermOptions(){
+		var termCollection = getService('SettingService').getTermCollectionList();
+		termCollection.setDisplayProperties('termID|value,termName|name');
+		termCollection.addFilter('termID', getService('SettingService').getSettingValue('orderTemplateEligibleTerms'),'in');
+		return termCollection.getRecords();
+	} 
 
 	// Account (many-to-one)
 	public any function setAccount(required any account) {

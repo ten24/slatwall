@@ -2,15 +2,20 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderTemplateFrequencyCardController{
 
+	public orderTemplate;
     public frequencyTerm;
+    public frequencyTermOptions;
 
 	constructor(public $hibachi,
 				public observerService,
 				public rbkeyService
 	){
-
+		this.observerService.attach(this.refreshFrequencyTerm,'OrderTemplateUpdateFrequencySuccess')
 	}
 
+	public refreshFrequencyTerm = (data) =>{
+		this.frequencyTerm = data.frequencyTerm;
+	}
 }
 
 class SWOrderTemplateFrequencyCard implements ng.IDirective {
@@ -19,7 +24,9 @@ class SWOrderTemplateFrequencyCard implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-        frequencyTerm:'<'
+		orderTemplate:'<',
+        frequencyTerm:'<?',
+        frequencyTermOptions:'<'
 	};
 	public controller=SWOrderTemplateFrequencyCardController;
 	public controllerAs="swOrderTemplateFrequencyCard";
