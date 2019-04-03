@@ -24,18 +24,18 @@
         /**
             ****************************    Strict Type-Checking Options     *******************************
         */
-        "strict": true, /* Enable all strict type-checking options. */
-        "noImplicitAny": false, /* Raise error on expressions and declarations with an implied 'any' type. */
-        "strictNullChecks": false, /* Enable strict null checks. */
-        "noImplicitThis": false, /* Raise error on 'this' expressions with an implied 'any' type. */
-        "alwaysStrict": true, /* Parse in strict mode and emit "use strict" for each source file. */
+        // "strict": true,                          /* Enable all strict type-checking options. */
+        "noImplicitAny": false,                     /* Raise error on expressions and declarations with an implied 'any' type. */
+        "strictNullChecks": false,                  /* Enable strict null checks. */
+        "noImplicitThis": false,                    /* Raise error on 'this' expressions with an implied 'any' type. */
+        // "alwaysStrict": true,                    /* Parse in strict mode and emit "use strict" for each source file. */
         /**
             ****************************    Additional Checks     *******************************
         */
-        "noUnusedLocals": false, /* Report errors on unused locals. */
-        "noUnusedParameters": false, /* Report errors on unused parameters. */
-        "noImplicitReturns": false, /* Report error when not all code paths in function return a value. */
-        "noFallthroughCasesInSwitch": false, /* Report errors for fallthrough cases in switch statement. */
+        "noUnusedLocals": false,                       /* Report errors on unused locals. */
+        "noUnusedParameters": false,                    /* Report errors on unused parameters. */
+        "noImplicitReturns": false,                     /* Report error when not all code paths in function return a value. */
+        "noFallthroughCasesInSwitch": false,            /* Report errors for fallthrough cases in switch statement. */
         "noStrictGenericChecks": true,
         "skipLibCheck": true,
         /**
@@ -56,7 +56,8 @@
             "jquery",
             "md5",
             "webpack-env",
-            "jasmine"
+            "jasmine",
+            "./overrides"
         ], /* Type declaration files to be included in compilation. */
         // "allowSyntheticDefaultImports": true,     /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
         /**
@@ -69,7 +70,8 @@
         /**  
             *****************************        Experimental Options         *******************************
         */
-        // "experimentalDecorators": true            /* Enables experimental support for ES7 decorators. */
+        "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+        "emitDecoratorMetadata": true          /* Enables experimental support for emitting type metadata for decorators. */
     },
     "exclude" : [
         "node_modules",

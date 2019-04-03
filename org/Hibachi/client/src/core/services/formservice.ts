@@ -10,6 +10,8 @@ class Form implements ng.IFormController{
     public $invalid: boolean;
     public $submitted: boolean;
     public $error: any;
+    public $pending: any;
+
     $addControl = (control: ng.INgModelController): void =>{}
     $removeControl = (control: ng.INgModelController): void =>{}
     $setValidity = (validationErrorKey: string, isValid: boolean, control: ng.INgModelController): void =>{}

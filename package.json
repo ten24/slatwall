@@ -85,7 +85,7 @@
     "buildCustomFrontend:prod": "custom/client/customFrontendProd.js",
     "buildAll": "webpack --progress ",
     "buildAll:prod": "webpack -p --progress --config webpack.config.js",
-    "lint": "tsc -p tsconfig.json --pretty"
+    "lint": "tsc --pretty"
   },
   "jshintConfig": {
     "predef": [
