@@ -1,3 +1,10 @@
 <input type="text"
        class="form-control"
+       ng-if="swListingDisplayCell.column.type === 'currency'"
+       sw-currency-formatter
+       ng-model="swListingDisplayCell.pageRecord[swListingDisplayCell.pageRecordKey]" />
+       
+<input type="text"
+       class="form-control"
+       ng-if="swListingDisplayCell.column.type !== 'currency'"
        ng-model="swListingDisplayCell.pageRecord[swListingDisplayCell.pageRecordKey]" />

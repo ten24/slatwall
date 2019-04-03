@@ -22,11 +22,7 @@ import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.mo
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
 
-//directives
-import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
-
-import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
 declare var $:any;
@@ -91,7 +87,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }])
  //services
 //directives
-.directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //controllers
 .controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',($scope:any, $compile)=> {
     //Define the different payment types used here
@@ -161,9 +156,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }
 }])
 //filters
-
-.filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
-
 ;
 export{
     slatwalladminmodule

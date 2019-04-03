@@ -730,20 +730,28 @@ class SWListingDisplay implements ng.IDirective{
             /*Admin Actions*/
             actions:"<?",
             administrativeCount:"@?",
+            
+            recordEditEvent:"@?",
             recordEditAction:"@?",
             recordEditActionProperty:"@?",
             recordEditQueryString:"@?",
             recordEditModal:"<?",
             recordEditDisabled:"<?",
+            
+            recordDetailEvent:"@?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
             recordDetailActionIdProperty:"@?",
             recordDetailActionIdKey:"@?",
             recordDetailQueryString:"@?",
             recordDetailModal:"<?",
+            
+            recordDeleteEvent:"@?",
             recordDeleteAction:"@?",
             recordDeleteActionProperty:"@?",
             recordDeleteQueryString:"@?",
+            
+            recordAddEvent:"@?",
             recordAddAction:"@?",
             recordAddActionProperty:"@?",
             recordAddQueryString:"@?",
