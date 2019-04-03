@@ -89225,20 +89225,25 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.$scope = $scope;
         this.expandable = false;
         this.getDirectiveTemplate = function () {
-            var templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycell.html';
-            if (_this.expandable || (_this.swListingDisplay.expandable && _this.column.tdclass && _this.column.tdclass === 'primary')) {
-                templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplayselectablecellexpandable.html';
+            var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
+            if (_this.column.isEditable) {
+                return basePartialPath + 'listingdisplaycelledit.html';
             }
-            if (!_this.swListingDisplay.expandable || !_this.column.tdclass || _this.column.tdclass !== 'primary') {
+            var templateUrl = basePartialPath + 'listingdisplaycell.html';
+            var listingDisplayIsExpandableAndPrimaryColumn = (_this.swListingDisplay.expandable && _this.column.tdclass && _this.column.tdclass === 'primary');
+            if (_this.expandable || listingDisplayIsExpandableAndPrimaryColumn) {
+                templateUrl = basePartialPath + 'listingdisplayselectablecellexpandable.html';
+            }
+            else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
-                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycelldate.html';
+                    templateUrl = basePartialPath + 'listingdisplaycelldate.html';
                 }
                 else if (_this.column.type === 'currency') {
                     if (_this.column.aggregate && _this.pageRecord) {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
-                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellcurrency.html';
+                    templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
                 else if ([
                     "double",
@@ -89247,21 +89252,21 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     "long",
                     "short",
                     "big_decimal"
-                ].indexOf(_this.column.ormtype) != -1) {
-                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellnumeric.html';
+                ].indexOf(_this.column.ormtype) !== -1) {
+                    templateUrl = basePartialPath + 'listingdisplaycellnumeric.html';
                 }
                 else if (_this.column.aggregate) {
                     _this.value = _this.pageRecord[_this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias)];
-                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellaggregate.html';
+                    templateUrl = basePartialPath + 'listingdisplaycellaggregate.html';
                 }
             }
             return templateUrl;
         };
-        this.hibachiPathBuilder = hibachiPathBuilder;
-        this.listingPartialPath = listingPartialPath;
-        this.$scope = $scope;
-        if (!this.value && this.pageRecord && this.column) {
-            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);
+        if (!this.pageRecordKey && this.column) {
+            this.pageRecordKey = this.listingService.getPageRecordKey(this.column.propertyIdentifier);
+        }
+        if (!this.value && this.pageRecord && this.pageRecordKey) {
+            this.value = this.pageRecord[this.pageRecordKey];
         }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord);
         this.hasActionCaller = false;
@@ -89270,9 +89275,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
             this.actionCaller = {
                 action: this.column.action
             };
-            if (this.column.queryString) {
-                this.actionCaller.queryString = this.utilityService.replaceStringWithProperties(this.column.queryString, this.pageRecord);
-            }
+            this.actionCaller.queryString = this.utilityService.replaceStringWithProperties(this.column.queryString, this.pageRecord);
         }
         if (this.cellView) {
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
@@ -90494,6 +90497,7 @@ var ListingService = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.localStorageService = localStorageService;
         this.listingDisplays = {};
+        this.pageRecordKeys = {};
         this.state = {};
         /**
          * The reducer is responsible for modifying the state of the state object into a new state for listeners.
@@ -90668,6 +90672,9 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.getPageRecordKey = function (propertyIdentifier) {
+            if (_this.pageRecordKeys[propertyIdentifier] != null) {
+                return _this.pageRecordKeys[propertyIdentifier];
+            }
             if (propertyIdentifier) {
                 var propertyIdentifierWithoutAlias = '';
                 if (propertyIdentifier.indexOf('_') === 0) {
@@ -90683,7 +90690,8 @@ var ListingService = /** @class */ (function () {
                 else {
                     propertyIdentifierWithoutAlias = propertyIdentifier;
                 }
-                return _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+                _this.pageRecordKeys[propertyIdentifier] = _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+                return _this.pageRecordKeys[propertyIdentifier];
             }
             return '';
         };

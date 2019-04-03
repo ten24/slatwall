@@ -5,6 +5,7 @@ class SWListingDisplayCellController{
     /* local state variables */
     public swListingDisplay:any;
     public pageRecord:any;
+    public pageRecordKey:string;
     public column:any;
     public popover:any;
     public value:any;
@@ -27,9 +28,14 @@ class SWListingDisplayCellController{
         public $scope
     ){
         
-        if(!this.value && this.pageRecord && this.column){
-            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
+        if(!this.pageRecordKey && this.column){
+            this.pageRecordKey = this.listingService.getPageRecordKey(this.column.propertyIdentifier);
         }
+        
+        if(!this.value && this.pageRecord && this.pageRecordKey){
+            this.value = this.pageRecord[this.pageRecordKey];        
+        }
+        
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
