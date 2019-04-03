@@ -22,6 +22,10 @@ declare global {
     namespace angular {
         interface Function {
         }
+
+        interface IAngularStatic {
+            mock: IMockStatic;
+        }
     }
 }
 
