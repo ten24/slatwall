@@ -5,6 +5,9 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfset rc.skuCollectionList = getHibachiScope().getService('SkuService').getSkuCollectionList() />
+<cfset rc.skuCollectionList.setDisplayProperties('skuName,skuCode,skuDescription',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) /> 
+<cfset rc.skuCollectionList.addDisplayProperty('skuID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
+<cfset rc.skuCollectionList.addDisplayProperty('price',getHibachiScope().rbKey('entity.sku.price'),{isVisible=true,isSearchable=true,isDeletable=true,isEditable=true}) /> 
 
 <cfset rc.orderTemplateItemCollectionList = getHibachiScope().getService('OrderService').getOrderTemplateItemCollectionList() />
 

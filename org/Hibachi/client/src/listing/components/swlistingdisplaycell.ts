@@ -26,23 +26,23 @@ class SWListingDisplayCellController{
         public utilityService,
         public $scope
     ){
-        this.hibachiPathBuilder = hibachiPathBuilder;
-        this.listingPartialPath = listingPartialPath;
-        this.$scope = $scope;
+        
         if(!this.value && this.pageRecord && this.column){
             this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
         }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
+        
         if(this.column.action && this.column.queryString){
+            
             this.hasActionCaller = true;
             this.actionCaller = {
                 action:this.column.action
             }
-            if(this.column.queryString){
-                this.actionCaller.queryString=this.utilityService.replaceStringWithProperties(this.column.queryString,this.pageRecord);
-            }
+            
+            this.actionCaller.queryString=this.utilityService.replaceStringWithProperties(this.column.queryString,this.pageRecord);
+            
         }
 
         if(this.cellView){
@@ -63,7 +63,7 @@ class SWListingDisplayCellController{
             }
             this.templateVariables["listingDisplayID"] = this.swListingDisplay.tableID; 
         
-        }else if(!this.hasActionCaller){
+        } else if(!this.hasActionCaller){
             
             this.templateUrl = this.getDirectiveTemplate();
         }
@@ -73,21 +73,28 @@ class SWListingDisplayCellController{
 
     public getDirectiveTemplate = ()=>{
         
-        var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycell.html';
+        var basePartialPath = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath);
         
-        if(this.expandable || (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary')){
-            templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplayselectablecellexpandable.html';
+        if(this.column.isEditable){
+            return basePartialPath + 'listingdisplaycelledit.html';
         }
-
-        if(!this.swListingDisplay.expandable || !this.column.tdclass || this.column.tdclass !== 'primary'){
+        
+        var templateUrl = basePartialPath + 'listingdisplaycell.html';
+        
+        var listingDisplayIsExpandableAndPrimaryColumn = (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary');
+        
+        if(this.expandable || listingDisplayIsExpandableAndPrimaryColumn){
+            templateUrl = basePartialPath + 'listingdisplayselectablecellexpandable.html';
+        } else if(!listingDisplayIsExpandableAndPrimaryColumn){
+            
             if(this.column.ormtype === 'timestamp'){
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycelldate.html';
-            }else if(this.column.type==='currency'){
+                templateUrl = basePartialPath + 'listingdisplaycelldate.html';
+            }else if(this.column.type === 'currency'){
                 if(this.column.aggregate && this.pageRecord){
                     var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
                     this.value = this.pageRecord[pageRecordKey];
                 }
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
+                templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
             }else if([
                 "double", 
                 "float", 
@@ -95,12 +102,14 @@ class SWListingDisplayCellController{
                 "long", 
                 "short", 
                 "big_decimal"
-            ].indexOf(this.column.ormtype) != -1){  
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellnumeric.html'; 
+            ].indexOf(this.column.ormtype) !== -1){  
+                templateUrl = basePartialPath + 'listingdisplaycellnumeric.html'; 
             }else if(this.column.aggregate){
                 this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellaggregate.html';
+                templateUrl = basePartialPath + 'listingdisplaycellaggregate.html';
             }
+        
+            
         }
 
         return templateUrl;
