@@ -67194,13 +67194,25 @@ var SWPricingManagerController = /** @class */ (function () {
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
         this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode");
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
+        var editableColumns = "minQuantity,maxQuantity,price";
         for (var i = 0; i < this.skuPriceCollectionConfig.columns.length; i++) {
-            if (this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.price") {
+            var indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""));
+            if (indexOf > -1) {
+                console.log("denny: ", indexOf);
                 this.skuPriceCollectionConfig.columns[i].hasCellView = "true";
-                this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPricesEdit";
+                if (this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.price") {
+                    this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPricesEdit";
+                }
+                else if (this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.minQuantity"
+                    || this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.maxQuantity") {
+                    var columnName = this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", "");
+                    columnName = columnName.slice(3);
+                    console.log("columnName: ", columnName);
+                    this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPrice" + columnName + "Edit";
+                }
             }
         }
-        console.log(this.skuPriceCollectionConfig);
+        console.log(this.skuPriceCollectionConfig.getCollectionConfig());
     }
     return SWPricingManagerController;
 }());
@@ -88938,6 +88950,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
             this.template = htmlCellView;
             //convert the page records into attrs
             this.templateVariables = this.pageRecord;
+            console.log(this.pageRecord);
             if (angular.isDefined(this.column.columnID)) {
                 this.templateVariables["column"] = this.column.columnID;
             }
