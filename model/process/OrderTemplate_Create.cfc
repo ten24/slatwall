@@ -81,7 +81,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}	
 
 	public array function getFrequencyTermIDOptions() {
-		return getOrderTemplate.getFrequencyTermOptions();
+		return getOrderTemplate().getFrequencyTermOptions();
 	}
 
 	public array function getOrderTemplateTypeIDOptions() {
