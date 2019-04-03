@@ -106,6 +106,19 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		}
 	}
 
+	public string function getScheduledOrderDates(numeric iterations = 5){
+		
+		var scheduledOrderDates = DateFormat(this.getScheduleOrderNextPlaceDateTime(), 'mm/dd/yyyy'); 
+		var currentDate = this.getScheduleOrderNextPlaceDateTime();  
+
+		for(var i=1; i <= arguments.iterations; i++){
+			currentDate = DateFormat(this.getFrequencyTerm().getEndDate(currentDate), 'mm/dd/yyyy');
+			scheduledOrderDates = listAppend(scheduledOrderDates, currentDate); 	
+		}
+
+		return replaceNoCase(scheduledOrderDates,',',', ', 'all');
+	}
+
 	// Account (many-to-one)
 	public any function setAccount(required any account) {
 		variables.account = arguments.account;
