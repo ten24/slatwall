@@ -15,5 +15,6 @@
 		<Record workflowTriggerID="f80aaac73fc84ee7a7d53962c641f653" triggerType="Event" triggerEvent="afterOrderProcess_placeOrderSuccess" startDateTime="2016-01-01 12:00:00" workflowID="c74704ef385a4ad1949b554086fcd80b" />
 		<Record workflowTriggerID="3130ad06932948d38bf37e7a5c27a435" triggerType="Event" triggerEvent="afterOrderDeliveryProcess_createSuccess" startDateTime="2016-01-01 12:00:00" workflowID="46d8e458b7dd4aa9876ce62b33e9e43f" />
 		<Record workflowTriggerID="a8bcb9a9e2e52981cea92c599170e052" triggerType="Schedule" startDateTime="2016-01-01 12:00:00" workflowID="a6c7740cb58189c914c2b2528aec7c1d" scheduleID="a7379771019d044026ae978809e1fd3d"  timeout="90" />
+		<Record workflowTriggerID="550dcb2c1fda4161ae932fda5372f722" triggerType="Event" triggerEvent="IMPLEMENT ME - TRIGGER NAME HERE" startDateTime="2016-01-01 12:00:00" workflowID="f8f3d033dd8444df85a92a8715b913a7" />
 	</Records>
 </Table>
