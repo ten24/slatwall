@@ -2,13 +2,27 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderTemplateUpcomingOrdersCardController{
 
+	public frequencyTerm:any;
+
     public scheduledOrderDates:string;
+    public startDate:Date; 
+    public title:string; 
 
 	constructor(public $hibachi,
 				public observerService,
 				public rbkeyService
 	){
-        
+		if(this.title == null){
+			this.title = this.rbkeyService.rbKey('entity.orderTemplate.scheduledOrderDates');
+		}
+		
+        if( this.startDate == null && 
+        	this.scheduledOrderDates != null && 
+        	this.scheduledOrderDates.length
+        ){
+        	var firstDate = this.scheduledOrderDates.split(',')[0];
+        	this.startDate = Date.parse(firstDate);
+        }
 	}
 
 }
@@ -19,7 +33,9 @@ class SWOrderTemplateUpcomingOrdersCard implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-        scheduledOrderDates:'@?'
+        scheduledOrderDates:'@',
+        frequencyTerm:'<?',
+        title:"@?"
 	};
 	public controller=SWOrderTemplateUpcomingOrdersCardController;
 	public controllerAs="swOrderTemplateUpcomingOrdersCard";

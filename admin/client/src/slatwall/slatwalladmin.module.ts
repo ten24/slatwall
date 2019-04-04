@@ -18,6 +18,7 @@ import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {skumodule} from "../sku/sku.module";
 import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.module";
+import {termmodule} from "../term/term.module"; 
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
@@ -46,6 +47,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   productbundlemodule.name,
   skumodule.name,
   subscriptionusagemodule.name,
+  termmodule.name,
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)

@@ -112,6 +112,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		var scheduledOrderDates = DateFormat(this.getScheduleOrderNextPlaceDateTime(), 'mm/dd/yyyy'); 
 		var currentDate = this.getScheduleOrderNextPlaceDateTime();  
 
+		arguments.iterations--;
+
 		for(var i=1; i <= arguments.iterations; i++){
 			currentDate = DateFormat(this.getFrequencyTerm().getEndDate(currentDate), 'mm/dd/yyyy');
 			scheduledOrderDates = listAppend(scheduledOrderDates, currentDate); 	

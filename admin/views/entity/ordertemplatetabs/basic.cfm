@@ -35,7 +35,11 @@
 			</div> 
 			
 			<div class="col-md-2">
-				<sw-order-template-upcoming-orders-card data-scheduled-order-dates="#rc.orderTemplate.getScheduledOrderDates(1)#">
+				<sw-order-template-upcoming-orders-card 
+					<cfif not isNull(rc.orderTemplate.getFrequencyTerm())>
+						data-frequency-term="#rc.orderTemplate.getFrequencyTerm().getEncodedJsonRepresentation()#"
+					</cfif>
+						data-scheduled-order-dates="#rc.orderTemplate.getScheduledOrderDates(1)#">
 				</sw-order-template-upcoming-orders-card>
 			</div> 
 			
