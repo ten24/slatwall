@@ -3001,12 +3001,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(
 			hasAggregateFilter() 
 			|| hasGroupBys()
+			
 		){
 			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
  		}else{
  			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
- 			var countHQLSuffix = getHQL(true);
+ 			var countHQLSuffix = getHQL(true,false,false,false,true);
 		}
 
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
@@ -3471,6 +3472,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
 						) continue;
 						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
+							variables.groupBys ="";
+							return;
 							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
 						}else if(Find(column.propertyIdentifier,getOrderByHQL())){
 							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
