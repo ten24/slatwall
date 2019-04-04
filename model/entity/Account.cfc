@@ -155,6 +155,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	
 
+	
+	//CUSTOM PROPERTIES BEGIN
+	property name="mynewcustomproperty";
+	
+	//CUSTOM PROPERTIES END
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
@@ -997,4 +1002,16 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 
 	
+
+	//CUSTOM FUNCTIONS BEGIN
+	public any function getMyCustomProperty(){
+		
+		if(!structkeyExists(variables,'mycustomproperty')){
+			return 'anything';
+		}
+		return variables.mycustomproperty;
+	}
+
+
+	//CUSTOM FUNCTIONS END
 }

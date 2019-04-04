@@ -105,7 +105,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.orderCollectionList = getOrderService().getOrderCollectionList();
 		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
 		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
-		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','NOT IN');
 		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
 
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
