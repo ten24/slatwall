@@ -67064,6 +67064,9 @@ var SWModalLauncherController = /** @class */ (function () {
                 _this.cancelAction()();
             }
         };
+        this.hasSaveAction = typeof this.saveAction === 'function';
+        this.hasCancelAction = typeof this.cancelAction === 'function';
+        this.hasDeleteAction = typeof this.deleteAction === 'function';
         if (angular.isUndefined(this.showModal)) {
             this.showModal = false;
         }
@@ -67144,8 +67147,7 @@ var SWModalWindowController = /** @class */ (function () {
     // @ngInject
     function SWModalWindowController() {
         if (angular.isUndefined(this.modalName)) {
-            console.warn("You did not pass a modal title to SWModalWindowController");
-            this.modalName = "";
+            throw ("You did not pass a modal title to SWModalWindowController");
         }
     }
     return SWModalWindowController;
