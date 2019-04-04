@@ -21,7 +21,7 @@
 					usingPersonalCollection="false"
 				>
 				</hb:HibachiListingDisplay>	
-
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>	
+
