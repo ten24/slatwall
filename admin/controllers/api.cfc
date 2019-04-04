@@ -124,10 +124,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		abort;
 	}
 	
-	public void function getSkuPrices(required struct rc){
-		writedump("I did IT!!!!!!");abort;
-	}
-	
 	public void function post( required struct rc ) {
 		rc.response = {};
 		
