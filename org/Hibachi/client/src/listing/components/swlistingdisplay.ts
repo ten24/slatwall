@@ -1,3 +1,4 @@
+import angular = require("angular");
 
 class SWListingDisplayController{
     /* local state variables */

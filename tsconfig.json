@@ -24,7 +24,7 @@
         /**
             ****************************    Strict Type-Checking Options     *******************************
         */
-        // "strict": true,                          /* Enable all strict type-checking options. */
+        "strict": true,                          /* Enable all strict type-checking options. */
         "noImplicitAny": false,                     /* Raise error on expressions and declarations with an implied 'any' type. */
         "strictNullChecks": false,                  /* Enable strict null checks. */
         "noImplicitThis": false,                    /* Raise error on 'this' expressions with an implied 'any' type. */
@@ -49,7 +49,7 @@
             "./node_modules/@types"
         ], /* List of folders to include type definitions from. */
         "types": [
-            "angularjs",
+            "angular",
             "bootstrap",
             "chart.js",
             "datejs",

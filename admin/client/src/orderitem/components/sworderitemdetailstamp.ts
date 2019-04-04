@@ -1,10 +1,12 @@
+import angular = require("angular");
+
 /**
  * Displays a shipping label in the order items row.
  * @module slatwalladmin
  * @class swOrderItemsShippingLabelStamp
  */
-class SWOrderItemDetailStamp{
-	public static Factory(){
+class SWOrderItemDetailStamp {
+	public static Factory() {
 		var directive = (
 			$log,
 			$hibachi,
@@ -33,17 +35,17 @@ class SWOrderItemDetailStamp{
 		collectionConfigService,
 		orderItemPartialsPath,
 		slatwallPathBuilder
-	){
+	) {
 		return {
 			restrict: 'A',
-			scope:{
-				systemCode:"=",
-				orderItemId:"=",
-				skuId:"=",
-				orderItem:"="
+			scope: {
+				systemCode: "=",
+				orderItemId: "=",
+				skuId: "=",
+				orderItem: "="
 			},
-			templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"orderitem-detaillabel.html",
-			link: function(scope, element, attrs){
+			templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitem-detaillabel.html",
+			link: function (scope, element, attrs) {
 				scope.details = [];
 				scope.orderItem.detailsName = [];
 				var results;
@@ -60,28 +62,28 @@ class SWOrderItemDetailStamp{
 				 * Event: Event Date, Event Location
 				 * Subscription: Subscription Term, Subscription Benefits
 				 */
-				var getMerchandiseDetails = function(orderItem){
+				var getMerchandiseDetails = function (orderItem) {
 					//Get option and option groups
-					for (var i = 0; i <=  orderItem.data.sku.data.options.length - 1; i++){
+					for (var i = 0; i <= orderItem.data.sku.data.options.length - 1; i++) {
 						var optionGroupCollectionConfig = collectionConfigService.newCollectionConfig("Option");
 						optionGroupCollectionConfig.addDisplayProperty("optionID,optionName, optionGroup.optionGroupName");
 						optionGroupCollectionConfig.addFilter("optionID", orderItem.data.sku.data.options[i].optionID, "=");
 						optionGroupCollectionConfig.getEntity().then(
-							(results)=>{
-								if(angular.isDefined(results.pageRecords[0])){
+							(results) => {
+								if (angular.isDefined(results.pageRecords[0])) {
 									orderItem.detailsName.push(results.pageRecords[0].optionGroup_optionGroupName);
 									orderItem.details.push(results.pageRecords[0].optionName);
 								}
 							},
-							(reason)=>{
-								throw("SWOrderItemDetailStamp had trouble retrieving the option group for option");
+							(reason) => {
+								throw ("SWOrderItemDetailStamp had trouble retrieving the option group for option");
 							}
 						);
 					}
 
 				};
 
-				var getSubscriptionDetails = function(orderItem){
+				var getSubscriptionDetails = function (orderItem) {
 
 					//get Subscription Term and Subscription Benefits
 					var name = orderItem.data.sku.data.subscriptionTerm.data.subscriptionTermName || "";
@@ -89,7 +91,7 @@ class SWOrderItemDetailStamp{
 					orderItem.details.push(name);
 
 					//Maybe multiple benefits so show them all.
-					for (var i = 0; i <=  orderItem.data.sku.data.subscriptionBenefits.length - 1; i++){
+					for (var i = 0; i <= orderItem.data.sku.data.subscriptionBenefits.length - 1; i++) {
 						var benefitName = orderItem.data.sku.data.subscriptionBenefits[i].subscriptionBenefitName || "";
 						orderItem.detailsName.push("Subscription Benefit:");
 						orderItem.details.push(benefitName);
@@ -97,23 +99,23 @@ class SWOrderItemDetailStamp{
 
 				};
 
-				var getEventDetails = function(orderItem){
+				var getEventDetails = function (orderItem) {
 					//get event date, and event location
 					orderItem.detailsName.push("Event Date: ");
 					orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);
 					//Need to iterate this.
-					for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++ ){
+					for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++) {
 						orderItem.detailsName.push("Location: ");
 						orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
 					}
 
 				};
-				if (angular.isUndefined(scope.orderItem.details)){
+				if (angular.isUndefined(scope.orderItem.details)) {
 					scope.orderItem.details = [];
 				}
-				if (angular.isDefined(scope.orderItem.details)){
-					
-					switch (scope.systemCode){
+				if (angular.isDefined(scope.orderItem.details)) {
+
+					switch (scope.systemCode) {
 						case "merchandise":
 							getMerchandiseDetails(scope.orderItem);
 							break;
@@ -129,6 +131,6 @@ class SWOrderItemDetailStamp{
 		};
 	}
 }
-export{
+export {
 	SWOrderItemDetailStamp
 }

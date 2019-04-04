@@ -2,6 +2,7 @@
 import {Cart} from "../model/entity/cart";
 import {Account} from "../model/entity/account";
 import {PublicRequest} from "../model/transient/publicrequest";
+import angular = require("angular");
 
 class PublicService {
     public account:Account;

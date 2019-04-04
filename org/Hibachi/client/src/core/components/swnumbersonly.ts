@@ -1,35 +1,36 @@
+import angular = require("angular");
 
 
-class SWNumbersOnly implements ng.IDirective{
+class SWNumbersOnly implements ng.IDirective {
     public restrict = "A";
     public require = "ngModel";
     public scope = {
-        ngModel:'=',
-        minNumber:'=?',
-        maxNumber:'=?'
+        ngModel: '=',
+        minNumber: '=?',
+        maxNumber: '=?'
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
+    public link: ng.IDirectiveLinkFn = ($scope: any, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, modelCtrl: ng.INgModelController) => {
 
-         modelCtrl.$parsers.unshift((inputValue) =>{
+        modelCtrl.$parsers.unshift((inputValue) => {
             var modelValue = modelCtrl.$modelValue;
-            if(inputValue != "" && !isNaN(Number(inputValue))){
-                if(angular.isDefined($scope.minNumber)){
-                    if(Number(inputValue) >= $scope.minNumber || !angular.isDefined($scope.minNumber)){
+            if (inputValue != "" && !isNaN(Number(inputValue))) {
+                if (angular.isDefined($scope.minNumber)) {
+                    if (Number(inputValue) >= $scope.minNumber || !angular.isDefined($scope.minNumber)) {
                         modelCtrl.$setValidity("minNumber", true);
-                    } else if (angular.isDefined($scope.minNumber)){
+                    } else if (angular.isDefined($scope.minNumber)) {
                         modelCtrl.$setValidity("minNumber", false);
                     }
                 }
-                if(angular.isDefined($scope.maxNumber)){
-                    if(Number(inputValue) <= $scope.maxNumber || !angular.isDefined($scope.maxNumber)){
+                if (angular.isDefined($scope.maxNumber)) {
+                    if (Number(inputValue) <= $scope.maxNumber || !angular.isDefined($scope.maxNumber)) {
                         modelCtrl.$setValidity("maxNumber", true);
-                    } else if (angular.isDefined($scope.maxNumber)){
+                    } else if (angular.isDefined($scope.maxNumber)) {
                         modelCtrl.$setValidity("maxNumber", false);
                     }
                 }
 
-                if(modelCtrl.$valid){
+                if (modelCtrl.$valid) {
                     modelValue = Number(inputValue);
                 } else {
                     modelValue = $scope.minNumber;
@@ -41,12 +42,12 @@ class SWNumbersOnly implements ng.IDirective{
 
 
     }
-    public static Factory(){
+    public static Factory() {
         var directive = () => new SWNumbersOnly();
         directive.$inject = [];
         return directive;
     }
 }
-export{
+export {
     SWNumbersOnly
 }

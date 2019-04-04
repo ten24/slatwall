@@ -8,25 +8,35 @@
  * https://stackoverflow.com/a/42035067
  * 
  */
+import angular = require("angular");
 
 declare global {
-    const angular: ng.IAngularStatic;
-    const Chart: typeof Chart;
+    // const angular: ng.IAngularStatic;
+    // const Chart: typeof Chart;
 
 
-    interface Function {
-        $inject?: ReadonlyArray<string>;
-    }
+    // interface Function {
+    //     $inject?: ReadonlyArray<string>;
+    // }
 
 
-    namespace angular {
-        interface Function {
+    // namespace angular {
+    //     interface Function {
+    //     }
+
+    //     interface IAngularStatic {
+    //         mock: IMockStatic;
+    //     }
+    // }
+
+
+    /** 
+     *
+        interface IScope extends IRootScopeService {
+            [x: string]: any;
         }
-
-        interface IAngularStatic {
-            mock: IMockStatic;
-        }
-    }
+     * 
+    */
 }
 
 

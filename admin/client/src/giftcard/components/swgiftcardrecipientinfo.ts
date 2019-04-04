@@ -1,11 +1,13 @@
+import angular = require("angular");
+
 class SWGiftCardRecipientInfoController {
 
 	public giftCard;
-	public detailAccountLink; 
+	public detailAccountLink;
 
 	//@ngInject
-	constructor(public $hibachi){
-		if(angular.isDefined(this.giftCard.ownerAccount_accountID)){
+	constructor(public $hibachi) {
+		if (angular.isDefined(this.giftCard.ownerAccount_accountID)) {
 			this.detailAccountLink = $hibachi.buildUrl('admin:entity.detailaccount', 'accountID=' + this.giftCard.ownerAccount_accountID);
 		}
 	}
@@ -13,17 +15,17 @@ class SWGiftCardRecipientInfoController {
 
 class SWGiftCardRecipientInfo implements ng.IDirective {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict: string;
+	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-		giftCard:"=?"
+		giftCard: "=?"
 	};
 	public controller = SWGiftCardRecipientInfoController;
 	public controllerAs = "swGiftCardRecipientInfo";
 
-	public static Factory():ng.IDirectiveFactory{
-		var directive:ng.IDirectiveFactory = (
+	public static Factory(): ng.IDirectiveFactory {
+		var directive: ng.IDirectiveFactory = (
 			giftCardPartialsPath,
 			slatwallPathBuilder
 		) => new SWGiftCardRecipientInfo(
@@ -37,14 +39,14 @@ class SWGiftCardRecipientInfo implements ng.IDirective {
 		return directive;
 	}
 
-	constructor(private giftCardPartialsPath, private slatwallPathBuilder){
+	constructor(private giftCardPartialsPath, private slatwallPathBuilder) {
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
 		this.restrict = "EA";
 	}
 
 }
 
-export{
+export {
 	SWGiftCardRecipientInfoController,
 	SWGiftCardRecipientInfo
 }

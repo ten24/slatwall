@@ -1,6 +1,7 @@
 
 import {HibachiValidationService} from "../services/hibachivalidationservice";
 import {HibachiService} from "../services/hibachiservice";
+import angular = require("angular");
 class HibachiServiceDecorator{
     //@ngInject
     constructor(

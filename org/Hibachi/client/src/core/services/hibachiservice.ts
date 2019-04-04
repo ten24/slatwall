@@ -1,206 +1,207 @@
 
 declare var escape;
-import {AdminRequest} from "../model/transient/adminrequest";
+import { AdminRequest } from "../model/transient/adminrequest";
+import angular = require("angular");
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
 // 	loadingResourceBundle:boolean;
 // } 
 
-class HibachiService{
+class HibachiService {
 
 	public _deferred = {};
-    public _resourceBundle = {};
-    public usePublicRoutes:boolean = false;
+	public _resourceBundle = {};
+	public usePublicRoutes: boolean = false;
 	//@ngInject
 	constructor(
-		private $window:ng.IWindowService,
-		private $q:ng.IQService,
-		private $http:ng.IHttpService,
-		private $timeout:ng.ITimeoutService,
-		private $log:ng.ILogService,
-		private $rootScope:ng.IRootScopeService,
-		private $location:ng.ILocationService,
-		private $anchorScroll:ng.IAnchorScrollService,
+		private $window: ng.IWindowService,
+		private $q: ng.IQService,
+		private $http: ng.IHttpService,
+		private $timeout: ng.ITimeoutService,
+		private $log: ng.ILogService,
+		private $rootScope: ng.IRootScopeService,
+		private $location: ng.ILocationService,
+		private $anchorScroll: ng.IAnchorScrollService,
 		private $injector,
 		private requestService,
 		private utilityService,
 		private formService,
-        private rbkeyService,
-        private appConfig,
-		private _config:any,
-		public _jsEntities:any,
-		public _jsEntityInstances?:any
-	){
+		private rbkeyService,
+		private appConfig,
+		private _config: any,
+		public _jsEntities: any,
+		public _jsEntityInstances?: any
+	) {
 		this.$injector = $injector;
-        this.$window = $window;
-        this.$q = $q;
-        this.$http = $http;
-        this.$timeout = $timeout;
-        this.$log = $log;
-        this.$rootScope = $rootScope;
-        this.$location = $location;
-        this.$anchorScroll = $anchorScroll;
+		this.$window = $window;
+		this.$q = $q;
+		this.$http = $http;
+		this.$timeout = $timeout;
+		this.$log = $log;
+		this.$rootScope = $rootScope;
+		this.$location = $location;
+		this.$anchorScroll = $anchorScroll;
 		this.requestService = requestService;
-        this.utilityService = utilityService;
-        this.formService = formService;
-        this.rbkeyService = rbkeyService;
+		this.utilityService = utilityService;
+		this.formService = formService;
+		this.rbkeyService = rbkeyService;
 
-        this.appConfig = appConfig;
-        this._config = _config;
-        this._jsEntities = _jsEntities;
-        this._jsEntityInstances = _jsEntityInstances;
-        
+		this.appConfig = appConfig;
+		this._config = _config;
+		this._jsEntities = _jsEntities;
+		this._jsEntityInstances = _jsEntityInstances;
+
 	}
 
 
-	public buildUrl = (action:string,queryString:string):string =>{
+	public buildUrl = (action: string, queryString: string): string => {
 		//actionName example: slatAction. defined in FW1 and populated to config
 		var actionName = this.appConfig.action;
 		var baseUrl = this.appConfig.baseURL;
 		queryString = queryString || '';
-		if(angular.isDefined(queryString) && queryString.length){
-			if(queryString.indexOf('&') !== 0){
-				queryString = '&'+ queryString;
+		if (angular.isDefined(queryString) && queryString.length) {
+			if (queryString.indexOf('&') !== 0) {
+				queryString = '&' + queryString;
 			}
 		}
 		return baseUrl + '?' + actionName + '=' + action + queryString;
 	};
 
-    public getUrlWithActionPrefix = () => {
-        return this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+"=";
-    }
+	public getUrlWithActionPrefix = () => {
+		return this.appConfig.baseURL + '/index.cfm/?' + this.appConfig.action + "=";
+	}
 
-	getJsEntities= () =>{
+	getJsEntities = () => {
 		return this._jsEntities;
 	};
 
-	setJsEntities= (jsEntities) =>{
+	setJsEntities = (jsEntities) => {
 		this._jsEntities = jsEntities;
 	};
 
-	getJsEntityInstances= () =>{
+	getJsEntityInstances = () => {
 		return this._jsEntityInstances;
 	};
 
-	setJsEntityInstances= (jsEntityInstances) =>{
+	setJsEntityInstances = (jsEntityInstances) => {
 		this._jsEntityInstances = jsEntityInstances;
 	};
 
-	getEntityExample = (entityName)=>{
+	getEntityExample = (entityName) => {
 		return this._jsEntityInstances[entityName];
 	};
 
-	getEntityMetaData = (entityName)=>{
+	getEntityMetaData = (entityName) => {
 		return this._jsEntityInstances[entityName].metaData;
 	};
 
-	getPropertyByEntityNameAndPropertyName = (entityName,propertyName)=>{
+	getPropertyByEntityNameAndPropertyName = (entityName, propertyName) => {
 		return this.getEntityMetaData(entityName)[propertyName];
 	};
 
-	getPrimaryIDPropertyNameByEntityName = (entityName)=>{
+	getPrimaryIDPropertyNameByEntityName = (entityName) => {
 		return this.getEntityExample(entityName).$$getIDName();
 	};
 
-	getEntityHasPropertyByEntityName = (entityName,propertyName):boolean=>{
+	getEntityHasPropertyByEntityName = (entityName, propertyName): boolean => {
 		return angular.isDefined(this.getEntityMetaData(entityName)[propertyName]);
 	};
 
-	getBaseEntityAliasFromName = (entityName)=>{
+	getBaseEntityAliasFromName = (entityName) => {
 		return '_' + entityName;
 	}
 
-	getPropertyIsObjectByEntityNameAndPropertyIdentifier = (entityName:string,propertyIdentifier:string):boolean=>{
-		var lastEntity = this.getLastEntityNameInPropertyIdentifier(entityName,propertyIdentifier);
+	getPropertyIsObjectByEntityNameAndPropertyIdentifier = (entityName: string, propertyIdentifier: string): boolean => {
+		var lastEntity = this.getLastEntityNameInPropertyIdentifier(entityName, propertyIdentifier);
 		var entityMetaData = this.getEntityMetaData(lastEntity);
-		return angular.isDefined(entityMetaData[this.utilityService.listLast(propertyIdentifier,'.')].cfc);
+		return angular.isDefined(entityMetaData[this.utilityService.listLast(propertyIdentifier, '.')].cfc);
 	};
 
-	getLastEntityNameInPropertyIdentifier = (entityName,propertyIdentifier)=>{
-		if(!entityName){
-			throw('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
+	getLastEntityNameInPropertyIdentifier = (entityName, propertyIdentifier) => {
+		if (!entityName) {
+			throw ('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
 		}
 		//strip alias if it exists and convert everything to be periods
-		if(propertyIdentifier.charAt(0) === '_'){
-			propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.'); 
+		if (propertyIdentifier.charAt(0) === '_') {
+			propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g, '.'), '.');
 		}
-		
+
 		var propertyIdentifierArray = propertyIdentifier.split('.');
-		
-		if(propertyIdentifierArray[0] === entityName.toLowerCase()){
+
+		if (propertyIdentifierArray[0] === entityName.toLowerCase()) {
 			propertyIdentifierArray.shift();
 		}
 
-		if(propertyIdentifierArray.length > 1){
+		if (propertyIdentifierArray.length > 1) {
 			var propertiesStruct = this.getEntityMetaData(entityName);
-			var currentProperty = propertyIdentifierArray.shift(); 
-			if(
+			var currentProperty = propertyIdentifierArray.shift();
+			if (
 				!propertiesStruct[currentProperty] ||
 				!propertiesStruct[currentProperty].cfc
-			){
-				throw("The Property Identifier "+propertyIdentifier+" is invalid for the entity "+entityName);
+			) {
+				throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
 			}
 			var currentEntityName = propertiesStruct[currentProperty].cfc;
 			var currentPropertyIdentifier = propertyIdentifierArray.join('.');
-			return this.getLastEntityNameInPropertyIdentifier(currentEntityName,currentPropertyIdentifier);
+			return this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
 		}
 		return entityName;
 
 	};
 	//helper method to inflate a new entity with data
-	populateEntity = (entityName, data)=>{
+	populateEntity = (entityName, data) => {
 		var newEntity = this.newEntity(entityName);
-		angular.extend(newEntity.data,data);
+		angular.extend(newEntity.data, data);
 		return newEntity;
 	}
 	//service method used to transform collection data to collection objects based on a collectionconfig
-	populateCollection = (collectionData,collectionConfig) =>{
+	populateCollection = (collectionData, collectionConfig) => {
 		//create array to hold objects
 		var entities = [];
 		//loop over all collection data to create objects
 		var hibachiService = this;
-		angular.forEach(collectionData, (collectionItemData, key)=>{
+		angular.forEach(collectionData, (collectionItemData, key) => {
 			//create base Entity
-			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace(this.appConfig.applicationKey,'')]();
+			var entity = hibachiService['new' + collectionConfig.baseEntityName.replace(this.appConfig.applicationKey, '')]();
 			//populate entity with data based on the collectionConfig
-			angular.forEach(collectionConfig.columns, (column, key)=>{
+			angular.forEach(collectionConfig.columns, (column, key) => {
 				//get objects base properties
-				var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase(),'');
-                propertyIdentifier = this.utilityService.replaceAll(propertyIdentifier,'_','.');
-                if(propertyIdentifier.charAt(0)==='.'){
-                    propertyIdentifier = propertyIdentifier.slice(1);
-                }
+				var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase(), '');
+				propertyIdentifier = this.utilityService.replaceAll(propertyIdentifier, '_', '.');
+				if (propertyIdentifier.charAt(0) === '.') {
+					propertyIdentifier = propertyIdentifier.slice(1);
+				}
 				var propertyIdentifierArray = propertyIdentifier.split('.');
-				var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
+				var propertyIdentifierKey = propertyIdentifier.replace(/\./g, '_');
 				var currentEntity = entity;
-				angular.forEach(propertyIdentifierArray,(property,key)=>{
-					if(key === propertyIdentifierArray.length-1){
+				angular.forEach(propertyIdentifierArray, (property, key) => {
+					if (key === propertyIdentifierArray.length - 1) {
 						//if we are on the last item in the array
-						if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
-							var relatedEntity = hibachiService['new'+currentEntity.metaData[property].cfc]();
+						if (angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one') {
+							var relatedEntity = hibachiService['new' + currentEntity.metaData[property].cfc]();
 							relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
-							currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
-						}else if(angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
-							angular.forEach(collectionItemData[propertyIdentifierKey],function(arrayItem,key){
-								var relatedEntity = hibachiService['new'+currentEntity.metaData[property].cfc]();
+							currentEntity['$$set' + currentEntity.metaData[property].name.charAt(0).toUpperCase() + currentEntity.metaData[property].name.slice(1)](relatedEntity);
+						} else if (angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')) {
+							angular.forEach(collectionItemData[propertyIdentifierKey], function (arrayItem, key) {
+								var relatedEntity = hibachiService['new' + currentEntity.metaData[property].cfc]();
 								relatedEntity.$$init(arrayItem);
-								currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+								currentEntity['$$add' + currentEntity.metaData[property].singularname.charAt(0).toUpperCase() + currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
 							});
-						}else{
+						} else {
 							currentEntity.data[property] = collectionItemData[propertyIdentifierKey];
 						}
-					}else{
+					} else {
 						var propertyMetaData = currentEntity.metaData[property];
-						if(angular.isUndefined(currentEntity.data[property])){
-							if(propertyMetaData.fieldtype === 'one-to-many'){
+						if (angular.isUndefined(currentEntity.data[property])) {
+							if (propertyMetaData.fieldtype === 'one-to-many') {
 								relatedEntity = [];
-							}else{
-								relatedEntity = hibachiService['new'+propertyMetaData.cfc]();
+							} else {
+								relatedEntity = hibachiService['new' + propertyMetaData.cfc]();
 							}
-						}else{
+						} else {
 							relatedEntity = currentEntity.data[property];
 						}
-						currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
+						currentEntity['$$set' + propertyMetaData.name.charAt(0).toUpperCase() + propertyMetaData.name.slice(1)](relatedEntity);
 						currentEntity = relatedEntity;
 					}
 				});
@@ -210,36 +211,36 @@ class HibachiService{
 		return entities;
 	};
 	/*basic entity getter where id is optional, returns a promise*/
-	getDefer =(deferKey) =>{
+	getDefer = (deferKey) => {
 		return this._deferred[deferKey];
 	};
-	cancelPromise= (deferKey) =>{
+	cancelPromise = (deferKey) => {
 		var deferred = this.getDefer(deferKey);
-		if(angular.isDefined(deferred)){
-			deferred.resolve({messages:[{messageType:'error',message:'User Cancelled'}]});
+		if (angular.isDefined(deferred)) {
+			deferred.resolve({ messages: [{ messageType: 'error', message: 'User Cancelled' }] });
 		}
 	};
-	newEntity= (entityName) =>{
+	newEntity = (entityName) => {
 
-		if (entityName != undefined){
-			var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
-			if(angular.element(document.body).injector().has(entityServiceName)){
+		if (entityName != undefined) {
+			var entityServiceName = entityName.charAt(0).toLowerCase() + entityName.slice(1) + 'Service';
+			if (angular.element(document.body).injector().has(entityServiceName)) {
 				var entityService = angular.element(document.body).injector().get(entityServiceName);
-				let functionObj = entityService['new'+entityName];
-				if (entityService['new'+entityName] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)){
-					return entityService['new'+entityName]();
+				let functionObj = entityService['new' + entityName];
+				if (entityService['new' + entityName] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)) {
+					return entityService['new' + entityName]();
 				}
 			}
-			return new this._jsEntities[entityName];	
- 
+			return new this._jsEntities[entityName];
+
 		}
-	
+
 	};
-	getEntityDefinition= (entityName) =>{
+	getEntityDefinition = (entityName) => {
 		return this._jsEntities[entityName];
 	};
 	/*basic entity getter where id is optional, returns a promise*/
-	getEntity= (entityName:string, options:any) => {
+	getEntity = (entityName: string, options: any) => {
 		/*
 		*
 		* getEntity('Product', '12345-12345-12345-12345');
@@ -248,19 +249,19 @@ class HibachiService{
 		*/
 		var apiSubsystemName = this.appConfig.apiSubsystemName || "api";
 
-		if(angular.isUndefined(options)){
+		if (angular.isUndefined(options)) {
 			options = {};
 		}
 
 
-		if(angular.isDefined(options.deferKey)) {
+		if (angular.isDefined(options.deferKey)) {
 			this.cancelPromise(options.deferKey);
 		}
 
-		var params:any= {};
-		if(typeof options === 'string') {
+		var params: any = {};
+		if (typeof options === 'string') {
 
-			var urlString = this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName='+entityName+'&entityID='+options;
+			var urlString = this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName + '&entityID=' + options;
 		} else {
 			params['P:Current'] = options.currentPage || 1;
 			params['P:Show'] = options.pageShow || 10;
@@ -277,15 +278,15 @@ class HibachiService{
 			params.processContext = options.processContext || '';
 			params.isReport = options.isReport || false;
 			params.periodInterval = options.periodInterval || "";
-			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
+			var urlString = this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
 		}
 
-		if(angular.isDefined(options.id)) {
-			urlString += '&entityId='+options.id;
+		if (angular.isDefined(options.id)) {
+			urlString += '&entityId=' + options.id;
 		}
 
 		var transformResponse = (data) => {
-			if(angular.isString(data)){
+			if (angular.isString(data)) {
 				data = JSON.parse(data);
 			}
 
@@ -293,11 +294,11 @@ class HibachiService{
 		};
 
 		//check if we are using a service to transform the response
-		if(angular.isDefined(options.transformResponse)) {
-			transformResponse=(data) => {
+		if (angular.isDefined(options.transformResponse)) {
+			transformResponse = (data) => {
 
 				var data = JSON.parse(data);
-				if(angular.isDefined(data.records))  {
+				if (angular.isDefined(data.records)) {
 					data = options.transformResponse(data.records);
 				}
 
@@ -305,200 +306,200 @@ class HibachiService{
 			};
 		}
 
-		let request = this.requestService.newAdminRequest(urlString,params)
+		let request = this.requestService.newAdminRequest(urlString, params)
 
-		if(options.deferKey)  {
+		if (options.deferKey) {
 			this._deferred[options.deferKey] = request;
 		}
 		return request.promise;
 
 	};
 	getResizedImageByProfileName = (profileName, skuIDs) => {
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&context=getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getResizedImageByProfileName&context=getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
 		let request = this.requestService.newPublicRequest(urlString);
 
 		return request.promise;
 	}
-	getEventOptions= (entityName) => {
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getEventOptionsByEntityName&entityName='+entityName;
+	getEventOptions = (entityName) => {
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getEventOptionsByEntityName&entityName=' + entityName;
 		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 	};
-    getProcessOptions= (entityName) => {
+	getProcessOptions = (entityName) => {
 
-        var urlString = this.getUrlWithActionPrefix()+'api:main.getProcessMethodOptionsByEntityName&entityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getProcessMethodOptionsByEntityName&entityName=' + entityName;
 		let request = this.requestService.newAdminRequest(urlString)
 
-        return request.promise;
-    };
+		return request.promise;
+	};
 	checkUniqueOrNullValue = (object, property, value) => {
 		var objectName = object.metaData.className;
 		var objectID = object.$$getID();
-		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
-		'&value=' + escape(value)).then(
-	 (results:any):ng.IPromise<any> =>{
-		return results.data.uniqueStatus;
-		})
+		return this.$http.get(this.getUrlWithActionPrefix() + 'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
+			'&value=' + escape(value)).then(
+				(results: any): ng.IPromise<any> => {
+					return results.data.uniqueStatus;
+				})
 	};
 	checkUniqueValue = (object, property, value) => {
 		var objectName = object.metaData.className;
 		var objectID = object.$$getID();
-		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
+		return this.$http.get(this.getUrlWithActionPrefix() + 'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
-			 (results:any):ng.IPromise<any> =>{
-				return results.data.uniqueStatus;
-		});
+				(results: any): ng.IPromise<any> => {
+					return results.data.uniqueStatus;
+				});
 	};
-	getPropertyDisplayData = (entityName,options) => {
+	getPropertyDisplayData = (entityName, options) => {
 
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayData&entityName='+entityName;
-		var params:any = {};
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getPropertyDisplayData&entityName=' + entityName;
+		var params: any = {};
 		params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-		let request = this.requestService.newAdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString, params);
 
 		return request.promise;
 	};
-	getPropertyDisplayOptions = (entityName,options) => {
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayOptions&entityName='+entityName;
-		var params:any = {};
+	getPropertyDisplayOptions = (entityName, options) => {
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getPropertyDisplayOptions&entityName=' + entityName;
+		var params: any = {};
 		params.property = options.property || options.propertyIdentifier || '';
 		params.entityID = options.entityID || '';
-		if(angular.isDefined(options.argument1))  {
+		if (angular.isDefined(options.argument1)) {
 			params.argument1 = options.argument1;
 		}
 
-		let request = this.requestService.newAdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString, params);
 
 		return request.promise;
 	};
 
-	public getPropertyTitle=(propertyName,metaData)=>{
+	public getPropertyTitle = (propertyName, metaData) => {
 		var propertyMetaData = metaData[propertyName];
-		if(angular.isDefined(propertyMetaData['hb_rbkey'])){
+		if (angular.isDefined(propertyMetaData['hb_rbkey'])) {
 			return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
-		}else if (angular.isUndefined(propertyMetaData['persistent'])){
-			if(angular.isDefined(propertyMetaData['fieldtype'])
-			&& angular.isDefined(propertyMetaData['cfc'])
-			&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1){
+		} else if (angular.isUndefined(propertyMetaData['persistent'])) {
+			if (angular.isDefined(propertyMetaData['fieldtype'])
+				&& angular.isDefined(propertyMetaData['cfc'])
+				&& ["one-to-many", "many-to-many"].indexOf(propertyMetaData.fieldtype) > -1) {
 
-				return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+"."+propertyName+',entity.'+propertyMetaData.cfc+'_plural');
-			}else if(angular.isDefined(propertyMetaData.fieldtype)
-			&& angular.isDefined(propertyMetaData.cfc)
-			&& ["many-to-one"].indexOf(propertyMetaData.fieldtype) > -1){
-				return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc);
-			}
-			return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
-		}else if(metaData.isProcessObject){
-			if(angular.isDefined(propertyMetaData.fieldtype)
+				return metaData.$$getRBKey("entity." + metaData.className.toLowerCase() + "." + propertyName + ',entity.' + propertyMetaData.cfc + '_plural');
+			} else if (angular.isDefined(propertyMetaData.fieldtype)
 				&& angular.isDefined(propertyMetaData.cfc)
-				&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
-			){
-				return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase()+'_plural');
-			}else if(angular.isDefined(propertyMetaData.fieldtype)
-				&& angular.isDefined(propertyMetaData.cfc)
-			){
-				return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase());
+				&& ["many-to-one"].indexOf(propertyMetaData.fieldtype) > -1) {
+				return metaData.$$getRBKey("entity." + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc);
 			}
-			return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+			return metaData.$$getRBKey('entity.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
+		} else if (metaData.isProcessObject) {
+			if (angular.isDefined(propertyMetaData.fieldtype)
+				&& angular.isDefined(propertyMetaData.cfc)
+				&& ["one-to-many", "many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
+			) {
+				return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc.toLowerCase() + '_plural');
+			} else if (angular.isDefined(propertyMetaData.fieldtype)
+				&& angular.isDefined(propertyMetaData.cfc)
+			) {
+				return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase() + ',entity.' + propertyMetaData.cfc.toLowerCase());
+			}
+			return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
 
 		}
-		return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+		return metaData.$$getRBKey('object.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
 	}
 
-	saveEntity= (entityName,id,params,context) => {
+	saveEntity = (entityName, id, params, context) => {
 
-		var urlString = this.getUrlWithActionPrefix()+'api:main.post';
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.post';
 
-		if(angular.isDefined(entityName))  {
+		if (angular.isDefined(entityName)) {
 			params.entityName = entityName;
 		}
-		if(angular.isDefined(id))  {
+		if (angular.isDefined(id)) {
 			params.entityID = id;
 		}
 
-		if(angular.isDefined(context))  {
+		if (angular.isDefined(context)) {
 			params.context = context;
 		}
-		let request = this.requestService.newAdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString, params);
 
 		return request.promise;
 	};
 
-	getExistingCollectionsByBaseEntity= (entityName) => {
+	getExistingCollectionsByBaseEntity = (entityName) => {
 
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
 		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 
 	};
-	getFilterPropertiesByBaseEntityName= (entityName,includeNonPersistent = false) => {
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName+'&includeNonPersistent='+includeNonPersistent;
+	getFilterPropertiesByBaseEntityName = (entityName, includeNonPersistent = false) => {
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName + '&includeNonPersistent=' + includeNonPersistent;
 		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 	};
 
-	login = (emailAddress,password) => {
+	login = (emailAddress, password) => {
 
-		var urlString = this.appConfig.baseURL+'/index.cfm/api/auth/login';
-		var params:any= {
-			emailAddress:emailAddress,
-			password:password
+		var urlString = this.appConfig.baseURL + '/index.cfm/api/auth/login';
+		var params: any = {
+			emailAddress: emailAddress,
+			password: password
 		};
 
-		let request = this.requestService.newAdminRequest(urlString,params);
+		let request = this.requestService.newAdminRequest(urlString, params);
 		return request.promise;
 
 	};
 
-	getResourceBundle= (locale) => {
+	getResourceBundle = (locale) => {
 
 		var locale = locale || this.appConfig.rbLocale;
 
-		if(this._resourceBundle[locale]) {
+		if (this._resourceBundle[locale]) {
 			return this._resourceBundle[locale];
 		}
 
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getResourceBundle&instantiationKey=' + this.appConfig.instantiationKey + '&locale=' + locale;
 
 		let request = this.requestService.newAdminRequest(urlString);
 		return request.promise
 	};
 
-	getCurrencies = () =>{
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
+	getCurrencies = () => {
+		var urlString = this.getUrlWithActionPrefix() + 'api:main.getCurrencies&instantiationKey=' + this.appConfig.instantiationKey;
 		let request = this.requestService.newAdminRequest(urlString);
 
 		return request.promise;
 	};
 
-    getConfig= () => {
+	getConfig = () => {
 		return this._config;
 	};
-	getConfigValue= (key) => {
+	getConfigValue = (key) => {
 		return this._config[key];
 	};
-	setConfigValue= (key,value) => {
+	setConfigValue = (key, value) => {
 		this._config[key] = value;
 	};
-	setConfig= (config) => {
+	setConfig = (config) => {
 		this._config = config;
 	};
 }
 
-class $Hibachi implements ng.IServiceProvider{
+class $Hibachi implements ng.IServiceProvider {
 
 	public _config = {};
-	private angular:ng.IAngularStatic = angular;
+	private angular: ng.IAngularStatic = angular;
 	public _jsEntities;
 	public _jsEntityInstances;
-	public setJsEntities = (jsEntities):void =>{
+	public setJsEntities = (jsEntities): void => {
 		this._jsEntities = jsEntities;
 	};
-    //@ngInject
-	constructor(appConfig){
+	//@ngInject
+	constructor(appConfig) {
 
 		this._config = appConfig;
 
@@ -515,29 +516,29 @@ class $Hibachi implements ng.IServiceProvider{
 			'requestService',
 			'utilityService',
 			'formService',
-            'rbkeyService',
+			'rbkeyService',
 
-            'appConfig'
+			'appConfig'
 		];
 	}
 
 
 	public $get(
-		$window:ng.IWindowService,
-		$q:ng.IQService,
-		$http:ng.IHttpService,
-		$timeout:ng.ITimeoutService,
-		$log:ng.ILogService,
-		$rootScope:ng.IRootScopeService,
-		$location:ng.ILocationService,
-		$anchorScroll:ng.IAnchorScrollService,
+		$window: ng.IWindowService,
+		$q: ng.IQService,
+		$http: ng.IHttpService,
+		$timeout: ng.ITimeoutService,
+		$log: ng.ILogService,
+		$rootScope: ng.IRootScopeService,
+		$location: ng.ILocationService,
+		$anchorScroll: ng.IAnchorScrollService,
 		$injector,
 		requestService,
 		utilityService,
 		formService,
-        rbkeyService,
+		rbkeyService,
 
-        appConfig
+		appConfig
 	) {
 		return new HibachiService(
 			$window,
@@ -552,30 +553,30 @@ class $Hibachi implements ng.IServiceProvider{
 			requestService,
 			utilityService,
 			formService,
-            rbkeyService,
+			rbkeyService,
 
-            appConfig,
+			appConfig,
 			this._config,
 			this._jsEntities,
 			this._jsEntityInstances
 		);
 
 	}
-	public getConfig = () =>{
+	public getConfig = () => {
 		return this._config;
 	};
-	public getConfigValue = (key) =>{
+	public getConfigValue = (key) => {
 		return this._config[key];
 	};
-	public setConfigValue = (key,value) =>{
+	public setConfigValue = (key, value) => {
 		this._config[key] = value;
 	};
-	public setConfig = (config) =>{
+	public setConfig = (config) => {
 		this._config = config;
 	};
 }
 
-export{
+export {
 	HibachiService,
 	$Hibachi
 }

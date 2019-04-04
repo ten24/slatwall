@@ -1,10 +1,11 @@
+import angular = require("angular");
 
-class SWTrim{
+class SWTrim {
     //@ngInject
-    public static Factory(rbkeyService){
-        return (text:string, max, wordwise=true, tail="...")=>{
-            if(angular.isDefined(text) && angular.isString(text)){
-               if (!text) return '';
+    public static Factory(rbkeyService) {
+        return (text: string, max, wordwise = true, tail = "...") => {
+            if (angular.isDefined(text) && angular.isString(text)) {
+                if (!text) return '';
 
                 max = parseInt(max, 10);
                 if (!max) return text;
@@ -23,7 +24,7 @@ class SWTrim{
             return text;
         }
     }
-    
+
 }
 export {
     SWTrim

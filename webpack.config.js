@@ -88,7 +88,7 @@ var appConfig = {
     new VisualizerPlugin({
       filename: 'bundle-stats.html'
     }),
-    // new BundleAnalyzerPlugin()
+    new BundleAnalyzerPlugin()
   ],
   optimization: {
     usedExports: true,

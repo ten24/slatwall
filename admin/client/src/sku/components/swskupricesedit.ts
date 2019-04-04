@@ -1,3 +1,5 @@
+import angular = require("angular");
+
 class SWSkuPricesEditController{
     
     public Id:string; 

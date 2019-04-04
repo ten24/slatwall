@@ -1,3 +1,4 @@
+import angular = require("angular");
 
 class SWWorkflowTaskActionsController {
     private workflowTask;
@@ -33,28 +34,28 @@ class SWWorkflowTaskActionsController {
         public hibachiPathBuilder,
         public collectionConfigService,
         public observerService
-    ){
+    ) {
 
         this.$log.debug('Workflow Task Actions Init');
         this.$log.debug(this.workflowTask);
         this.openActions = false;
 
-        this.observerService.attach((item) =>{
-            if(angular.isDefined(this.emailTemplateCollectionConfig)){
+        this.observerService.attach((item) => {
+            if (angular.isDefined(this.emailTemplateCollectionConfig)) {
                 this.emailTemplateCollectionConfig.clearFilters();
-                this.emailTemplateCollectionConfig.addFilter("emailTemplateObject",item.value);
+                this.emailTemplateCollectionConfig.addFilter("emailTemplateObject", item.value);
             }
-            if(angular.isDefined(this.printTemplateCollectionConfig)){
+            if (angular.isDefined(this.printTemplateCollectionConfig)) {
                 this.printTemplateCollectionConfig.clearFilters();
-                this.printTemplateCollectionConfig.addFilter("printTemplateObject",item.value);
+                this.printTemplateCollectionConfig.addFilter("printTemplateObject", item.value);
             }
-        },'WorkflowWorkflowObjectOnChange');
+        }, 'WorkflowWorkflowObjectOnChange');
 
 
         /**
          * Returns the correct object based on the selected object type.
          */
-        var getObjectByActionType = (workflowTaskAction) =>{
+        var getObjectByActionType = (workflowTaskAction) => {
             if (workflowTaskAction.data.actionType === 'email') {
                 workflowTaskAction.$$getEmailTemplate();
 
@@ -67,7 +68,7 @@ class SWWorkflowTaskActionsController {
          * Returns workflow task action, and saves them to the scope variable workflowtaskactions
          * --------------------------------------------------------------------------------------------------------
          */
-        this.getWorkflowTaskActions = ()=> {
+        this.getWorkflowTaskActions = () => {
             /***
              Note:
              This conditional is checking whether or not we need to be retrieving to
@@ -75,16 +76,16 @@ class SWWorkflowTaskActionsController {
              trip to the database.
 
              ***/
-            if(angular.isUndefined(this.workflowTask.data.workflowTaskActions)){
+            if (angular.isUndefined(this.workflowTask.data.workflowTaskActions)) {
                 var workflowTaskPromise = this.workflowTask.$$getWorkflowTaskActions();
-                workflowTaskPromise.then( ()=> {
+                workflowTaskPromise.then(() => {
                     this.workflowTaskActions = this.workflowTask.data.workflowTaskActions;
-                    angular.forEach(this.workflowTaskActions,  (workflowTaskAction) =>{
+                    angular.forEach(this.workflowTaskActions, (workflowTaskAction) => {
                         getObjectByActionType(workflowTaskAction);
                     });
                     this.$log.debug(this.workflowTaskActions);
                 });
-            }else{
+            } else {
                 this.workflowTaskActions = this.workflowTask.data.workflowTaskActions;
             }
             if (angular.isUndefined(this.workflowTask.data.workflowTaskActions)) {
@@ -101,24 +102,24 @@ class SWWorkflowTaskActionsController {
          * @param taskAction
          * --------------------------------------------------------------------------------------------------------
          */
-        this.saveWorkflowTaskAction =  (taskAction, context) =>{
+        this.saveWorkflowTaskAction = (taskAction, context) => {
             this.$log.debug("Context: " + context);
             this.$log.debug("saving task action and parent task");
-            this.$log.debug(taskAction);  
+            this.$log.debug(taskAction);
             var savePromise = this.workflowTaskActions.selectedTaskAction.$$save();
-            savePromise.then( () => {
+            savePromise.then(() => {
                 var taSavePromise = taskAction.$$save;
                 //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
-                if (context == 'add'){
+                if (context == 'add') {
                     this.$log.debug("Save and New");
                     this.addWorkflowTaskAction(taskAction);
                     this.finished = false;
-                }else if (context == "finish"){
+                } else if (context == "finish") {
                     this.finished = true;
                 }
                 //Auto save the workflow now that the task action is saved.
                 this.workflowTask.data.workflow.$$save();
-            },(err)=>{
+            }, (err) => {
                 angular.element('a[href="/##j-basic-2"]').click();
                 console.warn(err);
             });
@@ -127,13 +128,13 @@ class SWWorkflowTaskActionsController {
         /**
          * Sets the editing state to show/hide the edit screen.
          */
-        this.setHidden = (task) =>{
-            if(!angular.isObject(task)){ task = {};}
+        this.setHidden = (task) => {
+            if (!angular.isObject(task)) { task = {}; }
 
-            if(angular.isUndefined(task.hidden)){
+            if (angular.isUndefined(task.hidden)) {
 
-                task.hidden=false;
-            }else{
+                task.hidden = false;
+            } else {
                 this.$log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
                 task.hidden = !task.hidden;
             }
@@ -163,7 +164,7 @@ class SWWorkflowTaskActionsController {
             this.finished = false;
             this.workflowTaskActions.selectedTaskAction = undefined;
             var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(this.workflowTask.data.workflow.data.workflowObject, true);
-            filterPropertiesPromise.then( (value) =>{
+            filterPropertiesPromise.then((value) => {
                 this.filterPropertiesList = {
                     baseEntityName: this.workflowTask.data.workflow.data.workflowObject,
                     baseEntityAlias: "_" + this.workflowTask.data.workflow.data.workflowObject
@@ -172,25 +173,25 @@ class SWWorkflowTaskActionsController {
                 this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject] = this.metadataService.getPropertiesListByBaseEntityAlias(this.workflowTask.data.workflow.data.workflowObject);
                 this.metadataService.formatPropertiesList(this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject], this.workflowTask.data.workflow.data.workflowObject);
                 this.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-                this.emailTemplateSelected =  (this.workflowTaskActions.selectedTaskAction.data.emailTemplate) ? this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateName : '';
+                this.emailTemplateSelected = (this.workflowTaskActions.selectedTaskAction.data.emailTemplate) ? this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateName : '';
 
                 this.emailTemplateCollectionConfig = this.collectionConfigService.newCollectionConfig("EmailTemplate");
                 this.emailTemplateCollectionConfig.setDisplayProperties("emailTemplateID,emailTemplateName");
-                this.emailTemplateCollectionConfig.addFilter("emailTemplateObject",this.workflowTask.data.workflow.data.workflowObject);
+                this.emailTemplateCollectionConfig.addFilter("emailTemplateObject", this.workflowTask.data.workflow.data.workflowObject);
 
 
-                this.printTemplateSelected =  (this.workflowTaskActions.selectedTaskAction.data.printTemplate) ? this.workflowTaskActions.selectedTaskAction.data.printTemplate.data.printTemplateName : '';
+                this.printTemplateSelected = (this.workflowTaskActions.selectedTaskAction.data.printTemplate) ? this.workflowTaskActions.selectedTaskAction.data.printTemplate.data.printTemplateName : '';
 
                 this.printTemplateCollectionConfig = this.collectionConfigService.newCollectionConfig("PrintTemplate");
                 this.printTemplateCollectionConfig.setDisplayProperties("printTemplateID,printTemplateName");
-                this.printTemplateCollectionConfig.addFilter("printTemplateObject",this.workflowTask.data.workflow.data.workflowObject);
+                this.printTemplateCollectionConfig.addFilter("printTemplateObject", this.workflowTask.data.workflow.data.workflowObject);
 
             });
         };
         /**
          * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
          */
-        this.deleteEntity = (entity) =>{
+        this.deleteEntity = (entity) => {
             this.removeWorkflowTaskAction(entity);
         };
         /**
@@ -199,9 +200,9 @@ class SWWorkflowTaskActionsController {
          * and reindexes the list.
          * --------------------------------------------------------------------------------------------------------
          */
-        this.removeWorkflowTaskAction =  (workflowTaskAction) => {
+        this.removeWorkflowTaskAction = (workflowTaskAction) => {
             var deletePromise = workflowTaskAction.$$delete();
-            deletePromise.then( () =>{
+            deletePromise.then(() => {
                 if (workflowTaskAction === this.workflowTaskActions.selectedTaskAction) {
                     delete this.workflowTaskActions.selectedTaskAction;
                 }
@@ -215,7 +216,7 @@ class SWWorkflowTaskActionsController {
         };
 
         this.searchProcess = {
-            name:''
+            name: ''
         };
 
         /**
@@ -232,11 +233,11 @@ class SWWorkflowTaskActionsController {
         /**
          * Retrieves the proccess options for a workflow trigger action.
          */
-        this.getProcessOptions = (objectName) =>{
-            if(!this.processOptions.length){
+        this.getProcessOptions = (objectName) => {
+            if (!this.processOptions.length) {
                 var proccessOptionsPromise = this.$hibachi.getProcessOptions(objectName);
 
-                proccessOptionsPromise.then((value)=>{
+                proccessOptionsPromise.then((value) => {
                     this.processOptions = value.data;
                 });
             }
@@ -247,7 +248,7 @@ class SWWorkflowTaskActionsController {
         /**
          * Changes the selected process option value.
          */
-        this.selectProcess = (processOption)=>{
+        this.selectProcess = (processOption) => {
             this.workflowTaskActions.selectedTaskAction.data.processMethod = processOption.value;
             this.searchProcess.name = processOption.value;
             this.workflowTaskActions.selectedTaskAction.forms.selectedTaskAction.$setDirty();
@@ -258,20 +259,20 @@ class SWWorkflowTaskActionsController {
 
 
 
-        this.selectEmailTemplate =  (item) => {
-            if(angular.isDefined(this.workflowTaskActions.selectedTaskAction.data.emailTemplate)){
+        this.selectEmailTemplate = (item) => {
+            if (angular.isDefined(this.workflowTaskActions.selectedTaskAction.data.emailTemplate)) {
                 this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateID = item.emailTemplateID;
-            }else{
+            } else {
                 var templateEmail = this.$hibachi.newEmailTemplate();
                 templateEmail.data.emailTemplateID = item.emailTemplateID;
                 this.workflowTaskActions.selectedTaskAction.$$setEmailTemplate(templateEmail);
             }
         };
 
-        this.selectPrintTemplate =  (item) => {
-            if(angular.isDefined(this.workflowTaskActions.selectedTaskAction.data.printTemplate)){
+        this.selectPrintTemplate = (item) => {
+            if (angular.isDefined(this.workflowTaskActions.selectedTaskAction.data.printTemplate)) {
                 this.workflowTaskActions.selectedTaskAction.data.printTemplate.data.printTemplateID = item.printTemplateID;
-            }else{
+            } else {
                 var templatePrint = this.$hibachi.newPrintTemplate();
                 templatePrint.data.printTemplateID = item.printTemplateID;
                 this.workflowTaskActions.selectedTaskAction.$$setPrintTemplate(templatePrint);
@@ -280,7 +281,7 @@ class SWWorkflowTaskActionsController {
     }
 }
 
-class SWWorkflowTaskActions  implements ng.IDirective{
+class SWWorkflowTaskActions implements ng.IDirective {
 
     public static $inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
     public templateUrl;
@@ -290,32 +291,32 @@ class SWWorkflowTaskActions  implements ng.IDirective{
     public bindToController = {
         workflowTask: "="
     };
-    public controller=SWWorkflowTaskActionsController;
-    public controllerAs="swWorkflowTaskActions";
+    public controller = SWWorkflowTaskActionsController;
+    public controllerAs = "swWorkflowTaskActions";
 
     constructor(
         public workflowPartialsPath,
         public hibachiPathBuilder
-    ){
+    ) {
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "workflowtaskactions.html";
     }
-    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link: ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
 
     };
 
-    public static Factory(){
+    public static Factory() {
         var directive = (
-             workflowPartialsPath,
-             hibachiPathBuilder
-        )=> new SWWorkflowTaskActions(
+            workflowPartialsPath,
+            hibachiPathBuilder
+        ) => new SWWorkflowTaskActions(
             workflowPartialsPath,
             hibachiPathBuilder
         );
-        directive.$inject = [ 'workflowPartialsPath', 'hibachiPathBuilder'];
+        directive.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 
         return directive;
     }
 }
-export{
+export {
     SWWorkflowTaskActions
 }

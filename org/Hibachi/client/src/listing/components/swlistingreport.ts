@@ -1,3 +1,5 @@
+import angular = require("angular");
+
 class SWListingReportController {
     public selectedCollectionID: string;
     public collectionName: string;
@@ -58,7 +60,7 @@ class SWListingReportController {
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
     }
 
-    public $onInit =  () => {}
+    public $onInit = () => { }
 
     public updateReportFromListing = (params) => {
         if (params.collectionConfig) {
@@ -344,12 +346,12 @@ class SWListingReportController {
 
         }
     }
-    
+
     private loadChartJsChunk = async () => {
-     return await require.ensure([], 
-        (require) => require('chart.js'),
-        (err) => console.log(err),
-        "chartjs");
+        return await require.ensure([],
+            (require) => require('chart.js'),
+            (err) => console.log(err),
+            "chartjs");
     }
 
     public renderReport = async (reportingData, ctx) => {
@@ -397,7 +399,7 @@ class SWListingReportController {
             await this.loadChartJsChunk();
             console.log(" chartjs chunk loaded ");
         }
-        
+
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -442,7 +444,7 @@ class SWListingReportController {
         });
 
         this.chart.render();
-        
+
         this.observerService.notifyById('swListingReport_DrawChart', this.tableId, this.chart);
     }
 

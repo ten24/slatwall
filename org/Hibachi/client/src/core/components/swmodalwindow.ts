@@ -1,80 +1,82 @@
+import angular = require("angular");
+
 class SWModalWindowController {
 
     public modalName;
-    public title; 
-    public hasSaveAction:boolean; 
-    public hasCancelAction:boolean;
+    public title;
+    public hasSaveAction: boolean;
+    public hasCancelAction: boolean;
     public saveAction;
     public cancelAction;
 
-    public saveActionText:string; 
-    public cancelActionText:string; 
+    public saveActionText: string;
+    public cancelActionText: string;
 
     // @ngInject
-    constructor(){
-        if(angular.isUndefined(this.modalName)){
+    constructor() {
+        if (angular.isUndefined(this.modalName)) {
             console.warn("You did not pass a modal title to SWModalWindowController");
-            this.modalName = ""; 
+            this.modalName = "";
         }
     }
 
 }
 
-class SWModalWindow implements ng.IDirective{
+class SWModalWindow implements ng.IDirective {
 
     public templateUrl;
-    public transclude={
-        modalBody:"?swModalBody"
-    }; 
+    public transclude = {
+        modalBody: "?swModalBody"
+    };
     public restrict = "EA";
     public scope = {};
 
     public bindToController = {
-        modalName:"@",
-        title:"@",
-        hasSaveAction:"=?",
-        saveAction:"&?",
-        hasDeleteAction:"=?",
-        deleteAction:"&?",
-        hasCancelAction:"=?",
-        cancelAction:"&?",
-        saveActionText:"@", 
-        cancelActionText:"@"
+        modalName: "@",
+        title: "@",
+        hasSaveAction: "=?",
+        saveAction: "&?",
+        hasDeleteAction: "=?",
+        deleteAction: "&?",
+        hasCancelAction: "=?",
+        cancelAction: "&?",
+        saveActionText: "@",
+        cancelActionText: "@"
     };
-    public controller=SWModalWindowController;
-    public controllerAs="swModalWindow";
+    public controller = SWModalWindowController;
+    public controllerAs = "swModalWindow";
 
     // @ngInject
-    constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
+    constructor(public $compile, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modalwindow.html";
     }
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs) => {      
+            pre: ($scope: any, element: JQuery, attrs) => {
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
             }
         };
     }
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = (
             $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
+            , corePartialsPath
+            , hibachiPathBuilder
 
-        )=> new SWModalWindow(
+        ) => new SWModalWindow(
             $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
+            , corePartialsPath
+            , hibachiPathBuilder
         );
-        directive.$inject = ["$compile","corePartialsPath",
+        directive.$inject = ["$compile", "corePartialsPath",
             'hibachiPathBuilder'];
         return directive;
     }
 }
-export{
+export {
     SWModalWindow,
     SWModalWindowController
 }

@@ -1,40 +1,41 @@
+import angular = require("angular");
 
-class SWListingRowSaveController{
+class SWListingRowSaveController {
 
-    private listingID:string; 
-    private pageRecord:any; 
-    private pageRecordIndex:number; 
+    private listingID: string;
+    private pageRecord: any;
+    private pageRecordIndex: number;
 
     //@ngInject
     constructor(
         private listingService
-    ){
+    ) {
 
     }
 
-    public save = () =>{
-        this.listingService.markSaved(this.listingID,this.pageRecordIndex);
+    public save = () => {
+        this.listingService.markSaved(this.listingID, this.pageRecordIndex);
     }
 }
 
-class SWListingRowSave implements ng.IDirective{
+class SWListingRowSave implements ng.IDirective {
     public templateUrl;
-    public restrict:string = 'EA';
-    public scope=true;
-    public bindToController={
+    public restrict: string = 'EA';
+    public scope = true;
+    public bindToController = {
 
     };
-    public controller=SWListingRowSaveController;
-    public controllerAs="swListingRowSave";
+    public controller = SWListingRowSaveController;
+    public controllerAs = "swListingRowSave";
     public static $inject = ['utilityService'];
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = (
             hibachiPathBuilder,
             listingPartialPath,
             utilityService,
             scopeService
-        )=>new SWListingRowSave(
+        ) => new SWListingRowSave(
             hibachiPathBuilder,
             listingPartialPath,
             utilityService,
@@ -48,31 +49,31 @@ class SWListingRowSave implements ng.IDirective{
         ];
         return directive;
     }
-    constructor(private hibachiPathBuilder, 
-                private listingPartialPath, 
-                private utilityService,
-                private scopeService
-    ){
-       this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingrowsave.html';
+    constructor(private hibachiPathBuilder,
+        private listingPartialPath,
+        private utilityService,
+        private scopeService
+    ) {
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath) + 'listingrowsave.html';
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope:any, element:any, attrs:any) =>{
-            var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
-            if(angular.isDefined(currentScope["pageRecord"])){
-                $scope.swListingRowSave.pageRecord = currentScope["pageRecord"];
-            }
-            
-            var currentScope = this.scopeService.getRootParentScope($scope, "pageRecordKey");
-            if(angular.isDefined(currentScope["pageRecordKey"])){
-                $scope.swListingRowSave.pageRecordIndex = currentScope["pageRecordKey"];
-            }
+    public link: ng.IDirectiveLinkFn = ($scope: any, element: any, attrs: any) => {
+        var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
+        if (angular.isDefined(currentScope["pageRecord"])) {
+            $scope.swListingRowSave.pageRecord = currentScope["pageRecord"];
+        }
 
-            var currentScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-            if(angular.isDefined(currentScope["swListingDisplay"])){
-                $scope.swListingRowSave.listingID = currentScope["swListingDisplay"].tableID;
-            }
+        var currentScope = this.scopeService.getRootParentScope($scope, "pageRecordKey");
+        if (angular.isDefined(currentScope["pageRecordKey"])) {
+            $scope.swListingRowSave.pageRecordIndex = currentScope["pageRecordKey"];
+        }
+
+        var currentScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
+        if (angular.isDefined(currentScope["swListingDisplay"])) {
+            $scope.swListingRowSave.listingID = currentScope["swListingDisplay"].tableID;
+        }
     }
 }
-export{
+export {
     SWListingRowSave
 }

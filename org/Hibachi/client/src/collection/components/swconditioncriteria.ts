@@ -1,3 +1,5 @@
+import angular = require("angular");
+
 declare var Date:any;
 class SWConditionCriteria{
 	public static Factory(){

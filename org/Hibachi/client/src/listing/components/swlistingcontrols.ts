@@ -1,6 +1,7 @@
+import angular = require("angular");
 
 class SWListingControlsController {
-    public swListingDisplay:any;
+    public swListingDisplay: any;
     private selectedSearchColumn;
     private filterPropertiesList;
     private collectionConfig;
@@ -8,23 +9,23 @@ class SWListingControlsController {
     private searchText;
     private backupColumnsConfig;
     private listingColumns;
-    private displayOptionsClosed:boolean=true;
-    private filtersClosed:boolean=true;
-    private personalCollectionsClosed:boolean=true;
-    private showExport:boolean; 
-    private showReport:boolean;
-    private showFilters:boolean;
-    private showPersonalCollections:boolean;
-    private showPrintOptions:boolean; 
-    private showToggleFilters:boolean;
-    private showToggleSearch:boolean;
-    private showToggleDisplayOptions:boolean;
+    private displayOptionsClosed: boolean = true;
+    private filtersClosed: boolean = true;
+    private personalCollectionsClosed: boolean = true;
+    private showExport: boolean;
+    private showReport: boolean;
+    private showFilters: boolean;
+    private showPersonalCollections: boolean;
+    private showPrintOptions: boolean;
+    private showToggleFilters: boolean;
+    private showToggleSearch: boolean;
+    private showToggleDisplayOptions: boolean;
     private newFilterPosition;
     private itemInUse;
     private getCollection;
     private tableId;
     public columnIsControllableMap = {};
-    public simple:boolean;
+    public simple: boolean;
 
 
     //@ngInject
@@ -35,41 +36,41 @@ class SWListingControlsController {
         public listingService,
         public observerService
     ) {
-        if(angular.isUndefined(this.showPrintOptions)){
+        if (angular.isUndefined(this.showPrintOptions)) {
             this.showPrintOptions = false;
         }
-        if(angular.isUndefined(this.showExport)){
-            this.showExport = true; 
+        if (angular.isUndefined(this.showExport)) {
+            this.showExport = true;
         }
-        if(angular.isUndefined(this.showReport)){
-            this.showReport = true; 
+        if (angular.isUndefined(this.showReport)) {
+            this.showReport = true;
         }
-        
-        if(angular.isUndefined(this.showToggleSearch)){
+
+        if (angular.isUndefined(this.showToggleSearch)) {
             this.showToggleSearch = true;
         }
-        if(angular.isUndefined(this.showToggleFilters)){
+        if (angular.isUndefined(this.showToggleFilters)) {
             this.showToggleFilters = true;
         }
-        if(angular.isUndefined(this.showToggleDisplayOptions)){
+        if (angular.isUndefined(this.showToggleDisplayOptions)) {
             this.showToggleDisplayOptions = true;
         }
-        if(angular.isUndefined(this.showFilters)){
+        if (angular.isUndefined(this.showFilters)) {
             this.showFilters = false;
         }
         this.backupColumnsConfig = this.collectionConfig.getColumns();
 
-        if(angular.isDefined(this.tableId)){
+        if (angular.isDefined(this.tableId)) {
             this.listingColumns = this.listingService.getListingColumns(this.tableId);
         }
-        if(angular.isUndefined(this.simple)){
+        if (angular.isUndefined(this.simple)) {
             this.simple = true;
         }
 
 
         this.filterPropertiesList = {};
 
-        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then((value)=> {
+        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then((value) => {
             metadataService.setPropertiesList(value, this.collectionConfig.baseEntityAlias);
             this.filterPropertiesList[this.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias(this.collectionConfig.baseEntityAlias);
             metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias], this.collectionConfig.baseEntityAlias);
@@ -78,43 +79,43 @@ class SWListingControlsController {
         this.observerService.attach(this.filterActions, 'filterItemAction');
 
     }
-    public filterActions =(res)=>{
+    public filterActions = (res) => {
 
-        if(res.action == 'add' || res.action == 'remove'){
-            this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
+        if (res.action == 'add' || res.action == 'remove') {
+            this.observerService.notifyById('swPaginationAction', this.tableId, { type: 'setCurrentPage', payload: 1 });
         }
         this.filtersClosed = true;
     };
 
-    public getSelectedSearchColumnName = () =>{
+    public getSelectedSearchColumnName = () => {
         return (angular.isUndefined(this.selectedSearchColumn)) ? 'All' : this.selectedSearchColumn.title;
     };
 
-    public canDisplayColumn = (column) =>{
+    public canDisplayColumn = (column) => {
 
-        if(!this.listingColumns || !this.listingColumns.length){
+        if (!this.listingColumns || !this.listingColumns.length) {
             return true;
         }
 
-        if(angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])){
+        if (angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])) {
             return this.columnIsControllableMap[column.propertyIdentifier];
         }
-        for(var i=0; i < this.listingColumns.length; i++){
-            if(column.propertyIdentifier == this.listingColumns[i].propertyIdentifier){
+        for (var i = 0; i < this.listingColumns.length; i++) {
+            if (column.propertyIdentifier == this.listingColumns[i].propertyIdentifier) {
                 this.columnIsControllableMap[column.propertyIdentifier] = true;
             }
         }
-        if(!this.columnIsControllableMap[column.propertyIdentifier]){
+        if (!this.columnIsControllableMap[column.propertyIdentifier]) {
             this.columnIsControllableMap[column.propertyIdentifier] = false;
         }
         return this.columnIsControllableMap[column.propertyIdentifier];
     }
 
-    private addSearchFilter=()=>{
-        if(angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
+    private addSearchFilter = () => {
+        if (angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
 
         var keywords = this.searchText.split(" ");
-        for(var i = 0; i < keywords.length; i++){
+        for (var i = 0; i < keywords.length; i++) {
             this.collectionConfig.addLikeFilter(
                 this.selectedSearchColumn.propertyIdentifier,
                 keywords[i],
@@ -126,86 +127,86 @@ class SWListingControlsController {
 
         this.searchText = '';
         this.collectionConfig.setKeywords(this.searchText);
-        this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
+        this.observerService.notifyById('swPaginationAction', this.tableId, { type: 'setCurrentPage', payload: 1 });
     };
 
-    public toggleDisplayOptions= (closeButton:boolean=false)=>{
-        if(closeButton){
+    public toggleDisplayOptions = (closeButton: boolean = false) => {
+        if (closeButton) {
             this.displayOptionsClosed = true;
         } else {
             this.displayOptionsClosed = !this.displayOptionsClosed;
         }
     };
 
-    private setItemInUse = (booleanValue)=>{
+    private setItemInUse = (booleanValue) => {
         this.itemInUse = booleanValue;
     };
 
-    public removeFilter = (array, index, reloadCollection:boolean=true)=>{
+    public removeFilter = (array, index, reloadCollection: boolean = true) => {
         array.splice(index, 1);
-        if(reloadCollection){
-            this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
+        if (reloadCollection) {
+            this.observerService.notifyById('swPaginationAction', this.tableId, { type: 'setCurrentPage', payload: 1 });
         }
     };
 
-    public toggleFilters = ()=>{
-        if(this.filtersClosed) {
+    public toggleFilters = () => {
+        if (this.filtersClosed) {
 
-            if(this.simple){
-                this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+            if (this.simple) {
+                this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup, this.setItemInUse);
             }
         }
         this.filtersClosed = !this.filtersClosed;
     };
 
-    public togglePersonalCollections = () =>{
+    public togglePersonalCollections = () => {
         this.personalCollectionsClosed = !this.personalCollectionsClosed;
     }
 
-    public selectFilterItem = (filterItem) =>{
+    public selectFilterItem = (filterItem) => {
         this.filtersClosed = false;
         this.collectionService.selectFilterItem(filterItem);
     };
 
-    public saveCollection = (collectionConfig)=>{
-        if(collectionConfig){
+    public saveCollection = (collectionConfig) => {
+        if (collectionConfig) {
             this.collectionConfig = collectionConfig;
         }
         this.swListingDisplay.collectionConfig = this.collectionConfig;
-        this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage',payload:1});
+        this.observerService.notifyById('swPaginationAction', this.tableId, { type: 'setCurrentPage', payload: 1 });
     };
 
-    public exportCollection = () =>{
-        this.swListingDisplay.exportCurrentList(); 
+    public exportCollection = () => {
+        this.swListingDisplay.exportCurrentList();
     }
 
-    public printCollection = (printTemplateID) =>{
+    public printCollection = (printTemplateID) => {
         this.swListingDisplay.printCurrentList(printTemplateID);
     }
 
 }
 
-class SWListingControls  implements ng.IDirective{
+class SWListingControls implements ng.IDirective {
 
     public static $inject = ['listingPartialPath', 'hibachiPathBuilder'];
     public templateUrl;
     public restrict = 'E';
     public scope = {};
-    public require={swListingDisplay:'?^swListingDisplay'}
+    public require = { swListingDisplay: '?^swListingDisplay' }
 
-    public bindToController =  {
-        collectionConfig : "=",
-        tableId : "=?",
-        getCollection : "&",
-        showReport:"=?",
+    public bindToController = {
+        collectionConfig: "=",
+        tableId: "=?",
+        getCollection: "&",
+        showReport: "=?",
         showExport: "=?",
-        showFilters : "=?",
+        showFilters: "=?",
         showPrintOptions: "=?",
         showToggleSearch: "=?",
-        showToggleFilters : "=?",
-        showToggleDisplayOptions : "=?",
-        displayOptionsClosed:"=?",
-        simple:"=?"
+        showToggleFilters: "=?",
+        showToggleDisplayOptions: "=?",
+        displayOptionsClosed: "=?",
+        simple: "=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';
@@ -213,23 +214,23 @@ class SWListingControls  implements ng.IDirective{
     constructor(
         public collectionPartialsPath,
         public hibachiPathBuilder
-    ){
+    ) {
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingcontrols.html";
     }
 
-    public static Factory(){
+    public static Factory() {
         var directive = (
             listingPartialPath,
             hibachiPathBuilder
-        )=> new SWListingControls(
+        ) => new SWListingControls(
             listingPartialPath,
             hibachiPathBuilder
         );
-        directive.$inject = [ 'listingPartialPath', 'hibachiPathBuilder'];
+        directive.$inject = ['listingPartialPath', 'hibachiPathBuilder'];
         return directive;
     }
 }
 
-export{
+export {
     SWListingControls
 }
