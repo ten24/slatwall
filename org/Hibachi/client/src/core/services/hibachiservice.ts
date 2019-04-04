@@ -279,7 +279,11 @@ class HibachiService{
 			params.processContext = options.processContext || '';
 			params.isReport = options.isReport || false;
 			params.periodInterval = options.periodInterval || "";
-			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
+			if(angular.isDefined(options.customEndpoint) && options.customEndpoint.length){
+				var urlString = this.getUrlWithActionPrefix() + options.customEndpoint;
+			} else {
+				var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
+			}
 		}
 
 		if(angular.isDefined(options.id)) {

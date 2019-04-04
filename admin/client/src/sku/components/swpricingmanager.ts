@@ -36,27 +36,23 @@ class SWPricingManagerController{
         
         let editableColumns = "minQuantity,maxQuantity,price";
         
-        for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
-            let indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""))
-            if(indexOf > -1){
-                console.log("denny: ", indexOf);
-                this.skuPriceCollectionConfig.columns[i].hasCellView = "true";
+        // for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
+        //     let indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""))
+        //     if(indexOf > -1){
+        //         this.skuPriceCollectionConfig.columns[i].hasCellView = "true";
                 
-                if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.price"){
-                    this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPricesEdit";
-                }else if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.minQuantity"
-                        || this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.maxQuantity"){
-                    let columnName = this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", "");
-                    columnName = columnName.slice(3);
-                    console.log("columnName: ", columnName);
-                    this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPrice" + columnName + "Edit";
-                }
-            }
-        }
+        //         if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.price"){
+        //             this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPricesEdit";
+        //         }else if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.minQuantity"
+        //                 || this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.maxQuantity"){
+        //             let columnName = this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", "");
+        //             columnName = columnName.slice(3);
+        //             this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPrice" + columnName + "Edit";
+        //         }
+        //     }
+        // }
         
-        console.log(this.skuPriceCollectionConfig.getCollectionConfig());
     }
-
 }
 
 class SWPricingManager implements ng.IDirective{
