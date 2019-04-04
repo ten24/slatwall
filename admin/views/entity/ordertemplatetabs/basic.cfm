@@ -35,7 +35,7 @@
 			</div> 
 			
 			<div class="col-md-2">
-				<sw-order-template-upcoming-orders-card data-scheduled-order-dates="#rc.orderTemplate.getScheduledOrderDates()#">
+				<sw-order-template-upcoming-orders-card data-scheduled-order-dates="#rc.orderTemplate.getScheduledOrderDates(1)#">
 				</sw-order-template-upcoming-orders-card>
 			</div> 
 			
