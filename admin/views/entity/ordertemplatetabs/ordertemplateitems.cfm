@@ -16,6 +16,7 @@
 		<hb:HibachiPropertyList>
 
 				<hb:HibachiListingDisplay 
+					recordProcessEvent="addOrderTemplateItem"
 					collectionList="#rc.skuCollectionlist#"
 					usingPersonalCollection="false"
 				>

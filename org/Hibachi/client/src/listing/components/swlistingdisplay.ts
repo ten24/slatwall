@@ -62,12 +62,20 @@ class SWListingDisplayController{
     public pageRecordsWithManualSortOrder = {};
     public parentPropertyName:string;
     public processObjectProperties;
+    public hasRecordAddAction:boolean=false;
+    public recordAddEvent:string;
     public recordAddAction:string;
+    public hasRecordDetailAction:boolean=false;
+    public recordDetailEvent:string
     public recordDetailAction:string;
     public recordDetailActionIdProperty:string;
     public recordDetailActionIdKey:string;
     public recordDetailActionProperty:string;
+    public hasRecordEditAction:boolean=false;
+    public recordEditEvent:string
     public recordEditAction:string;
+    public hasRecordDeleteAction:boolean=false;
+    public recordDeleteEvent:string
     public recordDeleteAction:string;
     public recordProcessButtonDisplayFlag:boolean;
     public reportAction:string;
@@ -360,22 +368,43 @@ class SWListingDisplayController{
         } else {
 	        this.administrativeCount = 0;
         }
-        if(this.recordDetailAction && this.recordDetailAction.length){
+        
+        //Administractive Action Setup
+        this.hasRecordDetailAction = (this.recordDetailAction && this.recordDetailAction.length !== 0) || 
+                                     (this.recordDetailEvent && this.recordDetailEvent.length !== 0);
+        
+        this.hasRecordEditAction = (this.recordEditAction && this.recordEditAction.length !== 0) || 
+                                   (this.recordEditEvent && this.recordEditEvent.length !== 0);
+        
+        
+        this.hasRecordDeleteAction = (this.recordDeleteAction && this.recordDeleteAction.length !== 0) || 
+                                     (this.recordDeleteEvent && this.recordDeleteEvent.length !== 0);
+        
+        
+        this.hasRecordAddAction = (this.recordAddAction && this.recordAddAction.length !== 0) ||
+                                  (this.recordAddEvent && this.recordAddEvent.length !== 0);
+        
+        
+        if( this.hasRecordDetailAction ){
             this.administrativeCount++;
             this.adminattributes = this.getAdminAttributesByType('detail');
         }
-        if(this.recordEditAction && this.recordEditAction.length){
+        
+        if( this.hasRecordEditAction ){
             this.administrativeCount++;
             this.adminattributes = this.getAdminAttributesByType('edit');
         }
-        if(this.recordDeleteAction && this.recordDeleteAction.length){
+        
+        if( this.hasRecordDeleteAction ){
             this.administrativeCount++;
             this.adminattributes = this.getAdminAttributesByType('delete');
         }
-        if(this.recordAddAction && this.recordAddAction.length){
+        
+        if( this.hasRecordAddAction ){
             this.administrativeCount++;
             this.adminattributes = this.getAdminAttributesByType('add');
         }
+        
         if( this.collectionConfig != null &&
             angular.isDefined(this.collection) &&
             angular.isDefined(this.collection.collectionConfig)

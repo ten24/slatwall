@@ -50,3 +50,12 @@
 	ng-disabled="swActionCaller.disabled"
 	><i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 </button>
+
+<li ng-if="swActionCaller.type === 'event'">
+	<a ng-attr-title="{{swActionCaller.title}}" 
+		ng-attr-class="{{swActionCaller.class}}" 
+		ng-click="swActionCaller.emit()"
+		>
+		<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+	</a>
+</li>

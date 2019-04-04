@@ -65131,18 +65131,21 @@ var SWActionCallerController = /** @class */ (function () {
         this.observerService = observerService;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
+        this.hibachiPathBuilder = hibachiPathBuilder;
         this.$onInit = function () {
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
             }
-            if (!_this.isAngularRoute) {
+            if (_this.event != null && _this.event.length) {
+                _this.type = 'event'; //no action url needed
+            }
+            else if (!_this.isAngularRoute) {
                 _this.actionUrl = _this.$hibachi.buildUrl(_this.action, _this.queryString);
             }
             else {
                 _this.actionUrl = '#!/entity/' + _this.action + '/' + _this.queryString.split('=')[1];
             }
-            //            this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
             _this.type = _this.type || 'link';
             if (angular.isDefined(_this.titleRbKey)) {
                 _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);
@@ -65160,32 +65163,14 @@ var SWActionCallerController = /** @class */ (function () {
                     unbindWatcher();
                 });
             }
-            //            this.actionItem = this.getActionItem();
-            //            this.actionItemEntityName = this.getActionItemEntityName();
-            //            this.text = this.getText();
-            //            if(this.getDisabled()){
-            //                this.getDisabledText();
-            //            }else if(this.getConfirm()){
-            //                this.getConfirmText();
-            //            }
-            //
-            //            if(this.modalFullWidth && !this.getDisabled()){
-            //                this.class = this.class + " modalload-fullwidth";
-            //            }
-            //
-            //            if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-            //                this.class = this.class + " modalload";
-            //            }
-            /*need authentication lookup by api to disable
-            <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-                <cfset attributes.class &= " disabled" />
-            </cfif>
-            */
             if (_this.eventListeners) {
                 for (var key in _this.eventListeners) {
                     _this.observerService.attach(_this.eventListeners[key], key);
                 }
             }
+        };
+        this.emit = function () {
+            _this.observerService.notify(_this.event, _this.payload);
         };
         this.submit = function () {
             _this.$timeout(function () {
@@ -65335,15 +65320,6 @@ var SWActionCallerController = /** @class */ (function () {
             }
             return "";
         };
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$timeout = $timeout;
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.rbkeyService = rbkeyService;
-        this.$hibachi = $hibachi;
-        this.utilityService = utilityService;
-        this.hibachiPathBuilder = hibachiPathBuilder;
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
             var template = angular.element(html);
             _this.$element.parent().append(template);
@@ -65363,7 +65339,9 @@ var SWActionCaller = /** @class */ (function () {
         this.restrict = 'EA';
         this.scope = {};
         this.bindToController = {
-            action: "@",
+            action: "@?",
+            event: "@?",
+            payload: "=",
             text: "@",
             type: "@",
             queryString: "@",
@@ -78255,6 +78233,10 @@ var SWListingDisplayController = /** @class */ (function () {
         this.orderByStates = {};
         this.orderByIndices = {};
         this.pageRecordsWithManualSortOrder = {};
+        this.hasRecordAddAction = false;
+        this.hasRecordDetailAction = false;
+        this.hasRecordEditAction = false;
+        this.hasRecordDeleteAction = false;
         this.searching = false;
         this.selectable = false;
         this.showSearchFilters = false;
@@ -78379,19 +78361,28 @@ var SWListingDisplayController = /** @class */ (function () {
             else {
                 _this.administrativeCount = 0;
             }
-            if (_this.recordDetailAction && _this.recordDetailAction.length) {
+            //Administractive Action Setup
+            _this.hasRecordDetailAction = (_this.recordDetailAction && _this.recordDetailAction.length !== 0) ||
+                (_this.recordDetailEvent && _this.recordDetailEvent.length !== 0);
+            _this.hasRecordEditAction = (_this.recordEditAction && _this.recordEditAction.length !== 0) ||
+                (_this.recordEditEvent && _this.recordEditEvent.length !== 0);
+            _this.hasRecordDeleteAction = (_this.recordDeleteAction && _this.recordDeleteAction.length !== 0) ||
+                (_this.recordDeleteEvent && _this.recordDeleteEvent.length !== 0);
+            _this.hasRecordAddAction = (_this.recordAddAction && _this.recordAddAction.length !== 0) ||
+                (_this.recordAddEvent && _this.recordAddEvent.length !== 0);
+            if (_this.hasRecordDetailAction) {
                 _this.administrativeCount++;
                 _this.adminattributes = _this.getAdminAttributesByType('detail');
             }
-            if (_this.recordEditAction && _this.recordEditAction.length) {
+            if (_this.hasRecordEditAction) {
                 _this.administrativeCount++;
                 _this.adminattributes = _this.getAdminAttributesByType('edit');
             }
-            if (_this.recordDeleteAction && _this.recordDeleteAction.length) {
+            if (_this.hasRecordDeleteAction) {
                 _this.administrativeCount++;
                 _this.adminattributes = _this.getAdminAttributesByType('delete');
             }
-            if (_this.recordAddAction && _this.recordAddAction.length) {
+            if (_this.hasRecordAddAction) {
                 _this.administrativeCount++;
                 _this.adminattributes = _this.getAdminAttributesByType('add');
             }

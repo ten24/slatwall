@@ -252,7 +252,7 @@
                                 <!-- Detail -->
                                 <span ng-if="swListingDisplay.recordDetailActionIdProperty && swListingDisplay.recordDetailActionIdKey">
                                     <sw-action-caller
-                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            ng-if="swListingDisplay.hasRecordDetailAction"
                                             data-action="{{swListingDisplay.recordDetailAction}}"
                                             data-event="{{swListingDisplay.recordDetailEvent}}"
                                             data-payload="pageRecord"
@@ -269,7 +269,7 @@
                                 </span>
                                 <span ng-if="!swListingDisplay.recordDetailActionIdProperty || !swListingDisplay.recordDetailActionIdKey">
                                     <sw-action-caller
-                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            ng-if="swListingDisplay.hasRecordDetailAction"
                                             data-action="{{swListingDisplay.recordDetailAction}}"
                                             data-event="{{swListingDisplay.recordDetailEvent}}"
                                             data-payload="pageRecord"
@@ -289,7 +289,7 @@
                                 </span>
                                 <!--Edit-->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordEditAction && swListingDisplay.recordEditAction.length"
+                                        ng-if="swListingDisplay.hasRecordEditAction"
                                         data-action="{{swListingDisplay.recordEditAction}}"
                                         data-event="{{swListingDisplay.recordEditEvent}}"
                                         data-payload="pageRecord"
@@ -308,7 +308,7 @@
 
                                 <!-- Delete -->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordDeleteAction && swListingDisplay.recordDeleteAction.length"
+                                        ng-if="swListingDisplay.hasRecordDeleteAction"
                                         data-action="{{swListingDisplay.recordDeleteAction}}"
                                         data-event="{{swListingDisplay.recordDeleteEvent}}"
                                         data-payload="pageRecord"
@@ -327,7 +327,7 @@
 
                                 <!-- Add -->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordAddAction && swListingDisplay.recordAddAction.length"
+                                        ng-if="swListingDisplay.hasRecordAddAction"
                                         data-action="{{swListingDisplay.recordAddAction}}"
                                         data-event="{{swListingDisplay.recordAddEvent}}"
                                         data-payload="pageRecord"
