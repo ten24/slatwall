@@ -8,11 +8,12 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-				<hb:HibachiListingDisplay 
-					collectionList="#rc.account.getOrderTemplatesCollectionList()#"
-					usingPersonalCollection="false"
-				>
-				</hb:HibachiListingDisplay>
+			<hb:HibachiListingDisplay
+				recordDetailAction="admin:entity.detailordertemplate"
+				collectionList="#rc.account.getOrderTemplatesCollectionList()#"
+				usingPersonalCollection="false"
+			>
+			</hb:HibachiListingDisplay>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>	
