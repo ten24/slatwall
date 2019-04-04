@@ -477,6 +477,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1' ),1,1),
 						'alias' = alias & _propertyIdentifier
 					};
+					
+					join[arguments.aliastype]=true;
+					
 					addJoin(join);
 					arrayAppend(propertyIdentifierAliasData.joins,join);
 				}else{
@@ -808,11 +811,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = column.propertyIdentifier;
+			join['aggregate']=true;
 			doJoin = true;
 		}else if(propertyKey != ''){
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, collection)  & propertyKey;
 			join['associationName'] = collection;
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
+			join['aggregate']=true;
 			doJoin = true;
 		}
 
@@ -1109,6 +1114,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var joinFound = false;
 		for(var configJoin in getCollectionConfigStruct().joins){
 			if(configJoin.alias == arguments.join.alias){
+				//combine metadata
+				structAppend(configJoin,arguments.join);
 				joinFound = true;
 			}
 		}
@@ -1656,19 +1663,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var fromHQL = ' FROM #hibachiBaseEntityName# as #getBaseEntityAlias()#';
 		addHQLAlias(arguments.baseEntityName,getBaseEntityAlias());
 
-		fromHQL &= getJoinHQL();
-
 		return fromHQL;
 	}
 
-	public string function getJoinHQL(){
+	public string function getJoinHQL(boolean recordsCountJoin=false){
 		var joinHQL = '';
+		
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
+			//writedump(getCollectionConfigStruct().joins);abort;
             var allAliases = getAllAliases();
 			for(var join in getCollectionConfigStruct()["joins"]){
-                if(listFind(allAliases, join.alias)){
-                    joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
-                }
+				if(
+					!arguments.recordsCountJoin
+					||(
+						arguments.recordsCountJoin
+						&& (
+							(
+								structKeyExists(join,'filter')
+								&& join.filter
+							)||(
+								structKeyExists(join,'aggregate')
+								&& join.aggregate
+							)
+						)
+					)
+				){
+					if(listFind(allAliases, join.alias)){
+		                joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
+		            }					
+				}
 			}
 		}
 		return joinHQL;
@@ -1740,7 +1763,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
         return aliasList;
     }
 
-	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false, recordsCountJoins=false){
 		
 		structDelete(variables,'groupBys');
 		
@@ -1748,7 +1771,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 
-		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
+		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
 	
 		return HQL;
 	}
@@ -2979,10 +3002,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			hasAggregateFilter() 
 			|| hasGroupBys()
 		){
-			var countHQLSelections = "SELECT NEW MAP(COUNT(DISTINCT tempAlias.id) as recordsCount ";
-			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true)# )';
+			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
+			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
  		}else{
- 			var countHQLSelections = 'SELECT NEW MAP(COUNT(DISTINCT #getBaseEntityAlias()#.id) as recordsCount ';
+ 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
  			var countHQLSuffix = getHQL(true);
 		}
 
@@ -3140,7 +3163,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						structKeyExists(column,'isMetric') 
 						&& column.isMetric
 					)
-					|| structKeyExists(column,'aggregate')
+					|| (
+						structKeyExists(column,'aggregate')
+						&& structKeyExists(column.aggregate,'aggregateFunction')
+						&& len(column.aggregate.aggregateFunction)	
+					)
 				){
 					if(structKeyExists(column,'isDistinct') && column.isDistinct){
 						columnsHQL &= ' COALESCE(#column['aggregate']['aggregateFunction']#(DISTINCT #column.propertyIdentifier#),0) as #columnAlias#';
@@ -3164,7 +3191,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				
 				if(
-					!structKeyExists(column,'aggregate')
+					!(
+						structKeyExists(column,'aggregate')
+						&& structKeyExists(column.aggregate,'aggregateFunction')
+						&& len(column.aggregate.aggregateFunction)	
+					)
 					&& structKeyExists(column, 'ormtype') 
 					&& (
 						column.ormtype eq 'big_decimal'
@@ -3296,7 +3327,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(structKeyExists(column,'attributeID')){
 			return listLast(column.propertyIdentifier,'.');
 		}else{
-			if(structKeyExists(column,'aggregate')){
+			if(
+				structKeyExists(column,'aggregate')
+				&& structKeyExists(column.aggregate,'aggregateFunction')
+				&& len(column.aggregate.aggregateFunction)
+			){
 				return column.aggregate.aggregateAlias;
 			}else{
 
@@ -3318,7 +3353,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
 									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
 							};
-
+							
 
 							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
 							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
@@ -3368,7 +3403,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var propertyIdentifier = convertAliasToPropertyIdentifier(column.propertyIdentifier);
 					
 					if(
-						!structKeyExists(column,'aggregate')
+						!(
+							structKeyExists(column,'aggregate')
+							&& structKeyExists(column.aggregate,'aggregateFunction')
+							&& len(column.aggregate.aggregateFunction)
+						)
 						&& !structKeyExists(column,'persistent')
 						&& hasPropertyByPropertyIdentifier(propertyIdentifier)
 						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
@@ -3420,7 +3459,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
 						}
 	
-						if (structKeyExists(column, 'aggregate')
+						if (
+							(
+								structKeyExists(column,'aggregate')
+								&& structKeyExists(column.aggregate,'aggregateFunction')
+								&& len(column.aggregate.aggregateFunction)	
+							)
 							|| structKeyExists(column, 'attributeID')
 							|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
 							|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
@@ -3475,7 +3519,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		boolean excludeSelectAndOrderBy=false,
 		boolean forExport=false,
 	    boolean excludeOrderBy=false,
-	    boolean excludeGroupBy=false
+	    boolean excludeGroupBy=false,
+	    boolean recordsCountJoins=false
 	){
 
 
@@ -3489,10 +3534,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!isNull(collectionConfig.baseEntityName)){
 			var selectHQL = "";
 			var fromHQL = "";
+			var joinsHQL = "";
 			var filterHQL = "";
 			var postFilterHQL = "";
 			var orderByHQL = "";
 			var groupByHQL = "";
+			
 
 			if(!isnull(this.getParentCollection())){
 				mergeParentCollectionFilters();
@@ -3570,10 +3617,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 
-
-
-
-
 			addPostFiltersFromKeywords(collectionConfig);
 
 			//check if the user has applied any filters from the ui list view
@@ -3603,9 +3646,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
+			joinsHQL &= getJoinHQL(arguments.recordsCountJoins);
 			
-			
-			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
+			HQL = SelectHQL & FromHQL & joinsHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
 		
 
 		}
@@ -3671,7 +3714,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& column.ormtype neq 'big_decimal')
 				) continue;
 
-				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer' || structKeyExists(column, 'aggregate') ) ? 'STR' : '';
+				var formatter = (
+					column.ormtype eq 'big_decimal' 
+					|| column.ormtype eq 'integer' 
+					|| (
+						structKeyExists(column,'aggregate')
+						&& structKeyExists(column.aggregate,'aggregateFunction')
+						&& len(column.aggregate.aggregateFunction)
+					) 
+				) ? 'STR' : '';
 				if(formatter == '' && getHibachiScope().getApplicationValue('databaseType')=="Oracle10g"){
 					formatter = "LOWER";
 				}
