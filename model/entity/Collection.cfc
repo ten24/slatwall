@@ -3009,7 +3009,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
  			var countHQLSuffix = getHQL(true,false,false,false,true);
 		}
-/*
+
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
@@ -3033,7 +3033,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}
 		}
-*/
+
 
 		HQL = countHQLSelections & ') ' & countHQLSuffix;
 		return HQL;
