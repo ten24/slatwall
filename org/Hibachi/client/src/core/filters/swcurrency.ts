@@ -3,21 +3,24 @@
 
 
 class SWCurrency{
-   
+
     //@ngInject
-    public static Factory($sce,$log,$hibachi){
+    public static Factory($sce,$log,$hibachi,$filter){
         var data = null, serviceInvoked = false;
         function realFilter(value,decimalPlace,returnStringFlag=true) {
             // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if(data == null){
+            if(!angular.isDefined(data)){
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
                 data="$";
             }
-            if(value != null){
-                if(decimalPlace != null){
-                    value = parseFloat(value.toString()).toFixed(decimalPlace)
+            if(!value || value.toString().trim() == ''){
+                value = 0;
+            }
+            if(angular.isDefined(value)){
+                if(angular.isDefined(decimalPlace)){
+                    value = $filter('number')(value.toString(), decimalPlace);
                 } else {
-                    value = parseFloat(value.toString()).toFixed(2)
+                    value = $filter('number')(value.toString(), 2);
                 }
             }
             if(returnStringFlag){

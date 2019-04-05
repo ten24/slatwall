@@ -4,6 +4,7 @@ import {hibachimodule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.
 import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
 import {entitymodule} from "../../../../org/Hibachi/client/src/entity/entity.module";
 import {accountmodule} from "../account/account.module";
+import {addressmodule} from "../address/address.module";
 import {contentmodule} from "../content/content.module";
 import {formbuildermodule} from "../formbuilder/formbuilder.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
@@ -17,15 +18,12 @@ import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {skumodule} from "../sku/sku.module";
 import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.module";
+import {termmodule} from "../term/term.module"; 
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
 
-//directives
-import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
-
-import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
 declare var $:any;
@@ -35,6 +33,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   hibachimodule.name,
   entitymodule.name,
   accountmodule.name,
+  addressmodule.name,
   contentmodule.name,
   formbuildermodule.name,
   giftcardmodule.name,
@@ -48,6 +47,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   productbundlemodule.name,
   skumodule.name,
   subscriptionusagemodule.name,
+  termmodule.name,
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
@@ -89,7 +89,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }])
  //services
 //directives
-.directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //controllers
 .controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',($scope:any, $compile)=> {
     //Define the different payment types used here
@@ -159,9 +158,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }
 }])
 //filters
-
-.filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
-
 ;
 export{
     slatwalladminmodule

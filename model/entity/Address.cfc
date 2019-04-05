@@ -198,7 +198,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	public array function getStateCodeOptions() {
 		if(!structKeyExists(variables, "stateCodeOptions")) {
 			var collectionList = getService("addressService").getStateCollectionList();
-			collectionList.setDisplayProperties('stateName|name, stateCode|value')
+			collectionList.setDisplayProperties('stateName|name, stateCode|value');
 			if(!isNull(getCountryCode())) {
 				collectionList.addFilter("countryCode", getCountryCode());	
 			} else {

@@ -4,6 +4,8 @@
 class SWActionCallerController{
     public type:string;
     public confirm:any;
+    public event:string;
+    public payload:any;
     public action:string;
     public actionItem:string;
     public title:string;
@@ -14,7 +16,6 @@ class SWActionCallerController{
     public text:string;
     public disabled:boolean;
     public actionItemEntityName:string;
-    public hibachiPathBuilder:any;
     public eventListeners:any;
     public actionUrl:string;
     public queryString:string;
@@ -33,17 +34,8 @@ class SWActionCallerController{
         private observerService,
         private $hibachi,
         private rbkeyService,
-        hibachiPathBuilder
+        private hibachiPathBuilder
     ){
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$timeout = $timeout;
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.rbkeyService = rbkeyService;
-        this.$hibachi = $hibachi;
-        this.utilityService = utilityService;
-        this.hibachiPathBuilder = hibachiPathBuilder;
 
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
@@ -61,62 +53,49 @@ class SWActionCallerController{
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = this.utilityService.isAngularRoute();
         }
-        if(!this.isAngularRoute){
+        
+        if(this.event != null && this.event.length){
+            this.type = 'event';//no action url needed
+        } else if(!this.isAngularRoute){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
         }
 
-//            this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
+        
         if(angular.isDefined(this.titleRbKey)){
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
         }
+        
         if(angular.isUndefined(this.text)){
             this.text = this.title;
         }
 
-            if (this.type == "button"){
-                //handle submit.
-                /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
-                    if (newValue !== undefined){
-                        this.formController = newValue;
+        if (this.type == "button"){
+            //handle submit.
+            /** in order to attach the correct controller to local vm, we need a watch to bind */
+            var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
+                if (newValue !== undefined){
+                    this.formController = newValue;
 
-                    }
+                }
 
-                    unbindWatcher();
-                });
+                unbindWatcher();
+            });
 
-            }
-//            this.actionItem = this.getActionItem();
-//            this.actionItemEntityName = this.getActionItemEntityName();
-//            this.text = this.getText();
-//            if(this.getDisabled()){
-//                this.getDisabledText();
-//            }else if(this.getConfirm()){
-//                this.getConfirmText();
-//            }
-//
-//            if(this.modalFullWidth && !this.getDisabled()){
-//                this.class = this.class + " modalload-fullwidth";
-//            }
-//
-//            if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-//                this.class = this.class + " modalload";
-//            }
+        }
 
-        /*need authentication lookup by api to disable
-        <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-            <cfset attributes.class &= " disabled" />
-        </cfif>
-        */
         if(this.eventListeners){
             for(var key in this.eventListeners){
                 this.observerService.attach(this.eventListeners[key], key)
             }
         }
 
+    }
+    
+    public emit = () =>{
+        this.observerService.notify(this.event, this.payload);
     }
 
     public submit = () => {
@@ -277,7 +256,9 @@ class SWActionCaller implements ng.IDirective{
     public restrict:string = 'EA';
     public scope:any={};
     public bindToController:any={
-        action:"@",
+        action:"@?",
+        event:"@?",
+        payload: "=",
         text:"@",
         type:"@",
         queryString:"@",

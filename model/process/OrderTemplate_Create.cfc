@@ -81,10 +81,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}	
 
 	public array function getFrequencyTermIDOptions() {
-		var termCollection = getService('SettingService').getTermCollectionList();
-		termCollection.setDisplayProperties('termID|value,termName|name');
-		termCollection.addFilter('termID', getService('SettingService').getSettingValue('orderTemplateEligibleTerms'),'in');
-		return termCollection.getRecords();
+		return getOrderTemplate().getFrequencyTermOptions();
 	}
 
 	public array function getOrderTemplateTypeIDOptions() {

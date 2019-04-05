@@ -3,6 +3,7 @@ component output="false" accessors="true" extends="HibachiController" {
     property name="fw" type="any";
     property name="hibachiCollectionService" type="any";
     property name="hibachiService" type="any";
+    property name="hibachiDAO" type="any";
     property name="hibachiUtilityService" type="any";
 
     this.restController = true;
@@ -469,7 +470,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				var value = {
 					'name' = propertyDisplayOptions[i]['NAME'],
 					'value' = propertyDisplayOptions[i]['VALUE']  
-				}
+				};
 				arrayAppend(propertyDisplayOptionsFormatted, value);
 			}
 			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
@@ -810,29 +811,6 @@ component output="false" accessors="true" extends="HibachiController" {
 	        arguments.rc.apiResponse.content['data'][ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 
 
-	        if(!isnull(arguments.rc.propertyIdentifiersList)){
-	            //respond with data
-	            arguments.rc.apiResponse.content['data'] = {};
-	            var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
-	            for(propertyIdentifier in propertyIdentifiersArray){
-	                //check if method exists before trying to retrieve a property
-	                /*if(propertyIdentifier == 'pageRecords'){
-	                    var pageRecords = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier,format=true);
-	                    var propertyIdentifiers = [];
-	                    if(arraylen(pageRecords)){
-	                        propertyIdentifiers = structKeyArray(pageRecords[1]);
-	                    }
-	                    pageRecords = getService('hibachiCollectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
-	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = pageRecords;
-	                }else{*/
-						var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier)  
-						if(isObject(value)){
-							value = value.getStructRepresentation();
-						}
-						arguments.rc.apiResponse.content['data'][propertyIdentifier] = value;
-	                //}
-	            }
-	        }
 	        if(entity.hasErrors()){
 	            arguments.rc.apiResponse.content.success = false;
 	            var context = getPageContext();
@@ -843,6 +821,21 @@ component output="false" accessors="true" extends="HibachiController" {
 	        }else{
 	            arguments.rc.apiResponse.content.success = true;
 
+				//if we didn't have any errors let's flush the session so we can respond with the ID for newly created entities
+				getHibachiDAO().flushORMSession();
+	
+				//respond with data
+				if(!isnull(arguments.rc.propertyIdentifiersList)){
+					arguments.rc.apiResponse.content['data'] = {};
+					var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
+					for(var propertyIdentifier in propertyIdentifiersArray){
+						var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
+						if(isObject(value)){
+							value = value.getStructRepresentation();
+						}
+						arguments.rc.apiResponse.content['data'][propertyIdentifier] = value;
+					}
+				}
 	            // Setup success response message
 	            var replaceValues = {
 	                entityName = rbKey('entity.#entity.getClassName()#')

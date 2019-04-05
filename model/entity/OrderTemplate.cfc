@@ -87,9 +87,47 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	property name="lastOrderPlacedDateTime" persistent="false";
+	property name="scheduledOrderDates" persistent="false";
+
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
+
+	public string function getLastOrderPlacedDateTime(){
+		var orderCollectionList = getService('OrderService').getOrderCollectionList(); 
+		orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
+		orderCollectionList.addOrderBy('createdDateTime|DESC');
+		var records = orderCollectionList.getPageRecords();
+
+		if(!arrayIsEmpty(records)){
+			return records[1]['createdDateTime'];
+		} else { 
+			return '';
+		}
+	}
+
+	public string function getScheduledOrderDates(numeric iterations = 5){
+		
+		var scheduledOrderDates = DateFormat(this.getScheduleOrderNextPlaceDateTime(), 'mm/dd/yyyy'); 
+		var currentDate = this.getScheduleOrderNextPlaceDateTime();  
+
+		arguments.iterations--;
+
+		for(var i=1; i <= arguments.iterations; i++){
+			currentDate = DateFormat(this.getFrequencyTerm().getEndDate(currentDate), 'mm/dd/yyyy');
+			scheduledOrderDates = listAppend(scheduledOrderDates, currentDate); 	
+		}
+
+		return replaceNoCase(scheduledOrderDates,',',', ', 'all');
+	}
+
+	public array function getFrequencyTermOptions(){
+		var termCollection = getService('SettingService').getTermCollectionList();
+		termCollection.setDisplayProperties('termID|value,termName|name');
+		termCollection.addFilter('termID', getService('SettingService').getSettingValue('orderTemplateEligibleTerms'),'in');
+		return termCollection.getRecords();
+	} 
 
 	// Account (many-to-one)
 	public any function setAccount(required any account) {
@@ -136,16 +174,5 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}	
-	//CUSTOM FUNCTIONS BEGIN
 
-public array function getFrequencyTermOptions(){
-		var termCollection = getService('SettingService').getTermCollectionList();
-		termCollection.setDisplayProperties('termName|name,termID|value');
-		termCollection.addFilter('termHours','null','is');
-		termCollection.addFilter('termDays','null','is');
-		termCollection.addFilter('termYears','null','is');
-		termCollection.addfilter('termMonths','1,2','in');	
-		return termCollection.getRecords(); 
-	}
-//CUSTOM FUNCTIONS END
 }

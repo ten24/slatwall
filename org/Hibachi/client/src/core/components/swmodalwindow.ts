@@ -15,8 +15,7 @@ class SWModalWindowController {
     // @ngInject
     constructor(){
         if(angular.isUndefined(this.modalName)){
-            console.warn("You did not pass a modal title to SWModalWindowController");
-            this.modalName = ""; 
+            throw("You did not pass a modal title to SWModalWindowController");
         }
     }
 

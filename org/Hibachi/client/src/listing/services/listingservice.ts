@@ -7,6 +7,7 @@ import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes
 class ListingService{
 
     private listingDisplays = {};
+    private pageRecordKeys = {};
     private state = {};
     public listingDisplayStore: Store.IStore;
 
@@ -237,6 +238,9 @@ class ListingService{
     }
 
     public getPageRecordKey = (propertyIdentifier)=>{
+        if(this.pageRecordKeys[propertyIdentifier] != null){
+            return this.pageRecordKeys[propertyIdentifier];
+        }
         if(propertyIdentifier){
             var propertyIdentifierWithoutAlias = '';
             if(propertyIdentifier.indexOf('_') === 0){
@@ -250,7 +254,8 @@ class ListingService{
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
-            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
+           this.pageRecordKeys[propertyIdentifier] = this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
+           return this.pageRecordKeys[propertyIdentifier];
         }
         return '';
     };

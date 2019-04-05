@@ -1143,21 +1143,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			arguments.orderTemplate.setAccount(account);
 			arguments.orderTemplate.setOrderTemplateType( getTypeService().getType( processObject.getOrderTemplateTypeID() ) );
-			arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstDraft'))
+			arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstDraft'));
 			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 			arguments.orderTemplate.setSite( getSiteService().getSite( processObject.getSiteID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 
 			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		}
 
 		return arguments.orderTemplate;
 	}
+	
+	public any function processOrderTemplate_updateFrequency(required any orderTemplate, required any processObject, required struct data={}){
 
-	public any function processOrderTemplate_updateBilling(required any orderTemplate, required any processObject, required struct data={}){
+		arguments.orderTemplate.setFrequencyTerm(getSettingService().getTerm(arguments.processObject.getFrequencyTerm().value));
 
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate; 
+	}
+	
+	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
+		
 		var account = arguments.orderTemplate.getAccount(); 
-
+			
 		if(!isNull(processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
@@ -1171,10 +1181,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress = getAccountService().saveAccountAddress(accountAddress);
 
 
+			orderTemplate.setShippingAccountAddress(accountAddress);
+		} else if (!isNull(processObject.getShippingAccountAddress())) { 
+
+			orderTemplate.setShippingAccountAddress(getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value));	
+		}
+
+		var shippingMethod = getShippingService().getShippingMethod(processObject.getShippingMethod().shippingMethodID); 
+
+		orderTemplate.setShippingMethod(shippingMethod);	
+		
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate;
+	}
+	
+	public any function processOrderTemplate_updateBilling(required any orderTemplate, required any processObject, required struct data={}){
+
+		var account = arguments.orderTemplate.getAccount(); 
+
+	if(!isNull(processObject.getNewAccountAddress())){
+			var accountAddress = getAccountService().newAccountAddress();
+			accountAddress.populate(processObject.getNewAccountAddress());
+			
+			var address = getAddressService().newAddress();
+			address.populate(processObject.getNewAccountAddress().address);
+		
+			accountAddress.setAddress(address); 
+			accountAddress.setAccount(account); 
+
+			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+
+
 			orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
 			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
-		}
+		}	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();

@@ -58,6 +58,8 @@ class SWAccountShippingMethodModalController{
 		this.baseEntity = this.swAccountShippingAddressCard.baseEntity;
 		this.baseEntityPrimaryID = this.baseEntity[this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.baseEntityName)];
 		
+		this.defaultCountryCode = this.swAccountShippingAddressCard.defaultCountryCode;
+		
 		this.accountAddressOptions = this.swAccountShippingAddressCard.accountAddressOptions;
 		this.countryCodeOptions = this.swAccountShippingAddressCard.countryCodeOptions;
 		this.shippingMethodOptions = this.swAccountShippingAddressCard.shippingMethodOptions;
@@ -67,9 +69,7 @@ class SWAccountShippingMethodModalController{
         this.baseEntity.shippingMethod = this.shippingMethodOptions[0];
 	
 	    this.newAccountAddress = {
-        	address:{
-        		stateCode: this.stateCodeOptions[0]
-        	}
+        	address:{}
 	    };	
 	}
 	
@@ -80,6 +80,14 @@ class SWAccountShippingMethodModalController{
 			context: this.processContext,
 			propertyIdentifiersList: 'shippingAccountAddress,shippingMethod'
 		};
+		
+		if(this.showCreateShippingAddress){
+			formDataToPost.newAccountAddress = this.newAccountAddress;
+		} else {
+			formDataToPost.shippingAccountAddress = this.baseEntity.shippingAccountAddress;
+		}
+		
+		formDataToPost.shippingMethod = this.baseEntity.shippingMethod;
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
 		
@@ -95,7 +103,7 @@ class SWAccountShippingMethodModal implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-
+		modalButtonText:"@?"
 	};
 	public require = {
 		swAccountShippingAddressCard:"^^swAccountShippingAddressCard"

@@ -19,6 +19,10 @@ class SWModalLauncherController {
     
     // @ngInject
     constructor(){
+        this.hasSaveAction = typeof this.saveAction === 'function';
+        this.hasCancelAction = typeof this.cancelAction === 'function';
+        this.hasDeleteAction = typeof this.deleteAction === 'function';
+        
         if(angular.isUndefined(this.showModal)){
             this.showModal = false; 
         }
