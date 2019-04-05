@@ -6,7 +6,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public void function init(){
 		//on init load all possible record level perms
-		loadPermissionRecordRestrictionsCache();
+		//loadPermissionRecordRestrictionsCache();
 	}
 	
 	public void function loadPermissionRecordRestrictionsCache(boolean refresh=false){
@@ -23,7 +23,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public boolean function hasPermissionRecordRestriction(required string entityName){
-		return structKeyExists(variables.permissionRecordRestrictionMap,entityName);
+		return structKeyExists(variables,'permissionRecordRestrictionMap') && structKeyExists(variables.permissionRecordRestrictionMap,entityName);
 	}
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
