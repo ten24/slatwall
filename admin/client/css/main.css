@@ -7675,7 +7675,6 @@ table tr td .s-loading-icon {
 .s-detail-content-table tbody tr td {
   position: relative;
   font-weight: 500;
-  border: 1px solid #ddd!important;
 }
 .s-detail-content-table tbody tr td .form-group {
   margin-bottom: 0px;

@@ -69,7 +69,7 @@
                   {{slatwall.cart.orderItems.length}}
                 </span>
               </a>
-              <div class="dropdown-menu">
+              <div class="dropdown-menu px-2">
                 <cfinclude template="inc/header/minicart.cfm" />
               </div>
             </li>
