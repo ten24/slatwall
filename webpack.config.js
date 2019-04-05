@@ -118,11 +118,12 @@ var appConfig = {
         cache: true,
         parallel: true,
         sourceMap: true,
-        // extractComments: "all",
         terserOptions: {
           warnings: true,
           parse: {},
-          compress: true,
+          compress: {
+            drop_console: true,
+          },
           mangle: true, // Note `mangle.properties` is `false` by default.
           module: false,
           output: {

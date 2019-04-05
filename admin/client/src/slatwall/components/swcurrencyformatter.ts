@@ -1,6 +1,6 @@
 interface SWScope extends ng.IScope{
-    ngModel:any,
-    currencyCode:string
+    ngModel?:any,
+    currencyCode?:string
 }
 
 class SWCurrencyFormatter {

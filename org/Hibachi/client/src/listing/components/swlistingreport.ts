@@ -1,8 +1,8 @@
 import * as angular from "angular";
 
 
-interface CustomScope implements ng.IScope {
-    swListingReport: any;
+interface CustomScope extends ng.IScope {
+    swListingReport?: any;
 }
 class SWListingReportController {
     public selectedCollectionID: string;

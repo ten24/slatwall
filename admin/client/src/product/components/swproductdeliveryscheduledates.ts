@@ -67,6 +67,13 @@ class SWProductDeliveryScheduleDatesController {
     }
 }
 
+interface CustomScope extends ng.IScope{
+    openCalendarStart?:any;
+    openedCalendarStart?:boolean;
+    openCalendarEnd?:any;
+    openedCalendarEnd?:boolean;
+}
+
 class SWProductDeliveryScheduleDates implements ng.IDirective {
 
     public templateUrl;
@@ -104,7 +111,7 @@ class SWProductDeliveryScheduleDates implements ng.IDirective {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(productPartialsPath) + "/productdeliveryscheduledates.html";
     }
 
-    public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
+    public link: ng.IDirectiveLinkFn = (scope: CustomScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
         scope.openCalendarStart = function ($event) {
             $event.preventDefault();
             $event.stopPropagation();
