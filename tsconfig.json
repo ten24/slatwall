@@ -1,15 +1,15 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "module": "commonjs",
+        "module": "esnext",
         "lib": [
             "dom",
             "es5",
             "scripthost",
             "es2015.promise"
         ], /* Specify library files to be included in the compilation:  */
-        // "allowJs": true,                         /* Allow javascript files to be compiled. */
-        // "checkJs": true,                        /* Report errors in .js files. */
+        // "allowJs": true, /* Allow javascript files to be compiled. */
+        // "checkJs": true, /* Report errors in .js files. */
         // "jsx": "react",                          /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
         // "declaration": true,                     /* Generates corresponding '.d.ts' file. */
         // "sourceMap": true,                       /* Generates corresponding '.map' file. */
@@ -17,25 +17,25 @@
         // "outDir": "./dist2",                      /* Redirect output structure to the directory. */
         // "rootDir": "./",                         /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
         // "removeComments": true,                  /* Do not emit comments to output. */
-        "noEmit": true,                             /* Do not emit outputs. */
-        // "importHelpers": true,                      /* Import emit helpers from 'tslib'. */
+        "noEmit": true, /* Do not emit outputs. */
+        "importHelpers": true, /* Import emit helpers from 'tslib'. */
         // "downlevelIteration": true,              /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
         // "isolatedModules": true,                 /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
         /**
             ****************************    Strict Type-Checking Options     *******************************
         */
-        "strict": true,                          /* Enable all strict type-checking options. */
-        "noImplicitAny": false,                     /* Raise error on expressions and declarations with an implied 'any' type. */
-        "strictNullChecks": false,                  /* Enable strict null checks. */
-        "noImplicitThis": false,                    /* Raise error on 'this' expressions with an implied 'any' type. */
+        "strict": true, /* Enable all strict type-checking options. */
+        "noImplicitAny": false, /* Raise error on expressions and declarations with an implied 'any' type. */
+        "strictNullChecks": false, /* Enable strict null checks. */
+        "noImplicitThis": false, /* Raise error on 'this' expressions with an implied 'any' type. */
         // "alwaysStrict": true,                    /* Parse in strict mode and emit "use strict" for each source file. */
         /**
             ****************************    Additional Checks     *******************************
         */
-        "noUnusedLocals": false,                       /* Report errors on unused locals. */
-        "noUnusedParameters": false,                    /* Report errors on unused parameters. */
-        "noImplicitReturns": false,                     /* Report error when not all code paths in function return a value. */
-        "noFallthroughCasesInSwitch": false,            /* Report errors for fallthrough cases in switch statement. */
+        "noUnusedLocals": false, /* Report errors on unused locals. */
+        "noUnusedParameters": false, /* Report errors on unused parameters. */
+        "noImplicitReturns": false, /* Report error when not all code paths in function return a value. */
+        "noFallthroughCasesInSwitch": false, /* Report errors for fallthrough cases in switch statement. */
         "noStrictGenericChecks": true,
         "skipLibCheck": true,
         /**
@@ -50,6 +50,12 @@
         ], /* List of folders to include type definitions from. */
         "types": [
             "angular",
+            "angular-animate",
+            "angular-cookies",
+            "angular-mocks",
+            "angular-resource",
+            "angular-route",
+            "angular-sanitize",
             "bootstrap",
             "chart.js",
             "datejs",
@@ -70,10 +76,10 @@
         /**  
             *****************************        Experimental Options         *******************************
         */
-        "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
-        "emitDecoratorMetadata": true          /* Enables experimental support for emitting type metadata for decorators. */
+        "experimentalDecorators": false, /* Enables experimental support for ES7 decorators. */
+        "emitDecoratorMetadata": false /* Enables experimental support for emitting type metadata for decorators. */
     },
-    "exclude" : [
+    "exclude": [
         "node_modules",
         "dist",
         "**/*.spec.ts"

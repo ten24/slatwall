@@ -1,5 +1,5 @@
 import { GiftRecipient } from "../models/giftrecipient";
-import angular = require("angular");
+import * as angular from "angular";
 
 class SWAddOrderItemRecipientController {
 

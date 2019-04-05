@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 class SWCriteriaManyToOne {
 	public static Factory() {

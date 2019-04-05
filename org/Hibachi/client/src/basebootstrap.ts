@@ -1,5 +1,6 @@
-import "angular";
 
+import * as angular from "angular";
+import * as md5 from "md5";
 import "angular-resource";
 import "angular-cookies";
 import "angular-route";
@@ -13,10 +14,11 @@ import "../..//HibachiAssets/js/jquery-typewatch-2.0.js";
 import "../..//HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js";
 
 import { coremodule } from "./core/core.module";
-declare var angular: any;
+
+
+
 declare var hibachiConfig: any;
 declare var window: any;
-var md5 = require('md5');
 //generic bootstrapper
 export class BaseBootStrapper {
     public myApplication: any;
@@ -284,8 +286,8 @@ export class BaseBootStrapper {
                         this._resourceBundle[locale] = {};
                         deferred.resolve(response);
                     } else {
-                        this._resourceBundle[locale] = response;
-                        deferred.resolve(response);
+                        this._resourceBundle[locale] = response.data;
+                        deferred.resolve(response.data);
                     }
                 },
                 (reason) => { deferred.reject(reason) }
@@ -294,7 +296,7 @@ export class BaseBootStrapper {
         return deferred.promise
     };
 
-    getResourceBundles = () => {
+    getResourceBundles = (): ng.IPromise<{}> => {
         var localeListArray = this.appConfig.rbLocale.split('_');
         var rbPromise;
         var rbPromises = [];
@@ -308,9 +310,9 @@ export class BaseBootStrapper {
             //this.getResourceBundle('en_us');
             this.getResourceBundle('en');
         }
-        return this.$q.all(rbPromises).then((data) => {
+        return this.$q.all(rbPromises).then((data): any => {
             coremodule.constant('resourceBundles', this._resourceBundle);
-        }, (error) => {
+        }, (error): any => {
             //can enter here due to 404
             coremodule.constant('resourceBundles', this._resourceBundle);
         });

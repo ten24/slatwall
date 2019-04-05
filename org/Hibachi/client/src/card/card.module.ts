@@ -12,7 +12,7 @@ import { SWCardBody } from "./components/swcardbody";
 import { SWCardIcon } from "./components/swcardicon";
 import { SWCardProgressBar } from "./components/swcardprogressbar";
 import { SWCardListItem } from "./components/swcardlistitem";
-import angular = require('angular');
+import * as angular from "angular";
 var cardmodule = angular.module('hibachi.card', [coremodule.name])
 	.config([() => {
 

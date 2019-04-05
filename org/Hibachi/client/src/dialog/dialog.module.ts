@@ -4,7 +4,7 @@
 import { DialogService } from "./services/dialogservice";
 //controllers
 import { PageDialogController } from "./controllers/pagedialog";
-import angular = require("angular");
+import * as angular from "angular";
 
 var dialogmodule = angular.module('hibachi.dialog', []).config(() => {
 })

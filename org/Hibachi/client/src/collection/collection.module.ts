@@ -35,7 +35,7 @@ import { SWFilterGroupItem } from "./components/swfiltergroupitem";
 import { SWRestrictionConfig } from "./components/swrestrictionconfig";
 //filters
 import { AggregateFilter } from "./filters/aggregatefilter";
-import angular = require('angular');
+import * as angular from "angular";
 
 var collectionmodule = angular.module('hibachi.collection', [coremodule.name])
 	.config([() => {

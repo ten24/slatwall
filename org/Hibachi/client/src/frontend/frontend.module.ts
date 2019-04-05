@@ -12,7 +12,7 @@ import { SWFNavigation } from "./components/swfnavigation";
 import { SWFAddressForm } from "./components/swfaddressform";
 import { SWFSaveNotes } from "./components/swfsavenotes";
 import { SWFAlert } from "./components/swfalert";
-import angular = require("angular");
+import * as angular from "angular";
 
 declare var hibachiConfig: any;
 //need to inject the public service into the rootscope for use in the directives.

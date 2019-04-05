@@ -1,7 +1,6 @@
 
-//import Alert = require('../model/alert');
 import { Alert } from "../model/alert";
-import angular = require("angular");
+import * as angular from "angular";
 
 interface IAlertService {
     get(): Alert[];

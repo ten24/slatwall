@@ -1,6 +1,6 @@
-import angular = require("angular");
+import * as angular from "angular";
 
-var md5 = require('md5');
+import * as md5 from "md5";
 class optionWithGroup {
     constructor(
         public optionID: string,

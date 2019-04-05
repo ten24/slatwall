@@ -9,7 +9,7 @@ import { OrderFulfillmentService } from "../orderfulfillment/services/orderfulfi
 
 //directives
 import { SWFulfillmentBatchDetail } from "./components/swfulfillmentbatchdetail";
-import angular = require("angular");
+import * as angular from "angular";
 //models 
 
 

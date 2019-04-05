@@ -1,5 +1,4 @@
 
-//import alertmodule = require('./alert/alert.module');
 import { alertmodule } from "../alert/alert.module";
 import { cardmodule } from "../card/card.module";
 import { collectionmodule } from "../collection/collection.module";
@@ -13,7 +12,7 @@ import { workflowmodule } from "../workflow/workflow.module";
 
 //directives
 import { SWSaveAndFinish } from "./components/swsaveandfinish";
-import angular = require("angular");
+import * as angular from "angular";
 
 var hibachimodule = angular.module('hibachi', [
     alertmodule.name,

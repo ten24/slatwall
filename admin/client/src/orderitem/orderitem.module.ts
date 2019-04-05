@@ -6,7 +6,7 @@ import { SWOiShippingLabelStamp } from "./components/swoishippinglabelstamp";
 import { SWOrderItemDetailStamp } from "./components/sworderitemdetailstamp";
 import { SWOrderItems } from "./components/sworderitems";
 import { SWResizedImage } from "./components/swresizedimage";
-import angular = require('angular');
+import * as angular from "angular";
 
 
 var orderitemmodule = angular.module('hibachi.orderitem', [coremodule.name])

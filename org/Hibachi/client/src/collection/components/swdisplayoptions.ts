@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 class SWDisplayOptions {
     public static Factory(): ng.IDirectiveFactory {

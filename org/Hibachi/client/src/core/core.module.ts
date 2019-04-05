@@ -89,7 +89,7 @@ import { dialogmodule } from "../dialog/dialog.module";
 
 
 import { BaseObject } from "./model/baseobject";
-import angular = require("angular");
+import * as angular from "angular";
 declare var $: any;
 
 var coremodule = angular.module('hibachi.core', [

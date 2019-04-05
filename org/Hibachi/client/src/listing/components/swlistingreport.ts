@@ -1,5 +1,9 @@
-import angular = require("angular");
+import * as angular from "angular";
 
+
+interface CustomScope implements ng.IScope {
+    swListingReport: any;
+}
 class SWListingReportController {
     public selectedCollectionID: string;
     public collectionName: string;
@@ -570,7 +574,9 @@ class SWListingReport implements ng.IDirective {
         return directive;
     }
 
-    public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
+
+
+    public link: ng.IDirectiveLinkFn = (scope: CustomScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
         scope.swListingReport.openCalendarStart = function ($event) {
             $event.preventDefault();
             $event.stopPropagation();

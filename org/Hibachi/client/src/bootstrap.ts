@@ -1,20 +1,18 @@
 /*jshint browser:true */
-import {BaseBootStrapper} from "./basebootstrap";
-import {hibachimodule} from "./hibachi/hibachi.module";
-import {loggermodule} from "./logger/logger.module";
+import { BaseBootStrapper } from "./basebootstrap";
+import { hibachimodule } from "./hibachi/hibachi.module";
+import { loggermodule } from "./logger/logger.module";
 
 //custom bootstrapper
-class bootstrapper extends BaseBootStrapper{
+export class bootstrapper extends BaseBootStrapper {
     public myApplication;
-    constructor(){
-        var angular:any = super([hibachimodule.name, loggermodule.name]);
+    constructor() {
+        var angular: any = super([hibachimodule.name, loggermodule.name]);
         angular.bootstrap()
     }
 
 
 }
-
-export = new bootstrapper();
 
 
 

@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 interface IHibachiConfig {
 	baseURL;
@@ -225,20 +225,21 @@ class HibachiInterceptor implements IInterceptor {
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
 				} else if (rejection.data.messages[0].message === 'invalid_token') {
-					return $http.get(this.baseUrl + '?' + this.appConfig.action + '=api:main.login').then((loginResponse: IHibachiInterceptorPromise<any>) => {
-						if (loginResponse.status === 200) {
-							this.localStorageService.setItem('token', loginResponse.data.token);
-							rejection.config.headers = rejection.config.headers || {};
-							rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-							this.getJWTDataFromToken(loginResponse.data.token);
+					return $http.get(this.baseUrl + '?' + this.appConfig.action + '=api:main.login')
+						.then((loginResponse: IHibachiInterceptorPromise<any>) => {
+							if (loginResponse.status === 200) {
+								this.localStorageService.setItem('token', loginResponse.data.token);
+								rejection.config.headers = rejection.config.headers || {};
+								rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+								this.getJWTDataFromToken(loginResponse.data.token);
 
-							return $http(rejection.config).then(function (response) {
-								return response;
-							});
-						}
-					}, function (rejection) {
-						return rejection;
-					});
+								return $http(rejection.config).then(function (response) {
+									return response;
+								});
+							}
+						}, function (rejection) {
+							return rejection;
+						});
 				}
 			}
 		}

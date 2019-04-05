@@ -1,6 +1,6 @@
 import * as FluxStore from '../../../../../org/Hibachi/client/src/core/prototypes/swstore';
 import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actions/fulfillmentbatchactions';
-import angular = require('angular');
+import * as angular from "angular";
 
 /**
  * Fulfillment List Controller

@@ -8,7 +8,7 @@ import { SWFPropertyDisplayController } from "./swfpropertydisplay";
 import { SWFormFieldController } from "./swformfield";
 import { ObserverService } from "../../core/services/observerservice";
 import { MetaDataService } from "../../core/services/metadataservice";
-import angular = require("angular");
+import * as angular from "angular";
 //defines possible eventoptions
 type EventAnnouncer = "blur" |
 	"change" |

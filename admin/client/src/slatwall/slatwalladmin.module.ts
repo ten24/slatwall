@@ -21,7 +21,7 @@ import { SWCurrencyFormatter } from "./components/swcurrencyformatter"
 //filters
 
 import { SWCurrency } from "./filters/swcurrency";
-import angular = require("angular");
+import * as angular from "angular";
 
 //declare variables out of scope
 declare var $: any;

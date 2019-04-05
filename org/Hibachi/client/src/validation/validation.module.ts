@@ -20,7 +20,7 @@ import { SWValidationUniqueOrNull } from "./components/swvalidationuniqueornull"
 //services
 import { ValidationService } from "./services/validationservice";
 import { coremodule } from "../core/core.module";
-import angular = require("angular");
+import * as angular from "angular";
 
 var validationmodule = angular.module('hibachi.validation', [coremodule.name])
 	.run([function () {

@@ -7,7 +7,7 @@ import { SWAddOptionGroup } from "./components/swaddoptiongroup";
 import { SWOptionsForOptionGroup } from "./components/swoptionsforoptiongroup";
 //models
 import { optionWithGroup } from "./components/swaddoptiongroup";
-import angular = require("angular");
+import * as angular from "angular";
 
 var optiongroupmodule = angular.module('optiongroup', [coremodule.name])
 	.config([() => {

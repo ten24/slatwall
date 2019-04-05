@@ -15,7 +15,7 @@ import { SWDetailTabs } from "./components/swdetailtabs";
 import { SWDetail } from "./components/swdetail";
 import { SWList } from "./components/swlist";
 import { coremodule } from "../core/core.module";
-import angular = require("angular");
+import * as angular from "angular";
 
 declare var $: any;
 

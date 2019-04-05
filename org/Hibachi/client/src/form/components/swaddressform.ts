@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 //Displays an address form. Pass in an address object to bind to.
 declare var hibachiConfig: any;

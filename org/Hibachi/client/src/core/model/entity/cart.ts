@@ -1,6 +1,6 @@
 
 import { BaseEntity } from "./baseentity";
-import angular = require("angular");
+import * as angular from "angular";
 
 class Cart extends BaseEntity {
     public orderRequirementsList: string = "";

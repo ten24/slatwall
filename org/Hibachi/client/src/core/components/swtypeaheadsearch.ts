@@ -1,5 +1,5 @@
 import { PublicRequest } from "../model/transient/publicrequest";
-import angular = require("angular");
+import * as angular from "angular";
 
 class SWTypeaheadSearchController {
 

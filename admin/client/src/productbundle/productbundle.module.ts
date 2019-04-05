@@ -11,7 +11,7 @@ import { SWProductBundleGroupType } from "./components/swproductbundlegrouptype"
 import { SWProductBundleGroups } from "./components/swproductbundlegroups";
 import { SWProductBundleGroup } from "./components/swproductbundlegroup";
 import { SWProductBundleCollectionFilterItemTypeahead } from "./components/swproductbundlecollectionfilteritemtypeahead";
-import angular = require("angular");
+import * as angular from "angular";
 //filters
 
 

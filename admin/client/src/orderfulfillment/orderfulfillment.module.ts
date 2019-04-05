@@ -9,7 +9,7 @@ import { OrderFulfillmentService } from "./services/orderfulfillmentservice";
 
 //directives
 import { SWOrderFulfillmentList } from "./components/sworderfulfillmentlist";
-import angular = require("angular");
+import * as angular from "angular";
 //models 
 
 

@@ -4,7 +4,7 @@
 
 import { alertmodule } from "../alert/alert.module";
 import { ExceptionHandler } from "./services/exceptionhandler";
-import angular = require("angular");
+import * as angular from "angular";
 
 var loggermodule = angular.module('logger', [alertmodule.name])
 	.run([function () {

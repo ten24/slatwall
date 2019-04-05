@@ -1,7 +1,7 @@
 
 declare var escape;
 import { AdminRequest } from "../model/transient/adminrequest";
-import angular = require("angular");
+import * as angular from "angular";
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
 // 	loadingResourceBundle:boolean;

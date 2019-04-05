@@ -8,7 +8,7 @@ import { coremodule } from "../../../../org/Hibachi/client/src/core/core.module"
 
 //directives
 import { SWScheduledDeliveriesCard } from "./components/swscheduleddeliveriescard";
-import angular = require("angular");
+import * as angular from "angular";
 
 
 var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [coremodule.name]).config(() => {

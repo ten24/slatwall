@@ -16,7 +16,7 @@ import { SWWorkflowTrigger } from "./components/swworkflowtrigger";
 import { SWWorkflowTriggers } from "./components/swworkflowtriggers";
 import { SWWorkflowTriggerHistory } from "./components/swworkflowtriggerhistory";
 import { SWSchedulePreview } from "./components/swschedulepreview";
-import angular = require("angular");
+import * as angular from "angular";
 
 //filters
 

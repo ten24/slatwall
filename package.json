@@ -25,7 +25,7 @@
     "rxjs": "^5.4.3"
   },
   "devDependencies": {
-    "@types/angular": "^1.6.54",
+    "@types/angular": "^1.6.26",
     "@types/angular-animate": "^1.5.10",
     "@types/angular-cookies": "^1.4.5",
     "@types/angular-mocks": "^1.7.0",

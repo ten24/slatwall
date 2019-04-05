@@ -1,7 +1,7 @@
 
 import { BaseTransient } from "./basetransient";
 import { UtilityService } from "../../services/utilityservice";
-import angular = require("angular");
+import * as angular from "angular";
 
 class Request extends BaseTransient {
 

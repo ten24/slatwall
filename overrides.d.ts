@@ -8,16 +8,22 @@
  * https://stackoverflow.com/a/42035067
  * 
  */
-import angular = require("angular");
-
 declare global {
     // const angular: ng.IAngularStatic;
-    // const Chart: typeof Chart;
+    const Chart: typeof Chart;
 
 
-    // interface Function {
-    //     $inject?: ReadonlyArray<string>;
-    // }
+    declare module angular {
+        ///////////////////////////////////////////////////////////////////////////
+        // AngularStatic
+        // We reopen it to add the LazyBootstrap definition
+        ///////////////////////////////////////////////////////////////////////////
+        interface IAngularStatic implements ng.IAngularStatic {
+            lazy(app: any, modules?: any): any;
+        }
+
+
+    }
 
 
     // namespace angular {
@@ -28,15 +34,12 @@ declare global {
     //         mock: IMockStatic;
     //     }
     // }
+    // declare namespace angular {
+    //     interface IScope extends IRootScopeService {
+    //         [x: string]: any;
 
-
-    /** 
-     *
-        interface IScope extends IRootScopeService {
-            [x: string]: any;
-        }
-     * 
-    */
+    //     }
+    // }
 }
 
 

@@ -11,7 +11,7 @@ import { ProductCreateController } from "./controllers/preprocessproduct_create"
 import { SWProductListingPages } from "./components/swproductlistingpages";
 import { SWRelatedProducts } from "./components/swrelatedproducts";
 import { SWProductDeliveryScheduleDates } from "./components/swproductdeliveryscheduledates";
-import angular = require("angular");
+import * as angular from "angular";
 
 var productmodule = angular.module('hibachi.product', [coremodule.name]).config(() => {
 

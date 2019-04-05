@@ -4,7 +4,7 @@ import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
 declare var window:any;
 declare var require:any;
 //custom bootstrapper
-class bootstrapper extends BaseBootStrapper{
+export class bootstrapper extends BaseBootStrapper{
     public myApplication;
 
     constructor(){
@@ -26,9 +26,6 @@ class bootstrapper extends BaseBootStrapper{
 
     }
 }
-
-export = new bootstrapper();
-
 
 
 

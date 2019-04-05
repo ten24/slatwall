@@ -1,5 +1,5 @@
 import { BaseService } from "./baseservice";
-import angular = require("angular");
+import * as angular from "angular";
 
 class ScopeService {
 

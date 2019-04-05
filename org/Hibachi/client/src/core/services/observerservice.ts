@@ -9,7 +9,7 @@
 
 import { BaseService } from "./baseservice";
 import { UtilityService } from "./utilityservice";
-import angular = require("angular");
+import * as angular from "angular";
 
 class ObserverService extends BaseService {
     private observers;

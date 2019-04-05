@@ -1,5 +1,5 @@
 import { MetaDataService } from "../../core/services/metadataservice";
-import angular = require("angular");
+import * as angular from "angular";
 
 class SWPropertyDisplayController {
     private applyFilter;

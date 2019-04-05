@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 /* SwListingDisableRule
  * defines a filter, by which to determine what rows will be disabled

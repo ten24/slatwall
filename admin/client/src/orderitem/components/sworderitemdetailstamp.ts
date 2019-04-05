@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 /**
  * Displays a shipping label in the order items row.

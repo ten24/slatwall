@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 /*collection service is used to maintain the state of the ui*/
 

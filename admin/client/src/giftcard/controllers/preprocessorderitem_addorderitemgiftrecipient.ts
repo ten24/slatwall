@@ -1,5 +1,5 @@
 import { GiftRecipient } from "../models/giftrecipient";
-import angular = require("angular");
+import * as angular from "angular";
 
 interface IOrderItemGiftRecipientScope extends ng.IScope {
         orderItemGiftRecipients: GiftRecipient[];

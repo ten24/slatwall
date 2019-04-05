@@ -2,7 +2,7 @@
 import { Subject } from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes/swstore';
-import angular = require('angular');
+import * as angular from "angular";
 
 class ListingService{
 

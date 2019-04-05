@@ -1,6 +1,6 @@
 
 import { SWFForm, SWFFormController } from '../../form/components/swfform';
-import angular = require('angular');
+import * as angular from "angular";
 
 class SWFAddressFormController extends SWFFormController {
     //@ngInject

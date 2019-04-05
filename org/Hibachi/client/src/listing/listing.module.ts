@@ -20,7 +20,7 @@ import { SWListingOrderBy } from "./components/swlistingorderby";
 import { SWListingRowSave } from "./components/swlistingrowsave";
 import { SWListingSearch } from "./components/swlistingsearch";
 import { SWListingGlobalSearch } from "./components/swlistingglobalsearch";
-import angular = require("angular");
+import * as angular from "angular";
 
 
 var listingmodule = angular.module('hibachi.listing', [collectionmodule.name])

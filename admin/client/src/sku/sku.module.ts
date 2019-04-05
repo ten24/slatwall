@@ -21,7 +21,7 @@ import { SWSkuCodeEdit } from "./components/swskucodeedit";
 import { SWSkuPricesEdit } from "./components/swskupricesedit";
 import { SWSkuPriceQuantityEdit } from "./components/swskupricequantityedit";
 import { SWSkuThumbnail } from "./components/swskuthumbnail";
-import angular = require("angular");
+import * as angular from "angular";
 //filters
 
 

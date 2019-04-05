@@ -2,7 +2,7 @@
 import { SWPropertyDisplayController } from "./swpropertydisplay";
 import { SWFPropertyDisplayController } from "./swfpropertydisplay";
 import { SWFormController } from "./swform";
-import angular = require("angular");
+import * as angular from "angular";
 class SWFormFieldController {
 	public swPropertyDisplay: SWPropertyDisplayController;
 	public swfPropertyDisplay: SWFPropertyDisplayController;

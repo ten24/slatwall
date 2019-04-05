@@ -15,7 +15,7 @@ import { SWOrderItemGiftRecipientRow } from "./components/sworderitemgiftrecipie
 //models
 import { GiftCard } from "./models/giftcard";
 import { GiftRecipient } from "./models/giftrecipient";
-import angular = require("angular");
+import * as angular from "angular";
 
 var giftcardmodule = angular.module('giftcard', [coremodule.name])
 	.config([() => {

@@ -4,7 +4,7 @@ import { HibachiService } from "../../services/hibachiservice";
 import { HibachiValidationService } from "../../services/hibachivalidationservice";
 import { EntityService } from "../../services/entityservice";
 import { UtilityService } from "../../services/utilityservice";
-import angular = require("angular");
+import * as angular from "angular";
 
 abstract class BaseTransient extends BaseObject {
 

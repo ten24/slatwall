@@ -2,7 +2,7 @@
 import { PageDialog } from "../../dialog/model/pagedialog";
 import { IFilter } from "./collectionconfigservice";
 import { BaseEntityService } from "../../core/services/baseentityservice";
-import angular = require("angular");
+import * as angular from "angular";
 class CollectionService extends BaseEntityService {
     private _pageDialogs;
     private _collection;

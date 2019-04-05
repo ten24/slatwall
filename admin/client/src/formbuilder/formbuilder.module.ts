@@ -4,7 +4,7 @@ import { coremodule } from "../../../../org/Hibachi/client/src/core/core.module"
 //controllers
 //directives
 import { SWFormResponseListing } from "./components/swformresponselisting"
-import angular = require("angular");
+import * as angular from "angular";
 //models
 
 

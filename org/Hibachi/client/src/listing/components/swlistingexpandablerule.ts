@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 /* SWListingExpandableRule
  * defines a filter, by which to determine what will be expanded

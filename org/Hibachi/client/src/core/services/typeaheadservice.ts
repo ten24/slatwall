@@ -1,7 +1,7 @@
 import * as TypeaheadStore from '../prototypes/swstore';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
-import angular = require('angular');
+import * as angular from "angular";
 
 class TypeaheadService {
 

@@ -11,7 +11,7 @@ import { SWContentList } from "./components/swcontentlist";
 import { SWContentNode } from "./components/swcontentnode";
 import { SWAssignedProducts } from "./components/swassignedproducts";
 import { SWSiteSelector } from "./components/swsiteselector";
-import angular = require("angular");
+import * as angular from "angular";
 
 var contentmodule = angular.module('hibachi.content', [coremodule.name]).config(() => {
 

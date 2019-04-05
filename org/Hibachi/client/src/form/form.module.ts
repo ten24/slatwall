@@ -22,7 +22,7 @@ import { SWAddressForm } from "./components/swaddressform";
 import { SWPropertyDisplay } from "./components/swpropertydisplay";
 import { SWFPropertyDisplay } from "./components/swfpropertydisplay";
 import { SWFormSubscriber } from "./components/swformsubscriber";
-import angular = require("angular");
+import * as angular from "angular";
 
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', coremodule.name]).config(() => {
 

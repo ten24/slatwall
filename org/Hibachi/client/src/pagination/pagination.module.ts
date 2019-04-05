@@ -3,7 +3,7 @@
 import { PaginationService } from "./services/paginationservice";
 import { SWPaginationBar } from "./components/swpaginationbar";
 import { coremodule } from '../core/core.module';
-import angular = require("angular");
+import * as angular from "angular";
 
 var paginationmodule = angular.module('hibachi.pagination', [coremodule.name])
 	// .config(['$provide','baseURL',($provide,baseURL)=>{

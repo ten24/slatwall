@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 class SWListingDisplayCellController {
     /* local state variables */

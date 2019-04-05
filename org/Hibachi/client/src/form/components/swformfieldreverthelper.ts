@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 class SWFormFieldRevertHelperController {
 
@@ -13,7 +13,7 @@ class SWFormFieldRevertHelperController {
 }
 
 interface SWScope extends ng.IScope {
-    swFormFieldRevertHelper: any
+    swFormFieldRevertHelper?: any
 }
 
 class SWFormFieldRevertHelper implements ng.IDirective {

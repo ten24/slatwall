@@ -1,4 +1,4 @@
-import angular = require("angular");
+import * as angular from "angular";
 
 /**
 * Form Controller handles the logic for this directive.

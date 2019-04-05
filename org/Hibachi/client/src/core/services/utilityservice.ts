@@ -1,6 +1,6 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 import { BaseService } from "./baseservice";
-import angular = require("angular");
+import * as angular from "angular";
 class UtilityService extends BaseService {
     //@ngInject
     constructor(
