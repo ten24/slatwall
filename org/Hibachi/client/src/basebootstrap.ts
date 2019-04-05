@@ -282,17 +282,19 @@ export class BaseBootStrapper{
     };
 
     getResourceBundles= () => {
-        var localeListArray = this.appConfig.rbLocale.split('_');
-        var rbPromise;
+        var rbLocale = this.appConfig.rbLocale;
+        if(rbLocale == 'en_us'){
+            rbLocale = 'en'
+        }
+        var localeListArray = rbLocale.split('_');
         var rbPromises = [];
-        rbPromise = this.getResourceBundle(this.appConfig.rbLocale);
+        var rbPromise = this.getResourceBundle(rbLocale);
         rbPromises.push(rbPromise);
         if(localeListArray.length === 2) {
             rbPromise = this.getResourceBundle(localeListArray[0]);
             rbPromises.push(rbPromise);
         }
         if(localeListArray[0] !== 'en') {
-            //this.getResourceBundle('en_us');
             this.getResourceBundle('en');
         }
         return this.$q.all(rbPromises).then((data) => {

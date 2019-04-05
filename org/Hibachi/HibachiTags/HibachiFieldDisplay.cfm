@@ -42,6 +42,7 @@
 	<cfif attributes.requiredFlag>
 		<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, "required", " ")>
 	</cfif>
+	
 	<cfswitch expression="#attributes.displaytype#">
 		<!--- DL Case --->
 		<cfcase value="dl">
