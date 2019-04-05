@@ -4,7 +4,7 @@ import { hibachimodule } from "./hibachi/hibachi.module";
 import { loggermodule } from "./logger/logger.module";
 
 //custom bootstrapper
-export class bootstrapper extends BaseBootStrapper {
+class bootstrapper extends BaseBootStrapper {
     public myApplication;
     constructor() {
         var angular: any = super([hibachimodule.name, loggermodule.name]);
@@ -14,5 +14,6 @@ export class bootstrapper extends BaseBootStrapper {
 
 }
 
+export default new bootstrapper();
 
 
