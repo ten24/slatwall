@@ -51,7 +51,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="orderNumber" ormtype="string"  index="PI_ORDERNUMBER";
-	property name="orderName" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="orderOpenDateTime" ormtype="timestamp" hb_displayType="datetime";
 	property name="orderOpenIPAddress" ormtype="string";
@@ -71,11 +70,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="promotionCacheKey" ormtype="string" hb_auditable="false";
 	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
 
-	//schedule order
-	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
-	property name="scheduleOrderStartDateTime" ormtype="timestamp" hb_displayType="datetime";
-	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp" hb_displayType="datetime";
-
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
@@ -86,7 +80,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID" hb_optionsNullRBKey="define.none";
 	property name="referencedOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="referencedOrderID";	// Points at the "parent" (NOT return) order.
-	property name="scheduleOrderTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="scheduleOrderTermID";
 	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="orderCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderCreatedSiteID";
@@ -953,15 +946,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public array function getOrderTypeOptions() {
 		if(!structKeyExists(variables, "orderTypeOptions")) {
-			var orderTypeCollection = getService('TypeService').getTypeCollectionList();
-			orderTypeCollection.setDisplayProperties('typeID|value,typeName|name');
-			orderTypeCollection.addFilter('parentType.systemCode','orderType');
-			
-			if(getService('OrderService').getOrderItemCollectionList().getRecordsCount() == 0){
-				orderTypeCollection.addFilter('systemCode','otReturnOrder', '!=');
+			var sl = getPropertyOptionsSmartList("orderType");
+			var inFilter = "otExchangeOrder,otSalesOrder,otReturnOrder";
+			if(getSaleItemSmartList().getRecordsCount() gt 0) {
+				inFilter = listDeleteAt(inFilter, listFindNoCase(inFilter, "otReturnOrder"));
 			}
+			if(getReturnItemSmartList().getRecordsCount() gt 0) {
+				inFilter = listDeleteAt(inFilter, listFindNoCase(inFilter, "otSalesOrder"));
+			}
+			sl.addInFilter('systemCode', inFilter);
+			sl.addSelect('typeName', 'name');
+			sl.addSelect('typeID', 'value');
 
-			variables.orderTypeOptions = orderTypeCollection.getRecords();
+			variables.orderTypeOptions = sl.getRecords();
 		}
 		return variables.orderTypeOptions;
 	}

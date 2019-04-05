@@ -1593,7 +1593,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_placeOrder(required any order, struct data={}) {
-	
+		
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
 			arguments.order.setPlaceOrderFlag(true);
@@ -3367,11 +3367,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
   		return arguments.orderPayment;
   	}
-
-	public any function processOrder_createOrderFromTemplate(required any order, required any processObject){
-	
-		return arguments.order; 
-	} 
 
 	// =====================  END: Process Methods ============================
 
