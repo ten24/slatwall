@@ -16,6 +16,7 @@ import {SWProductBundleCollectionFilterItemTypeahead} from "./components/swprodu
 
 
 var productbundlemodule = angular.module('hibachi.productbundle',[coremodule.name]).config(()=>{
+    
 })
 //constants
 .constant('productBundlePartialsPath','productbundle/components/')

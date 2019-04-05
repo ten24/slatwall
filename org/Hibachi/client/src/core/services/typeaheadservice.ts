@@ -3,8 +3,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import * as TypeaheadStore from '../prototypes/swstore';
-import {Observable, Subject} from 'rxjs';
-
+import { Subject } from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
 
 class TypeaheadService {
     
