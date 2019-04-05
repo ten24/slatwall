@@ -154,11 +154,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 		//CUSTOM PROPERTIES BEGIN
 
- property name="flyType" ormtype="string" hb_formFieldType="select";
- property name="exampleSelect" ormtype="string" hb_formFieldType="select";
- property name="extensionColor" ormtype="string" hb_formFieldType="select";
- property name="pantsStyle" ormtype="string" hb_formFieldType="select";
- property name="chipset" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();

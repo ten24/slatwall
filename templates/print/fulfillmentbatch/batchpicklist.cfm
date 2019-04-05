@@ -1,8 +1,6 @@
 <cfparam name="print" type="any" />
 <cfparam name="printData" type="struct" default="#structNew()#" />
 <cfparam name="fulfillmentBatch" type="any" />
-<cfdump var= "#fulfillmentBatch#" top=2>
-<cfabort>
 
 <cfoutput>
 	<style>
