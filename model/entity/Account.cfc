@@ -155,6 +155,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		//CUSTOM PROPERTIES BEGIN
 
+        //CUSTOM PROPERTIES END
+        
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}

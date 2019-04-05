@@ -153,6 +153,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
 		//CUSTOM PROPERTIES BEGIN
+		
+		//CUSTOM PROPERTIES END
 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
