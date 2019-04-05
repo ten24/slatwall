@@ -13,8 +13,6 @@
             	<hb:HibachiPropertyDisplay object="#rc.containerPreset#" property="height" edit="#rc.edit#">
             	<hb:HibachiPropertyDisplay object="#rc.containerPreset#" property="width" edit="#rc.edit#">
             	<hb:HibachiPropertyDisplay object="#rc.containerPreset#" property="depth" edit="#rc.edit#">
-            	<hb:HibachiPropertyDisplay object="#rc.containerPreset#" property="bottleSize" edit="#rc.edit#">
-           		<hb:HibachiPropertyDisplay object="#rc.containerPreset#" property="maxQuantity" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 	</div>
