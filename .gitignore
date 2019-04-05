@@ -16,5 +16,3 @@ WEB-INF
 .rdsTempFiles/
 node_modules
 docker-compose.yml
-dist
-npm-debug.log
