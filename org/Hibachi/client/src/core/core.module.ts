@@ -61,6 +61,7 @@ import {SWCurrencyFormatter} from "./components/swcurrencyformatter";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
+import {SWDatePicker} from "./components/swdatepicker";
 import {SWDraggable} from "./components/swdraggable";
 import {SWDraggableContainer} from "./components/swdraggablecontainer";
 import {SWEntityActionBar} from "./components/swentityactionbar";
@@ -253,6 +254,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swColumnSorter',SWColumnSorter.Factory())
 .directive('swConfirm',SWConfirm.Factory())
 .directive('swCurrencyFormatter', SWCurrencyFormatter.Factory())
+.directive('swDatePicker', SWDatePicker.Factory())
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
