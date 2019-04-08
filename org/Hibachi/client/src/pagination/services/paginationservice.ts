@@ -106,7 +106,7 @@ class Pagination{
         return (this.getPageEnd() === this.getRecordsCount());
     };
     public showPreviousJump=():boolean =>{
-        return (angular.isDefined(this.getCurrentPage()) && this.getCurrentPage() > 3);
+        return (angular.isDefined(this.getCurrentPage()) && this.getCurrentPage() > 5);
     };
     public showNextJump=():boolean =>{
         return !!(this.getCurrentPage() < this.getTotalPages() - 3 && this.getTotalPages() > 6);
@@ -124,7 +124,7 @@ class Pagination{
             }
         }
 
-        if(this.getCurrentPage() <= 3){
+        if(this.getCurrentPage() <= 6){
             if(pageNumber < 6){
                 return true;
             }
@@ -152,10 +152,11 @@ class Pagination{
 
         this.totalPagesArray = [];
 
-        if(angular.isUndefined(this.getCurrentPage()) || this.getCurrentPage() < 5){
+        if(angular.isUndefined(this.getCurrentPage()) || this.getCurrentPage() < 6){
             var start = 1;
                 var end = (this.getTotalPages() <= 10) ? this.getTotalPages()+1 : 10;
-        }else{
+        }
+        else{
             var start = (!this.showNextJump()) ? this.getTotalPages() - 4 :this.getCurrentPage() - 3;
             var end = (this.showNextJump()) ? this.getCurrentPage() + 5 : this.getTotalPages() + 1;
         }
