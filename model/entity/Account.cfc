@@ -997,16 +997,4 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 
 	
-
-	//CUSTOM FUNCTIONS BEGIN
-
-public any function getMyCustomProperty(){
-		
-		if(!structkeyExists(variables,'mycustomproperty')){
-			return 'anything';
-		}
-		return variables.mycustomproperty;
-	}
-
-//CUSTOM FUNCTIONS END
 }
