@@ -124,14 +124,26 @@ class SWCriteriaNumber{
 			    	return numberOptions;
 			    };
 			    //initialize values
-
+                scope.inListArray = [];
 			    scope.conditionOptions = getNumberOptions(scope.comparisonType);
-
-			    scope.inListArray = [];
-    			if(angular.isDefined(scope.filterItem.RangeStart || scope.filterItem.RangeEnd)){
-    					var inListArray = scope.filterItem.RangeStart +','+scope.filterItem.RangeEnd;
+			    if(scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between'){
+			    	if(angular.isDefined(scope.filterItem.RangeStart || scope.filterItem.RangeEnd)){
+    					 scope.inListArray.push(scope.filterItem.RangeStart);
+    					 scope.inListArray.push(scope.filterItem.RangeEnd);
     			}
+		    		            scope.selectedFilterProperty.criteriaRangeStart = parseInt(scope.inListArray[0]);
+		    					scope.selectedFilterProperty.criteriaRangeEnd = parseInt(scope.inListArray[1]);
+		    				}else{
+		    					scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+		    				}
 
+
+			     
+			    if(angular.isDefined(scope.filterItem.value)){
+    				scope.inListArray = scope.filterItem.value.toString().split(',');
+			    	
+			    }
+    		 
     			scope.newListItem = '';
 
 			    //declare functions
