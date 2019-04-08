@@ -36,7 +36,7 @@ class SWFormFieldRevertHelper implements ng.IDirective {
 
     }
 
-    public link: ng.IDirectiveLinkFn = ($scope: SWScope, element: ng.IAugmentedJQuery, attrs: any, modelCtrl: ng.INgModelController) => {
+    public link: ng.IDirectiveLinkFn = ($scope: SWScope, element: ng.IAugmentedJQuery, attrs: any, modelCtrl: ng.IController | ng.INgModelController) => {
 
         var parentScope = $scope.$parent;
         var parentDirectiveScope = parentScope[$scope.swFormFieldRevertHelper.parentDirectiveControllerAs];
