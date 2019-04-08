@@ -42,12 +42,10 @@ Notes:
 
 <cftry>
 	<cfquery name="local.createSkuPrices">
-		INSERT INTO swskuprice (skuPriceID, price, minQuantity, maxQuantity, skuID, createdDateTime, currencyCode)
+		INSERT INTO swskuprice (skuPriceID, price, skuID, createdDateTime, currencyCode)
 		SELECT 
     		LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', '')),
     		s.price,
-    		1,
-    		1,
     		s.skuID,
     		NOW(),
     		<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.defaultCurrencyCode#" />
