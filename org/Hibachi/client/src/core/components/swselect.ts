@@ -1,6 +1,7 @@
 import * as angular from "angular";
 
 interface ISWSelectScope {
+    [key: string]: string
     collection: string;
     id?: string;
     value: string;
@@ -71,6 +72,7 @@ class SWSelect implements ng.IDirective {
 
     public restrict: string = 'EA';
     public scope = true;
+    // https://stackoverflow.com/questions/42256762/angular-bindtocontroller-not-working-can-bind-object-from-one-controller-scope
     public bindToController: ISWSelectScope = {
         collection: "=",
         id: "@?",

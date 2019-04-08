@@ -1,14 +1,18 @@
 const webpack = require("webpack");
-const CompressionPlugin = require("compression-webpack-plugin");
-const LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
+
 const ForceCaseSensitivityPlugin = require("force-case-sensitivity-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
-const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
-const VisualizerPlugin = require('webpack-visualizer-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const TerserPlugin = require("terser-webpack-plugin"); //minimizer
+const CompressionPlugin = require("compression-webpack-plugin");
+
+const LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
+const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
+const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
+
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+
 
 var path = require("path");
 var PATHS = {
@@ -31,6 +35,7 @@ var appConfig = {
     chunkFilename: "[name].[contenthash].bundle.js",
     sourceMapFilename: "sourcemaps/[file].map",
     publicPath: "/dist/", // we have to do more work on this one
+    pathinfo: false
     // publicPath: "#request.slatwallScope.getBaseURL()#/dist/"
   },
 
@@ -85,9 +90,7 @@ var appConfig = {
       threshold: 10240,
       minRatio: 0.8
     }),
-    new VisualizerPlugin({
-      filename: 'bundle-stats.html'
-    }),
+    // new ForkTsCheckerWebpackPlugin(), //  for typechecking,   were using tsloader to transpile-only to reduce the build time
     // new BundleAnalyzerPlugin()
   ],
   optimization: {

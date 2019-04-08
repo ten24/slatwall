@@ -352,10 +352,7 @@ class SWListingReportController {
     }
 
     private loadChartJsChunk = async () => {
-        return await require.ensure([],
-            (require) => require('chart.js'),
-            (err) => console.log(err),
-            "chartjs");
+        await import(/* webpackChunkName: "chartjs" */ 'chart.js');
     }
 
     public renderReport = async (reportingData, ctx) => {
