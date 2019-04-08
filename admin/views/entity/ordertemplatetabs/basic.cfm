@@ -45,7 +45,8 @@
 
 
 			<div class="col-md-2">
-				<sw-order-template-update-schedule-modal data-schedule-order-next-place-date-time-string="#dateFormat(rc.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyy-mm-dd')#">
+				<sw-order-template-update-schedule-modal data-schedule-order-next-place-date-time-string="#dateFormat(rc.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyy-mm-dd')#"
+														data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"> 
 				</sw-order-template-update-schedule-modal>
 			</div> 
 

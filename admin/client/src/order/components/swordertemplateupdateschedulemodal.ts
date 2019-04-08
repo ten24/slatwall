@@ -64,6 +64,7 @@ class SWOrderTemplateUpdateScheduleModal implements ng.IDirective {
 	public scope = {};
 	public bindToController = {
 		modalButtonText:"@?",
+		orderTemplate:"<?",
 		scheduleOrderNextPlaceDateTimeString:"@?",
 		scheduleOrderNextPlaceDateTime:"=?",
         endDayOfTheMonth:'<?',

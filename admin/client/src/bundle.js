@@ -63266,6 +63266,7 @@ var SWOrderTemplateUpdateScheduleModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             modalButtonText: "@?",
+            orderTemplate: "<?",
             scheduleOrderNextPlaceDateTimeString: "@?",
             scheduleOrderNextPlaceDateTime: "=?",
             endDayOfTheMonth: '<?',
