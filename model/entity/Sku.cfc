@@ -1915,6 +1915,39 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
+	
+	public void function preInsert(){
+		super.preInsert();
+		
+		var skuPrice = getService("SkuPriceService").newSkuPrice();
+		
+		skuPrice.setCurrencyCode(this.getCurrencyCode());
+		skuPrice.setSku(this);
+		skuPrice.setPrice(this.getPrice());
+		skuPrice.setCreatedDateTime(NOW());
+
+		skuPrice = getService("SkuPriceService").saveSkuPrice(skuPrice);
+	}
+
+	public void function preUpdate(Struct oldData){
+		super.preUpdate(argumentCollection=arguments);
+		
+		var sql = "SELECT sp.skuPriceID FROM swskuPrice sp 
+				   LEFT JOIN swsku s ON sp.skuID = s.skuID
+				   WHERE sp.minQuantity IS NULL
+				   AND sp.maxQuantity IS NULL";
+		
+		var query = QueryExecute(sql);
+		var SkuPriceService = getService("SkuPriceService");
+		
+		if(!isNull(query["skuPriceID"][1])){
+			var skuPrice = SkuPriceService.getSkuPrice(query["skuPriceID"][1]);
+			skuPrice.setPrice(this.getPrice());
+			skuPrice.setCurrencyCode(this.getCurrencyCode());
+			
+			skuPrice = skuPriceService.saveSkuPrice(skuPrice);
+		}
+	}
 
 	// ===================  END:  ORM Event Hooks  =========================
 
