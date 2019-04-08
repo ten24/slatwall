@@ -26,8 +26,8 @@ interface IParams {
 
 }
 
-interface IHibachiInterceptorPromise<T> extends ng.IPromise<any> {
-	data: any;
+interface IHibachiInterceptorResponse {
+	data: { token?: string };
 	status: number;
 }
 
@@ -226,7 +226,7 @@ class HibachiInterceptor implements IInterceptor {
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
 				} else if (rejection.data.messages[0].message === 'invalid_token') {
 					return $http.get(this.baseUrl + '?' + this.appConfig.action + '=api:main.login')
-						.then((loginResponse: IHibachiInterceptorPromise<any>) => {
+						.then((loginResponse: IHibachiInterceptorResponse) => {
 							if (loginResponse.status === 200) {
 								this.localStorageService.setItem('token', loginResponse.data.token);
 								rejection.config.headers = rejection.config.headers || {};
@@ -237,8 +237,6 @@ class HibachiInterceptor implements IInterceptor {
 									return response;
 								});
 							}
-						}, function (rejection) {
-							return rejection;
 						});
 				}
 			}

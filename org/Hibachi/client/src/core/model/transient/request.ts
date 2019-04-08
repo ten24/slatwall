@@ -54,24 +54,31 @@ class Request extends BaseTransient {
             //post
             let promise = this.$http({
                 url: url, data: data, headers: this.headers, method: 'post'
+            }).then((result: ng.IHttpResponse<any>) => {
+                this.processSuccess(result.data);
+                deferred.resolve(result.data);
+            }, (error) => {
+                this.processError(error);
+                deferred.reject(error);
+            }
+            ).catch((error) => {
+                this.processError(error);
+                deferred.reject(error);
             })
-                .success((result: any) => {
-                    this.processSuccess(result);
-                    deferred.resolve(result);
-                }).error((response) => {
-                    this.processError(response);
-                    deferred.reject(response);
-                });
             this.promise = deferred.promise;
         } else {
             //get
             this.$http({ url: url, method: 'get' })
-                .success((result: any) => {
-                    this.processSuccess(result);
-                    deferred.resolve(result);
-                }).error((reason) => {
-                    this.processError(reason);
-                    deferred.reject(reason);
+                .then((result: ng.IHttpResponse<any>) => {
+                    this.processSuccess(result.data);
+                    deferred.resolve(result.data);
+                }, (error) => {
+                    this.processError(error);
+                    deferred.reject(error);
+                }
+                ).catch((error) => {
+                    this.processError(error);
+                    deferred.reject(error);
                 });
             this.promise = deferred.promise;
         }
