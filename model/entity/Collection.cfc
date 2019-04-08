@@ -1933,20 +1933,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
-		var cacheKey = 'convertAliasToPropertyIdentifier'&arguments.propertyIdentifierWithAlias;
-
-		var convertedAlias = getCollectionCacheValue(cacheKey);
-		if(isNull(convertedAlias)){
-			if(left(arguments.propertyIdentifierWithAlias,1) == '_'){
-	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
-	 			arguments.propertyIdentifierWithAlias = listRest(right(arguments.propertyIdentifierWithAlias,len(arguments.propertyIdentifierWithAlias)-1),'.');
-	 		}
-	 		convertedAlias = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifierWithAlias);
-	 		setCollectionCacheValue(cacheKey,convertedAlias);
-		}
-
-
- 		return convertedAlias;
+		
+	       return getHibachiService().convertAliasToPropertyIdentifier(propertyIdentifierWithAlias,arguments.collectionConfig.baseEntityName);
  	}
 
 	public string function convertPropertyIdentifierToAlias(required string propertyIdentifier){

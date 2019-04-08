@@ -1532,6 +1532,21 @@ component output="false" accessors="true" extends="HibachiService" {
 		getService('HibachiCacheService').resetCachedKeyByPrefix(cacheKeyPrefix,true);	
 		return arguments.collection;
 	}
+	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierAlias, required string entityName){
+		var cacheKey = 'convertAliasToPropertyIdentifier'&arguments.propertyIdentifierWithAlias;
+    	var convertedAlias = getCollectionCacheValue(cacheKey);
+		if(isNull(convertedAlias)){
+			if(left(arguments.propertyIdentifierWithAlias,1) == '_'){
+	 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
+	 			arguments.propertyIdentifierWithAlias = listRest(right(arguments.propertyIdentifierWithAlias,len(arguments.propertyIdentifierWithAlias)-1),'.');
+	 		}
+	 		convertedAlias = getProperlyCasedPropertyIdentifier(entityName,arguments.propertyIdentifierWithAlias);
+	 		setCollectionCacheValue(cacheKey,convertedAlias);
+		}
+		return convertedAlias;
+	}
+		
+	
 	
 	public any function processCollection_ExportData(required any collection, required any processObject, struct data={}) {
 		//perform export
