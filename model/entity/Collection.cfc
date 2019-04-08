@@ -445,6 +445,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			propertyIdentifierAliasData = {
 				joins=[],
 				hasManyRelationFilter=false,
+				hasManyRelationColumn=false,
 				'_propertyIdentifier'=""
 			};
 
@@ -453,6 +454,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	 		var _propertyIdentifier = '';
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 			var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
+			
+			if(getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier)){
+				propertyIdentifierAliasData.hasManyRelationColumn=true;
+			}
 
 			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
 				if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
@@ -477,6 +482,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1' ),1,1),
 						'alias' = alias & _propertyIdentifier
 					};
+					if(propertyIdentifierAliasData.hasManyRelationColumn){
+						join['toMany']=true;
+					}
 					
 					join[arguments.aliastype]=true;
 					
@@ -1684,13 +1692,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							)||(
 								structKeyExists(join,'aggregate')
 								&& join.aggregate
+							)||(
+								structKeyExists(join,'toMany')
+								&& join.toMany
 							)
+							
 						)
 					)
 				){
 					if(listFind(allAliases, join.alias)){
 		                joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
-		            }					
+		            }
 				}
 			}
 		}
@@ -1772,7 +1784,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
-	
 		return HQL;
 	}
 
@@ -2639,7 +2650,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							getHQL(true);
 						}
 						HQL = getSelectionCountHQL();
-
+writedump(HQL);abort;
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -3471,7 +3482,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
 							|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
 						) continue;
-						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
+						if(
+							getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)
+							&& !getHasAggregate()
+						){
 							variables.groupBys ="";
 							return;
 							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
