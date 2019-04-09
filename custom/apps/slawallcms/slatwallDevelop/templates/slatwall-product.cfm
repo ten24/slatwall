@@ -6,7 +6,7 @@
 
 <cfset local.product = $.slatwall.getProduct() />
 <cfoutput>
-	<div class="container">
+	<div class="container my-5">
 		
 		<!--- If this item was just added show the success message --->
 		<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
@@ -24,13 +24,25 @@
 			</div>
 		</cfif>
 		
+		<!--- Product Type --->
+		<a href="#$.slatwall.setting('globalURLKeyProductType')#/#local.product.getProductType().getUrlTitle()#" class="text-secondary">#local.product.getProductType().getProductTypeName()#</a>
+		
 		<!--- We use the getTitle() method which uses the title template setting to pull in brand name or whatever else you might want in your titles --->
 		<h1>#local.product.getProductName()# / #local.product.getTitle()#</h1>
 
-		<div class="row">
+		<div class="row mb-5 mt-4">
 			
 			<!--- Product Image --->
 			<div class="col-md-4">
+				
+				<!--- Categories --->
+				<cfset local.categories = local.product.getCategories() />
+				
+				<cfloop array="#local.categories#" index="local.category">
+					<a href="#$.slatwall.setting('globalURLKeyCategory')#/#local.category.getUrlTitle()#">
+						<span class="badge badge-light"><i class="fa fa-tag" aria-hidden="true"></i> #local.category.getCategoryName()#</span>
+					</a>
+				</cfloop>
 
 				<!--- Display primary product image if it exists or the product image placeholder  --->
 				<cfif local.product.getImageExistsFlag()>
@@ -45,73 +57,39 @@
 			
 			
 			<!--- Product Body --->
-			<div class="col-md-8">
-				<ul>
-					<!--- Product Code --->
-					<li>Product Code #local.product.getProductCode()#</li>
-
-					<!--- Product Type --->
-					<li>Product Type <a href="#$.slatwall.setting('globalURLKeyProductType')#/#local.product.getProductType().getUrlTitle()#" class="text-secondary">#local.product.getProductType().getProductTypeName()#</a></li>
-					<!--- Brand --->
-					<cfif !isNull(local.product.getBrand())>
-						<li>Brand: <a href="#$.slatwall.setting('globalURLKeyBrand')#/#local.product.getBrand().getUrlTitle()#" class="text-secondary">#local.product.getBrand().getBrandName()#</a></li>
-					</cfif>
+			<div class="col-md-5 offset-md-3">
 				
-					<!--- List Price | This price is really just a place-holder type of price that can display the MSRP.  It is typically used to show the highest price --->
-					<li>List Price: #local.product.getFormattedValue('listPrice')#</li>
-
-					<!--- Current Account Price | This price is used for accounts that have Price Groups associated with their account.  Typically Price Groups are used for Wholesale pricing, or special employee / account pricing --->
-					<li>Current Account Price: #local.product.getFormattedValue('currentAccountPrice')#</li>
-
-					<!--- Sale Price | This value will be pulled from any current active promotions that don't require any promotion qualifiers or promotion codes --->
-					<li>Sale Price: #local.product.getFormattedValue('salePrice')#</li>
-
-					<!--- Live Price | The live price looks at both the salePrice and currentAccountPrice to figure out which is better and display that.  This is what the customer will see in their cart once the item has been added so it should be used as the primary price to display --->
-					<li>Live Price: #local.product.getFormattedValue('livePrice')#</li>
-				</ul>
-
-				<!--- Product Description --->
-				<h3>Product Description</h3>
-				#local.product.getProductDescription()#
-				
-				<!----Categories---->
-				<cfset local.categories = local.product.getCategories() />
-				Categories
-				<cfloop array="#local.categories#" index="local.category">
-					<a href="#$.slatwall.setting('globalURLKeyCategory')#/#local.category.getUrlTitle()#">#local.category.getCategoryName()#</a>
-				</cfloop>
-
-				<!--- Start: PRICE DISPLAY EXAMPLE --->
-				<h5>Price Display Example</h5>
-				
-				<cfif $.slatwall.product('price') gt $.slatwall.product('livePrice')>
-					<p>#local.product.getFormattedValue('price')#</p>
-					<p>#local.product.getFormattedValue('livePrice')#</p>
-				<cfelse>
-					<p>#local.product.getFormattedValue('livePrice')#</p>
+				<!--- Start: Add to Cart Examples --->
+				<cfif #local.product.getAvailableForPurchaseFlag()# AND (local.product.getQATS() GTE 1) >
+		
+					<cfinclude template="./inc/productdetail/addToCartSingleSku.cfm" />
+					<!---
+					<cfinclude template="./inc/productdetail/addToCartSplitOptions.cfm" />
+					<cfinclude template="./inc/productdetail/addToCartSplitOptionsAjaxUpdate.cfm" />
+					--->
+				<cfelseif local.product.getQATS() GTE 1>
+					<p>Available for purchase #dateFormat(local.product.getPurchaseStartDateTime(),"long")#</p>
 				</cfif>
+
+			</div>
+		</div>
+		
+		<!--- Product Description --->
+		<div class="row mb-4">
+			<div class="col-md-8">
+				<h2>Product Description</h2>
+				#local.product.getProductDescription()#
 			</div>
 		</div>
 
-		<!--- Start: Add to Cart Examples --->
-		<cfif #local.product.getAvailableForPurchaseFlag()# AND (local.product.getQATS() GTE 1) >
-
-			<cfinclude template="./inc/productdetail/addToCartSingleSku.cfm" />
-			<cfinclude template="./inc/productdetail/addToCartSplitOptions.cfm" />
-			<cfinclude template="./inc/productdetail/addToCartSplitOptionsAjaxUpdate.cfm" />
-		
-		<cfelseif local.product.getQATS() GTE 1>
-			<p>Available for purchase #dateFormat(local.product.getPurchaseStartDateTime(),"long")#</p>
-		</cfif>
-
-		<!--- Product Reviews --->
-		<cfinclude template="./inc/productdetail/productReview.cfm" />
+		<!--- Product Reviews
+		<cfinclude template="./inc/productdetail/productReview.cfm" />--->
 
 		<!--- Related Products --->
 		<cfinclude template="./inc/productdetail/relatedProducts.cfm" />
 
-		<!--- Product Image Gallery --->
-		<cfinclude template="./inc/productdetail/productImageGallery.cfm" />
+		<!--- Product Image Gallery
+		<cfinclude template="./inc/productdetail/productImageGallery.cfm" />--->
 		
 	</div>
 	
