@@ -1,80 +1,81 @@
+import * as angular from "angular";
 
-class SWEntityActionBarController{
-    public pageTitle; 
-    public pageTitleRbKey; 
-    
-    public init = () =>{
-        if(angular.isDefined(this.pageTitleRbKey)){
+class SWEntityActionBarController {
+    public pageTitle;
+    public pageTitleRbKey;
+
+    public init = () => {
+        if (angular.isDefined(this.pageTitleRbKey)) {
             this.pageTitle = this.rbkeyService.getRBKey(this.pageTitleRbKey);
         }
     }
 
     //@ngInject
-    constructor(private rbkeyService){
+    constructor(private rbkeyService) {
         this.init();
     }
 }
 
-class SWEntityActionBar implements ng.IDirective{
+class SWEntityActionBar implements ng.IDirective {
 
-    public restrict:string = 'E';
+    public restrict: string = 'E';
     public scope = {};
     public transclude = true;
-    public bindToController={
+    public bindToController = {
         /*Core settings*/
-        type:"@",
-        object:"=",
-        pageTitle:"@?",
-        pageTitleRbKey:"@?",
-        edit:"=",
+        type: "@",
+        object: "=",
+        pageTitle: "@?",
+        pageTitleRbKey: "@?",
+        edit: "=",
         /*Action Callers (top buttons)*/
-        showcancel:"=",
-        showcreate:"=",
-        showedit:"=",
-        showdelete:"=",
+        showcancel: "=",
+        showcreate: "=",
+        showedit: "=",
+        showdelete: "=",
 
         /*Basic Action Caller Overrides*/
-        createModal:"=",
-        createAction:"=",
-        createQueryString:"=",
+        createModal: "=",
+        createAction: "=",
+        createQueryString: "=",
 
-        backAction:"=",
-        backQueryString:"=",
+        backAction: "=",
+        backQueryString: "=",
 
-        cancelAction:"=",
-        cancelQueryString:"=",
+        cancelAction: "=",
+        cancelQueryString: "=",
 
-        deleteAction:"=",
-        deleteQueryString:"=",
+        deleteAction: "=",
+        deleteQueryString: "=",
 
         /*Process Specific Values*/
-        processAction:"=",
-        processContext:"="
+        processAction: "=",
+        processContext: "="
 
     };
-    public controller=SWEntityActionBarController
-    public controllerAs="swEntityActionBar";
+    public controller = SWEntityActionBarController
+    public controllerAs = "swEntityActionBar";
     public templateUrl;
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-            corePartialsPath,hibachiPathBuilder
-        ) => new SWEntityActionBar(corePartialsPath,hibachiPathBuilder);
-        directive.$inject = ['corePartialsPath','hibachiPathBuilder'];
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = (
+            corePartialsPath, hibachiPathBuilder
+        ) => new SWEntityActionBar(corePartialsPath, hibachiPathBuilder);
+        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
         return directive;
 
     }
 
     //@ngInject
-    constructor(private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'entityactionbar.html';
+    constructor(private corePartialsPath, hibachiPathBuilder) {
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'entityactionbar.html';
     }
 
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
 
     }
 }
-export{
+export {
     SWEntityActionBar
 }
 

@@ -1,7 +1,7 @@
-class SWFormFieldFileController  {
-	public propertyDisplay:any;
+class SWFormFieldFileController {
+	public propertyDisplay: any;
 	//@ngInject
-	constructor (public formService) {
+	constructor(public formService) {
 		if (this.propertyDisplay.isDirty == undefined) this.propertyDisplay.isDirty = false;
 		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
 		//this.formService.setPristinePropertyValue(this.propertyDisplay.property,this.propertyDisplay.object.data[this.propertyDisplay.property]);
@@ -20,16 +20,16 @@ class SWFormFieldFile implements ng.IDirective {
 	};
 
 	//@ngInject
-	public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attr:ng.IAttributes, formController: ng.IFormController) => {
+	public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attr: ng.IAttributes, formController: ng.IController | ng.IFormController) => {
 
 	}
 
 	public templateUrl;
-	public static Factory(){
+	public static Factory() {
 		var directive = (
 			coreFormPartialsPath,
 			hibachiPathBuilder
-		)=> new SWFormFieldFile(
+		) => new SWFormFieldFile(
 			coreFormPartialsPath,
 			hibachiPathBuilder
 		);
@@ -46,7 +46,7 @@ class SWFormFieldFile implements ng.IDirective {
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "file.html";
 	}
 }
-export{
+export {
 	SWFormFieldFile
 }
 

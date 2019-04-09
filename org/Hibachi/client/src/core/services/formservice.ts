@@ -1,9 +1,10 @@
+import * as angular from "angular";
 
-class Form implements ng.IFormController{
+class Form implements ng.IFormController {
     [name: string]: any;
-    public name:string;
-    public object:any;
-    public editing:boolean;
+    public name: string;
+    public object: any;
+    public editing: boolean;
     public $pristine: boolean;
     public $dirty: boolean;
     public $valid: boolean;
@@ -12,73 +13,73 @@ class Form implements ng.IFormController{
     public $error: any;
     public $pending: any;
 
-    $addControl = (control: ng.INgModelController): void =>{}
-    $removeControl = (control: ng.INgModelController): void =>{}
-    $setValidity = (validationErrorKey: string, isValid: boolean, control: ng.INgModelController): void =>{}
-    $setDirty = (): void =>{}
-    $setPristine = (): void =>{}
-    $commitViewValue = (): void =>{}
-    $rollbackViewValue = (): void =>{}
-    $setSubmitted = (): void =>{}
-    $setUntouched = (): void =>{}
+    $addControl = (control: ng.INgModelController): void => { }
+    $removeControl = (control: ng.INgModelController): void => { }
+    $setValidity = (validationErrorKey: string, isValid: boolean, control: ng.INgModelController): void => { }
+    $setDirty = (): void => { }
+    $setPristine = (): void => { }
+    $commitViewValue = (): void => { }
+    $rollbackViewValue = (): void => { }
+    $setSubmitted = (): void => { }
+    $setUntouched = (): void => { }
     //@ngInject
     constructor(
-        name:string,
-        object:any,
-        editing:boolean
-    ){
+        name: string,
+        object: any,
+        editing: boolean
+    ) {
         this.name = name;
         this.object = object;
         this.editing = editing;
     }
 }
 
-class FormService{
+class FormService {
     public static $inject = ['$log'];
     private _forms;
     private _pristinePropertyValue;
 
     constructor(
-        private $log:ng.ILogService
-    ){
+        private $log: ng.ILogService
+    ) {
         this.$log = $log;
         this._forms = {};
         this._pristinePropertyValue = {};
 
     }
 
-    setPristinePropertyValue = (property:string,value:any):void =>{
+    setPristinePropertyValue = (property: string, value: any): void => {
         this._pristinePropertyValue[property] = value;
     }
 
-    getPristinePropertyValue = (property:string):any =>{
+    getPristinePropertyValue = (property: string): any => {
         return this._pristinePropertyValue[property];
     }
 
-    setForm = (form:Form):void =>{
+    setForm = (form: Form): void => {
         this._forms[form.name] = form;
     }
 
-    getForm = (formName:string):Form =>{
+    getForm = (formName: string): Form => {
         return this._forms[formName];
     }
 
-    getForms = ():any =>{
+    getForms = (): any => {
         return this._forms;
     }
 
-    getFormsByObjectName = (objectName:string):any =>{
+    getFormsByObjectName = (objectName: string): any => {
         var forms = [];
-        for(var f in this._forms){
+        for (var f in this._forms) {
 
-            if(angular.isDefined(this._forms[f].$$swFormInfo.object) && this._forms[f].$$swFormInfo.object.metaData.className === objectName){
+            if (angular.isDefined(this._forms[f].$$swFormInfo.object) && this._forms[f].$$swFormInfo.object.metaData.className === objectName) {
                 forms.push(this._forms[f]);
             }
         }
         return forms;
     }
 
-    createForm = (name:string,object:any,editing:boolean):Form =>{
+    createForm = (name: string, object: any, editing: boolean): Form => {
         var _form = new Form(
             name,
             object,
@@ -88,19 +89,19 @@ class FormService{
         return _form;
     }
 
-    resetForm = (form:Form):void =>{
+    resetForm = (form: Form): void => {
 
         this.$log.debug('resetting form');
         this.$log.debug(form);
 
-        for(var key in form){
-            if(angular.isDefined(form[key])
+        for (var key in form) {
+            if (angular.isDefined(form[key])
                 && typeof form[key].$setViewValue == 'function'
-                && angular.isDefined(form[key].$viewValue)){
+                && angular.isDefined(form[key].$viewValue)) {
                 this.$log.debug(form[key]);
-                if(angular.isDefined(this.getPristinePropertyValue(key))){
+                if (angular.isDefined(this.getPristinePropertyValue(key))) {
                     form[key].$setViewValue(this.getPristinePropertyValue(key));
-                }else{
+                } else {
                     form[key].$setViewValue('');
                 }
                 form[key].$setUntouched(true);
@@ -114,7 +115,7 @@ class FormService{
         form.$setUntouched();
     }
 }
-export{
+export {
     FormService
 }
 

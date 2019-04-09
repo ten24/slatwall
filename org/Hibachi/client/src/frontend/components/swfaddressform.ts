@@ -1,79 +1,80 @@
 
-import {SWFForm,SWFFormController} from '../../form/components/swfform';
+import { SWFForm, SWFFormController } from '../../form/components/swfform';
+import * as angular from "angular";
 
-class SWFAddressFormController extends SWFFormController{
+class SWFAddressFormController extends SWFFormController {
     //@ngInject
     public slatwall;
     public fields;
     public addressOptions;
-    
+
     constructor(public $rootScope,
         public $scope,
         public $timeout,
         public $hibachi,
         public $element,
         public validationService,
-        public hibachiValidationService){
-        super( $rootScope,
-         $scope,
-         $timeout,
-         $hibachi,
-         $element,
-         validationService,
-         hibachiValidationService);
+        public hibachiValidationService) {
+        super($rootScope,
+            $scope,
+            $timeout,
+            $hibachi,
+            $element,
+            validationService,
+            hibachiValidationService);
         this.$rootScope = $rootScope;
         this.slatwall = $rootScope.slatwall;
-        
-        $scope.$watch(angular.bind(this,()=>{
+
+        $scope.$watch(angular.bind(this, () => {
             return this.form['countryCode'].$modelValue
-        }), (val)=>{
+        }), (val) => {
             this.slatwall.getStates(val);
         });
-        
-        $scope.$watch('slatwall.states.addressOptions', ()=>{
-            if(this.slatwall.states && this.slatwall.states.addressOptions){
+
+        $scope.$watch('slatwall.states.addressOptions', () => {
+            if (this.slatwall.states && this.slatwall.states.addressOptions) {
                 this.addressOptions = this.slatwall.states.addressOptions;
             }
         });
-        
+
     }
-    
-    public submitAddressForm = ()=>{
-        this.submitForm().then(result=>{
-            if(result && result.successfulActions.length){
+
+    public submitAddressForm = () => {
+        this.submitForm().then(result => {
+            if (result && result.successfulActions.length) {
                 console.log(this.ngModel);
                 this.slatwall.editingAddress = null;
-                this.$timeout(()=>{
+                this.$timeout(() => {
                     this.ngModel.$setViewValue(null);
                     this.ngModel.$commitViewValue();
                 })
             }
         })
     }
-    
+
 }
- 
-class SWFAddressForm extends SWFForm{
-    public static Factory(){
+
+class SWFAddressForm extends SWFForm {
+    public static Factory() {
         var directive = (
-        )=> new SWFAddressForm(
+        ) => new SWFAddressForm(
         );
         return directive;
     }
-    
+
     //@ngInject
     constructor(
-    ){
+    ) {
         super();
         let swfForm = new SWFForm;
         swfForm.controller = SWFAddressFormController;
-        swfForm.controllerAs="swfAddressForm";
+        swfForm.controllerAs = "swfAddressForm";
         swfForm.bindToController['formID'] = '@id';
         swfForm.bindToController['addressVariable'] = '@';
         return swfForm;
     }
 }
-export{
+export {
     SWFAddressFormController,
     SWFAddressForm
 }

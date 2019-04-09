@@ -1,11 +1,13 @@
-class SWFilterGroups{
-	public static Factory(){
+import * as angular from "angular";
+
+class SWFilterGroups {
+	public static Factory() {
 		var directive = (
 			$log,
 			collectionPartialsPath,
 			hibachiPathBuilder,
 			observerService
-		)=> new SWFilterGroups(
+		) => new SWFilterGroups(
 			$log,
 			collectionPartialsPath,
 			hibachiPathBuilder,
@@ -24,56 +26,56 @@ class SWFilterGroups{
 		collectionPartialsPath,
 		hibachiPathBuilder,
 		observerService
-	){
+	) {
 		return {
 			restrict: 'EA',
-			scope:{
-				collectionConfig:"=?",
+			scope: {
+				collectionConfig: "=?",
 				filterGroupItem: "=?",
-				filterPropertiesList:"=?",
-				saveCollection:"&",
-				filterGroup:"=?",
-				comparisonType:"=?",
-                simple:"=",
-                readOnly:"="
+				filterPropertiesList: "=?",
+				saveCollection: "&",
+				filterGroup: "=?",
+				comparisonType: "=?",
+				simple: "=",
+				readOnly: "="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
-			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
+			templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
+			controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 				//if the filter group comparisontype is not specified, then assume we are doing filters
-				if(!angular.isDefined($scope.comparisonType)){
+				if (!angular.isDefined($scope.comparisonType)) {
 					$scope.comparisonType = 'filter';
 				}
 				$scope.itemInUse = false;
 				$log.debug('collectionConfig');
 				$log.debug($scope.collectionConfig);
-				this.getFilterGroup = function(){
+				this.getFilterGroup = function () {
 					return $scope.filterGroup;
 				};
 
-				this.getFilterGroupItem = function(){
+				this.getFilterGroupItem = function () {
 					return $scope.filterGroupItem;
 				};
 
-				this.setItemInUse = function(booleanValue){
+				this.setItemInUse = function (booleanValue) {
 					$scope.itemInUse = booleanValue;
 				};
 
-				this.getItemInUse = function(){
+				this.getItemInUse = function () {
 					return $scope.itemInUse;
 				};
 
-				this.saveCollection = function(){
+				this.saveCollection = function () {
 					$scope.saveCollection();
 				};
 
-				$scope.deselectItems = function(filterItem){
-					for(var i in filterItem.$$siblingItems){
+				$scope.deselectItems = function (filterItem) {
+					for (var i in filterItem.$$siblingItems) {
 						filterItem.$$siblingItems[i].$$disabled = false;
 					}
 				};
 
-				this.removeFilterItem = function(filterItemIndex){
-					if(angular.isDefined(filterItemIndex)){
+				this.removeFilterItem = function (filterItemIndex) {
+					if (angular.isDefined(filterItemIndex)) {
 
 						$scope.deselectItems($scope.filterGroupItem[filterItemIndex]);
 						$scope.filterGroupItem[filterItemIndex].setItemInUse(false);
@@ -81,9 +83,9 @@ class SWFilterGroups{
 						$log.debug('removeFilterItem');
 						$log.debug(filterItemIndex);
 
-						$scope.filterGroupItem.splice(filterItemIndex,1);
+						$scope.filterGroupItem.splice(filterItemIndex, 1);
 						//make sure first item has no logical operator if it exists
-						if($scope.filterGroupItem.length){
+						if ($scope.filterGroupItem.length) {
 							delete $scope.filterGroupItem[0].logicalOperator;
 						}
 
@@ -94,14 +96,14 @@ class SWFilterGroups{
 					}
 				};
 
-				this.removeFilterGroupItem = function(filterGroupItemIndex){
+				this.removeFilterGroupItem = function (filterGroupItemIndex) {
 					//remove Item
 					$scope.deselectItems($scope.filterGroupItem[filterGroupItemIndex]);
 					$scope.filterGroupItem[filterGroupItemIndex].setItemInUse(false);
 
-					$scope.filterGroupItem.splice(filterGroupItemIndex,1);
+					$scope.filterGroupItem.splice(filterGroupItemIndex, 1);
 					//make sure first item has no logical operator if it exists
-					if($scope.filterGroupItem.length){
+					if ($scope.filterGroupItem.length) {
 						delete $scope.filterGroupItem[0].logicalOperator;
 					}
 					$log.debug('removeFilterGroupItem');
@@ -114,7 +116,7 @@ class SWFilterGroups{
 		};
 	}
 }
-export{
+export {
 	SWFilterGroups
 }
 

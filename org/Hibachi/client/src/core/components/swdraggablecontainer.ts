@@ -1,37 +1,38 @@
+import * as angular from "angular";
 
-class SWDraggableContainerController{
+class SWDraggableContainerController {
 
-    public draggable:boolean;
+    public draggable: boolean;
 
     //@ngInject
-    constructor(public draggableService){
-        if(angular.isUndefined(this.draggable)){
+    constructor(public draggableService) {
+        if (angular.isUndefined(this.draggable)) {
             this.draggable = false;
         }
     }
 
 }
 
-class SWDraggableContainer implements ng.IDirective{
+class SWDraggableContainer implements ng.IDirective {
     public _timeoutPromise;
-    public restrict:string = 'EA';
-    public scope={};
-    public bindToController={
-        draggable:"=?",
-        draggableRecords:"=?",
-        dropEventName:"@?",
-        listingId:"@?"
+    public restrict: string = 'EA';
+    public scope = {};
+    public bindToController = {
+        draggable: "=?",
+        draggableRecords: "=?",
+        dropEventName: "@?",
+        listingId: "@?"
     };
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = (
             $timeout,
             corePartialsPath,
             utilityService,
             listingService,
             observerService,
             draggableService,
-			hibachiPathBuilder
+            hibachiPathBuilder
         ) => new SWDraggableContainer(
             $timeout,
             corePartialsPath,
@@ -39,7 +40,7 @@ class SWDraggableContainer implements ng.IDirective{
             listingService,
             observerService,
             draggableService,
-			hibachiPathBuilder
+            hibachiPathBuilder
         );
         directive.$inject = [
             '$timeout',
@@ -48,13 +49,13 @@ class SWDraggableContainer implements ng.IDirective{
             'listingService',
             'observerService',
             'draggableService',
-			'hibachiPathBuilder'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
 
-    public controller=SWDraggableContainerController;
-    public controllerAs="swDraggableContainer";
+    public controller = SWDraggableContainerController;
+    public controllerAs = "swDraggableContainer";
     //@ngInject
     constructor(
         public $timeout,
@@ -63,12 +64,12 @@ class SWDraggableContainer implements ng.IDirective{
         public listingService,
         public observerService,
         public draggableService,
-		public hibachiPathBuilder
-     ){
+        public hibachiPathBuilder
+    ) {
     }
 
-    public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        scope.$watch('swDraggableContainer.draggable',(newValue,oldValue)=>{
+    public link: ng.IDirectiveLinkFn = (scope: any, element: any, attrs: any) => {
+        scope.$watch('swDraggableContainer.draggable', (newValue, oldValue) => {
 
             angular.element(element).attr("draggable", newValue);
 
@@ -82,31 +83,31 @@ class SWDraggableContainer implements ng.IDirective{
             var listNode = element[0];
             var placeholderNode = placeholderElement[0];
             placeholderElement.remove();
-            if(newValue){
-                element.on('drop', (e)=>{
+            if (newValue) {
+                element.on('drop', (e) => {
                     e = e.originalEvent || e;
                     e.preventDefault();
 
-                    if(!this.draggableService.isDropAllowed(e)) return true;
+                    if (!this.draggableService.isDropAllowed(e)) return true;
 
                     var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
                     var parsedRecord = JSON.parse(record);
 
-                    var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
-                    if(index < parsedRecord.draggableStartKey){
+                    var index = Array.prototype.indexOf.call(listNode.children, placeholderNode);
+                    if (index < parsedRecord.draggableStartKey) {
                         parsedRecord.draggableStartKey++;
                     }
 
                     this.$timeout(
-                        ()=>{
+                        () => {
                             scope.swDraggableContainer.draggableRecords.splice(index, 0, parsedRecord);
                             scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
                         }, 0
                     );
 
-                    if (angular.isDefined(scope.swDraggableContainer.listingId)){
+                    if (angular.isDefined(scope.swDraggableContainer.listingId)) {
                         this.listingService.notifyListingPageRecordsUpdate(scope.swDraggableContainer.listingId);
-                    } else if (angular.isDefined(scope.swDraggableContainer.dropEventName)){
+                    } else if (angular.isDefined(scope.swDraggableContainer.dropEventName)) {
                         this.observerService.notify(scope.swDraggableContainer.dropEventName);
                     }
 
@@ -115,13 +116,13 @@ class SWDraggableContainer implements ng.IDirective{
                     return false;
                 });
 
-                element.on('dragenter', (e)=>{
+                element.on('dragenter', (e) => {
                     e = e.originalEvent || e;
                     if (!this.draggableService.isDropAllowed(e)) return true;
                     e.preventDefault();
                 });
 
-                element.on('dragleave', (e)=>{
+                element.on('dragleave', (e) => {
                     e = e.originalEvent || e;
 
                     if (e.pageX != 0 || e.pageY != 0) {
@@ -131,15 +132,15 @@ class SWDraggableContainer implements ng.IDirective{
                     return false;
                 });
 
-                element.on('dragover', (e)=>{
+                element.on('dragover', (e) => {
                     e = e.originalEvent || e;
                     e.stopPropagation();
 
-                    if(placeholderNode.parentNode != listNode) {
+                    if (placeholderNode.parentNode != listNode) {
                         element.append(placeholderElement);
                     }
 
-                    if(e.target !== listNode) {
+                    if (e.target !== listNode) {
                         var listItemNode = e.target;
                         while (listItemNode.parentNode !== listNode && listItemNode.parentNode) {
                             listItemNode = listItemNode.parentNode;
@@ -161,7 +162,7 @@ class SWDraggableContainer implements ng.IDirective{
         });
     }
 }
-export{
+export {
     SWDraggableContainer
 }
 

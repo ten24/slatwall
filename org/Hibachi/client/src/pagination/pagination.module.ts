@@ -1,23 +1,24 @@
 
 //services
-import {PaginationService} from "./services/paginationservice";
-import {SWPaginationBar} from "./components/swpaginationbar";
-import {coremodule} from '../core/core.module';
+import { PaginationService } from "./services/paginationservice";
+import { SWPaginationBar } from "./components/swpaginationbar";
+import { coremodule } from '../core/core.module';
+import * as angular from "angular";
 
 var paginationmodule = angular.module('hibachi.pagination', [coremodule.name])
-// .config(['$provide','baseURL',($provide,baseURL)=>{
-// 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
-// }])
-.run([()=> {
-}])
-//services
-.service('paginationService', PaginationService)
-.directive('swPaginationBar', SWPaginationBar.Factory())
-//constants
-.constant('partialsPath','pagination/components/')
-;
+	// .config(['$provide','baseURL',($provide,baseURL)=>{
+	// 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
+	// }])
+	.run([() => {
+	}])
+	//services
+	.service('paginationService', PaginationService)
+	.directive('swPaginationBar', SWPaginationBar.Factory())
+	//constants
+	.constant('partialsPath', 'pagination/components/')
+	;
 
-export{
+export {
 	paginationmodule
 }
 

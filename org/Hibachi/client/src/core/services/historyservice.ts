@@ -1,35 +1,36 @@
-import {BaseService} from "./baseservice";
+import { BaseService } from "./baseservice";
+import * as angular from "angular";
 
-class HistoryService { 
+class HistoryService {
 
-    private histories = {}; 
+    private histories = {};
 
     //ngInject
-    constructor(){
+    constructor() {
 
     }
 
-    public recordHistory = (key, data, overwrite=false) =>{
-        if(angular.isUndefined(this.histories[key]) || overwrite){
-            this.histories[key] = []; 
+    public recordHistory = (key, data, overwrite = false) => {
+        if (angular.isUndefined(this.histories[key]) || overwrite) {
+            this.histories[key] = [];
         }
-        this.histories[key].push(data); 
-    }   
-    
-    public hasHistory = (key) =>{
+        this.histories[key].push(data);
+    }
+
+    public hasHistory = (key) => {
         return angular.isDefined(this.histories[key]);
     }
 
-    public getHistory = (key) =>{
-        if(angular.isDefined(this.histories[key])){
+    public getHistory = (key) => {
+        if (angular.isDefined(this.histories[key])) {
             return this.histories[key];
         }
     }
 
-    public deleteHistory = (key) =>{
-        this.histories[key] = []; 
+    public deleteHistory = (key) => {
+        this.histories[key] = [];
     }
-    
+
 
 }
 export {

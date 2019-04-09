@@ -1,3 +1,9 @@
+import * as angular from "angular";
+
+
+interface CustomScope extends ng.IScope {
+    swListingReport?: any;
+}
 class SWListingReportController {
     public selectedCollectionID: string;
     public collectionName: string;
@@ -58,7 +64,7 @@ class SWListingReportController {
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
     }
 
-    public $onInit =  () => {}
+    public $onInit = () => { }
 
     public updateReportFromListing = (params) => {
         if (params.collectionConfig) {
@@ -344,12 +350,9 @@ class SWListingReportController {
 
         }
     }
-    
+
     private loadChartJsChunk = async () => {
-     return await require.ensure([], 
-        (require) => require('chart.js'),
-        (err) => console.log(err),
-        "chartjs");
+        await import(/* webpackChunkName: "chartjs" */ 'chart.js');
     }
 
     public renderReport = async (reportingData, ctx) => {
@@ -397,7 +400,7 @@ class SWListingReportController {
             await this.loadChartJsChunk();
             console.log(" chartjs chunk loaded ");
         }
-        
+
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -442,7 +445,7 @@ class SWListingReportController {
         });
 
         this.chart.render();
-        
+
         this.observerService.notifyById('swListingReport_DrawChart', this.tableId, this.chart);
     }
 
@@ -568,7 +571,9 @@ class SWListingReport implements ng.IDirective {
         return directive;
     }
 
-    public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
+
+
+    public link: ng.IDirectiveLinkFn = (scope: CustomScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
         scope.swListingReport.openCalendarStart = function ($event) {
             $event.preventDefault();
             $event.stopPropagation();

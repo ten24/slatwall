@@ -1,3 +1,4 @@
+import * as angular from "angular";
 
 class SWListingDisplayController{
     /* local state variables */

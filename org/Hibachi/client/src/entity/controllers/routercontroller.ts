@@ -1,13 +1,15 @@
-class RouterController{
+import * as angular from "angular";
+
+class RouterController {
 	//@ngInject
 	constructor(
 		$scope,
 		$routeParams,
 		$location,
 		$log,
-        utilityService
-	){
-		$scope.$id="routerController";
+		utilityService
+	) {
+		$scope.$id = "routerController";
 		$scope.partialRoute = '';
 
 		$log.debug($routeParams);
@@ -16,16 +18,16 @@ class RouterController{
 		$scope.controllerType = path.split('/')[1];
 		var type;
 
-		if($scope.controllerType === 'entity'){
-            //remove all dashes
+		if ($scope.controllerType === 'entity') {
+			//remove all dashes
 			$scope.entityName = utilityService.snakeToCapitalCase($routeParams.entityName);
-			if(angular.isDefined($routeParams.entityID)){
+			if (angular.isDefined($routeParams.entityID)) {
 				$scope.entityID = $routeParams.entityID || '';
 			}
 
 		}
 	}
 }
-export{
+export {
 	RouterController
 }

@@ -1,5 +1,7 @@
-class SWFilterGroupItem{
-	public static Factory(){
+import * as angular from "angular";
+
+class SWFilterGroupItem {
+	public static Factory() {
 		var directive = (
 			$http,
 			$compile,
@@ -8,7 +10,7 @@ class SWFilterGroupItem{
 			collectionService,
 			collectionPartialsPath,
 			hibachiPathBuilder
-		)=> new SWFilterGroupItem(
+		) => new SWFilterGroupItem(
 			$http,
 			$compile,
 			$templateCache,
@@ -36,25 +38,25 @@ class SWFilterGroupItem{
 		collectionService,
 		collectionPartialsPath,
 		hibachiPathBuilder
-	){
+	) {
 		return {
 			restrict: 'A',
-			require:"^swFilterGroups",
-			scope:{
-				collectionConfig:"=",
+			require: "^swFilterGroups",
+			scope: {
+				collectionConfig: "=",
 				filterGroupItem: "=",
-				siblingItems:"=",
-				filterPropertiesList:"=",
-				filterGroupItemIndex:"=",
-				saveCollection:"&",
-				comparisonType:"="
+				siblingItems: "=",
+				filterPropertiesList: "=",
+				filterGroupItemIndex: "=",
+				saveCollection: "&",
+				comparisonType: "="
 			},
-			link: function(scope, element,attrs,filterGroupsController){
-				var Partial = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroupitem.html";
-				var templateLoader = $http.get(Partial,{cache:$templateCache});
-				var promise = templateLoader.success(function(html){
+			link: function (scope, element, attrs, filterGroupsController) {
+				var Partial = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filtergroupitem.html";
+				var templateLoader = $http.get(Partial, { cache: $templateCache });
+				var promise = templateLoader.success(function (html) {
 					element.html(html);
-				}).then(function(response){
+				}).then(function (response) {
 					element.replaceWith($compile(element.html())(scope));
 				});
 
@@ -62,23 +64,23 @@ class SWFilterGroupItem{
 				scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
 				scope.filterGroupItem.$$index = scope.filterGroupItemIndex;
 
-				scope.removeFilterGroupItem = function(){
+				scope.removeFilterGroupItem = function () {
 					filterGroupsController.removeFilterGroupItem(scope.filterGroupItemIndex);
 				};
 
 				scope.filterGroupItem.removeFilterGroupItem = scope.removeFilterGroupItem;
 
 				scope.filterGroupItem.$$disabled = false;
-				if(angular.isUndefined(scope.filterGroupItem.$$isClosed)){
+				if (angular.isUndefined(scope.filterGroupItem.$$isClosed)) {
 					scope.filterGroupItem.$$isClosed = true;
 				}
 
 				scope.filterGroupItem.$$siblingItems = scope.siblingItems;
-				scope.selectFilterGroupItem = function(filterGroupItem){
+				scope.selectFilterGroupItem = function (filterGroupItem) {
 					collectionService.selectFilterGroupItem(filterGroupItem);
 				};
 
-				scope.logicalOperatorChanged = function(logicalOperatorValue){
+				scope.logicalOperatorChanged = function (logicalOperatorValue) {
 					$log.debug('logicalOperatorChanged');
 					$log.debug(logicalOperatorValue);
 					scope.filterGroupItem.logicalOperator = logicalOperatorValue;
@@ -88,6 +90,6 @@ class SWFilterGroupItem{
 		};
 	}
 }
-export{
+export {
 	SWFilterGroupItem
 }

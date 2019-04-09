@@ -1,61 +1,62 @@
+import * as angular from "angular";
 
-class SWDraggableController{
+class SWDraggableController {
 
-    public draggable:boolean;
+    public draggable: boolean;
 
     //@ngInject
-    constructor(){
-        if(angular.isUndefined(this.draggable)){
+    constructor() {
+        if (angular.isUndefined(this.draggable)) {
             this.draggable = false;
         }
     }
 
 }
 
-class SWDraggable implements ng.IDirective{
-    public restrict:string = 'EA';
-    public scope={};
-    public bindToController={
+class SWDraggable implements ng.IDirective {
+    public restrict: string = 'EA';
+    public scope = {};
+    public bindToController = {
         //all fields required
-        draggable:"=",
-        draggableRecord:"=",
-        draggableKey:"="
+        draggable: "=",
+        draggableRecord: "=",
+        draggableKey: "="
     };
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = (
             corePartialsPath,
             utilityService,
             draggableService,
-			hibachiPathBuilder
+            hibachiPathBuilder
         ) => new SWDraggable(
             corePartialsPath,
             utilityService,
             draggableService,
-			hibachiPathBuilder
+            hibachiPathBuilder
         );
         directive.$inject = [
             'corePartialsPath',
             'utilityService',
             'draggableService',
-			'hibachiPathBuilder'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
 
-    public controller=SWDraggableController;
-    public controllerAs="swDraggable";
+    public controller = SWDraggableController;
+    public controllerAs = "swDraggable";
     //@ngInject
     constructor(
         public corePartialsPath,
         public utilityService,
         public draggableService,
-		public hibachiPathBuilder
-     ){
+        public hibachiPathBuilder
+    ) {
     }
 
-    public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        scope.$watch('swDraggable.draggable',(newValue,oldValue)=>{
+    public link: ng.IDirectiveLinkFn = (scope: any, element: any, attrs: any) => {
+        scope.$watch('swDraggable.draggable', (newValue, oldValue) => {
 
             angular.element(element).attr("draggable", newValue);
 
@@ -63,11 +64,11 @@ class SWDraggable implements ng.IDirective{
             if (!id) {
                 id = this.utilityService.createID(32);
             }
-            if(newValue){
-                element.bind("dragstart", function(e) {
+            if (newValue) {
+                element.bind("dragstart", function (e) {
                     e = e.originalEvent || e;
                     e.stopPropagation();
-                    if(!scope.swDraggable.draggable) return false;
+                    if (!scope.swDraggable.draggable) return false;
                     element.addClass("s-dragging");
                     scope.swDraggable.draggableRecord.draggableStartKey = scope.swDraggable.draggableKey;
                     e.dataTransfer.setData("application/json", angular.toJson(scope.swDraggable.draggableRecord));
@@ -75,12 +76,12 @@ class SWDraggable implements ng.IDirective{
                     e.dataTransfer.setDragImage(element[0], 0, 0);
                 });
 
-                element.bind("dragend", function(e) {
+                element.bind("dragend", function (e) {
                     e = e.originalEvent || e;
                     e.stopPropagation();
                     element.removeClass("s-dragging");
                 });
-            }else{
+            } else {
                 element.unbind("dragstart");
                 element.unbind("dragged");
             }
@@ -92,7 +93,7 @@ class SWDraggable implements ng.IDirective{
 
     }
 }
-export{
+export {
     SWDraggable
 }
 

@@ -1,10 +1,10 @@
 
 class SWFormFieldJsonController {
-    public propertyDisplay:any;
-	//@ngInject
-    constructor (formService) {
-		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	}
+    public propertyDisplay: any;
+    //@ngInject
+    constructor(formService) {
+        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+    }
 }
 
 class SWFormFieldJson implements ng.IDirective {
@@ -19,12 +19,12 @@ class SWFormFieldJson implements ng.IDirective {
     public templateUrl = "";
     public formController: ng.IFormController;
 
-    public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) => {}
-    public static Factory(){
+    public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IController | ng.IFormController) => { }
+    public static Factory() {
         var directive = (
             coreFormPartialsPath,
-        hibachiPathBuilder
-        )=> new SWFormFieldJson(
+            hibachiPathBuilder
+        ) => new SWFormFieldJson(
             coreFormPartialsPath,
             hibachiPathBuilder
         );
@@ -44,6 +44,6 @@ class SWFormFieldJson implements ng.IDirective {
 
 }
 
-export{
+export {
     SWFormFieldJson
 }

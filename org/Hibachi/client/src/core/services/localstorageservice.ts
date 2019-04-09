@@ -1,53 +1,54 @@
+import * as angular from "angular";
 
-class LocalStorageService{
+class LocalStorageService {
 
 
     //@ngInject
     constructor(
-       public $window:ng.IWindowService
-    ){
+        public $window: ng.IWindowService
+    ) {
         this.$window = $window;
     }
-    
-    removeItem = (key:string)=>{
-        try{
+
+    removeItem = (key: string) => {
+        try {
             this.$window.localStorage.removeItem(key);
         }
-        catch(e){
+        catch (e) {
             console.error(e);
         }
     }
 
-    hasItem = (key:string)=>{
+    hasItem = (key: string) => {
         //try catch to handle safari in private mode which does not allow localstorage
-        try{
+        try {
             return (
                 this.$window.localStorage.getItem(key)
                 && this.$window.localStorage.getItem(key) !== null
                 && this.$window.localStorage.getItem(key) !== "undefined"
             );
-        }catch(e){
-            return false;    
+        } catch (e) {
+            return false;
         }
     }
 
-    getItem = (key:string)=>{
+    getItem = (key: string) => {
         let value = this.$window.localStorage.getItem(key);
-        if(value.charAt(0)==='{' || value.charAt(0)==='['){
+        if (value.charAt(0) === '{' || value.charAt(0) === '[') {
             value = angular.fromJson(value);
         }
         return value;
     }
 
-    setItem = (key:string, data:any)=>{
+    setItem = (key: string, data: any) => {
         //try catch to handle safari in private mode which does not allow localstorage
-        try{
-            if(angular.isObject(data) || angular.isArray(data)){
+        try {
+            if (angular.isObject(data) || angular.isArray(data)) {
                 data = angular.toJson(data);
             }
-            this.$window.localStorage.setItem(key,data);
-        }catch(e){
-            
+            this.$window.localStorage.setItem(key, data);
+        } catch (e) {
+
         }
     }
 

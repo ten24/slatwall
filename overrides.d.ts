@@ -9,25 +9,15 @@
  * 
  */
 
+import 'angular';
+
 declare global {
-    const angular: ng.IAngularStatic;
     const Chart: typeof Chart;
 
-
-    interface Function {
-        $inject?: ReadonlyArray<string>;
-    }
-
-
-    namespace angular {
-        interface Function {
-        }
-
-        interface IAngularStatic {
-            mock: IMockStatic;
+    declare module angular {
+        export interface IAngularStatic {
+            lazy(app: any, modules?: any): any;
         }
     }
+
 }
-
-
-export { };

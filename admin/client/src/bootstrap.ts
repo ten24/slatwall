@@ -10,4 +10,5 @@ class bootstrapper extends BaseBootStrapper {
     angular.bootstrap();
   }
 }
-export = new bootstrapper();
+
+export default new bootstrapper();
