@@ -3,6 +3,7 @@
 class SWModalLauncherController {
 
     public showModal:boolean; 
+    public launchEventName:string;
     public modalName:string; 
     public title:string; 
     public hasSaveAction:boolean=false;
@@ -18,7 +19,7 @@ class SWModalLauncherController {
     public deleteAction; 
     
     // @ngInject
-    constructor(){
+    constructor(public observerService){
         this.hasSaveAction = typeof this.saveAction === 'function';
         this.hasCancelAction = typeof this.cancelAction === 'function';
         this.hasDeleteAction = typeof this.deleteAction === 'function';
@@ -32,11 +33,18 @@ class SWModalLauncherController {
         if(angular.isUndefined(this.cancelActionText)){
             this.cancelActionText = "Cancel"; 
         }
+        
+        if(angular.isDefined(this.launchEventName)){
+            this.observerService.attach(this.launchModal, this.launchEventName);
+        }
     }
     
     public launchModal = () =>{
-        //activate the necessary modal
+        //this.showModal is only for use with custom template
         this.showModal = true; 
+        
+        //trigger bootstrap event to show modal
+        $("#" + this.modalName).modal('show');
     }
     
     public saveCallback = () =>{
@@ -90,6 +98,7 @@ class SWModalLauncher implements ng.IDirective{
     public scope = {};
     public bindToController = {
         showModal:"=?",
+        launchEventName:"@?",
         modalName:"@", 
         title:"@",
         saveAction:"&?",
