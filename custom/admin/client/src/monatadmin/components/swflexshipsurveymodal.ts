@@ -1,9 +1,14 @@
 class SWFlexshipSurveyModalController{
 
+	public title="Flexship Survey"
+
 	constructor(){
 
 	}
 
+	public save = () =>{
+		
+	}
 }
 
 class SWFlexshipSurveyModal {
@@ -43,7 +48,7 @@ class SWFlexshipSurveyModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = slatwallPathBuilder.buildPartialsPath(monatBasePath) + "/flexshipsurveymodal.html";
+		this.templateUrl = monatBasePath + "/monatadmin/components/flexshipsurveymodal.html";
 		this.restrict = "EA";
 	}
 

@@ -17,5 +17,10 @@ devConfig.context = PATHS.app;
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
 ];   
-devConfig.resolve.modules=[path.resolve(path.join(customPath, '../../../admin/client'), 'src/'),path.resolve(path.join(customPath, '../../client'), 'src/'),path.resolve(__dirname, 'src/'),'node_modules'];
+devConfig.resolve.modules= [
+    path.resolve(path.join(customPath, '../../../admin/client'), 'src/'),
+    path.resolve(path.join(customPath, '../../client'), 'src/'),
+    path.resolve(__dirname, 'src/'),
+    'node_modules'
+];
 module.exports = devConfig;

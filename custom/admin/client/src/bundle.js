@@ -69565,6 +69565,9 @@ exports.termmodule = termmodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFlexshipSurveyModalController = /** @class */ (function () {
     function SWFlexshipSurveyModalController() {
+        this.title = "Flexship Survey";
+        this.save = function () {
+        };
     }
     return SWFlexshipSurveyModalController;
 }());
@@ -69580,7 +69583,7 @@ var SWFlexshipSurveyModal = /** @class */ (function () {
         this.controllerAs = "swFlexshipSurveyModal";
         this.link = function (scope, element, attrs) {
         };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(monatBasePath) + "/flexshipsurveymodal.html";
+        this.templateUrl = monatBasePath + "/monatadmin/components/flexshipsurveymodal.html";
         this.restrict = "EA";
     }
     SWFlexshipSurveyModal.Factory = function () {
@@ -77813,7 +77816,9 @@ var SWModalLauncherController = /** @class */ (function () {
         this.hasDeleteAction = false;
         this.launchModal = function () {
             //activate the necessary modal
+            console.log('launching modal!!!');
             _this.showModal = true;
+            $("#" + _this.modalName).modal('show');
         };
         this.saveCallback = function () {
             //the passed save action must return a promise

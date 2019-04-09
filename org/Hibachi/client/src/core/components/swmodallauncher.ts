@@ -41,7 +41,9 @@ class SWModalLauncherController {
     
     public launchModal = () =>{
         //activate the necessary modal
+        console.log('launching modal!!!')
         this.showModal = true; 
+        $("#" + this.modalName).modal('show');
     }
     
     public saveCallback = () =>{
