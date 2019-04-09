@@ -311,10 +311,23 @@ class SWEditFilterItem{
                                     filterItem.attributeID = selectedFilterProperty.attributeID;
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
                                 }
-
+                                //scope.inListArray = [];
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-
-                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+                                
+                                if(scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between'){
+                                    
+    			    	            if(angular.isDefined(scope.filterItem.RangeStart || scope.filterItem.RangeEnd)){
+    			    	                  //scope.inListArray.push(scope.filterItem.RangeStart);
+    					                 //scope.inListArray.push(scope.filterItem.RangeEnd);
+    			    	                 //  scope.selectedFilterProperty.criteriaRangeStart = parseInt(scope.inListArray[0]);
+		    				     	    //   scope.selectedFilterProperty.criteriaRangeEnd = parseInt(scope.inListArray[1]);
+    			    	                filterItem.value = scope.filterItem.RangeStart+'-'+scope.filterItem.RangeEnd;
+        					           }
+    		    					 
+    		    				  }else{
+            		    					scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+            		    		 }
+                             //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value.toString();
                                 //if has a pattern then we need to evaluate where to add % for like statement
