@@ -1,5 +1,4 @@
-/// <reference path='../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
+
 
 //module
 import {coremodule} from "../core/core.module";

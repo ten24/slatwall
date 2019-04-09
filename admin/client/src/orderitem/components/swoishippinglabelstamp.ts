@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * Displays a shipping label in the order items row.
  * @module slatwalladmin

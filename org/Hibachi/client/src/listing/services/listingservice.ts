@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import { Subject } from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';

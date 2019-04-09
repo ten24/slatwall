@@ -1,5 +1,3 @@
-/// <reference path='../typings/hibachiTypescript.d.ts' />
-/// <reference path='../typings/tsd.d.ts' />
 import "angular";
 
 import "angular-resource";
@@ -32,6 +30,7 @@ export class BaseBootStrapper{
     
 
     constructor(myApplication){
+        console.log("Angular boostraped vjghd");
         this.myApplication = myApplication;
         return angular.lazy(this.myApplication).resolve(['$http','$q', ($http,$q)=> {
             this.$http = $http;

@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * SWValidationEqProperty: Validates true if the user value == another field's value.
  * @usage <input type='text' swvalidationgte='nameOfAnotherInput' /> will validate false if the user enters

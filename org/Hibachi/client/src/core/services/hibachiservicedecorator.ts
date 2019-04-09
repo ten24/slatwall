@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import {HibachiValidationService} from "../services/hibachivalidationservice";
 import {HibachiService} from "../services/hibachiservice";

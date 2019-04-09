@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import * as actions from '../actions/fulfillmentbatchactions';
 

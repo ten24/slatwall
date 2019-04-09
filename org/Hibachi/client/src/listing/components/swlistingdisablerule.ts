@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 /* SwListingDisableRule
  * defines a filter, by which to determine what rows will be disabled

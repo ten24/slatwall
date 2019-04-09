@@ -1,5 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../typings/hibachiTypescript.d.ts" />
+
 //services
 import {PaginationService} from "./services/paginationservice";
 import {SWPaginationBar} from "./components/swpaginationbar";

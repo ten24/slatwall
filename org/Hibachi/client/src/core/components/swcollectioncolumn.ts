@@ -1,4 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 
 
 class SWCollectionColumnController{

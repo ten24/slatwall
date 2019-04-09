@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 import {SWPropertyDisplay,SWPropertyDisplayController} from "./swpropertydisplay";
 
 class SWFPropertyDisplayController extends SWPropertyDisplayController {

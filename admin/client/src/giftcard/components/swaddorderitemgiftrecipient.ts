@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 import {GiftRecipient} from "../models/giftrecipient";
 
 class SWAddOrderItemRecipientController {

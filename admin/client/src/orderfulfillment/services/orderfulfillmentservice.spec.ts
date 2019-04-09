@@ -1,5 +1,3 @@
-/// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
 
 import {coremodule} from "../../../../../org/Hibachi/client/src/core/core.module";
 import {HibachiService} from "../../../../../org/Hibachi/client/src/core/services/hibachiservice";

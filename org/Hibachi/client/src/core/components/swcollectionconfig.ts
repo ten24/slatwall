@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-
 class SWCollectionConfigController{
     public filters = []; 
     public columns = []; 

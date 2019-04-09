@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../typings/slatwallTypescript.d.ts" />
 import {hibachimodule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.module";
 import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
 import {entitymodule} from "../../../../org/Hibachi/client/src/entity/entity.module";

@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../typings/slatwallTypescript.d.ts" />
 import {coremodule} from '../../../../org/Hibachi/client/src/core/core.module';
 //directives
 import {SWChildOrderItem} from "./components/swchildorderitem";

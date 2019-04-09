@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * Validates true if the model value (user value) is a numeric value.
  * @event This event fires on every change to an input.

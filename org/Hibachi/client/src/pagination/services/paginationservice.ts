@@ -1,5 +1,4 @@
-/// <reference path="../../../typings/tsd.d.ts" />
-/// <reference path="../../../typings/hibachiTypescript.d.ts" />
+
 /*collection service is used to maintain the state of the ui*/
 
 

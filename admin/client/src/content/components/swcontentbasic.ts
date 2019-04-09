@@ -1,6 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-
 class SWContentBasic{
     public static Factory(){
         var directive = (
