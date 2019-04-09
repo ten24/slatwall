@@ -71,6 +71,20 @@ component  extends="HibachiService" accessors="true" {
 	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
 		var slatwallTemplatesChildren = [
 			{
+				title='Account Template Page',
+				urlTitle="account-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAccount"),
+				settingName='account',
+				contentTemplateFile='slatwall-account-page.cfm'
+			},
+			{
+				title='Category Template Page',
+				urlTitle="category-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttCategory"),
+				settingName='category',
+				contentTemplateFile='slatwall-category.cfm'
+			},
+			{
 				title='Barrier Template Page',
 				urlTitle="barrier-template-page",
 				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
