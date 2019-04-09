@@ -63161,10 +63161,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderTemplateUpcomingOrdersCardController = /** @class */ (function () {
-    function SWOrderTemplateUpcomingOrdersCardController($hibachi, observerService, rbkeyService) {
+    function SWOrderTemplateUpcomingOrdersCardController($timeout, $hibachi, observerService, rbkeyService) {
+        var _this = this;
+        this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.updateSchedule = function (data) {
+            if (data == null)
+                return;
+            if (data.frequencyTerm != null) {
+                _this.frequencyTerm = null;
+                _this.$timeout(function () {
+                    _this.frequencyTerm = data.frequencyTerm;
+                });
+            }
+            if (data.scheduleOrderNextPlaceDateTime != null) {
+                _this.startDate = null;
+                _this.$timeout(function () {
+                    _this.setStartDate(Date.parse(data.scheduleOrderNextPlaceDateTime));
+                });
+            }
+        };
+        this.observerService.attach(this.updateSchedule, 'OrderTemplateUpdateScheduleSuccess');
+        this.observerService.attach(this.updateSchedule, 'OrderTemplateUpdateFrequencySuccess');
         if (this.title == null) {
             this.title = this.rbkeyService.rbKey('entity.orderTemplate.scheduledOrderDates');
         }
@@ -63172,9 +63192,15 @@ var SWOrderTemplateUpcomingOrdersCardController = /** @class */ (function () {
             this.scheduledOrderDates != null &&
             this.scheduledOrderDates.length) {
             var firstDate = this.scheduledOrderDates.split(',')[0];
-            this.startDate = Date.parse(firstDate);
+            this.setStartDate(Date.parse(firstDate));
         }
     }
+    SWOrderTemplateUpcomingOrdersCardController.prototype.setStartDate = function (date) {
+        this.startDate = date;
+        this.startDateFormatted = (this.startDate.getMonth() + 1) + '/' +
+            this.startDate.getDate() + '/' +
+            this.startDate.getFullYear();
+    };
     return SWOrderTemplateUpcomingOrdersCardController;
 }());
 var SWOrderTemplateUpcomingOrdersCard = /** @class */ (function () {
@@ -63248,7 +63274,8 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
                 entityID: _this.orderTemplate.orderTemplateID,
                 entityName: 'OrderTemplate',
                 context: _this.processContext,
-                scheduleOrderNextPlaceDateTime: _this.scheduleOrderNextPlaceDateTime
+                scheduleOrderNextPlaceDateTime: _this.scheduleOrderNextPlaceDateTime,
+                propertyIdentifiersList: 'orderTemplateID,scheduleOrderNextPlaceDateTime'
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
@@ -69417,7 +69444,6 @@ var SWTermScheduleTableController = /** @class */ (function () {
     function SWTermScheduleTableController(termService) {
         this.termService = termService;
         this.scheduledDates = [];
-        console.log('termScheduleTable', this);
         this.scheduledDates = termService.getTermScheduledDates(this.term, this.startDate);
     }
     return SWTermScheduleTableController;
