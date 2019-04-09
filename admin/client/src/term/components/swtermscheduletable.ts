@@ -7,7 +7,6 @@ class SWTermScheduleTableController{
     public startDate:Date; 
 
 	constructor(public termService){
-	    console.log('termScheduleTable', this)
 	    this.scheduledDates = termService.getTermScheduledDates(this.term, this.startDate);
 	}
 

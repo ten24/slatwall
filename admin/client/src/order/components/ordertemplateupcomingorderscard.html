@@ -1,9 +1,10 @@
 <label class="control-label" sw-rbkey="'entity.orderTemplate.scheduledOrderDates'"></label>
 <p class="form-control-static">
     
-    <span ng-bind="swOrderTemplateUpcomingOrdersCard.scheduledOrderDates"></span>
+    <span ng-bind="swOrderTemplateUpcomingOrdersCard.startDateFormatted"></span>
 
-    <sw-modal-launcher data-modal-name="viewUpcomingScheduledOrders" 
+    <sw-modal-launcher ng-if="swOrderTemplateUpcomingOrdersCard.startDate != null && swOrderTemplateUpcomingOrdersCard.frequencyTerm != null"
+                       data-modal-name="viewUpcomingScheduledOrders" 
                        data-title="{{swOrderTemplateUpcomingOrdersCard.title}}"> 
     
         <sw-modal-button>
@@ -12,7 +13,8 @@
         
         <sw-modal-content> 
         
-            <sw-term-schedule-table data-start-date="swOrderTemplateUpcomingOrdersCard.startDate"
+            <sw-term-schedule-table 
+                                    data-start-date="swOrderTemplateUpcomingOrdersCard.startDate"
                                     data-term="swOrderTemplateUpcomingOrdersCard.frequencyTerm">
             </sw-term-schedule-table>
             

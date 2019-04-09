@@ -46,7 +46,8 @@ class SWOrderTemplateUpdateScheduleModalController{
 			entityID: this.orderTemplate.orderTemplateID,
 			entityName: 'OrderTemplate',
 			context: this.processContext,
-			scheduleOrderNextPlaceDateTime: this.scheduleOrderNextPlaceDateTime
+			scheduleOrderNextPlaceDateTime: this.scheduleOrderNextPlaceDateTime,
+			propertyIdentifiersList: 'orderTemplateID,scheduleOrderNextPlaceDateTime'
 		};
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
