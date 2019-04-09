@@ -6,12 +6,17 @@ class SWOrderTemplateUpcomingOrdersCardController{
 
     public scheduledOrderDates:string;
     public startDate:Date; 
+    public startDateFormatted:string;
     public title:string; 
 
-	constructor(public $hibachi,
+	constructor(public $timeout,
+				public $hibachi,
 				public observerService,
 				public rbkeyService
 	){
+		this.observerService.attach(this.updateSchedule, 'OrderTemplateUpdateScheduleSuccess');
+		this.observerService.attach(this.updateSchedule, 'OrderTemplateUpdateFrequencySuccess');
+		
 		if(this.title == null){
 			this.title = this.rbkeyService.rbKey('entity.orderTemplate.scheduledOrderDates');
 		}
@@ -21,8 +26,37 @@ class SWOrderTemplateUpcomingOrdersCardController{
         	this.scheduledOrderDates.length
         ){
         	var firstDate = this.scheduledOrderDates.split(',')[0];
-        	this.startDate = Date.parse(firstDate);
+        	this.setStartDate(Date.parse(firstDate));
+        	
         }
+	}
+	
+	public setStartDate(date){
+		this.startDate = date;
+		this.startDateFormatted = (this.startDate.getMonth() + 1) + '/' +  
+								  this.startDate.getDate() + '/' +  
+								  this.startDate.getFullYear();
+	}
+	
+	public updateSchedule = (data) =>{
+		
+		if( data == null ) return;
+		
+		if( data.frequencyTerm != null){
+			this.frequencyTerm = null;
+			
+			this.$timeout(()=>{
+				this.frequencyTerm = data.frequencyTerm;
+			});
+		}
+		
+		if( data.scheduleOrderNextPlaceDateTime != null ){
+			this.startDate = null;
+		
+			this.$timeout(()=>{
+				this.setStartDate(Date.parse(data.scheduleOrderNextPlaceDateTime));
+			});
+		}
 	}
 
 }

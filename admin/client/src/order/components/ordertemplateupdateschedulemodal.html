@@ -1,0 +1,31 @@
+<sw-modal-launcher data-modal-name="{{swOrderTemplateUpdateScheduleModal.uniqueName}}" 
+                   data-title="{{swOrderTemplateUpdateScheduleModal.title}}" 
+                   data-save-action="swOrderTemplateUpdateScheduleModal.save">
+    
+    <sw-modal-button>
+        <button type="button" class="btn btn-default">
+            Push Out Next Delivery
+        </button>
+    </sw-modal-button>
+    
+    <sw-modal-content> 
+        <div class="col-md-12">
+            <div class="form-group ">
+				<label for="scheduleOrderNextPlaceDateTime" class="control-label col-sm-4">
+					<span class="s-title">Next Place Date</span>
+				</label>
+				<div class="col-sm-8">
+    				<input type="text" 
+    				       id="scheduleOrderNextPlaceDateTime"
+    				       name="scheduleOrderNextPlaceDateTime" 
+    				       sw-date-picker
+    				       data-end-day-of-the-month="swOrderTemplateUpdateScheduleModal.endDayOfTheMonth"
+    				       data-end-date="swOrderTemplateUpdateScheduleModal.endDate"
+    				       ng-model="swOrderTemplateUpdateScheduleModal.scheduleOrderNextPlaceDateTime"
+    				       class="form-control" 
+    				       autocomplete="off">
+				</div>
+			</div>
+        </div>
+    </sw-modal-content>
+</sw-modal-launcher>

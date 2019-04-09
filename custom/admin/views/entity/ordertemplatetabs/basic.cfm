@@ -1,5 +1,5 @@
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.orderTemplate" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -46,7 +46,9 @@
 
 			<div class="col-md-2">
 				<sw-order-template-update-schedule-modal data-schedule-order-next-place-date-time-string="#dateFormat(rc.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyy-mm-dd')#"
-														data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"> 
+														data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+														data-end-day-of-the-month="25" 
+														data-end-date-string="#dateFormat( dateAdd('d', now(), 90), 'yyyy-mm-dd')#">
 				</sw-order-template-update-schedule-modal>
 			</div> 
 
