@@ -140,6 +140,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="totalSumAggregates" persistent="false" type="array";
 
 	property name="exportFileName" type="string" persistent="false";
+	property name="runningGetRecordsCount" type="boolean" persistent="false" default="false";
 	
 	
 	
@@ -1959,6 +1960,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else{
 			return orderByHQL;
 		}
+		
 	}
 
 	public any function getNonPersistentColumn(){
@@ -2628,7 +2630,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getRecordsCount(boolean refresh=false) {
-		
+		setRunningGetRecordsCount(true);
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
@@ -2650,7 +2652,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							getHQL(true);
 						}
 						HQL = getSelectionCountHQL();
-writedump(HQL);abort;
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -2678,7 +2679,7 @@ writedump(HQL);abort;
 				}
 			}
 		}
-
+		setRunningGetRecordsCount(false);
 		return variables.recordsCount;
 	}
 
@@ -3484,7 +3485,10 @@ writedump(HQL);abort;
 						) continue;
 						if(
 							getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)
-							&& !getHasAggregate()
+							&& (
+								!getHasAggregate()
+								|| getRunningGetRecordsCount()
+							)
 						){
 							variables.groupBys ="";
 							return;
@@ -3664,7 +3668,6 @@ writedump(HQL);abort;
 
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 			joinsHQL &= getJoinHQL(arguments.recordsCountJoins);
-			
 			HQL = SelectHQL & FromHQL & joinsHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
 		
 
