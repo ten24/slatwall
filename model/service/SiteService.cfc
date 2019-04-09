@@ -71,6 +71,13 @@ component  extends="HibachiService" accessors="true" {
 	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
 		var slatwallTemplatesChildren = [
 			{
+				title='Address Template Page',
+				urlTitle="address-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAddress"),
+				settingName='address',
+				contentTemplateFile='slatwall-address-page.cfm'
+			},
+			{
 				title='Account Template Page',
 				urlTitle="account-template-page",
 				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAccount"),
