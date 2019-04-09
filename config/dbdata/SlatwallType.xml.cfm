@@ -78,6 +78,10 @@
 		<Record typeID="2c948084697d51bd01697d9a592d0009" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9a592d0009" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Draft" systemCode="otstDraft" />
 		<Record typeID="2c948084697d51bd01697d9be217000a" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9be217000a" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Active" systemCode="otstActive" />
 		<Record typeID="2c948084697d51bd01697d9d9492000b" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9d9492000b" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Inactive" systemCode="otstInactive" />
+		
+		<Record typeID="2c9280846a023949016a028c33ff000b" typeIDPath="2c9280846a023949016a028c33ff000b" parentTypeID="NULL" typeName="Order Template Schedule Date Change Reason Type" systemCode="orderTemplateScheduleDateChangeReasonType" childRequiresSystemCodeFlag="1" />
+
+		<Record typeID="2c9280846a023949016a029455f0000c" typeIDPath="2c9280846a023949016a028c33ff000b,2c9280846a023949016a029455f0000c" parentTypeID="2c9280846a023949016a028c33ff000b" typeName="Other" systemCode="otsdcrtOther" />
 
 		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661" parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e9a6622ad1614ea75cd5b982ce" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2e9a6622ad1614ea75cd5b982ce" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Sale" systemCode="oitSale" sortOrder="1" />
