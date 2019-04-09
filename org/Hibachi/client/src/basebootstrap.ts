@@ -1,3 +1,6 @@
+/// <reference path="../../../../overrides.d.ts"/>
+
+
 
 import * as angular from "angular";
 import * as md5 from "md5";

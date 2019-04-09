@@ -8,24 +8,16 @@
  * https://stackoverflow.com/a/42035067
  * 
  */
+
+import 'angular';
+
 declare global {
-    // const angular: ng.IAngularStatic;
     const Chart: typeof Chart;
 
-
     declare module angular {
-        ///////////////////////////////////////////////////////////////////////////
-        // AngularStatic
-        // We reopen it to add the LazyBootstrap definition
-        ///////////////////////////////////////////////////////////////////////////
-        interface IAngularStatic implements IAngularStatic {
+        export interface IAngularStatic {
             lazy(app: any, modules?: any): any;
         }
-
-
     }
 
 }
-
-
-export { };
