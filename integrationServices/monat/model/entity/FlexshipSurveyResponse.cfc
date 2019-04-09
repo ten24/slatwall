@@ -16,4 +16,12 @@ component displayname="FlexshipSurveyResponse" entityname="SlatwallFlexshipSurve
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+
+
+	public any function getOrderTemplateScheduleDateChangeReasonType(){
+		var typeCollection = getService('TypeService').getTypeCollectionList(); 
+		typeCollection.setDisplayProperties('typeDescription|name, typeID|value'); 
+		typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
+		return typeCollection.getRecords(); 
+	} 
 }

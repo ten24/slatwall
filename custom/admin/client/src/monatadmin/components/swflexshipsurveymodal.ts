@@ -1,6 +1,7 @@
 class SWFlexshipSurveyModalController{
 
-	public title="Flexship Survey"
+	public title:string="Flexship Survey";
+	public surveyOptions;
 
 	constructor(){
 
@@ -17,7 +18,7 @@ class SWFlexshipSurveyModal {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-
+		'surveyOptions':'<?'
 	};
 	public controller=SWFlexshipSurveyModalController;
 	public controllerAs="swFlexshipSurveyModal";

@@ -69578,7 +69578,9 @@ var SWFlexshipSurveyModal = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
         this.scope = {};
-        this.bindToController = {};
+        this.bindToController = {
+            'surveyOptions': '<?'
+        };
         this.controller = SWFlexshipSurveyModalController;
         this.controllerAs = "swFlexshipSurveyModal";
         this.link = function (scope, element, attrs) {
