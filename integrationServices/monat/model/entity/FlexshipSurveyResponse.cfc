@@ -4,7 +4,9 @@ component displayname="FlexshipSurveyResponse" entityname="SlatwallSurveyRespons
 	
 	property name="otherScheduleDateChangeReasonNotes" ormtype="string";
 
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID"; 
 	property name="orderTemplateScheduleDateChangeReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateScheduleDateChangeReasonTypeID"; 
+	property name="orderTemplate" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID"; 
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
