@@ -268,32 +268,8 @@
                         data-angular-links="false"
                         data-has-action-bar="false"
                         data-base-entity-name="SkuPrice"
+                        data-record-edit-event="EDIT_SKUPRICE"
                         data-collection-config="swPricingManager.skuPriceCollectionConfig">
-                    
-                    <!--<sw-listing-columns>
-                        <sw-listing-column 
-                                data-property-identifier="sku.skuCode" 
-                                tdclass="primary">
-                        </sw-listing-column>
-                        <sw-listing-column 
-                                data-property-identifier="sku.calculatedSkuDefinition">
-                        </sw-listing-column>
-                        <sw-listing-column 
-                                data-property-identifier="minQuantity">
-                        </sw-listing-column>
-                        <sw-listing-column 
-                                data-property-identifier="maxQuantity">
-                        </sw-listing-column>
-                        <sw-listing-column 
-                                data-property-identifier="price">
-                        </sw-listing-column>
-                        <sw-listing-column 
-                                data-property-identifier="priceGroup">
-                        </sw-listing-column>
-                        <sw-listing-column 
-                                data-property-identifier="priceGroupCode">
-                        </sw-listing-column>
-                    </sw-listing-columns>-->
                     
                     <!--<sw-listing-save-action>
                         <sw-listing-row-save>
@@ -315,7 +291,10 @@
                             </a>
                         </sw-edit-sku-price-modal-launcher>
                     </sw-listing-delete-action>--> 
+                    
+                    
                 </sw-listing-display>
+                <sw-edit-sku-price-modal-launcher></sw-edit-sku-price-modal-launcher>
            </sw-tab-content>
        </sw-tab-group>
     </div>

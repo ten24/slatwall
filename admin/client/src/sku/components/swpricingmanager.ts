@@ -31,10 +31,12 @@ class SWPricingManagerController{
         );
         
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
-        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode,currencyCode");
+        this.skuPriceCollectionConfig.addColumn("_skuprice.skuPriceID", "", {isVisible:false});
+        this.skuPriceCollectionConfig.addColumn("_skuprice_sku.skuID", "", {isVisible:false});
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
         
-        let editableColumns = "minQuantity,maxQuantity,price";
+        // let editableColumns = "minQuantity,maxQuantity,price";
         
         // for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
         //     let indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""))

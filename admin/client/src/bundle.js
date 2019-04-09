@@ -64,11 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-<<<<<<< HEAD
-/******/ 	return __webpack_require__(__webpack_require__.s = 902);
-=======
-/******/ 	return __webpack_require__(__webpack_require__.s = 903);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/******/ 	return __webpack_require__(__webpack_require__.s = 904);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -4989,11 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-<<<<<<< HEAD
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(901)(module)))
-=======
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(902)(module)))
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(903)(module)))
 
 /***/ }),
 /* 2 */
@@ -5455,171 +5447,90 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-var hibachiinterceptor_1 = __webpack_require__(804);
+var hibachiinterceptor_1 = __webpack_require__(806);
 //constant
-var hibachipathbuilder_1 = __webpack_require__(805);
+var hibachipathbuilder_1 = __webpack_require__(807);
 //services
-var cacheservice_1 = __webpack_require__(797);
-var publicservice_1 = __webpack_require__(816);
-var accountservice_1 = __webpack_require__(796);
-var accountaddressservice_1 = __webpack_require__(795);
-var cartservice_1 = __webpack_require__(798);
-var draggableservice_1 = __webpack_require__(799);
-var utilityservice_1 = __webpack_require__(823);
-var selectionservice_1 = __webpack_require__(820);
-var observerservice_1 = __webpack_require__(813);
-var orderservice_1 = __webpack_require__(815);
-var orderpaymentservice_1 = __webpack_require__(814);
-var formservice_1 = __webpack_require__(803);
-var filterservice_1 = __webpack_require__(802);
-var expandableservice_1 = __webpack_require__(801);
-var metadataservice_1 = __webpack_require__(812);
-var rbkeyservice_1 = __webpack_require__(817);
-var typeaheadservice_1 = __webpack_require__(822);
-var hibachiservice_1 = __webpack_require__(807);
-var historyservice_1 = __webpack_require__(810);
-var localstorageservice_1 = __webpack_require__(811);
-var hibachiservicedecorator_1 = __webpack_require__(808);
-var hibachiscope_1 = __webpack_require__(806);
-var requestservice_1 = __webpack_require__(818);
-var scopeservice_1 = __webpack_require__(819);
-var skuservice_1 = __webpack_require__(821);
-var hibachivalidationservice_1 = __webpack_require__(809);
-var entityservice_1 = __webpack_require__(800);
+var cacheservice_1 = __webpack_require__(799);
+var publicservice_1 = __webpack_require__(818);
+var accountservice_1 = __webpack_require__(798);
+var accountaddressservice_1 = __webpack_require__(797);
+var cartservice_1 = __webpack_require__(800);
+var draggableservice_1 = __webpack_require__(801);
+var utilityservice_1 = __webpack_require__(825);
+var selectionservice_1 = __webpack_require__(822);
+var observerservice_1 = __webpack_require__(815);
+var orderservice_1 = __webpack_require__(817);
+var orderpaymentservice_1 = __webpack_require__(816);
+var formservice_1 = __webpack_require__(805);
+var filterservice_1 = __webpack_require__(804);
+var expandableservice_1 = __webpack_require__(803);
+var metadataservice_1 = __webpack_require__(814);
+var rbkeyservice_1 = __webpack_require__(819);
+var typeaheadservice_1 = __webpack_require__(824);
+var hibachiservice_1 = __webpack_require__(809);
+var historyservice_1 = __webpack_require__(812);
+var localstorageservice_1 = __webpack_require__(813);
+var hibachiservicedecorator_1 = __webpack_require__(810);
+var hibachiscope_1 = __webpack_require__(808);
+var requestservice_1 = __webpack_require__(820);
+var scopeservice_1 = __webpack_require__(821);
+var skuservice_1 = __webpack_require__(823);
+var hibachivalidationservice_1 = __webpack_require__(811);
+var entityservice_1 = __webpack_require__(802);
 //controllers
-var globalsearch_1 = __webpack_require__(774);
+var globalsearch_1 = __webpack_require__(776);
 //filters
-var percentage_1 = __webpack_require__(778);
-var entityrbkey_1 = __webpack_require__(777);
-var swcurrency_1 = __webpack_require__(779);
-var swtrim_1 = __webpack_require__(780);
-var swunique_1 = __webpack_require__(781);
-var datefilter_1 = __webpack_require__(775);
-var datereporting_1 = __webpack_require__(776);
+var percentage_1 = __webpack_require__(780);
+var entityrbkey_1 = __webpack_require__(779);
+var swcurrency_1 = __webpack_require__(781);
+var swtrim_1 = __webpack_require__(782);
+var swunique_1 = __webpack_require__(783);
+var datefilter_1 = __webpack_require__(777);
+var datereporting_1 = __webpack_require__(778);
 //directives
 //  components
-var swactioncaller_1 = __webpack_require__(734);
-var swtypeaheadsearch_1 = __webpack_require__(772);
-var swtypeaheadinputfield_1 = __webpack_require__(769);
-var swtypeaheadmultiselect_1 = __webpack_require__(770);
-var swtypeaheadsearchlineitem_1 = __webpack_require__(773);
-var swtypeaheadremoveselection_1 = __webpack_require__(771);
-=======
-var hibachiinterceptor_1 = __webpack_require__(805);
-//constant
-var hibachipathbuilder_1 = __webpack_require__(806);
-//services
-var cacheservice_1 = __webpack_require__(798);
-var publicservice_1 = __webpack_require__(817);
-var accountservice_1 = __webpack_require__(797);
-var accountaddressservice_1 = __webpack_require__(796);
-var cartservice_1 = __webpack_require__(799);
-var draggableservice_1 = __webpack_require__(800);
-var utilityservice_1 = __webpack_require__(824);
-var selectionservice_1 = __webpack_require__(821);
-var observerservice_1 = __webpack_require__(814);
-var orderservice_1 = __webpack_require__(816);
-var orderpaymentservice_1 = __webpack_require__(815);
-var formservice_1 = __webpack_require__(804);
-var filterservice_1 = __webpack_require__(803);
-var expandableservice_1 = __webpack_require__(802);
-var metadataservice_1 = __webpack_require__(813);
-var rbkeyservice_1 = __webpack_require__(818);
-var typeaheadservice_1 = __webpack_require__(823);
-var hibachiservice_1 = __webpack_require__(808);
-var historyservice_1 = __webpack_require__(811);
-var localstorageservice_1 = __webpack_require__(812);
-var hibachiservicedecorator_1 = __webpack_require__(809);
-var hibachiscope_1 = __webpack_require__(807);
-var requestservice_1 = __webpack_require__(819);
-var scopeservice_1 = __webpack_require__(820);
-var skuservice_1 = __webpack_require__(822);
-var hibachivalidationservice_1 = __webpack_require__(810);
-var entityservice_1 = __webpack_require__(801);
-//controllers
-var globalsearch_1 = __webpack_require__(775);
-//filters
-var percentage_1 = __webpack_require__(779);
-var entityrbkey_1 = __webpack_require__(778);
-var swcurrency_1 = __webpack_require__(780);
-var swtrim_1 = __webpack_require__(781);
-var swunique_1 = __webpack_require__(782);
-var datefilter_1 = __webpack_require__(776);
-var datereporting_1 = __webpack_require__(777);
-//directives
-//  components
-var swactioncaller_1 = __webpack_require__(734);
-var swtypeaheadsearch_1 = __webpack_require__(773);
-var swtypeaheadinputfield_1 = __webpack_require__(770);
-var swtypeaheadmultiselect_1 = __webpack_require__(771);
-var swtypeaheadsearchlineitem_1 = __webpack_require__(774);
-var swtypeaheadremoveselection_1 = __webpack_require__(772);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
-var swcollectionconfig_1 = __webpack_require__(738);
-var swcollectionfilter_1 = __webpack_require__(739);
-var swcollectionorderby_1 = __webpack_require__(740);
-var swcollectioncolumn_1 = __webpack_require__(737);
-var swcurrencyformatter_1 = __webpack_require__(743);
-var swactioncallerdropdown_1 = __webpack_require__(735);
-var swcolumnsorter_1 = __webpack_require__(741);
-var swconfirm_1 = __webpack_require__(742);
-<<<<<<< HEAD
-var swdraggable_1 = __webpack_require__(745);
-var swdraggablecontainer_1 = __webpack_require__(746);
-var swentityactionbar_1 = __webpack_require__(747);
-var swentityactionbarbuttongroup_1 = __webpack_require__(748);
-var swexpandablerecord_1 = __webpack_require__(749);
-var swexpiringsessionnotifier_1 = __webpack_require__(750);
-var swgravatar_1 = __webpack_require__(752);
-var swlogin_1 = __webpack_require__(755);
-var swmodallauncher_1 = __webpack_require__(756);
-var swmodalwindow_1 = __webpack_require__(757);
-var swnumbersonly_1 = __webpack_require__(758);
-var swloading_1 = __webpack_require__(754);
-var swscrolltrigger_1 = __webpack_require__(763);
-var swtabgroup_1 = __webpack_require__(767);
-var swtabcontent_1 = __webpack_require__(766);
-var swtooltip_1 = __webpack_require__(768);
-var swrbkey_1 = __webpack_require__(762);
-var swoptions_1 = __webpack_require__(759);
-var swselection_1 = __webpack_require__(764);
-var swclickoutside_1 = __webpack_require__(736);
-var swdirective_1 = __webpack_require__(744);
-var swexportaction_1 = __webpack_require__(751);
-var swhref_1 = __webpack_require__(753);
-var swprocesscaller_1 = __webpack_require__(761);
-var swsortable_1 = __webpack_require__(765);
-var sworderbycontrols_1 = __webpack_require__(760);
-=======
-var swdatepicker_1 = __webpack_require__(744);
-var swdraggable_1 = __webpack_require__(746);
-var swdraggablecontainer_1 = __webpack_require__(747);
-var swentityactionbar_1 = __webpack_require__(748);
-var swentityactionbarbuttongroup_1 = __webpack_require__(749);
-var swexpandablerecord_1 = __webpack_require__(750);
-var swexpiringsessionnotifier_1 = __webpack_require__(751);
-var swgravatar_1 = __webpack_require__(753);
-var swlogin_1 = __webpack_require__(756);
-var swmodallauncher_1 = __webpack_require__(757);
-var swmodalwindow_1 = __webpack_require__(758);
-var swnumbersonly_1 = __webpack_require__(759);
-var swloading_1 = __webpack_require__(755);
-var swscrolltrigger_1 = __webpack_require__(764);
-var swtabgroup_1 = __webpack_require__(768);
-var swtabcontent_1 = __webpack_require__(767);
-var swtooltip_1 = __webpack_require__(769);
-var swrbkey_1 = __webpack_require__(763);
-var swoptions_1 = __webpack_require__(760);
-var swselection_1 = __webpack_require__(765);
-var swclickoutside_1 = __webpack_require__(736);
-var swdirective_1 = __webpack_require__(745);
-var swexportaction_1 = __webpack_require__(752);
-var swhref_1 = __webpack_require__(754);
-var swprocesscaller_1 = __webpack_require__(762);
-var swsortable_1 = __webpack_require__(766);
-var sworderbycontrols_1 = __webpack_require__(761);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var swactioncaller_1 = __webpack_require__(735);
+var swtypeaheadsearch_1 = __webpack_require__(774);
+var swtypeaheadinputfield_1 = __webpack_require__(771);
+var swtypeaheadmultiselect_1 = __webpack_require__(772);
+var swtypeaheadsearchlineitem_1 = __webpack_require__(775);
+var swtypeaheadremoveselection_1 = __webpack_require__(773);
+var swcollectionconfig_1 = __webpack_require__(739);
+var swcollectionfilter_1 = __webpack_require__(740);
+var swcollectionorderby_1 = __webpack_require__(741);
+var swcollectioncolumn_1 = __webpack_require__(738);
+var swcurrencyformatter_1 = __webpack_require__(744);
+var swactioncallerdropdown_1 = __webpack_require__(736);
+var swcolumnsorter_1 = __webpack_require__(742);
+var swconfirm_1 = __webpack_require__(743);
+var swdatepicker_1 = __webpack_require__(745);
+var swdraggable_1 = __webpack_require__(747);
+var swdraggablecontainer_1 = __webpack_require__(748);
+var swentityactionbar_1 = __webpack_require__(749);
+var swentityactionbarbuttongroup_1 = __webpack_require__(750);
+var swexpandablerecord_1 = __webpack_require__(751);
+var swexpiringsessionnotifier_1 = __webpack_require__(752);
+var swgravatar_1 = __webpack_require__(754);
+var swlogin_1 = __webpack_require__(757);
+var swmodallauncher_1 = __webpack_require__(758);
+var swmodalwindow_1 = __webpack_require__(759);
+var swnumbersonly_1 = __webpack_require__(760);
+var swloading_1 = __webpack_require__(756);
+var swscrolltrigger_1 = __webpack_require__(765);
+var swtabgroup_1 = __webpack_require__(769);
+var swtabcontent_1 = __webpack_require__(768);
+var swtooltip_1 = __webpack_require__(770);
+var swrbkey_1 = __webpack_require__(764);
+var swoptions_1 = __webpack_require__(761);
+var swselection_1 = __webpack_require__(766);
+var swclickoutside_1 = __webpack_require__(737);
+var swdirective_1 = __webpack_require__(746);
+var swexportaction_1 = __webpack_require__(753);
+var swhref_1 = __webpack_require__(755);
+var swprocesscaller_1 = __webpack_require__(763);
+var swsortable_1 = __webpack_require__(767);
+var sworderbycontrols_1 = __webpack_require__(762);
 var alert_module_1 = __webpack_require__(297);
 var dialog_module_1 = __webpack_require__(301);
 var coremodule = angular.module('hibachi.core', [
@@ -6287,13 +6198,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var baseobject_1 = __webpack_require__(299);
-<<<<<<< HEAD
-var Entities = __webpack_require__(786);
-var Processes = __webpack_require__(792);
-=======
-var Entities = __webpack_require__(787);
-var Processes = __webpack_require__(793);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var Entities = __webpack_require__(788);
+var Processes = __webpack_require__(794);
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -33018,9 +32924,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
-var alertcontroller_1 = __webpack_require__(693);
+var alertcontroller_1 = __webpack_require__(694);
 //services
-var alertservice_1 = __webpack_require__(695);
+var alertservice_1 = __webpack_require__(696);
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -33041,38 +32947,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var collectionconfigservice_1 = __webpack_require__(732);
-var collectionservice_1 = __webpack_require__(733);
+var collectionconfigservice_1 = __webpack_require__(733);
+var collectionservice_1 = __webpack_require__(734);
 //controllers
-var collections_1 = __webpack_require__(727);
-var createcollection_1 = __webpack_require__(729);
-var confirmationcontroller_1 = __webpack_require__(728);
-var entity_createcollection_1 = __webpack_require__(730);
+var collections_1 = __webpack_require__(728);
+var createcollection_1 = __webpack_require__(730);
+var confirmationcontroller_1 = __webpack_require__(729);
+var entity_createcollection_1 = __webpack_require__(731);
 //directives
-var swcollection_1 = __webpack_require__(706);
-var swaddfilterbuttons_1 = __webpack_require__(705);
-var swdisplayoptions_1 = __webpack_require__(721);
-var swdisplayitem_1 = __webpack_require__(719);
-var swdisplayitemaggregate_1 = __webpack_require__(720);
-var swcollectiontable_1 = __webpack_require__(707);
-var swcolumnitem_1 = __webpack_require__(708);
-var swconditioncriteria_1 = __webpack_require__(709);
-var swcriteria_1 = __webpack_require__(710);
-var swcriteriaboolean_1 = __webpack_require__(711);
-var swcriteriadate_1 = __webpack_require__(712);
-var swcriteriamanytomany_1 = __webpack_require__(713);
-var swcriteriamanytoone_1 = __webpack_require__(714);
-var swcriterianumber_1 = __webpack_require__(715);
-var swcriteriaonetomany_1 = __webpack_require__(716);
-var swcriteriarelatedobject_1 = __webpack_require__(717);
-var swcriteriastring_1 = __webpack_require__(718);
-var sweditfilteritem_1 = __webpack_require__(722);
-var swfiltergroups_1 = __webpack_require__(724);
-var swfilteritem_1 = __webpack_require__(725);
-var swfiltergroupitem_1 = __webpack_require__(723);
-var swrestrictionconfig_1 = __webpack_require__(726);
+var swcollection_1 = __webpack_require__(707);
+var swaddfilterbuttons_1 = __webpack_require__(706);
+var swdisplayoptions_1 = __webpack_require__(722);
+var swdisplayitem_1 = __webpack_require__(720);
+var swdisplayitemaggregate_1 = __webpack_require__(721);
+var swcollectiontable_1 = __webpack_require__(708);
+var swcolumnitem_1 = __webpack_require__(709);
+var swconditioncriteria_1 = __webpack_require__(710);
+var swcriteria_1 = __webpack_require__(711);
+var swcriteriaboolean_1 = __webpack_require__(712);
+var swcriteriadate_1 = __webpack_require__(713);
+var swcriteriamanytomany_1 = __webpack_require__(714);
+var swcriteriamanytoone_1 = __webpack_require__(715);
+var swcriterianumber_1 = __webpack_require__(716);
+var swcriteriaonetomany_1 = __webpack_require__(717);
+var swcriteriarelatedobject_1 = __webpack_require__(718);
+var swcriteriastring_1 = __webpack_require__(719);
+var sweditfilteritem_1 = __webpack_require__(723);
+var swfiltergroups_1 = __webpack_require__(725);
+var swfilteritem_1 = __webpack_require__(726);
+var swfiltergroupitem_1 = __webpack_require__(724);
+var swrestrictionconfig_1 = __webpack_require__(727);
 //filters
-var aggregatefilter_1 = __webpack_require__(731);
+var aggregatefilter_1 = __webpack_require__(732);
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -33307,15 +33213,9 @@ exports.Request = Request;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
-<<<<<<< HEAD
-var dialogservice_1 = __webpack_require__(825);
+var dialogservice_1 = __webpack_require__(827);
 //controllers
-var pagedialog_1 = __webpack_require__(824);
-=======
-var dialogservice_1 = __webpack_require__(826);
-//controllers
-var pagedialog_1 = __webpack_require__(825);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var pagedialog_1 = __webpack_require__(826);
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -33346,21 +33246,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
-<<<<<<< HEAD
-var otherwisecontroller_1 = __webpack_require__(829);
-var routercontroller_1 = __webpack_require__(830);
+var otherwisecontroller_1 = __webpack_require__(831);
+var routercontroller_1 = __webpack_require__(832);
 //directives
-var swdetailtabs_1 = __webpack_require__(827);
-var swdetail_1 = __webpack_require__(826);
-var swlist_1 = __webpack_require__(828);
-=======
-var otherwisecontroller_1 = __webpack_require__(830);
-var routercontroller_1 = __webpack_require__(831);
-//directives
-var swdetailtabs_1 = __webpack_require__(828);
-var swdetail_1 = __webpack_require__(827);
-var swlist_1 = __webpack_require__(829);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var swdetailtabs_1 = __webpack_require__(829);
+var swdetail_1 = __webpack_require__(828);
+var swlist_1 = __webpack_require__(830);
 var core_module_1 = __webpack_require__(6);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -33741,39 +33632,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-<<<<<<< HEAD
-var workflowconditionservice_1 = __webpack_require__(900);
-var scheduleservice_1 = __webpack_require__(899);
+var workflowconditionservice_1 = __webpack_require__(902);
+var scheduleservice_1 = __webpack_require__(901);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(887);
-var swworkflowbasic_1 = __webpack_require__(889);
-var swworkflowcondition_1 = __webpack_require__(890);
-var swworkflowconditiongroupitem_1 = __webpack_require__(891);
-var swworkflowconditiongroups_1 = __webpack_require__(892);
-var swworkflowtask_1 = __webpack_require__(893);
-var swworkflowtaskactions_1 = __webpack_require__(894);
-var swworkflowtasks_1 = __webpack_require__(895);
-var swworkflowtrigger_1 = __webpack_require__(896);
-var swworkflowtriggers_1 = __webpack_require__(898);
-var swworkflowtriggerhistory_1 = __webpack_require__(897);
-var swschedulepreview_1 = __webpack_require__(888);
-=======
-var workflowconditionservice_1 = __webpack_require__(901);
-var scheduleservice_1 = __webpack_require__(900);
-//directives
-var swadmincreatesuperuser_1 = __webpack_require__(888);
-var swworkflowbasic_1 = __webpack_require__(890);
-var swworkflowcondition_1 = __webpack_require__(891);
-var swworkflowconditiongroupitem_1 = __webpack_require__(892);
-var swworkflowconditiongroups_1 = __webpack_require__(893);
-var swworkflowtask_1 = __webpack_require__(894);
-var swworkflowtaskactions_1 = __webpack_require__(895);
-var swworkflowtasks_1 = __webpack_require__(896);
-var swworkflowtrigger_1 = __webpack_require__(897);
-var swworkflowtriggers_1 = __webpack_require__(899);
-var swworkflowtriggerhistory_1 = __webpack_require__(898);
-var swschedulepreview_1 = __webpack_require__(889);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var swadmincreatesuperuser_1 = __webpack_require__(889);
+var swworkflowbasic_1 = __webpack_require__(891);
+var swworkflowcondition_1 = __webpack_require__(892);
+var swworkflowconditiongroupitem_1 = __webpack_require__(893);
+var swworkflowconditiongroups_1 = __webpack_require__(894);
+var swworkflowtask_1 = __webpack_require__(895);
+var swworkflowtaskactions_1 = __webpack_require__(896);
+var swworkflowtasks_1 = __webpack_require__(897);
+var swworkflowtrigger_1 = __webpack_require__(898);
+var swworkflowtriggers_1 = __webpack_require__(900);
+var swworkflowtriggerhistory_1 = __webpack_require__(899);
+var swschedulepreview_1 = __webpack_require__(890);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -33820,8 +33693,8 @@ var __extends = (this && this.__extends) || (function () {
 /// <reference path='../typings/slatwallTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
-var basebootstrap_1 = __webpack_require__(696);
-var slatwalladmin_module_1 = __webpack_require__(687);
+var basebootstrap_1 = __webpack_require__(697);
+var slatwalladmin_module_1 = __webpack_require__(688);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -48634,13 +48507,13 @@ module.exports = "<sw-modal-launcher ng-if=\"!swAddSkuPriceModalLauncher.pageRec
 /* 309 */
 /***/ (function(module, exports) {
 
-module.exports = "<sw-modal-launcher ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                   data-modal-name=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Edit Sku Price Detail\" \n                   data-save-action=\"swEditSkuPriceModalLauncher.save\">\n    <sw-modal-button>\n        <ng-transclude></ng-transclude>\n    </sw-modal-button>\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                     data-property-identifier=\"price\"\n                                                     data-editing=\"true\"\n                                                     data-editable=\"true\"\n                                                     data-is-dirty=\"true\" \n                                                     >\n                                </sw-property-display>\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swEditSkuPriceModalLauncher.skuPrice.data.currencyCode\"\n                                            ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                               <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                    data-property-identifier=\"minQuantity\"\n                                                    data-editing=\"true\"\n                                                    data-editable=\"!swEditSkuPriceModalLauncher.disableAllFieldsButPrice\"\n                                                    data-is-dirty=\"true\" \n                                                    >\n                                </sw-property-display>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                    data-property-identifier=\"maxQuantity\"\n                                                    data-editing=\"true\"\n                                                    data-editable=\"!swEditSkuPriceModalLauncher.disableAllFieldsButPrice\"\n                                                    data-is-dirty=\"true\" \n                                                    >\n                                </sw-property-display>\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-12\">\n                                <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                    data-property-identifier=\"priceGroup\"\n                                                    data-editing=\"true\"\n                                                    data-editable=\"!swEditSkuPriceModalLauncher.disableAllFieldsButPrice\"\n                                                    data-is-dirty=\"true\"\n                                                    >\n                                </sw-property-display>\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                         <sw-property-display data-object=\"swEditSkuPriceModalLauncher.sku\"\n                                data-property-identifier=\"skuID\"\n                                data-is-dirty=\"true\"\n                                data-is-hidden=\"true\"\n                                data-editing=\"true\"   \n                                data-editable=\"true\"\n                        >\n                        </sw-property-display>\n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
+module.exports = "<div class=\"modal fade\" id=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"false\">\n    <div class=\"modal-dialog modal-lg\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <a class=\"close\" data-dismiss=\"modal\">×</a>\n                <!-- HEADER TITLE HERE -->\n                <h3><span>Edit Sku Price</span></h3>\n            </div>\n            <div class=\"modal-body\">\n                <sw-form name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                         data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                         data-context=\"save\"\n                         >\n                    <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n                    <div class=\"row\">\n                        <div class=\"col-sm-4\">\n                            <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                            </sw-sku-thumbnail>\n                        </div>\n                        <div class=\"col-sm-8\">\n                            <div class=\"row\">\n                                <div class=\"col-sm-6\">\n                                    <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                         data-property-identifier=\"price\"\n                                                         data-editing=\"true\"\n                                                         data-editable=\"true\"\n                                                         data-is-dirty=\"true\" \n                                                         >\n                                    </sw-property-display>\n                                </div> \n                                <div class=\"col-sm-6\">\n                                    <div class=\"form-group\">\n                                        <label for=\"\" class=\"control-label\">Currency Code</label>\n                                        <select class=\"form-control\" \n                                                name=\"currencyCode\"\n                                                ng-model=\"swEditSkuPriceModalLauncher.skuPrice.data.currencyCode\"\n                                                ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                                ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                                >\n                                        </select>\n                                    </div>\n                                </div>\n                            </div>\n                            \n                            <div class=\"row\">\n                                <div class=\"col-sm-6\">\n                                   <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                        data-property-identifier=\"minQuantity\"\n                                                        data-editing=\"true\"\n                                                        data-editable=\"!swEditSkuPriceModalLauncher.disableAllFieldsButPrice\"\n                                                        data-is-dirty=\"true\" \n                                                        >\n                                    </sw-property-display>\n                                </div>\n                                <div class=\"col-sm-6\">\n                                    <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                        data-property-identifier=\"maxQuantity\"\n                                                        data-editing=\"true\"\n                                                        data-editable=\"!swEditSkuPriceModalLauncher.disableAllFieldsButPrice\"\n                                                        data-is-dirty=\"true\" \n                                                        >\n                                    </sw-property-display>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"col-sm-12\">\n                                    <sw-property-display data-object=\"swEditSkuPriceModalLauncher.skuPrice\" \n                                                        data-property-identifier=\"priceGroup\"\n                                                        data-editing=\"true\"\n                                                        data-editable=\"!swEditSkuPriceModalLauncher.disableAllFieldsButPrice\"\n                                                        data-is-dirty=\"true\"\n                                                        >\n                                    </sw-property-display>\n                                </div>\n                            </div>\n                            <!-- BEGIN HIDDEN FIELDS -->\n                             <sw-property-display data-object=\"swEditSkuPriceModalLauncher.sku\"\n                                    data-property-identifier=\"skuID\"\n                                    data-is-dirty=\"true\"\n                                    data-is-hidden=\"true\"\n                                    data-editing=\"true\"   \n                                    data-editable=\"true\"\n                            >\n                            </sw-property-display>\n                            <!-- END HIDDEN FIELDS -->\n                        </div>\n                    </div>\n                </sw-form>\n            </div>\n            <div class=\"modal-footer\">\n                <a href=\"#\" \n                   class=\"btn btn-default s-remove\"\n                   data-dismiss=\"modal\" \n                   ng-click=\"swEditSkuPriceModalLauncher.save()\">\n                   <span class=\"glyphicon glyphicon-remove icon-white\"></span> \n                   <span>Cancel</span>\n                </a>\n                <button class=\"btn btn-success\" \n                        type=\"button\" \n                        data-dismiss=\"modal\" \n                        ng-click=\"swEditSkuPriceModalLauncher.save()\">\n                    <i class=\"glyphicon glyphicon-ok icon-white\"></i> \n                    <span>Save</span>\n                </button> \n            </div>\n        </div>    \n    </div>        \n</div>\n";
 
 /***/ }),
 /* 310 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\">\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">  \n               <!-- Attempting to incorporate needs into existing listing -->\n                <!--<sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-base-entity-name=\"Sku\"\n                        data-base-entity-id=\"{{swPricingManager.productId}}\"\n                        data-administrative-count=\"1\"\n                                    >\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,sku_skuCode\" \n                                tdclass=\"primary\"\n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\"\n                                data-fallback-property-identifiers=\"sku_calculatedSkuDefinition\" \n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"minQuantity\" \n                                data-title=\"Minimum Quantity\"\n                                data-cell-view=\"swSkuPriceQuantityEdit\"\n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"maxQuantity\" \n                                data-title=\"Maximum Quantity\"\n                                data-cell-view=\"swSkuPriceQuantityEdit\"\n                            >\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPricesEdit\"\n                                data-header-view=\"swSkuCurrencySelector\"\n                            >\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"skuPrices.priceGroup.priceGroupCode\" \n                                data-fallback-property-identifiers=\"skuPrice_priceGroup.priceGroupCode,priceGroup.priceGroupCode\" \n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"skuPrices.priceGroup.priceGroupID\" \n                                data-is-visible=\"false\"\n                                data-fallback-property-identifiers=\"skuPrice_priceGroup.priceGroupID,priceGroup.priceGroupID\" \n                            ></sw-listing-column>\n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\"\n                            >\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"eligibleCurrencyCodeList\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuPricesCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                         <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"skuPricesCount\" data-filter-comparison-operator=\">\" data-filter-comparison-value=\"0\" data-refresh-children-event=\"updateSkuPrices\" > \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuPrice\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\"\n                                    >\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuPriceID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"minQuantity\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"maxQuantity\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"personalVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"taxableAmount\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"commissionableVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sponsorVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"productPackVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"retailValueVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"handlingFee\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"currencyCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"priceGroup.priceGroupCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"priceGroup.priceGroupID\" data-is-visible=\"false\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                            <sw-collection-filter data-property-identifier=\"currencyCode\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.product.defaultSku_currencyCode}}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules> \n                        \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                        <sw-listing-add-action>\n                            <sw-add-sku-price-modal-launcher data-default-currency-only=\"true\">\n                                <a href=\"#\" title=\"Add Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                    <i class=\"fa fa-plus\"></i>\n                                </a>\n                            </sw-add-sku-price-modal-launcher>\n                        </sw-listing-add-action>  \n                        <sw-listing-delete-action>\n                            <sw-delete-sku-price-modal-launcher>\n                            </sw-delete-sku-price-modal-launcher>\n                            <sw-edit-sku-price-modal-launcher>\n                                <a href=\"#\" title=\"Edit Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                    <i class=\"fa fa-edit\"></i>\n                                </a>\n                            </sw-edit-sku-price-modal-launcher>\n                        </sw-listing-delete-action>  \n                </sw-listing-display>-->\n                <sw-listing-display\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-base-entity-name=\"SkuPrice\"\n                        data-collection-config=\"swPricingManager.skuPriceCollectionConfig\">\n                    \n                    <!--<sw-listing-columns>\n                        <sw-listing-column \n                                data-property-identifier=\"sku.skuCode\" \n                                tdclass=\"primary\">\n                        </sw-listing-column>\n                        <sw-listing-column \n                                data-property-identifier=\"sku.calculatedSkuDefinition\">\n                        </sw-listing-column>\n                        <sw-listing-column \n                                data-property-identifier=\"minQuantity\">\n                        </sw-listing-column>\n                        <sw-listing-column \n                                data-property-identifier=\"maxQuantity\">\n                        </sw-listing-column>\n                        <sw-listing-column \n                                data-property-identifier=\"price\">\n                        </sw-listing-column>\n                        <sw-listing-column \n                                data-property-identifier=\"priceGroup\">\n                        </sw-listing-column>\n                        <sw-listing-column \n                                data-property-identifier=\"priceGroupCode\">\n                        </sw-listing-column>\n                    </sw-listing-columns>-->\n                    \n                    <!--<sw-listing-save-action>\n                        <sw-listing-row-save>\n                        </sw-listing-row-save>\n                    </sw-listing-save-action>\n                    <sw-listing-add-action>\n                        <sw-add-sku-price-modal-launcher data-default-currency-only=\"true\">\n                            <a href=\"#\" title=\"Add Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                <i class=\"fa fa-plus\"></i>\n                            </a>\n                        </sw-add-sku-price-modal-launcher>\n                    </sw-listing-add-action>  \n                    <sw-listing-delete-action>\n                        <sw-delete-sku-price-modal-launcher>\n                        </sw-delete-sku-price-modal-launcher>\n                        <sw-edit-sku-price-modal-launcher>\n                            <a href=\"#\" title=\"Edit Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                <i class=\"fa fa-edit\"></i>\n                            </a>\n                        </sw-edit-sku-price-modal-launcher>\n                    </sw-listing-delete-action>--> \n                </sw-listing-display>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
+module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\">\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">  \n               <!-- Attempting to incorporate needs into existing listing -->\n                <!--<sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-base-entity-name=\"Sku\"\n                        data-base-entity-id=\"{{swPricingManager.productId}}\"\n                        data-administrative-count=\"1\"\n                                    >\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,sku_skuCode\" \n                                tdclass=\"primary\"\n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\"\n                                data-fallback-property-identifiers=\"sku_calculatedSkuDefinition\" \n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"minQuantity\" \n                                data-title=\"Minimum Quantity\"\n                                data-cell-view=\"swSkuPriceQuantityEdit\"\n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"maxQuantity\" \n                                data-title=\"Maximum Quantity\"\n                                data-cell-view=\"swSkuPriceQuantityEdit\"\n                            >\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPricesEdit\"\n                                data-header-view=\"swSkuCurrencySelector\"\n                            >\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"skuPrices.priceGroup.priceGroupCode\" \n                                data-fallback-property-identifiers=\"skuPrice_priceGroup.priceGroupCode,priceGroup.priceGroupCode\" \n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"skuPrices.priceGroup.priceGroupID\" \n                                data-is-visible=\"false\"\n                                data-fallback-property-identifiers=\"skuPrice_priceGroup.priceGroupID,priceGroup.priceGroupID\" \n                            ></sw-listing-column>\n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\"\n                            >\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"eligibleCurrencyCodeList\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuPricesCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                         <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"skuPricesCount\" data-filter-comparison-operator=\">\" data-filter-comparison-value=\"0\" data-refresh-children-event=\"updateSkuPrices\" > \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuPrice\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\"\n                                    >\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuPriceID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"minQuantity\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"maxQuantity\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"personalVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"taxableAmount\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"commissionableVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sponsorVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"productPackVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"retailValueVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"handlingFee\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"currencyCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"priceGroup.priceGroupCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"priceGroup.priceGroupID\" data-is-visible=\"false\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                            <sw-collection-filter data-property-identifier=\"currencyCode\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.product.defaultSku_currencyCode}}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules> \n                        \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                        <sw-listing-add-action>\n                            <sw-add-sku-price-modal-launcher data-default-currency-only=\"true\">\n                                <a href=\"#\" title=\"Add Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                    <i class=\"fa fa-plus\"></i>\n                                </a>\n                            </sw-add-sku-price-modal-launcher>\n                        </sw-listing-add-action>  \n                        <sw-listing-delete-action>\n                            <sw-delete-sku-price-modal-launcher>\n                            </sw-delete-sku-price-modal-launcher>\n                            <sw-edit-sku-price-modal-launcher>\n                                <a href=\"#\" title=\"Edit Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                    <i class=\"fa fa-edit\"></i>\n                                </a>\n                            </sw-edit-sku-price-modal-launcher>\n                        </sw-listing-delete-action>  \n                </sw-listing-display>-->\n                <sw-listing-display\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-base-entity-name=\"SkuPrice\"\n                        data-record-edit-event=\"EDIT_SKUPRICE\"\n                        data-collection-config=\"swPricingManager.skuPriceCollectionConfig\">\n                    \n                    <!--<sw-listing-save-action>\n                        <sw-listing-row-save>\n                        </sw-listing-row-save>\n                    </sw-listing-save-action>\n                    <sw-listing-add-action>\n                        <sw-add-sku-price-modal-launcher data-default-currency-only=\"true\">\n                            <a href=\"#\" title=\"Add Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                <i class=\"fa fa-plus\"></i>\n                            </a>\n                        </sw-add-sku-price-modal-launcher>\n                    </sw-listing-add-action>  \n                    <sw-listing-delete-action>\n                        <sw-delete-sku-price-modal-launcher>\n                        </sw-delete-sku-price-modal-launcher>\n                        <sw-edit-sku-price-modal-launcher>\n                            <a href=\"#\" title=\"Edit Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                <i class=\"fa fa-edit\"></i>\n                            </a>\n                        </sw-edit-sku-price-modal-launcher>\n                    </sw-listing-delete-action>--> \n                    \n                    \n                </sw-listing-display>\n                <sw-edit-sku-price-modal-launcher></sw-edit-sku-price-modal-launcher>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
 
 /***/ }),
 /* 311 */
@@ -63455,7 +63328,7 @@ exports.SWOrderTemplateUpdateScheduleModal = SWOrderTemplateUpdateScheduleModal;
 
 
 /***/ }),
-/* 646 */
+/* 647 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63465,7 +63338,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
-<<<<<<< HEAD
 var swaccountpaymentmethodmodal_1 = __webpack_require__(639);
 var swaccountshippingaddresscard_1 = __webpack_require__(640);
 var swaccountshippingmethodmodal_1 = __webpack_require__(641);
@@ -63473,16 +63345,7 @@ var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(642);
 var swordertemplatefrequencycard_1 = __webpack_require__(643);
 var swordertemplatefrequencymodal_1 = __webpack_require__(644);
 var swordertemplateupcomingorderscard_1 = __webpack_require__(645);
-=======
-var swaccountpaymentmethodmodal_1 = __webpack_require__(638);
-var swaccountshippingaddresscard_1 = __webpack_require__(639);
-var swaccountshippingmethodmodal_1 = __webpack_require__(640);
-var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(641);
-var swordertemplatefrequencycard_1 = __webpack_require__(642);
-var swordertemplatefrequencymodal_1 = __webpack_require__(643);
-var swordertemplateupcomingorderscard_1 = __webpack_require__(644);
-var swordertemplateupdateschedulemodal_1 = __webpack_require__(645);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var swordertemplateupdateschedulemodal_1 = __webpack_require__(646);
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63502,7 +63365,7 @@ exports.ordermodule = ordermodule;
 
 
 /***/ }),
-/* 647 */
+/* 648 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63719,7 +63582,7 @@ exports.SWOrderDeliveryDetail = SWOrderDeliveryDetail;
 
 
 /***/ }),
-/* 648 */
+/* 649 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63733,7 +63596,7 @@ var core_module_1 = __webpack_require__(6);
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
 //controllers
 //directives
-var sworderdeliverydetail_1 = __webpack_require__(647);
+var sworderdeliverydetail_1 = __webpack_require__(648);
 var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63748,7 +63611,7 @@ exports.orderdeliverydetailmodule = orderdeliverydetailmodule;
 
 
 /***/ }),
-/* 649 */
+/* 650 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64409,7 +64272,7 @@ exports.SWOrderFulfillmentList = SWOrderFulfillmentList;
 
 
 /***/ }),
-/* 650 */
+/* 651 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64423,7 +64286,7 @@ var core_module_1 = __webpack_require__(6);
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
-var sworderfulfillmentlist_1 = __webpack_require__(649);
+var sworderfulfillmentlist_1 = __webpack_require__(650);
 //models 
 var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
     .config([function () {
@@ -64440,7 +64303,7 @@ exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
 
 /***/ }),
-/* 651 */
+/* 652 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64731,7 +64594,7 @@ exports.SWChildOrderItem = SWChildOrderItem;
 
 
 /***/ }),
-/* 652 */
+/* 653 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64775,7 +64638,7 @@ exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
 
 
 /***/ }),
-/* 653 */
+/* 654 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65263,7 +65126,7 @@ exports.SWOrderItem = SWOrderItem;
 
 
 /***/ }),
-/* 654 */
+/* 655 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65377,7 +65240,7 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 
 
 /***/ }),
-/* 655 */
+/* 656 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65531,7 +65394,7 @@ exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
-/* 656 */
+/* 657 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65574,7 +65437,7 @@ exports.SWResizedImage = SWResizedImage;
 
 
 /***/ }),
-/* 657 */
+/* 658 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65584,12 +65447,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(6);
 //directives
-var swchildorderitem_1 = __webpack_require__(651);
-var sworderitem_1 = __webpack_require__(653);
-var swoishippinglabelstamp_1 = __webpack_require__(652);
-var sworderitemdetailstamp_1 = __webpack_require__(654);
-var sworderitems_1 = __webpack_require__(655);
-var swresizedimage_1 = __webpack_require__(656);
+var swchildorderitem_1 = __webpack_require__(652);
+var sworderitem_1 = __webpack_require__(654);
+var swoishippinglabelstamp_1 = __webpack_require__(653);
+var sworderitemdetailstamp_1 = __webpack_require__(655);
+var sworderitems_1 = __webpack_require__(656);
+var swresizedimage_1 = __webpack_require__(657);
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -65609,7 +65472,7 @@ exports.orderitemmodule = orderitemmodule;
 
 
 /***/ }),
-/* 658 */
+/* 659 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65713,7 +65576,7 @@ exports.SWProductDeliveryScheduleDates = SWProductDeliveryScheduleDates;
 
 
 /***/ }),
-/* 659 */
+/* 660 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65775,7 +65638,7 @@ exports.SWProductListingPages = SWProductListingPages;
 
 
 /***/ }),
-/* 660 */
+/* 661 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65838,7 +65701,7 @@ exports.SWRelatedProducts = SWRelatedProducts;
 
 
 /***/ }),
-/* 661 */
+/* 662 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65942,7 +65805,7 @@ exports.ProductCreateController = ProductCreateController;
 
 
 /***/ }),
-/* 662 */
+/* 663 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65954,12 +65817,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //controllers
-var preprocessproduct_create_1 = __webpack_require__(661);
+var preprocessproduct_create_1 = __webpack_require__(662);
 //filters
 //directives
-var swproductlistingpages_1 = __webpack_require__(659);
-var swrelatedproducts_1 = __webpack_require__(660);
-var swproductdeliveryscheduledates_1 = __webpack_require__(658);
+var swproductlistingpages_1 = __webpack_require__(660);
+var swrelatedproducts_1 = __webpack_require__(661);
+var swproductdeliveryscheduledates_1 = __webpack_require__(659);
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
@@ -65975,7 +65838,7 @@ exports.productmodule = productmodule;
 
 
 /***/ }),
-/* 663 */
+/* 664 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66320,7 +66183,7 @@ exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollection
 
 
 /***/ }),
-/* 664 */
+/* 665 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66506,7 +66369,7 @@ exports.SWProductBundleGroup = SWProductBundleGroup;
 
 
 /***/ }),
-/* 665 */
+/* 666 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66593,7 +66456,7 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 
 
 /***/ }),
-/* 666 */
+/* 667 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66768,7 +66631,7 @@ exports.SWProductBundleGroupType = SWProductBundleGroupType;
 
 
 /***/ }),
-/* 667 */
+/* 668 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66869,7 +66732,7 @@ exports.CreateBundleController = CreateBundleController;
 
 
 /***/ }),
-/* 668 */
+/* 669 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66880,14 +66743,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var productbundleservice_1 = __webpack_require__(669);
+var productbundleservice_1 = __webpack_require__(670);
 //controllers
-var create_bundle_controller_1 = __webpack_require__(667);
+var create_bundle_controller_1 = __webpack_require__(668);
 //directives
-var swproductbundlegrouptype_1 = __webpack_require__(666);
-var swproductbundlegroups_1 = __webpack_require__(665);
-var swproductbundlegroup_1 = __webpack_require__(664);
-var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(663);
+var swproductbundlegrouptype_1 = __webpack_require__(667);
+var swproductbundlegroups_1 = __webpack_require__(666);
+var swproductbundlegroup_1 = __webpack_require__(665);
+var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(664);
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
@@ -66906,7 +66769,7 @@ exports.productbundlemodule = productbundlemodule;
 
 
 /***/ }),
-/* 669 */
+/* 670 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66992,7 +66855,7 @@ exports.ProductBundleService = ProductBundleService;
 
 
 /***/ }),
-/* 670 */
+/* 671 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67220,7 +67083,7 @@ exports.SWAddSkuPriceModalLauncher = SWAddSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 671 */
+/* 672 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67299,7 +67162,7 @@ exports.SWDefaultSkuRadio = SWDefaultSkuRadio;
 
 
 /***/ }),
-/* 672 */
+/* 673 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67421,7 +67284,7 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 673 */
+/* 674 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67456,35 +67319,58 @@ var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
             }
             _this.observerService.notify("pullBindings");
         };
-        this.initData = function () {
+        this.initData = function (pageRecord) {
+            console.log(pageRecord);
+            _this.pageRecord = pageRecord;
+            if (angular.isDefined(pageRecord)) {
+                var skuPriceData = {
+                    skuPriceID: pageRecord.skuPriceID,
+                    minQuantity: pageRecord.minQuantity,
+                    maxQuantity: pageRecord.maxQuantity,
+                    currencyCode: pageRecord.currencyCode,
+                    price: pageRecord.price
+                };
+                var skuData = {
+                    skuID: pageRecord["sku_skuID"],
+                    skuCode: pageRecord["sku_skuCode"],
+                    calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+                };
+                _this.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+                _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+                console.log(_this.skuPrice);
+                console.log(_this.sku);
+            }
+            else {
+                return;
+            }
+            $("#" + _this.uniqueName).modal();
             //these are populated in the link function initially
-            if (angular.isUndefined(_this.disableAllFieldsButPrice)) {
-                _this.disableAllFieldsButPrice = false;
+            /*if(angular.isUndefined(this.disableAllFieldsButPrice)){
+                this.disableAllFieldsButPrice = false;
             }
-            if (angular.isUndefined(_this.defaultCurrencyOnly)) {
-                _this.defaultCurrencyOnly = false;
+            if(angular.isUndefined(this.defaultCurrencyOnly)){
+                this.defaultCurrencyOnly = false;
             }
-            if (angular.isDefined(_this.minQuantity) && !isNaN(parseInt(_this.minQuantity))) {
-                _this.skuPrice.data.minQuantity = parseInt(_this.minQuantity);
+            if(angular.isDefined(this.minQuantity) && !isNaN(parseInt(this.minQuantity))){
+                this.skuPrice.data.minQuantity = parseInt(this.minQuantity);
             }
-            if (angular.isDefined(_this.maxQuantity) && !isNaN(parseInt(_this.minQuantity))) {
-                _this.skuPrice.data.maxQuantity = parseInt(_this.maxQuantity);
+            if(angular.isDefined(this.maxQuantity) && !isNaN(parseInt(this.minQuantity))){
+                this.skuPrice.data.maxQuantity = parseInt(this.maxQuantity);
             }
-            if (angular.isDefined(_this.priceGroupId)) {
-                _this.skuPrice.data.priceGroup.data.priceGroupId = parseInt(_this.priceGroupId);
+            if(angular.isDefined(this.priceGroupId)){
+                this.skuPrice.data.priceGroup.data.priceGroupId = parseInt(this.priceGroupId);
             }
-            if (angular.isUndefined(_this.currencyCodeOptions) && angular.isDefined(_this.eligibleCurrencyCodeList)) {
-                _this.currencyCodeOptions = _this.eligibleCurrencyCodeList.split(",");
+            
+            if(angular.isUndefined(this.currencyCodeOptions) && angular.isDefined(this.eligibleCurrencyCodeList)){
+                this.currencyCodeOptions = this.eligibleCurrencyCodeList.split(",");
             }
-            if (_this.defaultCurrencyOnly) {
-                _this.skuPrice.data.currencyCode = "USD"; //temporarily hardcoded
-            }
-            else if (angular.isDefined(_this.currencyCode)) {
-                _this.skuPrice.data.currencyCode = _this.currencyCode;
-            }
-            else if (angular.isDefined(_this.currencyCodeOptions) && _this.currencyCodeOptions.length) {
-                _this.skuPrice.data.currencyCode = _this.currencyCodeOptions[0];
-            }
+            if(this.defaultCurrencyOnly){
+                this.skuPrice.data.currencyCode = "USD" //temporarily hardcoded
+            } else if(angular.isDefined(this.currencyCode)){
+                this.skuPrice.data.currencyCode = this.currencyCode;
+            } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
+                this.skuPrice.data.currencyCode = this.currencyCodeOptions[0];
+            }*/
             _this.observerService.notify("pullBindings");
         };
         this.save = function () {
@@ -67495,34 +67381,24 @@ var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
                 _this.saveSuccess = true;
                 _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
                 //temporarily overriding for USD need to get this setting accessable to client side
-                if (angular.isDefined(_this.listingID) &&
+                if (angular.isDefined(_this.skuPrice) &&
                     _this.skuPrice.data.currencyCode == "USD") {
-                    var pageRecords = _this.listingService.getListingPageRecords(_this.listingID);
-                    for (var i = 0; i < pageRecords.length; i++) {
-                        if (angular.isDefined(pageRecords[i].skuID) &&
-                            pageRecords[i].skuID == _this.sku.data.skuID) {
-                            var skuPageRecord = pageRecords[i];
-                            var index = i + 1;
-                            while (index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)) {
-                                //let's find and update the sku price
-                                if (pageRecords[index].skuPriceID === _this.skuPrice.skuPriceID) {
-                                    _this.skuPrice.data.eligibleCurrencyCodeList = _this.currencyCodeOptions.join(",");
-                                    //spoof the page record
-                                    var skuPriceForListing = {};
-                                    for (var key in _this.skuPrice.data) {
-                                        skuPriceForListing[key] = _this.skuPrice.data[key];
-                                    }
-                                    skuPriceForListing["sku_skuID"] = _this.sku.skuID;
-                                    skuPriceForListing["sku_skuCode"] = _this.sku.skuCode;
-                                    skuPriceForListing["sku_calculatedSkuDefinition"] = _this.sku.calculatedSkuDefinition;
-                                    skuPriceForListing["priceGroup_priceGroupCode"] = skuPriceForListing.selectedpriceGroup.priceGroupCode;
-                                    skuPriceForListing["priceGroup_priceGroupID"] = skuPriceForListing.selectedpriceGroup.priceGroupID;
-                                    pageRecords[index] = skuPriceForListing;
-                                    break;
-                                }
-                                index++;
-                            }
+                    //   var pageRecords = this.listingService.getListingPageRecords(this.listingID);
+                    if (angular.isDefined(_this.pageRecord) &&
+                        angular.isDefined(_this.pageRecord.skuID)) {
+                        var skuPricePageRecord = _this.pageRecord;
+                        _this.skuPrice.data.eligibleCurrencyCodeList = _this.currencyCodeOptions.join(",");
+                        //spoof the page record
+                        var skuPriceForListing = {};
+                        for (var key in _this.skuPrice.data) {
+                            skuPriceForListing[key] = _this.skuPrice.data[key];
                         }
+                        skuPriceForListing["sku_skuID"] = _this.sku.skuID;
+                        skuPriceForListing["sku_skuCode"] = _this.sku.skuCode;
+                        skuPriceForListing["sku_calculatedSkuDefinition"] = _this.sku.calculatedSkuDefinition;
+                        skuPriceForListing["priceGroup_priceGroupCode"] = skuPriceForListing.selectedpriceGroup.priceGroupCode;
+                        skuPriceForListing["priceGroup_priceGroupID"] = skuPriceForListing.selectedpriceGroup.priceGroupID;
+                        _this.pageRecord = skuPriceForListing;
                     }
                 }
             }, function (reason) {
@@ -67548,52 +67424,50 @@ var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
         this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.formName = "editSkuPrice" + this.utilityService.createID(16);
         //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-        var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
-        if (angular.isDefined(currentScope.pageRecord)) {
-            this.pageRecord = currentScope.pageRecord;
-            //sku record case
-            if (angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length) {
-                var skuData = {
-                    skuID: currentScope.pageRecord["sku_skuID"],
-                    skuCode: currentScope.pageRecord["sku_skuCode"],
-                    calculatedSkuDefinition: currentScope.pageRecord["sku_calculatedSkuDefinition"]
-                };
-                var skuPriceData = {
-                    skuPriceID: currentScope.pageRecord.skuPriceID,
-                    minQuantity: currentScope.pageRecord.minQuantity,
-                    maxQuantity: currentScope.pageRecord.maxQuantity,
-                    currencyCode: currentScope.pageRecord.currencyCode,
-                    price: currentScope.pageRecord.price
-                };
-                var priceGroupData = {
-                    priceGroupID: currentScope.pageRecord["priceGroup_priceGroupID"],
-                    priceGroupCode: currentScope.pageRecord["priceGroup_priceGroupCode"]
-                };
-                this.sku = this.$hibachi.populateEntity('Sku', skuData);
-                this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
-                this.priceGroup = this.$hibachi.populateEntity('PriceGroup', priceGroupData);
-                this.skuPrice.$$setPriceGroup(this.priceGroup);
-                this.skuPrice.$$setSku(this.sku);
-                this.currencyCodeOptions = ["USD"]; //hard-coded for now
-            }
-            else {
-                return;
-            }
-        }
-        else {
-            throw ("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-        }
-        var listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-        if (angular.isDefined(listingScope.swListingDisplay)) {
-            this.listingID = listingScope.swListingDisplay.tableID;
-            this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId;
-            this.defaultCurrencyOnly = true;
-            this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
-        }
-        else {
-            throw ("swEditSkuPriceModalLauncher couldn't find listing scope");
-        }
-        this.initData();
+        // let currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
+        // if(angular.isDefined(currentScope.pageRecord)){ 
+        //     this.pageRecord = currentScope.pageRecord;
+        //     //sku record case
+        //     if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
+        //         let skuData = {
+        //             skuID:currentScope.pageRecord["sku_skuID"],
+        //             skuCode:currentScope.pageRecord["sku_skuCode"],
+        //             calculatedSkuDefinition:currentScope.pageRecord["sku_calculatedSkuDefinition"]
+        //         }
+        //         let skuPriceData = {
+        //             skuPriceID:currentScope.pageRecord.skuPriceID,
+        //             minQuantity:currentScope.pageRecord.minQuantity,
+        //             maxQuantity:currentScope.pageRecord.maxQuantity,
+        //             currencyCode:currentScope.pageRecord.currencyCode, 
+        //             price:currentScope.pageRecord.price
+        //         }
+        //         let priceGroupData = {
+        //             priceGroupID:currentScope.pageRecord["priceGroup_priceGroupID"],
+        //             priceGroupCode:currentScope.pageRecord["priceGroup_priceGroupCode"]
+        //         }
+        //         this.sku = this.$hibachi.populateEntity('Sku',skuData);
+        //         this.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
+        //         this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
+        //         this.skuPrice.$$setPriceGroup(this.priceGroup);
+        //         this.skuPrice.$$setSku(this.sku);
+        //         this.currencyCodeOptions = ["USD"]; //hard-coded for now
+        //     } else {
+        //         return;
+        //     }
+        // } else{ 
+        //     throw("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
+        // } 
+        // let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
+        // if(angular.isDefined(listingScope.swListingDisplay)){ 
+        //     this.listingID = listingScope.swListingDisplay.tableID;
+        //     this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
+        //     this.defaultCurrencyOnly = true;
+        //     this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
+        // } else {
+        //     throw("swEditSkuPriceModalLauncher couldn't find listing scope");
+        // }
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        //  this.initData();
     }
     return SWEditSkuPriceModalLauncherController;
 }());
@@ -67653,7 +67527,7 @@ exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 674 */
+/* 675 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67790,7 +67664,7 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 
 
 /***/ }),
-/* 675 */
+/* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67812,9 +67686,11 @@ var SWPricingManagerController = /** @class */ (function () {
         }, function (reason) {
         });
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
-        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode,currencyCode");
+        this.skuPriceCollectionConfig.addColumn("_skuprice.skuPriceID", "", { isVisible: false });
+        this.skuPriceCollectionConfig.addColumn("_skuprice_sku.skuID", "", { isVisible: false });
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
-        var editableColumns = "minQuantity,maxQuantity,price";
+        // let editableColumns = "minQuantity,maxQuantity,price";
         // for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
         //     let indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""))
         //     if(indexOf > -1){
@@ -67873,7 +67749,7 @@ exports.SWPricingManager = SWPricingManager;
 
 
 /***/ }),
-/* 676 */
+/* 677 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67982,7 +67858,7 @@ exports.SWSkuCodeEdit = SWSkuCodeEdit;
 
 
 /***/ }),
-/* 677 */
+/* 678 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68058,7 +67934,7 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 
 /***/ }),
-/* 678 */
+/* 679 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68247,7 +68123,7 @@ exports.SWSkuPriceEdit = SWSkuPriceEdit;
 
 
 /***/ }),
-/* 679 */
+/* 680 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68390,7 +68266,7 @@ exports.SWSkuPriceQuantityEdit = SWSkuPriceQuantityEdit;
 
 
 /***/ }),
-/* 680 */
+/* 681 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68521,7 +68397,7 @@ exports.SWSkuPricesEdit = SWSkuPricesEdit;
 
 
 /***/ }),
-/* 681 */
+/* 682 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68688,7 +68564,7 @@ exports.SWSkuStockAdjustmentModalLauncher = SWSkuStockAdjustmentModalLauncher;
 
 
 /***/ }),
-/* 682 */
+/* 683 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68747,7 +68623,7 @@ exports.SWSkuThumbnail = SWSkuThumbnail;
 
 
 /***/ }),
-/* 683 */
+/* 684 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68798,7 +68674,7 @@ exports.DefaultSkuService = DefaultSkuService;
 
 
 /***/ }),
-/* 684 */
+/* 685 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69140,7 +69016,7 @@ exports.SkuPriceService = SkuPriceService;
 
 
 /***/ }),
-/* 685 */
+/* 686 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69151,23 +69027,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var defaultskuservice_1 = __webpack_require__(683);
-var skupriceservice_1 = __webpack_require__(684);
+var defaultskuservice_1 = __webpack_require__(684);
+var skupriceservice_1 = __webpack_require__(685);
 //controllers
 //directives
-var swpricingmanager_1 = __webpack_require__(675);
-var swimagedetailmodallauncher_1 = __webpack_require__(674);
-var swaddskupricemodallauncher_1 = __webpack_require__(670);
-var swdeleteskupricemodallauncher_1 = __webpack_require__(672);
-var sweditskupricemodallauncher_1 = __webpack_require__(673);
-var swskustockadjustmentmodallauncher_1 = __webpack_require__(681);
-var swdefaultskuradio_1 = __webpack_require__(671);
-var swskucurrencyselector_1 = __webpack_require__(677);
-var swskupriceedit_1 = __webpack_require__(678);
-var swskucodeedit_1 = __webpack_require__(676);
-var swskupricesedit_1 = __webpack_require__(680);
-var swskupricequantityedit_1 = __webpack_require__(679);
-var swskuthumbnail_1 = __webpack_require__(682);
+var swpricingmanager_1 = __webpack_require__(676);
+var swimagedetailmodallauncher_1 = __webpack_require__(675);
+var swaddskupricemodallauncher_1 = __webpack_require__(671);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(673);
+var sweditskupricemodallauncher_1 = __webpack_require__(674);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(682);
+var swdefaultskuradio_1 = __webpack_require__(672);
+var swskucurrencyselector_1 = __webpack_require__(678);
+var swskupriceedit_1 = __webpack_require__(679);
+var swskucodeedit_1 = __webpack_require__(677);
+var swskupricesedit_1 = __webpack_require__(681);
+var swskupricequantityedit_1 = __webpack_require__(680);
+var swskuthumbnail_1 = __webpack_require__(683);
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -69195,7 +69071,7 @@ exports.skumodule = skumodule;
 
 
 /***/ }),
-/* 686 */
+/* 687 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69229,7 +69105,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 
 
 /***/ }),
-/* 687 */
+/* 688 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69237,8 +69113,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
-<<<<<<< HEAD
-var hibachi_module_1 = __webpack_require__(848);
+var hibachi_module_1 = __webpack_require__(850);
 var workflow_module_1 = __webpack_require__(304);
 var entity_module_1 = __webpack_require__(302);
 var account_module_1 = __webpack_require__(609);
@@ -69247,32 +69122,18 @@ var content_module_1 = __webpack_require__(620);
 var formbuilder_module_1 = __webpack_require__(622);
 var giftcard_module_1 = __webpack_require__(634);
 var optiongroup_module_1 = __webpack_require__(638);
-var orderitem_module_1 = __webpack_require__(657);
-var orderfulfillment_module_1 = __webpack_require__(650);
+var orderitem_module_1 = __webpack_require__(658);
+var orderfulfillment_module_1 = __webpack_require__(651);
 var fulfillmentbatchdetail_module_1 = __webpack_require__(624);
-=======
-var hibachi_module_1 = __webpack_require__(849);
-var workflow_module_1 = __webpack_require__(304);
-var entity_module_1 = __webpack_require__(302);
-var account_module_1 = __webpack_require__(608);
-var address_module_1 = __webpack_require__(610);
-var content_module_1 = __webpack_require__(619);
-var formbuilder_module_1 = __webpack_require__(621);
-var giftcard_module_1 = __webpack_require__(633);
-var optiongroup_module_1 = __webpack_require__(637);
-var orderitem_module_1 = __webpack_require__(657);
-var orderfulfillment_module_1 = __webpack_require__(650);
-var fulfillmentbatchdetail_module_1 = __webpack_require__(623);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
-var orderdeliverydetail_module_1 = __webpack_require__(648);
-var order_module_1 = __webpack_require__(646);
-var product_module_1 = __webpack_require__(662);
-var productbundle_module_1 = __webpack_require__(668);
-var sku_module_1 = __webpack_require__(685);
-var subscriptionusage_module_1 = __webpack_require__(689);
-var term_module_1 = __webpack_require__(692);
+var orderdeliverydetail_module_1 = __webpack_require__(649);
+var order_module_1 = __webpack_require__(647);
+var product_module_1 = __webpack_require__(663);
+var productbundle_module_1 = __webpack_require__(669);
+var sku_module_1 = __webpack_require__(686);
+var subscriptionusage_module_1 = __webpack_require__(690);
+var term_module_1 = __webpack_require__(693);
 //constant
-var slatwallpathbuilder_1 = __webpack_require__(686);
+var slatwallpathbuilder_1 = __webpack_require__(687);
 var slatwalladminmodule = angular.module('slatwalladmin', [
     //custom modules
     hibachi_module_1.hibachimodule.name,
@@ -69489,7 +69350,7 @@ exports.slatwalladminmodule = slatwalladminmodule;
 
 
 /***/ }),
-/* 688 */
+/* 689 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69582,7 +69443,7 @@ exports.SWScheduledDeliveriesCard = SWScheduledDeliveriesCard;
 
 
 /***/ }),
-/* 689 */
+/* 690 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69596,7 +69457,7 @@ var core_module_1 = __webpack_require__(6);
 //controllers
 //filters
 //directives
-var swscheduleddeliveriescard_1 = __webpack_require__(688);
+var swscheduleddeliveriescard_1 = __webpack_require__(689);
 var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('subscriptionUsagePartialsPath', 'subscriptionusage/components/')
@@ -69609,7 +69470,7 @@ exports.subscriptionusagemodule = subscriptionusagemodule;
 
 
 /***/ }),
-/* 690 */
+/* 691 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69660,7 +69521,7 @@ exports.SWTermScheduleTable = SWTermScheduleTable;
 
 
 /***/ }),
-/* 691 */
+/* 692 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69711,7 +69572,7 @@ exports.TermService = TermService;
 
 
 /***/ }),
-/* 692 */
+/* 693 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69721,8 +69582,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
-var swtermscheduletable_1 = __webpack_require__(690);
-var termservice_1 = __webpack_require__(691);
+var swtermscheduletable_1 = __webpack_require__(691);
+var termservice_1 = __webpack_require__(692);
 var termmodule = angular.module('term', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -69736,7 +69597,7 @@ exports.termmodule = termmodule;
 
 
 /***/ }),
-/* 693 */
+/* 694 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69756,7 +69617,7 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
-/* 694 */
+/* 695 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69780,7 +69641,7 @@ exports.Alert = Alert;
 
 
 /***/ }),
-/* 695 */
+/* 696 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69789,7 +69650,7 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
-var alert_1 = __webpack_require__(694);
+var alert_1 = __webpack_require__(695);
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -69859,7 +69720,7 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
-/* 696 */
+/* 697 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70130,7 +69991,7 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
-/* 697 */
+/* 698 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70142,13 +70003,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //components
-var swcardlayout_1 = __webpack_require__(701);
-var swcardview_1 = __webpack_require__(704);
-var swcardheader_1 = __webpack_require__(699);
-var swcardbody_1 = __webpack_require__(698);
-var swcardicon_1 = __webpack_require__(700);
-var swcardprogressbar_1 = __webpack_require__(703);
-var swcardlistitem_1 = __webpack_require__(702);
+var swcardlayout_1 = __webpack_require__(702);
+var swcardview_1 = __webpack_require__(705);
+var swcardheader_1 = __webpack_require__(700);
+var swcardbody_1 = __webpack_require__(699);
+var swcardicon_1 = __webpack_require__(701);
+var swcardprogressbar_1 = __webpack_require__(704);
+var swcardlistitem_1 = __webpack_require__(703);
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -70167,7 +70028,7 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
-/* 698 */
+/* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70214,7 +70075,7 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
-/* 699 */
+/* 700 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70263,7 +70124,7 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
-/* 700 */
+/* 701 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70314,7 +70175,7 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
-/* 701 */
+/* 702 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70365,7 +70226,7 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
-/* 702 */
+/* 703 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70419,7 +70280,7 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
-/* 703 */
+/* 704 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70472,7 +70333,7 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
-/* 704 */
+/* 705 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70524,7 +70385,7 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
-/* 705 */
+/* 706 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70569,7 +70430,7 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
-/* 706 */
+/* 707 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70612,7 +70473,7 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
-/* 707 */
+/* 708 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70706,7 +70567,7 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
-/* 708 */
+/* 709 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70941,7 +70802,7 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
-/* 709 */
+/* 710 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71839,7 +71700,7 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
-/* 710 */
+/* 711 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71878,7 +71739,7 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
-/* 711 */
+/* 712 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71974,7 +71835,7 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
-/* 712 */
+/* 713 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72447,7 +72308,7 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
-/* 713 */
+/* 714 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72588,7 +72449,7 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
-/* 714 */
+/* 715 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72750,7 +72611,7 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
-/* 715 */
+/* 716 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72940,7 +72801,7 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
-/* 716 */
+/* 717 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73088,7 +72949,7 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
-/* 717 */
+/* 718 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73185,7 +73046,7 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
-/* 718 */
+/* 719 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73363,7 +73224,7 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
-/* 719 */
+/* 720 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73427,7 +73288,7 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
-/* 720 */
+/* 721 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73513,7 +73374,7 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
-/* 721 */
+/* 722 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73782,7 +73643,7 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
-/* 722 */
+/* 723 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74164,7 +74025,7 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
-/* 723 */
+/* 724 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74237,7 +74098,7 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
-/* 724 */
+/* 725 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74337,7 +74198,7 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
-/* 725 */
+/* 726 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74405,7 +74266,7 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
-/* 726 */
+/* 727 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74466,7 +74327,7 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
-/* 727 */
+/* 728 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74522,7 +74383,7 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
-/* 728 */
+/* 729 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74561,7 +74422,7 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
-/* 729 */
+/* 730 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74769,7 +74630,7 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
-/* 730 */
+/* 731 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74808,7 +74669,7 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
-/* 731 */
+/* 732 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74839,7 +74700,7 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
-/* 732 */
+/* 733 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75724,7 +75585,7 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
-/* 733 */
+/* 734 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75946,7 +75807,7 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
-/* 734 */
+/* 735 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76222,7 +76083,7 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
-/* 735 */
+/* 736 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76273,7 +76134,7 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
-/* 736 */
+/* 737 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76324,7 +76185,7 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
-/* 737 */
+/* 738 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76416,7 +76277,7 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
-/* 738 */
+/* 739 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76584,7 +76445,7 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
-/* 739 */
+/* 740 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76647,7 +76508,7 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
-/* 740 */
+/* 741 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76698,7 +76559,7 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
-/* 741 */
+/* 742 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76745,7 +76606,7 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
-/* 742 */
+/* 743 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76899,7 +76760,7 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
-/* 743 */
+/* 744 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76962,9 +76823,7 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
-/* 744 */
-<<<<<<< HEAD
-=======
+/* 745 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77033,8 +76892,7 @@ exports.SWDatePicker = SWDatePicker;
 
 
 /***/ }),
-/* 745 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 746 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77093,11 +76951,7 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 745 */
-=======
-/* 746 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 747 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77180,11 +77034,7 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 746 */
-=======
-/* 747 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 748 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77319,11 +77169,7 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 747 */
-=======
-/* 748 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 749 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77396,11 +77242,7 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 748 */
-=======
-/* 749 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 750 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77439,11 +77281,7 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 749 */
-=======
-/* 750 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 751 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77651,11 +77489,7 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 750 */
-=======
-/* 751 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 752 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77725,11 +77559,7 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 751 */
-=======
-/* 752 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 753 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77763,11 +77593,7 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 752 */
-=======
-/* 753 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 754 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77811,11 +77637,7 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 753 */
-=======
-/* 754 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77849,11 +77671,7 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 754 */
-=======
-/* 755 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 756 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77889,11 +77707,7 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 755 */
-=======
-/* 756 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 757 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77969,11 +77783,7 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 756 */
-=======
-/* 757 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 758 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78092,11 +77902,7 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 757 */
-=======
-/* 758 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 759 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78160,11 +77966,7 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 758 */
-=======
-/* 759 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 760 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78223,11 +78025,7 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 759 */
-=======
-/* 760 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 761 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78298,11 +78096,7 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 760 */
-=======
-/* 761 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 762 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78454,11 +78248,7 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 761 */
-=======
-/* 762 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 763 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78546,11 +78336,7 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 762 */
-=======
-/* 763 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 764 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78594,11 +78380,7 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 763 */
-=======
-/* 764 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 765 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78690,11 +78472,7 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 764 */
-=======
-/* 765 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 766 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78791,11 +78569,7 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 765 */
-=======
-/* 766 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 767 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78852,11 +78626,7 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 766 */
-=======
-/* 767 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 768 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78944,11 +78714,7 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 767 */
-=======
-/* 768 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 769 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79059,11 +78825,7 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 768 */
-=======
-/* 769 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 770 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79147,11 +78909,7 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 769 */
-=======
-/* 770 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 771 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79268,11 +79026,7 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 770 */
-=======
-/* 771 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 772 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79415,11 +79169,7 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 771 */
-=======
-/* 772 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79495,11 +79245,7 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 772 */
-=======
-/* 773 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 774 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79882,11 +79628,7 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 773 */
-=======
-/* 774 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79937,11 +79679,7 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 774 */
-=======
-/* 775 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80091,11 +79829,7 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 775 */
-=======
-/* 776 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 777 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80121,11 +79855,7 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 776 */
-=======
-/* 777 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 778 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80166,11 +79896,7 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 777 */
-=======
-/* 778 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 779 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80197,11 +79923,7 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 778 */
-=======
-/* 779 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 780 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80228,11 +79950,7 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 779 */
-=======
-/* 780 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 781 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80296,11 +80014,7 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 780 */
-=======
-/* 781 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 782 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80342,11 +80056,7 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 781 */
-=======
-/* 782 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 783 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80396,11 +80106,7 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 782 */
-=======
-/* 783 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 784 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80441,11 +80147,7 @@ exports.Account = Account;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 783 */
-=======
-/* 784 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 785 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80488,11 +80190,7 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 784 */
-=======
-/* 785 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 786 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80525,11 +80223,7 @@ exports.Address = Address;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 785 */
-=======
-/* 786 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 787 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80590,11 +80284,7 @@ exports.Cart = Cart;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 786 */
-=======
-/* 787 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 788 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80602,44 +80292,24 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-var account_1 = __webpack_require__(782);
+var account_1 = __webpack_require__(784);
 exports.Account = account_1.Account;
-var address_1 = __webpack_require__(784);
+var address_1 = __webpack_require__(786);
 exports.Address = address_1.Address;
-var cart_1 = __webpack_require__(785);
+var cart_1 = __webpack_require__(787);
 exports.Cart = cart_1.Cart;
-var orderitem_1 = __webpack_require__(787);
+var orderitem_1 = __webpack_require__(789);
 exports.OrderItem = orderitem_1.OrderItem;
-var orderpayment_1 = __webpack_require__(788);
+var orderpayment_1 = __webpack_require__(790);
 exports.OrderPayment = orderpayment_1.OrderPayment;
-var sku_1 = __webpack_require__(789);
+var sku_1 = __webpack_require__(791);
 exports.Sku = sku_1.Sku;
-var accountaddress_1 = __webpack_require__(783);
-=======
-var account_1 = __webpack_require__(783);
-exports.Account = account_1.Account;
-var address_1 = __webpack_require__(785);
-exports.Address = address_1.Address;
-var cart_1 = __webpack_require__(786);
-exports.Cart = cart_1.Cart;
-var orderitem_1 = __webpack_require__(788);
-exports.OrderItem = orderitem_1.OrderItem;
-var orderpayment_1 = __webpack_require__(789);
-exports.OrderPayment = orderpayment_1.OrderPayment;
-var sku_1 = __webpack_require__(790);
-exports.Sku = sku_1.Sku;
-var accountaddress_1 = __webpack_require__(784);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var accountaddress_1 = __webpack_require__(785);
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 787 */
-=======
-/* 788 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 789 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80672,11 +80342,7 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 788 */
-=======
-/* 789 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 790 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80693,11 +80359,7 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 789 */
-=======
-/* 790 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 791 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80737,11 +80399,7 @@ exports.Sku = Sku;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 790 */
-=======
-/* 791 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 792 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80774,11 +80432,7 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 791 */
-=======
-/* 792 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 793 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80799,11 +80453,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-var baseprocess_1 = __webpack_require__(790);
-=======
-var baseprocess_1 = __webpack_require__(791);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var baseprocess_1 = __webpack_require__(792);
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -80817,11 +80467,7 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 792 */
-=======
-/* 793 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 794 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80829,20 +80475,12 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-var order_addorderpayment_1 = __webpack_require__(791);
-=======
-var order_addorderpayment_1 = __webpack_require__(792);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var order_addorderpayment_1 = __webpack_require__(793);
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 793 */
-=======
-/* 794 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 795 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80894,11 +80532,7 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 794 */
-=======
-/* 795 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 796 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80958,11 +80592,7 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 795 */
-=======
-/* 796 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 797 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80998,11 +80628,7 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 796 */
-=======
-/* 797 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 798 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81038,11 +80664,7 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 797 */
-=======
-/* 798 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 799 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81128,11 +80750,7 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 798 */
-=======
-/* 799 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 800 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81169,11 +80787,7 @@ exports.CartService = CartService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 799 */
-=======
-/* 800 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 801 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81203,11 +80817,7 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 800 */
-=======
-/* 801 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 802 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81245,11 +80855,7 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 801 */
-=======
-/* 802 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 803 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81295,11 +80901,7 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 802 */
-=======
-/* 803 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 804 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81361,11 +80963,7 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 803 */
-=======
-/* 804 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 805 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81458,11 +81056,7 @@ exports.FormService = FormService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 804 */
-=======
-/* 805 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 806 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81647,11 +81241,7 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 805 */
-=======
-/* 806 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 807 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81688,11 +81278,7 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 806 */
-=======
-/* 807 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 808 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81725,11 +81311,7 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 807 */
-=======
-/* 808 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 809 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82210,11 +81792,7 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 808 */
-=======
-/* 809 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 810 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82999,11 +82577,7 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 809 */
-=======
-/* 810 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 811 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83292,11 +82866,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 810 */
-=======
-/* 811 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 812 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83332,11 +82902,7 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 811 */
-=======
-/* 812 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 813 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83394,11 +82960,7 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 812 */
-=======
-/* 813 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 814 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83549,11 +83111,7 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 813 */
-=======
-/* 814 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 815 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83722,11 +83280,7 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 814 */
-=======
-/* 815 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 816 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83764,11 +83318,7 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 815 */
-=======
-/* 816 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 817 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83809,11 +83359,7 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 816 */
-=======
-/* 817 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 818 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85239,11 +84785,7 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 817 */
-=======
-/* 818 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 819 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85353,11 +84895,7 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 818 */
-=======
-/* 819 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 820 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85365,13 +84903,8 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-var adminrequest_1 = __webpack_require__(793);
-var publicrequest_1 = __webpack_require__(794);
-=======
-var adminrequest_1 = __webpack_require__(794);
-var publicrequest_1 = __webpack_require__(795);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var adminrequest_1 = __webpack_require__(795);
+var publicrequest_1 = __webpack_require__(796);
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -85401,11 +84934,7 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 819 */
-=======
-/* 820 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 821 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85442,11 +84971,7 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 820 */
-=======
-/* 821 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 822 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85572,11 +85097,7 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 821 */
-=======
-/* 822 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 823 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85614,11 +85135,7 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 822 */
-=======
-/* 823 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 824 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85858,11 +85375,7 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 823 */
-=======
-/* 824 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 825 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86320,11 +85833,7 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 824 */
-=======
-/* 825 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 826 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86350,11 +85859,7 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 825 */
-=======
-/* 826 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 827 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86398,11 +85903,7 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 826 */
-=======
-/* 827 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 828 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86477,11 +85978,7 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 827 */
-=======
-/* 828 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 829 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86512,11 +86009,7 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 828 */
-=======
-/* 829 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 830 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86563,11 +86056,7 @@ exports.SWList = SWList;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 829 */
-=======
-/* 830 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 831 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86586,11 +86075,7 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 830 */
-=======
-/* 831 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 832 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86622,11 +86107,7 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 831 */
-=======
-/* 832 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 833 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86795,11 +86276,7 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 832 */
-=======
-/* 833 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 834 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86883,11 +86360,7 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 833 */
-=======
-/* 834 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 835 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86927,11 +86400,7 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 834 */
-=======
-/* 835 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 836 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87124,11 +86593,7 @@ exports.SWFForm = SWFForm;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 835 */
-=======
-/* 836 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 837 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87230,11 +86695,7 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 836 */
-=======
-/* 837 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 838 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87557,11 +87018,7 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 837 */
-=======
-/* 838 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 839 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87841,11 +87298,7 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 838 */
-=======
-/* 839 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 840 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87893,11 +87346,7 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 839 */
-=======
-/* 840 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 841 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87940,11 +87389,7 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 840 */
-=======
-/* 841 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 842 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88064,11 +87509,7 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 841 */
-=======
-/* 842 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 843 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88136,11 +87577,7 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 842 */
-=======
-/* 843 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 844 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88230,11 +87667,7 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 843 */
-=======
-/* 844 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 845 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88295,11 +87728,7 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 844 */
-=======
-/* 845 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 846 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88664,11 +88093,7 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 845 */
-=======
-/* 846 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 847 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88679,47 +88104,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(6);
 //services
-<<<<<<< HEAD
-var fileservice_1 = __webpack_require__(846);
+var fileservice_1 = __webpack_require__(848);
 //directives
 //  components
 //form
-var swinput_1 = __webpack_require__(844);
-var swfformfield_1 = __webpack_require__(835);
-var swform_1 = __webpack_require__(836);
-var swfform_1 = __webpack_require__(834);
-var swffileinput_1 = __webpack_require__(833);
-var swformfield_1 = __webpack_require__(837);
-var swformfieldfile_1 = __webpack_require__(838);
-var swformfieldjson_1 = __webpack_require__(839);
-var swformfieldsearchselect_1 = __webpack_require__(840);
-var swformregistrar_1 = __webpack_require__(841);
-var swerrordisplay_1 = __webpack_require__(832);
-var swaddressform_1 = __webpack_require__(831);
+var swinput_1 = __webpack_require__(846);
+var swfformfield_1 = __webpack_require__(837);
+var swform_1 = __webpack_require__(838);
+var swfform_1 = __webpack_require__(836);
+var swffileinput_1 = __webpack_require__(835);
+var swformfield_1 = __webpack_require__(839);
+var swformfieldfile_1 = __webpack_require__(840);
+var swformfieldjson_1 = __webpack_require__(841);
+var swformfieldsearchselect_1 = __webpack_require__(842);
+var swformregistrar_1 = __webpack_require__(843);
+var swerrordisplay_1 = __webpack_require__(834);
+var swaddressform_1 = __webpack_require__(833);
 var swpropertydisplay_1 = __webpack_require__(303);
-var swfpropertydisplay_1 = __webpack_require__(843);
-var swformsubscriber_1 = __webpack_require__(842);
-=======
-var fileservice_1 = __webpack_require__(847);
-//directives
-//  components
-//form
-var swinput_1 = __webpack_require__(845);
-var swfformfield_1 = __webpack_require__(836);
-var swform_1 = __webpack_require__(837);
-var swfform_1 = __webpack_require__(835);
-var swffileinput_1 = __webpack_require__(834);
-var swformfield_1 = __webpack_require__(838);
-var swformfieldfile_1 = __webpack_require__(839);
-var swformfieldjson_1 = __webpack_require__(840);
-var swformfieldsearchselect_1 = __webpack_require__(841);
-var swformregistrar_1 = __webpack_require__(842);
-var swerrordisplay_1 = __webpack_require__(833);
-var swaddressform_1 = __webpack_require__(832);
-var swpropertydisplay_1 = __webpack_require__(303);
-var swfpropertydisplay_1 = __webpack_require__(844);
-var swformsubscriber_1 = __webpack_require__(843);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var swfpropertydisplay_1 = __webpack_require__(845);
+var swformsubscriber_1 = __webpack_require__(844);
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -88744,11 +88147,7 @@ exports.formmodule = formmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 846 */
-=======
-/* 847 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 848 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88795,11 +88194,7 @@ exports.FileService = FileService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 847 */
-=======
-/* 848 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 849 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88909,11 +88304,7 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 848 */
-=======
-/* 849 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 850 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88923,29 +88314,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
 var alert_module_1 = __webpack_require__(297);
-var card_module_1 = __webpack_require__(697);
+var card_module_1 = __webpack_require__(698);
 var collection_module_1 = __webpack_require__(298);
-<<<<<<< HEAD
-var listing_module_1 = __webpack_require__(864);
+var listing_module_1 = __webpack_require__(866);
 var dialog_module_1 = __webpack_require__(301);
 var entity_module_1 = __webpack_require__(302);
-var pagination_module_1 = __webpack_require__(867);
-var form_module_1 = __webpack_require__(845);
-var validation_module_1 = __webpack_require__(886);
+var pagination_module_1 = __webpack_require__(869);
+var form_module_1 = __webpack_require__(847);
+var validation_module_1 = __webpack_require__(888);
 var workflow_module_1 = __webpack_require__(304);
 //directives
-var swsaveandfinish_1 = __webpack_require__(847);
-=======
-var listing_module_1 = __webpack_require__(865);
-var dialog_module_1 = __webpack_require__(301);
-var entity_module_1 = __webpack_require__(302);
-var pagination_module_1 = __webpack_require__(868);
-var form_module_1 = __webpack_require__(846);
-var validation_module_1 = __webpack_require__(887);
-var workflow_module_1 = __webpack_require__(304);
-//directives
-var swsaveandfinish_1 = __webpack_require__(848);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var swsaveandfinish_1 = __webpack_require__(849);
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -88987,11 +88366,7 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 849 */
-=======
-/* 850 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 851 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89040,11 +88415,7 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 850 */
-=======
-/* 851 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 852 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89103,11 +88474,7 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 851 */
-=======
-/* 852 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 853 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89267,11 +88634,7 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 852 */
-=======
-/* 853 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 854 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89451,11 +88814,7 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 853 */
-=======
-/* 854 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 855 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89518,11 +88877,7 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 854 */
-=======
-/* 855 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 856 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90223,11 +89578,7 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 855 */
-=======
-/* 856 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 857 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90349,11 +89700,7 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 856 */
-=======
-/* 857 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 858 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90430,11 +89777,7 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 857 */
-=======
-/* 858 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 859 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90493,11 +89836,7 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 858 */
-=======
-/* 859 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 860 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90536,11 +89875,7 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 859 */
-=======
-/* 860 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 861 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90597,11 +89932,7 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 860 */
-=======
-/* 861 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 862 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90649,11 +89980,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 861 */
-=======
-/* 862 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 863 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91160,11 +90487,7 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 862 */
-=======
-/* 863 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 864 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91228,11 +90551,7 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 863 */
-=======
-/* 864 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 865 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91459,11 +90778,7 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 864 */
-=======
-/* 865 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 866 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91474,43 +90789,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(298);
 //services
-<<<<<<< HEAD
-var listingservice_1 = __webpack_require__(865);
+var listingservice_1 = __webpack_require__(867);
 //directives
-var swlistingdisplay_1 = __webpack_require__(854);
-var swlistingreport_1 = __webpack_require__(861);
-var swlistingdisplaycell_1 = __webpack_require__(855);
-var swlistingcontrols_1 = __webpack_require__(852);
-var swlistingaggregate_1 = __webpack_require__(849);
-var swlistingcolorfilter_1 = __webpack_require__(850);
-var swlistingcolumn_1 = __webpack_require__(851);
-var swlistingdisablerule_1 = __webpack_require__(853);
-var swlistingexpandablerule_1 = __webpack_require__(856);
-var swlistingfilter_1 = __webpack_require__(857);
-var swlistingfiltergroup_1 = __webpack_require__(858);
-var swlistingorderby_1 = __webpack_require__(860);
-var swlistingrowsave_1 = __webpack_require__(862);
-var swlistingsearch_1 = __webpack_require__(863);
-var swlistingglobalsearch_1 = __webpack_require__(859);
-=======
-var listingservice_1 = __webpack_require__(866);
-//directives
-var swlistingdisplay_1 = __webpack_require__(855);
-var swlistingreport_1 = __webpack_require__(862);
-var swlistingdisplaycell_1 = __webpack_require__(856);
-var swlistingcontrols_1 = __webpack_require__(853);
-var swlistingaggregate_1 = __webpack_require__(850);
-var swlistingcolorfilter_1 = __webpack_require__(851);
-var swlistingcolumn_1 = __webpack_require__(852);
-var swlistingdisablerule_1 = __webpack_require__(854);
-var swlistingexpandablerule_1 = __webpack_require__(857);
-var swlistingfilter_1 = __webpack_require__(858);
-var swlistingfiltergroup_1 = __webpack_require__(859);
-var swlistingorderby_1 = __webpack_require__(861);
-var swlistingrowsave_1 = __webpack_require__(863);
-var swlistingsearch_1 = __webpack_require__(864);
-var swlistingglobalsearch_1 = __webpack_require__(860);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var swlistingdisplay_1 = __webpack_require__(856);
+var swlistingreport_1 = __webpack_require__(863);
+var swlistingdisplaycell_1 = __webpack_require__(857);
+var swlistingcontrols_1 = __webpack_require__(854);
+var swlistingaggregate_1 = __webpack_require__(851);
+var swlistingcolorfilter_1 = __webpack_require__(852);
+var swlistingcolumn_1 = __webpack_require__(853);
+var swlistingdisablerule_1 = __webpack_require__(855);
+var swlistingexpandablerule_1 = __webpack_require__(858);
+var swlistingfilter_1 = __webpack_require__(859);
+var swlistingfiltergroup_1 = __webpack_require__(860);
+var swlistingorderby_1 = __webpack_require__(862);
+var swlistingrowsave_1 = __webpack_require__(864);
+var swlistingsearch_1 = __webpack_require__(865);
+var swlistingglobalsearch_1 = __webpack_require__(861);
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -91538,11 +90833,7 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 865 */
-=======
-/* 866 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 867 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92510,11 +91801,7 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 866 */
-=======
-/* 867 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 868 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92560,11 +91847,7 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 867 */
-=======
-/* 868 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 869 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92573,13 +91856,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
-<<<<<<< HEAD
-var paginationservice_1 = __webpack_require__(868);
-var swpaginationbar_1 = __webpack_require__(866);
-=======
-var paginationservice_1 = __webpack_require__(869);
-var swpaginationbar_1 = __webpack_require__(867);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var paginationservice_1 = __webpack_require__(870);
+var swpaginationbar_1 = __webpack_require__(868);
 var core_module_1 = __webpack_require__(6);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -92596,11 +91874,7 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 868 */
-=======
-/* 869 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 870 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92797,11 +92071,7 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 869 */
-=======
-/* 870 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 871 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93190,11 +92460,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 870 */
-=======
-/* 871 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 872 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93226,11 +92492,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 871 */
-=======
-/* 872 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 873 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93263,11 +92525,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 872 */
-=======
-/* 873 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 874 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93331,11 +92589,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 873 */
-=======
-/* 874 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 875 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93365,11 +92619,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 874 */
-=======
-/* 875 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 876 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93399,11 +92649,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 875 */
-=======
-/* 876 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 877 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93437,11 +92683,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 876 */
-=======
-/* 877 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 878 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93474,11 +92716,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 877 */
-=======
-/* 878 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 879 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93512,11 +92750,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 878 */
-=======
-/* 879 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 880 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93549,11 +92783,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 879 */
-=======
-/* 880 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 881 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93583,11 +92813,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 880 */
-=======
-/* 881 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 882 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93617,11 +92843,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 881 */
-=======
-/* 882 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 883 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93652,11 +92874,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 882 */
-=======
-/* 883 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 884 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93693,11 +92911,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 883 */
-=======
-/* 884 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 885 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93730,11 +92944,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 884 */
-=======
-/* 885 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 886 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93771,11 +92981,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 885 */
-=======
-/* 886 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 887 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93932,11 +93138,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 886 */
-=======
-/* 887 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 888 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93945,45 +93147,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-<<<<<<< HEAD
-var swvalidate_1 = __webpack_require__(869);
-var swvalidationminlength_1 = __webpack_require__(877);
-var swvalidationdatatype_1 = __webpack_require__(870);
-var swvalidationeq_1 = __webpack_require__(871);
-var swvalidationeqproperty_1 = __webpack_require__(872);
-var swvalidationgte_1 = __webpack_require__(873);
-var swvalidationlte_1 = __webpack_require__(874);
-var swvalidationmaxlength_1 = __webpack_require__(875);
-var swvalidationmaxvalue_1 = __webpack_require__(876);
-var swvalidationminvalue_1 = __webpack_require__(878);
-var swvalidationneq_1 = __webpack_require__(879);
-var swvalidationnumeric_1 = __webpack_require__(880);
-var swvalidationregex_1 = __webpack_require__(881);
-var swvalidationrequired_1 = __webpack_require__(882);
-var swvalidationunique_1 = __webpack_require__(883);
-var swvalidationuniqueornull_1 = __webpack_require__(884);
+var swvalidate_1 = __webpack_require__(871);
+var swvalidationminlength_1 = __webpack_require__(879);
+var swvalidationdatatype_1 = __webpack_require__(872);
+var swvalidationeq_1 = __webpack_require__(873);
+var swvalidationeqproperty_1 = __webpack_require__(874);
+var swvalidationgte_1 = __webpack_require__(875);
+var swvalidationlte_1 = __webpack_require__(876);
+var swvalidationmaxlength_1 = __webpack_require__(877);
+var swvalidationmaxvalue_1 = __webpack_require__(878);
+var swvalidationminvalue_1 = __webpack_require__(880);
+var swvalidationneq_1 = __webpack_require__(881);
+var swvalidationnumeric_1 = __webpack_require__(882);
+var swvalidationregex_1 = __webpack_require__(883);
+var swvalidationrequired_1 = __webpack_require__(884);
+var swvalidationunique_1 = __webpack_require__(885);
+var swvalidationuniqueornull_1 = __webpack_require__(886);
 //services
-var validationservice_1 = __webpack_require__(885);
-=======
-var swvalidate_1 = __webpack_require__(870);
-var swvalidationminlength_1 = __webpack_require__(878);
-var swvalidationdatatype_1 = __webpack_require__(871);
-var swvalidationeq_1 = __webpack_require__(872);
-var swvalidationeqproperty_1 = __webpack_require__(873);
-var swvalidationgte_1 = __webpack_require__(874);
-var swvalidationlte_1 = __webpack_require__(875);
-var swvalidationmaxlength_1 = __webpack_require__(876);
-var swvalidationmaxvalue_1 = __webpack_require__(877);
-var swvalidationminvalue_1 = __webpack_require__(879);
-var swvalidationneq_1 = __webpack_require__(880);
-var swvalidationnumeric_1 = __webpack_require__(881);
-var swvalidationregex_1 = __webpack_require__(882);
-var swvalidationrequired_1 = __webpack_require__(883);
-var swvalidationunique_1 = __webpack_require__(884);
-var swvalidationuniqueornull_1 = __webpack_require__(885);
-//services
-var validationservice_1 = __webpack_require__(886);
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+var validationservice_1 = __webpack_require__(887);
 var core_module_1 = __webpack_require__(6);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -94011,11 +93192,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 887 */
-=======
-/* 888 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 889 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94049,11 +93226,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 888 */
-=======
-/* 889 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 890 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94091,11 +93264,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 889 */
-=======
-/* 890 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 891 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94129,11 +93298,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 890 */
-=======
-/* 891 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 892 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94254,11 +93419,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 891 */
-=======
-/* 892 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 893 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94289,11 +93450,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 892 */
-=======
-/* 893 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 894 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94343,11 +93500,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 893 */
-=======
-/* 894 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 895 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94394,11 +93547,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 894 */
-=======
-/* 895 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 896 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94670,11 +93819,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 895 */
-=======
-/* 896 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 897 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94874,11 +94019,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 896 */
-=======
-/* 897 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 898 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94980,11 +94121,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 897 */
-=======
-/* 898 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 899 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95029,11 +94166,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 898 */
-=======
-/* 899 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 900 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95322,11 +94455,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 899 */
-=======
-/* 900 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 901 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95438,11 +94567,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 900 */
-=======
-/* 901 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 902 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95500,11 +94625,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 901 */
-=======
-/* 902 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 903 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -95532,11 +94653,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 902 */
-=======
-/* 903 */
->>>>>>> 1c0cb2183965fbd720debb21a39a8e6db06599a7
+/* 904 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(305);

@@ -25,7 +25,7 @@ class SWEditSkuPriceModalLauncherController{
     public imagePath:string; 
     public selectCurrencyCodeEventName:string; 
     public priceGroupId:string;
-    
+
     //@ngInject
     constructor(
         public $hibachi,
@@ -40,53 +40,55 @@ class SWEditSkuPriceModalLauncherController{
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "editSkuPrice" + this.utilityService.createID(16);
+        
         //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-        let currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
-        if(angular.isDefined(currentScope.pageRecord)){ 
-            this.pageRecord = currentScope.pageRecord;
-            //sku record case
-            if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
-                let skuData = {
-                    skuID:currentScope.pageRecord["sku_skuID"],
-                    skuCode:currentScope.pageRecord["sku_skuCode"],
-                    calculatedSkuDefinition:currentScope.pageRecord["sku_calculatedSkuDefinition"]
-                }
+        // let currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
+        // if(angular.isDefined(currentScope.pageRecord)){ 
+        //     this.pageRecord = currentScope.pageRecord;
+        //     //sku record case
+        //     if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
+        //         let skuData = {
+        //             skuID:currentScope.pageRecord["sku_skuID"],
+        //             skuCode:currentScope.pageRecord["sku_skuCode"],
+        //             calculatedSkuDefinition:currentScope.pageRecord["sku_calculatedSkuDefinition"]
+        //         }
                 
-                let skuPriceData = {
-                    skuPriceID:currentScope.pageRecord.skuPriceID,
-                    minQuantity:currentScope.pageRecord.minQuantity,
-                    maxQuantity:currentScope.pageRecord.maxQuantity,
-                    currencyCode:currentScope.pageRecord.currencyCode, 
-                    price:currentScope.pageRecord.price
-                }
+        //         let skuPriceData = {
+        //             skuPriceID:currentScope.pageRecord.skuPriceID,
+        //             minQuantity:currentScope.pageRecord.minQuantity,
+        //             maxQuantity:currentScope.pageRecord.maxQuantity,
+        //             currencyCode:currentScope.pageRecord.currencyCode, 
+        //             price:currentScope.pageRecord.price
+        //         }
                 
-                let priceGroupData = {
-                    priceGroupID:currentScope.pageRecord["priceGroup_priceGroupID"],
-                    priceGroupCode:currentScope.pageRecord["priceGroup_priceGroupCode"]
-                }
+        //         let priceGroupData = {
+        //             priceGroupID:currentScope.pageRecord["priceGroup_priceGroupID"],
+        //             priceGroupCode:currentScope.pageRecord["priceGroup_priceGroupCode"]
+        //         }
                 
-                this.sku = this.$hibachi.populateEntity('Sku',skuData);
-                this.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
-                this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
-                this.skuPrice.$$setPriceGroup(this.priceGroup);
-                this.skuPrice.$$setSku(this.sku);
-                this.currencyCodeOptions = ["USD"]; //hard-coded for now
-            } else {
-                return;
-            }
-        } else{ 
-            throw("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-        } 
-        let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-        if(angular.isDefined(listingScope.swListingDisplay)){ 
-            this.listingID = listingScope.swListingDisplay.tableID;
-            this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
-            this.defaultCurrencyOnly = true;
-            this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
-        } else {
-            throw("swEditSkuPriceModalLauncher couldn't find listing scope");
-        }
-         this.initData();
+        //         this.sku = this.$hibachi.populateEntity('Sku',skuData);
+        //         this.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
+        //         this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
+        //         this.skuPrice.$$setPriceGroup(this.priceGroup);
+        //         this.skuPrice.$$setSku(this.sku);
+        //         this.currencyCodeOptions = ["USD"]; //hard-coded for now
+        //     } else {
+        //         return;
+        //     }
+        // } else{ 
+        //     throw("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
+        // } 
+        // let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
+        // if(angular.isDefined(listingScope.swListingDisplay)){ 
+        //     this.listingID = listingScope.swListingDisplay.tableID;
+        //     this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
+        //     this.defaultCurrencyOnly = true;
+        //     this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
+        // } else {
+        //     throw("swEditSkuPriceModalLauncher couldn't find listing scope");
+        // }
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        //  this.initData();
     }
     
     public updateCurrencyCodeSelector = (args) =>{
@@ -99,9 +101,34 @@ class SWEditSkuPriceModalLauncherController{
         this.observerService.notify("pullBindings");
     }
 
-    public initData = () =>{
+    public initData = (pageRecord?:any) =>{
+        console.log(pageRecord);
+        this.pageRecord = pageRecord;
+        if(angular.isDefined(pageRecord)){
+           let skuPriceData = {
+                skuPriceID : pageRecord.skuPriceID,
+                minQuantity : pageRecord.minQuantity,
+                maxQuantity : pageRecord.maxQuantity,
+                currencyCode : pageRecord.currencyCode, 
+                price : pageRecord.price
+            } 
+            
+            let skuData = {
+                skuID:pageRecord["sku_skuID"],
+                skuCode:pageRecord["sku_skuCode"],
+                calculatedSkuDefinition:pageRecord["sku_calculatedSkuDefinition"]
+            }
+            
+            this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+            this.sku = this.$hibachi.populateEntity('Sku', skuData);
+            console.log(this.skuPrice);
+            console.log(this.sku);
+        } else {
+            return;
+        }
+        $("#"+this.uniqueName).modal();
         //these are populated in the link function initially
-        if(angular.isUndefined(this.disableAllFieldsButPrice)){
+        /*if(angular.isUndefined(this.disableAllFieldsButPrice)){
             this.disableAllFieldsButPrice = false; 
         }
         if(angular.isUndefined(this.defaultCurrencyOnly)){
@@ -126,7 +153,9 @@ class SWEditSkuPriceModalLauncherController{
             this.skuPrice.data.currencyCode = this.currencyCode; 
         } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
             this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
-        }
+        }*/
+        
+        
         this.observerService.notify("pullBindings");
     }
     
@@ -141,20 +170,16 @@ class SWEditSkuPriceModalLauncherController{
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 
                 //temporarily overriding for USD need to get this setting accessable to client side
-                if( angular.isDefined(this.listingID) && 
+                if( angular.isDefined(this.skuPrice) && 
                     this.skuPrice.data.currencyCode == "USD"
                 ){
-                   var pageRecords = this.listingService.getListingPageRecords(this.listingID);
+                //   var pageRecords = this.listingService.getListingPageRecords(this.listingID);
                    
-                   for(var i=0; i < pageRecords.length; i++){
-                        if( angular.isDefined(pageRecords[i].skuID) &&
-                            pageRecords[i].skuID == this.sku.data.skuID
+                        if( angular.isDefined(this.pageRecord) &&
+                            angular.isDefined(this.pageRecord.skuID)
                         ){
-                            var skuPageRecord = pageRecords[i];
-                            var index = i + 1; 
-                            while(index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)){
-                                //let's find and update the sku price
-                                if(pageRecords[index].skuPriceID === this.skuPrice.skuPriceID){
+                            var skuPricePageRecord = this.pageRecord;
+                           
                                     this.skuPrice.data.eligibleCurrencyCodeList = this.currencyCodeOptions.join(",");
                                     //spoof the page record
                                     var skuPriceForListing:any = {}; 
@@ -166,14 +191,9 @@ class SWEditSkuPriceModalLauncherController{
                                     skuPriceForListing["sku_calculatedSkuDefinition"] = this.sku.calculatedSkuDefinition;
                                     skuPriceForListing["priceGroup_priceGroupCode"] = skuPriceForListing.selectedpriceGroup.priceGroupCode;
                                     skuPriceForListing["priceGroup_priceGroupID"] = skuPriceForListing.selectedpriceGroup.priceGroupID;
-                                    pageRecords[index] = skuPriceForListing;
-                                    break; 
-                                }  
-                                index++; 
+                                    this.pageRecord = skuPriceForListing;
                             }
                         }
-                   }
-                } 
             },
             (reason)=>{
                 //error callback
