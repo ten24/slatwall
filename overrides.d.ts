@@ -18,28 +18,13 @@ declare global {
         // AngularStatic
         // We reopen it to add the LazyBootstrap definition
         ///////////////////////////////////////////////////////////////////////////
-        interface IAngularStatic implements ng.IAngularStatic {
+        interface IAngularStatic implements IAngularStatic {
             lazy(app: any, modules?: any): any;
         }
 
 
     }
 
-
-    // namespace angular {
-    //     interface Function {
-    //     }
-
-    //     interface IAngularStatic {
-    //         mock: IMockStatic;
-    //     }
-    // }
-    // declare namespace angular {
-    //     interface IScope extends IRootScopeService {
-    //         [x: string]: any;
-
-    //     }
-    // }
 }
 
 
