@@ -24,7 +24,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				var numberOfColumns = listlen(line, ',', true); 
 			} else {
 				var row = []; 
-				var capture = false;
+				var capture = true;
 				var isText = false;  
 				var capturedText = ''; 
 				for(var j = 1; j <= Len(line); j++){
