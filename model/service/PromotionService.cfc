@@ -102,7 +102,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	private void function setupOrderItemQualifiedDiscounts(required any order, required struct orderItemQualifiedDiscounts){
 		
-		
 		// Loop over orderItems and add Sale Prices to the qualified discounts
 		for(var orderItem in arguments.order.getOrderItems()) {
 			var salePriceDetails = orderItem.getSalePrice();
@@ -393,8 +392,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  			}
  		}
  		
- 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity(),'md5');
-		
+ 		// var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity(),'md5');
+		var promotionCacheKey = getHibachiScope().createHibachiUUID();
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
 
@@ -454,7 +453,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
 				removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-				writeDump(var=orderItemQualifiedDiscounts,top=4);abort;
+
 				// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
 				applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 	
@@ -963,7 +962,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public boolean function getOrderItemInReward(required any reward, required any orderItem) {
 		var skuCollection = reward.getSkuCollection();
 		if(!isNull(skuCollection)){
-			return reward.hasOrderItemSku(arguments.orderItem);
+			return this.rewardHasSkuBySkuID(arguments.reward,arguments.orderItem.getSku().getSkuID());
 		/*========BEGIN DEPRECATED LOGIC========*/
 		}else{
 			// START: Check Exclusions
@@ -1031,6 +1030,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		/*==========END DEPRECATED LOGIC=========*/
 	}
+	
+	private boolean function rewardHasSkuBySkuID( required any reward, required any skuID){
+		return arguments.reward.hasSkuBySkuID(arguments.skuID)
+	}
 
 	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode) {
 		var discountAmountPreRounding = 0;
@@ -1084,78 +1087,121 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ----------------- END: Apply Promotion Logic -------------------------
 
 	public struct function getSalePriceDetailsForProductSkus(required string productID, string currencyCode='') {
-		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getSalePricePromotionRewardsQuery(productID = arguments.productID,currencyCode = arguments.currencyCode), "skuID");
 		
-		for(var key in priceDetails) {
-			if(priceDetails[key].roundingRuleID != "") {
-				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
-			}
-			priceDetails[key].salePrice=round(priceDetails[key].salePrice*100)/100; //Round to 2 decimals
-		}
+		var priceDetails = getProductSkuSalePricesByPromoRewardSkuCollection( productID=arguments.productID, currencyCode=arguments.currencyCode );
+
+		//Get values for deprecated promotions
+		var deprecatedPriceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getSalePricePromotionRewardsQuery(productID = arguments.productID,currencyCode = arguments.currencyCode), "skuID");
+
+		priceDetails = getLowestRoundedPriceDetails(priceDetails,deprecatedPriceDetails);
+		
 		return priceDetails;
 	}
 
 	public struct function getSalePriceDetailsForOrderItem(required any orderItem) {
+
+		var priceDetails = getOrderItemSalePricesByPromoRewardSkuCollection( arguments.orderItem );
 		
-		var priceDetails = getOrderItemSalePricesBySkuCollection(arguments.orderItem);
-		writeDump(priceDetails);abort;
-		// var priceDetails = {};
 		//Get values for deprecated promotions
-		structAppend(priceDetails,getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getOrderItemSalePricePromotionRewardsQuery(orderItem = arguments.orderItem), "orderItemID"));
-		writeDump('next up is price details');
-		for(var key in priceDetails) {
-			if(priceDetails[key].roundingRuleID != "") {
-				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
-			}
-		}
+		var deprecatedPriceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getOrderItemSalePricePromotionRewardsQuery(orderItem = arguments.orderItem), "orderItemID");
+
+		priceDetails = getLowestRoundedPriceDetails(priceDetails,deprecatedPriceDetails);
 
 		return priceDetails;
 	}
 	
-	public struct function getOrderItemSalePricesBySkuCollection(required any orderItem){
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true );
-		var discountAmount = 0;
-		var originalPrice = arguments.orderItem.getPrice();
+	public struct function getLowestRoundedPriceDetails(required struct priceDetails, required struct deprecatedPriceDetails){
+		for(var key in arguments.priceDetails) {
+			try{
+				if(arguments.priceDetails[key].roundingRuleID != "") {
+					arguments.priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=arguments.priceDetails[key].salePrice, roundingRuleID=arguments.priceDetails[key].roundingRuleID);
+				}
+			}catch(any e){
+				writeDump('boo you whore');
+				writeDump(arguments.priceDetails);abort;
+			}
+		}
+		for(var key in arguments.deprecatedPriceDetails){
+			if(arguments.deprecatedPriceDetails[key].roundingRuleID != "") {
+				arguments.deprecatedPriceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=arguments.deprecatedPriceDetails[key].salePrice, roundingRuleID=arguments.deprecatedPriceDetails[key].roundingRuleID);
+			}
+			if( !structKeyExists( arguments.priceDetails, key )
+				|| ( arguments.priceDetails[key].salePrice > arguments.deprecatedPriceDetails[key].salePrice ) ){
+				
+				arguments.priceDetails[key] = arguments.deprecatedPriceDetails[key];
+				
+			}
+		}
+		return arguments.priceDetails;
+	}
+	
+	public struct function getProductSkuSalePricesByPromoRewardSkuCollection( required string productID, string currencyCode='' ){
+		var product = getService('productService').getProduct( arguments.productID );
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true );
+		var skus = product.getSkus();
+		var priceDetails = {};
 		
+		for(var sku in skus){
+			var skuPriceDetails = getPriceDetailsForPromoRewards(
+														promoRewards=activePromotionRewardsWithSkuCollection,
+														skuID=sku.getSkuID(),
+														originalPrice=sku.getPriceByCurrencyCode(arguments.currencyCode),
+														currencyCode=arguments.currencyCode);
+			structAppend(priceDetails,{'#sku.getSkuID()#':skuPriceDetails});
+		}
+		return priceDetails;
+	}
+	
+	public struct function getOrderItemSalePricesByPromoRewardSkuCollection(required any orderItem){
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true );
+		var originalPrice = arguments.orderItem.getSkuPrice();
+		var currencyCode = arguments.orderItem.getCurrencyCode();
+		
+		var priceDetails = getPriceDetailsForPromoRewards(
+														promoRewards=activePromotionRewardsWithSkuCollection,
+														skuID=arguments.orderItem.getSkuID(),
+														originalPrice=originalPrice,
+														currencyCode=currencyCode);
+		
+		return {'#arguments.orderItem.getOrderItemID()#':priceDetails};
+	}
+	
+	public struct function getPriceDetailsForPromoRewards(required array promoRewards, 
+															required string skuID,
+															required string originalPrice,
+															string currencyCode = ''){
 		var priceDetails = {
-			originalPrice:originalPrice,
+			originalPrice:arguments.originalPrice,
 			promotionID:'',
 			roundingRuleID:'',
-			salePrice:originalPrice,
+			salePrice:arguments.originalPrice,
 			salePriceDiscountType:'',
 			salePriceExpirationDateTime:''
 		};
-		
-		for( var promoReward in activePromotionRewardsWithSkuCollection ){
-			if( getOrderItemInReward( promoReward, arguments.orderItem ) ){
+		var discountAmount = 0;
+		for( var promoReward in promoRewards ){
+			if( rewardHasSkuBySkuID( promoReward, arguments.skuID ) ){
 				var promoDiscountAmount = getDiscountAmount( 
 															promoReward, 
 															originalPrice, 
-															1, 
-															arguments.orderItem.getCurrencyCode());
+															1,
+															currencyCode);
 				if(promoDiscountAmount > discountAmount){
 					discountAmount = promoDiscountAmount;
 					priceDetails.promotionID = promoReward.getPromotionPeriod().getPromotion().getPromotionID();
-					priceDetails.roundingRuleID = promoReward.getRoundingRule().getRoundingRuleID();
 					priceDetails.salePriceExpirationDateTime = promoReward.getPromotionPeriod().getEndDateTime();
+					
+					if(!isNull(promoReward.getRoundingRule())){
+						priceDetails.roundingRuleID = promoReward.getRoundingRule().getRoundingRuleID();
+					}
+					
 					var amountType = promoReward.getAmountType();
 					priceDetails.salePriceDiscountType = amountType;
-					switch(amountType){
-						case 'percentageOff':
-							priceDetails.salePrice = originalPrice - (originalPrice * (discountAmount / 100));
-							break;
-						case 'amount':
-							priceDetails.salePrice = discountAmount;
-							break;
-						case 'amountOff':
-							priceDetails.salePrice = originalPrice - discountAmount;
-							break;
-					}
+					priceDetails.salePrice = originalPrice - discountAmount;
 				}
 			}
 		}
-		
-		return {'#arguments.orderItem.getOrderItemID()#':priceDetails};
+		return priceDetails;
 	}
 
 	public struct function getShippingMethodOptionsDiscountAmountDetails(required any shippingMethodOption) {
