@@ -40,9 +40,10 @@ class SWModalLauncherController {
     }
     
     public launchModal = () =>{
-        //activate the necessary modal
-        console.log('launching modal!!!')
+        //this.showModal is only for use with custom template
         this.showModal = true; 
+        
+        //trigger bootstrap event to show modal
         $("#" + this.modalName).modal('show');
     }
     

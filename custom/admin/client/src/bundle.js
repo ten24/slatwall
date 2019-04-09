@@ -77815,9 +77815,9 @@ var SWModalLauncherController = /** @class */ (function () {
         this.hasCancelAction = false;
         this.hasDeleteAction = false;
         this.launchModal = function () {
-            //activate the necessary modal
-            console.log('launching modal!!!');
+            //this.showModal is only for use with custom template
             _this.showModal = true;
+            //trigger bootstrap event to show modal
             $("#" + _this.modalName).modal('show');
         };
         this.saveCallback = function () {
