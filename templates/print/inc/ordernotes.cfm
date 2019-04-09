@@ -1,5 +1,5 @@
 <cfoutput>
-    <cfif not isNull(order.getNotes())>
+    <cfif not isNull(order.getorderNotes())>
         <div style="clear:both;">
             <h4 style="border-bottom:2px solid black;">Customer Comments</h4>
             <p>#getHibachiScope().getService('HibachiUtilityService').hibachiHTMLEditFormat(order.getNotes())#</p>
