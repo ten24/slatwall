@@ -1,58 +1,43 @@
 <cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
-<!--- Start: Related Products Example --->
+	
+<!--- Get the related products collection list --->
+<cfset relatedProductsCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
+<cfset relatedProductsCollectionList.addFilter("productID",$.slatwall.product().getProductID())/>
+<!--- Adding fliter to only show active / published products --->
+<cfset relatedProductsCollectionList.addFilter("relatedProducts.relatedProduct.activeFlag",1)>
+<cfset relatedProductsCollectionList.addFilter("relatedProducts.relatedProduct.publishedFlag",1)>
+<!--- Set related product properties to display --->
+<cfset relatedProductsCollectionList.setDisplayProperties("relatedProducts.relatedProduct.activeFlag,relatedProducts.relatedProduct.publishedFlag,relatedProducts.relatedProduct.productType.productTypeName,relatedProducts.relatedProduct.calculatedSalePrice,relatedProducts.relatedProduct.productID,relatedProducts.relatedProduct.urlTitle,relatedProducts.relatedProduct.defaultSku.skuID|defaultSku_skuID,relatedProducts.relatedProduct.defaultSku.imageFile|defaultSku_imageFile,relatedProducts.relatedProduct.defaultSku.skuCode|defaultSku_skuCode,relatedProducts.relatedProduct.defaultSku.bundleFlag|defaultSku_bundleFlag,relatedProducts.relatedProduct.defaultSku.price|defaultSku_price,relatedProducts.relatedProduct.productName")>
+<cfset relatedProductsCollectionList.addDisplayAggregate('relatedProducts.relatedProduct.defaultSku.bundledSkus','count','bundledSkusCount') />
+<cfset relatedProductsCollectionList.setPageRecordsShow(6)>
+<cfset relatedProducts = relatedProductsCollectionList.getPageRecords()>
+<!--- Verify that there are records --->
+<cfif ArrayLen(relatedProducts)>
+
+	<h2>Related Products</h2>
+	
 	<div class="row">
-		<div class="span12">
-
-			<h5>Related Products Example</h5>
-
-			<!--- Get the related products smart list --->
-			<cfset relatedProductsSmartList = local.product.getRelatedProductsSmartList() />
-
-			<!--- Setting this to only show 4 --->
-			<cfset relatedProductsSmartList.setPageRecordsShow(4) />
-
-			<!--- Adding fliter to only show active / published products --->
-			<cfset relatedProductsSmartList.addFilter('activeFlag', 1) />
-			<cfset relatedProductsSmartList.addFilter('publishedFlag', 1) />
-
-			<!--- Verify that there are records --->
-			<cfif relatedProductsSmartList.getRecordsCount()>
-				<ul class="thumbnails">
-
-					<!--- Promary loop for each related product --->
-					<cfloop array="#relatedProductsSmartList.getPageRecords()#" index="product">
-
-						<!--- Individual Product --->
-						<li class="span3">
-
-							<div class="thumbnail">
-
-								<!--- Product Image --->
-								<img src="#product.getResizedImagePath(size='m')#" alt="#product.getCalculatedTitle()#" />
-
-								<!--- The Calculated Title allows you to setup a title string as a dynamic setting.  When you call getTitle() it generates the title based on that title string setting. To be more perfomant this value is cached as getCalculatedTitle() --->
-								<h5>#product.getCalculatedTitle()#</h5>
-
-								<!--- Check to see if the products price is > the sale price.  If so, then display the original price with a line through it --->
-								<cfif product.getPrice() gt product.getCalculatedSalePrice()>
-									<p><span style="text-decoration:line-through;">#product.getPrice()#</span> <span class="text-error">#product.getFormattedValue('calculatedSalePrice')#</span></p>
-								<cfelse>
-									<p>#product.getFormattedValue('calculatedSalePrice')#</p>
-								</cfif>
-
-								<!--- This is the link to the product detail page.  sense we aren't on a listing page you should always just use the standard getProductURL() --->
-								<a href="#product.getProductURL()#">Details / Buy</a>
-
-							</div>
-						</li>
-					</cfloop>
-				</ul>
-			<cfelse>
-				<p>There are no related products.</p>
-			</cfif>
-
-		</div>
+		<!--- Promary loop for each related product --->
+		<cfloop array="#relatedProducts#" index="local.product">
+			<div class="col-md-3">
+		    	<div class="card">
+					<cfset local.smallimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.product['relatedProducts_relatedProduct_defaultSku_skuID']#","medium") />
+					<a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['relatedProducts_relatedProduct_urlTitle']#">
+						<cfif arrayLen(local.smallImages)>
+							<img src="#local.smallimages[1]#" class="card-img-top" alt="#local.product['productName']#">
+						</cfif>
+					</a>
+					<div class="card-body">
+						<h5 class="card-title">
+							<a href="/store/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['relatedProducts_relatedProduct_urlTitle']#">#local.product['relatedProducts_relatedProduct_productName']#</a>
+						</h5>
+					
+						<a href="#local.product['relatedProducts_relatedProduct_urlTitle']#" class="btn btn-light btn-sm btn-block">View Product</a>
+					</div>
+				</div>
+			</div>
+	    </cfloop>
 	</div>
-	<!--- End: Related Products Example --->
+</cfif>
 </cfoutput>
