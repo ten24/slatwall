@@ -1,14 +1,15 @@
 
-class FrontendController{
-        
+class FrontendController {
+
+        //@ngInject
         constructor(
                 private $scope,
-                private $element, private $log:ng.ILogService,
+                private $element, private $log: ng.ILogService,
                 private $hibachi,
                 private collectionConfigService,
-                private selectionService){
-                
+                private selectionService) {
+
         }
 
 }
-export{FrontendController}
+export { FrontendController }

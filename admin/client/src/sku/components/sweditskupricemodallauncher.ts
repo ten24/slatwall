@@ -250,6 +250,7 @@ class SWEditSkuPriceModalLauncher implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         private $hibachi,
         private entityService,

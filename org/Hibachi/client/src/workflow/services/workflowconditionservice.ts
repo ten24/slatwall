@@ -17,6 +17,8 @@ class WorkflowCondition{
 
  class WorkflowConditionService{
 	public static $inject = ["$log","$hibachi","alertService"];
+	
+	//@ngInject
 	public constructor(public $log:ng.ILogService,$hibachi,alertService){
 
 	}

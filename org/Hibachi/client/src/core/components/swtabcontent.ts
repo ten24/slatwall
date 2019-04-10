@@ -8,7 +8,7 @@ class SWTabContentController {
     public loaded: boolean;
 
 
-    // @ngInject
+    //@ngInject
     constructor(private $scope,
         private $q,
         private $transclude,
@@ -54,7 +54,7 @@ class SWTabContent implements ng.IDirective {
     public controller = SWTabContentController;
     public controllerAs = "swTabContent";
 
-    // @ngInject
+    //@ngInject
     constructor(public $compile, private scopeService, private observerService, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabcontent.html";
     }

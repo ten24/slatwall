@@ -1,14 +1,13 @@
-import {Cart} from "../model/entity/cart";
-import {BaseEntityService} from "./baseentityservice";
-class CartService extends BaseEntityService{
-    //@ngInject
+import { Cart } from "../model/entity/cart";
+import { BaseEntityService } from "./baseentityservice";
+class CartService extends BaseEntityService {
     //@ngInject
     constructor(
-        public $injector:ng.auto.IInjectorService,
+        public $injector: ng.auto.IInjectorService,
         public $hibachi,
         public utilityService
-    ){
-        super($injector,$hibachi,utilityService,'Order','Cart');
+    ) {
+        super($injector, $hibachi, utilityService, 'Order', 'Cart');
     }
 }
 export {

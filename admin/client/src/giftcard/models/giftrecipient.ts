@@ -7,21 +7,22 @@ class GiftRecipient {
     public account;
     public editing;
 
+    //@ngInject
     constructor(
         firstName?: string,
         lastName?: string,
         emailAddress?: string,
         giftMessage?: string,
-        quantity?:number,
-        account?:boolean,
-        editing?:boolean
+        quantity?: number,
+        account?: boolean,
+        editing?: boolean
     ) {
         this.quantity = 1;
         this.editing = false;
         this.account = false;
     }
 
-    public reset = () =>{
+    public reset = () => {
         this.firstName = null;
         this.lastName = null;
         this.emailAddress = null;
@@ -30,6 +31,6 @@ class GiftRecipient {
         this.quantity = 1;
     }
 }
-export{
+export {
     GiftRecipient
 }

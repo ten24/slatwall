@@ -9,6 +9,7 @@ class SWGiftCardBalanceController {
 
 	public static $inject = ["collectionConfigService"];
 
+	//@ngInject
 	constructor(private collectionConfigService) {
 		this.init();
 	}
@@ -82,6 +83,7 @@ class SWGiftCardBalance implements ng.IDirective {
 		return directive;
 	}
 
+	//@ngInject
 	constructor(private collectionConfigService, private giftCardPartialsPath, private slatwallPathBuilder) {
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/balance.html";
 		this.restrict = "EA";

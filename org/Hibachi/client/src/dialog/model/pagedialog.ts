@@ -1,8 +1,9 @@
 
 //model
 class PageDialog {
-    public partialFileName:string;
-    public path:string;
+    public partialFileName: string;
+    public path: string;
+    //@ngInject
     constructor(
         path: string
     ) {

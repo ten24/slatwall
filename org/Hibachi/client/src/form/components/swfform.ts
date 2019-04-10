@@ -18,7 +18,7 @@ class SWFFormController {
     public errorToDisplay:string; //very first error returned from call
     public uploadProgressPercentage:any = 0;
     
-    // @ngInject
+    //@ngInject
     constructor(
         public $rootScope,
         public $scope,
@@ -183,7 +183,7 @@ class SWFForm  {
     };
     public controller       = SWFFormController;
     public controllerAs     = "swfForm";
-    // @ngInject
+    //@ngInject
     constructor() {
     }
     /**

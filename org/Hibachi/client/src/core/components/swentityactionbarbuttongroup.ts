@@ -1,23 +1,24 @@
-class SWEntityActionBarButtonGroupController{
-	constructor(){
+class SWEntityActionBarButtonGroupController {
+	//@ngInject
+	constructor() {
 
 	}
 }
 
-class SWEntityActionBarButtonGroup implements ng.IDirective{
+class SWEntityActionBarButtonGroup implements ng.IDirective {
 
-	public restrict:string = 'E';
+	public restrict: string = 'E';
 	public scope = {};
-	public transclude=true;
-	public bindToController={
+	public transclude = true;
+	public bindToController = {
 
 	};
-	public controller=SWEntityActionBarButtonGroupController
-	public controllerAs="swEntityActionBarButtonGroup";
+	public controller = SWEntityActionBarButtonGroupController
+	public controllerAs = "swEntityActionBarButtonGroup";
 	public templateUrl;
 
-	public static Factory(){
-		var directive:ng.IDirectiveFactory=(
+	public static Factory() {
+		var directive: ng.IDirectiveFactory = (
 			corePartialsPath,
 			hibachiPathBuilder
 		) => new SWEntityActionBarButtonGroup(
@@ -28,17 +29,17 @@ class SWEntityActionBarButtonGroup implements ng.IDirective{
 			'hibachiPathBuilder'];
 		return directive;
 	}
-    //@ngInject
+	//@ngInject
 	constructor(private corePartialsPath,
-			hibachiPathBuilder){
-		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'entityactionbarbuttongroup.html';
+		hibachiPathBuilder) {
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'entityactionbarbuttongroup.html';
 	}
 
-	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+	public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
 
 	}
 }
-export{
+export {
 	SWEntityActionBarButtonGroup
 }
 

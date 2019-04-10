@@ -10,7 +10,7 @@ class SWOptionsForOptionGroupController {
 
     public selectedOption;
 
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout,
                 private collectionConfigService,
                 private observerService
@@ -82,7 +82,7 @@ class SWOptionsForOptionGroup implements ng.IDirective{
         ];
         return directive;
     }
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout,
                 private collectionConfigService,
                 private observerService, private optionGroupPartialsPath, slatwallPathBuilder

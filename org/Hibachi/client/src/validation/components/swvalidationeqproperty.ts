@@ -4,36 +4,36 @@
  * value other than 5.
  */
 
-import {ValidationService} from "../services/validationservice";
-import {ObserverService} from "../../core/services/observerservice";
+import { ValidationService } from "../services/validationservice";
+import { ObserverService } from "../../core/services/observerservice";
 
 
-class SWValidationEqPropertyController{
+class SWValidationEqPropertyController {
+    public swvalidationeqproperty: any;
+
     //@ngInject
-    public swvalidationeqproperty:any;
-
-    constructor(private $rootScope, private validationService,private $scope){
+    constructor(private $rootScope, private validationService, private $scope) {
     }
-    
-    $onChanges = (changes)=>{
-        if(this.$scope.ngModel && this.$scope.ngModel.$validators && changes.swvalidationeqproperty){
-            this.$scope.ngModel.$validators.swvalidationeqproperty = (modelValue, viewValue)=>{
+
+    $onChanges = (changes) => {
+        if (this.$scope.ngModel && this.$scope.ngModel.$validators && changes.swvalidationeqproperty) {
+            this.$scope.ngModel.$validators.swvalidationeqproperty = (modelValue, viewValue) => {
                 let confirmValue;
-                if(changes.swvalidationeqproperty){
+                if (changes.swvalidationeqproperty) {
                     confirmValue = changes.swvalidationeqproperty.currentValue;
                 }
                 return confirmValue === modelValue;
 
             };
         }
-        if(this.$scope.ngModel){
+        if (this.$scope.ngModel) {
             this.$scope.ngModel.$validate();
         }
     }
-    
+
 }
 
-class SWValidationEqProperty{
+class SWValidationEqProperty {
     public static Factory() {
         var directive = (
             $rootScope,
@@ -44,32 +44,32 @@ class SWValidationEqProperty{
             validationService,
             observerService
         );
-        
-        directive.$inject = ['$rootScope','validationService','observerService'];
+
+        directive.$inject = ['$rootScope', 'validationService', 'observerService'];
         return directive;
     }
-    
+
     //@ngInject
     constructor(
         $rootScope,
-        validationService:ValidationService,
-        observerService:ObserverService
-    ){
+        validationService: ValidationService,
+        observerService: ObserverService
+    ) {
         return {
-            controller:SWValidationEqPropertyController,
-            controllerAs:"swValidationEqProperty",
+            controller: SWValidationEqPropertyController,
+            controllerAs: "swValidationEqProperty",
             restrict: "A",
-            require:"^ngModel",
-            scope:{},
+            require: "^ngModel",
+            scope: {},
             bindToController: {
                 swvalidationeqproperty: "<"
             },
-            link: function(scope, element, attributes, ngModel) {
+            link: function (scope, element, attributes, ngModel) {
                 scope.ngModel = ngModel;
             }
         };
     }
 }
-export{
+export {
     SWValidationEqProperty
 }

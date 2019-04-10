@@ -30,6 +30,8 @@ class SWChildOrderItem {
     ];
     return directive;
   }
+
+  //@ngInject
   constructor(
     $log,
     $http,

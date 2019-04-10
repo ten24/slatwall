@@ -21,6 +21,8 @@ class SWFilterItem {
 		];
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 		$log,
 		collectionService,

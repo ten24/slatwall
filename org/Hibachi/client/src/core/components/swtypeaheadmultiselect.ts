@@ -26,7 +26,7 @@ class SWTypeaheadMultiselectController {
     public listingId: string;
     public disabled: boolean;
 
-    // @ngInject
+    //@ngInject
     constructor(private $scope,
         private $transclude,
         private $hibachi,
@@ -112,7 +112,7 @@ class SWTypeaheadMultiselect implements ng.IDirective {
     public controller = SWTypeaheadMultiselectController;
     public controllerAs = "swTypeaheadMultiselect";
 
-    // @ngInject
+    //@ngInject
     constructor(public $compile, public scopeService, public typeaheadService, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadmultiselect.html";
     }

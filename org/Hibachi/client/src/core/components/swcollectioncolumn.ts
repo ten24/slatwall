@@ -2,6 +2,7 @@ import * as angular from "angular";
 
 
 class SWCollectionColumnController {
+    //@ngInject
     constructor() { }
 }
 

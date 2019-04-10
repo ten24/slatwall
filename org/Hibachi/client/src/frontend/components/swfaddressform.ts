@@ -8,6 +8,7 @@ class SWFAddressFormController extends SWFFormController {
     public fields;
     public addressOptions;
 
+    //@ngInject
     constructor(public $rootScope,
         public $scope,
         public $timeout,

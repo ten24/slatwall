@@ -13,7 +13,8 @@ class SWWorkflowTask{
 		];
 		return directive;
 	}
-	constructor(
+	//@ngInject
+		constructor(
 		workflowPartialsPath,
 			hibachiPathBuilder
 	){

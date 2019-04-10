@@ -1,68 +1,69 @@
 
 
-class SWFPromoBoxController{
+class SWFPromoBoxController {
     //@ngInject
-    public addPromotionCodeIsLoading:boolean;
-    public removePromotionCodeIsLoading:boolean;
-    public alertDisplaying:boolean = false;
-    
-    constructor(private $rootScope, private $timeout){
+    public addPromotionCodeIsLoading: boolean;
+    public removePromotionCodeIsLoading: boolean;
+    public alertDisplaying: boolean = false;
+
+    //@ngInject
+    constructor(private $rootScope, private $timeout) {
         this.$rootScope = $rootScope;
     }
-    public addPromotionCode = (promoCode)=>{
+    public addPromotionCode = (promoCode) => {
         this.addPromotionCodeIsLoading = true;
         let data = {
-            'promotionCode':promoCode
+            'promotionCode': promoCode
         }
-        this.$rootScope.slatwall.doAction('addPromotionCode',data).then(result=>{
+        this.$rootScope.slatwall.doAction('addPromotionCode', data).then(result => {
             this.addPromotionCodeIsLoading = false;
             this.displayAlert();
-           
+
         });
     }
-    public removePromotionCode = (promoCode)=>{
+    public removePromotionCode = (promoCode) => {
         this.removePromotionCodeIsLoading = true;
         let data = {
-            'promotionCode':promoCode.promotionCode
+            'promotionCode': promoCode.promotionCode
         }
-        this.$rootScope.slatwall.doAction('removePromotionCode',data).then(result=>{
+        this.$rootScope.slatwall.doAction('removePromotionCode', data).then(result => {
             this.removePromotionCodeIsLoading = false;
-        }); 
+        });
     }
-    
-    public displayAlert(){
+
+    public displayAlert() {
         this.alertDisplaying = true
-         this.$timeout(()=>{
+        this.$timeout(() => {
             this.alertDisplaying = false;
-        },3000);
+        }, 3000);
     }
 }
 
-class SWFPromoBox{
-    public static Factory(){
+class SWFPromoBox {
+    public static Factory() {
         var directive = (
             $rootScope
-        )=> new SWFPromoBox(
+        ) => new SWFPromoBox(
             $rootScope
         );
         directive.$inject = ['$rootScope'];
         return directive;
     }
-    
+
     //@ngInject
     constructor(
         $rootScope
-    ){
+    ) {
         return {
-            controller:SWFPromoBoxController,
-            controllerAs:"swfPromoBox",
+            controller: SWFPromoBoxController,
+            controllerAs: "swfPromoBox",
             restrict: "A",
-            link: function(scope, element, attributes, ngModel) {
+            link: function (scope, element, attributes, ngModel) {
             }
         };
     }
 }
-export{
+export {
     SWFPromoBoxController,
     SWFPromoBox
 }

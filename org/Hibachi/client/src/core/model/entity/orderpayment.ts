@@ -1,6 +1,7 @@
 
-class OrderPayment{
-    constructor(){
+class OrderPayment {
+    //@ngInject
+    constructor() {
 
     }
 }

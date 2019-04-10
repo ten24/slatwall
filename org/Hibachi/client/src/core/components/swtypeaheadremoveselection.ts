@@ -8,6 +8,7 @@ class SWTypeaheadRemoveSelectionController {
     public typeaheadDataKey: string;
     public disabled: boolean;
 
+    //@ngInject
     constructor(
         public $scope,
         public listingService,
@@ -56,7 +57,7 @@ class SWTypeaheadRemoveSelection implements ng.IDirective {
     public controller = SWTypeaheadRemoveSelectionController;
     public controllerAs = "swTypeaheadRemoveSelection";
 
-    // @ngInject
+    //@ngInject
     constructor(private scopeService,
         private corePartialsPath,
         hibachiPathBuilder

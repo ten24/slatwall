@@ -25,6 +25,7 @@ class SWContentNode {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         $log,
         $compile,

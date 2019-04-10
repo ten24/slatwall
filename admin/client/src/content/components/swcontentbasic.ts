@@ -27,6 +27,8 @@ class SWContentBasic {
         ];
         return directive;
     }
+
+    //@ngInject
     constructor(
         $log,
         $routeParams,

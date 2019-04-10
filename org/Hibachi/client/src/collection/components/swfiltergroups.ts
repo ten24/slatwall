@@ -21,6 +21,8 @@ class SWFilterGroups {
 		];
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 		$log,
 		collectionPartialsPath,

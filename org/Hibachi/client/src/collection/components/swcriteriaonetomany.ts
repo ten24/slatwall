@@ -30,6 +30,7 @@ class SWCriteriaOneToMany {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         $log,
         $hibachi,

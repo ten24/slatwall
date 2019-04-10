@@ -24,6 +24,7 @@ class SWDetail {
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$location,
 		$log,

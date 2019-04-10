@@ -24,6 +24,8 @@ class SWOptions {
         ];
         return directive;
     }
+
+    //@ngInject
     constructor(
         $log,
         $hibachi,

@@ -39,6 +39,7 @@ class FormService {
     private _forms;
     private _pristinePropertyValue;
 
+    //@ngInject
     constructor(
         private $log: ng.ILogService
     ) {

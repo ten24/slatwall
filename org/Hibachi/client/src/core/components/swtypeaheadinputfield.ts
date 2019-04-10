@@ -24,7 +24,7 @@ class SWTypeaheadInputFieldController {
     private collectionConfig;
     private $root;
 
-    // @ngInject
+    //@ngInject
     constructor(private $scope,
         private $transclude,
         private collectionConfigService,
@@ -126,7 +126,7 @@ class SWTypeaheadInputField implements ng.IDirective {
     public controller = SWTypeaheadInputFieldController;
     public controllerAs = "swTypeaheadInputField";
 
-    // @ngInject
+    //@ngInject
     constructor(private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
     }

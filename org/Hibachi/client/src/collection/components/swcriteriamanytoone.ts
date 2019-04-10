@@ -27,6 +27,7 @@ class SWCriteriaManyToOne {
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$log,
 		$hibachi,

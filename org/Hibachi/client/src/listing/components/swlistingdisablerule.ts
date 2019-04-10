@@ -47,6 +47,7 @@ class SWListingDisableRule implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(private scopeService, private $q) {
 
     }

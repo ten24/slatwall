@@ -2,6 +2,7 @@ import * as angular from "angular";
 
 import * as md5 from "md5";
 class optionWithGroup {
+    //@ngInject
     constructor(
         public optionID: string,
         public optionGroupID: string,
@@ -37,7 +38,7 @@ class SWAddOptionGroupController {
     public possibleComboHashes;
     public savedOptions;
 
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout,
         private collectionConfigService,
         private observerService,
@@ -192,7 +193,7 @@ class SWAddOptionGroup implements ng.IDirective {
         ];
         return directive;
     }
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout,
         private collectionConfigService,
         private observerService, private optionGroupPartialsPath, slatwallPathBuilder

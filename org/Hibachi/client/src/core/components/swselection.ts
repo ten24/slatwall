@@ -83,6 +83,7 @@ class SWSelection implements ng.IDirective {
     public controller = SWSelectionController;
     public controllerAs = 'swSelection';
 
+    //@ngInject
     constructor(
         public collectionPartialsPath,
         public hibachiPathBuilder

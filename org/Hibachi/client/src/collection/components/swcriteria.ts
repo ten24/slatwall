@@ -1,6 +1,6 @@
 
-class SWCriteria{
-	public static Factory(){
+class SWCriteria {
+	public static Factory() {
 		var directive = (
 			collectionPartialsPath,
 			hibachiPathBuilder
@@ -14,27 +14,28 @@ class SWCriteria{
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		collectionPartialsPath,
 		hibachiPathBuilder
-	){
+	) {
 		return {
 			restrict: 'E',
-			scope:{
-				filterItem:"=",
-		        selectedFilterProperty:"=",
-		        filterPropertiesList:"=",
-		        selectedFilterPropertyChanged:"&",
-		        comparisonType:"=",
-                collectionConfig: "="
+			scope: {
+				filterItem: "=",
+				selectedFilterProperty: "=",
+				filterPropertiesList: "=",
+				selectedFilterPropertyChanged: "&",
+				comparisonType: "=",
+				collectionConfig: "="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteria.html',
-			link: function(scope, element, attrs){
+			templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteria.html',
+			link: function (scope, element, attrs) {
 			}
 		};
 	}
 }
-export{
+export {
 	SWCriteria
 }
 

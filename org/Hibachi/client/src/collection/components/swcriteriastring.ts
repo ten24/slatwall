@@ -15,6 +15,8 @@ class SWCriteriaString {
 		];
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 		collectionPartialsPath,
 		hibachiPathBuilder

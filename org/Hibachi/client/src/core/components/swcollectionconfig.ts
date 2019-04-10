@@ -82,7 +82,7 @@ class SWCollectionConfig implements ng.IDirective {
         return directive;
     }
 
-    // @ngInject
+    //@ngInject
     constructor(
         public collectionConfigService,
         public listingService,

@@ -21,7 +21,7 @@ class SWOrderByControlsController {
     public propertyNotChosen: boolean;
     public edit: boolean;
 
-    // @ngInject
+    //@ngInject
     constructor(private listingService,
         private observerService,
         private utilityService) {
@@ -131,7 +131,7 @@ class SWOrderByControls implements ng.IDirective {
     public controller = SWOrderByControlsController;
     public controllerAs = "swOrderByControls";
 
-    // @ngInject
+    //@ngInject
     constructor(public $compile,
         private scopeService,
         private listingService,

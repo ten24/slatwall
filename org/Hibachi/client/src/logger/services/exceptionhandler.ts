@@ -14,6 +14,7 @@ class ExceptionHandler {
     /** returning the ExceptionHandler bind here removes the circular dependancy
         that you would get from having exceptionHandler require $http <-- exceptionHandler --> $http
         */
+    //@ngInject
     constructor(injector: ng.auto.IInjectorService) {
         //grab the injector we passed in
         ExceptionHandler.injector = injector;

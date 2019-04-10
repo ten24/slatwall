@@ -6,7 +6,7 @@ class SWFormFieldRevertHelperController {
     public parentDirectiveBindProperty: string;
     public valueToRevertTo: any;
 
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi
     ) {
     }
@@ -31,7 +31,7 @@ class SWFormFieldRevertHelper implements ng.IDirective {
     public controller = SWFormFieldRevertHelper;
     public controllerAs = "swFormFieldRevertHelper";
 
-    // @ngInject
+    //@ngInject
     constructor() {
 
     }

@@ -1,6 +1,8 @@
 import * as angular from "angular";
 
 class CollectionFilterItem {
+
+    //@ngInject
     constructor(
         public name: string,
         public type: string,
@@ -50,7 +52,7 @@ class SWProductBundleCollectionFilterItemTypeaheadController {
     public addProductBundleGroup;
     public productBundleGroups;
 
-    // @ngInject
+    //@ngInject
     constructor(private $log: ng.ILogService,
         private $timeout: ng.ITimeoutService,
         private collectionConfigService,
@@ -397,7 +399,7 @@ class SWProductBundleCollectionFilterItemTypeahead implements ng.IDirective {
     public controller = SWProductBundleCollectionFilterItemTypeaheadController;
     public controllerAs = "swProductBundleCollectionFilteritemTypeahead";
 
-    // @ngInject
+    //@ngInject
     constructor(private $log: ng.ILogService,
         private $timeout: ng.ITimeoutService,
         private collectionConfigService,

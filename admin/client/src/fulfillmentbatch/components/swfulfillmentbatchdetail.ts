@@ -9,7 +9,7 @@ class SWFulfillmentBatchDetailController  {
     public state;
     public fulfillmentBatchId: string;
     
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService){
        
         //setup a state change listener and send over the fulfillmentBatchID
@@ -244,7 +244,7 @@ class SWFulfillmentBatchDetail implements ng.IDirective{
 		];
 		return directive;
 	}
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private fulfillmentBatchDetailPartialsPath, slatwallPathBuilder){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(fulfillmentBatchDetailPartialsPath) + "fulfillmentbatchdetail.html";	
     }

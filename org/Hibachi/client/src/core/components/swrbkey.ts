@@ -27,6 +27,7 @@ class SWRbKey {
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$hibachi,
 		observerService,

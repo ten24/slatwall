@@ -5,7 +5,7 @@ class SWGravatarController {
 	public gravatarURL;
 	public emailAddress;
 
-	// @ngInject
+	//@ngInject
 	constructor() {
 		this.gravatarURL = "http://www.gravatar.com/avatar/" + md5(this.emailAddress.toLowerCase().trim());
 	}
@@ -26,6 +26,7 @@ class SWGravatar implements ng.IDirective {
 	public controller = SWGravatarController;
 	public controllerAs = "swGravatar";
 
+	//@ngInject
 	constructor() {
 	}
 

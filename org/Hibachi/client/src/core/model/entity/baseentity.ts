@@ -1,16 +1,17 @@
 
-import {BaseTransient} from "../transient/basetransient";
+import { BaseTransient } from "../transient/basetransient";
 
-declare var angular:any;
-abstract class BaseEntity extends BaseTransient{
+declare var angular: any;
+abstract class BaseEntity extends BaseTransient {
     public request;
 
-    constructor($injector){
+    //@ngInject
+    constructor($injector) {
         super($injector);
 
     }
 
 }
-export{
+export {
     BaseEntity
 }

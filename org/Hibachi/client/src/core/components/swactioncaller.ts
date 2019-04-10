@@ -318,6 +318,7 @@ class SWActionCaller implements ng.IDirective {
         return directive;
     }
 
+    //@ngInject
     constructor(
         public partialsPath,
         public utiltiyService,

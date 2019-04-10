@@ -1,6 +1,7 @@
 import * as angular from "angular";
 
 class Column {
+    //@ngInject
     constructor(
         public propertyIdentifier: string,
         public title: string,
@@ -40,6 +41,7 @@ interface IFilter {
 }
 
 class Filter {
+    //@ngInject
     constructor(
         public propertyIdentifier: string,
         public value: string,
@@ -53,6 +55,7 @@ class Filter {
 }
 
 class CollectionFilter {
+    //@ngInject
     constructor(
         private propertyIdentifier: string,
         private displayPropertyIdentifier: string,
@@ -65,6 +68,7 @@ class CollectionFilter {
 }
 
 class Join {
+    //@ngInject
     constructor(
         public associationName: string,
         public alias: string
@@ -77,6 +81,7 @@ interface IOrderBy {
 }
 
 class OrderBy {
+    //@ngInject
     constructor(
         public propertyIdentifier: string,
         public direction: string
@@ -97,7 +102,7 @@ class CollectionConfig {
         return angular.toJson(this.getCollectionConfig(false));
     }
 
-    // @ngInject
+    //@ngInject
     constructor(
         private rbkeyService: any,
         private $hibachi: any,
@@ -366,11 +371,11 @@ class CollectionConfig {
         }
         return propertyIdentifier;
     };
-    
-    public hasNonPersistentProperty=()=>{
-        for(var i in this.columns){
+
+    public hasNonPersistentProperty = () => {
+        for (var i in this.columns) {
             var column = this.columns[i];
-            if(angular.isDefined(column.persistent) && column.persistent === false){
+            if (angular.isDefined(column.persistent) && column.persistent === false) {
                 return true;
             }
         }

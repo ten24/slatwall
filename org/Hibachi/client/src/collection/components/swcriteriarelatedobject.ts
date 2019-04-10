@@ -33,6 +33,7 @@ class SWCriteriaRelatedObject {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         $log,
         $hibachi,

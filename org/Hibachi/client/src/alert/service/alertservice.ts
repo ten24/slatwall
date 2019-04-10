@@ -18,6 +18,7 @@ class AlertService implements IAlertService {
         '$timeout'
     ];
 
+    //@ngInject
     constructor(
         private $timeout: ng.ITimeoutService,
         public alerts: Alert[]

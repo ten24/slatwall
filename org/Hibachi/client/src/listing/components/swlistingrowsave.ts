@@ -49,6 +49,7 @@ class SWListingRowSave implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(private hibachiPathBuilder,
         private listingPartialPath,
         private utilityService,

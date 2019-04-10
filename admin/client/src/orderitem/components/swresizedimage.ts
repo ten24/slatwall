@@ -1,9 +1,9 @@
-class SWResizedImage{
-	public static Factory(){
+class SWResizedImage {
+	public static Factory() {
 		var directive = (
 			$http, $log, $q, $hibachi, orderItemPartialsPath,
 			slatwallPathBuilder
-		)=>new SWResizedImage(
+		) => new SWResizedImage(
 			$http, $log, $q, $hibachi, orderItemPartialsPath,
 			slatwallPathBuilder
 		);
@@ -13,33 +13,35 @@ class SWResizedImage{
 		];
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 		$http, $log, $q, $hibachi, orderItemPartialsPath,
-			slatwallPathBuilder
-	){
+		slatwallPathBuilder
+	) {
 		return {
 			restrict: 'E',
-			scope:{
-				orderItem:"=",
+			scope: {
+				orderItem: "=",
 			},
 			templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitem-image.html",
-			link: function(scope, element, attrs){
+			link: function (scope, element, attrs) {
 				var profileName = attrs.profilename;
 				var skuID = scope.orderItem.data.sku.data.skuID;
 				//Get the template.
 				//Call slatwallService to get the path from the image.
 				$hibachi.getResizedImageByProfileName(profileName, skuID)
-                .then(function (response) {
-					
-                    
-					$log.debug(response.resizedImagePaths[0]);
-					scope.orderItem.imagePath = response.resizedImagePaths[0];
-				});
+					.then(function (response) {
+
+
+						$log.debug(response.resizedImagePaths[0]);
+						scope.orderItem.imagePath = response.resizedImagePaths[0];
+					});
 			}
 		};
 	}
 }
-export{
+export {
 	SWResizedImage
 }
 

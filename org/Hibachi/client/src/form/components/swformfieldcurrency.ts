@@ -1,5 +1,6 @@
 class SWFormFieldCurrencyController {
     public propertyDisplay: any;
+    //@ngInject
     constructor() {
         if (this.propertyDisplay.isDirty == undefined) this.propertyDisplay.isDirty = false;
         this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
@@ -28,6 +29,8 @@ class SWFormFieldCurrency implements ng.IDirective {
         directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
         return directive;
     }
+
+    //@ngInject
     constructor(coreFormPartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "number.html";
     }

@@ -19,7 +19,8 @@ class SWWorkflowConditionGroups{
 		];
 		return directive;
 	}
-	constructor(
+	//@ngInject
+		constructor(
 		$log,
 		workflowConditionService,
 		workflowPartialsPath,

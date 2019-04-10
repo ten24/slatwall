@@ -144,7 +144,7 @@ class SWListingControlsController {
 
     public removeFilter = (array, index, reloadCollection: boolean = true) => {
         array.splice(index, 1);
-        this.observerService.notifyById('filterItemAction', this.swListingDisplay.tableID, {action: 'remove',filterItemIndex:index,collectionConfig:this.collectionConfig});
+        this.observerService.notifyById('filterItemAction', this.swListingDisplay.tableID, { action: 'remove', filterItemIndex: index, collectionConfig: this.collectionConfig });
         if (reloadCollection) {
             this.observerService.notifyById('swPaginationAction', this.tableId, { type: 'setCurrentPage', payload: 1 });
         }
@@ -212,6 +212,7 @@ class SWListingControls implements ng.IDirective {
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';
 
+    //@ngInject
     constructor(
         public collectionPartialsPath,
         public hibachiPathBuilder

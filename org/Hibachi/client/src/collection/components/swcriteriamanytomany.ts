@@ -33,6 +33,8 @@ class SWCriteriaManyToMany {
         ];
         return directive;
     }
+
+    //@ngInject
     constructor(
         $log,
         $hibachi,

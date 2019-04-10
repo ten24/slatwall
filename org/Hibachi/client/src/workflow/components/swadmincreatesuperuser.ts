@@ -16,7 +16,8 @@ class SWAdminCreateSuperUser{
 		];
 		return directive;
 	}
-	constructor(
+		//@ngInject
+		constructor(
 		$hibachi,
 		workflowPartialsPath,
 			hibachiPathBuilder

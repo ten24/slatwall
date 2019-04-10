@@ -14,6 +14,7 @@ class Cart extends BaseEntity {
     public orderID;
     //deprecated
 
+    //@ngInject
     constructor($injector) {
         super($injector);
     }

@@ -1,5 +1,6 @@
 class SWSchedulePreviewController {
-    constructor(){}
+      //@ngInject
+        constructor(){}
 }
 
 class SWSchedulePreview implements ng.IDirective{
@@ -15,7 +16,8 @@ class SWSchedulePreview implements ng.IDirective{
     public controller=SWSchedulePreviewController;
     public controllerAs="swSchedulePreview";
 
-    constructor(
+      //@ngInject
+        constructor(
         public workflowPartialsPath,
         public hibachiPathBuilder
     ){

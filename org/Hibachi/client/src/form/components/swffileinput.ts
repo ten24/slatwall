@@ -4,11 +4,11 @@ declare var hibachiConfig:any;
 class SWFFileInput implements ng.IDirective {
     public restrict: string = 'A';
 
-    // @ngInject
+    //@ngInject
     constructor( public $parse) {
     }
 
-    // @ngInject
+    //@ngInject
     public link: ng.IDirectiveLinkFn = (scope, element, attrs : any) => {
         var model = this.$parse(attrs.fileModel);
         element.bind('change', ()=>{

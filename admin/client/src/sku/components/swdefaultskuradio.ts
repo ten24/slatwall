@@ -75,6 +75,7 @@ class SWDefaultSkuRadio implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         skuPartialsPath,
         slatwallPathBuilder

@@ -11,7 +11,7 @@ class SWTabGroupController {
     public tabs: any[];
     public hasActiveTab: boolean = false;
 
-    // @ngInject
+    //@ngInject
     constructor(private utilityService,
         private rbkeyService,
         private observerService
@@ -94,7 +94,7 @@ class SWTabGroup implements ng.IDirective {
     public controller = SWTabGroupController;
     public controllerAs = "swTabGroup";
 
-    // @ngInject
+    //@ngInject
     constructor(public $compile, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabgroup.html";
     }

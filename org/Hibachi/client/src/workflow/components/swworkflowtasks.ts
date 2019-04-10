@@ -27,7 +27,8 @@ class SWWorkflowTasks {
 		];
 		return directive;
 	}
-	constructor(
+		//@ngInject
+			constructor(
 		$log,
 		$hibachi,
 		metadataService,

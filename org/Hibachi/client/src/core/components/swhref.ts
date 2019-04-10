@@ -1,8 +1,8 @@
-class SWHref{
-	public static Factory(){
+class SWHref {
+	public static Factory() {
 		var directive = (
 
-		)=>new SWHref(
+		) => new SWHref(
 
 		);
 		directive.$inject = [
@@ -10,24 +10,26 @@ class SWHref{
 		];
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 
-	){
+	) {
 		return {
 			restrict: 'A',
-			scope:{
-				swHref:"@"
+			scope: {
+				swHref: "@"
 			},
-			link: function(scope, element,attrs){
+			link: function (scope, element, attrs) {
 				/*convert link to use hashbang*/
 				var hrefValue = attrs.swHref;
-				hrefValue = '?ng#!'+hrefValue;
-				element.attr('href',hrefValue);
+				hrefValue = '?ng#!' + hrefValue;
+				element.attr('href', hrefValue);
 			}
 		};
 	}
 }
-export{
+export {
 	SWHref
 }
 

@@ -1,33 +1,35 @@
 
 
-class SWListingAggregateController{
-    public editable:boolean;
+class SWListingAggregateController {
+    public editable: boolean;
+
+    //@ngInject
     constructor(
 
-    ){
+    ) {
         this.init();
     }
 
-    public init = () =>{
+    public init = () => {
         this.editable = this.editable || false;
     }
 }
 
-class SWListingAggregate implements ng.IDirective{
-    public restrict:string = 'EA';
-    public scope=true;
-    public bindToController={
-        propertyIdentifier:"@",
-        aggregateFunction:"@",
-        aggregateAlias:"@?"
+class SWListingAggregate implements ng.IDirective {
+    public restrict: string = 'EA';
+    public scope = true;
+    public bindToController = {
+        propertyIdentifier: "@",
+        aggregateFunction: "@",
+        aggregateAlias: "@?"
     };
-    public controller=SWListingAggregateController;
-    public controllerAs="swListingAggregate";
+    public controller = SWListingAggregateController;
+    public controllerAs = "swListingAggregate";
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = (
 
-        )=>new SWListingAggregate(
+        ) => new SWListingAggregate(
 
         );
         directive.$inject = [
@@ -35,23 +37,24 @@ class SWListingAggregate implements ng.IDirective{
         ];
         return directive;
     }
-    constructor(){
+    //@ngInject
+    constructor() {
 
     }
 
-    public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link: ng.IDirectiveLinkFn = (scope: any, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
 
         var aggregate = {
-            propertyIdentifier:scope.swListingAggregate.propertyIdentifier,
-            aggregateFunction:scope.swListingAggregate.aggregateFunction,
-            aggregateAlias:scope.swListingAggregate.aggregateAlias,
+            propertyIdentifier: scope.swListingAggregate.propertyIdentifier,
+            aggregateFunction: scope.swListingAggregate.aggregateFunction,
+            aggregateAlias: scope.swListingAggregate.aggregateAlias,
         };
 
         scope.$parent.swListingDisplay.aggregates.push(aggregate);
 
     }
 }
-export{
+export {
     SWListingAggregate
 }
 

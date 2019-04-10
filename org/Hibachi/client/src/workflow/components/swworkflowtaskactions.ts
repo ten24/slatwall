@@ -294,7 +294,8 @@ class SWWorkflowTaskActions implements ng.IDirective {
     public controller = SWWorkflowTaskActionsController;
     public controllerAs = "swWorkflowTaskActions";
 
-    constructor(
+      //@ngInject
+        constructor(
         public workflowPartialsPath,
         public hibachiPathBuilder
     ) {

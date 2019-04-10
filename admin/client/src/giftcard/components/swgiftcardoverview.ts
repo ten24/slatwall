@@ -2,24 +2,25 @@ class SWGiftCardOverviewController {
 
 	public giftCard
 
-	constructor(){
+	//@ngInject
+	constructor() {
 
 	}
 }
 
 class SWGiftCardOverview implements ng.IDirective {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict: string;
+	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-		giftCard:"=?"
+		giftCard: "=?"
 	};
 	public controller = SWGiftCardOverviewController;
 	public controllerAs = "swGiftCardOverview"
 
-	public static Factory():ng.IDirectiveFactory{
-		var directive:ng.IDirectiveFactory = (
+	public static Factory(): ng.IDirectiveFactory {
+		var directive: ng.IDirectiveFactory = (
 			giftCardPartialsPath,
 			slatwallPathBuilder
 		) => new SWGiftCardOverview(
@@ -33,7 +34,8 @@ class SWGiftCardOverview implements ng.IDirective {
 		return directive;
 	}
 
-	constructor(private giftCardPartialsPath, private slatwallPathBuilder){
+	//@ngInject
+	constructor(private giftCardPartialsPath, private slatwallPathBuilder) {
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
 		this.restrict = "EA";
 	}

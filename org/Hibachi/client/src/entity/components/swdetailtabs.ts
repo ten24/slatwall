@@ -1,9 +1,9 @@
-class SWDetailTabs{
-	public static Factory(){
+class SWDetailTabs {
+	public static Factory() {
 		var directive = (
 			coreEntityPartialsPath,
 			hibachiPathBuilder
-		)=> new SWDetailTabs(
+		) => new SWDetailTabs(
 			coreEntityPartialsPath,
 			hibachiPathBuilder
 		);
@@ -13,19 +13,20 @@ class SWDetailTabs{
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		coreEntityPartialsPath,
 		hibachiPathBuilder
-	){
+	) {
 		return {
-	        restrict: 'E',
-	        templateUrl:hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath)+'detailtabs.html',
-	        link: function (scope, element, attr) {
+			restrict: 'E',
+			templateUrl: hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath) + 'detailtabs.html',
+			link: function (scope, element, attr) {
 
-	        }
-	    };
+			}
+		};
 	}
 }
-export{
+export {
 	SWDetailTabs
 }

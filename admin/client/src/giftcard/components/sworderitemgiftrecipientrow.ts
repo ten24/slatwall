@@ -7,6 +7,7 @@ class SWOrderItemGiftRecipientRowController {
 	public tableForm: any;
 	public showInvalidRecipientMessage: boolean;
 
+    //@ngInject
 	constructor() {
 
 	}
@@ -112,6 +113,7 @@ class SWOrderItemGiftRecipientRow implements ng.IDirective {
 		return directive;
 	}
 
+	//@ngInject
 	constructor(private giftCardPartialsPath, private slatwallPathBuilder) {
 		this.init()
 	}

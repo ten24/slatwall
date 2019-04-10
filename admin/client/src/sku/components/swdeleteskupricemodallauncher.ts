@@ -92,6 +92,7 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         private $hibachi,
         private scopeService,

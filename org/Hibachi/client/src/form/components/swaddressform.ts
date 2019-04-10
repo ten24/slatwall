@@ -177,7 +177,7 @@ class SWAddressForm implements ng.IComponentOptions {
         }
     }
 
-    // @ngInject
+    //@ngInject
     constructor(public coreFormPartialsPath, public hibachiPathBuilder) {
 
     }

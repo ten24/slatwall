@@ -15,6 +15,8 @@ class SWCriteriaBoolean {
 		];
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 		collectionPartialsPath,
 		hibachiPathBuilder

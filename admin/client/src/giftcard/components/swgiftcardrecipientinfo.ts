@@ -39,6 +39,7 @@ class SWGiftCardRecipientInfo implements ng.IDirective {
 		return directive;
 	}
 
+	//@ngInject
 	constructor(private giftCardPartialsPath, private slatwallPathBuilder) {
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
 		this.restrict = "EA";

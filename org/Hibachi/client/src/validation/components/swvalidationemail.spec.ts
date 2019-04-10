@@ -4,6 +4,8 @@ import { SWValidationEmail } from "./swvalidationemail";
 import angular from "angular";
 
 class test {
+
+    //@ngInject
     constructor(
 
     ) {

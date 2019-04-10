@@ -17,7 +17,7 @@ class SWModalLauncherController {
     public cancelAction;
     public deleteAction;
 
-    // @ngInject
+    //@ngInject
     constructor() {
         if (angular.isUndefined(this.showModal)) {
             this.showModal = false;
@@ -97,7 +97,7 @@ class SWModalLauncher implements ng.IDirective {
     public controller = SWModalLauncherController;
     public controllerAs = "swModalLauncher";
 
-    // @ngInject
+    //@ngInject
     constructor(public $compile, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modallauncher.html";
     }

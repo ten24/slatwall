@@ -35,7 +35,7 @@ class SWFormController {
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
-    // @ngInject
+    //@ngInject
     constructor(
         public $scope,
         public $element,
@@ -346,7 +346,7 @@ class SWForm implements ng.IDirective {
         directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
         return directive;
     }
-    // @ngInject
+    //@ngInject
     constructor(public coreFormPartialsPath, public hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "form.html";
     }

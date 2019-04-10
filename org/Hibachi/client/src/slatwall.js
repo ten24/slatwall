@@ -34054,7 +34054,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 * Form Controller handles the logic for this directive.
 */
 var SWFFormController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService) {
         var _this = this;
         this.$rootScope = $rootScope;
@@ -34192,7 +34192,7 @@ var SWFFormController = /** @class */ (function () {
 }());
 exports.SWFFormController = SWFFormController;
 var SWFForm = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWFForm() {
         this.require = {
             form: '?^form',
@@ -63822,7 +63822,7 @@ var OrderBy = /** @class */ (function () {
 }());
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
@@ -65361,7 +65361,7 @@ var SWCollectionConfigController = /** @class */ (function () {
 }());
 exports.SWCollectionConfigController = SWCollectionConfigController;
 var SWCollectionConfig = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWCollectionConfig(collectionConfigService, listingService, scopeService, $q) {
         var _this = this;
         this.collectionConfigService = collectionConfigService;
@@ -66527,7 +66527,7 @@ exports.SWExportAction = SWExportAction;
 Object.defineProperty(exports, "__esModule", { value: true });
 var md5 = __webpack_require__(75);
 var SWGravatarController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWGravatarController() {
         this.gravatarURL = "http://www.gravatar.com/avatar/" + md5(this.emailAddress.toLowerCase().trim());
     }
@@ -66716,7 +66716,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWModalLauncherController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWModalLauncherController() {
         var _this = this;
         this.hasSaveAction = false;
@@ -66769,7 +66769,7 @@ var SWModalLauncherController = /** @class */ (function () {
 }());
 exports.SWModalLauncherController = SWModalLauncherController;
 var SWModalLauncher = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWModalLauncher($compile, corePartialsPath, hibachiPathBuilder) {
         this.$compile = $compile;
         this.corePartialsPath = corePartialsPath;
@@ -66832,7 +66832,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWModalWindowController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWModalWindowController() {
         if (angular.isUndefined(this.modalName)) {
             console.warn("You did not pass a modal title to SWModalWindowController");
@@ -66843,7 +66843,7 @@ var SWModalWindowController = /** @class */ (function () {
 }());
 exports.SWModalWindowController = SWModalWindowController;
 var SWModalWindow = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWModalWindow($compile, corePartialsPath, hibachiPathBuilder) {
         this.$compile = $compile;
         this.corePartialsPath = corePartialsPath;
@@ -67027,7 +67027,7 @@ exports.SWOptions = SWOptions;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWOrderByControlsController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWOrderByControlsController(listingService, observerService, utilityService) {
         var _this = this;
         this.listingService = listingService;
@@ -67114,7 +67114,7 @@ var SWOrderByControlsController = /** @class */ (function () {
 }());
 exports.SWOrderByControlsController = SWOrderByControlsController;
 var SWOrderByControls = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.$compile = $compile;
@@ -67557,7 +67557,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWTabContentController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTabContentController($scope, $q, $transclude, $hibachi, $timeout, utilityService, rbkeyService, collectionConfigService) {
         this.$scope = $scope;
         this.$q = $q;
@@ -67588,7 +67588,7 @@ var SWTabContentController = /** @class */ (function () {
 }());
 exports.SWTabContentController = SWTabContentController;
 var SWTabContent = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.$compile = $compile;
@@ -67645,7 +67645,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWTabGroupController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTabGroupController(utilityService, rbkeyService, observerService) {
         var _this = this;
         this.utilityService = utilityService;
@@ -67712,7 +67712,7 @@ var SWTabGroupController = /** @class */ (function () {
 }());
 exports.SWTabGroupController = SWTabGroupController;
 var SWTabGroup = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTabGroup($compile, corePartialsPath, hibachiPathBuilder) {
         this.$compile = $compile;
         this.corePartialsPath = corePartialsPath;
@@ -67756,7 +67756,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWTooltipController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTooltipController(rbkeyService) {
         var _this = this;
         this.rbkeyService = rbkeyService;
@@ -67778,7 +67778,7 @@ var SWTooltipController = /** @class */ (function () {
 }());
 exports.SWTooltipController = SWTooltipController;
 var SWTooltip = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTooltip($document, corePartialsPath, hibachiPathBuilder) {
         this.$document = $document;
         this.corePartialsPath = corePartialsPath;
@@ -67840,7 +67840,7 @@ exports.SWTooltip = SWTooltip;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWTypeaheadInputFieldController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService, typeaheadService, $rootScope, observerService) {
         var _this = this;
         this.$scope = $scope;
@@ -67908,7 +67908,7 @@ var SWTypeaheadInputFieldController = /** @class */ (function () {
 }());
 exports.SWTypeaheadInputFieldController = SWTypeaheadInputFieldController;
 var SWTypeaheadInputField = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTypeaheadInputField(corePartialsPath, hibachiPathBuilder) {
         this.corePartialsPath = corePartialsPath;
         this.transclude = true;
@@ -67957,7 +67957,7 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWTypeaheadMultiselectController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTypeaheadMultiselectController($scope, $transclude, $hibachi, listingService, typeaheadService, utilityService, collectionConfigService) {
         var _this = this;
         this.$scope = $scope;
@@ -68012,7 +68012,7 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
 }());
 exports.SWTypeaheadMultiselectController = SWTypeaheadMultiselectController;
 var SWTypeaheadMultiselect = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTypeaheadMultiselect($compile, scopeService, typeaheadService, corePartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.$compile = $compile;
@@ -68128,7 +68128,7 @@ var SWTypeaheadRemoveSelectionController = /** @class */ (function () {
 }());
 exports.SWTypeaheadRemoveSelectionController = SWTypeaheadRemoveSelectionController;
 var SWTypeaheadRemoveSelection = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTypeaheadRemoveSelection(scopeService, corePartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.scopeService = scopeService;
@@ -68174,7 +68174,7 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWTypeaheadSearchController = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTypeaheadSearchController($scope, $q, $transclude, $hibachi, $timeout, utilityService, observerService, rbkeyService, collectionConfigService, typeaheadService, $http, requestService) {
         var _this = this;
         this.$scope = $scope;
@@ -68434,7 +68434,7 @@ var SWTypeaheadSearchController = /** @class */ (function () {
 }());
 exports.SWTypeaheadSearchController = SWTypeaheadSearchController;
 var SWTypeaheadSearch = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWTypeaheadSearch($compile, typeaheadService, corePartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.$compile = $compile;
@@ -75086,7 +75086,7 @@ var SWAddressFormController = /** @class */ (function () {
 }());
 exports.SWAddressFormController = SWAddressFormController;
 var SWAddressForm = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWAddressForm(coreFormPartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.coreFormPartialsPath = coreFormPartialsPath;
@@ -75193,7 +75193,7 @@ var SWErrorDisplayController = /** @class */ (function () {
 }());
 exports.SWErrorDisplayController = SWErrorDisplayController;
 var SWErrorDisplay = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWErrorDisplay(coreFormPartialsPath, hibachiPathBuilder) {
         this.coreFormPartialsPath = coreFormPartialsPath;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -75239,12 +75239,12 @@ exports.SWErrorDisplay = SWErrorDisplay;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFFileInput = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWFFileInput($parse) {
         var _this = this;
         this.$parse = $parse;
         this.restrict = 'A';
-        // @ngInject
+        //@ngInject
         this.link = function (scope, element, attrs) {
             var model = _this.$parse(attrs.fileModel);
             element.bind('change', function () {
@@ -75387,7 +75387,7 @@ var SWFormController = /** @class */ (function () {
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
-    // @ngInject
+    //@ngInject
     function SWFormController($scope, $element, $hibachi, $http, $timeout, observerService, $rootScope, entityService, utilityService) {
         var _this = this;
         this.$scope = $scope;
@@ -75638,7 +75638,7 @@ var SWFormController = /** @class */ (function () {
 }());
 exports.SWFormController = SWFormController;
 var SWForm = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWForm(coreFormPartialsPath, hibachiPathBuilder) {
         this.coreFormPartialsPath = coreFormPartialsPath;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -77120,7 +77120,7 @@ var SWFDirectiveController = /** @class */ (function () {
 }());
 exports.SWFDirectiveController = SWFDirectiveController;
 var SWFDirective = /** @class */ (function () {
-    // @ngInject
+    //@ngInject
     function SWFDirective(hibachiPathBuilder, $compile) {
         var _this = this;
         this.restrict = 'E';
@@ -77134,7 +77134,7 @@ var SWFDirective = /** @class */ (function () {
         this.templatePath = "";
         this.url = "";
         /** allows you to build a directive without using another controller and directive config. */
-        // @ngInject
+        //@ngInject
         this.link = function (scope, element, attrs) {
             _this.scope = scope;
             _this.path = attrs.partialPath || _this.templatePath;

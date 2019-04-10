@@ -1,8 +1,9 @@
-import {BaseEntity} from "./baseentity";
+import { BaseEntity } from "./baseentity";
 
-class Address extends BaseEntity{
+class Address extends BaseEntity {
 
-    constructor($injector){
+    //@ngInject
+    constructor($injector) {
         super($injector);
     }
 

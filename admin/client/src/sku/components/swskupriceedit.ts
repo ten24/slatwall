@@ -186,6 +186,7 @@ class SWSkuPriceEdit implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         private observerService,
         private historyService,

@@ -1,4 +1,5 @@
 class GiftCard {
+    //@ngInject
     constructor(
         public giftCardID: string,
         public giftCardCode: string,
@@ -12,6 +13,6 @@ class GiftCard {
 
     }
 }
-export{
+export {
     GiftCard
 }

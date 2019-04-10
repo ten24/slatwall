@@ -33,6 +33,7 @@ class SWWorkflowTriggers {
         ];
         return directive;
     }
+     //@ngInject
     constructor(
         $hibachi,
         workflowPartialsPath,

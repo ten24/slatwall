@@ -29,7 +29,7 @@ export class BaseBootStrapper {
     public instantiationKey: string;
     public isPrivate: boolean;
 
-
+    //@ngInject
     constructor(myApplication) {
         console.log("Angular boostraped");
         this.myApplication = myApplication;

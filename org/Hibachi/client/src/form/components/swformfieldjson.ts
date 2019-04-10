@@ -35,6 +35,7 @@ class SWFormFieldJson implements ng.IDirective {
         return directive;
     }
 
+    //@ngInject
     constructor(
         coreFormPartialsPath,
         hibachiPathBuilder

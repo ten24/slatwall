@@ -50,7 +50,7 @@ class SWShippingCostEstimator implements ng.IDirective {
     public $compile;
     public path: string;
     
-    // @ngInject
+    //@ngInject
     constructor(hibachiPathBuilder, $compile) {
         if(!hibachiConfig){
             hibachiConfig = {};    

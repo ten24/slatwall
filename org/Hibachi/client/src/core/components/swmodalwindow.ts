@@ -12,7 +12,7 @@ class SWModalWindowController {
     public saveActionText: string;
     public cancelActionText: string;
 
-    // @ngInject
+    //@ngInject
     constructor() {
         if (angular.isUndefined(this.modalName)) {
             console.warn("You did not pass a modal title to SWModalWindowController");
@@ -46,7 +46,7 @@ class SWModalWindow implements ng.IDirective {
     public controller = SWModalWindowController;
     public controllerAs = "swModalWindow";
 
-    // @ngInject
+    //@ngInject
     constructor(public $compile, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modalwindow.html";
     }

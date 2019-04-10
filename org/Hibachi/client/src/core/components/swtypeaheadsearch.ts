@@ -48,7 +48,7 @@ class SWTypeaheadSearchController {
 
     private _timeoutPromise;
 
-    // @ngInject
+    //@ngInject
     constructor(private $scope,
         private $q,
         private $transclude,
@@ -411,7 +411,7 @@ class SWTypeaheadSearch implements ng.IDirective {
     public controller = SWTypeaheadSearchController;
     public controllerAs = "swTypeaheadSearch";
 
-    // @ngInject
+    //@ngInject
     constructor(public $compile, public typeaheadService, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
     }

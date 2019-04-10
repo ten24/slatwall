@@ -62,6 +62,7 @@ class SWSkuThumbnail implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         skuPartialsPath,
         slatwallPathBuilder

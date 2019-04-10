@@ -2,6 +2,7 @@ import * as angular from "angular";
 
 
 class CollectionFilterItem {
+	//@ngInject
 	constructor(
 		public name: string,
 		public type: string,
@@ -50,20 +51,20 @@ class SWProductBundleGroupController {
 	public removeProductBundleGroup;
 	public addProductBundleGroup;
 	public refreshProductBundleGroup;
-  public productBundleGroups; 
+	public productBundleGroups;
 
-    //@ngInject
+	//@ngInject
 	constructor(
-      private $log:ng.ILogService,
-      private $timeout:ng.ITimeoutService,
-      private collectionConfigService,
-      private metadataService,
-      private utilityService,
-      private formService,
-      private $hibachi,
-      private productBundlePartialsPath    
-    ) {
-		this.init(); 
+		private $log: ng.ILogService,
+		private $timeout: ng.ITimeoutService,
+		private collectionConfigService,
+		private metadataService,
+		private utilityService,
+		private formService,
+		private $hibachi,
+		private productBundlePartialsPath
+	) {
+		this.init();
 	}
 
 	public init = () => {
@@ -211,22 +212,22 @@ class SWProductBundleGroup implements ng.IDirective {
 		refreshProductBundleGroup: "&",
 		formName: "@"
 	};
-    
+
 	public controller = SWProductBundleGroupController;
 	public controllerAs = "swProductBundleGroup";
 
-    //@ngInject
-	constructor( private productBundlePartialsPath, slatwallPathBuilder) {
+	//@ngInject
+	constructor(private productBundlePartialsPath, slatwallPathBuilder) {
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	}
 
-	public link: ng.IDirectiveLinkFn = ($scope: any, element: any, attrs: any, ctrl: any) => {}
+	public link: ng.IDirectiveLinkFn = ($scope: any, element: any, attrs: any, ctrl: any) => { }
 
 	public static Factory() {
-		var directive = ( productBundlePartialsPath, slatwallPathBuilder ) => new SWProductBundleGroup(
-            productBundlePartialsPath, slatwallPathBuilder
-        );
-    directive.$inject = [ "productBundlePartialsPath", "slatwallPathBuilder" ];
+		var directive = (productBundlePartialsPath, slatwallPathBuilder) => new SWProductBundleGroup(
+			productBundlePartialsPath, slatwallPathBuilder
+		);
+		directive.$inject = ["productBundlePartialsPath", "slatwallPathBuilder"];
 		return directive;
 	}
 }

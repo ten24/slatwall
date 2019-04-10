@@ -3,8 +3,8 @@
  * @module slatwalladmin
  * @class swOrderItemsShippingLabelStamp
  */
-class SWOiShippingLabelStamp{
-	public static Factory(){
+class SWOiShippingLabelStamp {
+	public static Factory() {
 		var directive = (
 			$log,
 			orderItemPartialsPath,
@@ -21,18 +21,19 @@ class SWOiShippingLabelStamp{
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$log,
 		orderItemPartialsPath,
 		slatwallPathBuilder
-	){
+	) {
 		return {
 			restrict: 'E',
-			scope:{
-				orderFulfillment:"="
+			scope: {
+				orderFulfillment: "="
 			},
-			templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"orderfulfillment-shippinglabel.html",
-			link: function(scope, element, attrs){
+			templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderfulfillment-shippinglabel.html",
+			link: function (scope, element, attrs) {
 				//Get the template.
 				$log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");
 				$log.debug(scope.orderFulfillment);
@@ -41,6 +42,6 @@ class SWOiShippingLabelStamp{
 		};
 	}
 }
-export{
+export {
 	SWOiShippingLabelStamp
 }

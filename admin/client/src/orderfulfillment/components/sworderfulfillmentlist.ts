@@ -36,7 +36,7 @@ class SWOrderFulfillmentListController {
     public customOrderItemCollectionConfig:string;
     private state:any;
 
-    // @ngInject
+    //@ngInject
     constructor(
             private $hibachi, 
             private $timeout, 
@@ -754,7 +754,7 @@ class SWOrderFulfillmentList implements ng.IDirective{
 		];
 		return directive;
 	}
-    // @ngInject
+    //@ngInject
     constructor(
         slatwallPathBuilder,
         orderFulfillmentPartialsPath

@@ -30,6 +30,8 @@ class SWFilterGroupItem {
 		];
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 		$http,
 		$compile,

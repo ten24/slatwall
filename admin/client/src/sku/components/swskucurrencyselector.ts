@@ -78,6 +78,7 @@ class SWSkuCurrencySelector implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         private scopeService,
         skuPartialsPath,

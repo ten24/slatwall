@@ -17,7 +17,7 @@ class SWOrderDeliveryDetailController {
     public useShippingIntegrationForTrackingNumber: boolean;
 
 
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService) {
         this.defaultContainersStruct = this.defaultContainerJson;
         this.packageCount = this.defaultContainersStruct['packageCount'];
@@ -234,7 +234,7 @@ class SWOrderDeliveryDetail implements ng.IDirective {
         ];
         return directive;
     }
-    // @ngInject
+    //@ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private orderDeliveryDetailPartialsPath, slatwallPathBuilder) {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderDeliveryDetailPartialsPath) + "/orderdeliverydetail.html";
     }

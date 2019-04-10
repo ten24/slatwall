@@ -1,22 +1,23 @@
 
-import {BaseEntity} from "./baseentity";
+import { BaseEntity } from "./baseentity";
 
-class Account extends BaseEntity{
-    public accountID:string;
-    public giftCards:Array<any>=[];
-    public firstName:string;
-    public lastName:string;
-    public entity:any;
-    public processObjects:any;
-    public accountAddresses:Array<any>;
-    public accountPaymentMethods:Array<any>;
+class Account extends BaseEntity {
+    public accountID: string;
+    public giftCards: Array<any> = [];
+    public firstName: string;
+    public lastName: string;
+    public entity: any;
+    public processObjects: any;
+    public accountAddresses: Array<any>;
+    public accountPaymentMethods: Array<any>;
 
-    constructor($injector){
+    //@ngInject
+    constructor($injector) {
         super($injector);
     }
 
-    public userIsLoggedIn = ():boolean =>{
-        if (this.accountID !== ''){
+    public userIsLoggedIn = (): boolean => {
+        if (this.accountID !== '') {
             return true;
         }
         return false;

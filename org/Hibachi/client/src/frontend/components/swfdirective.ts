@@ -29,7 +29,7 @@ class SWFDirective implements ng.IDirective {
     public $compile;
     public path: string;
 
-    // @ngInject
+    //@ngInject
     constructor(hibachiPathBuilder, $compile) {
         if (!hibachiConfig) {
             hibachiConfig = {};
@@ -46,7 +46,7 @@ class SWFDirective implements ng.IDirective {
     }
 
     /** allows you to build a directive without using another controller and directive config. */
-    // @ngInject
+    //@ngInject
     public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: any) => {
         this.scope = scope;
         this.path = attrs.partialPath || this.templatePath;

@@ -42,6 +42,8 @@ class SWEditFilterItem {
         ];
         return directive;
     }
+
+    //@ngInject
     constructor(
         $log,
         $filter,
@@ -230,10 +232,10 @@ class SWEditFilterItem {
                     for (var siblingIndex in scope.filterItem.$$siblingItems) {
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
-                    if(scope.filterItem.$$isNew === true){
-                        scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
-                    }else{
-                        observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
+                    if (scope.filterItem.$$isNew === true) {
+                        scope.removeFilterItem({ filterItemIndex: scope.filterItemIndex });
+                    } else {
+                        observerService.notify('filterItemAction', { action: 'close', filterItemIndex: scope.filterItemIndex });
                     }
                 };
 

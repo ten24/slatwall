@@ -1,10 +1,10 @@
-class SWLoading{
-    public static Factory(){
+class SWLoading {
+    public static Factory() {
         var directive = (
             $log,
             corePartialsPath,
             hibachiPathBuilder
-        )=> new SWLoading(
+        ) => new SWLoading(
             $log,
             corePartialsPath,
             hibachiPathBuilder
@@ -16,23 +16,24 @@ class SWLoading{
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         $log,
         corePartialsPath,
         hibachiPathBuilder
-    ){
+    ) {
         return {
             restrict: 'A',
-            transclude:true,
-            templateUrl:hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'loading.html',
-            scope:{
-                swLoading:'='
+            transclude: true,
+            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'loading.html',
+            scope: {
+                swLoading: '='
             },
-            link: (scope,attrs,element) =>{
+            link: (scope, attrs, element) => {
             }
         };
     }
 }
-export{
+export {
     SWLoading
 }

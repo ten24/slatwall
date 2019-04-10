@@ -1,12 +1,12 @@
 
-class SWFormFieldSearchSelect{
-	public static Factory(){
+class SWFormFieldSearchSelect {
+	public static Factory() {
 		var directive = (
 			$log,
 			$hibachi,
 			coreFormPartialsPath,
 			hibachiPathBuilder
-		)=>new SWFormFieldSearchSelect(
+		) => new SWFormFieldSearchSelect(
 			$log,
 			$hibachi,
 			coreFormPartialsPath,
@@ -20,28 +20,29 @@ class SWFormFieldSearchSelect{
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$log,
 		$hibachi,
 		coreFormPartialsPath,
 		hibachiPathBuilder
-	){
-		return{
-			templateUrl:hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+'search-select.html',
-			require:"^form",
+	) {
+		return {
+			templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
+			require: "^form",
 			restrict: 'E',
-			scope:{
-				propertyDisplay:"="
+			scope: {
+				propertyDisplay: "="
 			},
-			link:function(scope,element,attr,formController){
+			link: function (scope, element, attr, formController) {
 				//set up selectionOptions
 				scope.selectionOptions = {
-					value:[],
-					$$adding:false
+					value: [],
+					$$adding: false
 				};
 				//match in matches track by
 				//function to set state of adding new item
-				scope.setAdding = function(isAdding){
+				scope.setAdding = function (isAdding) {
 					scope.isAdding = isAdding;
 					scope.showAddBtn = false;
 				};
@@ -52,54 +53,54 @@ class SWFormFieldSearchSelect{
 				//create basic
 				var object = $hibachi.newEntity(propertyMetaData.cfc);
 
-//				scope.propertyDisplay.template = '';
-//				//check for a template
-//				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
-//				var templatePath = coreFormPartialsPath + 'formfields/searchselecttemplates/';
-//				if(angular.isUndefined(scope.propertyDisplay.template)){
-//					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
-//						$log.debug('template');
-//						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
-//					},function(){
-//						scope.propertyDisplay.template = templatePath+'index.html';
-//						$log.debug('template');
-//						$log.debug(scope.propertyDisplay.template);
-//					});
-//				}
+				//				scope.propertyDisplay.template = '';
+				//				//check for a template
+				//				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
+				//				var templatePath = coreFormPartialsPath + 'formfields/searchselecttemplates/';
+				//				if(angular.isUndefined(scope.propertyDisplay.template)){
+				//					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
+				//						$log.debug('template');
+				//						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
+				//					},function(){
+				//						scope.propertyDisplay.template = templatePath+'index.html';
+				//						$log.debug('template');
+				//						$log.debug(scope.propertyDisplay.template);
+				//					});
+				//				}
 
 				//set up query function for finding related object
 				scope.cfcProperCase = propertyMetaData.cfcProperCase;
-				scope.selectionOptions.getOptionsByKeyword=function(keyword){
-					var filterGroupsConfig = '['+
-					' {  '+
-						'"filterGroup":[  '+
-							'{'+
-								' "propertyIdentifier":"_'+scope.cfcProperCase.toLowerCase()+'.'+scope.cfcProperCase+'Name",'+
-								' "comparisonOperator":"like",'+
-								' "ormtype":"string",'+
-								' "value":"%'+keyword+'%"'+
-						'  }'+
-						' ]'+
-					' }'+
-					']';
-					return $hibachi.getEntity(propertyMetaData.cfc, {filterGroupsConfig:filterGroupsConfig.trim()})
-					.then(function(value){
-						$log.debug('typesByKeyword');
-						$log.debug(value);
-						scope.selectionOptions.value = value.pageRecords;
+				scope.selectionOptions.getOptionsByKeyword = function (keyword) {
+					var filterGroupsConfig = '[' +
+						' {  ' +
+						'"filterGroup":[  ' +
+						'{' +
+						' "propertyIdentifier":"_' + scope.cfcProperCase.toLowerCase() + '.' + scope.cfcProperCase + 'Name",' +
+						' "comparisonOperator":"like",' +
+						' "ormtype":"string",' +
+						' "value":"%' + keyword + '%"' +
+						'  }' +
+						' ]' +
+						' }' +
+						']';
+					return $hibachi.getEntity(propertyMetaData.cfc, { filterGroupsConfig: filterGroupsConfig.trim() })
+						.then(function (value) {
+							$log.debug('typesByKeyword');
+							$log.debug(value);
+							scope.selectionOptions.value = value.pageRecords;
 
-						var myLength = keyword.length;
+							var myLength = keyword.length;
 
-						if (myLength > 0) {
-							scope.showAddBtn = true;
-						}else{
-							scope.showAddBtn = false;
-						}
-						return scope.selectionOptions.value;
-					});
+							if (myLength > 0) {
+								scope.showAddBtn = true;
+							} else {
+								scope.showAddBtn = false;
+							}
+							return scope.selectionOptions.value;
+						});
 				};
-				var propertyPromise = scope.propertyDisplay.object['$$get'+propertyMetaData.nameCapitalCase]();
-				propertyPromise.then(function(data){
+				var propertyPromise = scope.propertyDisplay.object['$$get' + propertyMetaData.nameCapitalCase]();
+				propertyPromise.then(function (data) {
 
 				});
 
@@ -113,22 +114,22 @@ class SWFormFieldSearchSelect{
 					object.$$init($item);
 					$log.debug('select item');
 					$log.debug(object);
-					scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](object);
+					scope.propertyDisplay.object['$$set' + propertyMetaData.nameCapitalCase](object);
 				};
 
-//				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
-//					$log.debug('getmeta');
-//					$log.debug(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
-//
-//					//scope.propertyDipslay.object['$$get'+]
-//				}
-//
-//				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
+				//				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
+				//					$log.debug('getmeta');
+				//					$log.debug(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+				//
+				//					//scope.propertyDipslay.object['$$get'+]
+				//				}
+				//
+				//				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
 			}
 		};
 	}
 }
-export{
+export {
 	SWFormFieldSearchSelect
 }
 

@@ -11,7 +11,7 @@ class SWCurrencyFormatter {
         ngModel: '=',
         currencyCode: '@?'
     }
-
+    //@ngInject
     constructor(public $filter: ng.IFilterService, public $timeout: ng.ITimeoutService) {
     }
 

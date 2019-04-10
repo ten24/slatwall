@@ -1,20 +1,21 @@
-class SWGiftCardDetailController{
+class SWGiftCardDetailController {
 	public giftCardId;
 	public giftCard;
 
 	public static $inject = ["collectionConfigService"];
 
-	constructor(private collectionConfigService){
+	//@ngInject
+	constructor(private collectionConfigService) {
 		this.init();
 	}
 
-	public init = ():void =>{
+	public init = (): void => {
 		var giftCardConfig = this.collectionConfigService.newCollectionConfig('GiftCard');
 		giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, calculatedBalanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage, ownerAccount.accountID, ownerAccount.firstName, ownerAccount.lastName");
 		giftCardConfig.addFilter('giftCardID', this.giftCardId);
 		giftCardConfig.setAllRecords(true);
 
-		giftCardConfig.getEntity().then((response:any):void =>{
+		giftCardConfig.getEntity().then((response: any): void => {
 			this.giftCard = response.records[0];
 		});
 	}
@@ -22,18 +23,18 @@ class SWGiftCardDetailController{
 
 class SWGiftCardDetail implements ng.IDirective {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict: string;
+	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-		giftCardId:"@",
-		giftCard:"=?"
+		giftCardId: "@",
+		giftCard: "=?"
 	};
-	public controller= SWGiftCardDetailController;
-	public controllerAs="swGiftCardDetail";
+	public controller = SWGiftCardDetailController;
+	public controllerAs = "swGiftCardDetail";
 
-	public static Factory():ng.IDirectiveFactory{
-		var directive:ng.IDirectiveFactory = (
+	public static Factory(): ng.IDirectiveFactory {
+		var directive: ng.IDirectiveFactory = (
 			collectionConfigService,
 			giftCardPartialsPath,
 			slatwallPathBuilder
@@ -50,12 +51,13 @@ class SWGiftCardDetail implements ng.IDirective {
 		return directive;
 	}
 
-	constructor(private collectionConfigService, private giftCardPartialsPath, private slatwallPathBuilder){
+	//@ngInject
+	constructor(private collectionConfigService, private giftCardPartialsPath, private slatwallPathBuilder) {
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/basic.html";
 		this.restrict = "E";
 	}
 
-	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+	public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
 	}
 
 }

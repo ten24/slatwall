@@ -1,21 +1,22 @@
 
-import {BaseEntity} from "./baseentity";
+import { BaseEntity } from "./baseentity";
 
-declare var angular:any;
-class Sku extends BaseEntity{
+declare var angular: any;
+class Sku extends BaseEntity {
 
-    public newQOH; 
+    public newQOH;
 
-    constructor($injector){
+    //@ngInject
+    constructor($injector) {
         super($injector);
     }
 
-    public setNewQOH = (value) =>{
-        this.newQOH = value; 
+    public setNewQOH = (value) => {
+        this.newQOH = value;
     }
 
-    public getNewQOH = () =>{
-        return this.newQOH; 
+    public getNewQOH = () => {
+        return this.newQOH;
     }
 
 }

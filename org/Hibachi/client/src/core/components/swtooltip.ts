@@ -7,7 +7,7 @@ class SWTooltipController {
     public position;
     public showTooltip: boolean = false;
 
-    // @ngInject
+    //@ngInject
     constructor(public rbkeyService) {
         if (angular.isDefined(this.rbKey)) {
             this.text = rbkeyService.getRBKey(this.rbKey);
@@ -42,7 +42,7 @@ class SWTooltip implements ng.IDirective {
     public controller = SWTooltipController;
     public controllerAs = "swTooltip";
 
-    // @ngInject
+    //@ngInject
     constructor(public $document, private corePartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tooltip.html";
     }

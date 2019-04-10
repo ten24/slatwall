@@ -1,34 +1,36 @@
 
 
-class SWListingColorFilterController{
+class SWListingColorFilterController {
+
+    //@ngInject
     constructor(
 
-    ){
+    ) {
         this.init();
     }
 
-    public init = () =>{
+    public init = () => {
     }
 }
 
-class SWListingColorFilter implements ng.IDirective{
+class SWListingColorFilter implements ng.IDirective {
 
-    public restrict:string = 'EA';
-    public scope=true;
-    public bindToController={
-        propertyToCompare:"@",
-        comparisonOperator:"@",
-        comparisonValue:"@",
-        comparisonProperty:"@",
-        colorClass:"@",
-        color:"@"
+    public restrict: string = 'EA';
+    public scope = true;
+    public bindToController = {
+        propertyToCompare: "@",
+        comparisonOperator: "@",
+        comparisonValue: "@",
+        comparisonProperty: "@",
+        colorClass: "@",
+        color: "@"
     };
-    public controller=SWListingColorFilterController;
-    public controllerAs="swListingColorFilter";
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
+    public controller = SWListingColorFilterController;
+    public controllerAs = "swListingColorFilter";
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = (
             utilityService
-        )=>new SWListingColorFilter(
+        ) => new SWListingColorFilter(
             utilityService
         );
         directive.$inject = [
@@ -37,25 +39,26 @@ class SWListingColorFilter implements ng.IDirective{
         return directive;
     }
 
-    constructor(private utilityService){
+    //@ngInject
+    constructor(private utilityService) {
 
     }
 
-    public link:ng.IDirectiveLinkFn = (scope: any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link: ng.IDirectiveLinkFn = (scope: any, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
 
         var colorFilter = {
-            propertyToCompare:scope.swListingColorFilter.propertyToCompare,
-            comparisonOperator:scope.swListingColorFilter.comparisonOperator,
-            comparisonValue:scope.swListingColorFilter.comparisonValue,
-            comparisonProperty:scope.swListingColorFilter.comparisonProperty,
-            colorClass:scope.swListingColorFilter.colorClass,
-            color:scope.swListingColorFilter.color
+            propertyToCompare: scope.swListingColorFilter.propertyToCompare,
+            comparisonOperator: scope.swListingColorFilter.comparisonOperator,
+            comparisonValue: scope.swListingColorFilter.comparisonValue,
+            comparisonProperty: scope.swListingColorFilter.comparisonProperty,
+            colorClass: scope.swListingColorFilter.colorClass,
+            color: scope.swListingColorFilter.color
         };
-        if(this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.colorFilters,'propertyToCompare',colorFilter.propertyToCompare) === -1){
+        if (this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.colorFilters, 'propertyToCompare', colorFilter.propertyToCompare) === -1) {
             scope.$parent.swListingDisplay.colorFilters.push(colorFilter);
         }
     }
 }
-export{
+export {
     SWListingColorFilter
 }

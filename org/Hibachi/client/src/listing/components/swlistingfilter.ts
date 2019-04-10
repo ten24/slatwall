@@ -2,6 +2,7 @@ import * as angular from "angular";
 
 
 class SWListingFilterController {
+    //@ngInject
     constructor(
 
     ) {
@@ -37,6 +38,7 @@ class SWListingFilter implements ng.IDirective {
         ];
         return directive;
     }
+    //@ngInject
     constructor() {
 
     }

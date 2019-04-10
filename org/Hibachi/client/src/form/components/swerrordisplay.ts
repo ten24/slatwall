@@ -71,7 +71,7 @@ class SWErrorDisplay implements ng.IDirective {
         errorClass:"@?"
     }
 
-    // @ngInject
+    //@ngInject
     constructor( public coreFormPartialsPath, public hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "errordisplay.html";
     }

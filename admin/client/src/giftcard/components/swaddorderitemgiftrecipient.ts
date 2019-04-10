@@ -184,7 +184,7 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective {
         ];
         return directive;
     }
-
+    //@ngInject
     constructor(
         private $hibachi,
         private giftCardPartialsPath,

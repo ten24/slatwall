@@ -16,7 +16,8 @@ class SWWorkflowConditionGroupItem{
 		];
 		return directive;
 	}
-	constructor(
+		//@ngInject
+		constructor(
 
 		workflowPartialsPath,
 			hibachiPathBuilder

@@ -19,7 +19,8 @@ class SWWorkflowTriggerHistory{
         ];
         return directive;
     }
-    constructor(
+        //@ngInject
+        constructor(
             workflowPartialsPath,
             hibachiPathBuilder,
             $rootScope,

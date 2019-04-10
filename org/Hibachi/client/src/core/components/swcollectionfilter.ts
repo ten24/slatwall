@@ -1,6 +1,7 @@
 import * as angular from "angular";
 
 class SWCollectionFilterController {
+    //@ngInject
     constructor() { }
 }
 

@@ -17,6 +17,7 @@ abstract class BaseTransient extends BaseObject {
     public data: any;
     public utilityService: UtilityService;
 
+    //@ngInject
     constructor($injector) {
         super($injector);
         this.$hibachi = <HibachiService>this.getService('$hibachi');

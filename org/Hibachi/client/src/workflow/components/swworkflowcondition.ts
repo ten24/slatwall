@@ -24,7 +24,8 @@ class SWWorkflowCondition {
 		];
 		return directive;
 	}
-	constructor(
+		//@ngInject
+		constructor(
 		$log,
 		$hibachi,
 		metadataService,

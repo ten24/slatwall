@@ -20,6 +20,7 @@ class Request extends BaseTransient {
     public method: string;
     public utilityService: UtilityService;
 
+    //@ngInject
     constructor(
         url: string,
         data?: any,

@@ -19,6 +19,7 @@ class SWCriteriaDate {
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$log,
 		collectionPartialsPath,

@@ -60,6 +60,7 @@ class SWProcessCaller implements ng.IDirective {
 	public controller = SWProcessCallerController
 	public controllerAs = "swProcessCaller";
 	public static $inject = ['corePartialsPath', 'utilityService'];
+	//@ngInject
 	constructor(private corePartialsPath, private utilityService) {
 		this.corePartialsPath = corePartialsPath;
 		this.utilityService = utilityService;

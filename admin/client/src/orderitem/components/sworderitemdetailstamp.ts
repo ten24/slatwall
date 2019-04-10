@@ -29,6 +29,8 @@ class SWOrderItemDetailStamp {
 		]
 		return directive;
 	}
+
+	//@ngInject
 	constructor(
 		$log,
 		$hibachi,
