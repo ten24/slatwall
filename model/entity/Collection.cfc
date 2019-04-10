@@ -141,6 +141,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="exportFileName" type="string" persistent="false";
 	property name="runningGetRecordsCount" type="boolean" persistent="false" default="false";
+	property name="primaryIDFound" type="boolean" persistent="false" default="false";
 	
 	
 	
@@ -1698,6 +1699,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
+							)||(
+								structKeyExists(join,'groupBy')
+								&& join.groupBy
 							)
 							
 						)
@@ -2657,7 +2661,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(!structKeyExists(variables,'records')){
 							setRunningGetRecordsCount(false);
 							getHQL();
-							
 							setRunningGetRecordsCount(true);
 						}
 						HQL = getSelectionCountHQL();
@@ -3024,6 +3027,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
+				||
+				(
+					hasGroupBys()
+					&& !getprimaryIDFound()
+				)
 			){
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
@@ -3034,6 +3042,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var totalSumAggregate in variables.totalSumAggregates){
 			if(
 				hasAggregateFilter() 
+				||
+				(
+					hasGroupBys()
+					&& !getprimaryIDFound()
+				)
 			){
 				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
@@ -3043,6 +3056,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(
 			hasAggregateFilter() 
+			||
+			(
+				hasGroupBys()
+				&& !getprimaryIDFound()
+			)
 		){
 			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
@@ -3481,6 +3499,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
 							propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
 						}
+						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
+							setprimaryIDFound(true);
+						}
 	
 						if (
 							(
@@ -3503,6 +3524,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							variables.groupBys ="";
 							return;
 						}else if(Find(column.propertyIdentifier,getOrderByHQL())){
+							
 							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
 							
 						}else{
@@ -3514,26 +3536,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				
 				//if we have the collection objects primary id property as a column exclude all others group bys for better performance
-				if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
-					if(arraylen(getOrderBys()) == 0){
-						groupByOverride = listAppend(groupByOverride,convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier));
-					}
-					variables.groupBys = groupByOverride;
-					return variables.groupBys;
-				}
-				
-				if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
-					if(getApplyOrderBysToGroupBys()){
-						for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
-							if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
-							groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
+				if(primaryIDFound){
+					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
+						if(arraylen(getOrderBys()) == 0){
+							groupByOverride = listAppend(groupByOverride,convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier));
 						}
+						variables.groupBys = groupByOverride;
+						return variables.groupBys;
 					}
-				}else{
-					if(!getExcludeOrderBy()){
-						var orderBy = getDefaultOrderBy();
-						if(!getHasAggregate()){
-							groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+					
+					if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
+						if(getApplyOrderBysToGroupBys()){
+							for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
+								if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
+								groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
+							}
+						}
+					}else{
+						if(!getExcludeOrderBy()){
+							var orderBy = getDefaultOrderBy();
+							if(!getHasAggregate()){
+								groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+							}
 						}
 					}
 				}
