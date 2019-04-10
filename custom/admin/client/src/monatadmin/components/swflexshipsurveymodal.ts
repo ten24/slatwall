@@ -2,9 +2,10 @@ class SWFlexshipSurveyModalController{
 
 	public title:string="Flexship Survey";
 	public surveyOptions;
+	public surveyResponse;
 
 	constructor(){
-
+		console.log('surveyOptions', this.surveyOptions);
 	}
 
 	public save = () =>{

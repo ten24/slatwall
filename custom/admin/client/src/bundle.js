@@ -69568,6 +69568,7 @@ var SWFlexshipSurveyModalController = /** @class */ (function () {
         this.title = "Flexship Survey";
         this.save = function () {
         };
+        console.log('surveyOptions', this.surveyOptions);
     }
     return SWFlexshipSurveyModalController;
 }());

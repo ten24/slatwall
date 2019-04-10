@@ -4,10 +4,16 @@
                    data-save-action="swFlexshipSurveyModal.save">
     
     <sw-modal-content> 
-        <div class="col-md-12">
-            <div class="form-group">
-                <h2>SEE ME</h2>
+        <form name="flexshipSurveyModal">
+            <div class="radio s-vertical" ng-repeat="surveyOption in swFlexshipSurveyModal.surveyOptions">
+                <label ng-class="{'checked':swFlexshipSurveyModal.surveyResponse.value === surveyOption.value}">
+                    <input type="radio" 
+                           name="surveyOption"
+                           ng-model="swFlexshipSurveyModal.surveyResponse" 
+                           ng-value="surveyOption" />
+                    <span ng-bind="surveyOption.name"></span>
+                </label>
             </div>
-        </div>
+        </form>
     </sw-modal-content>
 </sw-modal-launcher>

@@ -5,6 +5,7 @@
         <column name="typeIDPath" />
         <column name="parentTypeID" />
         <column name="typeName"  update="false" />
+        <column name="typeDescription"  update="false" />
         <column name="systemCode" update="false" />
         <column name="sortOrder" update="false" />
         <column name="childRequiresSystemCodeFlag" datatype="bit" />
