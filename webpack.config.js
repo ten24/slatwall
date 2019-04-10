@@ -10,6 +10,8 @@ const LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkT
 const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
 const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
 
+const  NgAnnotateWebPackPlugin = require('ng-annotate-webpack-plugin');
+
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 
@@ -24,7 +26,7 @@ var PATHS = {
 var appConfig = {
   mode: "development",
   // watch: true,
-  context: __dirname, //where thi dist/ folder goes
+  context: __dirname, //where the dist/ folder goes
   entry: {
     app: path.join(PATHS.app, "/bootstrap.ts"),
     frontend: path.join(PATHS.hibachi, "/frontend/bootstrap.ts"),
@@ -64,6 +66,10 @@ var appConfig = {
     ]
   },
   plugins: [
+    new NgAnnotateWebPackPlugin({
+            add: true,
+            // other ng-annotate options here
+        }),
     new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new ForceCaseSensitivityPlugin(),

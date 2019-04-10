@@ -51,9 +51,10 @@
     "jasmine-core": "^2.8.0",
     "json-loader": "^0.5.4",
     "less": "*",
+    "ng-annotate": "^1.2.2",
     "ng-annotate-loader": "^0.6.1",
     "ng-annotate-patched": "^1.9.0",
-    "ng-annotate-webpack-plugin": "0.2.0",
+    "ng-annotate-webpack-plugin": "0.3.0",
     "run-sequence": "1.1.4",
     "script-loader": "^0.7.2",
     "strip-loader": "^0.1.2",
@@ -95,7 +96,7 @@
     "buildCustomFrontend": "custom/client/customFrontend.js",
     "buildCustomFrontend:prod": "custom/client/customFrontendProd.js",
     "buildAll": "webpack --progress ",
-    "buildAll:prod": "webpack -p --progress",
+    "buildAll:prod": "webpack -p --progress --config webpack.config.js",
     "lint": "tsc --pretty"
   },
   "jshintConfig": {
