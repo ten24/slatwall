@@ -1992,6 +1992,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//there are two types of alias. One on the collection config in this format _product_defaultSku.skuID
 	//and another on the record output formatted like defaultSku_skuID
 	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
+		//handle legacy alias that is in Account.firstName format instead of _account.firstName
+		if(listFirst(arguments.propertyIdentifierWithAlias,'.') == getCollectionObject()){
+			arguments.propertyIdentifierWithAlias = getBaseEntityAlias()&'.'&listRest(arguments.propertyIdentifierWithAlias,'.');
+		}
+		
 		var cacheKey = 'convertAliasToPropertyIdentifier'&arguments.propertyIdentifierWithAlias;
 
 		var convertedAlias = getCollectionCacheValue(cacheKey);
