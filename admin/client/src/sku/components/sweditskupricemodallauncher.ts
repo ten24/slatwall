@@ -88,7 +88,7 @@ class SWEditSkuPriceModalLauncherController{
         //     throw("swEditSkuPriceModalLauncher couldn't find listing scope");
         // }
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
-        //  this.initData();
+        this.initData();
     }
     
     public updateCurrencyCodeSelector = (args) =>{
@@ -102,8 +102,8 @@ class SWEditSkuPriceModalLauncherController{
     }
 
     public initData = (pageRecord?:any) =>{
-        console.log(pageRecord);
         this.pageRecord = pageRecord;
+        console.log(pageRecord);
         if(angular.isDefined(pageRecord)){
            let skuPriceData = {
                 skuPriceID : pageRecord.skuPriceID,
@@ -114,19 +114,54 @@ class SWEditSkuPriceModalLauncherController{
             } 
             
             let skuData = {
-                skuID:pageRecord["sku_skuID"],
-                skuCode:pageRecord["sku_skuCode"],
-                calculatedSkuDefinition:pageRecord["sku_calculatedSkuDefinition"]
+                skuID : pageRecord["sku_skuID"],
+                skuCode : pageRecord["sku_skuCode"],
+                calculatedSkuDefinition : pageRecord["sku_calculatedSkuDefinition"]
+            }
+            
+            let priceGroupData = {
+                priceGroupID : pageRecord["priceGroup_priceGroupID"],
+                priceGroupCode : pageRecord["priceGroup_priceGroupCode"]
             }
             
             this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
             this.sku = this.$hibachi.populateEntity('Sku', skuData);
-            console.log(this.skuPrice);
-            console.log(this.sku);
+            this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
+            this.skuPrice.$$setPriceGroup(this.priceGroup);
+            this.skuPrice.$$setSku(this.sku);
+            this.currencyCodeOptions = ["USD"];
+            
+            this.skuPrice.data.minQuantity = pageRecord.minQuantity;
+            this.skuPrice.data.maxQuantity = pageRecord.maxQuantity;
+            this.skuPrice.data.priceGroup.data.priceGroupId = pageRecord["priceGroup_priceGroupID"];
         } else {
-            return;
+            if(angular.isUndefined(this.disableAllFieldsButPrice)){
+                this.disableAllFieldsButPrice = false; 
+            }
+            if(angular.isUndefined(this.defaultCurrencyOnly)){
+                this.defaultCurrencyOnly = false; 
+            }
+            if(angular.isDefined(this.minQuantity) && !isNaN(parseInt(this.minQuantity))){
+                this.skuPrice.data.minQuantity = parseInt(this.minQuantity);
+            }
+            if(angular.isDefined(this.maxQuantity) && !isNaN(parseInt(this.minQuantity))){
+                this.skuPrice.data.maxQuantity = parseInt(this.maxQuantity); 
+            }
+            if(angular.isDefined(this.priceGroupId)){
+                this.skuPrice.data.priceGroup.data.priceGroupId = parseInt(this.priceGroupId); 
+            }
+            
+            if(angular.isUndefined(this.currencyCodeOptions) && angular.isDefined(this.eligibleCurrencyCodeList)){
+                this.currencyCodeOptions = this.eligibleCurrencyCodeList.split(",");
+            }
+            if(this.defaultCurrencyOnly){
+                this.skuPrice.data.currencyCode = "USD" //temporarily hardcoded
+            } else if(angular.isDefined(this.currencyCode)){
+                this.skuPrice.data.currencyCode = this.currencyCode; 
+            } else if(angular.isDefined(this.currencyCodeOptions) && this.currencyCodeOptions.length){
+                this.skuPrice.data.currencyCode = this.currencyCodeOptions[0]; 
+            }
         }
-        $("#"+this.uniqueName).modal();
         //these are populated in the link function initially
         /*if(angular.isUndefined(this.disableAllFieldsButPrice)){
             this.disableAllFieldsButPrice = false; 
@@ -162,7 +197,7 @@ class SWEditSkuPriceModalLauncherController{
     public save = () => {
         this.observerService.notify("updateBindings");
         var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
-        var savePromise = this.skuPrice.$$save();
+        var savePromise = this.skuPrice.$$save();;
       
         savePromise.then(
             (response)=>{ 
@@ -173,30 +208,29 @@ class SWEditSkuPriceModalLauncherController{
                 if( angular.isDefined(this.skuPrice) && 
                     this.skuPrice.data.currencyCode == "USD"
                 ){
-                //   var pageRecords = this.listingService.getListingPageRecords(this.listingID);
+                    var pageRecord = this.pageRecord;
                    
-                        if( angular.isDefined(this.pageRecord) &&
-                            angular.isDefined(this.pageRecord.skuID)
-                        ){
-                            var skuPricePageRecord = this.pageRecord;
-                           
-                                    this.skuPrice.data.eligibleCurrencyCodeList = this.currencyCodeOptions.join(",");
-                                    //spoof the page record
-                                    var skuPriceForListing:any = {}; 
-                                    for(var key in this.skuPrice.data){
-                                        skuPriceForListing[key] =  this.skuPrice.data[key];
-                                    }
-                                    skuPriceForListing["sku_skuID"] = this.sku.skuID;
-                                    skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
-                                    skuPriceForListing["sku_calculatedSkuDefinition"] = this.sku.calculatedSkuDefinition;
-                                    skuPriceForListing["priceGroup_priceGroupCode"] = skuPriceForListing.selectedpriceGroup.priceGroupCode;
-                                    skuPriceForListing["priceGroup_priceGroupID"] = skuPriceForListing.selectedpriceGroup.priceGroupID;
-                                    this.pageRecord = skuPriceForListing;
-                            }
+                    if( angular.isDefined(pageRecord) &&
+                        angular.isDefined(pageRecord.skuID)
+                    ){
+                        this.skuPrice.data.eligibleCurrencyCodeList = this.currencyCodeOptions.join(",");
+                        //spoof the page record
+                        var skuPriceForListing:any = {}; 
+                        for(var key in this.skuPrice.data){
+                            skuPriceForListing[key] =  this.skuPrice.data[key];
                         }
+                        skuPriceForListing["sku_skuID"] = this.sku.skuID;
+                        skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
+                        skuPriceForListing["sku_calculatedSkuDefinition"] = this.sku.calculatedSkuDefinition;
+                        skuPriceForListing["priceGroup_priceGroupCode"] = skuPriceForListing.selectedpriceGroup.priceGroupCode;
+                        skuPriceForListing["priceGroup_priceGroupID"] = skuPriceForListing.selectedpriceGroup.priceGroupID;
+                        pageRecord = skuPriceForListing;
+                    }
+                }
             },
             (reason)=>{
                 //error callback
+                console.log("validation failed because: ", reason);
                 this.saveSuccess = false; 
             }
         ).finally(()=>{       
@@ -207,13 +241,13 @@ class SWEditSkuPriceModalLauncherController{
                         this.skuPrice.data[key] = null;
                     }
                 }
-
+                
                 this.formService.resetForm(this.formName);
                 this.initData();
-
-                if(firstSkuPriceForSku){
-                    this.listingService.getCollection(this.listingID); 
-                }
+                
+                
+                this.listingService.getCollection(this.listingID); 
+                
                 this.listingService.notifyListingPageRecordsUpdate(this.listingID);
             }
         });
