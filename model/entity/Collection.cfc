@@ -3536,7 +3536,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				
 				//if we have the collection objects primary id property as a column exclude all others group bys for better performance
-				if(primaryIDFound){
+				if(getprimaryIDFound()){
 					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
 						if(arraylen(getOrderBys()) == 0){
 							groupByOverride = listAppend(groupByOverride,convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier));
