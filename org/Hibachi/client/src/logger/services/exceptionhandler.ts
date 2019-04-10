@@ -1,8 +1,7 @@
-/// <reference path="../../../typings/tsd.d.ts" />
-/// <reference path="../../../typings/hibachiTypescript.d.ts" />
+
 //depends on alert module
-import {Alert} from "../../alert/model/alert";
-import {AlertService} from "../../alert/service/alertservice";
+import { Alert } from "../../alert/model/alert";
+import { AlertService } from "../../alert/service/alertservice";
 /*<------------------------------------------------------------------------
     This is out main class where we actually handle the exception by
     instantiating the http config and passing it along with the
@@ -23,11 +22,11 @@ class ExceptionHandler {
     }
 
     private static handle(exception: string, cause: any) {
-        var alertService:AlertService;
-        if(exception){
+        var alertService: AlertService;
+        if (exception) {
             exception = exception.toString();
         }
-        if(cause){
+        if (cause) {
             cause = cause.toString();
         }
         console.error(exception);
@@ -42,14 +41,14 @@ class ExceptionHandler {
 
 
         var requestConfig: ng.IRequestConfig = {
-            url : "?'+hibachiConfig.action+'=api:main.log",
-            method : "POST",
-            data : serializer({exception: exception, cause: cause, apiRequest: true}),
-            headers : {'Content-Type' : "application/x-www-form-urlencoded"}
+            url: "?'+hibachiConfig.action+'=api:main.log",
+            method: "POST",
+            data: serializer({ exception: exception, cause: cause, apiRequest: true }),
+            headers: { 'Content-Type': "application/x-www-form-urlencoded" }
         };
 
         /** notice I use the fat arrow for the anon function which preserves lexical scope. */
-        http(requestConfig).error(
+        http(requestConfig).catch(
             data => {
                 alertService.addAlert({ msg: exception, type: 'error' });
             }

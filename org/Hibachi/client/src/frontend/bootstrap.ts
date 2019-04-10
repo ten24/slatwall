@@ -11,4 +11,5 @@ class bootstrapper extends BaseBootStrapper {
   }
 }
 
-export = new bootstrapper();
+export default new bootstrapper();
+

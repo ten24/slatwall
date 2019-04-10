@@ -1,7 +1,7 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-class SWCriteriaRelatedObject{
-    public static Factory(){
+import * as angular from "angular";
+
+class SWCriteriaRelatedObject {
+    public static Factory() {
         var directive = (
             $log,
             $hibachi,
@@ -42,35 +42,35 @@ class SWCriteriaRelatedObject{
         metadataService,
         hibachiPathBuilder,
         rbkeyService
-    ){
+    ) {
         return {
             restrict: 'E',
-            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriarelatedobject.html',
-            link: function(scope, element, attrs){
-                var getRelatedObjectOptions = function(){
+            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriarelatedobject.html',
+            link: function (scope, element, attrs) {
+                var getRelatedObjectOptions = function () {
                     var relatedObjectOptions = {
-                        drillEntity:null,
-                        hasEntity:{
-                            display:"Defined",
-                            comparisonOperator:"is not",
-                            value:"null"
+                        drillEntity: null,
+                        hasEntity: {
+                            display: "Defined",
+                            comparisonOperator: "is not",
+                            value: "null"
                         },
-                        notHasEntity:{
-                            display:"Not Defined",
-                            comparisonOperator:"is",
-                            value:"null"
+                        notHasEntity: {
+                            display: "Not Defined",
+                            comparisonOperator: "is",
+                            value: "null"
                         },
-                        aggregate : {
-                            aggregate : ""
+                        aggregate: {
+                            aggregate: ""
                         }
                     };
                     return relatedObjectOptions;
                 };
 
-                scope.aggregate ={};
+                scope.aggregate = {};
                 scope.aggregate.selectedAggregate = '';
 
-                scope.aggregateOptions = [ 'Average', 'Count', 'Sum', 'Min', 'Max'];
+                scope.aggregateOptions = ['Average', 'Count', 'Sum', 'Min', 'Max'];
 
                 scope.selectAggregate = function (aggregate) {
                     scope.selectedFilterProperty.selectedCriteriaType.aggregate = aggregate;
@@ -81,36 +81,36 @@ class SWCriteriaRelatedObject{
                 $log.debug(scope.selectedFilterProperty);
                 $log.debug(scope.filterPropertiesList);
 
-                scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
-                    if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
+                scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+                    if (angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])) {
                         var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
-                        filterPropertiesPromise.then(function(value){
+                        filterPropertiesPromise.then(function (value) {
                             scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
-                            metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+                            metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier], scope.selectedFilterProperty.propertyIdentifier);
 
-                        }, function(reason){
+                        }, function (reason) {
 
                         });
                     }
 
-                    scope.selectedCriteriaChanged = function(selectedCriteria, selectedAggregate?){
+                    scope.selectedCriteriaChanged = function (selectedCriteria, selectedAggregate?) {
                         var breadCrumb = {
-                            entityAlias:scope.selectedFilterProperty.name,
-                            cfc:scope.selectedFilterProperty.cfc,
-                            propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
-                            rbKey:rbkeyService.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
+                            entityAlias: scope.selectedFilterProperty.name,
+                            cfc: scope.selectedFilterProperty.cfc,
+                            propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier,
+                            rbKey: rbkeyService.getRBKey('entity.' + scope.selectedFilterProperty.cfc.replace('_', ''))
                         };
                         $log.debug('breadcrumb');
                         $log.debug(breadCrumb);
                         $log.debug(scope.filterItem.breadCrumbs);
                         scope.filterItem.breadCrumbs.push(breadCrumb);
 
-                        if(selectedAggregate){
+                        if (selectedAggregate) {
                             scope.selectedFilterProperty.selectedCriteriaType.ormtype = 'integer';
                             scope.selectedFilterProperty.selectedCriteriaType.aggregate = selectedAggregate;
                         }
                         //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
-                        scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+                        scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
                         //update criteria to display the condition of the new critera we have selected
                         $log.debug(scope.selectedFilterProperty);
 
@@ -120,6 +120,6 @@ class SWCriteriaRelatedObject{
         };
     }
 }
-export{
+export {
     SWCriteriaRelatedObject
 }

@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import {BaseEntityService} from "./baseentityservice";
 class SkuService extends BaseEntityService{

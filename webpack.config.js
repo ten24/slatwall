@@ -1,13 +1,18 @@
-var webpack = require("webpack");
-const CompressionPlugin = require("compression-webpack-plugin");
-var LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
+const webpack = require("webpack");
 
-var ForceCaseSensitivityPlugin = require("force-case-sensitivity-webpack-plugin");
+const ForceCaseSensitivityPlugin = require("force-case-sensitivity-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+const TerserPlugin = require("terser-webpack-plugin"); //minimizer
+const CompressionPlugin = require("compression-webpack-plugin");
+
+const LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
 const CleanWebpackPlugin = require("clean-webpack-plugin"); // clean dist  dir
 const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
+
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
-const TerserPlugin = require("terser-webpack-plugin"); //minimizer
+
 
 var path = require("path");
 var PATHS = {
@@ -22,24 +27,25 @@ var appConfig = {
   context: __dirname, //where thi dist/ folder goes
   entry: {
     app: path.join(PATHS.app, "/bootstrap.ts"),
-    frontend: path.join(PATHS.hibachi, "/frontend/bootstrap.ts")
+    frontend: path.join(PATHS.hibachi, "/frontend/bootstrap.ts"),
   },
   output: {
     path: PATHS.dist,
     filename: "[name].[contenthash].js",
     chunkFilename: "[name].[contenthash].bundle.js",
     sourceMapFilename: "sourcemaps/[file].map",
-    publicPath: "#request.slatwallScope.getBaseURL()#/dist/" 
-    //    publicPath: "#request.slatwallScope.getBaseURL()#/admin/client/dist/" //  the url to the output directory resolved relative to the HTML page
+    publicPath: "/dist/", // we have to do more work on this one
+    pathinfo: false
+    // publicPath: "#request.slatwallScope.getBaseURL()#/dist/"
   },
 
   // Turn on sourcemaps
-  devtool: 'source-map',
+  // devtool: "source-map",
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".js"]
   },
   externals: {
-    // jquery: 'jQuery'
+    jquery: "jQuery"
   },
   module: {
     rules: [
@@ -52,31 +58,31 @@ var appConfig = {
               transpileOnly: true
             }
           }
-        ]
+        ],
+        exclude: /node_modules/
       }
     ]
   },
   plugins: [
     new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
-    new ForceCaseSensitivityPlugin(),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+    new ForceCaseSensitivityPlugin(),
     new CleanWebpackPlugin(),
+    new LinkTypePlugin(),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
       filename: "include-admin.cfm",
       inject: false,
       chunks: ["app"],
-      chunkSortMode: "dependency"
+      chunkSortMode: "dependency",
     }),
-    new LinkTypePlugin(),
     new HtmlWebpackPlugin({
       template: path.join("./template.html"),
       filename: "include-frontend.cfm",
       inject: false,
       chunks: ["frontend"],
-      chunkSortMode: "dependency"
+      chunkSortMode: "dependency",
     }),
-    new LinkTypePlugin(),
     new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
@@ -84,21 +90,17 @@ var appConfig = {
       threshold: 10240,
       minRatio: 0.8
     }),
-    // new BundleAnalyzerPlugin()
+    // new ForkTsCheckerWebpackPlugin(), //  for typechecking,   were using tsloader to transpile-only to reduce the build time
+    new BundleAnalyzerPlugin()
   ],
   optimization: {
     usedExports: true,
-    // runtimeChunk: {
-    //   name: entrypoint => `runtime~${entrypoint.name}`
-    // },
-    runtimeChunk: 'single',
+    runtimeChunk: "single",
     splitChunks: {
       chunks: "all",
       maxInitialRequests: Infinity,
-      minSize: 30000,
+      minSize: 3000,
       cacheGroups: {
-        // default: false,
-        // vendors: false,
         "vendor-angular": {
           reuseExistingChunk: true,
           name: "vendor-angular",
@@ -106,13 +108,11 @@ var appConfig = {
           chunks: "initial",
           priority: 2
         },
-        "vendor-all": {
-          reuseExistingChunk: true,
-          name: "vendor-all",
-          test: /[\\/]node_modules[\\/]/,
-          chunks: "initial",
-          priority: 1
-        }
+        "async": {
+          enforce: true,
+          chunks: "async",
+          priority: 2
+        },
       }
     },
     mangleWasmImports: true, //  tells webpack to reduce the size of WASM by changing imports to shorter strings. It mangles module and export names.
@@ -121,11 +121,12 @@ var appConfig = {
         cache: true,
         parallel: true,
         sourceMap: true,
-        // extractComments: "all",
         terserOptions: {
           warnings: false,
           parse: {},
-          compress: true,
+          compress: {
+            drop_console: true,
+          },
           mangle: true, // Note `mangle.properties` is `false` by default.
           module: false,
           output: {

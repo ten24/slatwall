@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+import * as angular from "angular";
+
 class SWSkuPricesEditController{
     
     public Id:string; 

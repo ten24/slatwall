@@ -1,5 +1,4 @@
-/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+
 import {Request} from "./request";
 import {ObserverService} from "../../services/observerservice";
 

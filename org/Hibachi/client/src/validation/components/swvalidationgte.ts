@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * SwValidationGTE: Validates true if the user value >= to the constraint value.
  * @usage <input type='text' swvalidationGte='5' /> will validate false if the user enters

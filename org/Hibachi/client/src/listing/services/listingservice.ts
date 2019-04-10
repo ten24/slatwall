@@ -1,9 +1,8 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import { Subject } from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes/swstore';
+import * as angular from "angular";
 
 class ListingService{
 

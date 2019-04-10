@@ -1,9 +1,8 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import {Cart} from "../model/entity/cart";
 import {Account} from "../model/entity/account";
 import {PublicRequest} from "../model/transient/publicrequest";
+import * as angular from "angular";
 
 class PublicService {
     public account:Account;

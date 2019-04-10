@@ -1,5 +1,4 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+import * as angular from "angular";
 
 class SWListingSearchController {
     private selectedSearchColumn;

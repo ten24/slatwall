@@ -1,5 +1,6 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+
+import * as angular from "angular";
+
 class CreateBundleController{
 	
 	public $inject=[
@@ -15,6 +16,7 @@ class CreateBundleController{
 		'formService',
 		'productBundlePartials'
 	];
+  
 	//@ngInject
 	constructor(
 		public $scope,
@@ -38,34 +40,34 @@ class CreateBundleController{
 		    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 		}
 
-		$scope.$id="create-bundle-controller";
+		$scope.$id = "create-bundle-controller";
 		//if this view is part of the dialog section, call the inherited function
-		if(angular.isDefined($scope.scrollToTopOfDialog)){
+		if (angular.isDefined($scope.scrollToTopOfDialog)) {
 			$scope.scrollToTopOfDialog();
 
 		}
 
 		var productID = getParameterByName('productID');
 
-		var productBundleConstructor = () =>{
+		var productBundleConstructor = () => {
 
 			$log.debug($scope);
 
-			if(angular.isDefined($scope.product)){
+			if (angular.isDefined($scope.product)) {
 
-				for(var form in $scope.product.forms){
+				for (var form in $scope.product.forms) {
 					formService.resetForm($scope.product.forms[form]);
 				}
 
-				if(angular.isDefined($scope.product.data.skus[0])){
-					for(var form in $scope.product.data.skus[0].forms){
+				if (angular.isDefined($scope.product.data.skus[0])) {
+					for (var form in $scope.product.data.skus[0].forms) {
 						formService.resetForm($scope.product.data.skus[0].forms[form]);
 					}
 				}
 
-				if(angular.isDefined($scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup)){
-					for(var form in $scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms){
-						formService.resetForm( $scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms[form]);
+				if (angular.isDefined($scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup)) {
+					for (var form in $scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms) {
+						formService.resetForm($scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms[form]);
 					}
 				}
 			}
@@ -81,16 +83,15 @@ class CreateBundleController{
 
 		$scope.productBundleGroup;
 
-		if(angular.isDefined(productID) && productID !== ''){
-			var productPromise = $hibachi.getProduct({id:productID});
+		if (angular.isDefined(productID) && productID !== '') {
+			var productPromise = $hibachi.getProduct({ id: productID });
 
-			productPromise.promise.then(()=>{
+			productPromise.promise.then( () => {
 				$log.debug(productPromise.value);
-				productPromise.value.$$getSkus().then(()=>{
-					productPromise.value.data.skus[0].$$getProductBundleGroups().then(()=>{
-
+				productPromise.value.$$getSkus().then( () => {
+					productPromise.value.data.skus[0].$$getProductBundleGroups().then( () => {
 						$scope.product = productPromise.value;
-						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,(productBundleGroup)=>{
+						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,(productBundleGroup) => {
 							productBundleGroup.$$getProductBundleGroupType();
 							this.productBundleService.decorateProductBundleGroup(productBundleGroup);
 							productBundleGroup.data.$$editing = false;
@@ -104,6 +105,6 @@ class CreateBundleController{
 		}
 	}
 }
-export{
+export {
 	CreateBundleController
 }

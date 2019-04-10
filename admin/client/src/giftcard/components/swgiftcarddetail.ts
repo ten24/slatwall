@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 class SWGiftCardDetailController{
 	public giftCardId;
 	public giftCard;

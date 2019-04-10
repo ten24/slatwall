@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 import {BaseObject} from "../model/baseobject";
 import * as Entities from "../model/entity/entities";
 import * as Processes from "../model/process/processes";

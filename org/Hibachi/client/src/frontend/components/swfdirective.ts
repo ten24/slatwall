@@ -1,6 +1,6 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-declare var hibachiConfig:any;
+import * as angular from "angular";
+
+declare var hibachiConfig: any;
 
 class SWFDirectiveController {
     private hibachiScope;
@@ -14,7 +14,7 @@ class SWFDirectiveController {
 }
 
 class SWFDirective implements ng.IDirective {
-    
+
     public restrict: string = 'E';
     public scope: any;
     public bindToController = {
@@ -28,11 +28,11 @@ class SWFDirective implements ng.IDirective {
     public url: string = "";
     public $compile;
     public path: string;
-    
+
     // @ngInject
     constructor(hibachiPathBuilder, $compile) {
-        if(!hibachiConfig){
-            hibachiConfig = {};    
+        if (!hibachiConfig) {
+            hibachiConfig = {};
         }
         if (!hibachiConfig.customPartialsPath) {
             hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
@@ -44,7 +44,7 @@ class SWFDirective implements ng.IDirective {
         this.url = hibachiConfig.customPartialsPath + 'swfdirectivepartial.html';
         this.$compile = $compile;
     }
-    
+
     /** allows you to build a directive without using another controller and directive config. */
     // @ngInject
     public link: ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: any) => {
@@ -63,10 +63,10 @@ class SWFDirective implements ng.IDirective {
             if (attrs.type == "A" || !attrs.type) {
                 var template = '<span ' + attrs.directive + ' ';
                 if (angular.isDefined(this.scope.variables)) {
-                    angular.forEach(this.scope.variables, function(value, key) {
-                        if(!angular.isString(value) && !angular.isNumber(value)){
+                    angular.forEach(this.scope.variables, function (value, key) {
+                        if (!angular.isString(value) && !angular.isNumber(value)) {
                             template += ' ' + key + '="SWFDirective.' + 'variables.' + key + '" ';
-                        } else { 
+                        } else {
                             template += ' ' + key + '="' + value + '" ';
                         }
                     });
@@ -76,14 +76,14 @@ class SWFDirective implements ng.IDirective {
             } else {
                 var template = '<' + attrs.directive + ' ';
                 if (this.scope.variables) {
-                    angular.forEach(this.scope.variables, function(value, key) {
+                    angular.forEach(this.scope.variables, function (value, key) {
                         template += ' ' + key + '=' + value + ' ';
                     });
                 }
                 template += + '>';
                 template += '</' + attrs.directive + '>';
             }
-            
+
             // Render the template.
             element.html('').append(this.$compile(template)(scope));
             debugger;
@@ -106,6 +106,6 @@ class SWFDirective implements ng.IDirective {
         return directive;
     }
 }
-export {SWFDirectiveController, SWFDirective};
-    
-    
+export { SWFDirectiveController, SWFDirective };
+
+

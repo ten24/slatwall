@@ -1,36 +1,36 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-class SWProductBundleGroupsController{
+import * as angular from "angular";
+
+class SWProductBundleGroupsController {
 
     public sku;
     public productBundleGroups;
 
     //@ngInject
     constructor(public $scope,
-                public $element,
-                public $attrs,
-                public $log,
-                public productBundleService,
-                public $hibachi
-    ){
+        public $element,
+        public $attrs,
+        public $log,
+        public productBundleService,
+        public $hibachi
+    ) {
         $scope.editing = $scope.editing || true;
 
-        angular.forEach(this.productBundleGroups,(obj)=>{
+        angular.forEach(this.productBundleGroups, (obj) => {
             productBundleService.decorateProductBundleGroup(obj);
             obj.data.$$editing = false;
         });
     }
 
-    public removeProductBundleGroup = (index)=>{
-        if(angular.isDefined(this.productBundleGroups[index]) && this.productBundleGroups[index].$$isPersisted()){
-            this.productBundleGroups[index].$$delete().then((data)=>{
+    public removeProductBundleGroup = (index) => {
+        if (angular.isDefined(this.productBundleGroups[index]) && this.productBundleGroups[index].$$isPersisted()) {
+            this.productBundleGroups[index].$$delete().then((data) => {
                 //no more logic to run
             });
         }
-        this.productBundleGroups.splice(index,1);
+        this.productBundleGroups.splice(index, 1);
     }
 
-    public addProductBundleGroup = () =>{
+    public addProductBundleGroup = () => {
         var productBundleGroup = this.$hibachi.newProductBundleGroup();
 
         productBundleGroup.$$setProductBundleSku(this.sku);
@@ -39,19 +39,19 @@ class SWProductBundleGroupsController{
 
     }
 
-    public refreshProductBundleGroup = () =>{
-        for (var pbg in this.productBundleGroups){
-            if (this.productBundleGroups[pbg]['forms'] != undefined || this.productBundleGroups[pbg]['forms'][`createProductBundle${pbg}`] != undefined){
+    public refreshProductBundleGroup = () => {
+        for (var pbg in this.productBundleGroups) {
+            if (this.productBundleGroups[pbg]['forms'] != undefined || this.productBundleGroups[pbg]['forms'][`createProductBundle${pbg}`] != undefined) {
                 //updates the min and max from the raw form values instead of making another http call.
 
-                if (this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['maximumQuantity'] != undefined && this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['maximumQuantity']['$modelValue'] != undefined){
-                    if (this.productBundleGroups[`${pbg}`]['data']['maximumQuantity'] !==  this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['maximumQuantity']['$modelValue']){
+                if (this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['maximumQuantity'] != undefined && this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['maximumQuantity']['$modelValue'] != undefined) {
+                    if (this.productBundleGroups[`${pbg}`]['data']['maximumQuantity'] !== this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['maximumQuantity']['$modelValue']) {
                         this.productBundleGroups[`${pbg}`]['data']['maximumQuantity'] = this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['maximumQuantity']['$modelValue'];
                     }
                 }
 
-                if (this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity'] != undefined && this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'] != undefined){
-                    if (this.productBundleGroups[`${pbg}`]['data']['minimumQuantity'] !== this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue']){
+                if (this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity'] != undefined && this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'] != undefined) {
+                    if (this.productBundleGroups[`${pbg}`]['data']['minimumQuantity'] !== this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue']) {
                         this.productBundleGroups[`${pbg}`]['data']['minimumQuantity'] = this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'];
                     }
                 }
@@ -61,44 +61,36 @@ class SWProductBundleGroupsController{
 }
 
 
-class SWProductBundleGroups implements ng.IDirective{
+class SWProductBundleGroups implements ng.IDirective {
     public templateUrl;
     public restrict = 'EA';
     public scope = {
-        sku:"=",
-        productBundleGroups:"="
+        sku: "=",
+        productBundleGroups: "="
     };
     public bindToController = {
-        sku:"=",
-        productBundleGroups:"="
+        sku: "=",
+        productBundleGroups: "="
     };
     public controller = SWProductBundleGroupsController;
-    public controllerAs="swProductBundleGroups";
+    public controllerAs = "swProductBundleGroups";
 
 
-    public static Factory(){
+    public static Factory() {
         var directive = (
-			productBundlePartialsPath,
-			slatwallPathBuilder
-        )=> new SWProductBundleGroups(
-            productBundlePartialsPath,
-			slatwallPathBuilder
+          productBundlePartialsPath, slatwallPathBuilder 
+        ) => new SWProductBundleGroups (
+            productBundlePartialsPath, slatwallPathBuilder
         );
-        directive.$inject = [
-            'productBundlePartialsPath',
-			'slatwallPathBuilder'
-        ];
+        directive.$inject = [ 'productBundlePartialsPath', 'slatwallPathBuilder' ];
         return directive;
     }
     //@ngInject
-    constructor(
-        productBundlePartialsPath,
-	   slatwallPathBuilder
-    ){
+    constructor( productBundlePartialsPath, slatwallPathBuilder ) {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html";
     }
 }
-export{
+export {
     SWProductBundleGroups,
     SWProductBundleGroupsController
 }

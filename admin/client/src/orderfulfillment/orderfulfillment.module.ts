@@ -1,32 +1,32 @@
-/// <reference path='../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
+
 //modules
-import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
+import { coremodule } from "../../../../org/Hibachi/client/src/core/core.module";
 
 //services
-import {OrderFulfillmentService} from "./services/orderfulfillmentservice";
+import { OrderFulfillmentService } from "./services/orderfulfillmentservice";
 
 //controllers
 
 //directives
-import {SWOrderFulfillmentList} from "./components/sworderfulfillmentlist";
+import { SWOrderFulfillmentList } from "./components/sworderfulfillmentlist";
+import * as angular from "angular";
 //models 
 
 
-var orderfulfillmentmodule = angular.module('orderFulfillment',[coremodule.name])
-.config([()=>{
+var orderfulfillmentmodule = angular.module('orderFulfillment', [coremodule.name])
+	.config([() => {
 
-}]).run([()=>{
+	}]).run([() => {
 
-}])
-//constants
-.constant('orderFulfillmentPartialsPath','orderfulfillment/components/')
-//services
-.service('orderFulfillmentService', OrderFulfillmentService)
-//controllers
-//directives
-.directive('swOrderFulfillmentList', SWOrderFulfillmentList.Factory());
+	}])
+	//constants
+	.constant('orderFulfillmentPartialsPath', 'orderfulfillment/components/')
+	//services
+	.service('orderFulfillmentService', OrderFulfillmentService)
+	//controllers
+	//directives
+	.directive('swOrderFulfillmentList', SWOrderFulfillmentList.Factory());
 
-export{
+export {
 	orderfulfillmentmodule
 };

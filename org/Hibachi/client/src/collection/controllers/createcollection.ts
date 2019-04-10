@@ -1,22 +1,21 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+import * as angular from "angular";
 
-class CreateCollection{
+class CreateCollection {
 
     //@ngInject
     constructor(
         $scope, $log, $timeout, $hibachi, collectionService, metadataService, paginationService, dialogService,
-        observerService, selectionService,collectionConfigService, rbkeyService, $window
-    ){
-        $window.scrollTo(0,0);
+        observerService, selectionService, collectionConfigService, rbkeyService, $window
+    ) {
+        $window.scrollTo(0, 0);
         $scope.params = dialogService.getCurrentDialog().params;
         $scope.readOnly = angular.isDefined($scope.params.readOnly) && $scope.params.readOnly == true;
 
         $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
         var hibachiConfig = $hibachi.getConfig();
 
-        if($scope.params.entityName == 'Type' && angular.isUndefined($scope.params.entityId) && angular.isDefined($scope.params.parentEntity)){
-            $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^'+hibachiConfig.applicationKey, 'i'), '');
+        if ($scope.params.entityName == 'Type' && angular.isUndefined($scope.params.entityId) && angular.isDefined($scope.params.parentEntity)) {
+            $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
             var systemCode = $scope.params.parentEntity.charAt(0).toLowerCase() + $scope.params.parentEntity.slice(1) + 'Type';
             $scope.myCollection.addFilter('parentType.systemCode', systemCode);
         }
@@ -25,7 +24,7 @@ class CreateCollection{
         $scope.paginator = paginationService.createPagination();
 
         //$scope.isRadio = true;
-        $scope.hideEditView=true;
+        $scope.hideEditView = true;
         //$scope.closeSaving = true;
         $scope.hasSelection = selectionService.getSelectionCount;
         $scope.idsSelected = selectionService.getSelections;
@@ -35,22 +34,22 @@ class CreateCollection{
         };
 
         $scope.newCollection = $hibachi.newCollection();
-        $scope.newCollection.data.collectionCode = $scope.params.entityName+"-"+new Date().valueOf();
+        $scope.newCollection.data.collectionCode = $scope.params.entityName + "-" + new Date().valueOf();
         $scope.newCollection.data.collectionObject = $scope.params.entityName;
 
 
 
-        if(angular.isDefined($scope.params.entityId)){
+        if (angular.isDefined($scope.params.entityId)) {
             $scope.newCollection.data.collectionID = $scope.params.entityId;
-            $timeout(function(){
+            $timeout(function () {
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
 
             });
         }
 
-        if(angular.isDefined($scope.params.collectionName)){
+        if (angular.isDefined($scope.params.collectionName)) {
             $scope.newCollection.data.collectionName = $scope.params.collectionName;
-            $timeout(function(){
+            $timeout(function () {
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
 
             });
@@ -69,14 +68,14 @@ class CreateCollection{
 
             var collectionOptions;
 
-            if(angular.isDefined($scope.params.entityId)){
-                collectionOptions= {
-                    id:$scope.params.entityId,
-                    currentPage:$scope.paginator.getCurrentPage(),
-                    pageShow:$scope.paginator.getPageShow(),
-                    keywords:$scope.keywords
+            if (angular.isDefined($scope.params.entityId)) {
+                collectionOptions = {
+                    id: $scope.params.entityId,
+                    currentPage: $scope.paginator.getCurrentPage(),
+                    pageShow: $scope.paginator.getPageShow(),
+                    keywords: $scope.keywords
                 }
-            }else{
+            } else {
                 collectionOptions = $scope.myCollection.getOptions()
             }
 
@@ -85,18 +84,18 @@ class CreateCollection{
                 $scope.myCollection.getEntityName(), collectionOptions
             );
             collectionListingPromise.then(function (value) {
-                if(angular.isDefined($scope.params.entityId)){
+                if (angular.isDefined($scope.params.entityId)) {
                     $scope.newCollection.data.collectionName = value.collectionName;
                 }
                 $scope.collection = value;
                 $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
                 $scope.collectionInitial = angular.copy($scope.collection);
-                $scope.paginator.setRecordsCount( $scope.collection.recordsCount);
+                $scope.paginator.setRecordsCount($scope.collection.recordsCount);
                 $scope.paginator.setPageRecordsInfo($scope.collection);
 
-               if(angular.isUndefined($scope.myCollection.columns)){
+                if (angular.isUndefined($scope.myCollection.columns)) {
                     var colConfig = angular.fromJson(value.collectionConfig)
-                    colConfig.baseEntityName = colConfig.baseEntityName.replace(new RegExp('^'+hibachiConfig.applicationKey, 'i'), '');
+                    colConfig.baseEntityName = colConfig.baseEntityName.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
                     $scope.myCollection.loadJson(colConfig);
                 }
 
@@ -184,12 +183,12 @@ class CreateCollection{
 
         $scope.loadingCollection = false;
         var searchPromise;
-        $scope.searchCollection = function(){
-            if(searchPromise) {
+        $scope.searchCollection = function () {
+            if (searchPromise) {
                 $timeout.cancel(searchPromise);
             }
 
-            searchPromise = $timeout(function(){
+            searchPromise = $timeout(function () {
                 //$log.debug('search with keywords');
                 //$log.debug($scope.keywords);
                 //Set current page here so that the pagination does not break when getting collection
@@ -203,27 +202,27 @@ class CreateCollection{
         //
         $scope.hideExport = true;
         $scope.saveNewCollection = function ($index) {
-            if($scope.closeSaving) return;
+            if ($scope.closeSaving) return;
             $scope.closeSaving = true;
 
-            if(!angular.isUndefined(selectionService.getSelections('collectionSelection'))
-                && (selectionService.getSelections('collectionSelection').length > 0)){
+            if (!angular.isUndefined(selectionService.getSelections('collectionSelection'))
+                && (selectionService.getSelections('collectionSelection').length > 0)) {
                 $scope.collectionConfig.filterGroups[0].filterGroup = [
                     {
-                        "displayPropertyIdentifier": rbkeyService.getRBKey("entity."+$scope.myCollection.baseEntityName.toLowerCase()+"."+$scope.myCollection.collection.$$getIDName().toLowerCase()),
-                        "propertyIdentifier": $scope.myCollection.baseEntityAlias + "."+$scope.myCollection.collection.$$getIDName(),
-                        "comparisonOperator":"in",
-                        "value":selectionService.getSelections('collectionSelection').join(),
-                        "displayValue":selectionService.getSelections('collectionSelection').join(),
-                        "ormtype":"string",
-                        "fieldtype":"id",
-                        "conditionDisplay":"In List"
+                        "displayPropertyIdentifier": rbkeyService.getRBKey("entity." + $scope.myCollection.baseEntityName.toLowerCase() + "." + $scope.myCollection.collection.$$getIDName().toLowerCase()),
+                        "propertyIdentifier": $scope.myCollection.baseEntityAlias + "." + $scope.myCollection.collection.$$getIDName(),
+                        "comparisonOperator": "in",
+                        "value": selectionService.getSelections('collectionSelection').join(),
+                        "displayValue": selectionService.getSelections('collectionSelection').join(),
+                        "ormtype": "string",
+                        "fieldtype": "id",
+                        "conditionDisplay": "In List"
                     }
                 ];
             }
 
             $scope.newCollection.data.collectionConfig = $scope.collectionConfig;
-            if($scope.newCollection.data.collectionConfig.baseEntityName.lastIndexOf(hibachiConfig.applicationKey, 0) !== 0) {
+            if ($scope.newCollection.data.collectionConfig.baseEntityName.lastIndexOf(hibachiConfig.applicationKey, 0) !== 0) {
                 $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
             }
             $scope.newCollection.$$save().then(function () {
@@ -231,10 +230,10 @@ class CreateCollection{
                 selectionService.clearSelection('collectionSelection');
                 dialogService.removePageDialog($index);
                 $scope.closeSaving = false;
-            }, function(){
+            }, function () {
                 $scope.closeSaving = false;
             });
         }
     }
 }
-export{CreateCollection}
+export { CreateCollection }
