@@ -57,15 +57,19 @@ Notes:
 				data-field-name="#attributes.fieldName#"
 				data-property-to-save="accountID"
 				data-property-to-show="calculatedFullName"
-				data-properties-to-load="accountID,calculatedFullName"
+				data-properties-to-load="accountID,calculatedFullName,company,adminIcon,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber"
 				data-show-add-button="false"
 				data-show-view-button="false"
 				data-placeholder-text="#attributes.placeholderText#"
 				data-multiselect-mode="false"
 				data-order-by-list="calculatedFullName|ASC" >
-				
-				<span sw-typeahead-search-line-item data-property-identifier="calculatedFullName" is-searchable="true"></span><br>
-				
+
+				<span class="adminIcon" sw-typeahead-search-line-item bind-html="true" data-property-identifier="adminIcon"></span>
+				<span class="fullName first" sw-typeahead-search-line-item data-property-identifier="calculatedFullName" is-searchable="true"></span>
+				<span class="company" sw-typeahead-search-line-item data-property-identifier="company"></span>
+				<span class="emailAddress" sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress.emailAddress"></span>
+				<span class="phoneNumber" sw-typeahead-search-line-item data-property-identifier="primaryPhoneNumber.phoneNumber"></span>
+
 			</sw-typeahead-input-field>
 	</cfoutput>
 </cfif> 

@@ -79730,6 +79730,7 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
         this.scope = true;
         this.bindToController = {
             propertyIdentifier: "@",
+            bindHtml: "=?",
             isSearchable: "@?",
         };
         this.controller = SWTypeaheadSearchLineItemController;
@@ -79739,7 +79740,12 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
                 pre: function (scope, element, attrs) {
                     var innerHTML = element[0].innerHTML;
                     element[0].innerHTML = '';
-                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    if (!scope.swTypeaheadSearchLineItem.bindHtml) {
+                        var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    }
+                    else {
+                        var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind-html="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    }
                     element.append(span);
                 },
                 post: function (scope, element, attrs) { }
