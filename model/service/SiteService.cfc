@@ -97,6 +97,13 @@ component  extends="HibachiService" accessors="true" {
 				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBrand"),
 				settingName='brand',
 				contentTemplateFile='slatwall-brand.cfm'
+			},
+			{
+				title='Category Template Page',
+				urlTitle="category-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttCategory"),
+				settingName='category',
+				contentTemplateFile='slatwall-category.cfm'
 			}
 		];
 
