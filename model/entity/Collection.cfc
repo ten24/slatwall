@@ -477,6 +477,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//addGroupBy(alias);
 						propertyIdentifierAliasData.hasManyRelationFilter=true;
 					}
+					
 					current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
 					_propertyIdentifier &= '_' & propertyIdentifierParts[i];
 					var join = {
@@ -1129,7 +1130,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		if(!joinFound){
-			ArrayPrepend(getCollectionConfigStruct().joins,arguments.join);
+			//join should be duplicated so we don't modify cache references
+			ArrayPrepend(getCollectionConfigStruct().joins,duplicate(arguments.join));
 		}
 		getCollectionConfigStruct().joins = getService('hibachiUtilityService').arrayOfStructsSort(getCollectionConfigStruct().joins,'alias','asc');
 
@@ -1679,7 +1681,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var joinHQL = '';
 		
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
-			//writedump(getCollectionConfigStruct().joins);abort;
+			
             var allAliases = getAllAliases();
 			for(var join in getCollectionConfigStruct()["joins"]){
 				if(
@@ -2649,7 +2651,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var HQL = '';
 						//if getRecordsCount is called prior to getRecords then groupbys were never populated
 						if(!structKeyExists(variables,'records')){
-							getHQL(true);
+							setRunningGetRecordsCount(false);
+							getHQL();
+							
+							setRunningGetRecordsCount(true);
 						}
 						HQL = getSelectionCountHQL();
 						if( getDirtyReadFlag() ) {
@@ -3010,18 +3015,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var countHQLSelections = "";
 		var countHQLSuffix = "";
-		if(
-			hasAggregateFilter() 
-			|| hasGroupBys()
-			
-		){
-			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
-			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
- 		}else{
- 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
- 			var countHQLSuffix = getHQL(true,false,false,false,true);
-		}
-
+		
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
@@ -3030,7 +3024,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			){
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
-				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier,'aggregate')#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}
 		}
 
@@ -3042,8 +3036,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			){
 				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
-				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier,'aggregate')#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}
+		}
+		
+		if(
+			hasAggregateFilter() 
+			|| hasGroupBys()
+			
+		){
+			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
+			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
+ 		}else{
+ 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
+ 			var countHQLSuffix = getHQL(true,false,false,false,true);
 		}
 
 
@@ -3334,7 +3340,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			arrayAppend(variables.totalSumAggregates,column);
 		}
 	}
-
+	
 	public string function getColumnAlias(required struct column){
 
 		if(structKeyExists(column,'attributeID')){
@@ -3364,7 +3370,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							var join = {
 									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+									alias=currentAlias&'_'&columnPropertyIdentiferArray[j],
+									column=true
 							};
 							
 
