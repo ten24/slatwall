@@ -69564,13 +69564,18 @@ exports.termmodule = termmodule;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFlexshipSurveyModalController = /** @class */ (function () {
-    function SWFlexshipSurveyModalController($hibachi, requestService) {
+    function SWFlexshipSurveyModalController($hibachi, $scope, requestService) {
         var _this = this;
         this.$hibachi = $hibachi;
+        this.$scope = $scope;
         this.requestService = requestService;
         this.title = "Flexship Survey";
         this.processContext = "Create";
+        this.$onInit = function () {
+            console.log('form scope???', _this.form, _this.$scope);
+        };
         this.save = function () {
+            console.log('behold the form', _this.form);
             var formDataToPost = {
                 entityName: 'FlexshipSurveyResponse',
                 context: _this.processContext,
@@ -69586,7 +69591,6 @@ var SWFlexshipSurveyModalController = /** @class */ (function () {
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
         };
-        console.log('surveyOptions', this.surveyOptions);
     }
     return SWFlexshipSurveyModalController;
 }());
@@ -77876,8 +77880,11 @@ var SWModalLauncherController = /** @class */ (function () {
         if (angular.isUndefined(this.hasCancelAction)) {
             this.hasCancelAction = true;
         }
+        if (angular.isUndefined(this.saveDisabled)) {
+            this.saveDisabled = false;
+        }
         if (angular.isUndefined(this.showExit)) {
-            this.showExit = false;
+            this.showExit = true;
         }
         if (angular.isUndefined(this.showModal)) {
             this.showModal = false;
@@ -77917,6 +77924,7 @@ var SWModalLauncher = /** @class */ (function () {
             launchEventName: "@?",
             modalName: "@",
             title: "@",
+            saveDisabled: "=?",
             saveAction: "&?",
             deleteAction: "&?",
             cancelAction: "&?",
@@ -78004,6 +78012,7 @@ var SWModalWindow = /** @class */ (function () {
             modalName: "@",
             title: "@",
             showExit: "=?",
+            saveDisabled: "=?",
             hasSaveAction: "=?",
             saveAction: "&?",
             hasDeleteAction: "=?",

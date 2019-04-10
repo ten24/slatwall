@@ -2,13 +2,15 @@
                    data-modal-options="{backdrop:'static',keyboard:false}"
                    data-title="{{swFlexshipSurveyModal.title}}" 
                    data-launch-event-name="OrderTemplateUpdateScheduleSuccess"
-                   data-disable-click-outside="true"
+                   data-show-exit="false"
                    data-has-cancel-action="false"
-                   data-save-action="swFlexshipSurveyModal.save">
+                   data-save-action="swFlexshipSurveyModal.save"
+                   data-save-disabled="swFlexshipSurveyModal.form.$invalid">
     
     <sw-modal-content> 
         <div class="col-md-12">
-            <form name="flexshipSurveyModal">
+            <ng-form name="swFlexshipSurveyModal.form">
+                
                 <div class="radio s-vertical" ng-repeat="surveyOption in swFlexshipSurveyModal.surveyOptions">
                     <label ng-class="{'checked':swFlexshipSurveyModal.surveyResponse.value === surveyOption.value}">
                         <input type="radio" 
@@ -19,6 +21,7 @@
                         <span ng-bind="surveyOption.name"></span>
                     </label>
                 </div>
+                
                 <!-- Other Type defined in dbData -->
                 <div class="form-group" ng-if="swFlexshipSurveyModal.surveyResponse.value === '2c9280846a023949016a029455f0000c'">
                     <label class="control-label" 
@@ -29,7 +32,7 @@
                            name="otherReason"
                            ng-model="swFlexshipSurveyModal.otherScheduleDateChangeReasonNotes"/>
                 </div>
-            </form>
+            </ng-form>
         </div>
     </sw-modal-content>
 </sw-modal-launcher>
