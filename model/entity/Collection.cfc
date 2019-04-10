@@ -433,7 +433,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		return ArrayLen(collectionConfig['filterGroups']);
  	}
 
- 	public string function getPropertyIdentifierAlias(required string propertyIdentifier, aliastype="filter"){
+ 	public string function getPropertyIdentifierAlias(required string propertyIdentifier, aliastype="none"){
  		if(findNoCase('(',arguments.propertyIdentifier)){
  			return propertyIdentifier;
  		}
@@ -528,7 +528,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			collectionConfigStruct["filterGroups"] = [{"filterGroup"=[]}];
 		}
 
-		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier);
+		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'aggregateFilter');
 		var ormtype = getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
 		//create filter Group
 		var filterAggregate = {
@@ -579,7 +579,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		boolean hidden=true
 	){
 
-		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier);
+		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
 
 		var collectionConfig = this.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfig,'filterGroups')){
@@ -657,7 +657,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var groupBys = listToArray(arguments.groupByAlias);
 		var groupByList = "";
 		for(var groupBy in groupBys){
-			groupByList = listAppend(groupByList,getPropertyIdentifierAlias(groupBy));
+			groupByList = listAppend(groupByList,getPropertyIdentifierAlias(groupBy,'groupBy'));
 		}
 		if(!structKeyExists(collectionConfig,'groupBys') || !len(collectionConfig['groupBys'])){
 			collectionConfig["groupBys"] = groupByList;
@@ -821,13 +821,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = column.propertyIdentifier;
-			join['aggregate']=true;
+			join['aggregateColumn']=true;
 			doJoin = true;
 		}else if(propertyKey != ''){
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, collection)  & propertyKey;
 			join['associationName'] = collection;
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
-			join['aggregate']=true;
+			join['aggregateColumn']=true;
 			doJoin = true;
 		}
 
@@ -866,7 +866,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 
-		var propertyIdentifierAlias = getPropertyIdentifierAlias(propertyIdentifier);
+		var propertyIdentifierAlias = getPropertyIdentifierAlias(propertyIdentifier,'orderBy');
 		if(isAggregateFunction(propertyIdentifier)){
 			propertyIdentifierAlias = propertyIdentifier;
 		}
@@ -1228,7 +1228,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			break;
 		}
 
-		getPropertyIdentifierAlias(arguments.column.propertyIdentifier);
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
 		if(aggregateFunction != 'COUNT'){
 			return " #aggregateFunction#(COALESCE(#arguments.column.propertyIdentifier#,0)) as #arguments.column.aggregate.aggregateAlias#";
 		}else{
@@ -1693,7 +1693,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								structKeyExists(join,'filter')
 								&& join.filter
 							)||(
-								structKeyExists(join,'aggregate')
+								structKeyExists(join,'aggregateFilter')
 								&& join.aggregate
 							)||(
 								structKeyExists(join,'toMany')
@@ -1865,7 +1865,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var groupByArray = listToArray(groupByList);
 		
 		for(var i=1;i <=arraylen(groupByArray);i++){
-			groupByArray[i] = getPropertyIdentifierAlias(groupByArray[i]);
+			groupByArray[i] = getPropertyIdentifierAlias(groupByArray[i],'groupBy');
 		}
 		groupByList = arrayToList(groupByArray);
 		
@@ -1948,7 +1948,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				direction = ordering.direction;
 			}
 
-			orderByHQL &= '#getPropertyIdentifierAlias(ordering.propertyIdentifier)# #direction# ';
+			orderByHQL &= '#getPropertyIdentifierAlias(ordering.propertyIdentifier,'orderBy')# #direction# ';
 
 			//check whether a comma is needed
 			if(i != orderByCount){
@@ -2360,7 +2360,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}else{
 							HQL = getHQL();
 							HQLParams = getHQLParams();
-							
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 								variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -2662,6 +2661,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							setRunningGetRecordsCount(true);
 						}
 						HQL = getSelectionCountHQL();
+					
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -3024,31 +3024,25 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
-				||
-				hasGroupBys()
 			){
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
-				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier,'aggregate')#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier,'aggregateColumn')#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}
 		}
 
 		for(var totalSumAggregate in variables.totalSumAggregates){
 			if(
 				hasAggregateFilter() 
-				||
-				hasGroupBys()
 			){
 				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
-				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier,'aggregate')#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier,'aggregateColumn')#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}
 		}
 		
 		if(
 			hasAggregateFilter() 
-			|| hasGroupBys()
-			
 		){
 			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
@@ -3252,7 +3246,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 							//check if we have an aggregate
 							
-							if(!isNull(column.aggregate))
+							if(
+								structKeyExists(column,'aggregate')
+								&& structKeyExists(column.aggregate,'aggregateFunction')
+								&& len(column.aggregate.aggregateFunction)
+							)
 							{
 								//if we have an aggregate then put wrap the identifier
 								if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
@@ -3504,7 +3502,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						){
 							variables.groupBys ="";
 							return;
-							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
 						}else if(Find(column.propertyIdentifier,getOrderByHQL())){
 							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
 							
@@ -3759,7 +3756,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					formatter = "LOWER";
 				}
 				//Create a propertyIdentifier for DefaultColumns
-				var propertyIdentifier = (!defaultColumns)? getPropertyIdentifierAlias(column.propertyIdentifier) : getPropertyIdentifierAlias(column.name);
+				var propertyIdentifier = (!defaultColumns)? getPropertyIdentifierAlias(column.propertyIdentifier,'column') : getPropertyIdentifierAlias(column.name,'column');
 				//If is Attributes
 				if (structKeyExists(column, 'attributeID')) {
 					currentFilter['propertyIdentifier'] = propertyIdentifier;
