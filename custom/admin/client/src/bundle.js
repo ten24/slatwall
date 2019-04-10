@@ -63081,7 +63081,7 @@ var SWOrderTemplateFrequencyModalController = /** @class */ (function () {
         this.requestService = requestService;
         this.processContext = 'updateFrequency';
         this.uniqueName = 'frequencyModal';
-        this.formName = 'frequencydModal';
+        this.formName = 'frequencyModal';
         //rb key properties
         this.title = "Update Frequency";
         this.$onInit = function () {
