@@ -69564,9 +69564,26 @@ exports.termmodule = termmodule;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFlexshipSurveyModalController = /** @class */ (function () {
-    function SWFlexshipSurveyModalController() {
+    function SWFlexshipSurveyModalController($hibachi, requestService) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.requestService = requestService;
         this.title = "Flexship Survey";
+        this.processContext = "Create";
         this.save = function () {
+            var formDataToPost = {
+                entityName: 'FlexshipSurveyResponse',
+                context: _this.processContext,
+                propertyIdentifiersList: ''
+            };
+            formDataToPost.orderTemplateScheduleDateChangeReasonTypeID = _this.surveyResponse.value;
+            if (_this.surveyResponse.value === '2c9280846a023949016a029455f0000c' &&
+                _this.otherScheduleDateChangeReasonNotes.length) {
+                formDataToPost.otherScheduleDateChangeReasonNotes = _this.otherScheduleDateChangeReasonNotes;
+            }
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            return adminRequest.promise;
         };
         console.log('surveyOptions', this.surveyOptions);
     }

@@ -77745,14 +77745,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWModalLauncherController = /** @class */ (function () {
     // @ngInject
-    function SWModalLauncherController() {
+    function SWModalLauncherController(observerService) {
         var _this = this;
+        this.observerService = observerService;
         this.hasSaveAction = false;
         this.hasCancelAction = false;
         this.hasDeleteAction = false;
         this.launchModal = function () {
-            //activate the necessary modal
+            //this.showModal is only for use with custom template
             _this.showModal = true;
+            //trigger bootstrap event to show modal
+            $("#" + _this.modalName).modal('show');
         };
         this.saveCallback = function () {
             //the passed save action must return a promise
@@ -77795,6 +77798,9 @@ var SWModalLauncherController = /** @class */ (function () {
         if (angular.isUndefined(this.cancelActionText)) {
             this.cancelActionText = "Cancel";
         }
+        if (angular.isDefined(this.launchEventName)) {
+            this.observerService.attach(this.launchModal, this.launchEventName);
+        }
     }
     return SWModalLauncherController;
 }());
@@ -77813,6 +77819,7 @@ var SWModalLauncher = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             showModal: "=?",
+            launchEventName: "@?",
             modalName: "@",
             title: "@",
             saveAction: "&?",

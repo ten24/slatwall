@@ -4,16 +4,28 @@
                    data-save-action="swFlexshipSurveyModal.save">
     
     <sw-modal-content> 
-        <form name="flexshipSurveyModal">
-            <div class="radio s-vertical" ng-repeat="surveyOption in swFlexshipSurveyModal.surveyOptions">
-                <label ng-class="{'checked':swFlexshipSurveyModal.surveyResponse.value === surveyOption.value}">
-                    <input type="radio" 
-                           name="surveyOption"
-                           ng-model="swFlexshipSurveyModal.surveyResponse" 
-                           ng-value="surveyOption" />
-                    <span ng-bind="surveyOption.name"></span>
-                </label>
-            </div>
-        </form>
+        <div class="col-md-12">
+            <form name="flexshipSurveyModal">
+                <div class="radio s-vertical" ng-repeat="surveyOption in swFlexshipSurveyModal.surveyOptions">
+                    <label ng-class="{'checked':swFlexshipSurveyModal.surveyResponse.value === surveyOption.value}">
+                        <input type="radio" 
+                               name="surveyOption"
+                               ng-model="swFlexshipSurveyModal.surveyResponse" 
+                               ng-value="surveyOption" />
+                        <span ng-bind="surveyOption.name"></span>
+                    </label>
+                </div>
+                <!-- Other Type defined in dbData -->
+                <div class="form-group" ng-if="swFlexshipSurveyModal.surveyResponse.value === '2c9280846a023949016a029455f0000c'">
+                    <label class="control-label" 
+                           sw-rbKey="'entity.FlexshipSurveyResponse.otherScheduleDateChangeReasonNotes'">
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           name="otherReason"
+                           ng-model="swFlexshipSurveyModal.otherScheduleDateChangeReasonNotes"/>
+                </div>
+            </form>
+        </div>
     </sw-modal-content>
 </sw-modal-launcher>
