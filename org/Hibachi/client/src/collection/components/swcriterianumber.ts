@@ -124,11 +124,16 @@ class SWCriteriaNumber{
 			    	return numberOptions;
 			    };
 			    //initialize values
-                   if(angular.isDefined(scope.filterItem.value)){
-    				scope.inListArray = scope.filterItem.value.toString().split(',');
-			    	
-			    }
-    		 
+
+			    scope.conditionOptions = getNumberOptions(scope.comparisonType);
+            	           if(scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between'){
+		    					var criteriaRangeArray = scope.filterItem.value.split('-');
+		    					scope.selectedFilterProperty.criteriaRangeStart = parseInt(criteriaRangeArray[0]);
+		    					scope.selectedFilterProperty.criteriaRangeEnd = parseInt(criteriaRangeArray[1]);
+		    				}else{
+		    					scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+		    				}
+			  
     			scope.newListItem = '';
 
 			    //declare functions
