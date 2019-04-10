@@ -1554,7 +1554,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(isnull(filter.attributeID)){
 								if(structKeyExists(filter,'propertyIdentifier') && len(filter.propertyIdentifier)){
 									var propertyIdentifier = filter.propertyIdentifier;
-									getPropertyIdentifierAlias(rereplace(listrest(propertyIdentifier,'_'),'_','.','all'));
+									getPropertyIdentifierAlias(rereplace(listrest(propertyIdentifier,'_'),'_','.','all'),'filter');
 
 									if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
 										propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
@@ -2661,7 +2661,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							setRunningGetRecordsCount(true);
 						}
 						HQL = getSelectionCountHQL();
-					
+				
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -3938,7 +3938,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function prepareAliasForFilterGroups(required array filterGroup){
 		for(var filter in arguments.filterGroup){
 			if(structKeyExists(filter,'propertyIdentifier')){
-				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier,'filter'));
 			}else if(structKeyExists(filter,'filterGroup')){
 				prepareAliasForFilterGroups(filter.filterGroup);
 			}
