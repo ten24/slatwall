@@ -67,6 +67,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCreateIPAddress" ormtype="string";
 
 	//calucluated property
+	property name="calculatedAdminIcon" ormtype="string";
 	property name="calculatedFullName" ormtype="string";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
