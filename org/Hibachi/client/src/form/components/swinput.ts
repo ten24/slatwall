@@ -434,7 +434,7 @@ class SWInput {
 	public controller = SWInputController;
 	public controllerAs = "swInput";
 
-	//ngInject
+	//@ngInject
 	constructor(
 		public $compile,
 		public $timeout,

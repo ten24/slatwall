@@ -1045,10 +1045,12 @@
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
 
-					var value = arguments.queryData[colArray[j]][i];
+					var value = replace(arguments.queryData[colArray[j]][i],'"',"'",'all');
+
+					value = '"#value#"'; //let's wrap the whole thing in double quotes to make sure spaces and newlines get preserved
 
 					// create our row
-					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
+					thisRow[j] = replace( value,',','','all');
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
@@ -1482,6 +1484,8 @@
 	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
+        <cfset local.timezoneOffset = getTimeZoneInfo().utcTotalOffset />
+        <cfset local.utcDate.setTime(local.utcDate.getTime() - (local.timezoneOffset * 1000) ) />
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
     

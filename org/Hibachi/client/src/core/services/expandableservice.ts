@@ -3,11 +3,9 @@ import * as angular from "angular";
 class ExpandableService {
 
     public recordStates = {};
-
-    //ngInject
-    constructor(
-
-    ) {
+    
+    //@ngInject
+    constructor() {
 
     }
 

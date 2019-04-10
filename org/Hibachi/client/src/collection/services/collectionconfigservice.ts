@@ -366,6 +366,16 @@ class CollectionConfig {
         }
         return propertyIdentifier;
     };
+    
+    public hasNonPersistentProperty=()=>{
+        for(var i in this.columns){
+            var column = this.columns[i];
+            if(angular.isDefined(column.persistent) && column.persistent === false){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public addColumn = (column: string, title: string = '', options: any = {}): CollectionConfig => {
         if (!this.columns || this.isReport() || options.aggregate != null || this.utilityService.ArrayFindByPropertyValue(this.columns, 'propertyIdentifier', column) === -1) {

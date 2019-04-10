@@ -78,43 +78,16 @@ class SWProductBundleGroups implements ng.IDirective {
 
     public static Factory() {
         var directive = (
-            $http,
-            $log,
-            $hibachi,
-            metadataService,
-            productBundlePartialsPath,
-            productBundleService,
-            slatwallPathBuilder
-        ) => new SWProductBundleGroups(
-            $http,
-            $log,
-            $hibachi,
-            metadataService,
-            productBundlePartialsPath,
-            productBundleService,
-            slatwallPathBuilder
+          productBundlePartialsPath, slatwallPathBuilder 
+        ) => new SWProductBundleGroups (
+            productBundlePartialsPath, slatwallPathBuilder
         );
-        directive.$inject = [
-            '$http',
-            '$log',
-            '$hibachi',
-            'metadataService',
-            'productBundlePartialsPath',
-            'productBundleService',
-            'slatwallPathBuilder'
-        ];
+        directive.$inject = [ 'productBundlePartialsPath', 'slatwallPathBuilder' ];
         return directive;
     }
-    constructor(
-        $http,
-        $log,
-        $hibachi,
-        metadataService,
-        productBundlePartialsPath,
-        productBundleService,
-        slatwallPathBuilder
-    ) {
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html";
+    //@ngInject
+    constructor( productBundlePartialsPath, slatwallPathBuilder ) {
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html";
     }
 }
 export {

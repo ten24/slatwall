@@ -73,10 +73,28 @@ class SWTooltip implements ng.IDirective {
         }
     }
 
-    public static Factory() {
-        var directive: ng.IDirectiveFactory = ($document, corePartialsPath, hibachiPathBuilder) => new SWTooltip($document, corePartialsPath, hibachiPathBuilder);
-        directive.$inject = ["$document", "corePartialsPath", "hibachiPathBuilder"];
-        return directive;
+	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) => {
+      var tooltip = element.find(".tooltip");
+      var elementPosition= element.position(); 
+      var tooltipStyle = tooltip[0].style; 
+      if(attrs && attrs.position){
+          switch(attrs.position.toLowerCase()){
+              case 'top':
+                tooltipStyle.top = "0px"; 
+                tooltipStyle.left = "0px"; 
+                break; 
+              case 'bottom':
+                //where the element is rendered to begin with
+                break;
+              case 'left': 
+                tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5)  + "px"; 
+                tooltipStyle.left = (-1 * (elementPosition.left + element[0].offsetLeft - 5)) + "px";
+                element.find(".tooltip-inner")[0].style.maxWidth = "none";
+                break;
+              case 'right':
+                break;
+          }   
+      }   
     }
 }
 export {

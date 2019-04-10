@@ -65,7 +65,7 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	property name="locationCollections" singularname="locationCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCntGroupLocCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="cycleCountBatchs" singularname="cycleCountBatch" cfc="CycleCountBatch" fieldtype="many-to-many" linktable="SwCycleCountBatchCountGroup" fkcolumn="cycleCountGroupID" inversejoincolumn="cycleCountBatchID" inverse="true";
+	property name="cycleCountBatches" singularname="cycleCountBatch" cfc="CycleCountBatch" fieldtype="many-to-many" linktable="SwCycleCountBatchCountGroup" fkcolumn="cycleCountGroupID" inversejoincolumn="cycleCountBatchID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -78,25 +78,52 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	
 	// Non-Persistent Properties
 	property name="skuCollection" persistent="false";
+	property name="totalItemCount" persistent="false";
+	property name="itemCountPerDay" persistent="false";
+	property name="singleCountCycleDays" persistent="false";
+	property name="skuRecords" type="array" persistent="false";
 
 	
 	// ============ START: Non-Persistent Property Methods =================
 	 public string function getSkuCollectionConfig(){
     	if(isNull(variables.skuCollectionConfig)){
     		var defaultSkuCollectionList = getService('skuService').getSkuCollectionList();
-    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,skuDescription,skuCode,listPrice,price,renewalPrice',{isVisible=true,isSearchabl=true});
-    		defaultSkuCollectionList.addDisplayProperty(displayProperty='skuID',columnconfig={isVisible=false});
+    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,calculatedSkuDefinition,skuCode,listPrice,price,renewalPrice',{isVisible=true,isSearchable=true});
+    		defaultSkuCollectionList.setOrderBy('calculatedLastCountedDateTime|ASC');
     		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionList.getCollectionConfigStruct());
     		
     	}
     	return variables.skuCollectionConfig;
     }
     
-    public any function getSkuCollection(){
-	var skuCollectionList = getService('skuService').getSkuCollectionList();
-	skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
-	skuCollection = skuCollectionList;
-    	return skuCollection;
+    public any function getSkuCollection(boolean refresh=false){
+    	if(!structKeyExists(variables,'skuCollection') || arguments.refresh == true){
+			var skuCollectionList = getService('skuService').getSkuCollectionList();
+			skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
+			variables.skuCollection = skuCollectionList;
+    	}
+    	variables.skuCollection.setDisplayProperties('activeFlag,publishedFlag,skuName,calculatedSkuDefinition,skuCode,listPrice,price,renewalPrice',{isVisible=true,isSearchable=true});
+		variables.skuCollection.addDisplayProperty(displayProperty='skuID',columnconfig={isVisible=false});
+		variables.skuCollection.setOrderBy('calculatedLastCountedDateTime|ASC');
+		
+    	return variables.skuCollection;
+    }
+    
+    public numeric function getTotalItemCount(){
+    	if(!structKeyExists(variables,'totalItemCount')){
+    		variables.totalItemCount = getSkuCollection().getRecordsCount();
+    	}
+    	return variables.totalItemCount;
+    }
+    
+    public numeric function getItemCountPerDay(boolean round=true){
+    	if(arguments.round == false){
+    		return getSkuCollection().getRecordsCount() * getFrequencyToCount() / getDaysInCycle();
+    	}
+    	if(!structKeyExists(variables,'itemCountPerDay')){
+    		variables.itemCountPerDay = ceiling(getSkuCollection().getRecordsCount() * getFrequencyToCount() / getDaysInCycle());
+    	}
+    	return variables.itemCountPerDay;
     }
     
 	public any function getCycleCountGroupsStockCollection() {
@@ -132,6 +159,64 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 		}
 		
 		return cycleCountGroupCollection;
+	}
+
+	public array function getFutureCounts(required numeric numberOfDays, numeric previousDaysCount=0){
+		var countsByDay = [];
+		for(var i = 1; i < numberOfDays; i++){
+			var itemsToCount = getCountItemsByDay(i,arguments.previousDaysCount);
+			if(arrayLen(itemsToCount)){
+				arrayAppend(countsByDay,itemsToCount);
+			}else{
+				break;
+			}
+			arguments.previousDaysCount += 1;
+		}
+		return countsByDay;
+	}
+	
+	public array function getCountItemsByDay(required numeric countDay, numeric cycleDay, boolean padArray=false){
+
+		var skuCollection = getSkuCollection();
+		var itemCountPerDay = getItemCountPerDay();
+		var totalItemCount = getTotalItemCount();
+		var recordIndex = 1 + ((arguments.countDay-1) * itemCountPerDay);
+		var overallItemNumber = 1 + ((arguments.cycleDay-1) * itemCountPerDay);
+
+		if(!structKeyExists(variables,'skuRecords')){
+			skuCollection.setOrderBy('calculatedLastCountedDateTime');
+			variables.skuRecords = skuCollection.getRecords();
+		}
+		var skus = [];
+
+		for(var i = 1; i <= itemCountPerDay; i++){
+
+			if(overallItemNumber > totalItemCount * getFrequencyToCount()){
+				break;
+			}
+			if(recordIndex > totalItemCount){
+				recordIndex = recordIndex % totalItemCount;
+				if(recordIndex == 0){
+					recordIndex = totalItemCount;
+				}
+			}
+			
+			var sku = variables.skuRecords[recordIndex];
+			if(!isNull(sku)){
+				sku['cycleCountGroup_cycleCountGroupID'] = this.getCycleCountGroupID();
+				sku['cycleCountGroup_cycleCountGroupName'] = this.getCycleCountGroupName();
+				arrayAppend(skus, sku);
+			}
+			recordIndex += 1;
+			overallItemNumber += 1;
+		}
+		
+		if(arguments.padArray && arrayLen(skus)){
+			while(arrayLen(skus) < getItemCountPerDay()){
+				arrayAppend(skus, {});
+			}
+		}
+		return skus;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

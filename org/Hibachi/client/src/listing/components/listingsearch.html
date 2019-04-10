@@ -21,7 +21,9 @@
                 data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.swListingDisplay.searchText"
                 data-ng-disabled="!swListingSearch.selectedSearchColumn"
                 data-ng-click="swListingSearch.addSearchFilter()">
-                <i class="glyphicon glyphicon-plus"></i>
+                <span sw-tooltip class="tool-tip-item" data-text="Add Search to Filter List" data-position="bottom">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </span>
         </button>
     </span>
     
@@ -34,21 +36,23 @@
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
-            <i class="fas fa-chart-line"></i>
+            <span sw-tooltip class="tool-tip-item" data-text="Reporting" data-position="bottom">
+                <i class="fas fa-chart-line"></i>
+            </span>
         </button>
-        <ul class="dropdown-menu pull-right  with-btn">
+        <ul class="dropdown-menu pull-right  with-btn autocomplete-options" >
             <li>
                     <a ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}" >New Report</a>
             </li>
             <li role="separator" class="divider"></li>
             <li class="dropdown-menu-loader" ng-show="!swListingSearch.swListingDisplay.persistedReportCollections"><i class="fa fa-refresh fa-spin fa-fw"></i></li>
-            <li ng-repeat="persistedReport in swListingSearch.swListingDisplay.persistedReportCollections">
+            <li ng-repeat="persistedReport in swListingSearch.swListingDisplay.persistedReportCollections" >
                 <a ng-bind="persistedReport.collectionName" ng-click="swListingSearch.swListingDisplay.selectPersistedReport(persistedReport)"
                     ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
                 ></a>
-                <a href="#" style="display:inline;"
+                <!---<a href="#" style="display:inline;"
                 sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this Report." callback="swListingSearch.deleteReportCollection(persistedReport)"
-                ><i class="fa fa-trash"></i></a>
+                ><i class="fa fa-trash"></i></a>--->
             </li>
             
         </ul>
@@ -60,7 +64,9 @@
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
-            <i class="fas fa-save"></i>
+            <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
+                <i class="fas fa-save"></i>
+            </span>
         </button>
         <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
             <li style="padding:8px;">
@@ -90,7 +96,9 @@
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 
         >
-            <i  class="fa fa-bookmark"></i>
+            <span sw-tooltip class="tool-tip-item" data-text="All Saved Reports" data-position="bottom">
+                <i  class="fa fa-bookmark"></i>
+            </span>
         </button>
         <ul class="dropdown-menu pull-right with-btn">
             <li>
@@ -107,21 +115,27 @@
         </ul>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
-        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
-            <i class="fa fa-filter"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Filtering" data-position="bottom">
+            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
+                <i class="fa fa-filter"></i>
+            </button>
+        </span>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleDisplayOptions">
-        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
-            <i class="fa fa-th"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Display Options" data-position="bottom">
+            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
+                <i class="fa fa-th"></i>
+            </button>
+        </span>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showExport">
-        <button type="button"
-                class="btn btn-sm btn-default"
-                data-ng-click="swListingSearch.swListingControls.exportCollection()">
-            <i class="fa fa-download"></i>
-        </button>
+        <span sw-tooltip class="tool-tip-item" data-text="Export" data-position="bottom">
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-ng-click="swListingSearch.swListingControls.exportCollection()">
+                <i class="fa fa-download"></i>
+            </button>
+        </span>
     </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
         <button type="button"

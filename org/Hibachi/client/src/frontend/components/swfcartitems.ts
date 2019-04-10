@@ -11,10 +11,11 @@ class SWFCartItemsController{
         this.$rootScope = $rootScope;
         this.$rootScope.slatwall.doAction('getResizedImageByProfileName',{profileName:'small',skuIds:this.orderItem.sku.skuID})
         .then((result:any)=>{
-            this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
-            this.loadingImages = false;
+            if(result){
+                this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
+                this.loadingImages = false;
+            }    
         });
-
     }
     
     public getProductDescriptionAndTruncate = (length=4000)=>{
@@ -49,16 +50,7 @@ class SWFCartItemsController{
         });
     }
     public clearCartItems = ()=>{
-        let cartItems = this.$rootScope.slatwall.cart.orderItems;
-        let data = {
-            'orderItemIDList': ""
-        };
-        let orderItemIDs = [];
-        for(var i=0; i<cartItems.length; i++){
-            orderItemIDs.push(cartItems[i].orderItemID);
-        }
-        data['orderItemIDList'] = orderItemIDs.join();
-        this.$rootScope.slatwall.doAction('removeOrderItem',data);
+        this.$rootScope.slatwall.doAction('clearOrder',{});
     }
 }
  

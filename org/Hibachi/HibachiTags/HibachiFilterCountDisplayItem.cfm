@@ -256,8 +256,9 @@
 				</cfif>
 			
 			</cfif>
+			<!--- Only append the in if the filtertype isn't r --->
 			
-			<cfif !len(attributes.comparisonOperator)>
+			<cfif !len(attributes.comparisonOperator) AND attributes.filterType neq "r">
 				<cfset attributes.comparisonOperator = 'in'/>
 			</cfif>
 			

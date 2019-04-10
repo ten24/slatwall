@@ -48,10 +48,46 @@ Notes:
 */
 
 component accessors="true" output="false" extends="Slatwall.model.transient.fulfillment.ShippingRequestBean" {
+    property name="orderFulfillment" cfc="OrderFulfillment";
+    property name="orderDelivery" cfc="OrderDelivery";
 
-	public any function init() {
-		// Set defaults
-		
-		return super.init();
-	}
+    public any function init(){
+    	return super.init();
+    }
+
+    public void function populateShippingItemsWithOrderDelivery_Create(required any processObject, boolean clear=false){
+        if(arguments.clear){
+			variables.shippingItemRequestBeans = [];
+		} 
+		if(isNull(getOrderDelivery())){
+		    setOrderDelivery(arguments.processObject.getOrderDelivery());
+		}
+		var orderDeliveryItems = arguments.processObject.getOrderDeliveryItems();
+		for(var i=1; i <= arrayLen(orderDeliveryItems); i++) {
+		    var orderItem = getService('orderService').getOrderItem(orderDeliveryItems[i].orderItem.orderItemID);
+		    if(isnull(orderItem) || orderItem.getNewFlag()){
+		        continue;
+		    }
+		    var sku = orderItem.getSku();
+			addShippingItem(
+				value=sku.getPrice(),
+				weight=sku.setting( 'skuShippingWeight' ),
+				weightUnitOfMeasure=sku.setting( 'skuShippingWeightUnitCode' ),
+				quantity=orderDeliveryItems[i].quantity
+		    );
+		}
+    }
+
+	public void function addShippingItemWithOrderFulfillmentItem(required any orderFulfillmentItem){
+	    if(!structKeyExists(variables,'orderFulfillment') && isNull(variables.orderFulfillment)){
+	        variables.orderFulfillment = arguments.orderFulfillmentItem.getOrderFulfillment();
+	    }
+	    var sku=arguments.orderFulfillmentItem.getSku();
+		addShippingItem(
+				value=sku.getPrice(),
+				weight=sku.setting( 'skuShippingWeight' ),
+				weightUnitOfMeasure=sku.setting( 'skuShippingWeightUnitCode' ),
+				quantity=arguments.orderFulfillmentItem.getQuantity()
+		);
+	} 
 }

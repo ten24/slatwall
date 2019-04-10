@@ -1,7 +1,5 @@
 /// <reference path="../../../../overrides.d.ts"/>
 
-
-
 import * as angular from "angular";
 import * as md5 from "md5";
 import "angular-resource";
@@ -17,8 +15,6 @@ import "../..//HibachiAssets/js/jquery-typewatch-2.0.js";
 import "../..//HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js";
 
 import { coremodule } from "./core/core.module";
-
-
 
 declare var hibachiConfig: any;
 declare var window: any;
@@ -300,17 +296,19 @@ export class BaseBootStrapper {
     };
 
     getResourceBundles = (): ng.IPromise<{}> => {
-        var localeListArray = this.appConfig.rbLocale.split('_');
-        var rbPromise;
+        var rbLocale = this.appConfig.rbLocale;
+          if(rbLocale == 'en_us'){
+              rbLocale = 'en'
+          }
+        var localeListArray = rbLocale.split('_');
         var rbPromises = [];
-        rbPromise = this.getResourceBundle(this.appConfig.rbLocale);
+        var rbPromise = this.getResourceBundle(rbLocale);
         rbPromises.push(rbPromise);
         if (localeListArray.length === 2) {
             rbPromise = this.getResourceBundle(localeListArray[0]);
             rbPromises.push(rbPromise);
         }
-        if (localeListArray[0] !== 'en') {
-            //this.getResourceBundle('en_us');
+        if(localeListArray[0] !== 'en') {
             this.getResourceBundle('en');
         }
         return this.$q.all(rbPromises).then((data): any => {

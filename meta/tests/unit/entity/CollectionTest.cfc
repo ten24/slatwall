@@ -64,6 +64,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function convertAliasToPropertyIdentifier_collectionConfigFormat(){
+		var alias = "_product_defaultSku.skuID";
+		var myCollection = variables.entityService.newCollection();
+		myCollection.setCollectionObject('product');
+		var propertyIdentifier = myCollection.convertAliasToPropertyIdentifier(alias);
+		assertEquals('defaultSku.skuID',propertyIdentifier);
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function convertAliasToPropertyIdentifier_OutputFormat(){
+		var alias = "sku_createdDateTime";
+		var myCollection=variables.entityService.newCollection();
+		myCollection.setCollectionObject('OrderItem');
+		var propertyIdentifier = myCollection.convertAliasToPropertyIdentifier(alias);
+		assertEquals('sku.createdDateTime',propertyIdentifier);
+	}
+	
+	/**
+	* @test
+	*/
 	public void function convertRelatedFilterTest(){
 		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
 		

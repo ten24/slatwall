@@ -69,6 +69,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.orderDelivery#">
 			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/orderdeliveryitems">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/containers">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />

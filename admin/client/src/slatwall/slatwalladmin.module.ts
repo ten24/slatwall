@@ -8,6 +8,7 @@ import { optiongroupmodule } from "../optiongroup/optiongroup.module";
 import { orderitemmodule } from "../orderitem/orderitem.module";
 import { orderfulfillmentmodule } from "../orderfulfillment/orderfulfillment.module";
 import { fulfillmentbatchdetailmodule } from "../fulfillmentbatch/fulfillmentbatchdetail.module";
+import { orderdeliverydetailmodule } from "../orderdelivery/orderdeliverydetail.module";
 import { productmodule } from "../product/product.module";
 import { productbundlemodule } from "../productbundle/productbundle.module";
 import { skumodule } from "../sku/sku.module";
@@ -37,6 +38,7 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
     orderitemmodule.name,
     orderfulfillmentmodule.name,
     fulfillmentbatchdetailmodule.name,
+    orderdeliverydetailmodule.name,
     productmodule.name,
     productbundlemodule.name,
     skumodule.name,
@@ -45,36 +47,28 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
 ])
     .constant("baseURL", $.slatwall.getConfig().baseURL)
     .constant('slatwallPathBuilder', new SlatwallPathBuilder())
+    .constant('isAdmin',true)
     .config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig', 'slatwallPathBuilder', 'appConfig',
         ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig, slatwallPathBuilder, appConfig) => {
             //configure partials path properties
             slatwallPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
             slatwallPathBuilder.setBasePartialsPath('/admin/client/src/');
-
+          
             datepickerConfig.showWeeks = false;
             datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
             datepickerPopupConfig.toggleWeeksText = null;
-
-
-
-
+          
             // route provider configuration
-
-
         }])
     .run(['$rootScope', '$filter', '$anchorScroll', '$hibachi', 'dialogService', 'observerService', 'utilityService', 'slatwallPathBuilder', ($rootScope, $filter, $anchorScroll, $hibachi, dialogService, observerService, utilityService, slatwallPathBuilder) => {
         $anchorScroll.yOffset = 100;
-
         $rootScope.openPageDialog = function (partial) {
             dialogService.addPageDialog(partial);
         };
-
         $rootScope.closePageDialog = function (index) {
             dialogService.removePageDialog(index);
         };
-
         $rootScope.createID = utilityService.createID;
-
         $rootScope.slatwall = $rootScope.hibachiScope;
         $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
     }])
@@ -98,7 +92,6 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
                 if ($scope.paymentType != paymentType.aptAdjustment)
                     obj.paymentType = $scope.paymentType;
             });
-
             if ($scope.paymentType == paymentType.aptCharge) {
                 $scope.paymentTypeName = $.slatwall.rbKey('define.charge');
                 $scope.paymentTypeLock = true;
@@ -110,7 +103,6 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
                 $scope.paymentTypeName = $.slatwall.rbKey('define.adjustment');
                 $scope.amount = 0;
             }
-
             //Update the subtotal now that we changed the payment type
             $scope.updateSubTotal();
         }

@@ -50,20 +50,20 @@ class SWProductBundleGroupController {
 	public removeProductBundleGroup;
 	public addProductBundleGroup;
 	public refreshProductBundleGroup;
-	public productBundleGroups;
+  public productBundleGroups; 
 
-	// @ngInject
-	constructor(private $log: ng.ILogService,
-		private $timeout: ng.ITimeoutService,
-		private collectionConfigService,
-		private productBundleService,
-		private metadataService,
-		private utilityService,
-		private formService,
-		private $hibachi,
-		private productBundlePartialsPath
-	) {
-		this.init();
+    //@ngInject
+	constructor(
+      private $log:ng.ILogService,
+      private $timeout:ng.ITimeoutService,
+      private collectionConfigService,
+      private metadataService,
+      private utilityService,
+      private formService,
+      private $hibachi,
+      private productBundlePartialsPath    
+    ) {
+		this.init(); 
 	}
 
 	public init = () => {
@@ -211,40 +211,22 @@ class SWProductBundleGroup implements ng.IDirective {
 		refreshProductBundleGroup: "&",
 		formName: "@"
 	};
-
+    
 	public controller = SWProductBundleGroupController;
 	public controllerAs = "swProductBundleGroup";
 
-	// @ngInject
-	constructor(private $log: ng.ILogService,
-		private $timeout: ng.ITimeoutService,
-		private collectionConfigService,
-		private productBundleService,
-		private metadataService,
-		private utilityService,
-		private formService,
-		private $hibachi,
-		private productBundlePartialsPath,
-		slatwallPathBuilder) {
+    //@ngInject
+	constructor( private productBundlePartialsPath, slatwallPathBuilder) {
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	}
 
-	public link: ng.IDirectiveLinkFn = ($scope: any, element: any, attrs: any, ctrl: any) => {
-	}
+	public link: ng.IDirectiveLinkFn = ($scope: any, element: any, attrs: any, ctrl: any) => {}
 
 	public static Factory() {
-		var directive = (
-			$log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath,
-			slatwallPathBuilder
-		) => new SWProductBundleGroup(
-			$log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath,
-			slatwallPathBuilder
-		);
-		directive.$inject = [
-			"$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
-			"slatwallPathBuilder"
-		];
-
+		var directive = ( productBundlePartialsPath, slatwallPathBuilder ) => new SWProductBundleGroup(
+            productBundlePartialsPath, slatwallPathBuilder
+        );
+    directive.$inject = [ "productBundlePartialsPath", "slatwallPathBuilder" ];
 		return directive;
 	}
 }

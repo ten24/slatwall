@@ -23,7 +23,16 @@ class SWListingDisplayController{
     public collection;
     public childPropertyName;
     public colorFilters = [];
-    public columns = [];
+    public _columns = [];
+    
+    get columns(): Array<any> {
+        return this._columns;
+    }
+    set columns(newArray: Array<any>) {
+        this._columns = newArray;
+        this.columnCount = this._columns.length;
+    }
+    
     public columnCount;
     public commonProperties;
     public customListingControls:boolean;

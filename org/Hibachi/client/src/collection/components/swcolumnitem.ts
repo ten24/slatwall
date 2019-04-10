@@ -44,12 +44,12 @@ class SWColumnItem {
 				propertiesList: "<",
 				orderBy: "="
 			},
-			templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
-			link: function (scope, element, attrs, controller, observerService) {
 
+      templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
+			link: function(scope, element, attrs, controller){	
 				scope.getReportLabelColor = (chart) => {
-					if (scope.column.aggregate && chart.config.data.datasets) {
-						for (let i = 0; i < chart.config.data.datasets.length; i++) {
+					if(scope.column.aggregate && chart.config.data.datasets) {
+						for(let i=0; i<chart.config.data.datasets.length; i++) {
 							var dataset = chart.config.data.datasets[i];
 							if (dataset.label == scope.column.title) {
 								let color = '#FF0000';
@@ -70,6 +70,7 @@ class SWColumnItem {
 						}
 					}
 				}
+        
 				controller.swListingDisplay.observerService.attach(scope.getReportLabelColor, 'swListingReport_DrawChart', controller.swListingDisplay.tableID);
 
 				if (!scope.saveCollection && controller.swListingControls) {
@@ -81,7 +82,22 @@ class SWColumnItem {
 					}
 				}
 
-				scope.editingDisplayTitle = false;
+        scope.editDisplayTitle = function(){
+            if(angular.isUndefined(scope.column.displayTitle) || !scope.column.displayTitle.length){
+                scope.column.displayTitle = scope.column.title;
+            }
+            scope.previousDisplayTitle=scope.column.displayTitle;
+            scope.editingDisplayTitle = true;
+        };
+        scope.saveDisplayTitle = function(){
+            scope.saveCollection();
+            scope.editingDisplayTitle = false;
+            controller.swListingDisplay.observerService.notifyById('displayOptionsAction', controller.swListingDisplay.tableID, {action: 'saveDisplayTitle',collectionConfig:controller.swListingControls.collectionConfig});
+        };
+        scope.cancelDisplayTitle = function(){
+            scope.column.displayTitle = scope.previousDisplayTitle;
+            scope.editingDisplayTitle = false;
+        };
 
 				scope.editDisplayTitle = function () {
 					if (angular.isUndefined(scope.column.displayTitle) || !scope.column.displayTitle.length) {

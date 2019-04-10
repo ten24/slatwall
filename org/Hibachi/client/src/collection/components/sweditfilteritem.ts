@@ -230,11 +230,10 @@ class SWEditFilterItem {
                     for (var siblingIndex in scope.filterItem.$$siblingItems) {
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
-                    if (scope.filterItem.$$isNew === true) {
-                        observerService.notify('filterItemAction', { action: 'remove', filterItemIndex: scope.filterItemIndex });
-                        scope.removeFilterItem({ filterItemIndex: scope.filterItemIndex });
-                    } else {
-                        observerService.notify('filterItemAction', { action: 'close', filterItemIndex: scope.filterItemIndex });
+                    if(scope.filterItem.$$isNew === true){
+                        scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
+                    }else{
+                        observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
                     }
                 };
 

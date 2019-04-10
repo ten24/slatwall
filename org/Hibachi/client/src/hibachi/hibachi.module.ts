@@ -28,23 +28,23 @@ var hibachimodule = angular.module('hibachi', [
 ]).config([() => {
 
 }])
-    .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', ($rootScope, publicService, $hibachi, localStorageService) => {
+.run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', ($rootScope, publicService, $hibachi, localStorageService, isAdmin) => {
 
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if ($hibachi.newAccount) {
+        if (!isAdmin && $hibachi.newAccount) {
             $rootScope.hibachiScope.getAccount();
         }
-        if ($hibachi.newOrder) {
+        if (!isAdmin && $hibachi.newOrder) {
             $rootScope.hibachiScope.getCart();
         }
-        if ($hibachi.newCountry) {
+        if (!isAdmin && $hibachi.newCountry) {
             $rootScope.hibachiScope.getCountries();
         }
-        if ($hibachi.newState) {
+        if (!isAdmin && $hibachi.newState) {
             $rootScope.hibachiScope.getStates();
         }
-        if ($hibachi.newState) {
+        if (!isAdmin && $hibachi.newState) {
             $rootScope.hibachiScope.getAddressOptions();
         }
 
@@ -54,8 +54,7 @@ var hibachimodule = angular.module('hibachi', [
 
     }])
     .constant('hibachiPartialsPath', 'hibachi/components/')
-    .directive('swSaveAndFinish', SWSaveAndFinish.Factory())
-    ;
+    .directive('swSaveAndFinish', SWSaveAndFinish.Factory());
 
 export {
     hibachimodule

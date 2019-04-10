@@ -54,14 +54,33 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.cycleCountBatch#" edit="#rc.edit#">
+	<hb:HibachiEntityProcessForm entity="#rc.cycleCountBatch#" edit="#rc.edit#" sRedirectAction="admin:entity.detailPhysical" sRenderItem="physical">
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.cycleCountBatch#">
 		</hb:HibachiEntityActionBar>
-		
+		<input type="hidden" name="day" value="#rc.processObject.getDay()#">
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="physicalName" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="countPostDateTime" edit="#rc.edit#" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<h5>Counts</h5>
+			<hb:HibachiPropertyList>
+				<cfset local.cycleCountItems = rc.processObject.getCycleCountItems() />
+			    <cfloop from="1" to="#arrayLen(local.cycleCountItems)#" index="index">
+			    	<cfset local.cycleCountItem = local.cycleCountItems[index] />
+			        <div class="form-group">
+						<label for="cycleCountItems[#index#].quantity" class="control-label col-sm-4">
+							<span class="s-title">#local.cycleCountItem['skuCode']#</span>
+						</label>
+					    <div class="col-sm-8">
+            				<input type="text" name="cycleCountItems[#index#].quantity" class="form-control" id="cycleCountItems[#index#]">
+            				<input type="hidden" name="cycleCountItems[#index#].skuID" value="#local.cycleCountItem['skuID']#">
+            				<input type="hidden" name="cycleCountItems[#index#].cycleCountGroupID" value="#local.cycleCountItem['cycleCountGroup_cycleCountGroupID']#">
+            			</div>
+					</div>
+			    </cfloop>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

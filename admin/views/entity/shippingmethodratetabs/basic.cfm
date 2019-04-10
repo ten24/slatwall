@@ -35,7 +35,7 @@
 			
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="defaultAmount" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.defaultAmount' ng-init=""shippingMethodRate.defaultAmount='#rc.shippingMethodRate.getDefaultAmount()#'""">
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="rateMultiplierAmount" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.rateMultiplierAmount' ng-init=""shippingMethodRate.rateMultiplierAmount='#rc.shippingMethodRate.getRateMultiplierAmount()#'""">
-			
+			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="ratePerContainer" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.ratePerContainer' ng-init=""shippingMethodRate.ratePerContainer='#rc.shippingMethodRate.getRatePerContainer()#'""">
 			<!--- display a sample of the calculations that will be used with the upcharge --->
 			<div ng-if="shippingMethodRate.rateMultiplierAmount && (shippingMethodRate.minimumShipmentWeight || shippingMethodRate.minimumShipmentQuantity)" class="ng-cloak">
 				<ul class="list-group" > 
@@ -50,6 +50,18 @@
 						<br><span><b>Weight</b> {{(shippingMethodRate.minimumShipmentWeight*1+n)}} lbs. X <b>Rate Multiplier Amount</b> {{shippingMethodRate.rateMultiplierAmount|currency}} + <b>Default Amount</b> {{shippingMethodRate.defaultAmount|currency}} = </span>
 						<span class="badge"><b>{{((shippingMethodRate.defaultAmount * 1)+((shippingMethodRate.minimumShipmentWeight*1+n)*(shippingMethodRate.rateMultiplierAmount*1))|currency)}}</b></span>
 					</li>	
+				</ul>		
+			</div>
+			<!--- display a sample of the calculations that will be used with the upcharge --->
+			<div ng-if="shippingMethodRate.rateMultiplierAmount && (shippingMethodRate.minimumShipmentWeight || shippingMethodRate.minimumShipmentQuantity)" class="ng-cloak">
+				<ul class="list-group" > 
+					
+					<small>When using a rate per container the charge is calculated as follows: base amount + Rate Per Container * Number of Containers beyond 1st container = charge</small>
+					
+					<li class="list-group-item" ng-repeat="n in [1,2,3,4,5] track by $index">
+						<br><span><b>Default Amount</b> [{{shippingMethodRate.defaultAmount|currency}}] + <b>Number of Containers</b> [{{(n)}}] X <b>Rate Per Container</b> [{{shippingMethodRate.ratePerContainer|currency}}] = </span>
+						<span class="badge">{{((shippingMethodRate.defaultAmount)+((shippingMethodRate.ratePerContainer*n)|currency)}}</span></b>
+					</li>
 				</ul>		
 			</div>
 		</hb:HibachiPropertyList>

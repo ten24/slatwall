@@ -86,6 +86,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return placeholders;
 	}
 	
+	public boolean function canDeliverGiftCardItems(){
+		if (hasGiftCardDeliveryItems()) {
+			return !isNull(getOrder().getOrderPayments()) && arrayLen(getOrder().getOrderPayments()) > 0;
+		} else {
+			return true;
+		}
+	}
+	
 	public boolean function isValidDeliveryQuantity(){
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
 			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
@@ -101,6 +109,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public boolean function isValidQuantity(){
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
+		
 			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0 && !isNull(getLocation()) ) {
 				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
 				var thisQuantity = getOrderDeliveryItems()[i].quantity;
@@ -108,10 +117,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					sku=orderItem.getSku(),
 					location=getLocation()
 				);
-				if( 
-					orderItem.getSku().setting('skuTrackInventoryFlag') 
-					&& thisQuantity > stock.getQOH() 
-				) {
+				
+				if( orderItem.getSku().setting('skuTrackInventoryFlag') && thisQuantity > (stock.getQOH() + stock.getQuantity('MQATSBOM')) ){
 					return false;
 				}
 			}
@@ -126,7 +133,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(structKeyExists(variables,'shippingIntegration')){
 			return variables.shippingIntegration;
 		}
-		
+
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
@@ -162,6 +169,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		return orderDeliveryItemsStruct;
+	}
+	
+	public any function getContainerDetailsForOrderDelivery(){
+		return getService('ContainerService').getContainerDetails(this, true);		
 	}
 
 	public boolean function hasUndeliveredOrderItemsWithoutProvidedGiftCardCode() {
@@ -262,6 +273,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 
 		return true;
+	}
+
+	private boolean function hasGiftCardDeliveryItems(){
+		var orderDeliveryItemsStruct = getOrderDeliveryItemsStruct();
+		
+		for (var orderItem in getOrderFulfillment().getOrderFulfillmentItems()) {
+			if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && orderItem.isGiftCardOrderItem()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public numeric function getCapturableAmount() {

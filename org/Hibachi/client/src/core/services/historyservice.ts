@@ -5,9 +5,8 @@ class HistoryService {
 
     private histories = {};
 
-    //ngInject
-    constructor() {
-
+    //@ngInject
+    constructor(){
     }
 
     public recordHistory = (key, data, overwrite = false) => {

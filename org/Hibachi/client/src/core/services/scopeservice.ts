@@ -3,9 +3,8 @@ import * as angular from "angular";
 
 class ScopeService {
 
-    //ngInject
-    constructor() {
-
+    //@ngInject
+    constructor(){
     }
 
     public getRootParentScope = (scope, targetScopeName) => {
