@@ -3,15 +3,22 @@
 class SWModalLauncherController {
 
     public showModal:boolean; 
+    public showExit:boolean;
+    
+    public modalOptions;
+    
     public launchEventName:string;
     public modalName:string; 
     public title:string; 
+    
     public hasSaveAction:boolean=false;
     public hasCancelAction:boolean=false;
     public hasDeleteAction:boolean=false; 
 
     public saveActionText:string; 
-    public cancelActionText:string; 
+    public cancelActionText:string;
+    
+    public saveDisabled:boolean;
 
     //callbacks
     public saveAction;
@@ -26,7 +33,12 @@ class SWModalLauncherController {
         if(angular.isUndefined(this.hasCancelAction)){
             this.hasCancelAction = true;
         }
-        
+        if(angular.isUndefined(this.saveDisabled)){
+            this.saveDisabled = false; 
+        }
+        if(angular.isUndefined(this.showExit)){
+            this.showExit = true; 
+        }
         if(angular.isUndefined(this.showModal)){
             this.showModal = false; 
         }
@@ -35,6 +47,9 @@ class SWModalLauncherController {
         }
         if(angular.isUndefined(this.cancelActionText)){
             this.cancelActionText = "Cancel"; 
+        }
+        if(angular.isUndefined(this.modalOptions)){
+           this.modalOptions =  {};
         }
         
         if(angular.isDefined(this.launchEventName)){
@@ -47,7 +62,7 @@ class SWModalLauncherController {
         this.showModal = true; 
         
         //trigger bootstrap event to show modal
-        $("#" + this.modalName).modal('show');
+        $("#" + this.modalName).modal(this.modalOptions);
     }
     
     public saveCallback = () =>{
@@ -100,10 +115,13 @@ class SWModalLauncher implements ng.IDirective{
     public restrict = "EA";
     public scope = {};
     public bindToController = {
+        modalOptions:"<?",
         showModal:"=?",
+        showExit:"=?",
         launchEventName:"@?",
         modalName:"@", 
         title:"@",
+        saveDisabled:"=?",
         saveAction:"&?",
         deleteAction:"&?",
         cancelAction:"&?",
