@@ -12,35 +12,35 @@ class SWListingReportController {
     public collectionConfig: any;
     public reportCollectionConfig: any;
     //key value for adding rbkeys later
-    public periodIntervals=[{value:'Hour'},{value:'Day'},{value:'Week'},{value:'Month'},{value:'Year'}];
-    public selectedPeriodColumn:any;
-    public selectedPeriodInterval:any;
-    public startDate:any;
-    public endDate:any;
-    public tempEndDate:any;
-    public startDateCompare:any;
-    public endDateCompare:any;
-    public tempEndDateCompare:any;
-    public compareReportCollectionConfig:any;
-    public compareReportingData:any;
-    public reportingData:any;
-    public chart:Chart;
-    public compareChart:Chart;
-    public persistedReportCollections:any;
-    public selectedReport:any;
-    public collectionNameSaveIsOpen:boolean;
-    public filterPropertiesList:any;
-    public hasMetric:boolean;
-    public objectPath:string[]=[];
-    public selectedPeriodPropertyIdentifierArray:string[]=[];
+    public periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
+    public selectedPeriodColumn: any;
+    public selectedPeriodInterval: any;
+    public startDate: any;
+    public endDate: any;
+    public tempEndDate: any;
+    public startDateCompare: any;
+    public endDateCompare: any;
+    public tempEndDateCompare: any;
+    public compareReportCollectionConfig: any;
+    public compareReportingData: any;
+    public reportingData: any;
+    public chart: Chart;
+    public compareChart: Chart;
+    public persistedReportCollections: any;
+    public selectedReport: any;
+    public collectionNameSaveIsOpen: boolean;
+    public filterPropertiesList: any;
+    public hasMetric: boolean;
+    public objectPath: string[] = [];
+    public selectedPeriodPropertyIdentifierArray: string[] = [];
     public selectedPeriodPropertyIdentifier;
-    public collectionId:string;
-    public createdByAccountID:string;
-    public swListingDisplay:any;
-    public isPublic:boolean;
-    public accountOwnerID:string;
-    
-    
+    public collectionId: string;
+    public createdByAccountID: string;
+    public swListingDisplay: any;
+    public isPublic: boolean;
+    public accountOwnerID: string;
+
+
     //@ngInject
     constructor(
         public $filter,
@@ -67,11 +67,11 @@ class SWListingReportController {
         } else {
             this.getPeriodColumns();
             this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
-        }        
-        this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
-        this.observerService.attach(this.updateReportFromListing,'displayOptionsAction',this.tableId);
+        }
+        this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
+        this.observerService.attach(this.updateReportFromListing, 'displayOptionsAction', this.tableId);
     }
-    
+
     public $onInit = () => { }
 
     public updateReportFromListing = (params) => {
@@ -81,23 +81,23 @@ class SWListingReportController {
         }
     }
 
-  public saveReportCollection = (collectionName?)=>{
-        if(collectionName || this.collectionId){
+    public saveReportCollection = (collectionName?) => {
+        if (collectionName || this.collectionId) {
             var serializedJSONData = {
                 'collectionConfig': this.collectionConfig.collectionConfigString,
                 'collectionObject': this.collectionConfig.baseEntityName,
-                'reportFlag':1
+                'reportFlag': 1
             }
-            
-            if(!this.isPublic){
+
+            if (!this.isPublic) {
                 serializedJSONData['accountOwner'] = {
                     'accountID': this.$rootScope.slatwall.account.accountID
                 };
-            }else{
-                serializedJSONData['publicFlag']=1;
+            } else {
+                serializedJSONData['publicFlag'] = 1;
             }
-            
-            if(collectionName){
+
+            if (collectionName) {
                 serializedJSONData['collectionName'] = collectionName;
             }
 
@@ -199,27 +199,27 @@ class SWListingReportController {
             }
         }
     };
-    
-    public updatePeriod = ()=>{
+
+    public updatePeriod = () => {
         //if we have all the info we need then we can make a report
         if (
             this.selectedPeriodColumn
             && this.selectedPeriodInterval
             && this.startDate
             && this.endDate
-        ){
-            if(this.swListingDisplay && this.swListingDisplay.collectionData){
-                if(this.swListingDisplay.collectionData.createdByAccountID){
-                    this.createdByAccountID = this.swListingDisplay.collectionData.createdByAccountID;                
+        ) {
+            if (this.swListingDisplay && this.swListingDisplay.collectionData) {
+                if (this.swListingDisplay.collectionData.createdByAccountID) {
+                    this.createdByAccountID = this.swListingDisplay.collectionData.createdByAccountID;
                 }
-                if(this.swListingDisplay.collectionData.accountOwner_accountID){
+                if (this.swListingDisplay.collectionData.accountOwner_accountID) {
                     this.accountOwnerID = this.swListingDisplay.collectionData.accountOwner_accountID;
                     this.isPublic = false;
-                }else if(this.collectionId){
+                } else if (this.collectionId) {
                     this.isPublic = true;
                 }
             }
-          
+
             this.startDate = new Date(this.startDate);
             this.startDate.setHours(0, 0, 0, 0)
 
@@ -233,11 +233,11 @@ class SWListingReportController {
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
             //if the interval is an hour than we should only be able to show data for one day
-            if(this.selectedPeriodInterval.value=='hour'){
+            if (this.selectedPeriodInterval.value == 'hour') {
                 this.tempEndDate = this.endDate;
 
                 this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
-            }else if(this.tempEndDate){
+            } else if (this.tempEndDate) {
                 this.endDate = this.tempEndDate;
                 delete this.tempEndDate;
             }
@@ -256,7 +256,7 @@ class SWListingReportController {
                 this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
                 this.reportCollectionConfig.setReportFlag(1);
 
-                this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
+                this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false, isExportable: true });
 
                 this.reportCollectionConfig.setAllRecords(true);
                 this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier + '|ASC');
@@ -300,50 +300,50 @@ class SWListingReportController {
 
         }
     }
-    
-    public updateComparePeriod = ()=>{
-        
+
+    public updateComparePeriod = () => {
+
         this.startDateCompare = new Date(this.startDateCompare);
-        this.startDateCompare.setHours(0,0,0,0)
-        
+        this.startDateCompare.setHours(0, 0, 0, 0)
+
         this.endDateCompare = new Date(this.endDateCompare);
-        this.endDateCompare.setHours(23,59,59,999);
-        
+        this.endDateCompare.setHours(23, 59, 59, 999);
+
         //if date is in the wrong format then update those dates
-        if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
+        if (this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1) {
             this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
             this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
         }
-        
-        if(this.selectedPeriodInterval.value=='hour'){
-            this.tempEndDateCompare= this.endDateCompare
+
+        if (this.selectedPeriodInterval.value == 'hour') {
+            this.tempEndDateCompare = this.endDateCompare
             this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
-        }else if (this.tempEndDateCompare){
+        } else if (this.tempEndDateCompare) {
             this.endDateCompare = this.tempEndDateCompare;
             delete this.tempEndDateCompare;
         }
-        
+
         this.compareReportCollectionConfig = this.collectionConfig.clone();
-        for(var i in this.compareReportCollectionConfig.columns){
+        for (var i in this.compareReportCollectionConfig.columns) {
             var column = this.compareReportCollectionConfig.columns[i];
-            if(column.aggregate){
+            if (column.aggregate) {
                 column.isMetric = true;
-            }else{
+            } else {
                 column.isVisible = false;
             }
         }
         this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
         this.compareReportCollectionConfig.setReportFlag(1);
-        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
+        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false, isExportable: true });
         this.compareReportCollectionConfig.setAllRecords(true);
-        this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
-        
+        this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier + '|ASC');
+
         //TODO:should add as a filterGroup
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',true,true,false,'dates');
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',true,true,false,'dates');
-        this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
-			var ctx = $("#myChartCompare");
-			this.renderReport(reportingData,ctx)
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier, this.startDateCompare, '>=', 'AND', true, true, false, 'dates');
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier, this.endDateCompare, '<=', 'AND', true, true, false, 'dates');
+        this.compareReportCollectionConfig.getEntity().then((reportingData) => {
+            var ctx = $("#myChartCompare");
+            this.renderReport(reportingData, ctx)
         });
     }
 
@@ -356,51 +356,51 @@ class SWListingReportController {
         var dates = [];
         var datasets = [];
 
-        if(ctx.is($("#myChartCompare"))){
-            var chart = this.compareChart; 
-            this.compareReportingData=reportingData;
-        }else{
+        if (ctx.is($("#myChartCompare"))) {
+            var chart = this.compareChart;
+            this.compareReportingData = reportingData;
+        } else {
             var chart = this.chart;
         }
 
 
 
-        this.reportingData.records.forEach(element=>{
+        this.reportingData.records.forEach(element => {
             var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
             pidAliasArray.shift();
             var pidAlias = pidAliasArray.join('_');
-            var value = this.$filter('swdatereporting')(element[pidAlias],this.selectedPeriodInterval.value);
+            var value = this.$filter('swdatereporting')(element[pidAlias], this.selectedPeriodInterval.value);
 
             dates.push(value);
         });
 
-        this.reportCollectionConfig.columns.forEach(column=>{
-            if(column.isMetric){
+        this.reportCollectionConfig.columns.forEach(column => {
+            if (column.isMetric) {
                 let color = this.random_rgba();
                 let title = column.displayTitle || column.title;
                 let metrics = [];
-                this.reportingData.records.forEach(element=>{
+                this.reportingData.records.forEach(element => {
                     metrics.push(
                         {
-                            y:element[column.aggregate.aggregateAlias],
-                            x:element[this.selectedPeriodColumn.name]
+                            y: element[column.aggregate.aggregateAlias],
+                            x: element[this.selectedPeriodColumn.name]
                         }
                     )
                 });
                 datasets.push(
                     {
-                        label:title,
-                        data:metrics,
-                        backgroundColor:color,
-                        borderColor:color,
+                        label: title,
+                        data: metrics,
+                        backgroundColor: color,
+                        borderColor: color,
                         borderWidth: 2,
-                        fill:false
-                        }
+                        fill: false
+                    }
                 );
             }
         });
-      
-		    //used to clear old rendered charts before adding new ones
+
+        //used to clear old rendered charts before adding new ones
         if (this.chart != null) {
             this.chart.destroy();
             console.log("not loading chartjs chunk");
@@ -443,11 +443,11 @@ class SWListingReportController {
                 },
                 hover: {
                     intersect: true,
-                    mode:'nearest',
-                    onHover: function(e) {
-                         var point = this.getElementAtEvent(e);
-                         if (point.length) e.target.style.cursor = 'pointer';
-                         else e.target.style.cursor = 'default';
+                    mode: 'nearest',
+                    onHover: function (e) {
+                        var point = this.getElementAtEvent(e);
+                        if (point.length) (<HTMLInputElement>e.target).style.cursor = 'pointer';
+                        else (<HTMLInputElement>e.target).style.cursor = 'default';
                     }
                 },
                 elements: {
@@ -456,10 +456,10 @@ class SWListingReportController {
                     }
                 },
                 legend: {
-                    onHover: function(e) {
-                       e.target.style.cursor = 'pointer';
+                    onHover: function (e) {
+                        (<HTMLInputElement>e.target).style.cursor = 'pointer';
                     }
-                 }
+                }
             }
         });
 
@@ -566,7 +566,7 @@ class SWListingReport implements ng.IDirective {
     };
     public controller = SWListingReportController;
     public controllerAs = 'swListingReport';
-    public require={swListingDisplay:"?^swListingDisplay"};
+    public require = { swListingDisplay: "?^swListingDisplay" };
     //@ngInject
     constructor(
         public scopeService,

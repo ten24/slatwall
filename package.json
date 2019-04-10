@@ -73,6 +73,7 @@
   "scripts": {
     "postbuild": "bower install",
     "prestart": "npm install",
+    "prebuildAll": "npm install",
     "prebuildHibachi": "npm install",
     "prebuildSlatwall": "npm install",
     "start": "http-server -a localhost -p 8000",
@@ -94,7 +95,7 @@
     "buildCustomFrontend": "custom/client/customFrontend.js",
     "buildCustomFrontend:prod": "custom/client/customFrontendProd.js",
     "buildAll": "webpack --progress ",
-    "buildAll:prod": "webpack -p --progress --config webpack.config.js",
+    "buildAll:prod": "webpack -p --progress",
     "lint": "tsc --pretty"
   },
   "jshintConfig": {

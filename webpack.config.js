@@ -91,7 +91,7 @@ var appConfig = {
       minRatio: 0.8
     }),
     // new ForkTsCheckerWebpackPlugin(), //  for typechecking,   were using tsloader to transpile-only to reduce the build time
-    new BundleAnalyzerPlugin()
+    // new BundleAnalyzerPlugin()
   ],
   optimization: {
     usedExports: true,

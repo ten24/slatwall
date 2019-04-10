@@ -31,7 +31,7 @@ export class BaseBootStrapper {
 
 
     constructor(myApplication) {
-        console.log("Angular boostraped vjghd");
+        console.log("Angular boostraped");
         this.myApplication = myApplication;
         return angular.lazy(this.myApplication).resolve(['$http', '$q', ($http: ng.IHttpService, $q: ng.IQService) => {
             this.$http = $http;
@@ -297,9 +297,9 @@ export class BaseBootStrapper {
 
     getResourceBundles = (): ng.IPromise<{}> => {
         var rbLocale = this.appConfig.rbLocale;
-          if(rbLocale == 'en_us'){
-              rbLocale = 'en'
-          }
+        if (rbLocale == 'en_us') {
+            rbLocale = 'en'
+        }
         var localeListArray = rbLocale.split('_');
         var rbPromises = [];
         var rbPromise = this.getResourceBundle(rbLocale);
@@ -308,7 +308,7 @@ export class BaseBootStrapper {
             rbPromise = this.getResourceBundle(localeListArray[0]);
             rbPromises.push(rbPromise);
         }
-        if(localeListArray[0] !== 'en') {
+        if (localeListArray[0] !== 'en') {
             this.getResourceBundle('en');
         }
         return this.$q.all(rbPromises).then((data): any => {

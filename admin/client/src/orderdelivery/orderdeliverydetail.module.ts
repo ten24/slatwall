@@ -1,7 +1,5 @@
-/// <reference path='../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
 //modules
-import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
+import { coremodule } from "../../../../org/Hibachi/client/src/core/core.module";
 
 //services
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
@@ -9,25 +7,25 @@ import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 //controllers
 
 //directives
-import {SWOrderDeliveryDetail} from "./components/sworderdeliverydetail";
+import { SWOrderDeliveryDetail } from "./components/sworderdeliverydetail";
 
 
-var orderdeliverydetailmodule = angular.module('orderdeliverydetail',[coremodule.name])
-.config([()=>{
+var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [coremodule.name])
+	.config([() => {
 
-}]).run([()=>{
+	}]).run([() => {
 
-}])
-//constants
-.constant('orderDeliveryDetailPartialsPath','orderdelivery/components/')
+	}])
+	//constants
+	.constant('orderDeliveryDetailPartialsPath', 'orderdelivery/components/')
 
-//services
+	//services
 
-//controllers
+	//controllers
 
-//directives
-.directive('swOrderDeliveryDetail', SWOrderDeliveryDetail.Factory());
+	//directives
+	.directive('swOrderDeliveryDetail', SWOrderDeliveryDetail.Factory());
 
-export{
+export {
 	orderdeliverydetailmodule
 };
