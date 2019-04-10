@@ -21,8 +21,11 @@ class SWModalLauncherController {
     // @ngInject
     constructor(public observerService){
         this.hasSaveAction = typeof this.saveAction === 'function';
-        this.hasCancelAction = typeof this.cancelAction === 'function';
         this.hasDeleteAction = typeof this.deleteAction === 'function';
+        
+        if(angular.isUndefined(this.hasCancelAction)){
+            this.hasCancelAction = true;
+        }
         
         if(angular.isUndefined(this.showModal)){
             this.showModal = false; 
@@ -105,7 +108,8 @@ class SWModalLauncher implements ng.IDirective{
         deleteAction:"&?",
         cancelAction:"&?",
         saveActionText:"@?",
-        cancelActionText:"@?"
+        cancelActionText:"@?",
+        hasCancelAction:"=?"
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";

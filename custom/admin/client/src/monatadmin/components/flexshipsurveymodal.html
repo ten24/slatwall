@@ -1,6 +1,9 @@
 <sw-modal-launcher data-modal-name="flexshipSurveyModal" 
+                   data-modal-options="{backdrop:'static',keyboard:false}"
                    data-title="{{swFlexshipSurveyModal.title}}" 
                    data-launch-event-name="OrderTemplateUpdateScheduleSuccess"
+                   data-disable-click-outside="true"
+                   data-has-cancel-action="false"
                    data-save-action="swFlexshipSurveyModal.save">
     
     <sw-modal-content> 
@@ -10,6 +13,7 @@
                     <label ng-class="{'checked':swFlexshipSurveyModal.surveyResponse.value === surveyOption.value}">
                         <input type="radio" 
                                name="surveyOption"
+                               required
                                ng-model="swFlexshipSurveyModal.surveyResponse" 
                                ng-value="surveyOption" />
                         <span ng-bind="surveyOption.name"></span>

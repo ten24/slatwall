@@ -69577,6 +69577,7 @@ var SWFlexshipSurveyModalController = /** @class */ (function () {
                 propertyIdentifiersList: ''
             };
             formDataToPost.orderTemplateScheduleDateChangeReasonTypeID = _this.surveyResponse.value;
+            formDataToPost.orderTemplateID = _this.orderTemplate.orderTemplateID;
             if (_this.surveyResponse.value === '2c9280846a023949016a029455f0000c' &&
                 _this.otherScheduleDateChangeReasonNotes.length) {
                 formDataToPost.otherScheduleDateChangeReasonNotes = _this.otherScheduleDateChangeReasonNotes;
@@ -69597,6 +69598,7 @@ var SWFlexshipSurveyModal = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
+            'orderTemplate': '<?',
             'surveyOptions': '<?'
         };
         this.controller = SWFlexshipSurveyModalController;
@@ -77838,7 +77840,7 @@ var SWModalLauncherController = /** @class */ (function () {
             //this.showModal is only for use with custom template
             _this.showModal = true;
             //trigger bootstrap event to show modal
-            $("#" + _this.modalName).modal('show');
+            $("#" + _this.modalName).modal(_this.modalOptions);
         };
         this.saveCallback = function () {
             //the passed save action must return a promise
@@ -77870,8 +77872,13 @@ var SWModalLauncherController = /** @class */ (function () {
             }
         };
         this.hasSaveAction = typeof this.saveAction === 'function';
-        this.hasCancelAction = typeof this.cancelAction === 'function';
         this.hasDeleteAction = typeof this.deleteAction === 'function';
+        if (angular.isUndefined(this.hasCancelAction)) {
+            this.hasCancelAction = true;
+        }
+        if (angular.isUndefined(this.showExit)) {
+            this.showExit = false;
+        }
         if (angular.isUndefined(this.showModal)) {
             this.showModal = false;
         }
@@ -77880,6 +77887,9 @@ var SWModalLauncherController = /** @class */ (function () {
         }
         if (angular.isUndefined(this.cancelActionText)) {
             this.cancelActionText = "Cancel";
+        }
+        if (angular.isUndefined(this.modalOptions)) {
+            this.modalOptions = {};
         }
         if (angular.isDefined(this.launchEventName)) {
             this.observerService.attach(this.launchModal, this.launchEventName);
@@ -77901,7 +77911,9 @@ var SWModalLauncher = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
+            modalOptions: "<?",
             showModal: "=?",
+            showExit: "=?",
             launchEventName: "@?",
             modalName: "@",
             title: "@",
@@ -77909,7 +77921,8 @@ var SWModalLauncher = /** @class */ (function () {
             deleteAction: "&?",
             cancelAction: "&?",
             saveActionText: "@?",
-            cancelActionText: "@?"
+            cancelActionText: "@?",
+            hasCancelAction: "=?"
         };
         this.controller = SWModalLauncherController;
         this.controllerAs = "swModalLauncher";
@@ -77955,9 +77968,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SWModalWindowController = /** @class */ (function () {
     // @ngInject
     function SWModalWindowController() {
-        if (angular.isUndefined(this.modalName)) {
-            throw ("You did not pass a modal title to SWModalWindowController");
-        }
+        var _this = this;
+        this.$onInit = function () {
+            _this.modalName = _this.swModalLauncher.modalName;
+            _this.title = _this.swModalLauncher.title;
+            _this.showExit = _this.swModalLauncher.showExit;
+            _this.hasSaveAction = _this.swModalLauncher.hasSaveAction;
+            _this.hasCancelAction = _this.swModalLauncher.hasCancelAction;
+            _this.saveAction = _this.swModalLauncher.saveAction;
+            _this.cancelAction = _this.swModalLauncher.cancelAction;
+            _this.saveActionText = _this.swModalLauncher.saveActionText;
+            _this.cancelActionText = _this.swModalLauncher.cancelActionText;
+            if (angular.isUndefined(_this.modalName)) {
+                throw ("You did not pass a modal title to SWModalWindowController");
+            }
+        };
     }
     return SWModalWindowController;
 }());
@@ -77971,10 +77996,14 @@ var SWModalWindow = /** @class */ (function () {
             modalBody: "?swModalBody"
         };
         this.restrict = "EA";
+        this.require = {
+            swModalLauncher: "^^swModalLauncher"
+        };
         this.scope = {};
         this.bindToController = {
             modalName: "@",
             title: "@",
+            showExit: "=?",
             hasSaveAction: "=?",
             saveAction: "&?",
             hasDeleteAction: "=?",
