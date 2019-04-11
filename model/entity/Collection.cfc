@@ -1677,13 +1677,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return fromHQL;
 	}
-
-	public string function getJoinHQL(boolean recordsCountJoin=false){
-		var joinHQL = '';
-		
+	//this means that the filter does not have a complimentary column on a toMany relationship
+	//and therefore we need to use group bys to prevent duplicates
+	//if it did have a complimentary column we can avoid group by because we will expect dupes
+	public boolean function hasExclusiveToManyFilter(boolean recordsCountJoin=false){
+		var joins = getValidJoins(arguments.recordsCountJoin);
+		for(var join in joins){
+			if(
+				structKeyExists(join,'toMany')
+				&& (
+					(
+						structKeyExists(join,'aggregateFilter')
+						&& join.aggregateFilter
+					)&& (
+						!structKeyExists(join,'aggregateColumn')
+					)
+					||
+					(
+						structKeyExists(join,'filter')	
+						&& !structKeyExists(join,'column')
+					)
+				)
+			){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public array function getValidJoins(boolean recordsCountJoin=false){
+		var validJoins = [];
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
-			
-            var allAliases = getAllAliases();
 			for(var join in getCollectionConfigStruct()["joins"]){
 				if(
 					!arguments.recordsCountJoin
@@ -1695,7 +1719,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								&& join.filter
 							)||(
 								structKeyExists(join,'aggregateFilter')
-								&& join.aggregate
+								&& join.aggregateFilter
 							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
@@ -1707,12 +1731,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						)
 					)
 				){
-					if(listFind(allAliases, join.alias)){
-		                joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
-		            }
+					arrayAppend(validJoins,join);	
 				}
 			}
 		}
+		return validJoins;
+	}
+
+	public string function getJoinHQL(boolean recordsCountJoin=false){
+		var joinHQL = '';
+		var joins = getValidJoins(arguments.recordsCountJoin);
+			
+        var allAliases = getAllAliases();
+		for(var join in joins){
+			if(listFind(allAliases, join.alias)){
+                joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
+            }
+		}
+		
 		return joinHQL;
 	}
 
@@ -3516,6 +3552,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						) continue;
 						if(
 							getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)
+							&& !hasExclusiveToManyFilter(getRunningGetRecordsCount())
 							&& (
 								!getHasAggregate()
 								|| getRunningGetRecordsCount()

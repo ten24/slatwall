@@ -98,7 +98,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-	public void function CollectionWithoutFilterShouldntAddGroupBy(){
+	public void function collectionWithoutFilterShouldntAddGroupBy(){
 		var myCollection = variables.entityService.getAccountCollectionList();
 		myCollection.setDisplayProperties('accountID,firstName,lastName,company,primaryPhoneNumber.phoneNumber,primaryEmailAddress.emailAddress,organizationFlag');
 		assertFalse(myCollection.getHQL() contains 'GROUP BY ');
@@ -111,7 +111,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var myCollection = variables.entityService.getAccountCollectionList();
 		myCollection.setDisplayProperties('accountID,firstName,lastName,company,primaryPhoneNumber.phoneNumber,primaryEmailAddress.emailAddress,organizationFlag');
 		myCollection.addFilter('firstName','Miguel');
-		assertFalse(myCollection.getHQL() contains 'GROUP BY ');
+		assertFalse(myCollection.getHQL() contains 'GROUP BY ' );
 	}
 	
 	/**
