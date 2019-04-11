@@ -3083,6 +3083,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(
 				hasAggregateFilter() 
 				||
+				hasExclusiveToManyFilter(getRunningGetRecordsCount())
+				||
 				(
 					hasGroupBys()
 					&& !getprimaryIDFound()
@@ -3098,6 +3100,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(
 				hasAggregateFilter() 
 				||
+				hasExclusiveToManyFilter(getRunningGetRecordsCount())
+				||
 				(
 					hasGroupBys()
 					&& !getprimaryIDFound()
@@ -3111,6 +3115,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(
 			hasAggregateFilter() 
+			||
+			hasExclusiveToManyFilter(getRunningGetRecordsCount())
 			||
 			(
 				hasGroupBys()
