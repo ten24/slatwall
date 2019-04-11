@@ -3572,7 +3572,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(
 							(
 								getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)
-								|| !hasToMany()
+								|| !hasToMany(getRunningGetRecordsCount())
 							)
 							&& !hasExclusiveToManyFilter(getRunningGetRecordsCount())
 							&& (
