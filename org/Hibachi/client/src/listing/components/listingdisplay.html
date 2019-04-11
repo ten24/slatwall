@@ -406,7 +406,7 @@
                                     ng-style="{'border': swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
 							    <sw-listing-display-cell
-							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] && !column.isEditable"
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-value="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
