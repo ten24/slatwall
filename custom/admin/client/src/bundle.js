@@ -86492,7 +86492,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 */
 var SWFFormController = /** @class */ (function () {
     // @ngInject
-    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, observerService, hibachiValidationService) {
+    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
@@ -86500,7 +86500,6 @@ var SWFFormController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.$element = $element;
         this.validationService = validationService;
-        this.observerService = observerService;
         this.hibachiValidationService = hibachiValidationService;
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
@@ -86542,7 +86541,6 @@ var SWFFormController = /** @class */ (function () {
             return file;
         };
         this.submitForm = function () {
-            console.log('submittingForm', _this.form.$valid);
             if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
@@ -89680,6 +89678,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.getDirectiveTemplate = function () {
             var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
             if (_this.column.isEditable) {
+                if (!_this.column.type) {
+                    _this.column.type = 'text';
+                }
+                if (_this.column.defaultValue) {
+                    _this.pageRecord[_this.column.propertyIdentifier] = _this.column.defaultValue;
+                }
                 return basePartialPath + 'listingdisplaycelledit.html';
             }
             var templateUrl = basePartialPath + 'listingdisplaycell.html';
@@ -91371,11 +91375,6 @@ var ListingService = /** @class */ (function () {
         };
         this.setupColumns = function (listingID, collectionConfig, collectionObject) {
             //assumes no alias formatting
-            //when listing columns are specified override what is there
-            console.log('do we have listing columns???', _this.getListing(listingID).listingColumns.length, _this.getListing(listingID).listingColumns, _this.getListing(listingID).columns);
-            if (_this.getListing(listingID).listingColumns.length > 0) {
-                _this.getListing(listingID).columns = _this.getListing(listingID).listingColumns;
-            }
             if (_this.getListing(listingID).columns.length == 0 &&
                 collectionConfig != null) {
                 if (collectionConfig.columns == null) {
@@ -91406,7 +91405,7 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.setupColumn = function (listingID, column, collectionConfig, collectionObject) {
-            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView && !column.isCollectionColumn) {
+            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView) {
                 _this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier, undefined, column);
             }
             if (!collectionConfig && _this.getListing(listingID).collectionConfig != null) {
@@ -91620,7 +91619,6 @@ var ListingService = /** @class */ (function () {
         };
         this.setupDefaultGetCollection = function (listingID) {
             if (_this.getListing(listingID).collectionConfigs.length == 0) {
-                console.log('multi collection mode');
                 if (_this.getListing(listingID).collectionId) {
                     _this.getListing(listingID).collectionConfig.baseEntityNameType = 'Collection';
                     _this.getListing(listingID).collectionConfig.id = _this.getListing(listingID).collectionId;
@@ -91652,7 +91650,6 @@ var ListingService = /** @class */ (function () {
                 };
             }
             else {
-                console.log('setting up default get collection');
                 return function () {
                     _this.getListing(listingID).collectionData = {};
                     _this.getListing(listingID).collectionData.pageRecords = [];

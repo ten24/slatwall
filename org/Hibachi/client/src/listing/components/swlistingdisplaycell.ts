@@ -82,6 +82,15 @@ class SWListingDisplayCellController{
         var basePartialPath = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath);
         
         if(this.column.isEditable){
+            
+            if(!this.column.type){
+                this.column.type = 'text';
+            }
+            
+            if(this.column.defaultValue){
+                this.pageRecord[this.column.propertyIdentifier] = this.column.defaultValue;
+            }
+            
             return basePartialPath + 'listingdisplaycelledit.html';
         }
         

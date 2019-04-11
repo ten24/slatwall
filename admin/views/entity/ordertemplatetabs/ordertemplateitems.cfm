@@ -16,6 +16,7 @@
 <cfset arrayAppend(rc.columns, {
 	'title': getHibachiScope().rbKey('define.quantity'),
 	'propertyIdentifier':'quantity',
+	'type':'number',
 	'defaultValue':1, 
 	'isCollectionColumn':false, 
 	'isEditable':true,
