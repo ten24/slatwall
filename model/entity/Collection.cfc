@@ -438,12 +438,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		if(findNoCase('(',arguments.propertyIdentifier)){
  			return propertyIdentifier;
  		}
+ 		
+ 		
  		var cacheKey = 'getPropertyIdentifierAlias'&arguments.propertyIdentifier&arguments.aliastype;
  		//check if the propertyIdentifier has base alias aready and strip it
  		var alias = getBaseEntityAlias();
  		var propertyIdentifierAliasData = getCollectionCacheValue(cacheKey);
 
  		if(isNull(propertyIdentifierAliasData)){
+ 			//deal with legacy Account_
+ 			if(listFirst(arguments.propertyIdentifier,'.') == getCollectionObject()){
+	 			arguments.propertyIdentifier = listRest(arguments.propertyIdentifier,'.');
+	 		}
+ 			
  			propertyIdentifierAliasData = {
 				joins=[],
 				hasManyRelationFilter=false,
@@ -1705,6 +1712,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return false;
 	}
 	
+	public boolean function hasToMany(boolean recordsCountJoin=false){
+		var joins = getValidJoins(arguments.recordsCountJoin);
+		for(var join in joins){
+			if(
+				structKeyExists(join,'toMany')
+			){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public array function getValidJoins(boolean recordsCountJoin=false){
 		var validJoins = [];
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
@@ -2033,8 +2052,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//and another on the record output formatted like defaultSku_skuID
 	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
 		//handle legacy alias that is in Account.firstName format instead of _account.firstName
-		if(listFirst(arguments.propertyIdentifierWithAlias,'.') == getCollectionObject()){
-			arguments.propertyIdentifierWithAlias = getBaseEntityAlias()&'.'&listRest(arguments.propertyIdentifierWithAlias,'.');
+		if(listFirst(arguments.propertyIdentifierWithAlias,'_') == getCollectionObject()){
+			arguments.propertyIdentifierWithAlias = getBaseEntityAlias()&'.'&listRest(arguments.propertyIdentifierWithAlias,'_');
 		}
 		
 		var cacheKey = 'convertAliasToPropertyIdentifier'&arguments.propertyIdentifierWithAlias;
@@ -3551,7 +3570,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
 						) continue;
 						if(
-							getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)
+							(
+								getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)
+								|| !hasToMany()
+							)
 							&& !hasExclusiveToManyFilter(getRunningGetRecordsCount())
 							&& (
 								!getHasAggregate()

@@ -2832,7 +2832,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
         };
         var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
         
+        debug(collectionEntity2.getHQL());
+        debug(collectionEntity2.hasExclusiveToManyFilter());
         assertFalse(collectionEntity2.getHQL() contains 'GROUP BY ', 'Group By should be ignored if specified on the collection config');
+        
+        
         var joinsHQL = trim(collectionEntity2.getJoinHQL());
 
         assert(joinsHQL == "left join _account.primaryEmailAddress as _account_primaryEmailAddress", 'Bad Join HQL: "#joinsHQL#", expected: "left join _account.primaryEmailAddress as _account_primaryEmailAddress"');
