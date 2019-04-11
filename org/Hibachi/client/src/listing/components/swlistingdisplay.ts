@@ -44,6 +44,7 @@ class SWListingDisplayController{
     public getChildCount;
     public hasCollectionPromise;
     public hideRules = [];
+    public listingColumns;
     public multiSlot:boolean;
     public multiselectable:boolean = false;
     public multiselectFieldName;
@@ -147,8 +148,6 @@ class SWListingDisplayController{
            this.showFilters = true;
         }
         
-        
-
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -188,6 +187,7 @@ class SWListingDisplayController{
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
+            
             personalCollection.getEntity().then((data)=>{
                 if(data.pageRecords.length){
 
@@ -203,7 +203,7 @@ class SWListingDisplayController{
                 }else{
                     this.multiSlot = originalMultiSlotValue;
                 }
-                 this.processCollection();
+                this.processCollection();
             });
 
          }else{
@@ -260,16 +260,19 @@ class SWListingDisplayController{
                     if(angular.isUndefined(this.getCollection)){
                         this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                     }
-
                     this.paginator.getCollection = this.getCollection;
                     this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
                     
                 }
             );
         }else if(this.multiSlot == false){
+            
             if(this.columns && this.columns.length){
                 this.collectionConfig.columns = this.columns;
+            } else if (this.listingColumns && this.listingColumns.length){
+                this.columns = this.listingColumns;
             }
+            
             //setup selectable
             this.listingService.setupSelect(this.tableID);
             this.listingService.setupMultiselect(this.tableID);
@@ -803,6 +806,7 @@ class SWListingDisplay implements ng.IDirective{
             }
             ]
             */
+            listingColumns:'<?',
 
             /*Hierachy Expandable*/
             parentPropertyName:"@?",

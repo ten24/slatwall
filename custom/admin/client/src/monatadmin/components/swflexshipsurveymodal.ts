@@ -21,12 +21,10 @@ class SWFlexshipSurveyModalController{
 	}
 	
 	public $onInit = () =>{
-		console.log('form scope???', this.form, this.$scope);	
+
 	}
 
 	public save = () =>{
-		console.log('behold the form', this.form)
-		
 		var formDataToPost:any = {
 			entityName: 'FlexshipSurveyResponse',
 			context: this.processContext,

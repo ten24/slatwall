@@ -15,6 +15,7 @@
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigJson" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
+	<cfparam name="attributes.listingColumns" type="any" default="" />
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
@@ -150,7 +151,10 @@
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
-	 			data-using-personal-collection="#attributes.usingPersonalCollection#"
+				data-using-personal-collection="#attributes.usingPersonalCollection#"
+				<cfif len(attributes.listingColumns)>
+					data-listing-columns="#attributes.listingColumns#"
+				</cfif> 
 	 			<cfif len(attributes.personalCollectionIdentifier)>
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
  				</cfif>

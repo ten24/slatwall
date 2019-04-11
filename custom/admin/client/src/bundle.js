@@ -69572,10 +69572,8 @@ var SWFlexshipSurveyModalController = /** @class */ (function () {
         this.title = "Flexship Survey";
         this.processContext = "Create";
         this.$onInit = function () {
-            console.log('form scope???', _this.form, _this.$scope);
         };
         this.save = function () {
-            console.log('behold the form', _this.form);
             var formDataToPost = {
                 entityName: 'FlexshipSurveyResponse',
                 context: _this.processContext,
@@ -89054,6 +89052,9 @@ var SWListingDisplayController = /** @class */ (function () {
                 if (_this.columns && _this.columns.length) {
                     _this.collectionConfig.columns = _this.columns;
                 }
+                else if (_this.listingColumns && _this.listingColumns.length) {
+                    _this.columns = _this.listingColumns;
+                }
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
@@ -89580,6 +89581,7 @@ var SWListingDisplay = /** @class */ (function () {
             }
             ]
             */
+            listingColumns: '<?',
             /*Hierachy Expandable*/
             parentPropertyName: "@?",
             //booleans
@@ -91369,6 +91371,11 @@ var ListingService = /** @class */ (function () {
         };
         this.setupColumns = function (listingID, collectionConfig, collectionObject) {
             //assumes no alias formatting
+            //when listing columns are specified override what is there
+            console.log('do we have listing columns???', _this.getListing(listingID).listingColumns.length, _this.getListing(listingID).listingColumns, _this.getListing(listingID).columns);
+            if (_this.getListing(listingID).listingColumns.length > 0) {
+                _this.getListing(listingID).columns = _this.getListing(listingID).listingColumns;
+            }
             if (_this.getListing(listingID).columns.length == 0 &&
                 collectionConfig != null) {
                 if (collectionConfig.columns == null) {
@@ -91399,7 +91406,7 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.setupColumn = function (listingID, column, collectionConfig, collectionObject) {
-            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView) {
+            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView && !column.isCollectionColumn) {
                 _this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier, undefined, column);
             }
             if (!collectionConfig && _this.getListing(listingID).collectionConfig != null) {
@@ -91613,6 +91620,7 @@ var ListingService = /** @class */ (function () {
         };
         this.setupDefaultGetCollection = function (listingID) {
             if (_this.getListing(listingID).collectionConfigs.length == 0) {
+                console.log('multi collection mode');
                 if (_this.getListing(listingID).collectionId) {
                     _this.getListing(listingID).collectionConfig.baseEntityNameType = 'Collection';
                     _this.getListing(listingID).collectionConfig.id = _this.getListing(listingID).collectionId;
@@ -91644,6 +91652,7 @@ var ListingService = /** @class */ (function () {
                 };
             }
             else {
+                console.log('setting up default get collection');
                 return function () {
                     _this.getListing(listingID).collectionData = {};
                     _this.getListing(listingID).collectionData.pageRecords = [];
