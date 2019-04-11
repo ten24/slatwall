@@ -220,7 +220,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================== START: Logical Methods =========================	
 		//CUSTOM PROPERTIES BEGIN
 property name="disableOnFlexshipFlag" ormtype="boolean";
-    property name="disableOnRegularOrderFlag" ormtype="boolean";//CUSTOM PROPERTIES END
+    property name="disableOnRegularOrderFlag" ormtype="boolean";
+    property name="onTheFlyKitFlag" ormtype="boolean";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());

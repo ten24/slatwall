@@ -1,0 +1,42 @@
+{
+    "baseentity":"SkuPrice",
+    "mapping":[
+        {
+            "sourceColumn":"ItemCode",
+            "propertyIdentifier":"sku.skuCode",
+            "key":true
+        },
+        {
+            "sourcecolumn":"remoteID",
+            "sourceColumnDataGenerator":"'IMPORT-' + ItemCode + '-' + CountryCode + '-' + PriceLevel",
+            "propertyidentifier":"remoteID",
+            "key":true
+        },
+        {
+            "sourceColumn":"SellingPrice",
+            "propertyIdentifier":"price"
+        },
+        {
+            "sourceColumn":"",
+            "propertyIdentifier":"personalVolume"
+        },
+            "sourceColumn":"TaxablePrice",
+            "propertyIdentifier":"taxableAmount"
+        },
+            "sourceColumn":"Commission",
+            "propertyIdentifier":"commissionableVolume"
+        },
+            "sourceColumn":"",
+            "propertyIdentifier":"sponsorVolume"
+        },
+            "sourceColumn":"",
+            "propertyIdentifier":"productPackVolume"
+        },
+            "sourceColumn":"",
+            "propertyIdentifier":"retailValueVolume"
+        },
+            "sourceColumn":"",
+            "propertyIdentifier":"handlingFee"
+        }
+    ]
+}
