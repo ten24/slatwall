@@ -47,10 +47,13 @@ Notes:
 
 */
 component extends="HibachiService" accessors="true" output="false" {
-	variables.appsPath = expandPath('/#getApplicationValue('applicationKey')#') & '/';
 	variables.skeletonAppPath = expandPath('/#getApplicationValue('applicationKey')#') & '/integrationServices/slatwallcms/skeletonapp';
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public void function getAppsPath(){
+		return expandPath('/#getApplicationValue('applicationKey')#') & '/apps';
+	}
 	
 	public void function deployApplication(required any app) {
 		// copy skeletonapp to /apps/{applicationCodeOrID} 
@@ -94,8 +97,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		//deploy the app if the application is new	
 		if(arguments.app.isNew()){
 			//create directory for app
-			if(!directoryExists(variables.appsPath)){
-				directoryCreate(variables.appsPath);
+			if(!directoryExists(getAppsPath())){
+				directoryCreate(getAppsPath());
 			}
 			//need to set the appcode to create the app path 
 			arguments.app.setAppCode(arguments.data.appCode);
