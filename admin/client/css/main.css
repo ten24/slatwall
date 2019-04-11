@@ -1694,8 +1694,9 @@ table tr th .glyphicon {
   margin-top: 0px;
 }
 .s-body-nav .s-header-info li:after {
-  font-family: fontAwesome;
+  font-family: "Font Awesome 5 Free";
   content: '\f105';
+  font-weight: 600;
   padding-right: 0px !important;
   padding-left: 0px !important;
   color: #b3b3b3;
@@ -2414,7 +2415,8 @@ table .s-edit-elements a:hover {
 }
 .s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper:after {
   content: "\f105";
-  font-family: fontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   right: -26px;
   position: absolute;
   font-size: 30px;
@@ -2492,7 +2494,8 @@ content.s-body-box.s-status-active .s-filter-header {
   background-color: #428bca;
 }
 content.s-body-box.s-status-active .s-filter-header:after {
-  font-family: fontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   content: "\f00c";
   font-size: 20px;
   position: relative;
@@ -3128,7 +3131,8 @@ table .s-table-header .table-section a.s-hint {
   display: block;
 }
 .s-select-wrapper:after {
-  font-family: fontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   content: "\f0dc";
   pointer-events: none;
   position: absolute;
@@ -3156,7 +3160,6 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-titled-select-wrapper.s-site select {
   padding: 3px 18px 0px 44px !important;
-  margin-top: 5px;
 }
 .s-titled-select-wrapper select {
   -webkit-appearance: none;
@@ -3746,9 +3749,6 @@ table .s-table-header .table-section a.s-hint {
   display: inline-block;
   width: 100%;
 }
-
-#customListingControls input.form-control.s-search { margin-top: 5px; }
-
 .s-search-wrapper .btn.s-add-search-param {
   position: absolute;
   right: 4px;
@@ -3759,9 +3759,9 @@ table .s-table-header .table-section a.s-hint {
   vertical-align: top;
 }
 .s-search-wrapper .input-group .s-search:before {
-  font-family: "Font Awesome 5 Free";
   content: "\f002";
-  font-weight: 900;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   position: absolute;
   left: 9px;
   top: 6px;
@@ -3839,7 +3839,8 @@ table .s-table-header .table-section a.s-hint {
   top: 9px;
   left: 10px;
   content: "\f067";
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
 }
 .s-search-results-wrapper.s-selectable .dropdown-menu li.s-selected a {
   color: #798c9c;
@@ -3850,7 +3851,8 @@ table .s-table-header .table-section a.s-hint {
   top: 9px;
   left: 10px;
   content: "\f00c";
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
 }
 .s-search-results-wrapper.s-selectable .dropdown-menu li.s-selected a:hover {
   color: #FFF !important;
@@ -3871,7 +3873,8 @@ table .s-table-header .table-section a.s-hint {
   position: absolute;
   top: 9px;
   left: 10px;
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
   pointer-event: none;
@@ -4456,7 +4459,9 @@ table .s-table-header .table-section a.s-hint {
   background-clip: padding-box;
 }
 .s-bundle-group-items .s-select-item:after {
-  font: normal normal normal 14px/1 FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
+  font-style: normal;
   content: "\f0da";
   position: absolute;
   right: 1px;
@@ -4980,7 +4985,8 @@ a[data-toggle="collapse"] {
   opacity: 1;
 }
 .s-create-window .s-bread-crumb ul li:after {
-  font-family: fontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   content: "\f105";
   opacity: 0.4;
   margin-left: 11px;
@@ -4999,7 +5005,9 @@ a[data-toggle="collapse"] {
 }
 .s-create-window .s-dialog-footer .s-loading:after {
   display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
+  font-weight: normal;
   font-size: inherit;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
@@ -5764,7 +5772,8 @@ a.disabled > i.hibachi-ui-radio-checked {
   max-height: 317px;
 }
 .s-metric-bullet-icon span:before {
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   content: "\f111";
   font-size: 8px;
 }
@@ -5997,14 +6006,12 @@ a.disabled > i.hibachi-ui-radio-checked {
   padding-right: 8px;
 }
 #get-started-report em {
-  color:#000;
+  color: #000;
   font-weight: 600;
 }
 #get-started-report .close {
   padding: 6px 10px;
 }
-
-
 /*-- Slideout Sidebar --*/
 .s-slide-main-content {
   text-align: center;
@@ -7272,7 +7279,8 @@ sw-sku-thumbnail .thumbnail .caption {
 }
 .s-detail-modules-wrapper .s-sm-content-block.s-selected:after {
   content: "\f00c";
-  font-family: fontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   position: absolute;
   right: 6px;
   top: 3px;
@@ -8047,28 +8055,32 @@ table.s-detail-content-table tbody tr.s-done {
   background: #FBFBFB;
 }
 .s-table-toolbar input.s-sku::-webkit-input-placeholder {
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   font-style: normal;
   text-decoration: inherit;
   font-size: 23px;
   padding-top: 1px;
 }
 .s-table-toolbar input.s-sku:-moz-placeholder {
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   font-style: normal;
   text-decoration: inherit;
   font-size: 23px;
   padding-top: 1px;
 }
 .s-table-toolbar input.s-sku::-moz-placeholder {
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   font-style: normal;
   text-decoration: inherit;
   font-size: 23px;
   padding-top: 1px;
 }
 .s-table-toolbar input.s-sku:-ms-input-placeholder {
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
   font-style: normal;
   text-decoration: inherit;
   font-size: 23px;
@@ -8561,7 +8573,9 @@ table.s-detail-content-table tbody tr.s-done {
 }
 @media only screen and (max-width: 979px) {
   .s-bundle-group-items .s-select-item:after {
-    font: normal normal normal 14px/1 FontAwesome;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 600;
+    font-style: normal;
     content: "\f0d8";
     position: absolute;
     right: 47%;
@@ -8608,4 +8622,15 @@ table.s-detail-content-table tbody tr.s-done {
 .currency {
   text-align: right;
   float: right;
+}
+.tooltip-inner {
+  white-space: nowrap;
+  max-width: none;
+}
+.tooltip.bottom .tooltip-arrow {
+  left: 1rem !important;
+}
+.tooltip.right {
+  position: absolute;
+  display: inline-block;
 }
