@@ -66,7 +66,7 @@ component extends="HibachiDAO" {
 		); 
 	}
 
-	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+	public any function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
 		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
 			return false;
 		}
