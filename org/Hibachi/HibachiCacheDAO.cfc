@@ -52,7 +52,7 @@ component extends="HibachiDAO" {
 		return left(arguments.serverInstanceIPAddress,4) == '192.' || left(arguments.serverInstanceIPAddress,4) == '127.';
 	}
 
-	public any getServerInstanceExpiredByServerInstanceKey(required string serverInstanceKey){
+	public any function getServerInstanceExpiredByServerInstanceKey(required string serverInstanceKey){
 		return ORMExecuteQuery('
 			SELECT si.serverInstanceExpired 
 			FROM #getApplicationKey()#ServerInstance si 
