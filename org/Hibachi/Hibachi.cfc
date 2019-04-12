@@ -337,7 +337,7 @@ component extends="framework.one" {
 		
 			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(variables.framework.hibachi.serverInstanceKey, true);
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(variables.framework.hibachi.serverInstanceKey, true, getHibachiScope().getServerInstanceIPAddress());
 			serverInstance.setSettingsExpired(false);
 			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 		}

@@ -21,7 +21,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		return super.init();
 	}
 
-	public any function getServerInstanceByServerInstanceKey(required string serverInstanceKey, string serverInstanceIPAddress){
+	public any function getServerInstanceByServerInstanceKey(required string serverInstanceKey, boolean returnNewIfNotFound, string serverInstanceIPAddress){
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
 
 		if(isNull(serverInstance) || serverInstance.getNewFlag()){
