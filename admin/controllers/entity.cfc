@@ -319,7 +319,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.orderSmartList.addInFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
 		arguments.rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		
-		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
 		arguments.rc.orderCollectionList.addOrderBy('orderOpenDateTime|DESC');
 	}
 

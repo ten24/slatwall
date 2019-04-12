@@ -21,8 +21,8 @@
 	<cfparam name="attributes.forceSSLFlag" type="boolean" default="false" />
 	
 	<!--- Make sure we don't have a stale token (this will happen when validation fails) --->
-	<cfif !CSRFVerifyToken(attributes.csrf, "hibachiCSRFToken")>
-		<cfset attributes.csrf = CSRFGenerateToken("hibachiCSRFToken", false) />
+	<cfif not attributes.hibachiScope.verifyCSRFToken(attributes.csrf)>
+		<cfset attributes.csrf = attributes.hibachiScope.generateCSRFToken() />
 	</cfif> 
 	
 	<cfset formAction ="">
