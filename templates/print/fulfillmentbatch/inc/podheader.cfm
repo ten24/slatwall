@@ -133,3 +133,4 @@
 				</table>
 			</div><!-- end of .col2 -->
 		</div>
+</cfoutput>
