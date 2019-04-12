@@ -232,6 +232,7 @@
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
                                     data-expandable-rules="swListingDisplay.expandableRules">
+							    
                             	<sw-listing-display-cell
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
@@ -374,6 +375,7 @@
                             data-ng-repeat="(pageRecordKey, pageRecord) in [swListingDisplay.collectionData.pageRecords[0]]"
                             data-ng-show="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
+                            ng-if="!swListingDisplay.collectionConfig.hasNonPersistentProperty()"
                         >
 
                             <!-- Sortable -->
