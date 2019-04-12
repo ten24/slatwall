@@ -117,7 +117,11 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public boolean function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+<<<<<<< HEAD
 		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(argumentCollection=arguments);
+=======
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(argumentsCollection=arguments);
+>>>>>>> origin/develop-team-jb-server-instance
 		if(isNull(isExpired)){
 			return false;
 		}else{
@@ -126,7 +130,11 @@ component accessors="true" output="false" extends="HibachiService" {
 	} 
 	
 	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+<<<<<<< HEAD
 		var isExpired = getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(argumentCollection=arguments);
+=======
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(argumentsCollection=arguments);
+>>>>>>> origin/develop-team-jb-server-instance
 		if(isNull(isExpired)){
 			return false;
 		}else{
