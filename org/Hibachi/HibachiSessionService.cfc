@@ -25,12 +25,26 @@ component output="false" accessors="true" extends="HibachiService"  {
 		return config;
 	}
 	
+	public string function generateCSRFToken(boolean forceNew=false, string tokenName='hibachiCSRFToken'){ 
+		if(arguments.forceNew || !hasSessionValue(arguments.tokenName)){
+			setSessionValue(arguments.tokenName, createUUID());
+			this.logHibachi('generating new CSRF: #getSessionValue(arguments.tokenName)#');
+		} 
+		return getSessionValue(arguments.tokenName);
+	}
+
+	public boolean function verifyCSRFToken(required string requestToken,string tokenName='hibachiCSRFToken'){
+		if(!hasSessionValue(arguments.tokenName)){
+			return false; 
+		}
+
+		return arguments.requestToken == getSessionValue(arguments.tokenName); 
+	} 
+
 	public any function verifyCSRF(required any rc, required any framework){
 		// Right now this logic only runs if CSRF token is present, not as secure as it could be. 
-		if(structKeyExists(arguments.rc, "csrf")){
-			var validToken = CSRFVerifyToken(arguments.rc.csrf,"hibachiCSRFToken");
-			if(!validToken){
-				this.logHibachi("CSRF FAILED - Expected: " & CSRFGenerateToken("hibachiCSRFToken",true) & ' Recieved: ' & arguments.rc.csrf, true); 
+		if(structKeyExists(arguments.rc, "csrf") && !this.verifyCSRFToken(arguments.rc.csrf)){
+				
 				getHibachiScope().showMessage(getHibachiScope().rbKey("admin.define.csrfinvalid"),"success");
 	
 				//If the token is invalid we don't know if the original request was successful or not, right now this logic assumes success (not ideal)
@@ -50,11 +64,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 					var defaultSubsystemAction = subsystem & ':' & section & '.' & item;  
  					arguments.framework.redirect( action=defaultSubsystemAction, preserve="messages");
 				}	
-			}
 		}
 		
 		//only force a new token if one was passed in
-		arguments.rc.csrf = CSRFGenerateToken("hibachiCSRFToken", structKeyExists(arguments.rc, "csrf")); 
+		arguments.rc.csrf = this.generateCSRFToken(structKeyExists(arguments.rc, "csrf")); 
 		
  		return arguments.rc;	
 	}

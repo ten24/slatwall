@@ -180,7 +180,7 @@ class SWDisplayOptions{
                             }else{
                                 column['type'] = 'none';
                             }
-                            if(angular.isDefined(selectedProperty.aggregate)){
+                            if(angular.isDefined(selectedProperty.aggregate) && selectedProperty.aggregate.length){
                                 
                                 column['ormtype'] = 'string';
                                 column['aggregate']={
