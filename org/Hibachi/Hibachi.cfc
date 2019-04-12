@@ -321,8 +321,9 @@ component extends="framework.one" {
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
-						
+			
 		if(!structKeyExists(server, variables.framework.applicationKey) || !structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){
+			server[variables.framework.applicationKey] = {};	
 			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
 		}
 
