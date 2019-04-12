@@ -24,7 +24,7 @@ component extends="framework.one" {
 	// =============== configFramework
 
 	// Defaults
-
+ 
 	// FW1 Setup
 	variables.framework=structNew();
 	variables.framework.applicationKey = 'Hibachi';
@@ -673,13 +673,7 @@ component extends="framework.one" {
 					}
 
 					// Application Setup Started
-					if(!structKeyExists(application,getHibachiInstanceApplicationScopeKey())){
-						application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
-					}else{
-						for(var key in applicationInitData){
-							application[getHibachiInstanceApplicationScopeKey()][key]=applicationInitData[key];
-						}
-					}
+					application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
 					
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application cache cleared, and init values set.");
 
@@ -800,6 +794,7 @@ component extends="framework.one" {
 					coreBF.load();
 					onBeanFactoryLoadComplete();
 					
+					
 					//==================== START: EVENT HANDLER SETUP ========================
 					
 
@@ -859,7 +854,9 @@ component extends="framework.one" {
 					// ========================== END: FULL UPDATE ==============================
 
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
-					onFirstRequestPostUpdate();
+					onFirstRequestPostUpdate();	
+					//verify that any property changes to audit and auditarchive mirror each other
+					getBeanFactory().getBean('HibachiAuditService').verifyIntegrity();
 
 					//==================== START: JSON BUILD SETUP ========================
 

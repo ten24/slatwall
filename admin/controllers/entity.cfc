@@ -100,6 +100,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
 	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
 	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
+	this.secureMethods=listAppend(this.secureMethods,'createreport');
+	this.secureMethods=listAppend(this.secureMethods,'editreport');
+	this.secureMethods=listAppend(this.secureMethods,'deletereport');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
@@ -126,7 +129,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.addressZoneLocation = getAddressService().getAddress( rc.addressID, true );
 		rc.addressZone = getAddressService().getAddressZone( rc.addressZoneID );
 
-		rc.addressZone.removeAddressZoneLocation( rc.addressZoneLocation );
+		if (!isNull(rc.addressZone) && !isNull(rc.addressZoneLocation)) {
+			rc.addressZone.removeAddressZoneLocation( rc.addressZoneLocation );
+		}
 
 		getFW().redirect(action="admin:entity.detailaddresszone", queryString="addressZoneID=#rc.addressZoneID#&messageKeys=admin.setting.deleteaddresszonelocation_success");
 	}
@@ -314,7 +319,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.orderSmartList.addInFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
 		arguments.rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		
-		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
 		arguments.rc.orderCollectionList.addOrderBy('orderOpenDateTime|DESC');
 	}
 

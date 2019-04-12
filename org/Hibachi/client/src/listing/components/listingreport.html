@@ -11,7 +11,7 @@
             		    <label>Dimensions</label>
             			<select 
                       ng-model="swListingReport.selectedPeriodColumn" 
-                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by periodColumn.fieldtype
+                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by !periodColumn.ormtype ? 'Related Data' : undefined
                                         for periodColumn in swListingReport.periodColumns
                                          | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
                             "
@@ -63,7 +63,7 @@
                                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </span>
                             </p>
-                            <a href="#" id="hibachi-report-enable-compare" class="pull-right">+ Compare Dates</a>
+                            <a href="##" id="hibachi-report-enable-compare" class="btn-text pull-right">+ Compare Dates</a>
                         </div>
                         
                         <input type="hidden" name="reportCompareFlag" value="0">
@@ -127,6 +127,7 @@
             		</select> --->
             		
             		<!-- TODO: Backend - Wireup new period interval UI -->
+            		<label>View By</label>
             		<div class="btn-group btn-group-sm" role="group" aria-label="...">
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('hour')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='hour'}" class="btn btn-default">Hour</button>
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('day')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='day'}" class="btn btn-default">Day</button>
@@ -137,7 +138,6 @@
                 </div><!-- end of .col -->
                 
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
-            	    <span class="col-md-8" > Make Public: <input ng-model="swListingReport.isPublic" type="checkbox"/></span>
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -171,6 +171,19 @@
         	</div><!-- end of .flex-align-right -->
     	</div><!-- end of .col -->
     </div><!-- end of .flex -->
+    
+    <div id="get-started-report">
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="text">
+            <h2>Create Your Orders Report</h2>
+            <ol>
+                <li>Select your <em>Report Dimensions</em>.</li>
+                <li>Use the <em>Display Options</em> to customize the date in your report and graph.</li>
+            </ol>
+        </div>
+    </div>
 
 	
 	<div id="chartContainer">

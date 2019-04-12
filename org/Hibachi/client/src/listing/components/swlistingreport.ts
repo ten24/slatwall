@@ -14,12 +14,15 @@ class SWListingReportController {
     public selectedPeriodInterval:any;
     public startDate:any;
     public endDate:any;
+    public tempEndDate:any;
     public startDateCompare:any;
     public endDateCompare:any;
+    public tempEndDateCompare:any;
     public compareReportCollectionConfig:any;
     public compareReportingData:any;
     public reportingData:any;
     public chart:Chart;
+    public compareChart:Chart;
     public persistedReportCollections:any;
     public selectedReport:any;
     public collectionNameSaveIsOpen:boolean;
@@ -64,6 +67,7 @@ class SWListingReportController {
         }
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
+        this.observerService.attach(this.updateReportFromListing,'displayOptionsAction',this.tableId);
     }
     
     public $onInit=()=>{
@@ -134,81 +138,6 @@ class SWListingReportController {
         return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
     }
     
-    public updateComparePeriod = ()=>{
-        
-        this.startDateCompare = new Date(this.startDateCompare);
-        this.startDateCompare.setHours(0,0,0,0)
-        
-        this.endDateCompare = new Date(this.endDateCompare);
-        this.endDateCompare.setHours(23,59,59,999);
-        
-        //if date is in the wrong format then update those dates
-        if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
-            this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
-            this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
-        }
-        
-        if(this.selectedPeriodInterval.value=='hour'){
-            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
-        }
-        
-        this.compareReportCollectionConfig = this.collectionConfig.clone();
-        for(var i in this.compareReportCollectionConfig.columns){
-            var column = this.compareReportCollectionConfig.columns[i];
-            if(column.aggregate){
-                column.isMetric = true;
-            }else{
-                column.isVisible = false;
-            }
-        }
-        this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
-        this.compareReportCollectionConfig.setReportFlag(1);
-        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
-        this.compareReportCollectionConfig.setAllRecords(true);
-        this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
-        
-        //TODO:should add as a filterGroup
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',true,true,false,'dates');
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',true,true,false,'dates');
-        
-        this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
-           /*this.compareReportingData = reportingData;
-           this.compareReportingData.records.forEach(element=>{
-               if(!this.chart.data.labels.includes(element[this.selectedPeriodColumn.name])){
-                  this.chart.data.labels.push(element[this.selectedPeriodColumn.name]);
-               }
-           });
-			this.reportCollectionConfig.columns.forEach(column=>{
-			    if(column.isMetric){
-			        let color = this.random_rgba();
-			        let title = `${column.title} (${this.startDateCompare.toDateString()} - ${new Date(this.endDateCompare).toDateString()})`;
-			        let metrics = [];
-			        this.compareReportingData.records.forEach(element=>{
-			             metrics.push(
-    			                {
-    			                    y:element[column.aggregate.aggregateAlias],
-    			                    x:element[this.selectedPeriodColumn.name]
-    			                }
-    			      )
-			        });
-			        this.chart.data.datasets.push(
-			            {
-                        label:title,
-                        data:metrics,
-                        backgroundColor:color,
-                        borderColor:color,
-                        borderWidth: 2,
-                        fill:false
-                        }
-			        );
-			    }
-			});
-			this.chart.update();*/
-			var ctx = $("#myChartCompare");
-			this.renderReport(reportingData,ctx)
-        });
-    }
-    
     //decides if report comes from persisted collection or transient
     public getReportCollectionConfig = ()=>{
         var reportCollectionConfig = this.collectionConfig.clone()
@@ -277,8 +206,6 @@ class SWListingReportController {
         }
     };
     
-    
-    
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
         if(
@@ -313,11 +240,15 @@ class SWListingReportController {
             this.reportCollectionConfig = this.getReportCollectionConfig();
             //if the interval is an hour than we should only be able to show data for one day
             if(this.selectedPeriodInterval.value=='hour'){
+                this.tempEndDate = this.endDate;
                 this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+            }else if(this.tempEndDate){
+                this.endDate = this.tempEndDate;
+                delete this.tempEndDate;
             }
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
-                if(column.aggregate){
+                if(column.aggregate && column.aggregate.aggregateFunction && column.aggregate.aggregateFunction.length){
                     column.isMetric = true;
                     this.hasMetric = true;
                 }else{
@@ -372,11 +303,67 @@ class SWListingReportController {
             
         }
     }
+    
+    public updateComparePeriod = ()=>{
+        
+        this.startDateCompare = new Date(this.startDateCompare);
+        this.startDateCompare.setHours(0,0,0,0)
+        
+        this.endDateCompare = new Date(this.endDateCompare);
+        this.endDateCompare.setHours(23,59,59,999);
+        
+        //if date is in the wrong format then update those dates
+        if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
+            this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+            this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
+        }
+        
+        if(this.selectedPeriodInterval.value=='hour'){
+            this.tempEndDateCompare= this.endDateCompare
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+        }else if (this.tempEndDateCompare){
+            this.endDateCompare = this.tempEndDateCompare;
+            delete this.tempEndDateCompare;
+        }
+        
+        this.compareReportCollectionConfig = this.collectionConfig.clone();
+        for(var i in this.compareReportCollectionConfig.columns){
+            var column = this.compareReportCollectionConfig.columns[i];
+            if(column.aggregate){
+                column.isMetric = true;
+            }else{
+                column.isVisible = false;
+            }
+        }
+        this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+        this.compareReportCollectionConfig.setReportFlag(1);
+        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
+        this.compareReportCollectionConfig.setAllRecords(true);
+        this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
+        
+        //TODO:should add as a filterGroup
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',true,true,false,'dates');
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',true,true,false,'dates');
+        this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
+			var ctx = $("#myChartCompare");
+			this.renderReport(reportingData,ctx)
+        });
+    }
 
     public renderReport=(reportingData,ctx)=>{
         this.reportingData = reportingData;
 		var dates = [];
 		var datasets = [];
+		
+		if(ctx.is($("#myChartCompare"))){
+		    var chart = this.compareChart; 
+		    this.compareReportingData=reportingData;
+		}else{
+		    var chart = this.chart;
+		}
+		
+		
+		
 		this.reportingData.records.forEach(element=>{
 		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
 		    pidAliasArray.shift();
@@ -389,7 +376,7 @@ class SWListingReportController {
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
 		        let color = this.random_rgba();
-		        let title = `${column.title}`;
+		        let title = column.displayTitle || column.title;
 		        let metrics = [];
 		        this.reportingData.records.forEach(element=>{
 		            metrics.push(
@@ -412,10 +399,10 @@ class SWListingReportController {
 		    }
 		});
 		//used to clear old rendered charts before adding new ones
-		if(this.chart!=null){
-            this.chart.destroy();
+		if(chart!=null){
+            chart.destroy();
         }
-        this.chart = new Chart(ctx, {
+        chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: dates,
@@ -449,17 +436,26 @@ class SWListingReportController {
                 hover: {
                     intersect: true,
                     mode:'nearest',
+                    onHover: function(e) {
+                         var point = this.getElementAtEvent(e);
+                         if (point.length) e.target.style.cursor = 'pointer';
+                         else e.target.style.cursor = 'default';
+                    }
                 },
                 elements:{
                     line:{
                         tension:0
                     }
-                }
+                },
+                legend: {
+                    onHover: function(e) {
+                       e.target.style.cursor = 'pointer';
+                    }
+                 }
             }
         });
-        
-        this.chart.draw();
-        this.observerService.notifyById('swListingReport_DrawChart',this.tableId,this.chart);
+        chart.draw();
+        this.observerService.notifyById('swListingReport_DrawChart',this.tableId,chart);
     }
     
     public popObjectPath=()=>{

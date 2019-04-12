@@ -21,7 +21,9 @@
                 data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.swListingDisplay.searchText"
                 data-ng-disabled="!swListingSearch.selectedSearchColumn"
                 data-ng-click="swListingSearch.addSearchFilter()">
-                <i class="glyphicon glyphicon-plus"></i>
+                <span sw-tooltip class="tool-tip-item" data-text="Add Search to Filter List" data-position="bottom">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </span>
         </button>
     </span>
     
@@ -31,14 +33,13 @@
     <!-- REPORT COLLECTIONS -->
     <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn s-action"
         ng-show="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span sw-tooltip class="tool-tip-item" data-text="New Report" data-position="bottom">
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        >
+            <span sw-tooltip class="tool-tip-item" data-text="Reporting" data-position="bottom">
                 <i class="fas fa-chart-line"></i>
             </span>
         </button>
-        
         <ul class="dropdown-menu pull-right  with-btn autocomplete-options" >
             <li>
                     <a ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swListingSearch.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()}}" >New Report</a>
@@ -60,13 +61,13 @@
     <!-- PERSONAL COLLECTIONS -->
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
-            <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            >
+        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        >
+            <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
                 <i class="fas fa-save"></i>
-            </button>
-        </span>
+            </span>
+        </button>
         <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
             <li style="padding:8px;">
                 <div class="s-form-input s-input-group s-edit" style="width:100px;">
@@ -91,14 +92,14 @@
     </span>
     <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn s-action"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <span sw-tooltip class="tool-tip-item" data-text="All Saved Reports" data-position="bottom">
-            <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-    
-            >
+        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+
+        >
+            <span sw-tooltip class="tool-tip-item" data-text="All Saved Reports" data-position="bottom">
                 <i  class="fa fa-bookmark"></i>
-            </button>
-        </span>
+            </span>
+        </button>
         <ul class="dropdown-menu pull-right with-btn">
             <li>
                     <a href="#" ng-click="swListingSearch.clearPersonalCollection()">Default</a>
@@ -136,9 +137,6 @@
             </button>
         </span>
     </span>
-    
-    
-    
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
         <button type="button"
                 class="btn btn-sm btn-default dropdown-toggle"
