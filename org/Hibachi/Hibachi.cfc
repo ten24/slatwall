@@ -322,13 +322,13 @@ component extends="framework.one" {
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
 						
-		if(!structKeyExists(variables.framework.hibachi, 'serverInstanceKey')){
-			variables.framework.hibachi.serverInstanceKey = createUUID();	
+		if(!structKeyExists(server, 'serverInstanceKey')){
+			server.serverInstanceKey = createUUID();	
 		}
 
 		if(!variables.framework.hibachi.isApplicationStart && 
 			variables.framework.hibachi.useServerInstanceCacheControl &&
-			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(variables.framework.hibachi.serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
+			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server.serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
 		){
 		
 			verifyApplicationSetup(reloadByServerInstance=true);
@@ -337,7 +337,7 @@ component extends="framework.one" {
 		
 			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(variables.framework.hibachi.serverInstanceKey, true, getHibachiScope().getServerInstanceIPAddress());
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server.serverInstanceKey, true, getHibachiScope().getServerInstanceIPAddress());
 			serverInstance.setSettingsExpired(false);
 			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 		}
