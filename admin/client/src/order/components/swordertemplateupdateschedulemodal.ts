@@ -17,6 +17,8 @@ class SWOrderTemplateUpdateScheduleModalController{
 	public uniqueName:string = 'updateScheduleModal';
 	public formName:string = 'updateScheduleModal';
 	
+	public form;
+	
 	//rb key properties
 	public title:string = "Update Schedule";
 

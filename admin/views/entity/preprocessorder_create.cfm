@@ -78,7 +78,7 @@ Notes:
 				</hb:HibachiDisplayToggle>
 			</hb:HibachiDisplayToggle>
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,primaryAddress.simpleRepresentation" edit="true">
+				<swa:SlatwallAccountTypeahead /> 	
 			</hb:HibachiDisplayToggle>
 			<hr />
 			<cfelse>

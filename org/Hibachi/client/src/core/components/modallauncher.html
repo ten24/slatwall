@@ -2,18 +2,7 @@
     <div ng-transclude="button"></div>
 </a>
 <div ng-transclude="staticButton"></div>
-<sw-modal-window 
-    data-title="{{swModalLauncher.title}}" 
-    data-modal-name="{{swModalLauncher.modalName}}" 
-    data-has-save-action="swModalLauncher.hasSaveAction"
-    data-save-action="swModalLauncher.saveCallback" 
-    data-save-action-text="{{swModalLauncher.saveActionText}}"
-    data-has-delete-action="swModalLauncher.hasDeleteAction"
-    data-delete-action="swModalLauncher.deleteCallback"
-    data-has-cancel-action="swModalLauncher.hasCancelAction"
-    data-cancel-action="swModalLauncher.cancelCallback"
-    data-cancel-action-text="{{swModalLauncher.cancelActionText}}"
->
+<sw-modal-window data-save-disabled="swModalLauncher.saveDisabled">
     <sw-modal-body>
         <div ng-transclude="content"></div>
     </sw-modal-body>
