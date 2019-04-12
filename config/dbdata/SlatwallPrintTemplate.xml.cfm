@@ -23,7 +23,7 @@
 	    <Record printTemplateID="9f93be730afc2de78325c154698ac7a6" printTemplateName="Packing Slip (Fulfillment Batch)" printTemplateObject="FulfillmentBatch" printTemplateFile="batchpackingslip.cfm" />
 	    <Record printTemplateID="66b45d0be03598fd0ba6dcb7129582d3" printTemplateName="Packing Slip (Order Delivery)" printTemplateObject="orderDelivery" printTemplateFile="packingslip.cfm" />
 	    <Record printTemplateID="664420a897d9b354a38f5932b7ed2723" printTemplateName="Invoice (Order Delivery)" printTemplateObject="orderDelivery" printTemplateFile="invoicedelivery.cfm" />
-	    <Record printTemplateID="903bc1972ed908e58a90468e5180ed01" printTemplateName="POD (Fulfillment Batch)" printTemplateObject="fulfillmentBatchd" printTemplateFile="batchpod.cfm" />
+	    <Record printTemplateID="903bc1972ed908e58a90468e5180ed01" printTemplateName="POD (Fulfillment Batch)" printTemplateObject="FulfillmentBatch" printTemplateFile="batchpod.cfm" />
 	    <Record printTemplateID="2160ccfa9b5139012fcd5c4705813917" printTemplateName="Pick List (Fulfillment Batch)" printTemplateObject="FulfillmentBatch" printTemplateFile="batchpicklist.cfm" />
 
 	</Records>

@@ -248,7 +248,7 @@ class SWListingReportController {
             }
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
-                if(column.aggregate){
+                if(column.aggregate && column.aggregate.aggregateFunction && column.aggregate.aggregateFunction.length){
                     column.isMetric = true;
                     this.hasMetric = true;
                 }else{

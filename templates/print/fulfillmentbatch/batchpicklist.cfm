@@ -57,16 +57,14 @@
 			<cfset local.OrderItemCollectionList.addFilter('orderFulfillment.fulfillmentBatchItems.fulfillmentBatch.fulfillmentBatchID', fulfillmentBatch.getFulfillmentBatchID())>
 			<cfset local.OrderItemCollectionList.addFilter('fulfillmentBatchItems.fulfillmentBatch.fulfillmentBatchID', fulfillmentBatch.getFulfillmentBatchID(),'=','OR')>
 			<cfset local.OrderItemCollectionList.setDisplayProperties(
-				'
-				orderItemID,
+				'orderItemID,
 				quantity,
+				stock.location,
 				stock.location.locationName,
 				stock.location.locationID,
-				stock.stockingLocation,
 				sku.skuCode,
 				sku.calculatedSkuDefinition,
 				sku.product.calculatedTitle,
-				sku.product.productWebName,
 				sku.product.productName,
 				sku.product.productType.productTypeName,
 				sku.bundleFlag,
@@ -111,11 +109,9 @@
 							<td>
 								<!--- <cfif not isNull(bundledSku.getBundledSku().getSkuName()) AND False>
 									#bundledSku.getBundledSku().getSkuName()# --->
-								<cfif not isNull(bundledSku.getBundledSku().getProduct().getProductWebName())>
-			                		#bundledSku.getBundledSku().getProduct().getProductWebName()#
-			                	<cfelse>
+							
 			                		#bundledSku.getBundledSku().getProduct().getProductName()#
-			                	</cfif> 
+			            
 			                </td>
 							
 							<td>#bundledSku.getBundledSku().getSkuCode()#</td>
@@ -134,9 +130,9 @@
 							
 							
 							<cfif isNull(local.bundledStock)>
-								<td>#local.orderItem['stock_stockingLocation']#</td>
-							<cfelseif not isNull( local.bundledStock.getStockingLocation() )>
-								<td>#local.bundledStock.getStockingLocation()#</td>
+								<td>#local.orderItem['stock_location']#</td>
+							<cfelseif not isNull( local.bundledStock.getlocation() )>
+								<td>#local.bundledStock.getLocation().getLocationName()#</td>
 							<cfelse >
 								<td></td>
 							</cfif>
@@ -156,11 +152,7 @@
 							</cfif>
 						</td>
 						<td>
-							<cfif len(trim(local.orderItem['sku_product_productWebName'])) >
-		                		#local.orderItem['sku_product_productWebName']#
-		                	<cfelse>
 		                		#local.orderItem['sku_product_productName']#
-		                	</cfif> 
 		                </td>
 						
 						<td>#local.orderItem['sku_skuCode']#</td>
@@ -172,11 +164,6 @@
 						</cfif>
 						
 						
-						<cfif len(trim(local.orderItem['stock_stockingLocation'])) >
-							<td>#local.orderItem['stock_stockingLocation']#</td>
-						<cfelse>
-							<td></td>
-						</cfif>
 						<td style="text-align:right; padding-right:20px;">#NumberFormat(local.totalOrderItemQuantity)#</td>
 					</tr>
 

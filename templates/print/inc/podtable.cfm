@@ -25,15 +25,13 @@
             				</cfif>
             			</td>
             			<td>
-            			    <cfif not isnull(local.orderFulfillmentItem.getSku().getProduct().getProductWebName()) AND len(trim(local.orderFulfillmentItem.getSku().getProduct().getProductWebName()))>
-            			          #local.orderFulfillmentItem.getSku().getProduct().getProductWebName()#
-            			    <cfelse>
+            			  
             			          #local.orderFulfillmentItem.getSku().getProduct().getProductName()#
-            			    </cfif>
+            			
             		    </td>
                         <td>
             				<cfif not isNull(local.orderFulfillmentItem.getSku().getProduct())>
-            					#local.orderFulfillmentItem.getSku().getProduct()#
+            					#local.orderFulfillmentItem.getSku().getProduct().getProductName()#
             				<cfelseif local.orderFulfillmentItem.getSku().getProduct().getProductType().getProductTypeName() EQ 'Wine' >
             					NV
             				</cfif>
