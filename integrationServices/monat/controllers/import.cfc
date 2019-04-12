@@ -4,7 +4,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     public void function importProducts(){
         param name="arguments.rc.fileLocation" default="#getDirectoryFromPath(getCurrentTemplatePath())#../assets/";
 		param name="arguments.rc.skuFileName" default="sku-code-data.csv";
-		param name="arguments.rc.pricesFileName" default="sku-prices-data.csv";
+		param name="arguments.rc.priceFileName" default="sku-price-data.csv";
 		param name="arguments.rc.bundleFileName" default="sku-kit-data.csv";
 		param name="arguments.rc.includeSegments" default="sku,bundle,price";
 
@@ -65,11 +65,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		/*=========== Sku Prices ===========*/
 		if(listFindNoCase(arguments.rc.includeSegments,'price')){
-		    columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
+		    columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
     		var skuPriceQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.priceFileName, columnTypeList);
+            
+            var numericFields = 'PriceLevel,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,ReailValueVolume';
+            for(var i = 1; i <= skuPriceQuery['RecordCount']; i++ ){
+                switch(skuPriceQuery['CountryCode'][i]){
+                    case 'CAN':
+                        skuPriceQuery['CountryCode'][i] = 'CAD';
+                        break;
+                    case 'GBR':
+                        skuPriceQuery['CountryCode'][i] = 'GBP';
+                        break;
+                    case 'USA':
+                        skuPriceQuery['CountryCode'][i] = 'USD';
+                        break;
+                }
+                for(var numericField in numericFields){
+                    skuPriceQuery[numericField][i] = reReplace(skuPriceQuery[numericField][i],'[^\d\.]','','all');
+                }
+            }
             
     		importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/prices.json');
     		getService("HibachiDataService").loadDataFromQuery(skuPriceQuery,importConfig);
+    		writeDump('price check on Shampoo');
 		}
 		abort;
     }

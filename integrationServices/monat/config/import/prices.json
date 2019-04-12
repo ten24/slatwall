@@ -17,26 +17,47 @@
             "propertyIdentifier":"price"
         },
         {
-            "sourceColumn":"",
+            "sourceColumn":"QualifyingPrice",
             "propertyIdentifier":"personalVolume"
         },
+        {
             "sourceColumn":"TaxablePrice",
             "propertyIdentifier":"taxableAmount"
         },
+        {
             "sourceColumn":"Commission",
             "propertyIdentifier":"commissionableVolume"
         },
-            "sourceColumn":"",
+        {
+            "sourceColumn":"RetailsCommissions",
             "propertyIdentifier":"sponsorVolume"
         },
-            "sourceColumn":"",
+        {
+            "sourceColumn":"ProductPackBonus",
             "propertyIdentifier":"productPackVolume"
         },
-            "sourceColumn":"",
+        {
+            "sourceColumn":"ReailValueVolume",
             "propertyIdentifier":"retailValueVolume"
         },
-            "sourceColumn":"",
-            "propertyIdentifier":"handlingFee"
+        {
+            "sourceColumn":"CountryCode",
+            "propertyIdentifier":"currencyCode"
+        },
+        {
+            "sourceColumn":"MinQuantity",
+            "sourceColumnDataGenerator":"1",
+            "propertyIdentifier":"minQuantity"
+        },
+        {
+            "sourceColumn":"PriceLevel",
+            "propertyIdentifier":"priceGroup.priceGroupCode"
+        },
+        {
+            "sourceColumn":"PriceGroupRemoteID",
+            "sourceColumnDataGenerator":"'IMPORT-' + PriceLevel",
+            "propertyIdentifier":"priceGroup.remoteID",
+            "key":true
         }
     ]
 }
