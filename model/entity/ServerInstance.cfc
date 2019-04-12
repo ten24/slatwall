@@ -51,7 +51,7 @@ component displayname="ServerInstance" entityname="SlatwallServerInstance" table
 	// Persistent Properties
 	property name="serverInstanceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="serverInstanceKey" ormtype="string" index="PI_SERVERINSTANCEKEY";
-	property name="serverInstanceIPAddress" ormtype="string" index="PI_SERVERCACHEIPADDRESS";
+	property name="serverInstanceIPAddress" ormtype="string";
 	property name="serverInstanceExpired" ormtype="boolean";
 	property name="settingsExpired" ormtype="boolean";
 	//calucluated property
