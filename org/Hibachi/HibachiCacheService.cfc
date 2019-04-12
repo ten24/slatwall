@@ -116,17 +116,18 @@ component accessors="true" output="false" extends="HibachiService" {
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	
-	public boolean function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
-		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments=arguments);
+	public boolean function isServerInstanceCacheExpired(required string serverInstanceIPAddress){
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
 		if(isNull(isExpired)){
+			this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			return false;
 		}else{
 			return isExpired;
 		}
 	} 
 	
-	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
-		return getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(arguments=arguments);
+	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceIPAddress){
+		return getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(arguments.serverInstanceIPAddress);
 	} 
 		
 	public any function getCachedValue( required string key ) {
