@@ -58,4 +58,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 
+	public any function getOrderTemplateScheduleDateChangeReasonType(){
+		if(!isNull(getOrderTemplateScheduleDateChangeReasonTypeID())){
+			return getService('TypeService').getType(getOrderTemplateScheduleDateChangeReasonTypeID());
+		}
+	}  
 }
