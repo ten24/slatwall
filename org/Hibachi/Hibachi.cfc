@@ -322,8 +322,11 @@ component extends="framework.one" {
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
 						
-		if(!structKeyExists(server, variables.framework.applicationKey) || !structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){
-			server[variables.framework.applicationKey] = {};	
+		if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
+			server[variables.framework.applicationKey] = {};
+		}
+
+		if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
 			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
 		}
 
