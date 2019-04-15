@@ -4,8 +4,6 @@
 <cfparam name="rc.orderTemplate" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset rc.flexshipSurveyResponse = getHibachiScope().getService('monatFlexshipService').newFlexshipSurveyResponse() />
-
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
@@ -47,11 +45,12 @@
 
 
 			<div class="col-md-2">
-				<sw-flexship-survey-modal data-survey-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.flexshipSurveyResponse.getOrderTemplateScheduleDateChangeReasonTypeOptions()))#"
+				<sw-flexship-survey-modal 
 										  data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"> 
 				</sw-flexship-survey-modal> 
 
 				<sw-order-template-update-schedule-modal data-schedule-order-next-place-date-time-string="#dateFormat(rc.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyy-mm-dd')#"
+														data-order-template-schedule-date-change-reason-type-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.flexshipSurveyResponse.getOrderTemplateScheduleDateChangeReasonTypeOptions()))#"	
 														data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 														data-end-day-of-the-month="25" 
 														data-end-date-string="#dateFormat( dateAdd('d', now(), 90), 'yyyy-mm-dd')#">

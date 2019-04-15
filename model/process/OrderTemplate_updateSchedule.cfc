@@ -51,6 +51,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="orderTemplate";
 
+	property name="otherScheduleDateChangeReasonNotes";
+
+	property name="orderTemplateScheduleDateChangeReasonTypeID"; 
+	property name="orderTemplateScheduleDateChangeReasonType"; 
+
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 
 }
