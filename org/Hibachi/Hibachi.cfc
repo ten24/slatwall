@@ -321,19 +321,25 @@ component extends="framework.one" {
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
+						
+		if(!structKeyExists(server, 'serverInstanceKey')){
+			server.serverInstanceKey = createUUID();	
+		}
 
-			if(!variables.framework.hibachi.isApplicationStart && variables.framework.hibachi.useServerInstanceCacheControl){
-			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-				verifyApplicationSetup(reloadByServerInstance=true);
-			}else{
-				//RELOAD JUST THE SETTINGS
-				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
-					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-					serverInstance.setSettingsExpired(false);
-						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
-				}
-			}
+		if(!variables.framework.hibachi.isApplicationStart && 
+			variables.framework.hibachi.useServerInstanceCacheControl &&
+			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server.serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
+		){
+		
+			verifyApplicationSetup(reloadByServerInstance=true);
+		
+		}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+		
+			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server.serverInstanceKey, true, getHibachiScope().getServerInstanceIPAddress());
+			serverInstance.setSettingsExpired(false);
+			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 		}
 		
 		// Verify that the session is setup

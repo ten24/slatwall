@@ -11,7 +11,9 @@ class SWOrderTemplateFrequencyModalController{
 	public processContext:string = 'updateFrequency';
 	
 	public uniqueName:string = 'frequencyModal';
-	public formName:string = 'frequencydModal';
+	public formName:string = 'frequencyModal';
+	
+	public form;
 	
 	//rb key properties
 	public title:string = "Update Frequency";

@@ -10,6 +10,7 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
     public scope=true;
     public bindToController={
         propertyIdentifier:"@",
+        bindHtml:"=?",
         isSearchable:"@?",
     };
     public controller=SWTypeaheadSearchLineItemController;
@@ -35,7 +36,13 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
             pre: (scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 var innerHTML = element[0].innerHTML;
                 element[0].innerHTML = '';
-                var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">'+' '+innerHTML+'</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                
+                if(!scope.swTypeaheadSearchLineItem.bindHtml){
+                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">'+' '+innerHTML+'</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                } else { 
+                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">'+' '+innerHTML+'</span> <span ng-bind-html="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                }
+                
                 element.append(span);
             },
             post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}

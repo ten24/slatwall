@@ -20,8 +20,29 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 		return super.init();
 	}
+
+	public any function getServerInstanceByServerInstanceKey(required string serverInstanceKey, boolean returnNewIfNotFound, string serverInstanceIPAddress){
+		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
+
+		if(isNull(serverInstance) || serverInstance.getNewFlag()){
+			serverInstance = this.newServerInstance();
+		
+			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
 	
-	public any function getServerInstanceByServerInstanceIPAddress(required any serverInstanceIPAddress){
+			if(structKeyExists(arguments, 'serverInstanceIPAddress')){
+				serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+			}
+
+			serverInstance.setServerInstanceExpired(false);
+			serverInstance.setSettingsExpired(false);
+			
+			this.saveServerInstance(serverInstance); 
+			getHibachiScope().flushOrmSession();
+		}
+		return serverInstance;	
+	} 
+	
+	public any function getServerInstanceByServerInstanceIPAddress(required string serverInstanceIPAddress){
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
 		
 		if(isNull(serverInstance) || serverInstance.getNewFlag()){

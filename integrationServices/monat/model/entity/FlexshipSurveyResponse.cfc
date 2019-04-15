@@ -18,9 +18,9 @@ component displayname="FlexshipSurveyResponse" entityname="SlatwallFlexshipSurve
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
 
 
-	public any function getOrderTemplateScheduleDateChangeReasonType(){
+	public any function getOrderTemplateScheduleDateChangeReasonTypeOptions(){
 		var typeCollection = getService('TypeService').getTypeCollectionList(); 
-		typeCollection.setDisplayProperties('typeDescription|name, typeID|value'); 
+		typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
 		typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
 		return typeCollection.getRecords(); 
 	} 
