@@ -118,7 +118,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 	public boolean function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
 		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(argumentCollection=arguments);
+
 		if(isNull(isExpired)){
+			this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			return false;
 		}else{
 			return isExpired;
@@ -132,8 +134,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		}else{
 			return isExpired;
 		}	
-
-	} 
+	}
 		
 	public any function getCachedValue( required string key ) {
 		// If using the internal cache, then check there
