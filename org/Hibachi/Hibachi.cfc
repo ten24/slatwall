@@ -321,24 +321,23 @@ component extends="framework.one" {
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
-			
+						
 		if(!structKeyExists(server, variables.framework.applicationKey) || !structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){
-			server[variables.framework.applicationKey] = {};	
 			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
 		}
 
 		if(!variables.framework.hibachi.isApplicationStart && 
 			variables.framework.hibachi.useServerInstanceCacheControl &&
-			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server.serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
+			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
 		){
 		
 			verifyApplicationSetup(reloadByServerInstance=true);
 		
-		}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+		}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 		
 			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server.serverInstanceKey, true, getHibachiScope().getServerInstanceIPAddress());
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true, getHibachiScope().getServerInstanceIPAddress());
 			serverInstance.setSettingsExpired(false);
 			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 		}
