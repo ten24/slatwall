@@ -29,7 +29,7 @@
         },
         {
           "sourceColumn":"ImageFile",
-          "sourceColumnDataGenerator":"SKUItemCode + '.jpg'"
+          "sourceColumnDataGenerator":"SKUItemCode + '.jpg'",
           "propertyIdentifier":"imageFile"
         },
         {
