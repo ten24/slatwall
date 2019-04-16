@@ -463,7 +463,7 @@ component accessors="true" output="false" extends="HibachiService" {
 
 					parentTableName = newTableName;
 
-				} while(len(thisPropertyIdentifier) GT 1);
+				} while(listLen(thisPropertyIdentifier,'.') GT 1);
 			}
 		}
 		if(structKeyExists(config,'depth')) {

@@ -86,9 +86,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 }
             }
             
+            var usdSkuPriceQuery = new Query();
+    		usdSkuPriceQuery.setDBType('query');
+    		usdSkuPriceQuery.setAttributes(skuPrices=skuPriceQuery);
+    		usdSkuPriceQuery.setSQL("SELECT * FROM skuPrices WHERE PriceLevel = '2' AND CountryCode = 'USD'");
+    		var usdSkuPrices = usdSkuPriceQuery.execute().getResult();
     		importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/prices.json');
+    		getService("HibachiDataService").loadDataFromQuery(usdSkuPrices,importConfig);
+    		writeDump('Price Check on Freedom Shampoo')
+    		
+    		importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
     		getService("HibachiDataService").loadDataFromQuery(skuPriceQuery,importConfig);
-    		writeDump('price check on Shampoo');
+    		writeDump('Price Check on Other Shampoo');
 		}
 		abort;
     }
