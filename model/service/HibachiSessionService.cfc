@@ -54,8 +54,11 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 
 	public struct function getConfig(){
 		var config = super.getConfig(); 
-		
+
+		//slatwall configuration		
 		config[ 'baseImageURL' ] = getHibachiScope().getBaseImageURL();
+		config[ 'missingImageURL' ] = getHibachiScope().setting('globalMissingImagePath'); 
+
 		//overrides hardcoded options with settings
 		config[ 'rbLocale' ] = getHibachiScope().getRBLocale();
 		config[ 'dateFormat' ] = getHibachiScope().setting('globalDateFormat');

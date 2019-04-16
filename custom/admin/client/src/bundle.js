@@ -67916,14 +67916,20 @@ var SWSkuImageController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.$http = $http;
         this.appConfig = appConfig;
-        console.log('conf img', this.appConfig);
+        if (this.imageFile == null) {
+            this.imagePath = this.appConfig.baseImageURL + '/image-placeholder.jpg';
+            return;
+        }
+        if (this.imagePath == null) {
+            this.imagePath = this.appConfig.baseImageURL + '/' + this.imageFile;
+        }
         fileService.imageExists(this.imagePath).then(function () {
             //Do nothing
         }, function () {
-            _this.imagePath = _this.appConfig.baseURL + 'assets/images/image-placeholder.jpg';
+            _this.imagePath = _this.appConfig.missingImageURL;
         }).finally(function () {
             if (angular.isDefined(_this.imagePath)) {
-                _this.image = _this.appConfig.baseURL + _this.imagePath;
+                _this.image = _this.imagePath;
             }
         });
     }
@@ -67935,6 +67941,7 @@ var SWSkuImage = /** @class */ (function () {
         this.restrict = 'EA';
         this.scope = {};
         this.bindToController = {
+            imageFile: "@?",
             imagePath: "@?"
         };
         this.controller = SWSkuImageController;

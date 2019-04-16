@@ -3,6 +3,7 @@
 class SWSkuImageController{
    
     public image:any; 
+    public imageFile:string; 
     public imagePath:string;
     public imageOnly:boolean; 
    
@@ -13,18 +14,27 @@ class SWSkuImageController{
         private $http,
         private appConfig
     ){
-    console.log('conf img',this.appConfig)
+    
+        if(this.imageFile == null){
+            this.imagePath = this.appConfig.baseImageURL + '/image-placeholder.jpg';
+            return;
+        }
+    
+        if(this.imagePath == null){
+            this.imagePath = this.appConfig.baseImageURL + '/' + this.imageFile;
+        }
+    
         fileService.imageExists(this.imagePath).then(
             ()=>{
                 //Do nothing
             },
             ()=>{
-                this.imagePath = this.appConfig.baseURL+'assets/images/image-placeholder.jpg';
+                this.imagePath = this.appConfig.missingImageURL;
             }
         ).finally(
             ()=>{
                 if(angular.isDefined(this.imagePath)){
-                    this.image = this.appConfig.baseURL+this.imagePath;
+                    this.image = this.imagePath;
                 }
             }
         )
@@ -36,6 +46,7 @@ class SWSkuImage implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
+        imageFile:"@?",
         imagePath:"@?"
     };
     public controller = SWSkuImageController;
