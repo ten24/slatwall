@@ -1182,7 +1182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
 			var address = getAddressService().newAddress();
-			address.populate(processObject.getNewAccountAddress().address)
+			address.populate(processObject.getNewAccountAddress().address);
 		
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
