@@ -7,7 +7,8 @@
 <cfset rc.skuCollectionList = getHibachiScope().getService('SkuService').getSkuCollectionList() />
 <cfset rc.skuCollectionList.setDisplayProperties('skuName,skuCode,skuDescription',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) /> 
 <cfset rc.skuCollectionList.addDisplayProperty('skuID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
-<cfset rc.skuCollectionList.addDisplayProperty('price',getHibachiScope().rbKey('entity.sku.price'),{isVisible=true,isSearchable=true,isDeletable=true,isEditable=true}) /> 
+<cfset rc.skuCollectionList.addDisplayProperty('price',getHibachiScope().rbKey('entity.sku.price'),{isVisible=true,isSearchable=true,isDeletable=true}) /> 
+<cfset rc.skuCollectionList.addDisplayProperty('imageFile',getHibachiScope().rbKey('entity.sku.imageFile'),{isVisible=false,isSearchable=true,isDeletable=true}) /> 
 
 <cfset rc.orderTemplateItemCollectionList = getHibachiScope().getService('OrderService').getOrderTemplateItemCollectionList() />
 
@@ -21,6 +22,14 @@
 	'isCollectionColumn':false, 
 	'isEditable':true,
 	'isVisible':true
+}) />
+
+<cfset arrayAppend(rc.columns, {
+	'title': getHibachiScope().rbKey('entity.sku.imageFile'),
+	'propertyIdentifier':'imageFile',
+	"isCollectionColumn":false,
+	'isVisible':true,
+	'cellView':'swSkuImage'
 }) />
 
 <cfoutput>
