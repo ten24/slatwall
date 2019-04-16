@@ -1128,10 +1128,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.newOrder();
 	}
-	
+
+	//begin order template functionality	
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
 
-			// Setup Account
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
 		} else {
@@ -1154,6 +1154,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate;
 	}
+
+	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
+	
+		
+		
+		return arguments.orderTemplate; 	
+	} 
 
 	public any function processOrderTemplate_updateSchedule(required any orderTemplate, required any processObject, required struct data={}){ 
 
@@ -1254,6 +1261,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate; 
 	} 
+	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 		//Setup Site Origin if using slatwall cms

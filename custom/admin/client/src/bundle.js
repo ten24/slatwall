@@ -63015,10 +63015,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderTemplateFrequencyCardController = /** @class */ (function () {
-    function SWOrderTemplateFrequencyCardController($hibachi, observerService, rbkeyService) {
+    function SWOrderTemplateFrequencyCardController($hibachi, observerService, orderTemplateService, rbkeyService) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.refreshFrequencyTerm = function (data) {
             _this.frequencyTerm = data.frequencyTerm;
@@ -63071,12 +63072,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderTemplateFrequencyModalController = /** @class */ (function () {
-    function SWOrderTemplateFrequencyModalController($timeout, $hibachi, entityService, observerService, rbkeyService, requestService) {
+    function SWOrderTemplateFrequencyModalController($timeout, $hibachi, entityService, observerService, orderTemplateService, rbkeyService, requestService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.processContext = 'updateFrequency';
@@ -63159,11 +63161,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderTemplateUpcomingOrdersCardController = /** @class */ (function () {
-    function SWOrderTemplateUpcomingOrdersCardController($timeout, $hibachi, observerService, rbkeyService) {
+    function SWOrderTemplateUpcomingOrdersCardController($timeout, $hibachi, observerService, orderTemplateService, rbkeyService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.updateSchedule = function (data) {
             if (data == null)
@@ -63245,11 +63248,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
-    function SWOrderTemplateUpdateScheduleModalController($timeout, $hibachi, observerService, rbkeyService, requestService) {
+    function SWOrderTemplateUpdateScheduleModalController($timeout, $hibachi, observerService, orderTemplateService, rbkeyService, requestService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.processContext = 'updateSchedule';
@@ -63336,6 +63340,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
+//services
+var ordertemplateservice_1 = __webpack_require__(907);
+//components
 var swaccountpaymentmethodmodal_1 = __webpack_require__(638);
 var swaccountshippingaddresscard_1 = __webpack_require__(639);
 var swaccountshippingmethodmodal_1 = __webpack_require__(640);
@@ -63350,6 +63357,8 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     }])
     //constants
     .constant('orderPartialsPath', 'order/components/')
+    //services
+    .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
     //controllers
     .directive('swAccountPaymentMethodModal', swaccountpaymentmethodmodal_1.SWAccountPaymentMethodModal.Factory())
     .directive('swAccountShippingAddressCard', swaccountshippingaddresscard_1.SWAccountShippingAddressCard.Factory())
@@ -89789,6 +89798,13 @@ var SWListingDisplayCellController = /** @class */ (function () {
             }
             return templateUrl;
         };
+        //prevent listing display edit cell from submitting the form if enter key is pressed
+        this.handleKeyPress = function (keyEvent) {
+            if (keyEvent.keyCode === 13) {
+                keyEvent.preventDefault();
+                keyEvent.stopPropagation();
+            }
+        };
         if (!this.pageRecordKey && this.column) {
             this.pageRecordKey = this.listingService.getPageRecordKey(this.column.propertyIdentifier);
         }
@@ -94812,6 +94828,54 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(305);
+
+
+/***/ }),
+/* 907 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var OrderTemplateService = /** @class */ (function () {
+    //@ngInject
+    function OrderTemplateService($http, $q, $hibachi, entityService, cacheService, collectionConfigService, observerService, requestService, utilityService) {
+        var _this = this;
+        this.$http = $http;
+        this.$q = $q;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.cacheService = cacheService;
+        this.collectionConfigService = collectionConfigService;
+        this.observerService = observerService;
+        this.requestService = requestService;
+        this.utilityService = utilityService;
+        this.setOrderTemplateID = function (orderTemplateID) {
+        };
+        this.addOrderTemplateItem = function (args) {
+            console.log('adding Order template items', args);
+            var formDataToPost = {
+                entityID: _this.orderTemplateID,
+                entityName: 'OrderTemplate',
+                context: 'addOrderTemplateItem',
+                propertyIdentifiersList: '',
+                skuID: args.skuID,
+                quantity: args.quantity
+            };
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            adminRequest.promise.then(function (response) {
+            }, function (reason) {
+            }).finally(function () {
+            });
+        };
+        this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
+    }
+    return OrderTemplateService;
+}());
+exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ })

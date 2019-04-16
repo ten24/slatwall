@@ -129,6 +129,14 @@ class SWListingDisplayCellController{
 
         return templateUrl;
     }
+    
+    //prevent listing display edit cell from submitting the form if enter key is pressed
+    public handleKeyPress = (keyEvent) =>{
+        if (keyEvent.keyCode === 13) {
+            keyEvent.preventDefault();
+            keyEvent.stopPropagation();
+        }
+    }
 }
 
 class SWListingDisplayCell {

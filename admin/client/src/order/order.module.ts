@@ -2,7 +2,9 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
-
+//services
+import {OrderTemplateService} from "./services/ordertemplateservice";
+//components
 import {SWAccountPaymentMethodModal} from "./components/swaccountpaymentmethodmodal";
 import {SWAccountShippingAddressCard} from "./components/swaccountshippingaddresscard";
 import {SWAccountShippingMethodModal} from "./components/swaccountshippingmethodmodal";
@@ -20,6 +22,8 @@ var ordermodule = angular.module('order',[coremodule.name])
 }])
 //constants
 .constant('orderPartialsPath','order/components/')
+//services
+.service('orderTemplateService', OrderTemplateService)
 //controllers
 .directive('swAccountPaymentMethodModal', SWAccountPaymentMethodModal.Factory())
 .directive('swAccountShippingAddressCard', SWAccountShippingAddressCard.Factory())

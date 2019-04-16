@@ -29,6 +29,7 @@ class SWOrderTemplateUpdateScheduleModalController{
 	constructor( public $timeout,
 	             public $hibachi,
 	             public observerService,
+	             public orderTemplateService,
 				 public rbkeyService,
 				 public requestService
 	){
