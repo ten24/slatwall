@@ -28,6 +28,11 @@
           "propertyIdentifier":"disableOnFlexshipFlag"
         },
         {
+          "sourceColumn":"ImageFile",
+          "sourceColumnDataGenerator":"SKUItemCode + '.jpg'"
+          "propertyIdentifier":"imageFile"
+        },
+        {
           "sourceColumn":"SKUItemCode",
           "propertyIdentifier":"product.productCode"
         },
