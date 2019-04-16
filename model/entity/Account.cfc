@@ -560,6 +560,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			
 			var accountAddressCollectionList = getService('AccountService').getAccountAddressCollectionList();
 			accountAddressCollectionList.setDisplayProperties('accountAddressName,address.streetAddress,address.city,address.stateCode,address.locality,address.countryCode,address.postalCode,accountAddressID|value');
+
 			accountAddressCollectionList.addFilter('account.accountID', getAccountID());
 			var accountAddresses = accountAddressCollectionList.getRecords(); 
 			for(var accountAddress in accountAddresses){
