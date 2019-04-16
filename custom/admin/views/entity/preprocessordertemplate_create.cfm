@@ -91,7 +91,15 @@ Notes:
 			<hr>
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="scheduleOrderNextPlaceDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
+										property="scheduleOrderNextPlaceDateTime" 
+										edit="#rc.edit#" 
+										fieldType="text" 
+										fieldAttributes="sw-date-picker 
+														ng-model=""scheduleOrderNextPlaceDateTime""
+														data-end-day-of-the-month=""26""
+														data-end-date=""Date.parse(#dateFormat(dateAdd('m', now(), 3),'mm/dd/yyyy')#)""
+														autocomplete=""off""">
 
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
 

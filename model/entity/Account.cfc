@@ -131,7 +131,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
-	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
+	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false"; 
 	property name="address" persistent="false";
 	property name="adminIcon" persistent="false";
 	property name="adminAccountFlag" persistent="false" hb_formatType="yesno";
@@ -555,17 +555,59 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	public any function getAccountAddressOptions() {
-		var accountAddressCollectionList = getService('AccountService').getAccountAddressCollectionList();
-		accountAddressCollectionList.setDisplayProperties('accountAddressName|name, accountAddressID|value');
-		accountAddressCollectionList.addFilter('account.accountID', getAccountID());
-		return accountAddressCollectionList.getRecords(); 	
+		if(!structKeyExists(variables, 'accountAddressOptions')){
+			variables.accountAddressOptions = [];	
+			
+			var accountAddressCollectionList = getService('AccountService').getAccountAddressCollectionList();
+			accountAddressCollectionList.setDisplayProperties('accountAddressName,address.streetAddress,address.city,address.stateCode,address.locality,address.countryCode,address.postalCode,accountAddressID|value');
+
+			accountAddressCollectionList.addFilter('account.accountID', getAccountID());
+			var accountAddresses = accountAddressCollectionList.getRecords(); 
+			for(var accountAddress in accountAddresses){
+
+				var addressName = accountAddress['accountAddressName'] & ' - ' & accountAddress['address_streetAddress'] & ', ' & accountAddress['address_city'] & ', ';  
+		
+				if(len(trim(accountAddress['address_postalCode']))){
+					addressName &= accountAddress['address_postalCode'] & ', ';
+				}	
+	
+				if(len(trim(accountAddress['address_stateCode']))){
+					addressName &= accountAddress['address_stateCode'] & ', ';
+				}	
+				
+				if(len(trim(accountAddress['address_stateCode']))){
+					addressName &= accountAddress['address_stateCode'] & ', ';
+				}
+
+				var accountAddressOption = {
+					"name":  addressName & accountAddress['address_countryCode'],
+					"value": accountAddress['value']  
+				};
+				arrayAppend(variables.accountAddressOptions, accountAddressOption);
+			} 
+		}
+
+		return variables.accountAddressOptions; 	
 	} 
 
 	public any function getAccountPaymentMethodOptions() {
-		var accountPaymentMethodCollectionList = getService('AccountService').getAccountPaymentMethodCollectionList(); 
-		accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName|name, accountPaymentMethodID|value');
-		accountPaymentMethodCollectionList.addFilter('account.accountID', getAccountID());
-		return accountPaymentMethodCollectionList.getRecords();
+		if(!structKeyExists(variables, 'accountPaymentMehodOptions')){
+			variables.accountPaymentMethodOptions = [];	
+			
+			var accountPaymentMethodCollectionList = getService('AccountService').getAccountPaymentMethodCollectionList(); 
+			accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName, creditCardLastFour, creditCardType, accountPaymentMethodID|value');
+			accountPaymentMethodCollectionList.addFilter('account.accountID', getAccountID());
+			
+			var paymentMethods = accountPaymentMethodCollectionList.getRecords();
+			for(var paymentMethod in paymentMethods){
+				var paymentMethodOption = {
+					"name": paymentMethod['accountPaymentMethodName'] & ' - ' & paymentMethod['creditCardType'] & ' *' & paymentMethod['creditCardLastFour'],
+					"value": paymentMethod['value']  
+				};
+				arrayAppend(variables.accountPaymentMethodOptions, paymentMethodOption); 
+			} 
+		}
+		return variables.accountPaymentMethodOptions;
 	} 
 
 	public any function getUnenrolledAccountLoyaltyOptions() {

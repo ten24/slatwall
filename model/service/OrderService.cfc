@@ -1157,6 +1157,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrderTemplate_updateSchedule(required any orderTemplate, required any processObject, required struct data={}){ 
 
+		var orderTemplateScheduleDateChangeReason = this.newOrderTemplateScheduleDateChangeReason();
+
+		orderTemplateScheduleDateChangeReason.setOrderTemplate(arguments.orderTemplate);
+		orderTemplateScheduleDateChangeReason.setAccount(arguments.orderTemplate.getAccount()); 
+		orderTemplateScheduleDateChangeReason.setOrderTemplateScheduleDateChangeReasonType(arguments.processObject.getOrderTemplateScheduleDateChangeReasonType());  
+
+		if(!isNull(arguments.processObject.getOtherScheduleDateChangeReasonNotes())){
+			orderTemplateScheduleDateChangeReason.setOtherScheduleDateChangeReasonNotes(arguments.processObject.getOtherScheduleDateChangeReasonNotes()); 
+		}
+
+		orderTemplateScheduleDateChangeReason = this.saveOrderTemplateScheduleDateChangeReason(orderTemplateScheduleDateChangeReason);
+
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 

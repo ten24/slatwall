@@ -63259,7 +63259,6 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
         this.title = "Update Schedule";
         this.$onInit = function () {
             if (_this.scheduleOrderNextPlaceDateTimeString != null) {
-                console.log('scheduleOrderNextPlaceDateTime', _this.scheduleOrderNextPlaceDateTimeString, Date.parse(_this.scheduleOrderNextPlaceDateTimeString));
                 var date = Date.parse(_this.scheduleOrderNextPlaceDateTimeString);
                 _this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
             }
@@ -63275,6 +63274,12 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
                 scheduleOrderNextPlaceDateTime: _this.scheduleOrderNextPlaceDateTime,
                 propertyIdentifiersList: 'orderTemplateID,scheduleOrderNextPlaceDateTime'
             };
+            formDataToPost.orderTemplateScheduleDateChangeReasonTypeID = _this.orderTemplateScheduleDateChangeReasonType.value;
+            formDataToPost.orderTemplateID = _this.orderTemplate.orderTemplateID;
+            if (_this.orderTemplateScheduleDateChangeReasonType.value === '2c9280846a023949016a029455f0000c' &&
+                _this.otherScheduleDateChangeReasonNotes.length) {
+                formDataToPost.otherScheduleDateChangeReasonNotes = _this.otherScheduleDateChangeReasonNotes;
+            }
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -63292,6 +63297,7 @@ var SWOrderTemplateUpdateScheduleModal = /** @class */ (function () {
         this.bindToController = {
             modalButtonText: "@?",
             orderTemplate: "<?",
+            orderTemplateScheduleDateChangeReasonTypeOptions: "<?",
             scheduleOrderNextPlaceDateTimeString: "@?",
             scheduleOrderNextPlaceDateTime: "=?",
             endDayOfTheMonth: '<?',

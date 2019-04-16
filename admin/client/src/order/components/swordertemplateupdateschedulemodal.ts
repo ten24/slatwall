@@ -12,6 +12,10 @@ class SWOrderTemplateUpdateScheduleModalController{
 	public scheduleOrderNextPlaceDateTimeString:string;
 	public scheduleOrderNextPlaceDateTime;
 	
+	public orderTemplateScheduleDateChangeReasonType;
+	public orderTemplateScheduleDateChangeReasonTypeOptions;
+	public otherScheduleDateChangeReasonNotes;
+	
 	public processContext:string = 'updateSchedule';
 	
 	public uniqueName:string = 'updateScheduleModal';
@@ -28,12 +32,10 @@ class SWOrderTemplateUpdateScheduleModalController{
 				 public rbkeyService,
 				 public requestService
 	){
-
 	}
 	
 	public $onInit = () =>{
 	    if(this.scheduleOrderNextPlaceDateTimeString != null){
-	        console.log('scheduleOrderNextPlaceDateTime', this.scheduleOrderNextPlaceDateTimeString, Date.parse(this.scheduleOrderNextPlaceDateTimeString));
 	        var date = Date.parse(this.scheduleOrderNextPlaceDateTimeString);
 	        this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
 	    }
@@ -52,6 +54,15 @@ class SWOrderTemplateUpdateScheduleModalController{
 			propertyIdentifiersList: 'orderTemplateID,scheduleOrderNextPlaceDateTime'
 		};
 		
+		formDataToPost.orderTemplateScheduleDateChangeReasonTypeID = this.orderTemplateScheduleDateChangeReasonType.value;
+		formDataToPost.orderTemplateID = this.orderTemplate.orderTemplateID;
+		
+		if( this.orderTemplateScheduleDateChangeReasonType.value === '2c9280846a023949016a029455f0000c' &&
+			this.otherScheduleDateChangeReasonNotes.length
+		){
+			formDataToPost.otherScheduleDateChangeReasonNotes = this.otherScheduleDateChangeReasonNotes;
+		}
+		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
 		
 		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
@@ -68,6 +79,7 @@ class SWOrderTemplateUpdateScheduleModal implements ng.IDirective {
 	public bindToController = {
 		modalButtonText:"@?",
 		orderTemplate:"<?",
+		orderTemplateScheduleDateChangeReasonTypeOptions:"<?",
 		scheduleOrderNextPlaceDateTimeString:"@?",
 		scheduleOrderNextPlaceDateTime:"=?",
         endDayOfTheMonth:'<?',
