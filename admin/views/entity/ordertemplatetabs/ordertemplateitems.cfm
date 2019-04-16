@@ -11,6 +11,7 @@
 <cfset rc.skuCollectionList.addDisplayProperty('imageFile',getHibachiScope().rbKey('entity.sku.imageFile'),{isVisible=false,isSearchable=true,isDeletable=false}) /> 
 
 <cfset rc.orderTemplateItemCollectionList = getHibachiScope().getService('OrderService').getOrderTemplateItemCollectionList() />
+<cfset rc.orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', rc.orderTemplate.getOrderTemplateID()) />
 
 <cfset rc.columns = rc.skuCollectionList.getCollectionConfigStruct().columns />
 
@@ -32,17 +33,26 @@
 }) />
 
 <cfoutput>
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
+
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 
 				<hb:HibachiListingDisplay 
-					recordProcessEvent="addOrderTemplateItem"
-					collectionList="#rc.skuCollectionlist#"
-					listingColumns="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.columns))#"
+					collectionList="#rc.orderTemplateItemCollectionlist#"
 					usingPersonalCollection="false"
 				>
-				</hb:HibachiListingDisplay>	
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
+				</hb:HibachiListingDisplay>				
+			
+				<cfif rc.edit >
+					<hb:HibachiListingDisplay 
+						recordProcessEvent="addOrderTemplateItem"
+						collectionList="#rc.skuCollectionlist#"
+						listingColumns="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.columns))#"
+						usingPersonalCollection="false"
+					>
+					</hb:HibachiListingDisplay>	
+				</cfif> 
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 </cfoutput>	
 
