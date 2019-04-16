@@ -54,6 +54,8 @@
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
 
+<cfset rc.orderTemplate.getAccount().getAccountAddressOptions() /> 
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderTemplate#" edit="#rc.edit#">
