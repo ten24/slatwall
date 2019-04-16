@@ -70019,7 +70019,6 @@ var BaseBootStrapper = /** @class */ (function () {
             });
         };
         this.myApplication = myApplication;
-        console.log('hibachi!!!', hibachiConfig);
         return angular.lazy(this.myApplication).resolve(['$http', '$q', function ($http, $q) {
                 _this.$http = $http;
                 _this.$q = $q;

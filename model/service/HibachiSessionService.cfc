@@ -57,6 +57,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		
 		config[ 'baseImageURL' ] = getHibachiScope().getBaseImageURL();
 		//overrides hardcoded options with settings
+		config[ 'rbLocale' ] = getHibachiScope().getRBLocale();
 		config[ 'dateFormat' ] = getHibachiScope().setting('globalDateFormat');
 		config[ 'timeFormat' ] = getHibachiScope().setting('globalTimeFormat');
 			

@@ -19,7 +19,6 @@ export class BaseBootStrapper{
 
     constructor(myApplication){
         this.myApplication = myApplication;
-        console.log('hibachi!!!',hibachiConfig);
         return angular.lazy(this.myApplication).resolve(['$http','$q', ($http,$q)=> {
             this.$http = $http;
             this.$q = $q;
