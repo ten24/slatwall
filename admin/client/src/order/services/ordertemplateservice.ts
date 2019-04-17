@@ -16,6 +16,7 @@ export class OrderTemplateService {
                 public utilityService
     ){
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem')
+        this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem')
         this.observerService.attach(this.refreshListing, 'OrderTemplateAddOrderTemplateItemSuccess')
     }
     
@@ -39,6 +40,29 @@ export class OrderTemplateService {
 			context: 'addOrderTemplateItem',
 			propertyIdentifiersList: '',
 			skuID: state.skuID,
+			quantity: state.quantity
+		};
+		
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		adminRequest.promise.then(
+		    (response)=>{
+		        
+		    }, 
+		    (reason)=>{
+		        
+		    }
+		);
+    }
+    
+    public editOrderTemplateItem = (state) =>{
+        var formDataToPost:any = {
+			entityID: state.orderTemplateItemID,
+			entityName: 'OrderTemplateItem',
+			context: 'save',
+			propertyIdentifiersList: '',
 			quantity: state.quantity
 		};
 		

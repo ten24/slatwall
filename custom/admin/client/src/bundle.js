@@ -63419,7 +63419,22 @@ var OrderTemplateService = /** @class */ (function () {
             }, function (reason) {
             });
         };
+        this.editOrderTemplateItem = function (state) {
+            var formDataToPost = {
+                entityID: state.orderTemplateItemID,
+                entityName: 'OrderTemplateItem',
+                context: 'save',
+                propertyIdentifiersList: '',
+                quantity: state.quantity
+            };
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            adminRequest.promise.then(function (response) {
+            }, function (reason) {
+            });
+        };
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
+        this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
         this.observerService.attach(this.refreshListing, 'OrderTemplateAddOrderTemplateItemSuccess');
     }
     return OrderTemplateService;
