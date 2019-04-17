@@ -67,6 +67,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="promotionService";
 	property name="settingService";
 	property name="shippingService";
+	property name="siteService";
 	property name="skuService";
 	property name="stockService";
 	property name="subscriptionService";
@@ -1127,6 +1128,132 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.newOrder();
 	}
+	
+	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
+
+			// Setup Account
+		if(arguments.processObject.getNewAccountFlag()) {
+			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+		} else {
+			var account = getAccountService().getAccount(processObject.getAccountID());
+		}
+
+		if(account.hasErrors()) {
+			arguments.order.addError('create', account.getErrors());
+		} else {
+			arguments.orderTemplate.setAccount(account);
+			arguments.orderTemplate.setOrderTemplateType( getTypeService().getType( processObject.getOrderTemplateTypeID() ) );
+			arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstDraft'));
+			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			arguments.orderTemplate.setSite( getSiteService().getSite( processObject.getSiteID()));
+			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+
+			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		}
+
+		return arguments.orderTemplate;
+	}
+
+	public any function processOrderTemplate_updateSchedule(required any orderTemplate, required any processObject, required struct data={}){ 
+
+		var orderTemplateScheduleDateChangeReason = this.newOrderTemplateScheduleDateChangeReason();
+
+		orderTemplateScheduleDateChangeReason.setOrderTemplate(arguments.orderTemplate);
+		orderTemplateScheduleDateChangeReason.setAccount(arguments.orderTemplate.getAccount()); 
+		orderTemplateScheduleDateChangeReason.setOrderTemplateScheduleDateChangeReasonType(arguments.processObject.getOrderTemplateScheduleDateChangeReasonType());  
+
+		if(!isNull(arguments.processObject.getOtherScheduleDateChangeReasonNotes())){
+			orderTemplateScheduleDateChangeReason.setOtherScheduleDateChangeReasonNotes(arguments.processObject.getOtherScheduleDateChangeReasonNotes()); 
+		}
+
+		orderTemplateScheduleDateChangeReason = this.saveOrderTemplateScheduleDateChangeReason(orderTemplateScheduleDateChangeReason);
+
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate;
+	}  
+	
+	public any function processOrderTemplate_updateFrequency(required any orderTemplate, required any processObject, required struct data={}){
+
+		arguments.orderTemplate.setFrequencyTerm(getSettingService().getTerm(arguments.processObject.getFrequencyTerm().value));
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate; 
+	}
+	
+	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
+		
+		var account = arguments.orderTemplate.getAccount(); 
+			
+		if(!isNull(processObject.getNewAccountAddress())){
+			var accountAddress = getAccountService().newAccountAddress();
+			accountAddress.populate(processObject.getNewAccountAddress());
+			
+			var address = getAddressService().newAddress();
+			address.populate(processObject.getNewAccountAddress().address);
+		
+			accountAddress.setAddress(address); 
+			accountAddress.setAccount(account); 
+
+			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+
+
+			orderTemplate.setShippingAccountAddress(accountAddress);
+		} else if (!isNull(processObject.getShippingAccountAddress())) { 
+
+			orderTemplate.setShippingAccountAddress(getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value));	
+		}
+
+		var shippingMethod = getShippingService().getShippingMethod(processObject.getShippingMethod().shippingMethodID); 
+
+		orderTemplate.setShippingMethod(shippingMethod);	
+		
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate;
+	}
+	
+	public any function processOrderTemplate_updateBilling(required any orderTemplate, required any processObject, required struct data={}){
+
+		var account = arguments.orderTemplate.getAccount(); 
+
+	if(!isNull(processObject.getNewAccountAddress())){
+			var accountAddress = getAccountService().newAccountAddress();
+			accountAddress.populate(processObject.getNewAccountAddress());
+			
+			var address = getAddressService().newAddress();
+			address.populate(processObject.getNewAccountAddress().address);
+		
+			accountAddress.setAddress(address); 
+			accountAddress.setAccount(account); 
+
+			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+
+
+			orderTemplate.setBillingAccountAddress(accountAddress);
+		} else if (!isNull(processObject.getBillingAccountAddress())) {  
+			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
+		}	
+
+		if(!isNull(processObject.getNewAccountPaymentMethod())){
+			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
+			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
+
+			accountPaymentMethod.setAccount(account); 
+
+			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
+			orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
+		} 
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate; 
+	} 
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 		//Setup Site Origin if using slatwall cms

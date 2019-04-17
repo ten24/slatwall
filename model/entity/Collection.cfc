@@ -724,10 +724,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			collectionConfig["columns"] = [];
 		}
 
+		arguments.column['isEditable'] = false;
 		arguments.column['isDeletable'] = false;
 		arguments.column['isVisible'] = false;
 		arguments.column['isSearchable'] = false;
 		arguments.column['isExportable'] = false;
+		if(structKeyExists(arguments.columnConfig, 'isEditable')){
+			arguments.column['isEditable'] = arguments.columnConfig['isEditable'];
+		}
 		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
 			arguments.column['isDeletable'] = arguments.columnConfig['isDeletable'];
 		}

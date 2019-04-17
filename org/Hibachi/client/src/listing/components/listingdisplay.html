@@ -232,6 +232,7 @@
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
                                     data-expandable-rules="swListingDisplay.expandableRules">
+                            	
                             	<sw-listing-display-cell
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
@@ -251,8 +252,10 @@
                                 <!-- Detail -->
                                 <span ng-if="swListingDisplay.recordDetailActionIdProperty && swListingDisplay.recordDetailActionIdKey">
                                     <sw-action-caller
-                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            ng-if="swListingDisplay.hasRecordDetailAction"
                                             data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-event="{{swListingDisplay.recordDetailEvent}}"
+                                            data-payload="pageRecord"
                                             data-query-string="{{'&'+swListingDisplay.recordDetailActionIdProperty+'='+pageRecord[swListingDisplay.recordDetailActionIdKey]+swListingDisplay.recordDetailQueryString}}"
                                             data-class="btn btn-default btn-xs"
                                             data-icon="eye-open"
@@ -266,8 +269,10 @@
                                 </span>
                                 <span ng-if="!swListingDisplay.recordDetailActionIdProperty || !swListingDisplay.recordDetailActionIdKey">
                                     <sw-action-caller
-                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            ng-if="swListingDisplay.hasRecordDetailAction"
                                             data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-event="{{swListingDisplay.recordDetailEvent}}"
+                                            data-payload="pageRecord"
                                             data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
                                             data-class="btn btn-default btn-xs"
                                             data-icon="eye-open"
@@ -284,8 +289,10 @@
                                 </span>
                                 <!--Edit-->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordEditAction && swListingDisplay.recordEditAction.length"
+                                        ng-if="swListingDisplay.hasRecordEditAction"
                                         data-action="{{swListingDisplay.recordEditAction}}"
+                                        data-event="{{swListingDisplay.recordEditEvent}}"
+                                        data-payload="pageRecord"
                                         data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
                                         data-class="btn btn-default btn-xs"
                                         data-icon="pencil"
@@ -301,8 +308,10 @@
 
                                 <!-- Delete -->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordDeleteAction && swListingDisplay.recordDeleteAction.length"
+                                        ng-if="swListingDisplay.hasRecordDeleteAction"
                                         data-action="{{swListingDisplay.recordDeleteAction}}"
+                                        data-event="{{swListingDisplay.recordDeleteEvent}}"
+                                        data-payload="pageRecord"
                                         data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
                                         data-class="btn btn-default btn-xs"
                                         data-icon="trash"
@@ -318,8 +327,10 @@
 
                                 <!-- Add -->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordAddAction && swListingDisplay.recordAddAction.length"
+                                        ng-if="swListingDisplay.hasRecordAddAction"
                                         data-action="{{swListingDisplay.recordAddAction}}"
+                                        data-event="{{swListingDisplay.recordAddEvent}}"
+                                        data-payload="pageRecord"
                                         data-query-string="{{'&'+swListingDisplay.parentPropertyName+'ID='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordAddQueryString}}"
                                         data-class="btn btn-default btn-xs"
                                         data-icon="plus"
@@ -336,6 +347,8 @@
                                 <sw-action-caller
                                         ng-repeat="action in swListingDisplay.actions"
                                         data-action="{{action.action}}"
+                                        data-event="{{action.event}}"
+                                        data-payload="pageRecord"
                                         data-query-string="{{swListingDisplay.replaceStringWithProperties(action.queryString,pageRecord)}}"
                                         data-class="{{action.tdclass}}"
                                         data-icon="{{action.icon}}"
@@ -356,13 +369,10 @@
                             <!-- Selectable -->
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
-                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
+                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}"></th>
                             
-                            </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
-
-                            <th class="s-detail-hidden-content">
-                            </th>
+                            <th class="s-detail-hidden-content"></th>
                         </tr>
                     </thead>
                     <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
@@ -396,7 +406,7 @@
                                     ng-style="{'border': swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
 							    <sw-listing-display-cell
-							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] && !column.isEditable"
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-value="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"

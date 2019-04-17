@@ -1,0 +1,35 @@
+/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+//modules
+import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
+
+import {SWAccountPaymentMethodModal} from "./components/swaccountpaymentmethodmodal";
+import {SWAccountShippingAddressCard} from "./components/swaccountshippingaddresscard";
+import {SWAccountShippingMethodModal} from "./components/swaccountshippingmethodmodal";
+import {SWCustomerAccountPaymentMethodCard} from "./components/swcustomeraccountpaymentmethodcard";
+import {SWOrderTemplateFrequencyCard} from "./components/swordertemplatefrequencycard";
+import {SWOrderTemplateFrequencyModal} from "./components/swordertemplatefrequencymodal";
+import {SWOrderTemplateUpcomingOrdersCard} from "./components/swordertemplateupcomingorderscard";
+import {SWOrderTemplateUpdateScheduleModal} from "./components/swordertemplateupdateschedulemodal";
+  
+var ordermodule = angular.module('order',[coremodule.name])
+.config([()=>{
+
+}]).run([()=>{
+
+}])
+//constants
+.constant('orderPartialsPath','order/components/')
+//controllers
+.directive('swAccountPaymentMethodModal', SWAccountPaymentMethodModal.Factory())
+.directive('swAccountShippingAddressCard', SWAccountShippingAddressCard.Factory())
+.directive('swAccountShippingMethodModal', SWAccountShippingMethodModal.Factory())
+.directive('swCustomerAccountPaymentMethodCard',SWCustomerAccountPaymentMethodCard.Factory())
+.directive('swOrderTemplateFrequencyCard', SWOrderTemplateFrequencyCard.Factory())
+.directive('swOrderTemplateFrequencyModal', SWOrderTemplateFrequencyModal.Factory())
+.directive('swOrderTemplateUpcomingOrdersCard', SWOrderTemplateUpcomingOrdersCard.Factory())
+.directive('swOrderTemplateUpdateScheduleModal', SWOrderTemplateUpdateScheduleModal.Factory())
+;
+export{
+	ordermodule
+};

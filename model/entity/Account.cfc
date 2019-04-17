@@ -67,6 +67,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCreateIPAddress" ormtype="string";
 
 	//calucluated property
+	property name="calculatedAdminIcon" ormtype="string";
 	property name="calculatedFullName" ormtype="string";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
@@ -97,6 +98,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
   	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="accountID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
   	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
+  	property name="orderTemplates" hb_populateEnabled="false" singularname="orderTemplate" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="OrderTemplate" inverse="true";
 	property name="productReviews" hb_populateEnabled="false" singularname="productReview" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="ProductReview" inverse="true";
 	property name="subscriptionUsageBenefitAccounts" singularname="subscriptionUsageBenefitAccount" cfc="SubscriptionUsageBenefitAccount" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="subscriptionUsages" singularname="subscriptionUsage" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
@@ -129,7 +131,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
-	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
+	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false"; 
 	property name="address" persistent="false";
 	property name="adminIcon" persistent="false";
 	property name="adminAccountFlag" persistent="false" hb_formatType="yesno";
@@ -151,6 +153,12 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
+
+		
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
+			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
+			return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
 
 	
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
@@ -546,6 +554,62 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.termOrderPaymentsByDueDateSmartList;
 	}
 
+	public any function getAccountAddressOptions() {
+		if(!structKeyExists(variables, 'accountAddressOptions')){
+			variables.accountAddressOptions = [];	
+			
+			var accountAddressCollectionList = getService('AccountService').getAccountAddressCollectionList();
+			accountAddressCollectionList.setDisplayProperties('accountAddressName,address.streetAddress,address.city,address.stateCode,address.locality,address.countryCode,address.postalCode,accountAddressID|value');
+
+			accountAddressCollectionList.addFilter('account.accountID', getAccountID());
+			var accountAddresses = accountAddressCollectionList.getRecords(); 
+			for(var accountAddress in accountAddresses){
+
+				var addressName = accountAddress['accountAddressName'] & ' - ' & accountAddress['address_streetAddress'] & ', ' & accountAddress['address_city'] & ', ';  
+		
+				if(len(trim(accountAddress['address_postalCode']))){
+					addressName &= accountAddress['address_postalCode'] & ', ';
+				}	
+	
+				if(len(trim(accountAddress['address_stateCode']))){
+					addressName &= accountAddress['address_stateCode'] & ', ';
+				}	
+				
+				if(len(trim(accountAddress['address_stateCode']))){
+					addressName &= accountAddress['address_stateCode'] & ', ';
+				}
+
+				var accountAddressOption = {
+					"name":  addressName & accountAddress['address_countryCode'],
+					"value": accountAddress['value']  
+				};
+				arrayAppend(variables.accountAddressOptions, accountAddressOption);
+			} 
+		}
+
+		return variables.accountAddressOptions; 	
+	} 
+
+	public any function getAccountPaymentMethodOptions() {
+		if(!structKeyExists(variables, 'accountPaymentMehodOptions')){
+			variables.accountPaymentMethodOptions = [];	
+			
+			var accountPaymentMethodCollectionList = getService('AccountService').getAccountPaymentMethodCollectionList(); 
+			accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName, creditCardLastFour, creditCardType, accountPaymentMethodID|value');
+			accountPaymentMethodCollectionList.addFilter('account.accountID', getAccountID());
+			
+			var paymentMethods = accountPaymentMethodCollectionList.getRecords();
+			for(var paymentMethod in paymentMethods){
+				var paymentMethodOption = {
+					"name": paymentMethod['accountPaymentMethodName'] & ' - ' & paymentMethod['creditCardType'] & ' *' & paymentMethod['creditCardLastFour'],
+					"value": paymentMethod['value']  
+				};
+				arrayAppend(variables.accountPaymentMethodOptions, paymentMethodOption); 
+			} 
+		}
+		return variables.accountPaymentMethodOptions;
+	} 
+
 	public any function getUnenrolledAccountLoyaltyOptions() {
 		if(!structKeyExists(variables, "unenrolledAccountLoyaltyOptions")) {
 			variables.unenrolledAccountLoyaltyOptions = [];
@@ -752,6 +816,14 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 	public void function removeOrder(required any Order) {
 	   arguments.order.removeAccount(this);
+	}
+
+	// Orders (one-to-many)
+	public void function addOrderTemplate(required any OrderTemplate) {
+	   arguments.orderTemplate.setAccount(this);
+	}
+	public void function removeOrderTemplate(required any OrderTemplate) {
+	   arguments.orderTemplate.removeAccount(this);
 	}
 
 	// Product Reviews (one-to-many)

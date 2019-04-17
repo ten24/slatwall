@@ -15,6 +15,7 @@
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigJson" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
+	<cfparam name="attributes.listingColumns" type="any" default="" />
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
@@ -22,18 +23,22 @@
 	<cfparam name="attributes.reportAction" type="string" default="" />
 
 	<!--- Admin Actions --->
+	<cfparam name="attributes.recordEditEvent" type="string" default="" />
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
 	<cfparam name="attributes.recordEditActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordEditQueryString" type="string" default="" />
 	<cfparam name="attributes.recordEditModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditDisabled" type="boolean" default="false" />
+	<cfparam name="attributes.recordDetailEvent" type="string" default="" />
 	<cfparam name="attributes.recordDetailAction" type="string" default="" />
 	<cfparam name="attributes.recordDetailActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordDetailQueryString" type="string" default="" />
 	<cfparam name="attributes.recordDetailModal" type="boolean" default="false" />
+	<cfparam name="attributes.recordDeleteEvent" type="string" default="" />
 	<cfparam name="attributes.recordDeleteAction" type="string" default="" />
 	<cfparam name="attributes.recordDeleteActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordDeleteQueryString" type="string" default="" />
+	<cfparam name="attributes.recordProcessEvent" type="string" default="" />
 	<cfparam name="attributes.recordProcessAction" type="string" default="" />
 	<cfparam name="attributes.recordProcessActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordProcessQueryString" type="string" default="" />
@@ -128,9 +133,15 @@
 			    data-edit="#attributes.edit#"
 			    data-name="#scopeVariableID#"
 				data-has-search="true"
+				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
+				record-detail-event="#attributes.recordDetailEvent#"
 				record-detail-action="#attributes.recordDetailAction#"
 				record-detail-modal="#attributes.recordDetailModal#"
+				record delete-event="#attributes.recordDeleteEvent#"
+				record-delete-action="#attributes.recordDeleteAction#"
+				record-add-event="#attributes.recordProcessEvent#"
+				record-add-action="#attributes.recordProcessAction#"
 				report-action="#attributes.reportAction#"
 				show-report="#attributes.showReport#"
 				data-is-angular-route="false"
@@ -140,7 +151,10 @@
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
-	 			data-using-personal-collection="#attributes.usingPersonalCollection#"
+				data-using-personal-collection="#attributes.usingPersonalCollection#"
+				<cfif len(attributes.listingColumns)>
+					data-listing-columns="#attributes.listingColumns#"
+				</cfif> 
 	 			<cfif len(attributes.personalCollectionIdentifier)>
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
  				</cfif>

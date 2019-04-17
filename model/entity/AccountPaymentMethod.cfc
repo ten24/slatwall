@@ -76,6 +76,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	// Related Object Properties (one-to-many)
 	property name="subscriptionUsages" singularname="subscriptionUsage" hb_populateEnabled="public" cfc="SubscriptionUsage" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all";
+	property name="orderTemplates" singularname="orderTemplate" hb_populateEnabled="public" cfc="OrderTemplate" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all"; 
 	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" inverse="true" lazy="extra";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true";
 
@@ -364,6 +365,14 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 	public void function removePaymentTransaction(required any paymentTransaction) {
 		arguments.paymentTransaction.removeAccountPaymentMethod( this );
+	}
+
+	// Order Templates (one-to-many)
+	public void function addOrderTemplate(required any orderTemplate) {
+		arguments.orderTemplate.setAccountPaymentMethod( this );
+	}
+	public void function removeOrderTemplate(required any orderTemplate) {
+		arguments.orderTemplate.removeAccountPaymentMethod( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
