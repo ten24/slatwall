@@ -38,6 +38,7 @@
 			<hb:HibachiPropertyList>
 
 				<hb:HibachiListingDisplay 
+					listingID='OrderTemplateDetailOrderItems'
 					collectionList="#rc.orderTemplateItemCollectionlist#"
 					usingPersonalCollection="false"
 				>

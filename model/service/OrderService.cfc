@@ -1156,9 +1156,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
-	
+
+		var newOrderTemplateItem = this.newOrderTemplateItem();
 		
-		
+		newOrderTemplateItem.setSku(processObject.getSku()); 
+		newOrderTemplateItem.setQuantity(processObject.getQuantity()); 
+		newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
+		newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem); 		
+
 		return arguments.orderTemplate; 	
 	} 
 

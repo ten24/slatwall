@@ -16,23 +16,30 @@ export class OrderTemplateService {
                 public utilityService
     ){
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem')
-        
+        this.observerService.attach(this.refreshListing, 'OrderTemplateAddOrderTemplateItemSuccess')
     }
     
     public setOrderTemplateID = (orderTemplateID) =>{
-        
+        this.orderTemplateID = orderTemplateID;
+    }
+    
+    public refreshListing = () =>{
+        var state = {
+            type: 'setCurrentPage', 
+            payload: 1
+        };
+        this.observerService.notifyById('swPaginationAction','OrderTemplateDetailOrderItems',state);
     }
  
-    public addOrderTemplateItem = (args) =>{
-        console.log('adding Order template items', args)
+    public addOrderTemplateItem = (state) =>{
         
         var formDataToPost:any = {
 			entityID: this.orderTemplateID,
 			entityName: 'OrderTemplate',
 			context: 'addOrderTemplateItem',
 			propertyIdentifiersList: '',
-			skuID: args.skuID,
-			quantity: args.quantity
+			skuID: state.skuID,
+			quantity: state.quantity
 		};
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
@@ -46,9 +53,7 @@ export class OrderTemplateService {
 		    (reason)=>{
 		        
 		    }
-		).finally(()=>{
-		    
-		});
+		);
     }
  
        
