@@ -369,13 +369,10 @@
                             <!-- Selectable -->
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
-                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
+                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}"></th>
                             
-                            </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
-
-                            <th class="s-detail-hidden-content">
-                            </th>
+                            <th class="s-detail-hidden-content"></th>
                         </tr>
                     </thead>
                     <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
@@ -409,7 +406,7 @@
                                     ng-style="{'border': swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
 							    <sw-listing-display-cell
-							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] && !column.isEditable"
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-value="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"

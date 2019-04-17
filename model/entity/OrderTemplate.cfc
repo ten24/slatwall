@@ -75,6 +75,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
 
 	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
+	property name="orderTemplateScheduleDateChangeReasons" singularname="orderTemplateScheduleDateChangeReason" cfc="OrderTemplateScheduleDateChangeReason" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
 
@@ -87,11 +88,22 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
+
+	public any function getOrderTemplateScheduleDateChangeReasonTypeOptions(){
+		if(!structKeyExists(variables, 'orderTemplateScheduleDateChangeReasonTypeOptions')){	
+			var typeCollection = getService('TypeService').getTypeCollectionList(); 
+			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
+			variables.orderTemplateScheduleDateChangeReasonTypeOptions = typeCollection.getRecords(); 
+		}
+		return variables.orderTemplateScheduleDateChangeReasonTypeOptions;  
 	}
 
 	public string function getLastOrderPlacedDateTime(){

@@ -1,6 +1,6 @@
-component displayname="FlexshipSurveyResponse" entityname="SlatwallFlexshipSurveyResponse" table="SwFlexshipSurveyResponse" persistent="true" output="false" accessors="true" extends="HibachiEntity" hb_permission="this" hb_processContexts="" hb_serviceName="MonatFlexshipService" {
+component displayname="OrderTemplateScheduleDateChangeReason" entityname="SlatwallOrderTemplateScheduleDateChangeReason" table="SwOrderTemplateScheduleDateChangeReason" persistent="true" output="false" accessors="true" extends="HibachiEntity" hb_permission="this" hb_processContexts="" hb_serviceName="OrderService" {
 	
-	property name="flexshipSurveyResponseID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="orderTemplateScheduleDateChangeReasonID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	
 	property name="otherScheduleDateChangeReasonNotes" ormtype="string";
 
@@ -18,10 +18,5 @@ component displayname="FlexshipSurveyResponse" entityname="SlatwallFlexshipSurve
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
 
 
-	public any function getOrderTemplateScheduleDateChangeReasonTypeOptions(){
-		var typeCollection = getService('TypeService').getTypeCollectionList(); 
-		typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
-		typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
-		return typeCollection.getRecords(); 
-	} 
+ 
 }

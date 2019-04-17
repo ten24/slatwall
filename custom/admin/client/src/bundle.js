@@ -63265,7 +63265,6 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
         this.title = "Update Schedule";
         this.$onInit = function () {
             if (_this.scheduleOrderNextPlaceDateTimeString != null) {
-                console.log('scheduleOrderNextPlaceDateTime', _this.scheduleOrderNextPlaceDateTimeString, Date.parse(_this.scheduleOrderNextPlaceDateTimeString));
                 var date = Date.parse(_this.scheduleOrderNextPlaceDateTimeString);
                 _this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
             }
@@ -63281,6 +63280,12 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
                 scheduleOrderNextPlaceDateTime: _this.scheduleOrderNextPlaceDateTime,
                 propertyIdentifiersList: 'orderTemplateID,scheduleOrderNextPlaceDateTime'
             };
+            formDataToPost.orderTemplateScheduleDateChangeReasonTypeID = _this.orderTemplateScheduleDateChangeReasonType.value;
+            formDataToPost.orderTemplateID = _this.orderTemplate.orderTemplateID;
+            if (_this.orderTemplateScheduleDateChangeReasonType.value === '2c9280846a023949016a029455f0000c' &&
+                _this.otherScheduleDateChangeReasonNotes.length) {
+                formDataToPost.otherScheduleDateChangeReasonNotes = _this.otherScheduleDateChangeReasonNotes;
+            }
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -63298,6 +63303,7 @@ var SWOrderTemplateUpdateScheduleModal = /** @class */ (function () {
         this.bindToController = {
             modalButtonText: "@?",
             orderTemplate: "<?",
+            orderTemplateScheduleDateChangeReasonTypeOptions: "<?",
             scheduleOrderNextPlaceDateTimeString: "@?",
             scheduleOrderNextPlaceDateTime: "=?",
             endDayOfTheMonth: '<?',
@@ -69660,10 +69666,8 @@ var SWFlexshipSurveyModalController = /** @class */ (function () {
         this.title = "Flexship Survey";
         this.processContext = "Create";
         this.$onInit = function () {
-            console.log('form scope???', _this.form, _this.$scope);
         };
         this.save = function () {
-            console.log('behold the form', _this.form);
             var formDataToPost = {
                 entityName: 'FlexshipSurveyResponse',
                 context: _this.processContext,
@@ -89155,6 +89159,9 @@ var SWListingDisplayController = /** @class */ (function () {
                 if (_this.columns && _this.columns.length) {
                     _this.collectionConfig.columns = _this.columns;
                 }
+                else if (_this.listingColumns && _this.listingColumns.length) {
+                    _this.columns = _this.listingColumns;
+                }
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
@@ -89685,6 +89692,7 @@ var SWListingDisplay = /** @class */ (function () {
             }
             ]
             */
+            listingColumns: '<?',
             /*Hierachy Expandable*/
             parentPropertyName: "@?",
             //booleans
@@ -89783,6 +89791,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.getDirectiveTemplate = function () {
             var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
             if (_this.column.isEditable) {
+                if (!_this.column.type) {
+                    _this.column.type = 'text';
+                }
+                if (_this.column.defaultValue) {
+                    _this.pageRecord[_this.column.propertyIdentifier] = _this.column.defaultValue;
+                }
                 return basePartialPath + 'listingdisplaycelledit.html';
             }
             var templateUrl = basePartialPath + 'listingdisplaycell.html';

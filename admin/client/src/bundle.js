@@ -63089,7 +63089,7 @@ var SWOrderTemplateFrequencyModalController = /** @class */ (function () {
         this.requestService = requestService;
         this.processContext = 'updateFrequency';
         this.uniqueName = 'frequencyModal';
-        this.formName = 'frequencydModal';
+        this.formName = 'frequencyModal';
         //rb key properties
         this.title = "Update Frequency";
         this.$onInit = function () {
@@ -77853,7 +77853,7 @@ var SWModalLauncherController = /** @class */ (function () {
             //this.showModal is only for use with custom template
             _this.showModal = true;
             //trigger bootstrap event to show modal
-            $("#" + _this.modalName).modal('show');
+            $("#" + _this.modalName).modal(_this.modalOptions);
         };
         this.saveCallback = function () {
             //the passed save action must return a promise
@@ -77885,8 +77885,16 @@ var SWModalLauncherController = /** @class */ (function () {
             }
         };
         this.hasSaveAction = typeof this.saveAction === 'function';
-        this.hasCancelAction = typeof this.cancelAction === 'function';
         this.hasDeleteAction = typeof this.deleteAction === 'function';
+        if (angular.isUndefined(this.hasCancelAction)) {
+            this.hasCancelAction = true;
+        }
+        if (angular.isUndefined(this.saveDisabled)) {
+            this.saveDisabled = false;
+        }
+        if (angular.isUndefined(this.showExit)) {
+            this.showExit = true;
+        }
         if (angular.isUndefined(this.showModal)) {
             this.showModal = false;
         }
@@ -77895,6 +77903,9 @@ var SWModalLauncherController = /** @class */ (function () {
         }
         if (angular.isUndefined(this.cancelActionText)) {
             this.cancelActionText = "Cancel";
+        }
+        if (angular.isUndefined(this.modalOptions)) {
+            this.modalOptions = {};
         }
         if (angular.isDefined(this.launchEventName)) {
             this.observerService.attach(this.launchModal, this.launchEventName);
@@ -77916,15 +77927,19 @@ var SWModalLauncher = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
+            modalOptions: "<?",
             showModal: "=?",
+            showExit: "=?",
             launchEventName: "@?",
             modalName: "@",
             title: "@",
+            saveDisabled: "=?",
             saveAction: "&?",
             deleteAction: "&?",
             cancelAction: "&?",
             saveActionText: "@?",
-            cancelActionText: "@?"
+            cancelActionText: "@?",
+            hasCancelAction: "=?"
         };
         this.controller = SWModalLauncherController;
         this.controllerAs = "swModalLauncher";
@@ -77970,9 +77985,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SWModalWindowController = /** @class */ (function () {
     // @ngInject
     function SWModalWindowController() {
-        if (angular.isUndefined(this.modalName)) {
-            throw ("You did not pass a modal title to SWModalWindowController");
-        }
+        var _this = this;
+        this.$onInit = function () {
+            _this.modalName = _this.swModalLauncher.modalName;
+            _this.title = _this.swModalLauncher.title;
+            _this.showExit = _this.swModalLauncher.showExit;
+            _this.hasSaveAction = _this.swModalLauncher.hasSaveAction;
+            _this.hasCancelAction = _this.swModalLauncher.hasCancelAction;
+            _this.saveAction = _this.swModalLauncher.saveAction;
+            _this.cancelAction = _this.swModalLauncher.cancelAction;
+            _this.saveActionText = _this.swModalLauncher.saveActionText;
+            _this.cancelActionText = _this.swModalLauncher.cancelActionText;
+            if (angular.isUndefined(_this.modalName)) {
+                throw ("You did not pass a modal title to SWModalWindowController");
+            }
+        };
     }
     return SWModalWindowController;
 }());
@@ -77986,10 +78013,15 @@ var SWModalWindow = /** @class */ (function () {
             modalBody: "?swModalBody"
         };
         this.restrict = "EA";
+        this.require = {
+            swModalLauncher: "^^swModalLauncher"
+        };
         this.scope = {};
         this.bindToController = {
             modalName: "@",
             title: "@",
+            showExit: "=?",
+            saveDisabled: "=?",
             hasSaveAction: "=?",
             saveAction: "&?",
             hasDeleteAction: "=?",
@@ -79707,6 +79739,7 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
         this.scope = true;
         this.bindToController = {
             propertyIdentifier: "@",
+            bindHtml: "=?",
             isSearchable: "@?",
         };
         this.controller = SWTypeaheadSearchLineItemController;
@@ -79716,7 +79749,12 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
                 pre: function (scope, element, attrs) {
                     var innerHTML = element[0].innerHTML;
                     element[0].innerHTML = '';
-                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    if (!scope.swTypeaheadSearchLineItem.bindHtml) {
+                        var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    }
+                    else {
+                        var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind-html="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    }
                     element.append(span);
                 },
                 post: function (scope, element, attrs) { }
@@ -89558,6 +89596,7 @@ var SWListingDisplay = /** @class */ (function () {
             }
             ]
             */
+            listingColumns: '<?',
             /*Hierachy Expandable*/
             parentPropertyName: "@?",
             //booleans
@@ -91347,6 +91386,11 @@ var ListingService = /** @class */ (function () {
         };
         this.setupColumns = function (listingID, collectionConfig, collectionObject) {
             //assumes no alias formatting
+            //when listing columns are specified override what is there
+            console.log('do we have listing columns???', _this.getListing(listingID).listingColumns.length, _this.getListing(listingID).listingColumns, _this.getListing(listingID).columns);
+            if (_this.getListing(listingID).listingColumns.length > 0) {
+                _this.getListing(listingID).columns = _this.getListing(listingID).listingColumns;
+            }
             if (_this.getListing(listingID).columns.length == 0 &&
                 collectionConfig != null) {
                 if (collectionConfig.columns == null) {
@@ -91377,7 +91421,7 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.setupColumn = function (listingID, column, collectionConfig, collectionObject) {
-            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView) {
+            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView && !column.isCollectionColumn) {
                 _this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier, undefined, column);
             }
             if (!collectionConfig && _this.getListing(listingID).collectionConfig != null) {

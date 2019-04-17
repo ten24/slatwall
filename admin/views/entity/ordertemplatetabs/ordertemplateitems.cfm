@@ -11,6 +11,18 @@
 
 <cfset rc.orderTemplateItemCollectionList = getHibachiScope().getService('OrderService').getOrderTemplateItemCollectionList() />
 
+<cfset rc.columns = rc.skuCollectionList.getCollectionConfigStruct().columns />
+
+<cfset arrayAppend(rc.columns, {
+	'title': getHibachiScope().rbKey('define.quantity'),
+	'propertyIdentifier':'quantity',
+	'type':'number',
+	'defaultValue':1, 
+	'isCollectionColumn':false, 
+	'isEditable':true,
+	'isVisible':true
+}) />
+
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
@@ -18,6 +30,7 @@
 				<hb:HibachiListingDisplay 
 					recordProcessEvent="addOrderTemplateItem"
 					collectionList="#rc.skuCollectionlist#"
+					listingColumns="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.columns))#"
 					usingPersonalCollection="false"
 				>
 				</hb:HibachiListingDisplay>	
