@@ -144,7 +144,7 @@
 				record-detail-event="#attributes.recordDetailEvent#"
 				record-detail-action="#attributes.recordDetailAction#"
 				record-detail-modal="#attributes.recordDetailModal#"
-				record delete-event="#attributes.recordDeleteEvent#"
+				record-delete-event="#attributes.recordDeleteEvent#"
 				record-delete-action="#attributes.recordDeleteAction#"
 				record-add-event="#attributes.recordProcessEvent#"
 				record-add-action="#attributes.recordProcessAction#"
