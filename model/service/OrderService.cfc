@@ -1157,12 +1157,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
 
-		var newOrderTemplateItem = this.newOrderTemplateItem();
+	
+		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+
+		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
+			
+			var newOrderTemplateItem = this.newOrderTemplateItem();
+
+			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
+			newOrderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
+			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
 		
-		newOrderTemplateItem.setSku(processObject.getSku()); 
-		newOrderTemplateItem.setQuantity(processObject.getQuantity()); 
-		newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
-		newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem); 		
+		} else {
+			
+			var orderTemplateItem = this.getOrderTemplateItem(orderTemplateItemCollectionList.getPageRecords()[1]['orderTemplateItemID']);
+			var baseQuantity = orderTemplateItem.getQuantity();
+			orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
+			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
+		}
 
 		return arguments.orderTemplate; 	
 	} 
