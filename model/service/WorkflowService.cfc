@@ -385,6 +385,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 				
 				break;
+			case 'processByQueue' :
+
+				break;
+
 			//IMPORT
 			case 'import' :
 				// TODO: Impliment This
@@ -442,8 +446,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			){
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
-					if(!isnull(workflowTaskAction.getUpdateData())){
-						if(!isnull(workflowTaskAction.getActionType())){
+					if(!isNull(workflowTaskAction.getUpdateData()) && !isNull(workflowTaskAction.getActionType())){
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
@@ -458,10 +461,10 @@ component extends="HibachiService" accessors="true" output="false" {
 							}else{
 								var actionSuccess = executeTaskAction(workflowTaskAction, javacast('null',''), data.workflowTrigger.getTriggerType());
 							}
+
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
 								arguments.data.entity.setAnnounceEvent(true);
 							}
-						}
         			}
 				}
 			}
