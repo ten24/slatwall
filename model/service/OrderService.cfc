@@ -1155,6 +1155,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate;
 	}
 
+	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, required any processObject, required struct data={}){
+
+				
+
+		return arguments.orderTemplate; 
+	}
+
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
 
 	

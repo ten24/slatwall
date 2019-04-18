@@ -145,6 +145,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		switch(variables.actionType){
 			case 'delete':
 			case 'process':
+			case 'processByQueue':
 				var crudType = 'delete';
 				break;
 			case 'print':

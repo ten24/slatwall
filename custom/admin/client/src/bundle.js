@@ -94605,6 +94605,9 @@ var SWWorkflowTriggers = /** @class */ (function () {
                     if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
                         scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
                     }
+                    if (scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig) {
+                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig.collectionConfigString;
+                    }
                     var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
                     saveWorkflowTriggerPromise.then(function () {
                         scope.showEventOptions = true;
