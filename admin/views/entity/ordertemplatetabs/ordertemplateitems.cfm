@@ -36,13 +36,18 @@
 	'cellView':'swSkuImage'
 }) />
 
+<cfset rc.editEvent = '' />
+<cfif rc.edit>
+	<cfset rc.editEvent = 'editOrderTemplateItem' />
+</cfif> 
+
 <cfoutput>
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 
 				<hb:HibachiListingDisplay
-					recordEditEvent="editOrderTemplateItem"
+					recordEditEvent="#rc.editEvent#"
 					recordDeleteEvent="deleteOrderTemplateItem"
 					listingID='OrderTemplateDetailOrderItems'
 					collectionList="#rc.orderTemplateItemCollectionlist#"

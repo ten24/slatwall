@@ -15,9 +15,11 @@ export class OrderTemplateService {
                 public requestService,
                 public utilityService
     ){
-        this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem')
-        this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem')
-        this.observerService.attach(this.refreshListing, 'OrderTemplateAddOrderTemplateItemSuccess')
+        this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
+        this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
+        this.observerService.attach(this.deleteOrderTemplateItem, 'deleteOrderTemplateItem');
+        this.observerService.attach(this.refreshListing, 'OrderTemplateAddOrderTemplateItemSuccess');
+        this.observerService.attach(this.refreshListing, 'OrderTemplateItemDeleteSuccess');
     }
     
     public setOrderTemplateID = (orderTemplateID) =>{
@@ -78,6 +80,29 @@ export class OrderTemplateService {
 		        
 		    }
 		);
+    }
+    
+    public deleteOrderTemplateItem = (state) =>{
+         var formDataToPost:any = {
+			entityID: state.orderTemplateItemID,
+			entityName: 'OrderTemplateItem',
+			context: 'delete',
+			propertyIdentifiersList: '',
+		};
+		
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		adminRequest.promise.then(
+		    (response)=>{
+		        
+		    }, 
+		    (reason)=>{
+		        
+		    }
+		);
+        
     }
  
        
