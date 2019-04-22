@@ -23,8 +23,12 @@ component accessors="true" output="false" extends="HibachiService" {
 				var csvQuery = QueryNew(arguments.columnsList, arguments.columnTypeList);
 				var numberOfColumns = listlen(line, ',', true); 
 			} else {
-				var row = []; 
-				var capture = false;
+				var row = [];
+				if(line[1] == '"'){
+					var capture = false;
+				}else{
+					var capture = true;
+				}
 				var isText = false;  
 				var capturedText = ''; 
 				for(var j = 1; j <= Len(line); j++){
@@ -459,7 +463,7 @@ component accessors="true" output="false" extends="HibachiService" {
 
 					parentTableName = newTableName;
 
-				} while(len(thisPropertyIdentifier) GT 1);
+				} while(listLen(thisPropertyIdentifier,'.') GT 1);
 			}
 		}
 		if(structKeyExists(config,'depth')) {
