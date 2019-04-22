@@ -14,7 +14,8 @@ var appConfig = {
         app:['./bootstrap.ts'],
          vendor: ["../lib/vendor.ts"],
     },
-    watch:true,
+    watch:false,
+    devtool: 'source-map',
     output: {
         path: PATHS.app,
         filename: 'bundle.js',
