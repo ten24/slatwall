@@ -1,0 +1,20 @@
+{
+    "baseentity":"SkuBundle",
+    "mapping":[
+        {
+          "sourceColumn":"ComponentItemCode",
+          "propertyIdentifier":"bundledSku.skuCode",
+          "key":true
+        },
+        {
+          "sourcecolumn":"remoteID",
+          "sourceColumnDataGenerator":"'IMPORT' + SKUItemCode + '-' + ComponentItemCode",
+          "propertyidentifier":"remoteID",
+          "key":true
+        },
+        {
+          "sourceColumn":"ComponentQuantity",
+          "propertyIdentifier":"bundledQuantity"
+        }
+    ]
+}
