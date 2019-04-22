@@ -89,7 +89,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public void function updateServerInstanceCache(string serverInstanceKey){
-		if(!structKeyExists(server, 'serverInstanceKey')){
+		if(!structKeyExists(arguments, 'serverInstanceKey')){
 			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
 		}
 		var serverInstance = this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
