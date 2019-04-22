@@ -53,6 +53,7 @@ component extends="meta.testbox.Application"{
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 
+    this.datasource.name = this.datasource.name&'-test';
 	this.sessionManagement = true;
 
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
@@ -67,7 +68,7 @@ component extends="meta.testbox.Application"{
 	this.ormsettings.eventhandling = true;
 	this.ormSettings.automanageSession = false;
 	setting requestTimeOut="0";
-
+    
 	
 
 }
