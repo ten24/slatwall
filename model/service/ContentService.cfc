@@ -227,6 +227,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Call save on the content
 		arguments.content.setSite(arguments.processObject.getSite());
 		arguments.content.setParentContent(arguments.processObject.getParentContent());
+		//Anirudh
+		if(!isNull(arguments.processObject.getContentTemplateType())){
+			arguments.content.setContentTemplateType(arguments.processObject.getContentTemplateType());
+		}
+		
 		if(
 			(isNull(arguments.data.urlTitle) || (!isNull(arguments.data.urlTitle) && !len(arguments.data.urlTitle)))
 			&& !isNull(arguments.content.getParentContent())
