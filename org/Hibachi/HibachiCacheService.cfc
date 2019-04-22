@@ -128,7 +128,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
 		var isExpired = getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(argumentCollection=arguments);
 		if(isNull(isExpired)){
-			return false;
+			return true;
 		}else{
 			return isExpired;
 		}	
