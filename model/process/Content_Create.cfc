@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Lazy / Injected Objects
 	property name="site";
 	property name="parentContent";
-	//Anirudh
+	
 	property name="contentTemplateTypeID";
 	property name="contentTemplateType" type="any";
 	
@@ -90,12 +90,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.parentContent;
 	}
 	
-	//Anirudh	
+	
 		public any function getContentTemplateType() {
 		if(!structKeyExists(variables, "contentTemplateType") && !isNull(getContentTemplateTypeID())) {
 			
 			variables.contentTemplateType = getService("typeService").getType(getContentTemplateTypeID());
-			// writeDump(variables.contentTemplateType);abort;
 			return variables.contentTemplateType;
 		}
 		if(structKeyExists(variables,'contentTemplateType')){
