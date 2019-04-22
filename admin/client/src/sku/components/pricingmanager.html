@@ -271,30 +271,10 @@
                         data-record-edit-event="EDIT_SKUPRICE"
                         data-record-delete-event="DELETE_SKUPRICE"
                         data-collection-config="swPricingManager.skuPriceCollectionConfig">
-                    
-                    <!--<sw-listing-save-action>
-                        <sw-listing-row-save>
-                        </sw-listing-row-save>
-                    </sw-listing-save-action>
-                    <sw-listing-add-action>
-                        <sw-add-sku-price-modal-launcher data-default-currency-only="true">
-                            <a href="#" title="Add Price" class="btn btn-default btn-xs" data-target="#">
-                                <i class="fa fa-plus"></i>
-                            </a>
-                        </sw-add-sku-price-modal-launcher>
-                    </sw-listing-add-action>  
-                    <sw-listing-delete-action>
-                        <sw-delete-sku-price-modal-launcher>
-                            <a href="#" title="Delete Price" class="btn btn-default" data-target="#">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </sw-delete-sku-price-modal-launcher>
-                    </sw-listing-delete-action>--> 
-                    
-                    
+                        
                 </sw-listing-display>
                 <sw-edit-sku-price-modal-launcher></sw-edit-sku-price-modal-launcher>
-                <sw-add-sku-price-modal-launcher>
+                <sw-add-sku-price-modal-launcher data-product-id="{{swPricingManager.productId}}">
                     <a href="#" title="Add Price" class="btn btn-default" data-target="#">
                         Add Sku Price
                         <i class="fa fa-plus"></i>
