@@ -109,7 +109,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var key in salePriceDetails) {
 				if(structKeyExists(salePriceDetails[key], "salePrice") && salePriceDetails[key].salePrice < orderItem.getSkuPrice()) {
 
-					var discountAmount = val(getService('HibachiUtilityService').precisionCalculate((orderItem.getSkuPrice() * orderItem.getQuantity()) - (salePriceDetails[key].salePrice * orderItem.getQuantity())));
+					var discountAmount = val(getService('HibachiUtilityService').precisionCalculate((orderItem.getPrice() * orderItem.getQuantity()) - (salePriceDetails[key].salePrice * orderItem.getQuantity())));
 
 					arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
 

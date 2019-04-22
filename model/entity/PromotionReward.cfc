@@ -162,6 +162,13 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 		return variables.currencyCode;
 	}
+	
+	public numeric function getAmount(){
+		if(!structKeyExists(variables,'amount')){
+			variables.amount = 0;
+		}
+		return variables.amount;
+	}
 
 
 	public numeric function getAmountByCurrencyCode(required string currencyCode){
