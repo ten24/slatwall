@@ -106,13 +106,19 @@ component accessors="true" output="false" extends="HibachiService" {
 		return false;
 	}
 	
-	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
-		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+	public void function updateServerInstanceCache(string serverInstanceKey){
+		if(!structKeyExists(arguments, 'serverInstanceKey')){
+			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
+		}
+		var serverInstance = this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
 		getDao('hibachiCacheDao').updateServerInstanceCache(serverInstance);
 	}
 	
-	public void function updateServerInstanceSettingsCache(required string serverInstanceIPAddress){
-		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+	public void function updateServerInstanceSettingsCache(string serverInstanceKey){
+		if(!structKeyExists(arguments, 'serverInstanceKey')){
+			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
+		}
+		var serverInstance = this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	

@@ -676,6 +676,7 @@ component extends="framework.one" {
 					applicationInitData["skipDbData"] = 				variables.framework.hibachi.skipDbData;
 					// Log the setup start with values
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application setup started.");
+					writeLog(file="#variables.framework.applicationKey#", text="General Log - Server Instance Key: #server[variables.framework.applicationKey].serverInstanceKey#" );
 					for(var key in applicationInitData) {
 						if(isSimpleValue(applicationInitData[key])) {
 							writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Init '#key#' as: #applicationInitData[key]#");
@@ -883,11 +884,11 @@ component extends="framework.one" {
 
 					//only run the update if it wasn't initiated by serverside cache being expired
 					if(!variables.framework.hibachi.isApplicationStart){
-					if(!arguments.reloadByServerInstance){
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
-					}else{
-						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-						serverInstance.setServerInstanceExpired(false);
+						if(!arguments.reloadByServerInstance){
+							getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(server[variables.framework.applicationKey].serverInstanceKey);
+						}else{
+							var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey,true,getHibachiScope().getServerInstanceIPAddress());
+							serverInstance.setServerInstanceExpired(false);
 							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 							getHibachiScope().flushORMSession();
 						}						
