@@ -25,14 +25,12 @@ component accessors="true" output="false" extends="HibachiService" {
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
 
 		if(isNull(serverInstance) || serverInstance.getNewFlag()){
-			serverInstance = this.newServerInstance();
-		
-			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
-	
-			if(structKeyExists(arguments, 'serverInstanceIPAddress')){
-				serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+			if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
+				arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
 			}
-
+			serverInstance = this.newServerInstance();
+			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
+			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			serverInstance.setServerInstanceExpired(false);
 			serverInstance.setSettingsExpired(false);
 			
@@ -41,22 +39,6 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 		return serverInstance;	
 	} 
-	
-	public any function getServerInstanceByServerInstanceIPAddress(required string serverInstanceIPAddress){
-		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
-		
-		if(isNull(serverInstance) || serverInstance.getNewFlag()){
-			serverInstance = this.newServerInstance();
-			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-			serverInstance.setServerInstanceExpired(false);
-			serverInstance.setSettingsExpired(false);
-			
-			this.saveServerInstance(serverInstance); 
-			getHibachiScope().flushOrmSession();
-		}
-		return serverInstance;
-	}
-	
 	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return getDao('HibachiCacheDAO').getDatabaseCacheByDatabaseCacheKey(arguments.databaseCacheKey);
@@ -106,13 +88,19 @@ component accessors="true" output="false" extends="HibachiService" {
 		return false;
 	}
 	
-	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
-		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+	public void function updateServerInstanceCache(string serverInstanceKey){
+		if(!structKeyExists(server, 'serverInstanceKey')){
+			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
+		}
+		var serverInstance = this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
 		getDao('hibachiCacheDao').updateServerInstanceCache(serverInstance);
 	}
 	
-	public void function updateServerInstanceSettingsCache(required string serverInstanceIPAddress){
-		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+	public void function updateServerInstanceSettingsCache(string serverInstanceKey){
+		if(!structKeyExists(arguments, 'serverInstanceKey')){
+			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
+		}
+		var serverInstance = this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	

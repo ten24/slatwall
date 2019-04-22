@@ -319,9 +319,7 @@ component extends="framework.one" {
 		
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
-		// Verify that the application is setup
-		verifyApplicationSetup(noredirect=arguments.noredirect);
-						
+		
 		if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
 			server[variables.framework.applicationKey] = {};
 		}
@@ -329,6 +327,9 @@ component extends="framework.one" {
 		if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
 			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
 		}
+		
+		// Verify that the application is setup
+		verifyApplicationSetup(noredirect=arguments.noredirect);
 
 		if(!variables.framework.hibachi.isApplicationStart && 
 			variables.framework.hibachi.useServerInstanceCacheControl &&
@@ -341,7 +342,7 @@ component extends="framework.one" {
 		
 			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true, getHibachiScope().getServerInstanceIPAddress());
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
 			serverInstance.setSettingsExpired(false);
 			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 		}
