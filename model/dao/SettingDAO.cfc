@@ -64,7 +64,7 @@ Notes:
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#">
 			)
 		</cfquery>
-		<cfset getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress())/>
+		<cfset getHibachiCacheService().updateServerInstanceSettingsCache()/>
 		
 	</cffunction>
 	
