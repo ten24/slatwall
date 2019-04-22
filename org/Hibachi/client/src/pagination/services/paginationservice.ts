@@ -126,7 +126,7 @@ class Pagination{
         }
 
         if(this.getCurrentPage() <= 4) {
-            if(pageNumber <= 6 && pageNumber - this.getCurrentPage() <= 1) {
+            if(pageNumber < 6 && pageNumber - this.getCurrentPage() <= 2) { // 
                 return true;
             }
         }
