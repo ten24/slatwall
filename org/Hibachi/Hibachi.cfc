@@ -137,12 +137,20 @@ component extends="framework.one" {
 		return 'production';
 	}
 	
+	public void function setDatasource(required string datasourceName){
+		this.datasource.name=arguments.datasourceName;
+	}
+	
+	public string function getDatasource(){
+		return this.datasource.name;
+	}
+	
 
 	// =============== configMappings
 
 	// Defaults
 	this.mappings[ "/#variables.framework.applicationKey#" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/org/Hibachi/", "");
-	this.mappings[ '/framework' ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & '/framework';
+	this.mappings[ '/framework' ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & 'framework';
 
 	// Allow For Application Config
 	try{include "../../config/configMappings.cfm";}catch(any e){}
