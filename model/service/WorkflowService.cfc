@@ -488,7 +488,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
 			
-			getHibachiCacheService().updateServerInstanceSettingsCache();
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			
 			getHibachiDAO().flushORMSession();
 			
@@ -512,7 +512,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
 			
-			getHibachiCacheService().updateServerInstanceSettingsCache();
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			
 			getHibachiDAO().flushORMSession();
 			
@@ -541,7 +541,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If there aren't any errors then flush, and clear cache
 		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
 			
-			getHibachiCacheService().updateServerInstanceSettingsCache();
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			
 			getHibachiDAO().flushORMSession();
 			
