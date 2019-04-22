@@ -677,6 +677,7 @@ component extends="framework.one" {
 					applicationInitData["skipDbData"] = 				variables.framework.hibachi.skipDbData;
 					// Log the setup start with values
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application setup started.");
+					writeLog(file="#variables.framework.applicationKey#", text="General Log - Server Instance Key: #server[variables.framework.applicationKey].serverInstanceKey#" );
 					for(var key in applicationInitData) {
 						if(isSimpleValue(applicationInitData[key])) {
 							writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Init '#key#' as: #applicationInitData[key]#");
