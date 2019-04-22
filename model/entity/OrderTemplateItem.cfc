@@ -58,17 +58,17 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	// Order Template (many-to-one)
 	public void function setOrderTemplate(required any orderTemplate) {
 		variables.orderTemplate = arguments.orderTemplate;
-		if(isNew() or !arguments.order.hasOrderTemplateItem( this )) {
-			arrayAppend(arguments.order.getOrderTemplateItems(), this);
+		if(isNew() or !arguments.orderTemplate.hasOrderTemplateItem( this )) {
+			arrayAppend(arguments.orderTemplate.getOrderTemplateItems(), this);
 		}
 	}
 	public void function removeOrderTemplate(any orderTemplate) {
 		if(!structKeyExists(arguments, "orderTemplate")) {
 			arguments.orderTemplate = variables.orderTemplate;
 		}
-		var index = arrayFind(arguments.order.getOrderTemplateItems(), this);
+		var index = arrayFind(arguments.orderTemplate.getOrderTemplateItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.order.getOrderTemplateItems(), index);
+			arrayDeleteAt(arguments.orderTemplate.getOrderTemplateItems(), index);
 		}
 		structDelete(variables, "orderTemplate");
 	}	

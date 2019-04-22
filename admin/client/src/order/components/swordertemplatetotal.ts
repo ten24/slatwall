@@ -1,36 +1,33 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWOrderTemplateFrequencyCardController{
+class SWOrderTemplateTotalController{
 
 	public orderTemplate;
-    public frequencyTerm;
-    public frequencyTermOptions;
+    public total;
 
 	constructor(public $hibachi,
 				public observerService,
 	            public orderTemplateService,
 				public rbkeyService
 	){
-		this.observerService.attach(this.refreshFrequencyTerm,'OrderTemplateUpdateFrequencySuccess')
+		this.observerService.attach(this.refreshTotal, 'OrderTemplateTotalUpdate')
 	}
 
-	public refreshFrequencyTerm = (data) =>{
-		this.frequencyTerm = data.frequencyTerm;
+	public refreshTotal = (data) =>{
+		this.total = data.total;
 	}
 }
 
-class SWOrderTemplateFrequencyCard implements ng.IDirective {
+class SWOrderTemplateTotal implements ng.IDirective {
 
 	public restrict:string;
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-		orderTemplate:'<',
-        frequencyTerm:'<?',
-        frequencyTermOptions:'<'
+		orderTemplate:'<'
 	};
-	public controller=SWOrderTemplateFrequencyCardController;
-	public controllerAs="swOrderTemplateFrequencyCard";
+	public controller=SWOrderTemplateTotalController;
+	public controllerAs="swOrderTemplateTotal";
 
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
@@ -38,7 +35,7 @@ class SWOrderTemplateFrequencyCard implements ng.IDirective {
 			slatwallPathBuilder,
 			$hibachi,
 			rbkeyService
-        ) => new SWOrderTemplateFrequencyCard(
+        ) => new SWOrderTemplateTotal(
 			orderPartialsPath,
 			slatwallPathBuilder,
 			$hibachi,
@@ -69,6 +66,6 @@ class SWOrderTemplateFrequencyCard implements ng.IDirective {
 }
 
 export {
-	SWOrderTemplateFrequencyCard
+	SWOrderTemplateTotal
 };
 

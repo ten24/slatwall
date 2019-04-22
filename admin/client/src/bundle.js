@@ -63267,7 +63267,6 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
         this.title = "Update Schedule";
         this.$onInit = function () {
             if (_this.scheduleOrderNextPlaceDateTimeString != null) {
-                console.log('scheduleOrderNextPlaceDateTime', _this.scheduleOrderNextPlaceDateTimeString, Date.parse(_this.scheduleOrderNextPlaceDateTimeString));
                 var date = Date.parse(_this.scheduleOrderNextPlaceDateTimeString);
                 _this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
             }
@@ -63283,6 +63282,12 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
                 scheduleOrderNextPlaceDateTime: _this.scheduleOrderNextPlaceDateTime,
                 propertyIdentifiersList: 'orderTemplateID,scheduleOrderNextPlaceDateTime'
             };
+            formDataToPost.orderTemplateScheduleDateChangeReasonTypeID = _this.orderTemplateScheduleDateChangeReasonType.value;
+            formDataToPost.orderTemplateID = _this.orderTemplate.orderTemplateID;
+            if (_this.orderTemplateScheduleDateChangeReasonType.value === '2c9280846a023949016a029455f0000c' &&
+                _this.otherScheduleDateChangeReasonNotes.length) {
+                formDataToPost.otherScheduleDateChangeReasonNotes = _this.otherScheduleDateChangeReasonNotes;
+            }
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -63300,6 +63305,7 @@ var SWOrderTemplateUpdateScheduleModal = /** @class */ (function () {
         this.bindToController = {
             modalButtonText: "@?",
             orderTemplate: "<?",
+            orderTemplateScheduleDateChangeReasonTypeOptions: "<?",
             scheduleOrderNextPlaceDateTimeString: "@?",
             scheduleOrderNextPlaceDateTime: "=?",
             endDayOfTheMonth: '<?',
@@ -67992,6 +67998,61 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var SWSkuImageController = /** @class */ (function () {
+    //@ngInject
+    function SWSkuImageController(fileService, $hibachi, $http, appConfig) {
+        var _this = this;
+        this.fileService = fileService;
+        this.$hibachi = $hibachi;
+        this.$http = $http;
+        this.appConfig = appConfig;
+        console.log('conf img', this.appConfig);
+        fileService.imageExists(this.imagePath).then(function () {
+            //Do nothing
+        }, function () {
+            _this.imagePath = _this.appConfig.baseURL + 'assets/images/image-placeholder.jpg';
+        }).finally(function () {
+            if (angular.isDefined(_this.imagePath)) {
+                _this.image = _this.appConfig.baseURL + _this.imagePath;
+            }
+        });
+    }
+    return SWSkuImageController;
+}());
+exports.SWSkuImageController = SWSkuImageController;
+var SWSkuImage = /** @class */ (function () {
+    function SWSkuImage(skuPartialsPath, slatwallPathBuilder) {
+        this.restrict = 'EA';
+        this.scope = {};
+        this.bindToController = {
+            imagePath: "@?"
+        };
+        this.controller = SWSkuImageController;
+        this.controllerAs = "swSkuImage";
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skuimage.html";
+    }
+    SWSkuImage.Factory = function () {
+        var directive = function (skuPartialsPath, slatwallPathBuilder) { return new SWSkuImage(skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWSkuImage;
+}());
+exports.SWSkuImage = SWSkuImage;
+
+
+/***/ }),
+/* 679 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 var SWSkuPriceEditController = /** @class */ (function () {
     //@ngInject
     function SWSkuPriceEditController(historyService, listingService, observerService, skuPriceService, utilityService, $hibachi, $filter, $timeout) {
@@ -69081,6 +69142,7 @@ var defaultskuservice_1 = __webpack_require__(684);
 var skupriceservice_1 = __webpack_require__(685);
 //controllers
 //directives
+<<<<<<< HEAD
 var swpricingmanager_1 = __webpack_require__(676);
 var swimagedetailmodallauncher_1 = __webpack_require__(675);
 var swaddskupricemodallauncher_1 = __webpack_require__(671);
@@ -69091,6 +69153,19 @@ var swdefaultskuradio_1 = __webpack_require__(672);
 var swskucurrencyselector_1 = __webpack_require__(678);
 var swskupriceedit_1 = __webpack_require__(679);
 var swskucodeedit_1 = __webpack_require__(677);
+=======
+var swpricingmanager_1 = __webpack_require__(675);
+var swimagedetailmodallauncher_1 = __webpack_require__(674);
+var swaddskupricemodallauncher_1 = __webpack_require__(670);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(672);
+var sweditskupricemodallauncher_1 = __webpack_require__(673);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(682);
+var swdefaultskuradio_1 = __webpack_require__(671);
+var swskuimage_1 = __webpack_require__(678);
+var swskucurrencyselector_1 = __webpack_require__(677);
+var swskupriceedit_1 = __webpack_require__(679);
+var swskucodeedit_1 = __webpack_require__(676);
+>>>>>>> c0caaf0d066e841aeb56417e4b91adb73e23349b
 var swskupricesedit_1 = __webpack_require__(681);
 var swskupricequantityedit_1 = __webpack_require__(680);
 var swskuthumbnail_1 = __webpack_require__(683);
@@ -69114,6 +69189,7 @@ var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).c
     .directive('swSkuCurrencySelector', swskucurrencyselector_1.SWSkuCurrencySelector.Factory())
     .directive('swSkuPriceEdit', swskupriceedit_1.SWSkuPriceEdit.Factory())
     .directive('swSkuCodeEdit', swskucodeedit_1.SWSkuCodeEdit.Factory())
+    .directive('swSkuImage', swskuimage_1.SWSkuImage.Factory())
     .directive('swSkuPricesEdit', swskupricesedit_1.SWSkuPricesEdit.Factory())
     .directive('swSkuPriceQuantityEdit', swskupricequantityedit_1.SWSkuPriceQuantityEdit.Factory())
     .directive('swSkuThumbnail', swskuthumbnail_1.SWSkuThumbnail.Factory());
@@ -69166,6 +69242,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var hibachi_module_1 = __webpack_require__(850);
 var workflow_module_1 = __webpack_require__(304);
 var entity_module_1 = __webpack_require__(302);
+<<<<<<< HEAD
 var account_module_1 = __webpack_require__(609);
 var address_module_1 = __webpack_require__(611);
 var content_module_1 = __webpack_require__(620);
@@ -69179,6 +69256,21 @@ var orderdeliverydetail_module_1 = __webpack_require__(649);
 var order_module_1 = __webpack_require__(647);
 var product_module_1 = __webpack_require__(663);
 var productbundle_module_1 = __webpack_require__(669);
+=======
+var account_module_1 = __webpack_require__(608);
+var address_module_1 = __webpack_require__(610);
+var content_module_1 = __webpack_require__(619);
+var formbuilder_module_1 = __webpack_require__(621);
+var giftcard_module_1 = __webpack_require__(633);
+var optiongroup_module_1 = __webpack_require__(637);
+var orderitem_module_1 = __webpack_require__(657);
+var orderfulfillment_module_1 = __webpack_require__(650);
+var fulfillmentbatchdetail_module_1 = __webpack_require__(623);
+var orderdeliverydetail_module_1 = __webpack_require__(648);
+var order_module_1 = __webpack_require__(646);
+var product_module_1 = __webpack_require__(662);
+var productbundle_module_1 = __webpack_require__(668);
+>>>>>>> c0caaf0d066e841aeb56417e4b91adb73e23349b
 var sku_module_1 = __webpack_require__(686);
 var subscriptionusage_module_1 = __webpack_require__(690);
 var term_module_1 = __webpack_require__(693);
@@ -89066,6 +89158,9 @@ var SWListingDisplayController = /** @class */ (function () {
                 if (_this.columns && _this.columns.length) {
                     _this.collectionConfig.columns = _this.columns;
                 }
+                else if (_this.listingColumns && _this.listingColumns.length) {
+                    _this.columns = _this.listingColumns;
+                }
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
@@ -89695,6 +89790,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.getDirectiveTemplate = function () {
             var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
             if (_this.column.isEditable) {
+                if (!_this.column.type) {
+                    _this.column.type = 'text';
+                }
+                if (_this.column.defaultValue) {
+                    _this.pageRecord[_this.column.propertyIdentifier] = _this.column.defaultValue;
+                }
                 return basePartialPath + 'listingdisplaycelledit.html';
             }
             var templateUrl = basePartialPath + 'listingdisplaycell.html';
@@ -91386,11 +91487,6 @@ var ListingService = /** @class */ (function () {
         };
         this.setupColumns = function (listingID, collectionConfig, collectionObject) {
             //assumes no alias formatting
-            //when listing columns are specified override what is there
-            console.log('do we have listing columns???', _this.getListing(listingID).listingColumns.length, _this.getListing(listingID).listingColumns, _this.getListing(listingID).columns);
-            if (_this.getListing(listingID).listingColumns.length > 0) {
-                _this.getListing(listingID).columns = _this.getListing(listingID).listingColumns;
-            }
             if (_this.getListing(listingID).columns.length == 0 &&
                 collectionConfig != null) {
                 if (collectionConfig.columns == null) {
@@ -91421,7 +91517,7 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.setupColumn = function (listingID, column, collectionConfig, collectionObject) {
-            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView && !column.isCollectionColumn) {
+            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView) {
                 _this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier, undefined, column);
             }
             if (!collectionConfig && _this.getListing(listingID).collectionConfig != null) {

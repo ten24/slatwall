@@ -29,12 +29,15 @@ class SWOrderTemplateUpdateScheduleModalController{
 	constructor( public $timeout,
 	             public $hibachi,
 	             public observerService,
+	             public orderTemplateService,
 				 public rbkeyService,
 				 public requestService
 	){
 	}
 	
 	public $onInit = () =>{
+		this.orderTemplateService.setOrderTemplateID(this.orderTemplate.orderTemplateID);
+		
 	    if(this.scheduleOrderNextPlaceDateTimeString != null){
 	        var date = Date.parse(this.scheduleOrderNextPlaceDateTimeString);
 	        this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();

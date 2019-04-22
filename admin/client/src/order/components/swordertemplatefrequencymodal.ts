@@ -22,6 +22,7 @@ class SWOrderTemplateFrequencyModalController{
 	             public $hibachi,
 	             public entityService,
 	             public observerService,
+	             public orderTemplateService,
 				 public rbkeyService,
 				 public requestService
 	){
