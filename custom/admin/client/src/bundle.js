@@ -88450,15 +88450,12 @@ var SWIsolateChildForm = /** @class */ (function () {
         */
         this.link = function (scope, element, attrs, formController) {
             if (!formController) {
-                throw ('asdjnasdk');
                 return;
             }
             var parentForm = formController.$$parentForm;
             if (!parentForm) {
-                throw ('asdjnkasdjknas');
                 return;
             }
-            console.log('removing this form controller from parent', parentForm, formController);
             parentForm.$removeControl(formController);
         };
     }

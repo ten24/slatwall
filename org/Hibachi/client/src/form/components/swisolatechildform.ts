@@ -30,17 +30,13 @@ class SWIsolateChildForm implements ng.IDirective {
     public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any) =>
     {
       if (!formController) {
-          throw('asdjnasdk')
         return;
       }
 
       var parentForm = formController.$$parentForm;
       if (!parentForm) {
-          throw('asdjnkasdjknas')
         return;
       }
-      
-      console.log('removing this form controller from parent', parentForm, formController);
 
       parentForm.$removeControl(formController);
     }
