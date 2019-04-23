@@ -161,7 +161,6 @@ component extends="HibachiService" output="false" accessors="true"  {
 	}
 	
 	private any function getItemArrayFromOrderDelivery_Create(required any processObject){
-		//Get # of bottles for each bottle size option
         var itemArray = [];
         var deliveryItems = arguments.processObject.getOrderDeliveryItems();
         for (var itemData in deliveryItems){

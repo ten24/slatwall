@@ -50,6 +50,37 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
+    <cfset productsCollectionList = rc.productType.getProductsCollectionList()>
+
+	<cfset displayPropertyList = "productName,productCode,brand.brandName,activeFlag,publishedFlag,price"/>
+    <cfset productsCollectionList.setDisplayProperties(
+    		displayPropertyList,
+    		{
+    			isVisible=true,
+    			isSearchable=true,
+    			isDeletable=true
+    		}
+    	)
+    />
+    
+    <cfset productsCollectionList.addDisplayProperty(
+    displayProperty='productID',
+    columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+
+    <hb:HibachiListingDisplay 
+		collectionList="#productsCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(productsCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(productsCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
+
+
+<!---
 
 	<hb:HibachiListingDisplay smartList="#rc.productType.getProductsSmartList()#"
 							   recordEditAction="admin:entity.editproduct"
@@ -61,5 +92,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="price" />
 	</hb:HibachiListingDisplay>
+	
+--->
 	
 </cfoutput>

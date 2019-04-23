@@ -218,6 +218,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAllowThirdPartyShippingAccount={fieldType="yesno",defaultValue=0},
+			globalDisableSearchSettings={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
