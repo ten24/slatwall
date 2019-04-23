@@ -385,6 +385,7 @@
                             data-ng-repeat="(pageRecordKey, pageRecord) in [swListingDisplay.collectionData.pageRecords[0]]"
                             data-ng-show="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
+                            ng-if="!swListingDisplay.collectionConfig.hasNonPersistentProperty()"
                         >
 
                             <!-- Sortable -->

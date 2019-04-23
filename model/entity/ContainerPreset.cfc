@@ -101,15 +101,5 @@ component displayname="ContainerPreset" entityname="SlatwallContainerPreset" tab
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
-
-public array function getBottleSizeOptions(){
-        if(!structKeyExists(variables,'bottleSizeOptions')){
-            var bottleSizeOptionCollection = getService('optionService').getOptionCollectionList();
-            bottleSizeOptionCollection.addFilter('optionGroup.optionGroupCode','size');
-             bottleSizeOptionCollection.addOrderBy('sortOrder');
-            variables.bottleSizeOptions = bottleSizeOptionCollection.getRecordOptions(false);
-        }
-        return variables.bottleSizeOptions;
-    }//CUSTOM FUNCTIONS END
+	// ===================  END:  ORM Event Hooks  =========================	
 }

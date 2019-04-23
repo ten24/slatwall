@@ -122,7 +122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If the returnRate is null, then check the sku against the parent priceGroup which will check product and productType (this is done with recursion)
 		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup())) {
-			returnRate = getRateForSkuBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup.getParentPriceGroup());
+			returnRate = getRateForSkuBasedOnPriceGroup(sku=arguments.sku, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 
 		// As long as the returnRate is not null, then return it.
