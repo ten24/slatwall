@@ -236,9 +236,9 @@
                                                 >
                                                 </sw-listing-display>
                                                 <sw-listing-display
-                                                    ng-if="workflowTriggerCollectionConfig"
+                                                    ng-if="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
                                                     data-using-personal-collection="false"
-                                                    data-collection-config="workflowTriggerCollectionConfig"
+                                                    data-collection-config="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
                                                     data-edit="false"
                                             	    data-has-search="true"
                                             	    data-is-angular-route="false"
@@ -295,6 +295,12 @@
                                         <sw-property-display
                                                 data-object="workflowTriggers.selectedTrigger"
                                                 data-property-identifier="timeout"
+                                                data-editing="true"
+                                                data-is-dirty="true"
+                                        ></sw-property-display>
+                                        <sw-property-display
+                                                data-object="workflowTriggers.selectedTrigger"
+                                                data-property-identifier="collectionPassthrough"
                                                 data-editing="true"
                                                 data-is-dirty="true"
                                         ></sw-property-display>

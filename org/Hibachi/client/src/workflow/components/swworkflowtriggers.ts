@@ -79,7 +79,7 @@ class SWWorkflowTriggers{
                     if(scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig && collectionConfigData.collectionConfig.collectionConfigString){
                         
                         scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig.collectionConfigString);
-                        scope.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(collectionConfigData.collectionConfig.collectionConfigString));
+                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(collectionConfigData.collectionConfig.collectionConfigString));
                         //update the property display programatically
                         observerService.notifyById('pullBindings','WorkflowTriggerscheduleCollectionConfigpullBindings').then(function(){
                               
