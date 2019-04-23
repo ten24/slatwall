@@ -32,7 +32,7 @@ appConfig.plugins =  [
 	    new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
 	    new webpack.optimize.OccurrenceOrderPlugin(),
 	    new webpack.optimize.UglifyJsPlugin({
-	    mangle: true,
+	    mangle: false,
 	    minimize: true,
 	    sourceMap:true,
 		    compress: {

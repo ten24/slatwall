@@ -71,6 +71,7 @@ Notes:
         		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="clearCache"  type="list" />
         		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="clone" type="list" />
         		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="rename" type="list" modal="true" />
+        		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="configure" type="list" modal="true" />
         	    </cfif>
     	    </cfif>
     </hb:HibachiEntityActionBar>
