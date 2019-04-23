@@ -96,11 +96,9 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		if(!getHibachiScope().getApplicationValue('skipDbData')){
 			// Setup Default Data... Not called on soft reloads.
 			getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
+			getBeanFactory().getBean('integrationService').loadDataFromIntegrations();
+			writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		}
-		// Setup Default Data.. Not called on soft reloads
-		getBeanFactory().getBean('integrationService').loadDataFromIntegrations();
-		
-		writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		
 		// Clear the setting cache so that it can be reloaded
 		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
@@ -113,8 +111,8 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		// Run Scripts
 		if( !getHibachiScope().getApplicationValue('skipDbData')){
 			getBeanFactory().getBean("updateService").runScripts();
+			writeLog(file="Slatwall", text="General Log - Update Service Scripts Have been Run");
 		}
-		writeLog(file="Slatwall", text="General Log - Update Service Scripts Have been Run");
 		
 	}
 	
