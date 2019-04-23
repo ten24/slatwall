@@ -75,10 +75,11 @@ class SWWorkflowTriggers{
                 scope.collectionCollectionConfig.addFilter("collectionObject",scope.workflow.data.workflowObject);
                 
                 scope.updateCollection = (collectionConfigData)=>{
+                    
                     if(scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig && collectionConfigData.collectionConfig.collectionConfigString){
                         
                         scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig.collectionConfigString);
-                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig =collectionConfigService.newCollectionConfig().loadJson(scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig.toString());
+                        scope.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(collectionConfigData.collectionConfig.collectionConfigString));
                         //update the property display programatically
                         observerService.notifyById('pullBindings','WorkflowTriggerscheduleCollectionConfigpullBindings').then(function(){
                               
@@ -183,11 +184,9 @@ class SWWorkflowTriggers{
 				 * Saves the workflow triggers then cascade a save to the workflow object as well.
 				 */
 				scope.saveWorkflowTrigger = function(context){
-                    if(!scope.workflowTriggers.selectedTrigger.$$isPersisted()){
+                    
+                    if(!scope.workflowTriggers.selectedTrigger.$$isPersisted() && scope.workflowTriggers.selectedTrigger.data.workflow == null){
                         scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
-                    }
-                    if(scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig){
-                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig.collectionConfigString;
                     }
                     
 					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
