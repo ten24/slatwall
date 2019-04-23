@@ -1695,8 +1695,8 @@ table tr th .glyphicon {
 }
 .s-body-nav .s-header-info li:after {
   font-family: "Font Awesome 5 Free";
-  content: '\f105';
   font-weight: 600;
+  content: '\f105';
   padding-right: 0px !important;
   padding-left: 0px !important;
   color: #b3b3b3;
@@ -4462,6 +4462,7 @@ table .s-table-header .table-section a.s-hint {
   font-family: "Font Awesome 5 Free";
   font-weight: 600;
   font-style: normal;
+  font: normal normal normal 14px/1;
   content: "\f0da";
   position: absolute;
   right: 1px;
@@ -5007,7 +5008,7 @@ a[data-toggle="collapse"] {
   display: inline-block;
   font-family: "Font Awesome 5 Free";
   font-weight: 600;
-  font-weight: normal;
+  font-style: normal;
   font-size: inherit;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
