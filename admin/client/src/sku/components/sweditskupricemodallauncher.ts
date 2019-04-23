@@ -46,10 +46,14 @@ class SWEditSkuPriceModalLauncherController{
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "editSkuPrice" + this.utilityService.createID(16);
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
         
         // this.initData();
     }
+    
+    
     
     public updateCurrencyCodeSelector = (args) =>{
         if(args != 'All'){
@@ -149,7 +153,6 @@ class SWEditSkuPriceModalLauncherController{
 	}
     
     public save = () => {
-        console.log("this works!!!")
         this.observerService.notify("updateBindings");
         var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
         var savePromise = this.skuPrice.$$save();
@@ -158,6 +161,8 @@ class SWEditSkuPriceModalLauncherController{
             (response)=>{ 
                this.saveSuccess = true; 
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
+               //hack, for whatever reason is not responding to getCollection event
+                this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
             },
             (reason)=>{
                 //error callback
@@ -172,14 +177,14 @@ class SWEditSkuPriceModalLauncherController{
                         this.skuPrice.data[key] = null;
                     }
                 }
-                
+                console.log(this.listingID);
                 this.formService.resetForm(this.formName);
                 this.initData();
-                
                 
                 this.listingService.getCollection(this.listingID); 
                 
                 this.listingService.notifyListingPageRecordsUpdate(this.listingID);
+                
             }
         });
         return savePromise; 
@@ -247,6 +252,7 @@ class SWEditSkuPriceModalLauncher implements ng.IDirective{
         public slatwallPathBuilder
     ){
         this.template = swEditSkuPriceModalLauncherHTML;
+        
     }
     
     public compile = (element: JQuery, attrs: angular.IAttributes) => {

@@ -64090,7 +64090,7 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct) {
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -64098,6 +64098,7 @@ var CollectionConfig = /** @class */ (function () {
         if (currentPage === void 0) { currentPage = 1; }
         if (pageShow === void 0) { pageShow = 10; }
         if (keywords === void 0) { keywords = ''; }
+        if (customEndpoint === void 0) { customEndpoint = ''; }
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
@@ -64120,6 +64121,7 @@ var CollectionConfig = /** @class */ (function () {
         this.currentPage = currentPage;
         this.pageShow = pageShow;
         this.keywords = keywords;
+        this.customEndpoint = customEndpoint;
         this.allRecords = allRecords;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
@@ -64266,7 +64268,8 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
-                periodInterval: _this.periodInterval
+                periodInterval: _this.periodInterval,
+                customEndpoint: _this.customEndpoint
             };
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
@@ -64748,6 +64751,9 @@ var CollectionConfig = /** @class */ (function () {
         this.getPageShow = function () {
             return _this.pageShow;
         };
+        this.getCustomEndpoint = function () {
+            return _this.customEndpoint;
+        };
         this.setAllRecords = function (allFlag) {
             if (allFlag === void 0) { allFlag = false; }
             _this.allRecords = allFlag;
@@ -64765,6 +64771,10 @@ var CollectionConfig = /** @class */ (function () {
         };
         this.setKeywords = function (keyword) {
             _this.keywords = keyword;
+            return _this;
+        };
+        this.setCustomEndpoint = function (endPoint) {
+            _this.customEndpoint = endPoint;
             return _this;
         };
         this.setId = function (id) {
@@ -70899,7 +70909,12 @@ var HibachiService = /** @class */ (function () {
                 params.processContext = options.processContext || '';
                 params.isReport = options.isReport || false;
                 params.periodInterval = options.periodInterval || "";
-                var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
+                if (angular.isDefined(options.customEndpoint) && options.customEndpoint.length) {
+                    var urlString = _this.getUrlWithActionPrefix() + options.customEndpoint;
+                }
+                else {
+                    var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
+                }
             }
             if (angular.isDefined(options.id)) {
                 urlString += '&entityId=' + options.id;
@@ -75837,7 +75852,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 */
 var SWFFormController = /** @class */ (function () {
     // @ngInject
-    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, observerService, hibachiValidationService) {
+    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
@@ -75845,7 +75860,6 @@ var SWFFormController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.$element = $element;
         this.validationService = validationService;
-        this.observerService = observerService;
         this.hibachiValidationService = hibachiValidationService;
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
@@ -75887,7 +75901,6 @@ var SWFFormController = /** @class */ (function () {
             return file;
         };
         this.submitForm = function () {
-            console.log('submittingForm', _this.form.$valid);
             if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
@@ -78384,21 +78397,21 @@ var SWListingDisplayController = /** @class */ (function () {
                     _this.listingService.setupInMultiCollectionConfigMode(_this.tableID);
                 }).catch(function () {
                     //do the initial setup for single collection mode
-                    console.log('initial setup 1');
                     _this.listingService.setupInSingleCollectionConfigMode(_this.tableID, _this.$scope);
                 }).finally(function () {
                     if (angular.isUndefined(_this.getCollection)) {
                         _this.getCollection = _this.listingService.setupDefaultGetCollection(_this.tableID);
                     }
-                    console.log('initial setup 2');
                     _this.paginator.getCollection = _this.getCollection;
                     _this.observerService.attach(_this.getCollectionObserver, 'getCollection', _this.tableID);
                 });
             }
             else if (_this.multiSlot == false) {
                 if (_this.columns && _this.columns.length) {
-                    console.log('setting columns 2');
                     _this.collectionConfig.columns = _this.columns;
+                }
+                else if (_this.listingColumns && _this.listingColumns.length) {
+                    _this.columns = _this.listingColumns;
                 }
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
@@ -78571,6 +78584,9 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
             if (_this.collectionConfig) {
                 _this.collectionConfig.setEventID(_this.tableID);
+                if (_this.customEndpoint && _this.customEndpoint.length) {
+                    _this.collectionConfig.setCustomEndpoint(_this.customEndpoint);
+                }
             }
             if (angular.isDefined(_this.sortableFieldName)) {
                 _this.sortableFieldName = "sorting" + _this.tableID;
@@ -78780,7 +78796,6 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.persistedReportCollections = data.records;
             });
         };
-        console.log('LISTING!@#!@#!@');
         //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
@@ -78806,7 +78821,6 @@ var SWListingDisplayController = /** @class */ (function () {
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
             this.$timeout(function () {
                 _this.collection = _this.collectionConfig;
-                console.log('setting columns 1');
                 _this.columns = _this.collectionConfig.columns;
             });
             this.multipleCollectionDeffered.reject();
@@ -78828,7 +78842,6 @@ var SWListingDisplayController = /** @class */ (function () {
                     _this.collectionObject = _this.baseEntityName;
                     _this.$timeout(function () {
                         _this.collection = _this.collectionConfig;
-                        console.log('setting columns 2');
                         _this.columns = _this.collectionConfig.columns;
                     });
                 }
@@ -78887,6 +78900,7 @@ var SWListingDisplay = /** @class */ (function () {
             baseEntity: "<?",
             baseEntityName: "@?",
             baseEntityId: "@?",
+            customEndpoint: "@?",
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
@@ -79028,6 +79042,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.getDirectiveTemplate = function () {
             var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
             if (_this.column.isEditable) {
+                if (!_this.column.type) {
+                    _this.column.type = 'text';
+                }
+                if (_this.column.defaultValue) {
+                    _this.pageRecord[_this.column.propertyIdentifier] = _this.column.defaultValue;
+                }
                 return basePartialPath + 'listingdisplaycelledit.html';
             }
             var templateUrl = basePartialPath + 'listingdisplaycell.html';
@@ -79062,6 +79082,13 @@ var SWListingDisplayCellController = /** @class */ (function () {
                 }
             }
             return templateUrl;
+        };
+        //prevent listing display edit cell from submitting the form if enter key is pressed
+        this.handleKeyPress = function (keyEvent) {
+            if (keyEvent.keyCode === 13) {
+                keyEvent.preventDefault();
+                keyEvent.stopPropagation();
+            }
         };
         if (!this.pageRecordKey && this.column) {
             this.pageRecordKey = this.listingService.getPageRecordKey(this.column.propertyIdentifier);
@@ -80719,11 +80746,6 @@ var ListingService = /** @class */ (function () {
         };
         this.setupColumns = function (listingID, collectionConfig, collectionObject) {
             //assumes no alias formatting
-            //when listing columns are specified override what is there
-            console.log('do we have listing columns???', _this.getListing(listingID).listingColumns.length, _this.getListing(listingID).listingColumns, _this.getListing(listingID).columns);
-            if (_this.getListing(listingID).listingColumns.length > 0) {
-                _this.getListing(listingID).columns = _this.getListing(listingID).listingColumns;
-            }
             if (_this.getListing(listingID).columns.length == 0 &&
                 collectionConfig != null) {
                 if (collectionConfig.columns == null) {
@@ -80754,7 +80776,7 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.setupColumn = function (listingID, column, collectionConfig, collectionObject) {
-            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView && !column.isCollectionColumn) {
+            if (_this.getListing(listingID).collectionConfig != null && !column.hasCellView) {
                 _this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier, undefined, column);
             }
             if (!collectionConfig && _this.getListing(listingID).collectionConfig != null) {
