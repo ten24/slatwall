@@ -186,12 +186,17 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	}
 	
 	// Collection Skus
+	
 	public boolean function hasSkuBySkuID(required any skuID){
 		var skuCollection = getSkuCollection();
 		skuCollection.addFilter('skuID',arguments.skuID,'=');
 		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
 		skuCollection.removeFilter('skuID',arguments.skuID);
 		return hasSku;
+	}
+	
+	public boolean function hasOrderItemSku(required any orderItem){
+		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
