@@ -67770,6 +67770,7 @@ var SWPricingManagerController = /** @class */ (function () {
         this.skuPriceCollectionConfig.addColumn("_skuprice_sku.skuID", "", { isVisible: false });
         this.skuPriceCollectionConfig.addColumn("_skuprice_priceGroup.priceGroupID", "", { isVisible: false });
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
+        this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
         // let editableColumns = "minQuantity,maxQuantity,price";
         // for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
         //     let indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""))

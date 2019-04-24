@@ -97,6 +97,18 @@ property name="personalVolume" ormtype="big_decimal";
  		return true; 
  	} 
  	
+ 	public boolean function isDefaultSkuPrice(){
+ 		return isNull(getMinQuantity()) 
+ 			&& isNull(getMaxQuantity()) 
+ 			&& isNull(getPriceGroup()) 
+ 			&& (getSku().getCurrencyCode() == getCurrencyCode())
+ 		;
+ 	}
+ 	
+ 	public boolean function isNotDefaultSkuPrice(){
+ 		return !isDefaultSkuPrice();
+ 	}
+ 	
  	public any function getPriceGroupOptions(){
 		var options = getPropertyOptions("priceGroup");
 		arrayAppend(options, {"name"=rbKey('define.none'), "value"=''});
