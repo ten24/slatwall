@@ -91671,7 +91671,10 @@ var ListingService = /** @class */ (function () {
             if (_this.getListing(listingID).multiSlot == false) {
                 _this.$timeout(function () {
                     _this.getListing(listingID).collectionConfig.loadJson(_this.getListing(listingID).collectionData.collectionConfig);
-                    _this.getListing(listingID).columns = _this.getListing(listingID).collectionConfig.columns;
+                    //only override columns if they were not specified programmatically (editable listing displays, with non-persistent columns)
+                    if (_this.getListing(listingID).listingColumns == null) {
+                        _this.getListing(listingID).columns = _this.getListing(listingID).collectionConfig.columns;
+                    }
                 });
             }
             if (_this.getListing(listingID).paginator != null
