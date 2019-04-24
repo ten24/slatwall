@@ -62691,6 +62691,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             }
             if (_this.showCreateAccountPaymentMethod) {
                 formDataToPost.newAccountPaymentMethod = _this.newAccountPaymentMethod;
+                formDataToPost.newAccountPaymentMethod.expirationYear = _this.newAccountPaymentMethod.expirationYear.VALUE;
             }
             else {
                 formDataToPost.accountPaymentMethod = _this.baseEntity.accountPaymentMethod;

@@ -1197,11 +1197,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderTemplate.addErrors(newOrder.getErrors());
 				return arguments.orderTemplate; 
 			}
-
 		} 		
 
+		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
+		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
+		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
 
+		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
+		
+		if(newOrder.hasErrors()){
+			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			return arguments.orderTemplate;
+		}
 
 		return arguments.orderTemplate; 
 	}
@@ -1299,7 +1308,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var account = arguments.orderTemplate.getAccount(); 
 
-	if(!isNull(processObject.getNewAccountAddress())){
+		if(!isNull(processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1315,13 +1324,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
 			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
-		}	
+		} 	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
 			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
 
-			accountPaymentMethod.setAccount(account); 
+			accountPaymentMethod.setAccount(account);
+			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
+
+			//set payment method as credit card
+			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a')); 
 
 			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
