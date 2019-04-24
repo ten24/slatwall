@@ -210,6 +210,21 @@
 			<cfif attributes.hint eq "">
 				<cfset attributes.hint = attributes.object.getPropertyHint( attributes.property ) />
 			</cfif>
+
+			<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif 
+				attributes.object.isPersistent() 
+				and listFindNoCase('text,textarea,wysiwyg', attributes.fieldType) 
+				and structKeyExists(attributes.object.getPropertyMetaData(attributes.property), 'ormtype')
+				and attributes.object.getPropertyMetaData(attributes.property).ormtype eq 'string'
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.object.getClassName())
+				and (
+					not structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_translate") 
+					or attributes.object.getPropertyMetaData(attributes.property).hb_translate
+				)
+			>
+				<cfset attributes.translateAttributes = {} />
+			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->
 			<cfif attributes.object.hasError(attributes.property)>

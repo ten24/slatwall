@@ -1863,6 +1863,10 @@ select:focus {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
+.form-group .form-control-feedback.adminentitypreprocesstranslation {
+  text-align: left;
+  pointer-events: auto;
+}
 .modal {
   z-index: 3003 !important;
 }
