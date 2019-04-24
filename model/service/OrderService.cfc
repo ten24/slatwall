@@ -1128,10 +1128,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.newOrder();
 	}
-	
+
+	//begin order template functionality	
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
 
-			// Setup Account
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
 		} else {
@@ -1154,6 +1154,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate;
 	}
+
+	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
+
+	
+		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+
+		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
+			
+			var newOrderTemplateItem = this.newOrderTemplateItem();
+
+			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
+			newOrderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
+			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
+		
+		} else {
+			
+			var orderTemplateItem = this.getOrderTemplateItem(orderTemplateItemCollectionList.getPageRecords()[1]['orderTemplateItemID']);
+			var baseQuantity = orderTemplateItem.getQuantity();
+			orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
+			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
+		}
+
+		return arguments.orderTemplate; 	
+	} 
 
 	public any function processOrderTemplate_updateSchedule(required any orderTemplate, required any processObject, required struct data={}){ 
 
@@ -1254,6 +1281,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate; 
 	} 
+	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 		//Setup Site Origin if using slatwall cms

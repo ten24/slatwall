@@ -231,7 +231,6 @@ class SWEditFilterItem{
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
                     if(scope.filterItem.$$isNew === true){
-                        observerService.notify('filterItemAction', {action: 'remove',filterItemIndex:scope.filterItemIndex});
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
                         observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});

@@ -12,6 +12,7 @@ class SWOrderTemplateUpcomingOrdersCardController{
 	constructor(public $timeout,
 				public $hibachi,
 				public observerService,
+	            public orderTemplateService,
 				public rbkeyService
 	){
 		this.observerService.attach(this.updateSchedule, 'OrderTemplateUpdateScheduleSuccess');

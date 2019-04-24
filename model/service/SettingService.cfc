@@ -218,6 +218,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAllowThirdPartyShippingAccount={fieldType="yesno",defaultValue=0},
+			globalDisableSearchSettings={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
@@ -1261,7 +1262,7 @@ component extends="HibachiService" output="false" accessors="true" {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+			getHibachiCacheService().updateServerInstanceSettingsCache();
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it

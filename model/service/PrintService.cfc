@@ -115,7 +115,6 @@ Notes:
 						include '#templatePath#';
 					}
 				}
-				
 				if(len(templateFileResponse) && !structKeyExists(local.printData, "printContent")) {
 					local.printData.printContent = templateFileResponse;
 				}

@@ -10,6 +10,7 @@
 
 	<!--- Optional --->
 	<cfparam name="attributes.title" type="string" default="" />
+	<cfparam name="attributes.listingID" type="string" default="" />
 
 	<!--- Collection Params. If collectionList is specified the items below configure it --->
 	<cfparam name="attributes.collectionList" type="any" default=""/>
@@ -131,14 +132,19 @@
 				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
-			    data-name="#scopeVariableID#"
+			    <cfif len(attributes.listingID)>
+					data-name="#attributes.listingID#"
+				<cfelse> 
+					data-name="#scopeVariableID#"
+				</cfif> 	
+					
 				data-has-search="true"
 				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
 				record-detail-event="#attributes.recordDetailEvent#"
 				record-detail-action="#attributes.recordDetailAction#"
 				record-detail-modal="#attributes.recordDetailModal#"
-				record delete-event="#attributes.recordDeleteEvent#"
+				record-delete-event="#attributes.recordDeleteEvent#"
 				record-delete-action="#attributes.recordDeleteAction#"
 				record-add-event="#attributes.recordProcessEvent#"
 				record-add-action="#attributes.recordProcessAction#"

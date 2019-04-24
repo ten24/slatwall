@@ -8,6 +8,7 @@ class SWOrderTemplateFrequencyCardController{
 
 	constructor(public $hibachi,
 				public observerService,
+	            public orderTemplateService,
 				public rbkeyService
 	){
 		this.observerService.attach(this.refreshFrequencyTerm,'OrderTemplateUpdateFrequencySuccess')

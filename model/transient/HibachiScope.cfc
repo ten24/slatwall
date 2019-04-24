@@ -168,16 +168,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public string function renderJSObject() {
-		var config = {};
-		config[ 'baseURL' ] = getApplicationValue('baseURL');
-		config[ 'action' ] = getApplicationValue('action');
-		config[ 'dateFormat' ] = setting('globalDateFormat');
-		config[ 'timeFormat' ] = setting('globalTimeFormat');
-		config[ 'rbLocale' ] = '#getRBLocale()#';
-		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
-		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
-		config[ 'applicationKey' ] = '#getApplicationValue('applicationKey')#';
-		config[ 'attributeCacheKey' ] = '#getService('hibachiService').getAttributeCacheKey()#';
+		var config = getService('HibachiSessionService').getConfig();
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
