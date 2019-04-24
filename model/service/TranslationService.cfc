@@ -1,5 +1,7 @@
 component extends="HibachiService" accessors="true" output="false" {
     
+    property name="settingService" type="any";
+
     // ===================== START: Logical Methods ===========================
     
     public array function getEntityNameOptions() {
@@ -22,6 +24,11 @@ component extends="HibachiService" accessors="true" output="false" {
         }
 
         return options;
+    }
+
+    // Returns a subset of all available locales filtered by the locales that have translation enabled.
+    public array function getSiteAvailableRbLocalesOptions() {
+        return getHibachiRBService().getAvailableLocaleOptions(localeFilterList=getService('settingService').getSettingValue('globalTranslateRbLocales'));
     }
 
     // =====================  END: Logical Methods ============================

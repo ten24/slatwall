@@ -106,7 +106,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return variables.resourceBundles[ arguments.locale ];
 	}
 
-	public array function getAvailableLocaleOptions() {
+	public array function getAvailableLocaleOptions(string localeFilterList='') {
 		var javaLocale = createObject('java', 'java.util.Locale');
 		var availableLocales = javaLocale.getAvailableLocales();
 
@@ -125,9 +125,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			if (len(localeData.countryCode)) {
 				localeData.value &= '_#localeData.countryCode#';
 			}
-
-			if (len(localeData.value)) {
-			arrayAppend(locales, localeData);
+			
+			// Include locale if no filter provided or if locale in the filter list
+			if (len(localeData.value) && (!len(arguments.localeFilterList) || listFindNoCase(arguments.localeFilterList, localeData.value))) {
+				arrayAppend(locales, localeData);
 			}
 		}
 
