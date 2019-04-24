@@ -62,8 +62,8 @@ class SWAddSkuPriceModalLauncherController{
         ).finally(()=>{ 
             
             if(angular.isDefined(this.skuOptions) && this.skuOptions.length){
-                this.selectedSku = this.setSelectedSku(this.skuOptions[0]);
-                this.submittedSku = { skuId : this.selectedSku['skuID']};
+                this.setSelectedSku(this.skuOptions[0]);
+                // this.submittedSku = { skuId : this.selectedSku['skuID']};
             }
         }); 
         
