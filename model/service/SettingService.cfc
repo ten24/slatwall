@@ -252,14 +252,14 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
-			globalRbLocale = {fieldType="select",defaultValue="en_us"},
+			globalLocale = {fieldType="select",defaultValue="en_us"},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalTranslateEntities = {fieldType="multiselect",defaultValue="Product,Sku"},
-			globalTranslateRbLocales = {fieldType="multiselect",defaultValue="en_us"},
+			globalTranslateLocales = {fieldType="multiselect",defaultValue="en_us"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
@@ -343,7 +343,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			productTypeMetaKeywordsString = {fieldType="textarea", defaultValue="${productTypeName}, ${parentProductType.productTypeName}"},
 
 			// Site
-			siteAvailableRbLocales = {fieldType="multiselect", defaultValue="en_us"},
+			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
@@ -570,11 +570,11 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
-			case "globalRbLocale":
+			case "globalLocale":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalTranslateEntities":
 				return getTranslationService().getEntityNameOptions();
-			case "globalTranslateRbLocales":
+			case "globalTranslateLocales":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
@@ -586,8 +586,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
 			case "productImageOptionCodeDelimiter":
 				return ['-','_'];
-			case "siteAvailableRbLocales":
-				return getTranslationService().getSiteAvailableRbLocalesOptions();
+			case "siteAvailableLocales":
+				return getTranslationService().getSiteAvailableLocalesOptions();
 			case "siteForgotPasswordEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":

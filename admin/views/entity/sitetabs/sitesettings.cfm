@@ -52,7 +52,7 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable>
-    <swa:SlatwallSetting settingName="siteAvailableRbLocales" settingObject="#rc.site#" />
+    <swa:SlatwallSetting settingName="siteAvailableLocales" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteMissingImagePath" settingObject="#rc.site#" />

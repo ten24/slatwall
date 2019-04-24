@@ -27,8 +27,8 @@ component extends="HibachiService" accessors="true" output="false" {
     }
 
     // Returns a subset of all available locales filtered by the locales that have translation enabled.
-    public array function getSiteAvailableRbLocalesOptions() {
-        return getHibachiRBService().getAvailableLocaleOptions(localeFilterList=getService('settingService').getSettingValue('globalTranslateRbLocales'));
+    public array function getSiteAvailableLocalesOptions() {
+        return getHibachiRBService().getAvailableLocaleOptions(localeFilterList=getService('settingService').getSettingValue('globalTranslateLocales'));
     }
 
     // =====================  END: Logical Methods ============================
