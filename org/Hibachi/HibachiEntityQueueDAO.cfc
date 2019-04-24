@@ -48,6 +48,8 @@ Notes:
 */
 component extends="HibachiDAO" persistent="false" accessors="true" output="false" {
 
+	property name="hibachiService" type="any";
+
 	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, any integration, string entityQueueData){
 		var hql = 'SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType ';
 		var params = {baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType};
@@ -65,6 +67,49 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			params
 		);
 	}
+
+	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string entityQueueType, string processMethod, boolean unique=false){
+		var queryService = new query();
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueType, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID) ";
+		sql &= "SELECT #createHibachiUUID()# as entityQueueID, "; 
+		sql &= "#arguments.entityName# as baseObject, ";  
+		sql &= "#getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName)# as baseID, ";
+		
+		if(structKeyExists(arguments, 'processMethod')){
+			sql &= "'#arguments.processObject#' as processMethod, ";
+		} else {
+			sql &= "NULL as processMethod, "; 
+		} 
+		
+		sql &= "'#entityQueueType#' as entityQueueType, ";
+		sql &= ":createdDateTime as createdDateTime, ";
+		sql &= ":modifiedDateTime as modifiedDateTime, ";
+
+		var accountID = 'NULL';
+		if(!isNull(getHibachiScope().getAccount())){
+			accountID = getHibachiScope().getAccount().getAccountID(); 
+		}
+		sql &= "#accountID# as createdByAccountID, ";
+		sql &= "#accountID# as modifiedByAccountID";
+	
+
+		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
+		sql &= "WHERE baseID in (:primaryIDList)"
+
+		if(arguments.unique){
+			sql &= " AND baseID not in (";
+			sql &= " SELECT baseID FROM swEntityQueue";
+			sql &= ")";
+		} 
+	
+		queryService.addParam(name='createdDateTime', value=now(), CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='modifiedDateTime', value=now(), CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='primaryIDList', value=arguments.primaryIDList, CFSQLTYPE="CF_SQL_VARCHAR");
+		
+
+		queryService.execute(sql=sql);
+
+	} 
 	
 	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
 		var queryService = new query();

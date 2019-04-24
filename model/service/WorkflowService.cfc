@@ -48,6 +48,7 @@ Notes:
 */
 component extends="HibachiService" accessors="true" output="false" {
 	
+	property name="hibachiEntityQueueDAO" type="any";
 	property name="workflowDAO" type="any";
 
 
@@ -330,7 +331,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return workflowTrigger;
 	}
 
-	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type){
+	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
 		var actionSuccess = false;
 		
 		switch (workflowTaskAction.getActionType()) {
@@ -401,7 +402,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break;
 			case 'processByQueue' :
-
+				if(structKeyExists(arguments,'data') && isArray(arguments.data)){
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(arrayToList(arguments.data), arguments.entity.getClassName(), 'process', workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+				} else { 
+					actionSucess = false; 
+				}	
 				break;
 
 			//IMPORT
@@ -472,7 +477,7 @@ component extends="HibachiService" accessors="true" output="false" {
 							
 							//Execute ACTION
 							if(structKeyExists(arguments.data,'entity')){
-								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType());
+								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType(), arguments.data.collectionData);
 							}else{
 								var actionSuccess = executeTaskAction(workflowTaskAction, javacast('null',''), data.workflowTrigger.getTriggerType());
 							}
