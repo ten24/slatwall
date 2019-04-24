@@ -403,7 +403,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				break;
 			case 'processByQueue' :
 				if(structKeyExists(arguments,'data') && isArray(arguments.data)){
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(arrayToList(arguments.data), arguments.entity.getClassName(), 'process', workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(arrayToList(arguments.data), arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
 				} else { 
 					actionSucess = false; 
 				}	
