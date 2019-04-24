@@ -258,7 +258,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
-			globalTranslationEntities = {fieldType="multiselect",defaultValue="Product,Sku"},
+			globalTranslateEntities = {fieldType="multiselect",defaultValue="Product,Sku"},
+			globalTranslateRbLocales = {fieldType="multiselect",defaultValue="en_us"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
@@ -571,8 +572,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				return options;
 			case "globalRbLocale":
 				return getHibachiRBService().getAvailableLocaleOptions();
-			case "globalTranslationEntities":
+			case "globalTranslateEntities":
 				return getTranslationService().getEntityNameOptions();
+			case "globalTranslateRbLocales":
+				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
@@ -584,7 +587,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "productImageOptionCodeDelimiter":
 				return ['-','_'];
 			case "siteAvailableRbLocales":
-				return getHibachiRBService().getAvailableLocaleOptions();
+				return getTranslationService().getSiteAvailableRbLocalesOptions();
 			case "siteForgotPasswordEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
