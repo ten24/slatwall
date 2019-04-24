@@ -38,6 +38,7 @@ class SWPricingManagerController{
         this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", {isVisible:false});
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
         this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
+        
         // let editableColumns = "minQuantity,maxQuantity,price";
         
         // for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
