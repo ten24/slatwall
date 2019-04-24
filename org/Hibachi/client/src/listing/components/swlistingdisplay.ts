@@ -569,6 +569,19 @@ class SWListingDisplayController{
         // Show all of the chosen calculations
         $(`.sw-${show}`).show();
     }
+    
+    public hasAverageOrTotal(){
+        if(this.collectionData){
+            for(var key in this.collectionData){
+                if(key.indexOf('recordsAvg') > -1 || key.indexOf('recordsTotal') > -1){
+                    return true
+                }   
+            }
+        }
+        
+        return false;
+    }
+    
     public hasNumerical=()=>{
         
         // Iterate over columns, find out if we have any numericals and return
