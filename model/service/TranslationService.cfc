@@ -2,6 +2,22 @@ component extends="HibachiService" accessors="true" output="false" {
     
     // ===================== START: Logical Methods ===========================
     
+    public array function getEntityNameOptions() {
+        var entitiesMetaData = getEntitiesMetaData();
+        var entitiesArray = listToArray(structKeyList(entitiesMetaData));
+        arraySort(entitiesArray,"text");
+
+        var options = [];
+        for(var value in entitiesArray) {
+            var option = {};
+            option["name"] = rbKey('entity.#value#');
+            option["value"] = value;
+            arrayAppend(options, option);
+        }
+        
+        return options;
+    }
+
     // =====================  END: Logical Methods ============================
     
     // ===================== START: DAO Passthrough ===========================

@@ -66,6 +66,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="siteService" type="any";
 	property name="taskService" type="any";
 	property name="taxService" type="any";
+	property name="translationService" type="any";
 	property name="typeService" type="any";
 	property name="skuService" type="any";
 
@@ -257,6 +258,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
+			globalTranslationEntities = {fieldType="multiselect",defaultValue="Product,Sku"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
@@ -567,14 +569,16 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
+			case "globalRbLocale":
+				return getHibachiRBService().getAvailableLocaleOptions();
+			case "globalTranslationEntities":
+				return getTranslationService().getEntityNameOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
 				optionSL.addSelect('unitName', 'name');
 				optionSL.addSelect('unitCode', 'value');
 				return optionSL.getRecords();
-			case "globalRbLocale":
-				return getHibachiRBService().getAvailableLocaleOptions();
 			case "paymentMethodCheckoutTransactionType" :
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
 			case "productImageOptionCodeDelimiter":
@@ -1080,7 +1084,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				}
 
 				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also (Edge case to exclude Site. No reason to introduce unecessary complexity by allowing Site to also specify site settings!)
-				if (settingDetails.siteProvided && arguments.object.getClassName() != 'Site') {
+				if (settingDetails.siteProvided && (isNull(arguments.object) || arguments.object.getClassName() != 'Site')) {
 					// Trying site level value resolution with the siteID and any other specified relationships
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
