@@ -44,15 +44,15 @@ class SWEditSkuPriceModalLauncherController extends EditSkuPriceModalLauncherCon
         } else{ 
             throw("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
         } 
-        let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-        if(angular.isDefined(listingScope.swListingDisplay)){ 
-            this.listingID = listingScope.swListingDisplay.tableID;
-            this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
-            this.defaultCurrencyOnly = true;
-            this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
-        } else {
-            throw("swEditSkuPriceModalLauncher couldn't find listing scope");
-        }
+        // let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
+        // if(angular.isDefined(listingScope.swListingDisplay)){ 
+        //     this.listingID = listingScope.swListingDisplay.tableID;
+        //     this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
+        //     this.defaultCurrencyOnly = true;
+        //     this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
+        // } else {
+        //     throw("swEditSkuPriceModalLauncher couldn't find listing scope");
+        // }
          this.initData();
         
     }

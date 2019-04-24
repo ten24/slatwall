@@ -31,10 +31,11 @@ class SWPricingManagerController{
         );
         
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
-        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode,currencyCode");
-        this.skuPriceCollectionConfig.addColumn("_skuprice.skuPriceID", "", {isVisible:false});
-        this.skuPriceCollectionConfig.addColumn("_skuprice_sku.skuID", "", {isVisible:false});
-        this.skuPriceCollectionConfig.addColumn("_skuprice_priceGroup.priceGroupID", "", {isVisible:false});
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,priceGroup.priceGroupCode,currencyCode");
+        this.skuPriceCollectionConfig.addDisplayProperty("price", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", {isVisible:false});
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", {isVisible:false});
+        this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", {isVisible:false});
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
         this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
         // let editableColumns = "minQuantity,maxQuantity,price";

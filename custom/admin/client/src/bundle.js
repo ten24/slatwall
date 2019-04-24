@@ -64,7 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 909);
+/******/ 	return __webpack_require__(__webpack_require__.s = 911);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2234,7 +2234,11 @@ exports.Observable = Observable;
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
+<<<<<<< Updated upstream
                 __webpack_require__(315)("./" + name);
+=======
+                __webpack_require__(314)("./" + name);
+>>>>>>> Stashed changes
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4985,7 +4989,11 @@ exports.Observable = Observable;
 
 })));
 
+<<<<<<< Updated upstream
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(306)(module)))
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(910)(module)))
+>>>>>>> Stashed changes
 
 /***/ }),
 /* 2 */
@@ -5447,6 +5455,7 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< Updated upstream
 var hibachiinterceptor_1 = __webpack_require__(812);
 //constant
 var hibachipathbuilder_1 = __webpack_require__(813);
@@ -5533,6 +5542,94 @@ var swsortable_1 = __webpack_require__(773);
 var sworderbycontrols_1 = __webpack_require__(768);
 var alert_module_1 = __webpack_require__(297);
 var dialog_module_1 = __webpack_require__(301);
+=======
+var hibachiinterceptor_1 = __webpack_require__(813);
+//constant
+var hibachipathbuilder_1 = __webpack_require__(814);
+//services
+var cacheservice_1 = __webpack_require__(806);
+var publicservice_1 = __webpack_require__(825);
+var accountservice_1 = __webpack_require__(805);
+var accountaddressservice_1 = __webpack_require__(804);
+var cartservice_1 = __webpack_require__(807);
+var draggableservice_1 = __webpack_require__(808);
+var utilityservice_1 = __webpack_require__(832);
+var selectionservice_1 = __webpack_require__(829);
+var observerservice_1 = __webpack_require__(822);
+var orderservice_1 = __webpack_require__(824);
+var orderpaymentservice_1 = __webpack_require__(823);
+var formservice_1 = __webpack_require__(812);
+var filterservice_1 = __webpack_require__(811);
+var expandableservice_1 = __webpack_require__(810);
+var metadataservice_1 = __webpack_require__(821);
+var rbkeyservice_1 = __webpack_require__(826);
+var typeaheadservice_1 = __webpack_require__(831);
+var hibachiservice_1 = __webpack_require__(816);
+var historyservice_1 = __webpack_require__(819);
+var localstorageservice_1 = __webpack_require__(820);
+var hibachiservicedecorator_1 = __webpack_require__(817);
+var hibachiscope_1 = __webpack_require__(815);
+var requestservice_1 = __webpack_require__(827);
+var scopeservice_1 = __webpack_require__(828);
+var skuservice_1 = __webpack_require__(830);
+var hibachivalidationservice_1 = __webpack_require__(818);
+var entityservice_1 = __webpack_require__(809);
+//controllers
+var globalsearch_1 = __webpack_require__(783);
+//filters
+var percentage_1 = __webpack_require__(787);
+var entityrbkey_1 = __webpack_require__(786);
+var swcurrency_1 = __webpack_require__(788);
+var swtrim_1 = __webpack_require__(789);
+var swunique_1 = __webpack_require__(790);
+var datefilter_1 = __webpack_require__(784);
+var datereporting_1 = __webpack_require__(785);
+//directives
+//  components
+var swactioncaller_1 = __webpack_require__(742);
+var swtypeaheadsearch_1 = __webpack_require__(781);
+var swtypeaheadinputfield_1 = __webpack_require__(778);
+var swtypeaheadmultiselect_1 = __webpack_require__(779);
+var swtypeaheadsearchlineitem_1 = __webpack_require__(782);
+var swtypeaheadremoveselection_1 = __webpack_require__(780);
+var swcollectionconfig_1 = __webpack_require__(746);
+var swcollectionfilter_1 = __webpack_require__(747);
+var swcollectionorderby_1 = __webpack_require__(748);
+var swcollectioncolumn_1 = __webpack_require__(745);
+var swcurrencyformatter_1 = __webpack_require__(751);
+var swactioncallerdropdown_1 = __webpack_require__(743);
+var swcolumnsorter_1 = __webpack_require__(749);
+var swconfirm_1 = __webpack_require__(750);
+var swdatepicker_1 = __webpack_require__(752);
+var swdraggable_1 = __webpack_require__(754);
+var swdraggablecontainer_1 = __webpack_require__(755);
+var swentityactionbar_1 = __webpack_require__(756);
+var swentityactionbarbuttongroup_1 = __webpack_require__(757);
+var swexpandablerecord_1 = __webpack_require__(758);
+var swexpiringsessionnotifier_1 = __webpack_require__(759);
+var swgravatar_1 = __webpack_require__(761);
+var swlogin_1 = __webpack_require__(764);
+var swmodallauncher_1 = __webpack_require__(765);
+var swmodalwindow_1 = __webpack_require__(766);
+var swnumbersonly_1 = __webpack_require__(767);
+var swloading_1 = __webpack_require__(763);
+var swscrolltrigger_1 = __webpack_require__(772);
+var swtabgroup_1 = __webpack_require__(776);
+var swtabcontent_1 = __webpack_require__(775);
+var swtooltip_1 = __webpack_require__(777);
+var swrbkey_1 = __webpack_require__(771);
+var swoptions_1 = __webpack_require__(768);
+var swselection_1 = __webpack_require__(773);
+var swclickoutside_1 = __webpack_require__(744);
+var swdirective_1 = __webpack_require__(753);
+var swexportaction_1 = __webpack_require__(760);
+var swhref_1 = __webpack_require__(762);
+var swprocesscaller_1 = __webpack_require__(770);
+var swsortable_1 = __webpack_require__(774);
+var sworderbycontrols_1 = __webpack_require__(769);
+var alert_module_1 = __webpack_require__(299);
+var dialog_module_1 = __webpack_require__(303);
+>>>>>>> Stashed changes
 var coremodule = angular.module('hibachi.core', [
     //Angular Modules
     'ngAnimate',
@@ -6197,9 +6294,15 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 var baseobject_1 = __webpack_require__(299);
 var Entities = __webpack_require__(794);
 var Processes = __webpack_require__(800);
+=======
+var baseobject_1 = __webpack_require__(301);
+var Entities = __webpack_require__(795);
+var Processes = __webpack_require__(801);
+>>>>>>> Stashed changes
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -8688,10 +8791,17 @@ module.exports = g;
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(){
+<<<<<<< Updated upstream
   var crypt = __webpack_require__(310),
       utf8 = __webpack_require__(66).utf8,
       isBuffer = __webpack_require__(314),
       bin = __webpack_require__(66).bin,
+=======
+  var crypt = __webpack_require__(309),
+      utf8 = __webpack_require__(65).utf8,
+      isBuffer = __webpack_require__(313),
+      bin = __webpack_require__(65).bin,
+>>>>>>> Stashed changes
 
   // The core
   md5 = function (message, options) {
@@ -10388,7 +10498,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseobject_1 = __webpack_require__(299);
+var baseobject_1 = __webpack_require__(301);
 var BaseTransient = /** @class */ (function (_super) {
     __extends(BaseTransient, _super);
     function BaseTransient($injector) {
@@ -23212,9 +23322,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var isArray_1 = __webpack_require__(13);
+<<<<<<< Updated upstream
 var isArrayLike_1 = __webpack_require__(292);
 var isPromise_1 = __webpack_require__(294);
 var PromiseObservable_1 = __webpack_require__(199);
+=======
+var isArrayLike_1 = __webpack_require__(291);
+var isPromise_1 = __webpack_require__(293);
+var PromiseObservable_1 = __webpack_require__(198);
+>>>>>>> Stashed changes
 var IteratorObservable_1 = __webpack_require__(459);
 var ArrayObservable_1 = __webpack_require__(15);
 var ArrayLikeObservable_1 = __webpack_require__(448);
@@ -28053,7 +28169,11 @@ var PairwiseSubscriber = (function (_super) {
 "use strict";
 
 var not_1 = __webpack_require__(608);
+<<<<<<< Updated upstream
 var filter_1 = __webpack_require__(52);
+=======
+var filter_1 = __webpack_require__(51);
+>>>>>>> Stashed changes
 /**
  * Splits the source Observable into two, one with values that satisfy a
  * predicate, and another with values that don't satisfy the predicate.
@@ -31881,6 +32001,79 @@ exports.isPromise = isPromise;
 //# sourceMappingURL=isPromise.js.map
 
 /***/ }),
+<<<<<<< Updated upstream
+=======
+/* 294 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(scope, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(610);
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64)))
+
+/***/ }),
+>>>>>>> Stashed changes
 /* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -32921,12 +33114,302 @@ exports.OrderFulfillmentService = OrderFulfillmentService;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swEditSkuPriceModalLauncherHTML = __webpack_require__(311);
+var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
+    //@ngInject
+    function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.formService = formService;
+        this.listingService = listingService;
+        this.observerService = observerService;
+        this.skuPriceService = skuPriceService;
+        this.utilityService = utilityService;
+        this.scopeService = scopeService;
+        this.$scope = $scope;
+        this.baseName = "j-add-sku-item-";
+        this.currencyCodeEditable = false;
+        this.priceGroupEditable = false;
+        this.currencyCodeOptions = [];
+        this.saveSuccess = true;
+        this.updateCurrencyCodeSelector = function (args) {
+            if (args != 'All') {
+                _this.skuPrice.data.currencyCode = args;
+                _this.currencyCodeEditable = false;
+            }
+            else {
+                _this.currencyCodeEditable = true;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.initData = function (pageRecord) {
+            _this.pageRecord = pageRecord;
+            if (angular.isDefined(pageRecord)) {
+                var skuPriceData = {
+                    skuPriceID: pageRecord.skuPriceID,
+                    minQuantity: pageRecord.minQuantity,
+                    maxQuantity: pageRecord.maxQuantity,
+                    currencyCode: pageRecord.currencyCode,
+                    price: pageRecord.price
+                };
+                var skuData = {
+                    skuID: pageRecord["sku_skuID"],
+                    skuCode: pageRecord["sku_skuCode"],
+                    calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+                };
+                var priceGroupData = {
+                    priceGroupID: pageRecord["priceGroup_priceGroupID"],
+                    priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
+                };
+                _this.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+                _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+                _this.priceGroup = _this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+                _this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                    _this.priceGroupOptions = response.records;
+                    _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+                }).finally(function () {
+                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                    for (var i = 0; i < _this.priceGroupOptions.length; i++) {
+                        if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
+                            _this.selectedPriceGroup = _this.priceGroupOptions[i];
+                        }
+                    }
+                    if (!_this.selectedPriceGroup['priceGroupID']) {
+                        _this.priceGroupEditable = true;
+                    }
+                });
+                _this.skuPriceService.getCurrencyOptions().then(function (response) {
+                    if (response.records.length) {
+                        _this.currencyCodeOptions = [];
+                        for (var i = 0; i < response.records.length; i++) {
+                            _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                        }
+                        _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                        _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                        for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
+                            if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
+                                _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
+                            }
+                        }
+                    }
+                });
+                _this.skuPrice.$$setPriceGroup(_this.priceGroup);
+                _this.skuPrice.$$setSku(_this.sku);
+            }
+            else {
+                return;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.setSelectedPriceGroup = function (priceGroupData) {
+            if (!priceGroupData.priceGroupID) {
+                _this.submittedPriceGroup = {};
+                return;
+            }
+            _this.submittedPriceGroup = { priceGroupID: priceGroupData['priceGroupID'] };
+        };
+        this.$onDestroy = function () {
+            console.log("$onDestroy called");
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+        };
+        this.save = function () {
+            console.log("this works!!!");
+            _this.observerService.notify("updateBindings");
+            var firstSkuPriceForSku = !_this.skuPriceService.hasSkuPrices(_this.sku.data.skuID);
+            var savePromise = _this.skuPrice.$$save();
+            savePromise.then(function (response) {
+                _this.saveSuccess = true;
+                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
+            }, function (reason) {
+                //error callback
+                console.log("validation failed because: ", reason);
+                _this.saveSuccess = false;
+            }).finally(function () {
+                if (_this.saveSuccess) {
+                    for (var key in _this.skuPrice.data) {
+                        if (key != 'sku' && key != 'currencyCode') {
+                            _this.skuPrice.data[key] = null;
+                        }
+                    }
+                    _this.formService.resetForm(_this.formName);
+                    _this.initData();
+                    _this.listingService.getCollection(_this.listingID);
+                    _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                }
+            });
+            return savePromise;
+        };
+        this.uniqueName = this.baseName + this.utilityService.createID(16);
+        this.formName = "editSkuPrice" + this.utilityService.createID(16);
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        // this.initData();
+    }
+    return SWEditSkuPriceModalLauncherController;
+}());
+exports.SWEditSkuPriceModalLauncherController = SWEditSkuPriceModalLauncherController;
+var SWEditSkuPriceModalLauncher = /** @class */ (function () {
+    function SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.observerService = observerService;
+        this.scopeService = scopeService;
+        this.collectionConfigService = collectionConfigService;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.scope = {};
+        this.skuData = {};
+        this.transclude = true;
+        this.bindToController = {
+            sku: "=?",
+            pageRecord: "=?",
+            minQuantity: "@?",
+            maxQuantity: "@?",
+            priceGroupId: "@?",
+            currencyCode: "@?",
+            eligibleCurrencyCodeList: "@?",
+            defaultCurrencyOnly: "=?",
+            disableAllFieldsButPrice: "=?"
+        };
+        this.controller = SWEditSkuPriceModalLauncherController;
+        this.controllerAs = "swEditSkuPriceModalLauncher";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = swEditSkuPriceModalLauncherHTML;
+    }
+    SWEditSkuPriceModalLauncher.Factory = function () {
+        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'entityService',
+            'observerService',
+            'scopeService',
+            'collectionConfigService',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWEditSkuPriceModalLauncher;
+}());
+exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
+
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swPricingManagerHTML = __webpack_require__(312);
+var SWPricingManagerController = /** @class */ (function () {
+    //@ngInject
+    function SWPricingManagerController(collectionConfigService) {
+        var _this = this;
+        this.collectionConfigService = collectionConfigService;
+        this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product");
+        this.productCollectionConfig.addFilter("productID", this.productId, "=", 'AND', true);
+        this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
+        this.productCollectionConfig.getEntity().then(function (response) {
+            _this.product = response.pageRecords[0];
+        }, function (reason) {
+        });
+        this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,priceGroup.priceGroupCode,currencyCode");
+        this.skuPriceCollectionConfig.addDisplayProperty("price", "", { isEditable: true });
+        this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", { isVisible: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", { isVisible: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", { isVisible: false });
+        this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
+        // let editableColumns = "minQuantity,maxQuantity,price";
+        // for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
+        //     let indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""))
+        //     if(indexOf > -1){
+        //         this.skuPriceCollectionConfig.columns[i].hasCellView = "true";
+        //         if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.price"){
+        //             this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPricesEdit";
+        //         }else if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.minQuantity"
+        //                 || this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.maxQuantity"){
+        //             let columnName = this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", "");
+        //             columnName = columnName.slice(3);
+        //             this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPrice" + columnName + "Edit";
+        //         }
+        //     }
+        // }
+    }
+    return SWPricingManagerController;
+}());
+exports.SWPricingManagerController = SWPricingManagerController;
+var SWPricingManager = /** @class */ (function () {
+    // @ngInject
+    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.priority = 1000;
+        this.scope = {};
+        this.bindToController = {
+            productId: "@",
+            trackInventory: "=?"
+        };
+        this.controller = SWPricingManagerController;
+        this.controllerAs = "swPricingManager";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = swPricingManagerHTML;
+    }
+    SWPricingManager.Factory = function () {
+        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWPricingManager;
+}());
+exports.SWPricingManager = SWPricingManager;
+
+
+/***/ }),
+/* 299 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
+<<<<<<< Updated upstream
 var alertcontroller_1 = __webpack_require__(700);
 //services
 var alertservice_1 = __webpack_require__(702);
+=======
+var alertcontroller_1 = __webpack_require__(701);
+//services
+var alertservice_1 = __webpack_require__(703);
+>>>>>>> Stashed changes
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -32936,7 +33419,7 @@ exports.alertmodule = alertmodule;
 
 
 /***/ }),
-/* 298 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32947,6 +33430,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
+<<<<<<< Updated upstream
 var collectionconfigservice_1 = __webpack_require__(739);
 var collectionservice_1 = __webpack_require__(740);
 //controllers
@@ -32979,6 +33463,40 @@ var swfiltergroupitem_1 = __webpack_require__(730);
 var swrestrictionconfig_1 = __webpack_require__(733);
 //filters
 var aggregatefilter_1 = __webpack_require__(738);
+=======
+var collectionconfigservice_1 = __webpack_require__(740);
+var collectionservice_1 = __webpack_require__(741);
+//controllers
+var collections_1 = __webpack_require__(735);
+var createcollection_1 = __webpack_require__(737);
+var confirmationcontroller_1 = __webpack_require__(736);
+var entity_createcollection_1 = __webpack_require__(738);
+//directives
+var swcollection_1 = __webpack_require__(714);
+var swaddfilterbuttons_1 = __webpack_require__(713);
+var swdisplayoptions_1 = __webpack_require__(729);
+var swdisplayitem_1 = __webpack_require__(727);
+var swdisplayitemaggregate_1 = __webpack_require__(728);
+var swcollectiontable_1 = __webpack_require__(715);
+var swcolumnitem_1 = __webpack_require__(716);
+var swconditioncriteria_1 = __webpack_require__(717);
+var swcriteria_1 = __webpack_require__(718);
+var swcriteriaboolean_1 = __webpack_require__(719);
+var swcriteriadate_1 = __webpack_require__(720);
+var swcriteriamanytomany_1 = __webpack_require__(721);
+var swcriteriamanytoone_1 = __webpack_require__(722);
+var swcriterianumber_1 = __webpack_require__(723);
+var swcriteriaonetomany_1 = __webpack_require__(724);
+var swcriteriarelatedobject_1 = __webpack_require__(725);
+var swcriteriastring_1 = __webpack_require__(726);
+var sweditfilteritem_1 = __webpack_require__(730);
+var swfiltergroups_1 = __webpack_require__(732);
+var swfilteritem_1 = __webpack_require__(733);
+var swfiltergroupitem_1 = __webpack_require__(731);
+var swrestrictionconfig_1 = __webpack_require__(734);
+//filters
+var aggregatefilter_1 = __webpack_require__(739);
+>>>>>>> Stashed changes
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -33022,7 +33540,7 @@ exports.collectionmodule = collectionmodule;
 
 
 /***/ }),
-/* 299 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33057,7 +33575,7 @@ exports.BaseObject = BaseObject;
 
 
 /***/ }),
-/* 300 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33204,7 +33722,7 @@ exports.Request = Request;
 
 
 /***/ }),
-/* 301 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33213,9 +33731,15 @@ exports.Request = Request;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
+<<<<<<< Updated upstream
 var dialogservice_1 = __webpack_require__(833);
 //controllers
 var pagedialog_1 = __webpack_require__(832);
+=======
+var dialogservice_1 = __webpack_require__(834);
+//controllers
+var pagedialog_1 = __webpack_require__(833);
+>>>>>>> Stashed changes
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -33229,7 +33753,7 @@ exports.dialogmodule = dialogmodule;
 
 
 /***/ }),
-/* 302 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33246,12 +33770,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
+<<<<<<< Updated upstream
 var otherwisecontroller_1 = __webpack_require__(837);
 var routercontroller_1 = __webpack_require__(838);
 //directives
 var swdetailtabs_1 = __webpack_require__(835);
 var swdetail_1 = __webpack_require__(834);
 var swlist_1 = __webpack_require__(836);
+=======
+var otherwisecontroller_1 = __webpack_require__(838);
+var routercontroller_1 = __webpack_require__(839);
+//directives
+var swdetailtabs_1 = __webpack_require__(836);
+var swdetail_1 = __webpack_require__(835);
+var swlist_1 = __webpack_require__(837);
+>>>>>>> Stashed changes
 var core_module_1 = __webpack_require__(6);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -33309,7 +33842,7 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
-/* 303 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33623,7 +34156,7 @@ exports.SWPropertyDisplay = SWPropertyDisplay;
 
 
 /***/ }),
-/* 304 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33632,6 +34165,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
+<<<<<<< Updated upstream
 var workflowconditionservice_1 = __webpack_require__(908);
 var scheduleservice_1 = __webpack_require__(907);
 //directives
@@ -33647,6 +34181,23 @@ var swworkflowtrigger_1 = __webpack_require__(904);
 var swworkflowtriggers_1 = __webpack_require__(906);
 var swworkflowtriggerhistory_1 = __webpack_require__(905);
 var swschedulepreview_1 = __webpack_require__(896);
+=======
+var workflowconditionservice_1 = __webpack_require__(909);
+var scheduleservice_1 = __webpack_require__(908);
+//directives
+var swadmincreatesuperuser_1 = __webpack_require__(896);
+var swworkflowbasic_1 = __webpack_require__(898);
+var swworkflowcondition_1 = __webpack_require__(899);
+var swworkflowconditiongroupitem_1 = __webpack_require__(900);
+var swworkflowconditiongroups_1 = __webpack_require__(901);
+var swworkflowtask_1 = __webpack_require__(902);
+var swworkflowtaskactions_1 = __webpack_require__(903);
+var swworkflowtasks_1 = __webpack_require__(904);
+var swworkflowtrigger_1 = __webpack_require__(905);
+var swworkflowtriggers_1 = __webpack_require__(907);
+var swworkflowtriggerhistory_1 = __webpack_require__(906);
+var swschedulepreview_1 = __webpack_require__(897);
+>>>>>>> Stashed changes
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -33672,7 +34223,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-/* 305 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33691,8 +34242,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /*jshint browser:true */
+<<<<<<< Updated upstream
 var basebootstrap_1 = __webpack_require__(703);
 var monatadmin_module_1 = __webpack_require__(699);
+=======
+var basebootstrap_1 = __webpack_require__(704);
+var monatadmin_module_1 = __webpack_require__(698);
+>>>>>>> Stashed changes
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -33708,6 +34264,7 @@ module.exports = new bootstrapper();
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 306 */
 /***/ (function(module, exports) {
 
@@ -34120,6 +34677,9 @@ process.umask = function() { return 0; };
 
 /***/ }),
 /* 309 */
+=======
+/* 308 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -48805,7 +49365,11 @@ return src;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 310 */
+=======
+/* 309 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports) {
 
 (function() {
@@ -48907,25 +49471,41 @@ return src;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 311 */
+=======
+/* 310 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports) {
 
 module.exports = "<sw-modal-launcher \n                   data-modal-name=\"{{swAddSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Add Sku Price Detail\" \n                   data-save-action=\"swAddSkuPriceModalLauncher.save\">\n    \n    <sw-modal-button>\n        <ng-transclude></ng-transclude>\n    </sw-modal-button>\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swAddSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swAddSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swAddSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swAddSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swAddSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swAddSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swAddSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swAddSkuPriceModalLauncher.disableAllFieldsButPrice || swAddSkuPriceModalLauncher.defaultCurrencyOnly) && !swAddSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swAddSkuPriceModalLauncher.skuCollectionConfig\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swAddSkuPriceModalLauncher.selectedSku['skuCode']\"\n                                                        data-add-function=\"swAddSkuPriceModalLauncher.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swAddSkuPriceModalLauncher.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swAddSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swAddSkuPriceModalLauncher.setSelectedPriceGroup(swAddSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swAddSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                         <!--<sw-property-display data-object=\"swAddSkuPriceModalLauncher.sku\"\n                                data-property-identifier=\"skuID\"\n                                data-is-dirty=\"true\"\n                                data-is-hidden=\"true\"\n                                data-editing=\"true\"   \n                                data-editable=\"true\"\n                        >\n                        </sw-property-display>-->\n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 312 */
+=======
+/* 311 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports) {
 
-module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Edit Sku Price Detail\" \n                   data-save-action=\"swEditSkuPriceModalLauncher.save\">\n    <!--<sw-modal-button>\n        <ng-transclude></ng-transclude>\n    </sw-modal-button>-->\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label  class=\"control-label\"\n                                            sw-rbKey=\"'entity.SkuPrice.currencyCode'\">\n                                        \n                                    </label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swEditSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-12\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swEditSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swEditSkuPriceModalLauncher.setSelectedPriceGroup(swEditSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        ng-disabled=\"swEditSkuPriceModalLauncher.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"text\" readonly name=\"priceGroup\" ng-if=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" ng-model=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        <!--<input  class=\"form-control\" \n                                type=\"hidden\"\n                                name=\"skuID\" \n                                ng-model=\"swEditSkuPriceModalLauncher.sku.skuID\"\n                        />-->\n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
+module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Edit Sku Price Detail\" \n                   data-save-action=\"swEditSkuPriceModalLauncher.save\">\n    <!--<sw-modal-button>\n        <ng-transclude></ng-transclude>\n    </sw-modal-button>-->\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label  class=\"control-label\"\n                                            sw-rbKey=\"'entity.SkuPrice.currencyCode'\">\n                                        \n                                    </label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swEditSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-12\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swEditSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swEditSkuPriceModalLauncher.setSelectedPriceGroup(swEditSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        ng-disabled=\"swEditSkuPriceModalLauncher.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"text\" readonly name=\"priceGroup\" ng-if=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" ng-model=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                         <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.sponsorVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"sponsorVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.sponsorVolume\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.handlingFee'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"handlingFee\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.handlingFee\"\n                                />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        <!--<input  class=\"form-control\" \n                                type=\"hidden\"\n                                name=\"skuID\" \n                                ng-model=\"swEditSkuPriceModalLauncher.sku.skuID\"\n                        />-->\n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 313 */
+=======
+/* 312 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\">\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">  \n               <!-- Attempting to incorporate needs into existing listing -->\n                <!--<sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-base-entity-name=\"Sku\"\n                        data-base-entity-id=\"{{swPricingManager.productId}}\"\n                        data-administrative-count=\"1\"\n                                    >\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,sku_skuCode\" \n                                tdclass=\"primary\"\n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\"\n                                data-fallback-property-identifiers=\"sku_calculatedSkuDefinition\" \n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"minQuantity\" \n                                data-title=\"Minimum Quantity\"\n                                data-cell-view=\"swSkuPriceQuantityEdit\"\n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"maxQuantity\" \n                                data-title=\"Maximum Quantity\"\n                                data-cell-view=\"swSkuPriceQuantityEdit\"\n                            >\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPricesEdit\"\n                                data-header-view=\"swSkuCurrencySelector\"\n                            >\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"skuPrices.priceGroup.priceGroupCode\" \n                                data-fallback-property-identifiers=\"skuPrice_priceGroup.priceGroupCode,priceGroup.priceGroupCode\" \n                            ></sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"skuPrices.priceGroup.priceGroupID\" \n                                data-is-visible=\"false\"\n                                data-fallback-property-identifiers=\"skuPrice_priceGroup.priceGroupID,priceGroup.priceGroupID\" \n                            ></sw-listing-column>\n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\"\n                            >\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"eligibleCurrencyCodeList\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuPricesCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                         <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"skuPricesCount\" data-filter-comparison-operator=\">\" data-filter-comparison-value=\"0\" data-refresh-children-event=\"updateSkuPrices\" > \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuPrice\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\"\n                                    >\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuPriceID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"minQuantity\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"maxQuantity\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"personalVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"taxableAmount\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"commissionableVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"sponsorVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"productPackVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"retailValueVolume\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"handlingFee\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"currencyCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"priceGroup.priceGroupCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"priceGroup.priceGroupID\" data-is-visible=\"false\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                            <sw-collection-filter data-property-identifier=\"currencyCode\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.product.defaultSku_currencyCode}}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules> \n                        \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                        <sw-listing-add-action>\n                            <sw-add-sku-price-modal-launcher data-default-currency-only=\"true\">\n                                <a href=\"#\" title=\"Add Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                    <i class=\"fa fa-plus\"></i>\n                                </a>\n                            </sw-add-sku-price-modal-launcher>\n                        </sw-listing-add-action>  \n                        <sw-listing-delete-action>\n                            <sw-delete-sku-price-modal-launcher>\n                            </sw-delete-sku-price-modal-launcher>\n                            <sw-edit-sku-price-modal-launcher>\n                                <a href=\"#\" title=\"Edit Price\" class=\"btn btn-default btn-xs\" data-target=\"#\">\n                                    <i class=\"fa fa-edit\"></i>\n                                </a>\n                            </sw-edit-sku-price-modal-launcher>\n                        </sw-listing-delete-action>  \n                </sw-listing-display>-->\n                \n                <!--hack forcing listing id to pricing listing-->\n                <sw-listing-display\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-base-entity-name=\"SkuPrice\"\n                        data-record-edit-event=\"EDIT_SKUPRICE\"\n                        data-record-delete-event=\"DELETE_SKUPRICE\"\n                        data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                        data-name=\"pricingListing\"\n                        data-using-personal-collection=\"true\"\n                >\n                        \n                </sw-listing-display>\n                <sw-edit-sku-price-modal-launcher></sw-edit-sku-price-modal-launcher>\n                <sw-add-sku-price-modal-launcher data-product-id=\"{{swPricingManager.productId}}\">\n                    <a href=\"#\" title=\"Add Price\" class=\"btn btn-default\" data-target=\"#\">\n                        Add Sku Price\n                        <i class=\"fa fa-plus\"></i>\n                    </a>\n                </sw-add-sku-price-modal-launcher>\n                <sw-delete-sku-price-modal-launcher>\n                </sw-delete-sku-price-modal-launcher>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 314 */
+=======
+/* 313 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports) {
 
 /*!
@@ -48952,7 +49532,11 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 315 */
+=======
+/* 314 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -49225,9 +49809,205 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
+<<<<<<< Updated upstream
 webpackContext.id = 315;
 
 /***/ }),
+=======
+webpackContext.id = 314;
+
+/***/ }),
+/* 315 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+>>>>>>> Stashed changes
 /* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49459,7 +50239,11 @@ var pipe_1 = __webpack_require__(61);
 exports.pipe = pipe_1.pipe;
 var asap_1 = __webpack_require__(284);
 var async_1 = __webpack_require__(5);
+<<<<<<< Updated upstream
 var queue_1 = __webpack_require__(285);
+=======
+var queue_1 = __webpack_require__(284);
+>>>>>>> Stashed changes
 var animationFrame_1 = __webpack_require__(597);
 var rxSubscriber_1 = __webpack_require__(38);
 var iterator_1 = __webpack_require__(26);
@@ -59489,8 +60273,13 @@ var Observable_1 = __webpack_require__(0);
 var Notification_1 = __webpack_require__(19);
 var ColdObservable_1 = __webpack_require__(598);
 var HotObservable_1 = __webpack_require__(599);
+<<<<<<< Updated upstream
 var SubscriptionLog_1 = __webpack_require__(286);
 var VirtualTimeScheduler_1 = __webpack_require__(283);
+=======
+var SubscriptionLog_1 = __webpack_require__(285);
+var VirtualTimeScheduler_1 = __webpack_require__(282);
+>>>>>>> Stashed changes
 var defaultMaxFrame = 750;
 var TestScheduler = (function (_super) {
     __extends(TestScheduler, _super);
@@ -60176,6 +60965,202 @@ exports.toSubscriber = toSubscriber;
 
 /***/ }),
 /* 610 */
+<<<<<<< Updated upstream
+=======
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64), __webpack_require__(315)))
+
+/***/ }),
+/* 611 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60185,7 +61170,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
+<<<<<<< Updated upstream
 var swcustomeraccountcard_1 = __webpack_require__(611);
+=======
+var swcustomeraccountcard_1 = __webpack_require__(612);
+>>>>>>> Stashed changes
 var accountmodule = angular.module('account', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -60198,7 +61187,11 @@ exports.accountmodule = accountmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 611 */
+=======
+/* 612 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60255,7 +61248,11 @@ exports.SWCustomerAccountCard = SWCustomerAccountCard;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 612 */
+=======
+/* 613 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60265,8 +61262,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
+<<<<<<< Updated upstream
 var swaddressformpartial_1 = __webpack_require__(613);
 var addressservice_1 = __webpack_require__(614);
+=======
+var swaddressformpartial_1 = __webpack_require__(614);
+var addressservice_1 = __webpack_require__(615);
+>>>>>>> Stashed changes
 var addressmodule = angular.module('address', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -60281,7 +61283,11 @@ exports.addressmodule = addressmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 613 */
+=======
+/* 614 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60362,7 +61368,11 @@ exports.SWAddressFormPartial = SWAddressFormPartial;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 614 */
+=======
+/* 615 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60391,7 +61401,11 @@ exports.AddressService = AddressService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 615 */
+=======
+/* 616 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60453,7 +61467,11 @@ exports.SWAssignedProducts = SWAssignedProducts;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 616 */
+=======
+/* 617 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60530,7 +61548,11 @@ exports.SWContentBasic = SWContentBasic;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 617 */
+=======
+/* 618 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60591,7 +61613,11 @@ exports.SWContentEditor = SWContentEditor;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 618 */
+=======
+/* 619 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60831,7 +61857,11 @@ exports.SWContentList = SWContentList;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 619 */
+=======
+/* 620 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60974,7 +62004,11 @@ exports.SWContentNode = SWContentNode;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 620 */
+=======
+/* 621 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61116,7 +62150,11 @@ exports.SWSiteSelector = SWSiteSelector;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 621 */
+=======
+/* 622 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61129,12 +62167,21 @@ var core_module_1 = __webpack_require__(6);
 //services
 //filters
 //directives
+<<<<<<< Updated upstream
 var swcontentbasic_1 = __webpack_require__(616);
 var swcontenteditor_1 = __webpack_require__(617);
 var swcontentlist_1 = __webpack_require__(618);
 var swcontentnode_1 = __webpack_require__(619);
 var swassignedproducts_1 = __webpack_require__(615);
 var swsiteselector_1 = __webpack_require__(620);
+=======
+var swcontentbasic_1 = __webpack_require__(617);
+var swcontenteditor_1 = __webpack_require__(618);
+var swcontentlist_1 = __webpack_require__(619);
+var swcontentnode_1 = __webpack_require__(620);
+var swassignedproducts_1 = __webpack_require__(616);
+var swsiteselector_1 = __webpack_require__(621);
+>>>>>>> Stashed changes
 var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('contentPartialsPath', 'content/components/')
@@ -61151,7 +62198,11 @@ exports.contentmodule = contentmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 622 */
+=======
+/* 623 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61255,7 +62306,11 @@ exports.SWFormResponseListing = SWFormResponseListing;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 623 */
+=======
+/* 624 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61267,7 +62322,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
+<<<<<<< Updated upstream
 var swformresponselisting_1 = __webpack_require__(622);
+=======
+var swformresponselisting_1 = __webpack_require__(623);
+>>>>>>> Stashed changes
 //models
 var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.name])
     .config([function () {
@@ -61282,7 +62341,11 @@ exports.formbuildermodule = formbuildermodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 624 */
+=======
+/* 625 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61515,7 +62578,11 @@ exports.SWFulfillmentBatchDetail = SWFulfillmentBatchDetail;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 625 */
+=======
+/* 626 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61529,7 +62596,11 @@ var core_module_1 = __webpack_require__(6);
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
+<<<<<<< Updated upstream
 var swfulfillmentbatchdetail_1 = __webpack_require__(624);
+=======
+var swfulfillmentbatchdetail_1 = __webpack_require__(625);
+>>>>>>> Stashed changes
 //models 
 var fulfillmentbatchdetailmodule = angular.module('fulfillmentbatchdetail', [core_module_1.coremodule.name])
     .config([function () {
@@ -61546,7 +62617,11 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 626 */
+=======
+/* 627 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61554,7 +62629,11 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 var giftrecipient_1 = __webpack_require__(636);
+=======
+var giftrecipient_1 = __webpack_require__(637);
+>>>>>>> Stashed changes
 var SWAddOrderItemRecipientController = /** @class */ (function () {
     //@ngInject
     function SWAddOrderItemRecipientController($hibachi, collectionConfigService, entityService, observerService) {
@@ -61713,7 +62792,11 @@ exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 627 */
+=======
+/* 628 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61792,7 +62875,11 @@ exports.SWGiftCardBalance = SWGiftCardBalance;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 628 */
+=======
+/* 629 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61851,7 +62938,11 @@ exports.SWGiftCardDetail = SWGiftCardDetail;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 629 */
+=======
+/* 630 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61981,7 +63072,11 @@ exports.SWGiftCardHistory = SWGiftCardHistory;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 630 */
+=======
+/* 631 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62041,7 +63136,11 @@ exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 631 */
+=======
+/* 632 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62082,7 +63181,11 @@ exports.SWGiftCardOverview = SWGiftCardOverview;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 632 */
+=======
+/* 633 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62128,7 +63231,11 @@ exports.SWGiftCardRecipientInfo = SWGiftCardRecipientInfo;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 633 */
+=======
+/* 634 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62236,7 +63343,11 @@ exports.SWOrderItemGiftRecipientRow = SWOrderItemGiftRecipientRow;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 634 */
+=======
+/* 635 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62282,7 +63393,11 @@ exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 635 */
+=======
+/* 636 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62293,6 +63408,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //controllers
+<<<<<<< Updated upstream
 var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(634);
 //directives
 var swaddorderitemgiftrecipient_1 = __webpack_require__(626);
@@ -62303,6 +63419,18 @@ var swgiftcardoverview_1 = __webpack_require__(631);
 var swgiftcardorderinfo_1 = __webpack_require__(630);
 var swgiftcardrecipientinfo_1 = __webpack_require__(632);
 var sworderitemgiftrecipientrow_1 = __webpack_require__(633);
+=======
+var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(635);
+//directives
+var swaddorderitemgiftrecipient_1 = __webpack_require__(627);
+var swgiftcardbalance_1 = __webpack_require__(628);
+var swgiftcarddetail_1 = __webpack_require__(629);
+var swgiftcardhistory_1 = __webpack_require__(630);
+var swgiftcardoverview_1 = __webpack_require__(632);
+var swgiftcardorderinfo_1 = __webpack_require__(631);
+var swgiftcardrecipientinfo_1 = __webpack_require__(633);
+var sworderitemgiftrecipientrow_1 = __webpack_require__(634);
+>>>>>>> Stashed changes
 var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -62324,7 +63452,11 @@ exports.giftcardmodule = giftcardmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 636 */
+=======
+/* 637 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62353,7 +63485,11 @@ exports.GiftRecipient = GiftRecipient;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 637 */
+=======
+/* 638 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62525,7 +63661,11 @@ exports.SWAddOptionGroup = SWAddOptionGroup;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 638 */
+=======
+/* 639 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62601,7 +63741,11 @@ exports.SWOptionsForOptionGroup = SWOptionsForOptionGroup;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 639 */
+=======
+/* 640 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62613,8 +63757,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
+<<<<<<< Updated upstream
 var swaddoptiongroup_1 = __webpack_require__(637);
 var swoptionsforoptiongroup_1 = __webpack_require__(638);
+=======
+var swaddoptiongroup_1 = __webpack_require__(638);
+var swoptionsforoptiongroup_1 = __webpack_require__(639);
+>>>>>>> Stashed changes
 var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -62629,7 +63778,11 @@ exports.optiongroupmodule = optiongroupmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 640 */
+=======
+/* 641 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62791,7 +63944,11 @@ exports.SWAccountPaymentMethodModal = SWAccountPaymentMethodModal;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 641 */
+=======
+/* 642 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62864,7 +64021,11 @@ exports.SWAccountShippingAddressCard = SWAccountShippingAddressCard;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 642 */
+=======
+/* 643 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62965,7 +64126,11 @@ exports.SWAccountShippingMethodModal = SWAccountShippingMethodModal;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 643 */
+=======
+/* 644 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63040,7 +64205,11 @@ exports.SWCustomerAccountPaymentMethodCard = SWCustomerAccountPaymentMethodCard;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 644 */
+=======
+/* 645 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63097,7 +64266,11 @@ exports.SWOrderTemplateFrequencyCard = SWOrderTemplateFrequencyCard;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 645 */
+=======
+/* 646 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63186,7 +64359,11 @@ exports.SWOrderTemplateFrequencyModal = SWOrderTemplateFrequencyModal;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 646 */
+=======
+/* 647 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63241,7 +64418,11 @@ exports.SWOrderTemplateTotal = SWOrderTemplateTotal;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 647 */
+=======
+/* 648 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63328,7 +64509,11 @@ exports.SWOrderTemplateUpcomingOrdersCard = SWOrderTemplateUpcomingOrdersCard;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 648 */
+=======
+/* 649 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63420,7 +64605,11 @@ exports.SWOrderTemplateUpdateScheduleModal = SWOrderTemplateUpdateScheduleModal;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 649 */
+=======
+/* 650 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63431,6 +64620,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
+<<<<<<< Updated upstream
 var ordertemplateservice_1 = __webpack_require__(650);
 //components
 var swaccountpaymentmethodmodal_1 = __webpack_require__(640);
@@ -63442,6 +64632,19 @@ var swordertemplatefrequencymodal_1 = __webpack_require__(645);
 var swordertemplatetotal_1 = __webpack_require__(646);
 var swordertemplateupcomingorderscard_1 = __webpack_require__(647);
 var swordertemplateupdateschedulemodal_1 = __webpack_require__(648);
+=======
+var ordertemplateservice_1 = __webpack_require__(651);
+//components
+var swaccountpaymentmethodmodal_1 = __webpack_require__(641);
+var swaccountshippingaddresscard_1 = __webpack_require__(642);
+var swaccountshippingmethodmodal_1 = __webpack_require__(643);
+var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(644);
+var swordertemplatefrequencycard_1 = __webpack_require__(645);
+var swordertemplatefrequencymodal_1 = __webpack_require__(646);
+var swordertemplatetotal_1 = __webpack_require__(647);
+var swordertemplateupcomingorderscard_1 = __webpack_require__(648);
+var swordertemplateupdateschedulemodal_1 = __webpack_require__(649);
+>>>>>>> Stashed changes
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63464,7 +64667,11 @@ exports.ordermodule = ordermodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 650 */
+=======
+/* 651 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63549,7 +64756,11 @@ exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 651 */
+=======
+/* 652 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63766,7 +64977,11 @@ exports.SWOrderDeliveryDetail = SWOrderDeliveryDetail;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 652 */
+=======
+/* 653 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63780,7 +64995,11 @@ var core_module_1 = __webpack_require__(6);
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
 //controllers
 //directives
+<<<<<<< Updated upstream
 var sworderdeliverydetail_1 = __webpack_require__(651);
+=======
+var sworderdeliverydetail_1 = __webpack_require__(652);
+>>>>>>> Stashed changes
 var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63795,7 +65014,11 @@ exports.orderdeliverydetailmodule = orderdeliverydetailmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 653 */
+=======
+/* 654 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64456,7 +65679,11 @@ exports.SWOrderFulfillmentList = SWOrderFulfillmentList;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 654 */
+=======
+/* 655 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64470,7 +65697,11 @@ var core_module_1 = __webpack_require__(6);
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
+<<<<<<< Updated upstream
 var sworderfulfillmentlist_1 = __webpack_require__(653);
+=======
+var sworderfulfillmentlist_1 = __webpack_require__(654);
+>>>>>>> Stashed changes
 //models 
 var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
     .config([function () {
@@ -64487,7 +65718,11 @@ exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 655 */
+=======
+/* 656 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64778,7 +66013,11 @@ exports.SWChildOrderItem = SWChildOrderItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 656 */
+=======
+/* 657 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64822,7 +66061,11 @@ exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 657 */
+=======
+/* 658 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65310,7 +66553,11 @@ exports.SWOrderItem = SWOrderItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 658 */
+=======
+/* 659 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65424,7 +66671,11 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 659 */
+=======
+/* 660 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65578,7 +66829,11 @@ exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 660 */
+=======
+/* 661 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65621,7 +66876,11 @@ exports.SWResizedImage = SWResizedImage;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 661 */
+=======
+/* 662 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65631,12 +66890,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(6);
 //directives
+<<<<<<< Updated upstream
 var swchildorderitem_1 = __webpack_require__(655);
 var sworderitem_1 = __webpack_require__(657);
 var swoishippinglabelstamp_1 = __webpack_require__(656);
 var sworderitemdetailstamp_1 = __webpack_require__(658);
 var sworderitems_1 = __webpack_require__(659);
 var swresizedimage_1 = __webpack_require__(660);
+=======
+var swchildorderitem_1 = __webpack_require__(656);
+var sworderitem_1 = __webpack_require__(658);
+var swoishippinglabelstamp_1 = __webpack_require__(657);
+var sworderitemdetailstamp_1 = __webpack_require__(659);
+var sworderitems_1 = __webpack_require__(660);
+var swresizedimage_1 = __webpack_require__(661);
+>>>>>>> Stashed changes
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -65656,7 +66924,11 @@ exports.orderitemmodule = orderitemmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 662 */
+=======
+/* 663 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65760,7 +67032,11 @@ exports.SWProductDeliveryScheduleDates = SWProductDeliveryScheduleDates;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 663 */
+=======
+/* 664 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65822,7 +67098,11 @@ exports.SWProductListingPages = SWProductListingPages;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 664 */
+=======
+/* 665 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65885,7 +67165,11 @@ exports.SWRelatedProducts = SWRelatedProducts;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 665 */
+=======
+/* 666 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65989,7 +67273,11 @@ exports.ProductCreateController = ProductCreateController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 666 */
+=======
+/* 667 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66001,12 +67289,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //controllers
+<<<<<<< Updated upstream
 var preprocessproduct_create_1 = __webpack_require__(665);
 //filters
 //directives
 var swproductlistingpages_1 = __webpack_require__(663);
 var swrelatedproducts_1 = __webpack_require__(664);
 var swproductdeliveryscheduledates_1 = __webpack_require__(662);
+=======
+var preprocessproduct_create_1 = __webpack_require__(666);
+//filters
+//directives
+var swproductlistingpages_1 = __webpack_require__(664);
+var swrelatedproducts_1 = __webpack_require__(665);
+var swproductdeliveryscheduledates_1 = __webpack_require__(663);
+>>>>>>> Stashed changes
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
@@ -66022,7 +67319,11 @@ exports.productmodule = productmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 667 */
+=======
+/* 668 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66367,7 +67668,11 @@ exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollection
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 668 */
+=======
+/* 669 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66553,7 +67858,11 @@ exports.SWProductBundleGroup = SWProductBundleGroup;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 669 */
+=======
+/* 670 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66640,7 +67949,11 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 670 */
+=======
+/* 671 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66815,7 +68128,11 @@ exports.SWProductBundleGroupType = SWProductBundleGroupType;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 671 */
+=======
+/* 672 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66916,7 +68233,11 @@ exports.CreateBundleController = CreateBundleController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 672 */
+=======
+/* 673 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66927,6 +68248,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
+<<<<<<< Updated upstream
 var productbundleservice_1 = __webpack_require__(673);
 //controllers
 var create_bundle_controller_1 = __webpack_require__(671);
@@ -66935,6 +68257,16 @@ var swproductbundlegrouptype_1 = __webpack_require__(670);
 var swproductbundlegroups_1 = __webpack_require__(669);
 var swproductbundlegroup_1 = __webpack_require__(668);
 var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(667);
+=======
+var productbundleservice_1 = __webpack_require__(674);
+//controllers
+var create_bundle_controller_1 = __webpack_require__(672);
+//directives
+var swproductbundlegrouptype_1 = __webpack_require__(671);
+var swproductbundlegroups_1 = __webpack_require__(670);
+var swproductbundlegroup_1 = __webpack_require__(669);
+var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(668);
+>>>>>>> Stashed changes
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
@@ -66953,7 +68285,11 @@ exports.productbundlemodule = productbundlemodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 673 */
+=======
+/* 674 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67039,7 +68375,11 @@ exports.ProductBundleService = ProductBundleService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 674 */
+=======
+/* 675 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67047,7 +68387,11 @@ exports.ProductBundleService = ProductBundleService;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 var skuPriceModalLauncherHTML = __webpack_require__(311);
+=======
+var skuPriceModalLauncherHTML = __webpack_require__(310);
+>>>>>>> Stashed changes
 var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
     //@ngInject
     function SWAddSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, $timeout) {
@@ -67241,7 +68585,11 @@ exports.SWAddSkuPriceModalLauncher = SWAddSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 675 */
+=======
+/* 676 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67320,7 +68668,11 @@ exports.SWDefaultSkuRadio = SWDefaultSkuRadio;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 676 */
+=======
+/* 677 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67405,6 +68757,7 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 677 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -67606,6 +68959,8 @@ exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
 
 
 /***/ }),
+=======
+>>>>>>> Stashed changes
 /* 678 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -67744,6 +69099,7 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 
 /***/ }),
 /* 679 */
+<<<<<<< Updated upstream
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67831,6 +69187,8 @@ exports.SWPricingManager = SWPricingManager;
 
 /***/ }),
 /* 680 */
+=======
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69202,6 +70560,7 @@ var defaultskuservice_1 = __webpack_require__(688);
 var skupriceservice_1 = __webpack_require__(689);
 //controllers
 //directives
+<<<<<<< Updated upstream
 var swpricingmanager_1 = __webpack_require__(679);
 var swimagedetailmodallauncher_1 = __webpack_require__(678);
 var swaddskupricemodallauncher_1 = __webpack_require__(674);
@@ -69216,6 +70575,22 @@ var swskucodeedit_1 = __webpack_require__(680);
 var swskupricesedit_1 = __webpack_require__(685);
 var swskupricequantityedit_1 = __webpack_require__(684);
 var swskuthumbnail_1 = __webpack_require__(687);
+=======
+var swpricingmanager_1 = __webpack_require__(700);
+var swimagedetailmodallauncher_1 = __webpack_require__(678);
+var swaddskupricemodallauncher_1 = __webpack_require__(675);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(677);
+var sweditskupricemodallauncher_1 = __webpack_require__(699);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(685);
+var swdefaultskuradio_1 = __webpack_require__(676);
+var swskuimage_1 = __webpack_require__(681);
+var swskucurrencyselector_1 = __webpack_require__(680);
+var swskupriceedit_1 = __webpack_require__(682);
+var swskucodeedit_1 = __webpack_require__(679);
+var swskupricesedit_1 = __webpack_require__(684);
+var swskupricequantityedit_1 = __webpack_require__(683);
+var swskuthumbnail_1 = __webpack_require__(686);
+>>>>>>> Stashed changes
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -69286,6 +70661,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
+<<<<<<< Updated upstream
 var hibachi_module_1 = __webpack_require__(856);
 var workflow_module_1 = __webpack_require__(304);
 var entity_module_1 = __webpack_require__(302);
@@ -69305,6 +70681,27 @@ var productbundle_module_1 = __webpack_require__(672);
 var sku_module_1 = __webpack_require__(690);
 var subscriptionusage_module_1 = __webpack_require__(694);
 var term_module_1 = __webpack_require__(697);
+=======
+var hibachi_module_1 = __webpack_require__(857);
+var workflow_module_1 = __webpack_require__(306);
+var entity_module_1 = __webpack_require__(304);
+var account_module_1 = __webpack_require__(611);
+var address_module_1 = __webpack_require__(613);
+var content_module_1 = __webpack_require__(622);
+var formbuilder_module_1 = __webpack_require__(624);
+var giftcard_module_1 = __webpack_require__(636);
+var optiongroup_module_1 = __webpack_require__(640);
+var orderitem_module_1 = __webpack_require__(662);
+var orderfulfillment_module_1 = __webpack_require__(655);
+var fulfillmentbatchdetail_module_1 = __webpack_require__(626);
+var orderdeliverydetail_module_1 = __webpack_require__(653);
+var order_module_1 = __webpack_require__(650);
+var product_module_1 = __webpack_require__(667);
+var productbundle_module_1 = __webpack_require__(673);
+var sku_module_1 = __webpack_require__(689);
+var subscriptionusage_module_1 = __webpack_require__(693);
+var term_module_1 = __webpack_require__(696);
+>>>>>>> Stashed changes
 //constant
 var slatwallpathbuilder_1 = __webpack_require__(691);
 var slatwalladminmodule = angular.module('slatwalladmin', [
@@ -69864,6 +71261,173 @@ exports.monatadminmodule = monatadminmodule;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+// var swEditSkuPriceModalLauncherHTML = require("html-loader!sku/components/editskupricemodallauncher");
+var sweditskupricemodallauncher_1 = __webpack_require__(297);
+var sweditskupricemodallauncher_2 = __webpack_require__(297);
+var SWEditSkuPriceModalLauncherController = /** @class */ (function (_super) {
+    __extends(SWEditSkuPriceModalLauncherController, _super);
+    //@ngInject
+    function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
+        var _this = _super.call(this, $hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) || this;
+        _this.$hibachi = $hibachi;
+        _this.entityService = entityService;
+        _this.formService = formService;
+        _this.listingService = listingService;
+        _this.observerService = observerService;
+        _this.skuPriceService = skuPriceService;
+        _this.utilityService = utilityService;
+        _this.scopeService = scopeService;
+        _this.$scope = $scope;
+        if (angular.isDefined(_this.pageRecord)) {
+            //sku record case
+            if (angular.isDefined(_this.pageRecord.skuPriceID) && _this.pageRecord.skuPriceID.length) {
+                _this.skuPrice.personalVolume = _this.pageRecord.personalVolume;
+                _this.skuPrice.taxableAmount = _this.pageRecord.taxableAmount;
+                _this.skuPrice.commissionableVolume = _this.pageRecord.commissionableVolume;
+                _this.skuPrice.sponsorVolume = _this.pageRecord.sponsorVolume;
+                _this.skuPrice.productPackVolume = _this.pageRecord.productPackVolume;
+                _this.skuPrice.retailValueVolume = _this.pageRecord.retailValueVolume;
+                _this.skuPrice.handlingFee = _this.pageRecord.handlingFee;
+            }
+            else {
+                return _this;
+            }
+        }
+        else {
+            throw ("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
+        }
+        // let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
+        // if(angular.isDefined(listingScope.swListingDisplay)){ 
+        //     this.listingID = listingScope.swListingDisplay.tableID;
+        //     this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
+        //     this.defaultCurrencyOnly = true;
+        //     this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
+        // } else {
+        //     throw("swEditSkuPriceModalLauncher couldn't find listing scope");
+        // }
+        _this.initData();
+        return _this;
+    }
+    return SWEditSkuPriceModalLauncherController;
+}(sweditskupricemodallauncher_2.SWEditSkuPriceModalLauncherController));
+exports.SWEditSkuPriceModalLauncherController = SWEditSkuPriceModalLauncherController;
+var SWEditSkuPriceModalLauncher = /** @class */ (function (_super) {
+    __extends(SWEditSkuPriceModalLauncher, _super);
+    function SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
+        var _this = _super.call(this, $hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) || this;
+        _this.$hibachi = $hibachi;
+        _this.entityService = entityService;
+        _this.observerService = observerService;
+        _this.scopeService = scopeService;
+        _this.collectionConfigService = collectionConfigService;
+        _this.skuPartialsPath = skuPartialsPath;
+        _this.slatwallPathBuilder = slatwallPathBuilder;
+        _this.controller = SWEditSkuPriceModalLauncherController;
+        return _this;
+    }
+    SWEditSkuPriceModalLauncher.Factory = function () {
+        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'entityService',
+            'observerService',
+            'scopeService',
+            'collectionConfigService',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWEditSkuPriceModalLauncher;
+}(sweditskupricemodallauncher_1.SWEditSkuPriceModalLauncher));
+exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
+
+
+/***/ }),
+/* 700 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var swpricingmanager_1 = __webpack_require__(298);
+var swpricingmanager_2 = __webpack_require__(298);
+var SWPricingManagerController = /** @class */ (function (_super) {
+    __extends(SWPricingManagerController, _super);
+    function SWPricingManagerController(collectionConfigService) {
+        var _this = _super.call(this, collectionConfigService) || this;
+        _this.collectionConfigService = collectionConfigService;
+        if (_this.skuPriceCollectionConfig) {
+            _this.skuPriceCollectionConfig.addDisplayProperty("personalVolume");
+            _this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount");
+            _this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume");
+            _this.skuPriceCollectionConfig.addDisplayProperty("sponsorVolume");
+            _this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume");
+            _this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume");
+            _this.skuPriceCollectionConfig.addDisplayProperty("handlingFee");
+        }
+        return _this;
+    }
+    return SWPricingManagerController;
+}(swpricingmanager_1.SWPricingManagerController));
+exports.SWPricingManagerController = SWPricingManagerController;
+var SWPricingManager = /** @class */ (function (_super) {
+    __extends(SWPricingManager, _super);
+    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
+        var _this = _super.call(this, $hibachi, skuPartialsPath, slatwallPathBuilder) || this;
+        _this.$hibachi = $hibachi;
+        _this.skuPartialsPath = skuPartialsPath;
+        _this.slatwallPathBuilder = slatwallPathBuilder;
+        _this.controller = SWPricingManagerController;
+        return _this;
+    }
+    SWPricingManager.Factory = function () {
+        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWPricingManager;
+}(swpricingmanager_2.SWPricingManager));
+exports.SWPricingManager = SWPricingManager;
+
+
+/***/ }),
+/* 701 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
@@ -69879,7 +71443,11 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 701 */
+=======
+/* 702 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69903,7 +71471,11 @@ exports.Alert = Alert;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 702 */
+=======
+/* 703 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69912,7 +71484,11 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
+<<<<<<< Updated upstream
 var alert_1 = __webpack_require__(701);
+=======
+var alert_1 = __webpack_require__(702);
+>>>>>>> Stashed changes
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -69982,7 +71558,11 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 703 */
+=======
+/* 704 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70255,7 +71835,11 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 704 */
+=======
+/* 705 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70267,6 +71851,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //components
+<<<<<<< Updated upstream
 var swcardlayout_1 = __webpack_require__(708);
 var swcardview_1 = __webpack_require__(711);
 var swcardheader_1 = __webpack_require__(706);
@@ -70274,6 +71859,15 @@ var swcardbody_1 = __webpack_require__(705);
 var swcardicon_1 = __webpack_require__(707);
 var swcardprogressbar_1 = __webpack_require__(710);
 var swcardlistitem_1 = __webpack_require__(709);
+=======
+var swcardlayout_1 = __webpack_require__(709);
+var swcardview_1 = __webpack_require__(712);
+var swcardheader_1 = __webpack_require__(707);
+var swcardbody_1 = __webpack_require__(706);
+var swcardicon_1 = __webpack_require__(708);
+var swcardprogressbar_1 = __webpack_require__(711);
+var swcardlistitem_1 = __webpack_require__(710);
+>>>>>>> Stashed changes
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -70292,7 +71886,11 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 705 */
+=======
+/* 706 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70339,7 +71937,11 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 706 */
+=======
+/* 707 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70388,7 +71990,11 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 707 */
+=======
+/* 708 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70439,7 +72045,11 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 708 */
+=======
+/* 709 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70490,7 +72100,11 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 709 */
+=======
+/* 710 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70544,7 +72158,11 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 710 */
+=======
+/* 711 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70597,7 +72215,11 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 711 */
+=======
+/* 712 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70649,7 +72271,11 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 712 */
+=======
+/* 713 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70694,7 +72320,11 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 713 */
+=======
+/* 714 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70737,7 +72367,11 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 714 */
+=======
+/* 715 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70831,7 +72465,11 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 715 */
+=======
+/* 716 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71067,7 +72705,11 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 716 */
+=======
+/* 717 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71965,7 +73607,11 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 717 */
+=======
+/* 718 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72004,7 +73650,11 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 718 */
+=======
+/* 719 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72100,7 +73750,11 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 719 */
+=======
+/* 720 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72573,7 +74227,11 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 720 */
+=======
+/* 721 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72714,7 +74372,11 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 721 */
+=======
+/* 722 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72876,7 +74538,11 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 722 */
+=======
+/* 723 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73066,7 +74732,11 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 723 */
+=======
+/* 724 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73214,7 +74884,11 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 724 */
+=======
+/* 725 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73311,7 +74985,11 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 725 */
+=======
+/* 726 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73489,7 +75167,11 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 726 */
+=======
+/* 727 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73553,7 +75235,11 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 727 */
+=======
+/* 728 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73639,7 +75325,11 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 728 */
+=======
+/* 729 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73920,7 +75610,11 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 729 */
+=======
+/* 730 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74301,7 +75995,11 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 730 */
+=======
+/* 731 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74374,7 +76072,11 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 731 */
+=======
+/* 732 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74474,7 +76176,11 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 732 */
+=======
+/* 733 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74542,7 +76248,11 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 733 */
+=======
+/* 734 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74603,7 +76313,11 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 734 */
+=======
+/* 735 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74659,7 +76373,11 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 735 */
+=======
+/* 736 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74698,7 +76416,11 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 736 */
+=======
+/* 737 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74906,7 +76628,11 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 737 */
+=======
+/* 738 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74945,7 +76671,11 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 738 */
+=======
+/* 739 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74976,7 +76706,11 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 739 */
+=======
+/* 740 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74985,16 +76719,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var Column = /** @class */ (function () {
-    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject, type) {
+    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isEditable, isExportable, persistent, ormtype, attributeID, attributeSetObject, type) {
         if (isVisible === void 0) { isVisible = true; }
         if (isDeletable === void 0) { isDeletable = true; }
         if (isSearchable === void 0) { isSearchable = true; }
+        if (isEditable === void 0) { isEditable = false; }
         if (isExportable === void 0) { isExportable = true; }
         this.propertyIdentifier = propertyIdentifier;
         this.title = title;
         this.isVisible = isVisible;
         this.isDeletable = isDeletable;
         this.isSearchable = isSearchable;
+        this.isEditable = isEditable;
         this.isExportable = isExportable;
         this.persistent = persistent;
         this.ormtype = ormtype;
@@ -75305,7 +77041,7 @@ var CollectionConfig = /** @class */ (function () {
             if (title === void 0) { title = ''; }
             if (options === void 0) { options = {}; }
             if (!_this.columns || _this.isReport() || options.aggregate != null || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, type = 'none', ormtype = 'string', lastProperty = column.split('.').pop(), isKeywordColumn = true, isOnlyKeywordColumn = false;
+                var isVisible = true, isDeletable = true, isSearchable = true, isEditable = false, isExportable = true, persistent, type = 'none', ormtype = 'string', lastProperty = column.split('.').pop(), isKeywordColumn = true, isOnlyKeywordColumn = false;
                 var lastEntity = _this.$hibachi.getEntityExample(_this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, column));
                 if (angular.isUndefined(lastEntity)) {
                     throw ("You have passed an incorrect entity name to a collection config");
@@ -75326,6 +77062,9 @@ var CollectionConfig = /** @class */ (function () {
                 }
                 if (angular.isDefined(options['isSearchable'])) {
                     isSearchable = options['isSearchable'];
+                }
+                if (angular.isDefined(options['isEditable'])) {
+                    isEditable = options['isEditable'];
                 }
                 if (angular.isDefined(options['isExportable'])) {
                     isExportable = options['isExportable'];
@@ -75354,7 +77093,7 @@ var CollectionConfig = /** @class */ (function () {
                 if (angular.isDefined(lastEntity.metaData[lastProperty])) {
                     persistent = lastEntity.metaData[lastProperty].persistent;
                 }
-                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject'], type);
+                var columnObject = new Column(column, title, isVisible, isDeletable, isEditable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject'], type);
                 //isMetric and isPeriod for reporting only reporting
                 if (options['isMetric']) {
                     columnObject['isMetric'] = options['isMetric'];
@@ -75870,7 +77609,11 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 740 */
+=======
+/* 741 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76092,7 +77835,11 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 741 */
+=======
+/* 742 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76368,7 +78115,11 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 742 */
+=======
+/* 743 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76419,7 +78170,11 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 743 */
+=======
+/* 744 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76470,7 +78225,11 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 744 */
+=======
+/* 745 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76562,7 +78321,11 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 745 */
+=======
+/* 746 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76730,7 +78493,11 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 746 */
+=======
+/* 747 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76793,7 +78560,11 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 747 */
+=======
+/* 748 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76844,7 +78615,11 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 748 */
+=======
+/* 749 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76891,7 +78666,11 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 749 */
+=======
+/* 750 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77045,7 +78824,11 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 750 */
+=======
+/* 751 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77108,7 +78891,11 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 751 */
+=======
+/* 752 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77177,7 +78964,11 @@ exports.SWDatePicker = SWDatePicker;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 752 */
+=======
+/* 753 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77236,7 +79027,11 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 753 */
+=======
+/* 754 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77319,7 +79114,11 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 754 */
+=======
+/* 755 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77454,7 +79253,11 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 755 */
+=======
+/* 756 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77527,7 +79330,11 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 756 */
+=======
+/* 757 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77566,7 +79373,11 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 757 */
+=======
+/* 758 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77774,7 +79585,11 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 758 */
+=======
+/* 759 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77844,7 +79659,11 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 759 */
+=======
+/* 760 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77878,7 +79697,11 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 760 */
+=======
+/* 761 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77922,7 +79745,11 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 761 */
+=======
+/* 762 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77956,7 +79783,11 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 762 */
+=======
+/* 763 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77992,7 +79823,11 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 763 */
+=======
+/* 764 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78068,7 +79903,11 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 764 */
+=======
+/* 765 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78209,7 +80048,11 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 765 */
+=======
+/* 766 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78290,7 +80133,11 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 766 */
+=======
+/* 767 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78349,7 +80196,11 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 767 */
+=======
+/* 768 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78420,7 +80271,11 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 768 */
+=======
+/* 769 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78572,7 +80427,11 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 769 */
+=======
+/* 770 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78660,7 +80519,11 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 770 */
+=======
+/* 771 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78704,7 +80567,11 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 771 */
+=======
+/* 772 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78796,7 +80663,11 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 772 */
+=======
+/* 773 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78893,7 +80764,11 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 773 */
+=======
+/* 774 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78950,7 +80825,11 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 774 */
+=======
+/* 775 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79038,7 +80917,11 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 775 */
+=======
+/* 776 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79149,7 +81032,11 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 776 */
+=======
+/* 777 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79231,7 +81118,11 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 777 */
+=======
+/* 778 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79348,7 +81239,11 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 778 */
+=======
+/* 779 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79491,7 +81386,11 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 779 */
+=======
+/* 780 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79567,7 +81466,11 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 780 */
+=======
+/* 781 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79950,7 +81853,11 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 781 */
+=======
+/* 782 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80007,7 +81914,11 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 782 */
+=======
+/* 783 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80157,7 +82068,11 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 783 */
+=======
+/* 784 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80183,7 +82098,11 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 784 */
+=======
+/* 785 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80224,7 +82143,11 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 785 */
+=======
+/* 786 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80251,7 +82174,11 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 786 */
+=======
+/* 787 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80278,7 +82205,11 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 787 */
+=======
+/* 788 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80342,7 +82273,11 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 788 */
+=======
+/* 789 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80384,7 +82319,11 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 789 */
+=======
+/* 790 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80434,7 +82373,11 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 790 */
+=======
+/* 791 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80475,7 +82418,11 @@ exports.Account = Account;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 791 */
+=======
+/* 792 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80518,7 +82465,11 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 792 */
+=======
+/* 793 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80551,7 +82502,11 @@ exports.Address = Address;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 793 */
+=======
+/* 794 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80612,7 +82567,11 @@ exports.Cart = Cart;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 794 */
+=======
+/* 795 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80620,6 +82579,7 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< Updated upstream
 var account_1 = __webpack_require__(790);
 exports.Account = account_1.Account;
 var address_1 = __webpack_require__(792);
@@ -80633,11 +82593,30 @@ exports.OrderPayment = orderpayment_1.OrderPayment;
 var sku_1 = __webpack_require__(797);
 exports.Sku = sku_1.Sku;
 var accountaddress_1 = __webpack_require__(791);
+=======
+var account_1 = __webpack_require__(791);
+exports.Account = account_1.Account;
+var address_1 = __webpack_require__(793);
+exports.Address = address_1.Address;
+var cart_1 = __webpack_require__(794);
+exports.Cart = cart_1.Cart;
+var orderitem_1 = __webpack_require__(796);
+exports.OrderItem = orderitem_1.OrderItem;
+var orderpayment_1 = __webpack_require__(797);
+exports.OrderPayment = orderpayment_1.OrderPayment;
+var sku_1 = __webpack_require__(798);
+exports.Sku = sku_1.Sku;
+var accountaddress_1 = __webpack_require__(792);
+>>>>>>> Stashed changes
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 795 */
+=======
+/* 796 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80670,7 +82649,11 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 796 */
+=======
+/* 797 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80687,7 +82670,11 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 797 */
+=======
+/* 798 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80727,7 +82714,11 @@ exports.Sku = Sku;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 798 */
+=======
+/* 799 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80760,7 +82751,11 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 799 */
+=======
+/* 800 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80781,7 +82776,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< Updated upstream
 var baseprocess_1 = __webpack_require__(798);
+=======
+var baseprocess_1 = __webpack_require__(799);
+>>>>>>> Stashed changes
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -80795,7 +82794,11 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 800 */
+=======
+/* 801 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80803,12 +82806,20 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< Updated upstream
 var order_addorderpayment_1 = __webpack_require__(799);
+=======
+var order_addorderpayment_1 = __webpack_require__(800);
+>>>>>>> Stashed changes
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 801 */
+=======
+/* 802 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80829,7 +82840,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
-var request_1 = __webpack_require__(300);
+var request_1 = __webpack_require__(302);
 var AdminRequest = /** @class */ (function (_super) {
     __extends(AdminRequest, _super);
     function AdminRequest(url, data, method, headers, $injector, observerService) {
@@ -80860,7 +82871,11 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 802 */
+=======
+/* 803 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80881,7 +82896,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
-var request_1 = __webpack_require__(300);
+var request_1 = __webpack_require__(302);
 var PublicRequest = /** @class */ (function (_super) {
     __extends(PublicRequest, _super);
     function PublicRequest(url, data, method, headers, $injector, observerService) {
@@ -80920,7 +82935,11 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 803 */
+=======
+/* 804 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80956,7 +82975,11 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 804 */
+=======
+/* 805 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80992,7 +83015,11 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 805 */
+=======
+/* 806 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81078,7 +83105,11 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 806 */
+=======
+/* 807 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81115,7 +83146,11 @@ exports.CartService = CartService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 807 */
+=======
+/* 808 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81145,7 +83180,11 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 808 */
+=======
+/* 809 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81183,7 +83222,11 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 809 */
+=======
+/* 810 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81229,7 +83272,11 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 810 */
+=======
+/* 811 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81291,7 +83338,11 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 811 */
+=======
+/* 812 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81384,7 +83435,11 @@ exports.FormService = FormService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 812 */
+=======
+/* 813 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81569,7 +83624,11 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 813 */
+=======
+/* 814 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81606,7 +83665,11 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 814 */
+=======
+/* 815 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81639,7 +83702,11 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 815 */
+=======
+/* 816 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82120,7 +84187,11 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 816 */
+=======
+/* 817 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82905,7 +84976,11 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 817 */
+=======
+/* 818 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83194,7 +85269,11 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 818 */
+=======
+/* 819 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83230,7 +85309,11 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 819 */
+=======
+/* 820 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83288,7 +85371,11 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 820 */
+=======
+/* 821 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83439,7 +85526,11 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 821 */
+=======
+/* 822 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83608,7 +85699,11 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 822 */
+=======
+/* 823 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83646,7 +85741,11 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 823 */
+=======
+/* 824 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83687,7 +85786,11 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 824 */
+=======
+/* 825 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85113,7 +87216,11 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 825 */
+=======
+/* 826 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85225,7 +87332,11 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 826 */
+=======
+/* 827 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85233,8 +87344,13 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< Updated upstream
 var adminrequest_1 = __webpack_require__(801);
 var publicrequest_1 = __webpack_require__(802);
+=======
+var adminrequest_1 = __webpack_require__(802);
+var publicrequest_1 = __webpack_require__(803);
+>>>>>>> Stashed changes
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -85264,7 +87380,11 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 827 */
+=======
+/* 828 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85301,7 +87421,11 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 828 */
+=======
+/* 829 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85427,7 +87551,11 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 829 */
+=======
+/* 830 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85465,7 +87593,11 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 830 */
+=======
+/* 831 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85705,7 +87837,11 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 831 */
+=======
+/* 832 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86163,7 +88299,11 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 832 */
+=======
+/* 833 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86189,7 +88329,11 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 833 */
+=======
+/* 834 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86233,7 +88377,11 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 834 */
+=======
+/* 835 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86308,7 +88456,11 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 835 */
+=======
+/* 836 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86339,7 +88491,11 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 836 */
+=======
+/* 837 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86386,7 +88542,11 @@ exports.SWList = SWList;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 837 */
+=======
+/* 838 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86405,7 +88565,11 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 838 */
+=======
+/* 839 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86437,7 +88601,11 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 839 */
+=======
+/* 840 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86606,7 +88774,11 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 840 */
+=======
+/* 841 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86690,7 +88862,11 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 841 */
+=======
+/* 842 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86730,7 +88906,11 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 842 */
+=======
+/* 843 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86923,7 +89103,11 @@ exports.SWFForm = SWFForm;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 843 */
+=======
+/* 844 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87025,7 +89209,11 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 844 */
+=======
+/* 845 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87348,7 +89536,11 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 845 */
+=======
+/* 846 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87628,7 +89820,11 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 846 */
+=======
+/* 847 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87676,7 +89872,11 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 847 */
+=======
+/* 848 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87719,7 +89919,11 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 848 */
+=======
+/* 849 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87839,7 +90043,11 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 849 */
+=======
+/* 850 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87907,7 +90115,11 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 850 */
+=======
+/* 851 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87997,7 +90209,11 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 851 */
+=======
+/* 852 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88018,7 +90234,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var swpropertydisplay_1 = __webpack_require__(303);
+var swpropertydisplay_1 = __webpack_require__(305);
 var SWFPropertyDisplayController = /** @class */ (function (_super) {
     __extends(SWFPropertyDisplayController, _super);
     //@ngInject
@@ -88058,7 +90274,11 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 852 */
+=======
+/* 853 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88423,7 +90643,11 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 853 */
+=======
+/* 854 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88434,6 +90658,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(6);
 //services
+<<<<<<< Updated upstream
 var fileservice_1 = __webpack_require__(854);
 //directives
 //  components
@@ -88453,6 +90678,27 @@ var swaddressform_1 = __webpack_require__(839);
 var swpropertydisplay_1 = __webpack_require__(303);
 var swfpropertydisplay_1 = __webpack_require__(851);
 var swformsubscriber_1 = __webpack_require__(850);
+=======
+var fileservice_1 = __webpack_require__(855);
+//directives
+//  components
+//form
+var swinput_1 = __webpack_require__(853);
+var swfformfield_1 = __webpack_require__(844);
+var swform_1 = __webpack_require__(845);
+var swfform_1 = __webpack_require__(843);
+var swffileinput_1 = __webpack_require__(842);
+var swformfield_1 = __webpack_require__(846);
+var swformfieldfile_1 = __webpack_require__(847);
+var swformfieldjson_1 = __webpack_require__(848);
+var swformfieldsearchselect_1 = __webpack_require__(849);
+var swformregistrar_1 = __webpack_require__(850);
+var swerrordisplay_1 = __webpack_require__(841);
+var swaddressform_1 = __webpack_require__(840);
+var swpropertydisplay_1 = __webpack_require__(305);
+var swfpropertydisplay_1 = __webpack_require__(852);
+var swformsubscriber_1 = __webpack_require__(851);
+>>>>>>> Stashed changes
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -88477,7 +90723,11 @@ exports.formmodule = formmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 854 */
+=======
+/* 855 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88524,7 +90774,11 @@ exports.FileService = FileService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 855 */
+=======
+/* 856 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88634,7 +90888,11 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 856 */
+=======
+/* 857 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88643,6 +90901,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
+<<<<<<< Updated upstream
 var alert_module_1 = __webpack_require__(297);
 var card_module_1 = __webpack_require__(704);
 var collection_module_1 = __webpack_require__(298);
@@ -88655,6 +90914,20 @@ var validation_module_1 = __webpack_require__(894);
 var workflow_module_1 = __webpack_require__(304);
 //directives
 var swsaveandfinish_1 = __webpack_require__(855);
+=======
+var alert_module_1 = __webpack_require__(299);
+var card_module_1 = __webpack_require__(705);
+var collection_module_1 = __webpack_require__(300);
+var listing_module_1 = __webpack_require__(873);
+var dialog_module_1 = __webpack_require__(303);
+var entity_module_1 = __webpack_require__(304);
+var pagination_module_1 = __webpack_require__(876);
+var form_module_1 = __webpack_require__(854);
+var validation_module_1 = __webpack_require__(895);
+var workflow_module_1 = __webpack_require__(306);
+//directives
+var swsaveandfinish_1 = __webpack_require__(856);
+>>>>>>> Stashed changes
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -88696,7 +90969,11 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 857 */
+=======
+/* 858 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88745,7 +91022,11 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 858 */
+=======
+/* 859 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88804,7 +91085,11 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 859 */
+=======
+/* 860 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88964,7 +91249,11 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 860 */
+=======
+/* 861 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89145,7 +91434,11 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 861 */
+=======
+/* 862 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89208,7 +91501,11 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 862 */
+=======
+/* 863 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89924,7 +92221,11 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 863 */
+=======
+/* 864 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90062,7 +92363,11 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 864 */
+=======
+/* 865 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90139,7 +92444,11 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 865 */
+=======
+/* 866 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90198,7 +92507,11 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 866 */
+=======
+/* 867 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90237,7 +92550,11 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 867 */
+=======
+/* 868 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90294,7 +92611,11 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 868 */
+=======
+/* 869 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90342,7 +92663,11 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 869 */
+=======
+/* 870 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90350,7 +92675,11 @@ exports.SWListingOrderBy = SWListingOrderBy;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< Updated upstream
 var chart_js_1 = __webpack_require__(309);
+=======
+var chart_js_1 = __webpack_require__(308);
+>>>>>>> Stashed changes
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
     function SWListingReportController($filter, $scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
@@ -90847,7 +93176,11 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 870 */
+=======
+/* 871 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90911,7 +93244,11 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 871 */
+=======
+/* 872 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91138,7 +93475,11 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 872 */
+=======
+/* 873 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91147,8 +93488,9 @@ exports.SWListingSearch = SWListingSearch;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-var collection_module_1 = __webpack_require__(298);
+var collection_module_1 = __webpack_require__(300);
 //services
+<<<<<<< Updated upstream
 var listingservice_1 = __webpack_require__(873);
 //directives
 var swlistingdisplay_1 = __webpack_require__(862);
@@ -91166,6 +93508,25 @@ var swlistingorderby_1 = __webpack_require__(868);
 var swlistingrowsave_1 = __webpack_require__(870);
 var swlistingsearch_1 = __webpack_require__(871);
 var swlistingglobalsearch_1 = __webpack_require__(867);
+=======
+var listingservice_1 = __webpack_require__(874);
+//directives
+var swlistingdisplay_1 = __webpack_require__(863);
+var swlistingreport_1 = __webpack_require__(870);
+var swlistingdisplaycell_1 = __webpack_require__(864);
+var swlistingcontrols_1 = __webpack_require__(861);
+var swlistingaggregate_1 = __webpack_require__(858);
+var swlistingcolorfilter_1 = __webpack_require__(859);
+var swlistingcolumn_1 = __webpack_require__(860);
+var swlistingdisablerule_1 = __webpack_require__(862);
+var swlistingexpandablerule_1 = __webpack_require__(865);
+var swlistingfilter_1 = __webpack_require__(866);
+var swlistingfiltergroup_1 = __webpack_require__(867);
+var swlistingorderby_1 = __webpack_require__(869);
+var swlistingrowsave_1 = __webpack_require__(871);
+var swlistingsearch_1 = __webpack_require__(872);
+var swlistingglobalsearch_1 = __webpack_require__(868);
+>>>>>>> Stashed changes
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -91193,7 +93554,11 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 873 */
+=======
+/* 874 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92161,7 +94526,11 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 874 */
+=======
+/* 875 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92207,7 +94576,11 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 875 */
+=======
+/* 876 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92216,8 +94589,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
+<<<<<<< Updated upstream
 var paginationservice_1 = __webpack_require__(876);
 var swpaginationbar_1 = __webpack_require__(874);
+=======
+var paginationservice_1 = __webpack_require__(877);
+var swpaginationbar_1 = __webpack_require__(875);
+>>>>>>> Stashed changes
 var core_module_1 = __webpack_require__(6);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -92234,7 +94612,11 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 876 */
+=======
+/* 877 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92431,7 +94813,11 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 877 */
+=======
+/* 878 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92820,7 +95206,11 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 878 */
+=======
+/* 879 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92852,7 +95242,11 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 879 */
+=======
+/* 880 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92885,7 +95279,11 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 880 */
+=======
+/* 881 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92949,7 +95347,11 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 881 */
+=======
+/* 882 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92979,7 +95381,11 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 882 */
+=======
+/* 883 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93009,7 +95415,11 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 883 */
+=======
+/* 884 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93043,7 +95453,11 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 884 */
+=======
+/* 885 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93076,7 +95490,11 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 885 */
+=======
+/* 886 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93110,7 +95528,11 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 886 */
+=======
+/* 887 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93143,7 +95565,11 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 887 */
+=======
+/* 888 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93173,7 +95599,11 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 888 */
+=======
+/* 889 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93203,7 +95633,11 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 889 */
+=======
+/* 890 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93234,7 +95668,11 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 890 */
+=======
+/* 891 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93271,7 +95709,11 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 891 */
+=======
+/* 892 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93304,7 +95746,11 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 892 */
+=======
+/* 893 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93341,7 +95787,11 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 893 */
+=======
+/* 894 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93498,7 +95948,11 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 894 */
+=======
+/* 895 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93507,6 +95961,7 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
+<<<<<<< Updated upstream
 var swvalidate_1 = __webpack_require__(877);
 var swvalidationminlength_1 = __webpack_require__(885);
 var swvalidationdatatype_1 = __webpack_require__(878);
@@ -93525,6 +95980,26 @@ var swvalidationunique_1 = __webpack_require__(891);
 var swvalidationuniqueornull_1 = __webpack_require__(892);
 //services
 var validationservice_1 = __webpack_require__(893);
+=======
+var swvalidate_1 = __webpack_require__(878);
+var swvalidationminlength_1 = __webpack_require__(886);
+var swvalidationdatatype_1 = __webpack_require__(879);
+var swvalidationeq_1 = __webpack_require__(880);
+var swvalidationeqproperty_1 = __webpack_require__(881);
+var swvalidationgte_1 = __webpack_require__(882);
+var swvalidationlte_1 = __webpack_require__(883);
+var swvalidationmaxlength_1 = __webpack_require__(884);
+var swvalidationmaxvalue_1 = __webpack_require__(885);
+var swvalidationminvalue_1 = __webpack_require__(887);
+var swvalidationneq_1 = __webpack_require__(888);
+var swvalidationnumeric_1 = __webpack_require__(889);
+var swvalidationregex_1 = __webpack_require__(890);
+var swvalidationrequired_1 = __webpack_require__(891);
+var swvalidationunique_1 = __webpack_require__(892);
+var swvalidationuniqueornull_1 = __webpack_require__(893);
+//services
+var validationservice_1 = __webpack_require__(894);
+>>>>>>> Stashed changes
 var core_module_1 = __webpack_require__(6);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -93552,7 +96027,11 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 895 */
+=======
+/* 896 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93586,7 +96065,11 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 896 */
+=======
+/* 897 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93624,7 +96107,11 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 897 */
+=======
+/* 898 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93658,7 +96145,11 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 898 */
+=======
+/* 899 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93779,7 +96270,11 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 899 */
+=======
+/* 900 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93810,7 +96305,11 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 900 */
+=======
+/* 901 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93860,7 +96359,11 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 901 */
+=======
+/* 902 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93907,7 +96410,11 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 902 */
+=======
+/* 903 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94179,7 +96686,11 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 903 */
+=======
+/* 904 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94379,7 +96890,11 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 904 */
+=======
+/* 905 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94481,7 +96996,11 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 905 */
+=======
+/* 906 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94526,7 +97045,11 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 906 */
+=======
+/* 907 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94815,7 +97338,11 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 907 */
+=======
+/* 908 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94927,7 +97454,11 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 908 */
+=======
+/* 909 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94985,10 +97516,42 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 909 */
+=======
+/* 910 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 911 */
+>>>>>>> Stashed changes
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(305);
+module.exports = __webpack_require__(307);
 
 
 /***/ })
