@@ -131,6 +131,7 @@ class SWAccountPaymentMethodModalController{
 		
 		if(this.showCreateAccountPaymentMethod){
 			formDataToPost.newAccountPaymentMethod = this.newAccountPaymentMethod;
+			formDataToPost.newAccountPaymentMethod.expirationYear = this.newAccountPaymentMethod.expirationYear.VALUE;
 		} else {
 			formDataToPost.accountPaymentMethod = this.baseEntity.accountPaymentMethod;
 		}

@@ -16,8 +16,12 @@
 <cfset rc.skuCollectionList.addDisplayProperty('skuID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
 <cfset rc.skuCollectionList.addDisplayProperty('price',getHibachiScope().rbKey('entity.sku.price'),{isVisible=true,isSearchable=true,isDeletable=false}) /> 
 <cfset rc.skuCollectionList.addDisplayProperty('imageFile',getHibachiScope().rbKey('entity.sku.imageFile'),{isVisible=false,isSearchable=true,isDeletable=false}) /> 
+<cfset rc.skuCollectionList.addFilter('publishedFlag', true) />
+<cfset rc.skuCollectionList.addFilter('activeFlag', true) />
+<cfset rc.skuCollectionList.addFilter('product.publishedFlag', true) />
+<cfset rc.skuCollectionList.addFilter('product.activeFlag', true) />
 
-<cfset rc.skuColumns = rc.skuCollectionList.getCollectionConfigStruct().columns />
+<cfset rc.skuColumns = duplicate(rc.skuCollectionList.getCollectionConfigStruct().columns) />
 
 <cfset arrayAppend(rc.skuColumns, {
 	'title': getHibachiScope().rbKey('define.quantity'),
@@ -27,13 +31,6 @@
 	'isCollectionColumn':false, 
 	'isEditable':true,
 	'isVisible':true
-}) />
-
-<cfset arrayPrepend(rc.skuColumns, {
-	'title': getHibachiScope().rbKey('entity.sku.imageFile'),
-	'propertyIdentifier':'imageFile',
-	'isVisible':true,
-	'cellView':'swSkuImage'
 }) />
 
 <cfset rc.editEvent = '' />
@@ -58,7 +55,7 @@
 				<cfif rc.edit >
 					<hb:HibachiListingDisplay 
 						recordProcessEvent="addOrderTemplateItem"
-						collectionList="#rc.skuCollectionlist#"
+						collectionList="#rc.skuCollectionList#"
 						listingColumns="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.skuColumns))#"
 						usingPersonalCollection="false"
 					>

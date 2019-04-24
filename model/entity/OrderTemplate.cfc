@@ -107,7 +107,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	}
 
 	public string function getLastOrderPlacedDateTime(){
-		var orderCollectionList = getService('OrderService').getOrderCollectionList(); 
+		var orderCollectionList = getService('OrderService').getOrderCollectionList();
+		orderCollectionList.addDisplayProperty('createdDateTime');  
 		orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
 		orderCollectionList.addOrderBy('createdDateTime|DESC');
 		var records = orderCollectionList.getPageRecords();
