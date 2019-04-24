@@ -105,6 +105,39 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return variables.resourceBundles[ arguments.locale ];
 	}
+
+	public array function getAvailableLocaleOptions() {
+		var javaLocale = createObject('java', 'java.util.Locale');
+		var availableLocales = javaLocale.getAvailableLocales();
+
+		var locales = [];
+		for (var locale in availableLocales) {
+			var localeData = {
+				countryCode = locale.getCountry(),
+				languageCode = locale.getLanguage(),
+				name = locale.getDisplayName(),
+				languageName = locale.getDisplayLanguage(),
+				countryName = locale.getDisplayCountry()
+			};
+
+			// Assemble the rbLocale with optional country suffix
+			localeData.value = localeData.languageCode;
+			if (len(localeData.countryCode)) {
+				localeData.value &= '_#localeData.countryCode#';
+			}
+
+			if (len(localeData.value)) {
+			arrayAppend(locales, localeData);
+			}
+		}
+
+		// Apply alphabetical sort using display name
+		arraySort(locales, function(elementA, elementB) {
+			return compareNoCase(elementA.name, elementB.name);
+		});
+
+		return locales;
+	}
 	
 	
 }
