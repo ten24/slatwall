@@ -340,6 +340,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			productTypeMetaKeywordsString = {fieldType="textarea", defaultValue="${productTypeName}, ${parentProductType.productTypeName}"},
 
 			// Site
+			siteAvailableRbLocales = {fieldType="multiselect", defaultValue="en_us"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
@@ -578,6 +579,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
 			case "productImageOptionCodeDelimiter":
 				return ['-','_'];
+			case "siteAvailableRbLocales":
+				return getHibachiRBService().getAvailableLocaleOptions();
 			case "siteForgotPasswordEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":

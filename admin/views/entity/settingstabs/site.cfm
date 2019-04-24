@@ -51,6 +51,7 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
+    <swa:SlatwallSetting settingName="siteAvailableRbLocales" />
 		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
 		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
 		<swa:SlatwallSetting settingName="siteOrderOrigin" />
