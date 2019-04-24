@@ -31,30 +31,15 @@ class SWPricingManagerController{
         );
         
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
-        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,minQuantity,maxQuantity,price,priceGroup.priceGroupCode,currencyCode");
-        this.skuPriceCollectionConfig.addColumn("_skuprice.skuPriceID", "", {isVisible:false});
-        this.skuPriceCollectionConfig.addColumn("_skuprice_sku.skuID", "", {isVisible:false});
-        this.skuPriceCollectionConfig.addColumn("_skuprice_priceGroup.priceGroupID", "", {isVisible:false});
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,priceGroup.priceGroupCode,currencyCode");
+        this.skuPriceCollectionConfig.addDisplayProperty("price", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("minQuantity", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", {isVisible:false});
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", {isVisible:false});
+        this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", {isVisible:false});
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
         this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
-        // let editableColumns = "minQuantity,maxQuantity,price";
-        
-        // for(var i=0; i<this.skuPriceCollectionConfig.columns.length; i++){
-        //     let indexOf = editableColumns.indexOf(this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", ""))
-        //     if(indexOf > -1){
-        //         this.skuPriceCollectionConfig.columns[i].hasCellView = "true";
-                
-        //         if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.price"){
-        //             this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPricesEdit";
-        //         }else if(this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.minQuantity"
-        //                 || this.skuPriceCollectionConfig.columns[i].propertyIdentifier == "_skuprice.maxQuantity"){
-        //             let columnName = this.skuPriceCollectionConfig.columns[i].propertyIdentifier.replace("_skuprice.", "");
-        //             columnName = columnName.slice(3);
-        //             this.skuPriceCollectionConfig.columns[i].cellView = "swSkuPrice" + columnName + "Edit";
-        //         }
-        //     }
-        // }
-        
     }
 }
 

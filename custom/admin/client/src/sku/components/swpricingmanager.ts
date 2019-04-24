@@ -7,21 +7,14 @@ class SWPricingManagerController extends PricingManagerController{
         super(collectionConfigService);
         
         if(this.skuPriceCollectionConfig){
-            this.skuPriceCollectionConfig.setDisplayProperties(
-                "sku.skuCode,"+
-                "sku.calculatedSkuDefinition,"+
-                "minQuantity,"+
-                "maxQuantity,"+
-                "price,"+
-                "priceGroup.priceGroupCode,"+
-                "personalVolume,"+
-                "taxableAmount,"+
-                "commissionableVolume,"+
-                "sponsorVolume,"+
-                "productPackVolume,"+
-                "retailValueVolume,"+
-                "handlingFee"
-            );
+            
+            this.skuPriceCollectionConfig.addDisplayProperty("personalVolume");
+            this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount");
+            this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume");
+            this.skuPriceCollectionConfig.addDisplayProperty("sponsorVolume");
+            this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume");
+            this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume");
+            this.skuPriceCollectionConfig.addDisplayProperty("handlingFee");
         }
     }
 }

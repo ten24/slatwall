@@ -63404,18 +63404,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 //services
 var ordertemplateservice_1 = __webpack_require__(649);
 //components
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 var swaccountpaymentmethodmodal_1 = __webpack_require__(639);
 var swaccountshippingaddresscard_1 = __webpack_require__(640);
 var swaccountshippingmethodmodal_1 = __webpack_require__(641);
 var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(642);
 var swordertemplatefrequencycard_1 = __webpack_require__(643);
 var swordertemplatefrequencymodal_1 = __webpack_require__(644);
+<<<<<<< HEAD
+=======
+//services
+var ordertemplateservice_1 = __webpack_require__(648);
+//components
+var swaccountpaymentmethodmodal_1 = __webpack_require__(638);
+var swaccountshippingaddresscard_1 = __webpack_require__(639);
+var swaccountshippingmethodmodal_1 = __webpack_require__(640);
+var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(641);
+var swordertemplatefrequencycard_1 = __webpack_require__(642);
+var swordertemplatefrequencymodal_1 = __webpack_require__(643);
+var swordertemplatetotal_1 = __webpack_require__(644);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+var swordertemplateupcomingorderscard_1 = __webpack_require__(645);
+var swordertemplateupdateschedulemodal_1 = __webpack_require__(646);
+=======
 var swordertemplatetotal_1 = __webpack_require__(645);
 var swordertemplateupcomingorderscard_1 = __webpack_require__(646);
 var swordertemplateupdateschedulemodal_1 = __webpack_require__(647);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63438,7 +63459,13 @@ exports.ordermodule = ordermodule;
 
 
 /***/ }),
+<<<<<<< HEAD
+/* 648 */
+<<<<<<< HEAD
+=======
+=======
 /* 649 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63523,7 +63550,12 @@ exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
+<<<<<<< HEAD
+/* 649 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 650 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63740,7 +63772,15 @@ exports.SWOrderDeliveryDetail = SWOrderDeliveryDetail;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 649 */
+=======
+/* 650 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 651 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63754,7 +63794,15 @@ var core_module_1 = __webpack_require__(6);
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
 //controllers
 //directives
+<<<<<<< HEAD
+<<<<<<< HEAD
+var sworderdeliverydetail_1 = __webpack_require__(648);
+=======
+var sworderdeliverydetail_1 = __webpack_require__(649);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 var sworderdeliverydetail_1 = __webpack_require__(650);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63769,7 +63817,15 @@ exports.orderdeliverydetailmodule = orderdeliverydetailmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 650 */
+=======
+/* 651 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 652 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64430,7 +64486,15 @@ exports.SWOrderFulfillmentList = SWOrderFulfillmentList;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 651 */
+=======
+/* 652 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 653 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64444,7 +64508,15 @@ var core_module_1 = __webpack_require__(6);
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
+<<<<<<< HEAD
+<<<<<<< HEAD
+var sworderfulfillmentlist_1 = __webpack_require__(650);
+=======
+var sworderfulfillmentlist_1 = __webpack_require__(651);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 var sworderfulfillmentlist_1 = __webpack_require__(652);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 //models 
 var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
     .config([function () {
@@ -64461,7 +64533,15 @@ exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 652 */
+=======
+/* 653 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 654 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64752,7 +64832,15 @@ exports.SWChildOrderItem = SWChildOrderItem;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 653 */
+=======
+/* 654 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 655 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64796,7 +64884,15 @@ exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 654 */
+=======
+/* 655 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 656 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65284,7 +65380,15 @@ exports.SWOrderItem = SWOrderItem;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 655 */
+=======
+/* 656 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 657 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65398,7 +65502,15 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 656 */
+=======
+/* 657 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 658 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65552,7 +65664,15 @@ exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 657 */
+=======
+/* 658 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 659 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65595,7 +65715,15 @@ exports.SWResizedImage = SWResizedImage;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 658 */
+=======
+/* 659 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 660 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65605,12 +65733,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(6);
 //directives
+<<<<<<< HEAD
+<<<<<<< HEAD
+var swchildorderitem_1 = __webpack_require__(652);
+var sworderitem_1 = __webpack_require__(654);
+var swoishippinglabelstamp_1 = __webpack_require__(653);
+var sworderitemdetailstamp_1 = __webpack_require__(655);
+var sworderitems_1 = __webpack_require__(656);
+var swresizedimage_1 = __webpack_require__(657);
+=======
+var swchildorderitem_1 = __webpack_require__(653);
+var sworderitem_1 = __webpack_require__(655);
+var swoishippinglabelstamp_1 = __webpack_require__(654);
+var sworderitemdetailstamp_1 = __webpack_require__(656);
+var sworderitems_1 = __webpack_require__(657);
+var swresizedimage_1 = __webpack_require__(658);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 var swchildorderitem_1 = __webpack_require__(654);
 var sworderitem_1 = __webpack_require__(656);
 var swoishippinglabelstamp_1 = __webpack_require__(655);
 var sworderitemdetailstamp_1 = __webpack_require__(657);
 var sworderitems_1 = __webpack_require__(658);
 var swresizedimage_1 = __webpack_require__(659);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -65630,7 +65776,15 @@ exports.orderitemmodule = orderitemmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 659 */
+=======
+/* 660 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 661 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65734,7 +65888,15 @@ exports.SWProductDeliveryScheduleDates = SWProductDeliveryScheduleDates;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 660 */
+=======
+/* 661 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 662 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65796,7 +65958,15 @@ exports.SWProductListingPages = SWProductListingPages;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 661 */
+=======
+/* 662 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 663 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65859,7 +66029,15 @@ exports.SWRelatedProducts = SWRelatedProducts;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 662 */
+=======
+/* 663 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 664 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65963,7 +66141,15 @@ exports.ProductCreateController = ProductCreateController;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 663 */
+=======
+/* 664 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 665 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65975,12 +66161,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //controllers
+<<<<<<< HEAD
+<<<<<<< HEAD
+var preprocessproduct_create_1 = __webpack_require__(662);
+//filters
+//directives
+var swproductlistingpages_1 = __webpack_require__(660);
+var swrelatedproducts_1 = __webpack_require__(661);
+var swproductdeliveryscheduledates_1 = __webpack_require__(659);
+=======
+var preprocessproduct_create_1 = __webpack_require__(663);
+//filters
+//directives
+var swproductlistingpages_1 = __webpack_require__(661);
+var swrelatedproducts_1 = __webpack_require__(662);
+var swproductdeliveryscheduledates_1 = __webpack_require__(660);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 var preprocessproduct_create_1 = __webpack_require__(664);
 //filters
 //directives
 var swproductlistingpages_1 = __webpack_require__(662);
 var swrelatedproducts_1 = __webpack_require__(663);
 var swproductdeliveryscheduledates_1 = __webpack_require__(661);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
@@ -65996,7 +66200,15 @@ exports.productmodule = productmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 664 */
+=======
+/* 665 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 666 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66341,7 +66553,15 @@ exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollection
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 665 */
+=======
+/* 666 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 667 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66527,7 +66747,15 @@ exports.SWProductBundleGroup = SWProductBundleGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 666 */
+=======
+/* 667 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 668 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66614,7 +66842,15 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 667 */
+=======
+/* 668 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 669 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66789,7 +67025,15 @@ exports.SWProductBundleGroupType = SWProductBundleGroupType;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 668 */
+=======
+/* 669 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 670 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66890,7 +67134,15 @@ exports.CreateBundleController = CreateBundleController;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 669 */
+=======
+/* 670 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 671 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66901,14 +67153,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
+<<<<<<< HEAD
+<<<<<<< HEAD
+var productbundleservice_1 = __webpack_require__(670);
+//controllers
+var create_bundle_controller_1 = __webpack_require__(668);
+//directives
+var swproductbundlegrouptype_1 = __webpack_require__(667);
+var swproductbundlegroups_1 = __webpack_require__(666);
+var swproductbundlegroup_1 = __webpack_require__(665);
+var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(664);
+=======
+var productbundleservice_1 = __webpack_require__(671);
+=======
 var productbundleservice_1 = __webpack_require__(672);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 //controllers
 var create_bundle_controller_1 = __webpack_require__(670);
 //directives
+<<<<<<< HEAD
+var swproductbundlegrouptype_1 = __webpack_require__(668);
+var swproductbundlegroups_1 = __webpack_require__(667);
+var swproductbundlegroup_1 = __webpack_require__(666);
+var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(665);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 var swproductbundlegrouptype_1 = __webpack_require__(669);
 var swproductbundlegroups_1 = __webpack_require__(668);
 var swproductbundlegroup_1 = __webpack_require__(667);
 var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(666);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
@@ -66927,7 +67201,15 @@ exports.productbundlemodule = productbundlemodule;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 670 */
+=======
+/* 671 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 672 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67013,7 +67295,15 @@ exports.ProductBundleService = ProductBundleService;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 671 */
+=======
+/* 672 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 673 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67215,7 +67505,15 @@ exports.SWAddSkuPriceModalLauncher = SWAddSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 672 */
+=======
+/* 673 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 674 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67294,7 +67592,15 @@ exports.SWDefaultSkuRadio = SWDefaultSkuRadio;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 673 */
+=======
+/* 674 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 675 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67379,7 +67685,15 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 674 */
+=======
+/* 675 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 676 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67580,7 +67894,15 @@ exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 675 */
+=======
+/* 676 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 677 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67717,7 +68039,15 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 676 */
+=======
+/* 677 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 678 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67803,7 +68133,15 @@ exports.SWPricingManager = SWPricingManager;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 677 */
+=======
+/* 678 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 679 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67912,7 +68250,15 @@ exports.SWSkuCodeEdit = SWSkuCodeEdit;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 678 */
+=======
+/* 679 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 680 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67988,7 +68334,15 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 
 /***/ }),
+<<<<<<< HEAD
+<<<<<<< HEAD
+/* 679 */
+=======
+/* 680 */
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 /* 681 */
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69175,6 +69529,52 @@ var defaultskuservice_1 = __webpack_require__(687);
 var skupriceservice_1 = __webpack_require__(688);
 //controllers
 //directives
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+var swpricingmanager_1 = __webpack_require__(676);
+var swimagedetailmodallauncher_1 = __webpack_require__(675);
+var swaddskupricemodallauncher_1 = __webpack_require__(671);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(673);
+var sweditskupricemodallauncher_1 = __webpack_require__(674);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(682);
+var swdefaultskuradio_1 = __webpack_require__(672);
+var swskucurrencyselector_1 = __webpack_require__(678);
+var swskupriceedit_1 = __webpack_require__(679);
+var swskucodeedit_1 = __webpack_require__(677);
+=======
+var swpricingmanager_1 = __webpack_require__(675);
+var swimagedetailmodallauncher_1 = __webpack_require__(674);
+var swaddskupricemodallauncher_1 = __webpack_require__(670);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(672);
+var sweditskupricemodallauncher_1 = __webpack_require__(673);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(682);
+var swdefaultskuradio_1 = __webpack_require__(671);
+var swskuimage_1 = __webpack_require__(678);
+var swskucurrencyselector_1 = __webpack_require__(677);
+var swskupriceedit_1 = __webpack_require__(679);
+var swskucodeedit_1 = __webpack_require__(676);
+>>>>>>> c0caaf0d066e841aeb56417e4b91adb73e23349b
+var swskupricesedit_1 = __webpack_require__(681);
+var swskupricequantityedit_1 = __webpack_require__(680);
+var swskuthumbnail_1 = __webpack_require__(683);
+=======
+var swpricingmanager_1 = __webpack_require__(677);
+var swimagedetailmodallauncher_1 = __webpack_require__(676);
+var swaddskupricemodallauncher_1 = __webpack_require__(672);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(674);
+var sweditskupricemodallauncher_1 = __webpack_require__(675);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(684);
+var swdefaultskuradio_1 = __webpack_require__(673);
+var swskuimage_1 = __webpack_require__(680);
+var swskucurrencyselector_1 = __webpack_require__(679);
+var swskupriceedit_1 = __webpack_require__(681);
+var swskucodeedit_1 = __webpack_require__(678);
+var swskupricesedit_1 = __webpack_require__(683);
+var swskupricequantityedit_1 = __webpack_require__(682);
+var swskuthumbnail_1 = __webpack_require__(685);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 var swpricingmanager_1 = __webpack_require__(678);
 var swimagedetailmodallauncher_1 = __webpack_require__(677);
 var swaddskupricemodallauncher_1 = __webpack_require__(673);
@@ -69189,6 +69589,7 @@ var swskucodeedit_1 = __webpack_require__(679);
 var swskupricesedit_1 = __webpack_require__(684);
 var swskupricequantityedit_1 = __webpack_require__(683);
 var swskuthumbnail_1 = __webpack_require__(686);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -69271,6 +69672,40 @@ var optiongroup_module_1 = __webpack_require__(638);
 var orderitem_module_1 = __webpack_require__(660);
 var orderfulfillment_module_1 = __webpack_require__(653);
 var fulfillmentbatchdetail_module_1 = __webpack_require__(624);
+<<<<<<< HEAD
+var orderdeliverydetail_module_1 = __webpack_require__(649);
+var order_module_1 = __webpack_require__(647);
+var product_module_1 = __webpack_require__(663);
+var productbundle_module_1 = __webpack_require__(669);
+=======
+var account_module_1 = __webpack_require__(608);
+var address_module_1 = __webpack_require__(610);
+var content_module_1 = __webpack_require__(619);
+var formbuilder_module_1 = __webpack_require__(621);
+var giftcard_module_1 = __webpack_require__(633);
+var optiongroup_module_1 = __webpack_require__(637);
+var orderitem_module_1 = __webpack_require__(659);
+var orderfulfillment_module_1 = __webpack_require__(652);
+var fulfillmentbatchdetail_module_1 = __webpack_require__(623);
+<<<<<<< HEAD
+var orderdeliverydetail_module_1 = __webpack_require__(648);
+var order_module_1 = __webpack_require__(646);
+var product_module_1 = __webpack_require__(662);
+var productbundle_module_1 = __webpack_require__(668);
+>>>>>>> c0caaf0d066e841aeb56417e4b91adb73e23349b
+var sku_module_1 = __webpack_require__(686);
+var subscriptionusage_module_1 = __webpack_require__(690);
+var term_module_1 = __webpack_require__(693);
+=======
+var orderdeliverydetail_module_1 = __webpack_require__(650);
+var order_module_1 = __webpack_require__(647);
+var product_module_1 = __webpack_require__(664);
+var productbundle_module_1 = __webpack_require__(670);
+var sku_module_1 = __webpack_require__(688);
+var subscriptionusage_module_1 = __webpack_require__(692);
+var term_module_1 = __webpack_require__(695);
+>>>>>>> c5b2813d313a1d52036c98782db973d17382456f
+=======
 var orderdeliverydetail_module_1 = __webpack_require__(651);
 var order_module_1 = __webpack_require__(648);
 var product_module_1 = __webpack_require__(665);
@@ -69278,6 +69713,7 @@ var productbundle_module_1 = __webpack_require__(671);
 var sku_module_1 = __webpack_require__(689);
 var subscriptionusage_module_1 = __webpack_require__(693);
 var term_module_1 = __webpack_require__(696);
+>>>>>>> b99e4cc1eddf9194ed4c07cba10173cddae61c3b
 //constant
 var slatwallpathbuilder_1 = __webpack_require__(690);
 var slatwalladminmodule = angular.module('slatwalladmin', [

@@ -50,7 +50,6 @@ class SWEditSkuPriceModalLauncherController{
         this.listingID = 'pricingListing';
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
         
-        // this.initData();
     }
     
     

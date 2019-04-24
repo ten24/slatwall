@@ -62,8 +62,7 @@ class SWAddSkuPriceModalLauncherController{
         ).finally(()=>{ 
             
             if(angular.isDefined(this.skuOptions) && this.skuOptions.length){
-                this.selectedSku = this.setSelectedSku(this.skuOptions[0]);
-                this.submittedSku = { skuId : this.selectedSku['skuID']};
+                this.setSelectedSku(this.skuOptions[0]);
             }
         }); 
         
@@ -91,7 +90,6 @@ class SWAddSkuPriceModalLauncherController{
             }
         );
         
-        
         this.initData();
     }    
     
@@ -110,38 +108,6 @@ class SWAddSkuPriceModalLauncherController{
         this.skuPrice = this.skuPriceService.newSkuPrice();
 
         this.pageRecord = pageRecord;
-        
-        if(angular.isDefined(pageRecord)){
-           let skuPriceData = {
-                skuPriceID : pageRecord.skuPriceID,
-                minQuantity : pageRecord.minQuantity,
-                maxQuantity : pageRecord.maxQuantity,
-                currencyCode : pageRecord.currencyCode, 
-                price : pageRecord.price
-            } 
-            
-            let skuData = {
-                skuID : pageRecord["sku_skuID"],
-                skuCode : pageRecord["sku_skuCode"],
-                calculatedSkuDefinition : pageRecord["sku_calculatedSkuDefinition"]
-            }
-            
-            let priceGroupData = {
-                priceGroupID : pageRecord["priceGroup_priceGroupID"],
-                priceGroupCode : pageRecord["priceGroup_priceGroupCode"]
-            }
-            
-            this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
-            this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
-            this.skuPrice.$$setPriceGroup(this.priceGroup);
-            this.currencyCodeOptions = ["USD"];
-            
-            this.skuPrice.data.minQuantity = pageRecord.minQuantity;
-            this.skuPrice.data.maxQuantity = pageRecord.maxQuantity;
-            this.skuPrice.data.priceGroup.data.priceGroupId = pageRecord["priceGroup_priceGroupID"];
-        } else {
-            return;
-        }
         
         this.observerService.notify("pullBindings");
     }
@@ -166,7 +132,6 @@ class SWAddSkuPriceModalLauncherController{
     
     public save = () => {
         this.observerService.notify("updateBindings");
-        // var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
         var savePromise = this.skuPrice.$$save();
       
         savePromise.then(
@@ -191,10 +156,6 @@ class SWAddSkuPriceModalLauncherController{
                 
                 this.formService.resetForm(this.formName);
                 this.initData();
-                
-                // if(firstSkuPriceForSku){
-                //     this.listingService.getCollection(this.listingID); 
-                // }
                 this.listingService.notifyListingPageRecordsUpdate(this.listingID);
             }
         });
