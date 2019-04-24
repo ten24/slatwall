@@ -49,6 +49,8 @@ class SWAddSkuPriceModalLauncherController{
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "addSkuPrice" + this.utilityService.createID(16);
         this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
         
         this.skuPriceService.getSkuOptions(this.productId).then(
             (response)=>{
@@ -63,7 +65,7 @@ class SWAddSkuPriceModalLauncherController{
                 this.selectedSku = this.skuOptions[0];
                 this.submittedSku = { skuId : this.selectedSku['skuID']};
             }
-        });
+        }); 
         
         this.skuPriceService.getPriceGroupOptions().then(
             (response)=>{
@@ -169,6 +171,8 @@ class SWAddSkuPriceModalLauncherController{
         savePromise.then(
             (response)=>{
                this.saveSuccess = true; 
+               //hack, for whatever reason is not responding to getCollection event
+                this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
             },
             (reason)=>{
                 //error callback
