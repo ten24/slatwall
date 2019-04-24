@@ -92483,6 +92483,7 @@ var Pagination = /** @class */ (function () {
             }
             _this.setPageEnd(collection.pageRecordsEnd);
             _this.setTotalPages(collection.totalPages);
+            _this.currentPage = collection.currentPage;
             _this.totalPagesArray = [];
             if (angular.isUndefined(_this.getCurrentPage()) || _this.getCurrentPage() < 5) {
                 var start = 1;
