@@ -26,9 +26,12 @@ class SWEditSkuPriceModalLauncherController extends EditSkuPriceModalLauncherCon
             scopeService,
             $scope
         );
-
+        
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+    }
+    
+    public initData = (pageRecord?:any) =>{
         if(angular.isDefined(this.pageRecord)){ 
-            //sku record case
             if(angular.isDefined(this.pageRecord.skuPriceID) && this.pageRecord.skuPriceID.length){
             
                 this.skuPrice.personalVolume = this.pageRecord.personalVolume;
@@ -44,17 +47,6 @@ class SWEditSkuPriceModalLauncherController extends EditSkuPriceModalLauncherCon
         } else{ 
             throw("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
         } 
-        // let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-        // if(angular.isDefined(listingScope.swListingDisplay)){ 
-        //     this.listingID = listingScope.swListingDisplay.tableID;
-        //     this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
-        //     this.defaultCurrencyOnly = true;
-        //     this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
-        // } else {
-        //     throw("swEditSkuPriceModalLauncher couldn't find listing scope");
-        // }
-         this.initData();
-        
     }
     
 }

@@ -7,7 +7,6 @@ class Column{
         public isVisible:boolean=true,
         public isDeletable:boolean=true,
         public isSearchable:boolean=true,
-        public isEditable:boolean=false,
         public isExportable:boolean=true,
         public persistent?:boolean,
         public ormtype?:string,
@@ -385,7 +384,6 @@ class CollectionConfig {
             var isVisible = true,
                 isDeletable = true,
                 isSearchable = true,
-                isEditable = false,
                 isExportable = true,
                 persistent ,
                 type = 'none',
@@ -416,9 +414,6 @@ class CollectionConfig {
             }
             if(angular.isDefined(options['isSearchable'])){
                 isSearchable = options['isSearchable'];
-            }
-            if(angular.isDefined(options['isEditable'])){
-                isEditable = options['isEditable'];
             }
             if(angular.isDefined(options['isExportable'])){
                 isExportable = options['isExportable'];
@@ -454,7 +449,6 @@ class CollectionConfig {
                 title,
                 isVisible,
                 isDeletable,
-                isEditable,
                 isSearchable,
                 isExportable,
                 persistent,
