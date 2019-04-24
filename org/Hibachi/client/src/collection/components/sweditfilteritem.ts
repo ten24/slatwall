@@ -312,7 +312,11 @@ class SWEditFilterItem{
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
                                 }
 
-                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                if(selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated){
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated;
+                                } else {
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                }
 
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
