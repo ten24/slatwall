@@ -66,10 +66,10 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 
-            <cfset rc.localeOptions = ['en_us','en_uk','pl_pl','en_ca','ie_ie'] />
+            <cfset rc.localeOptions = getHibachiScope().getService('hibachiRBService').getAvailableLocaleOptions(localeFilterList=getHibachiScope().getService('settingService').getSettingValue('globalTranslateLocales')) />
             <cfloop from="1" to="#arrayLen(rc.localeOptions)#" index="i">
-                <input type="hidden" name="translationData[#i#].locale" value="#rc.localeOptions[i]#">
-                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="need to retrieve" edit="#rc.edit#" title="#rc.processObject.getBasePropertyName()# (#rc.localeOptions[i]#)">
+                <input type="hidden" name="translationData[#i#].locale" value="#rc.localeOptions[i].value#">
+                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="" edit="#rc.edit#" title="#rc.localeOptions[i].name#">
             </cfloop>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

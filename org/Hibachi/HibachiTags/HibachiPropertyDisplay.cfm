@@ -224,6 +224,10 @@
 				)
 			>
 				<cfset attributes.translateAttributes = {} />
+				<cfset attributes.translateAttributes.queryString = '' />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseObject=#attributes.object.getClassName()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseID=#attributes.object.getPrimaryIDValue()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "basePropertyName=#attributes.property#", "&") />
 			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->
