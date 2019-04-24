@@ -62,7 +62,7 @@ class SWAddSkuPriceModalLauncherController{
         ).finally(()=>{ 
             
             if(angular.isDefined(this.skuOptions) && this.skuOptions.length){
-                this.selectedSku = this.skuOptions[0];
+                this.selectedSku = this.setSelectedSku(this.skuOptions[0]);
                 this.submittedSku = { skuId : this.selectedSku['skuID']};
             }
         }); 
@@ -160,6 +160,7 @@ class SWAddSkuPriceModalLauncherController{
         }
        
         this.selectedSku = { skuCode : skuData['skuCode'], skuID : skuData['skuID'] };
+        this.sku = this.$hibachi.populateEntity('Sku', skuData);
         this.submittedSku = { skuID : skuData['skuID'] };
     } 
     

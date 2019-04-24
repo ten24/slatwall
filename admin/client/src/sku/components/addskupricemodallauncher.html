@@ -17,7 +17,7 @@
             <div ng-show="!swAddSkuPriceModalLauncher.saveSuccess" class="alert alert-error" role="alert" sw-rbkey="'admin.entity.addskuprice.invalid'"></div>
             <div class="row">
                     <div class="col-sm-4">
-                        <sw-sku-thumbnail data-sku-data="swAddSkuPriceModalLauncher.sku.data">
+                        <sw-sku-thumbnail ng-if="swAddSkuPriceModalLauncher.sku.data" data-sku-data="swAddSkuPriceModalLauncher.sku.data">
                         </sw-sku-thumbnail>
                     </div>
                     <div class="col-sm-8">
