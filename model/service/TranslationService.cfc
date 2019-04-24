@@ -4,17 +4,23 @@ component extends="HibachiService" accessors="true" output="false" {
     
     public array function getEntityNameOptions() {
         var entitiesMetaData = getEntitiesMetaData();
-        var entitiesArray = listToArray(structKeyList(entitiesMetaData));
-        arraySort(entitiesArray,"text");
+
+        var entityNames = [];
+        for (var entityName in entitiesMetaData) {
+            if (!structKeyExists(entitiesMetaData[entityName], 'hb_translate') || entitiesMetaData[entityName].hb_translate) {
+                arrayAppend(entityNames, entityName);
+            }
+        }
+        arraySort(entityNames,"text");
 
         var options = [];
-        for(var value in entitiesArray) {
+        for(var value in entityNames) {
             var option = {};
             option["name"] = rbKey('entity.#value#');
             option["value"] = value;
             arrayAppend(options, option);
         }
-        
+
         return options;
     }
 
