@@ -67389,6 +67389,8 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
             var savePromise = _this.skuPrice.$$save();
             savePromise.then(function (response) {
                 _this.saveSuccess = true;
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
             }, function (reason) {
                 //error callback
                 console.log(reason);
@@ -67413,6 +67415,8 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
         this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.formName = "addSkuPrice" + this.utilityService.createID(16);
         this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
         this.skuPriceService.getSkuOptions(this.productId).then(function (response) {
             _this.skuOptions = [];
             for (var i = 0; i < response.records.length; i++) {
@@ -67616,6 +67620,8 @@ var SWDeleteSkuPriceModalLauncherController = /** @class */ (function () {
         this.deleteSkuPrice = function () {
             var deletePromise = _this.skuPrice.$$delete();
             deletePromise.then(function (resolve) {
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
             }, function (reason) {
                 console.log("Could not delete Sku Price Because: ", reason);
             });
@@ -67623,6 +67629,8 @@ var SWDeleteSkuPriceModalLauncherController = /** @class */ (function () {
         };
         this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.observerService.attach(this.init, "DELETE_SKUPRICE");
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
     }
     return SWDeleteSkuPriceModalLauncherController;
 }());
@@ -89907,6 +89915,16 @@ var SWListingDisplayController = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    SWListingDisplayController.prototype.hasAverageOrTotal = function () {
+        if (this.collectionData) {
+            for (var key in this.collectionData) {
+                if (key.indexOf('recordsAvg') > -1 || key.indexOf('recordsTotal') > -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {

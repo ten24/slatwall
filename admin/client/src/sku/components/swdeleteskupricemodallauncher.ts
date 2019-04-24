@@ -20,7 +20,9 @@ class SWDeleteSkuPriceModalLauncherController{
         private observerService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
-        this.observerService.attach(this.init, "DELETE_SKUPRICE")
+        this.observerService.attach(this.init, "DELETE_SKUPRICE");
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
     }  
     
     public init = (pageRecord:any) =>{
@@ -44,7 +46,8 @@ class SWDeleteSkuPriceModalLauncherController{
         
         deletePromise.then(
             (resolve)=>{
-                
+                //hack, for whatever reason is not responding to getCollection event
+                this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
             },
             (reason)=>{
                 console.log("Could not delete Sku Price Because: ", reason);

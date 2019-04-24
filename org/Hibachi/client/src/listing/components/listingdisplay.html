@@ -434,8 +434,8 @@
                             	</sw-listing-display-cell>
 							</td>
 
-                            <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
-                                <span  ng-show="swListingDisplay.hasNumerical()">
+                            <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0 && swListingDisplay.hasAverageOrTotal()">
+                                <span  >
                                     <div class="btn-group" style="position: static;">
                                         <button class="btn btn-primary dropdown-toggle btn-primary calcRows" data-toggle="dropdown" aria-expanded="true">Total <span class="caret"></span></button>
                                             <ul class="dropdown-menu pull-right" id="">
