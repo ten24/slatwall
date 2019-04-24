@@ -1203,7 +1203,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
 		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
 
-		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+		//newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
 	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
@@ -1211,6 +1211,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addErrors(newOrder.getErrors());
 			return arguments.orderTemplate;
 		}
+
+		//place order
 
 		return arguments.orderTemplate; 
 	}
