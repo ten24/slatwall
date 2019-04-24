@@ -251,6 +251,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
+			globalRbLocale = {fieldType="select",defaultValue="en_us"},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
@@ -571,6 +572,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('unitName', 'name');
 				optionSL.addSelect('unitCode', 'value');
 				return optionSL.getRecords();
+			case "globalRbLocale":
+				return getHibachiRBService().getAvailableLocaleOptions();
 			case "paymentMethodCheckoutTransactionType" :
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
 			case "productImageOptionCodeDelimiter":
