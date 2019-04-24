@@ -71,7 +71,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string entityQueueType, string processMethod, boolean unique=false){
 		var queryService = new query();
 		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueType, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID) ";
-		sql &= "SELECT #createHibachiUUID()# as entityQueueID, "; 
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
 		sql &= "#arguments.entityName# as baseObject, ";  
 		sql &= "#getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName)# as baseID, ";
 		
