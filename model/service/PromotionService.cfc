@@ -1025,8 +1025,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)){
 			switch(reward.getAmountType()) {
 				case "percentageOff" :
-					writeDump(originalAmount);
-					writeDump(reward.getAmountByCurrencyCode(arguments.currencyCode));
 					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (reward.getAmountByCurrencyCode(arguments.currencyCode)/100)));
 					break;
 				case "amountOff" :
