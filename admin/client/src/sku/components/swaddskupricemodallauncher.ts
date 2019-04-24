@@ -63,7 +63,6 @@ class SWAddSkuPriceModalLauncherController{
             
             if(angular.isDefined(this.skuOptions) && this.skuOptions.length){
                 this.setSelectedSku(this.skuOptions[0]);
-                // this.submittedSku = { skuId : this.selectedSku['skuID']};
             }
         }); 
         
@@ -133,7 +132,6 @@ class SWAddSkuPriceModalLauncherController{
     
     public save = () => {
         this.observerService.notify("updateBindings");
-        // var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
         var savePromise = this.skuPrice.$$save();
       
         savePromise.then(
