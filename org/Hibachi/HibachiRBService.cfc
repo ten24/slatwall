@@ -113,8 +113,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		var locales = [];
 		for (var locale in availableLocales) {
 			var localeData = {
-				countryCode = locale.getCountry(),
-				languageCode = locale.getLanguage(),
+				countryCode = lcase(locale.getCountry()),
+				languageCode = lcase(locale.getLanguage()),
 				name = locale.getDisplayName(),
 				languageName = locale.getDisplayLanguage(),
 				countryName = locale.getDisplayCountry()
