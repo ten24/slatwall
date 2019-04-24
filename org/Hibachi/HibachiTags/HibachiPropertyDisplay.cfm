@@ -210,6 +210,25 @@
 			<cfif attributes.hint eq "">
 				<cfset attributes.hint = attributes.object.getPropertyHint( attributes.property ) />
 			</cfif>
+
+			<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif 
+				attributes.object.isPersistent() 
+				and listFindNoCase('text,textarea,wysiwyg', attributes.fieldType) 
+				and structKeyExists(attributes.object.getPropertyMetaData(attributes.property), 'ormtype')
+				and attributes.object.getPropertyMetaData(attributes.property).ormtype eq 'string'
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.object.getClassName())
+				and (
+					not structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_translate") 
+					or attributes.object.getPropertyMetaData(attributes.property).hb_translate
+				)
+			>
+				<cfset attributes.translateAttributes = {} />
+				<cfset attributes.translateAttributes.queryString = '' />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseObject=#attributes.object.getClassName()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseID=#attributes.object.getPrimaryIDValue()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "basePropertyName=#attributes.property#", "&") />
+			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->
 			<cfif attributes.object.hasError(attributes.property)>

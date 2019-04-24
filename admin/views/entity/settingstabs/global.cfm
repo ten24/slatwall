@@ -52,6 +52,9 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalUsageStats" />
+		<swa:SlatwallSetting settingName="globalLocale" />
+		<swa:SlatwallSetting settingName="globalTranslateLocales" />
+		<swa:SlatwallSetting settingName="globalTranslateEntities" />
 		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
 		<swa:SlatwallSetting settingName="globalCurrencyType" />
 		<swa:SlatwallSetting settingName="globalDateFormat" />

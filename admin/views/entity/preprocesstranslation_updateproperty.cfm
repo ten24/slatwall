@@ -46,18 +46,33 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.translation" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-    <swa:SlatwallSetting settingName="siteAvailableLocales" />
-		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
-		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
-		<swa:SlatwallSetting settingName="siteOrderOrigin" />
-		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" />
-		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" />
-		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+<hb:HibachiEntityProcessForm entity="#getHibachiScope().getService('translationService').newTranslation()#" edit="#rc.edit#" sRedirectAction="admin:entity.detail#rc.processObject.getBaseObject()#" sRedirectQS="#getHibachiScope().getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.processObject.getBaseObject())#=#rc.processObject.getBaseID()#">
+	<input type="hidden" name="baseObject" value="#rc.processObject.getBaseObject()#">
+    <input type="hidden" name="baseID" value="#rc.processObject.getBaseID()#">
+    <input type="hidden" name="basePropertyName" value="#rc.processObject.getBasePropertyName()#">
 
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.translation#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+
+            <cfset rc.localeOptions = getHibachiScope().getService('hibachiRBService').getAvailableLocaleOptions(localeFilterList=getHibachiScope().getService('settingService').getSettingValue('globalTranslateLocales')) />
+            <cfloop from="1" to="#arrayLen(rc.localeOptions)#" index="i">
+                <input type="hidden" name="translationData[#i#].locale" value="#rc.localeOptions[i].value#">
+                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="" edit="#rc.edit#" title="#rc.localeOptions[i].name#">
+            </cfloop>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>
+</cfoutput>

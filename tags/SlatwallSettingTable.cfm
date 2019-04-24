@@ -149,7 +149,7 @@ Notes:
 
 						<tr>
 							<td class="primary">
-								#thisSetting.settingDisplayName# <cfif len(thisSetting.settingHint)><a href="##" rel="tooltip" class="hint" title="#thisSetting.settingHint#"><i class="icon-question-sign"></i></a></cfif>
+								#thisSetting.settingDisplayName# <cfif len(thisSetting.settingHint)><a href="##" rel="tooltip" class="hint" title="#thisSetting.settingHint#"><i class="fa fa-question-circle"></i></a></cfif>
 							</td>
 							<cfif attributes.showFilterEntities>
 								<td>#settingFilterEntitiesName#</td>

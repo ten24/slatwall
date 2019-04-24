@@ -22,6 +22,7 @@
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
+	<cfparam name="attributes.translateAttributes" type="any" default="" />
 	<!---
 		attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
@@ -252,6 +253,16 @@
 		<cfcase value="text">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
+				<cfif isStruct(attributes.translateAttributes)>
+					<cfset attributes.translateAttributes.entity = "Translation" />
+					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
+					<cfset attributes.translateAttributes.processContext = "updateProperty" />
+					<cfset attributes.translateAttributes.class = "form-control-feedback" />
+					<cfset attributes.translateAttributes.icon = "globe" />
+					<cfset attributes.translateAttributes.iconOnly = "true" />
+					<cfset attributes.translateAttributes.modal = "true" />
+					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
+				</cfif>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textautocomplete">
