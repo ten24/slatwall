@@ -798,6 +798,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		if(!structKeyExists(variables, "assignedOrderItemAttributeSetSmartList")) {
 
 			variables.assignedOrderItemAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
+			
 			variables.assignedOrderItemAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('attributeSetObject', 'OrderItem');
@@ -814,8 +815,9 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			if(!isNull(getProduct().getBrand())) {
 				wc &= " OR aslatwallbrand.brandID = '#getProduct().getBrand().getBrandID()#'";
 			}
-			wc &= " OR aslatwallsku.skuID = '#getSkuID()#'";
-			wc &= ")";
+			wc &= " OR aslatwallsku.skuID = '#getSkuID()#')";
+			wc &= " AND aslatwallattributeset.attributeSetName IS NOT NULL";
+			
 
 			variables.assignedOrderItemAttributeSetSmartList.addWhereCondition( wc );
 		}

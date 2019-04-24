@@ -133,7 +133,7 @@
 	        	<cfset local.sequenceNo = 0 />
 	        	<cfloop collection="#local.containers#" item="size">
 	        		<cfif isArray(local.containers[size])>
-		        		<cfloop array="#local.containers[size]#" item="container">
+		        		<cfloop array="#local.containers[size]#" index="local.container">
 		        			<cfset local.sequenceNo++ />
 					        <ns:RequestedPackageLineItems>
 								<ns:SequenceNumber>#local.sequenceNo#</ns:SequenceNumber>
@@ -141,11 +141,11 @@
 								<ns:GroupPackageCount>1</ns:GroupPackageCount>
 					            <ns:InsuredValue>
 					                <ns:Currency>USD</ns:Currency>
-					                <ns:Amount>#container.value#</ns:Amount>
+					                <ns:Amount>#local.container.value#</ns:Amount>
 					            </ns:InsuredValue>
 					            <ns:Weight>
 					                <ns:Units>LB</ns:Units>
-					                <ns:Value>#container.weight#</ns:Value>
+					                <ns:Value>#local.container.weight#</ns:Value>
 								</ns:Weight>
 								<cfif setting('specialServiceAlcoholFlag')>
 									<ns:SpecialServicesRequested>
