@@ -454,7 +454,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
 				removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-				writeDump(var=orderItemQualifiedDiscounts,top=4);abort;
+
 				// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
 				applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 	
@@ -729,7 +729,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			};
 
 			if( getOrderItemInQualifier(qualifier=qualifier, orderItem=orderItem) ){
-
 				qualifiedOrderItemDetails.qualificationCount = orderItem.getQuantity();
 				qualifiedItemsQuantity += orderItem.getQuantity();
 
