@@ -33,13 +33,6 @@
 	'isVisible':true
 }) />
 
-<cfset arrayPrepend(rc.skuColumns, {
-	'title': getHibachiScope().rbKey('entity.sku.imageFile'),
-	'propertyIdentifier':'imageFile',
-	'isVisible':true,
-	'cellView':'swSkuImage'
-}) />
-
 <cfset rc.editEvent = '' />
 <cfif rc.edit>
 	<cfset rc.editEvent = 'editOrderTemplateItem' />
