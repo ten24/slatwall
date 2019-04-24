@@ -956,10 +956,12 @@ component extends="HibachiService" output="false" accessors="true" {
 
 				// Attempt object level value resolution without site context if necessary
 				if (!foundValue) {
-					// Delete any siteID from settingRelationship if present
-					structDelete(settingDetails.settingRelationships, 'siteID');
+					// Delete any siteID from settingRelationship if present unless the base object is a Site entity itself (otherwise we still want the siteID filter applied because it will appear identical if overridden at global level with siteID being null)
+					if (arguments.object.getClassName() != 'Site') {
+						structDelete(settingDetails.settingRelationships, 'siteID');
+					}
 
-					// Now try just object level value resolution without siteID in settingRelationships
+					// Now try just object level value resolution without siteID in settingRelationships except if Site of course.
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
 						foundValue = true;
@@ -1077,8 +1079,8 @@ component extends="HibachiService" output="false" accessors="true" {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
 
-				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also
-				if (settingDetails.siteProvided) {
+				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also (Edge case to exclude Site. No reason to introduce unecessary complexity by allowing Site to also specify site settings!)
+				if (settingDetails.siteProvided && arguments.object.getClassName() != 'Site') {
 					// Trying site level value resolution with the siteID and any other specified relationships
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
