@@ -1157,7 +1157,51 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, required any processObject, required struct data={}){
 
-				
+		var newOrder = this.newOrder(); 
+
+		var processOrderCreate = newOrder.getProcessObject('create'); 
+		processOrderCreate.setNewAccountFlag(false); 
+		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
+		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
+		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
+		//do we need location
+	
+		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
+	
+		if(newOrder.hasErrors()){
+			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			return arguments.orderTemplate; 
+		} 
+
+		newOrder.setOrderTemplate(arguments.orderTemplate);
+		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
+		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
+
+		newOrder = this.saveOrder(newOrder); 
+
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity'); 
+		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+
+		var orderTemplateItems = orderTemplateItemCollection.getRecords(); 
+		for(var orderTemplateItem in orderTemplateItems){ 
+
+			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
+			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
+			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
+
+			newOrder = this.processOrder_addOrderItem(newOrder, processOrderAddOrderItem);
+
+			if(newOrder.hasErrors()){
+				arguments.orderTemplate.addErrors(newOrder.getErrors());
+				return arguments.orderTemplate; 
+			}
+
+		} 		
+
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 
 		return arguments.orderTemplate; 
 	}
