@@ -51,6 +51,7 @@ class SWAccountPaymentMethodModalController{
 				 public rbkeyService,
 				 public requestService
 	){
+		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
 	}
 	
 	public $onInit = () =>{
@@ -120,7 +121,7 @@ class SWAccountPaymentMethodModalController{
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext,
-			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod'
+			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'
 		};
 		
 		if(this.showCreateBillingAddress){

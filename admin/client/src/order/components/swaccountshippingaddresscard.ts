@@ -34,8 +34,10 @@ class SWAccountShippingAddressCardController{
 	}
 	
 	public updateShippingInfo = (data) =>{
+		this.accountAddressOptions = data['account.accountAddressOptions'];
 		this.shippingAccountAddress = data.shippingAccountAddress;
 		this.shippingMethod = data.shippingMethod; 
+		this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
 	}
 }
 
