@@ -91140,7 +91140,7 @@ var SWListingSearchController = /** @class */ (function () {
                 delete selectedPersonalCollection[_this.swListingDisplay.baseEntityName.toLowerCase()];
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
-            window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
+            window.location.reload();
         };
         this.deleteReportCollection = function (persistedCollection) {
             _this.$hibachi.saveEntity('Collection', persistedCollection.collectionID, {}, 'delete').then(function (data) {
