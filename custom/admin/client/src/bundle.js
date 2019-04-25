@@ -32971,9 +32971,28 @@ var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
                     priceGroupID: pageRecord["priceGroup_priceGroupID"],
                     priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
                 };
+                //reference to form is being wiped
+                if (_this.skuPrice) {
+                    var skuPriceForms = _this.skuPrice.forms;
+                }
                 _this.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+                if (skuPriceForms) {
+                    _this.skuPrice.forms = skuPriceForms;
+                }
+                if (_this.sku) {
+                    var skuForms = _this.sku.forms;
+                }
                 _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+                if (skuForms) {
+                    _this.skuPrice.forms = skuForms;
+                }
+                if (_this.priceGroup) {
+                    var priceGroupForms = _this.priceGroup.forms;
+                }
                 _this.priceGroup = _this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+                if (priceGroupForms) {
+                    _this.priceGroup.forms = priceGroupForms;
+                }
                 _this.skuPriceService.getPriceGroupOptions().then(function (response) {
                     _this.priceGroupOptions = response.records;
                     _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
@@ -33025,12 +33044,18 @@ var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
         this.save = function () {
             _this.observerService.notify("updateBindings");
             var firstSkuPriceForSku = !_this.skuPriceService.hasSkuPrices(_this.sku.data.skuID);
+            if (_this.submittedPriceGroup) {
+                _this.priceGroup.priceGroupID = _this.submittedPriceGroup.priceGroupID;
+                _this.priceGroup.priceGroupCode = _this.submittedPriceGroup.priceGroupCode;
+            }
             var savePromise = _this.skuPrice.$$save();
             savePromise.then(function (response) {
                 _this.saveSuccess = true;
                 _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
                 //hack, for whatever reason is not responding to getCollection event
                 _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+                var form = _this.formService.getForm(_this.formName);
+                _this.formService.resetForm(form);
             }, function (reason) {
                 //error callback
                 console.log("validation failed because: ", reason);
@@ -33042,8 +33067,7 @@ var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
                             _this.skuPrice.data[key] = null;
                         }
                     }
-                    console.log(_this.listingID);
-                    _this.formService.resetForm(_this.formName);
+                    _this.formService.resetForm(_this.formService.getForm(_this.formName));
                     _this.initData();
                     _this.listingService.getCollection(_this.listingID);
                     _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);

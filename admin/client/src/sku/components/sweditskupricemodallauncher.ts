@@ -85,10 +85,30 @@ class SWEditSkuPriceModalLauncherController{
                 priceGroupID : pageRecord["priceGroup_priceGroupID"],
                 priceGroupCode : pageRecord["priceGroup_priceGroupCode"]
             }
-            
+            //reference to form is being wiped
+            if(this.skuPrice){
+                var skuPriceForms = this.skuPrice.forms;
+            }
             this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+            if(skuPriceForms){
+                this.skuPrice.forms=skuPriceForms;
+            }
+            
+            if(this.sku){
+                var skuForms = this.sku.forms;
+            }
             this.sku = this.$hibachi.populateEntity('Sku', skuData);
+            if(skuForms){
+                this.skuPrice.forms=skuForms;
+            }
+            
+            if(this.priceGroup){
+                var priceGroupForms = this.priceGroup.forms;
+            }
             this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
+            if(priceGroupForms){
+                this.priceGroup.forms=priceGroupForms;
+            }
             
             this.skuPriceService.getPriceGroupOptions().then(
                 (response)=>{
@@ -139,6 +159,7 @@ class SWEditSkuPriceModalLauncherController{
     }
     
     public setSelectedPriceGroup = (priceGroupData) =>{
+        
         if(!priceGroupData.priceGroupID){
             this.submittedPriceGroup = {};
             return;
@@ -154,6 +175,11 @@ class SWEditSkuPriceModalLauncherController{
     public save = () => {
         this.observerService.notify("updateBindings");
         var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
+        if(this.submittedPriceGroup){
+            this.priceGroup.priceGroupID = this.submittedPriceGroup.priceGroupID;
+            this.priceGroup.priceGroupCode = this.submittedPriceGroup.priceGroupCode;
+        }
+        
         var savePromise = this.skuPrice.$$save();
       
         savePromise.then(
@@ -162,6 +188,9 @@ class SWEditSkuPriceModalLauncherController{
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                //hack, for whatever reason is not responding to getCollection event
                 this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
+                var form = this.formService.getForm(this.formName);
+               
+                this.formService.resetForm(form);
             },
             (reason)=>{
                 //error callback
@@ -176,8 +205,8 @@ class SWEditSkuPriceModalLauncherController{
                         this.skuPrice.data[key] = null;
                     }
                 }
-                console.log(this.listingID);
-                this.formService.resetForm(this.formName);
+                this.formService.resetForm(this.formService.getForm(this.formName));
+                
                 this.initData();
                 
                 this.listingService.getCollection(this.listingID); 
