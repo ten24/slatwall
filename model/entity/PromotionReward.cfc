@@ -199,6 +199,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
 				variables.includedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
+			variables.includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+			variables.includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
 		}
 		return variables.includedSkusCollection;
 	}
@@ -210,6 +212,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 				variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
 				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
 				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 		}

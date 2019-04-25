@@ -54,21 +54,29 @@ Notes:
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
 <cfparam name="rc.edit" type="boolean">
 
-<cfoutput>
-    <div class="col-md-6">
+
+    <sw-add-sku-price-modal-launcher>
+        <a href="#" title="Add Price" class="pull-right btn btn-primary" data-target="#">
+            <i class="fa fa-plus"></i> Add Sku Price
+        </a>
+    </sw-add-sku-price-modal-launcher>
+
+    <cfoutput>
+
+        <cfset local.includedSkuPricesCollection = $.slatwall.getService('HibachiService').getSkuPriceCollectionList() />
+        <cfset local.includedSkuPricesCollection.setDisplayProperties('sku.skuCode,currencyCode,price',{'isVisible': true, 'isSearchable': true, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('personalVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('taxableAmount','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('commissionableVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('sponsorVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('productPackVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailValueVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isSearchable': false}, true) />
+                
         <hb:HibachiListingDisplay 
-            collectionList="#rc.promotionReward.getIncludedSkusCollection()#" 
-            title="Included Skus" 
-            collectionConfigFieldName="includedSkusCollectionConfig" 
+            collectionList="#local.includedSkuPricesCollection#" 
+            collectionConfigFieldName="includedSkuPricesCollectionConfig" 
             edit="#rc.edit#" 
+            recordDeleteEvent="REMOVE_PROMOTIONSKUPRICE"
             displaytype="plainTitle"/>
-	</div>
-	<div class="col-md-6">
-	    <hb:HibachiListingDisplay 
-	        collectionList="#rc.promotionReward.getExcludedSkusCollection()#" 
-	        title="Excluded Skus" 
-	        collectionConfigFieldName="excludedSkusCollectionConfig" 
-	        edit="#rc.edit#" 
-            displaytype="plainTitle" />
-	</div>
-</cfoutput>
+    </cfoutput>
