@@ -115,6 +115,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
         }
+        
+        if(!directoryExists(systemrbpath)){
+        	directoryCreate(systemrbpath);
+        }
     	if(DirectoryExists(customrbpath)){
     		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
     		for(var item in customDirectoryListing){
