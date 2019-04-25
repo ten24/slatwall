@@ -136,7 +136,6 @@ class SWListingDisplayCellController{
     
     //prevent listing display edit cell from submitting the form if enter key is pressed
     public handleKeyPress = (keyEvent) =>{
-        console.log(keyEvent);
         if (keyEvent.keyCode === 13) {
             keyEvent.preventDefault();
             keyEvent.stopPropagation();
