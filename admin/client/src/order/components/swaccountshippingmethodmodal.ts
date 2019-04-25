@@ -50,6 +50,7 @@ class SWAccountShippingMethodModalController{
 				 public requestService
 	){
 		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
+		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
 	}
 	
 	public $onInit = () =>{
@@ -65,6 +66,9 @@ class SWAccountShippingMethodModalController{
 		this.countryCodeOptions = this.swAccountShippingAddressCard.countryCodeOptions;
 		this.shippingMethodOptions = this.swAccountShippingAddressCard.shippingMethodOptions;
 		this.stateCodeOptions = this.swAccountShippingAddressCard.stateCodeOptions;
+		
+		this.hideSelectAccountAddress = this.accountAddressOptions.length === 0;
+		this.showCreateShippingAddress = this.hideSelectAccountAddress;
         
         if(!this.hideSelectAccountAddress  && this.swAccountShippingAddressCard.shippingAccountAddress == null){
 			this.baseEntity.shippingAccountAddress = this.accountAddressOptions[0];

@@ -52,6 +52,7 @@ class SWAccountPaymentMethodModalController{
 				 public requestService
 	){
 		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
+		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
 	}
 	
 	public $onInit = () =>{

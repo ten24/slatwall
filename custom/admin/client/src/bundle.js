@@ -62701,6 +62701,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             return adminRequest.promise;
         };
         this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
     }
     return SWAccountPaymentMethodModalController;
 }());
@@ -62777,12 +62778,17 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
         this.shippingAddressTitle = 'Shipping Address';
         this.shippingMethodTitle = 'Shipping Method';
         this.updateShippingInfo = function (data) {
-            _this.accountAddressOptions = data['account.accountAddressOptions'];
-            _this.shippingAccountAddress = data.shippingAccountAddress;
-            _this.shippingMethod = data.shippingMethod;
-            _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
+            if (data['account.accountAddressOptions'] != null) {
+                _this.accountAddressOptions = data['account.accountAddressOptions'];
+            }
+            if (data.shippingAccountAddress != null && data.shippingMethod != null) {
+                _this.shippingAccountAddress = data.shippingAccountAddress;
+                _this.shippingMethod = data.shippingMethod;
+                _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
+            }
         };
         this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
+        this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateBillingSuccess');
         if (this.shippingAccountAddress != null && this.shippingMethod != null) {
             this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
         }
@@ -62872,6 +62878,8 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             _this.countryCodeOptions = _this.swAccountShippingAddressCard.countryCodeOptions;
             _this.shippingMethodOptions = _this.swAccountShippingAddressCard.shippingMethodOptions;
             _this.stateCodeOptions = _this.swAccountShippingAddressCard.stateCodeOptions;
+            _this.hideSelectAccountAddress = _this.accountAddressOptions.length === 0;
+            _this.showCreateShippingAddress = _this.hideSelectAccountAddress;
             if (!_this.hideSelectAccountAddress && _this.swAccountShippingAddressCard.shippingAccountAddress == null) {
                 _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
             }
@@ -62908,6 +62916,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             return adminRequest.promise;
         };
         this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
     }
     return SWAccountShippingMethodModalController;
 }());
@@ -62964,12 +62973,19 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
         this.updateBillingInfo = function (data) {
-            _this.accountAddressOptions = data['account.accountAddressOptions'];
-            _this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
-            _this.billingAccountAddress = data.billingAccountAddress;
-            _this.accountPaymentMethod = data.accountPaymentMethod;
-            _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
+            if (data['account.accountAddressOptions'] != null) {
+                _this.accountAddressOptions = data['account.accountAddressOptions'];
+            }
+            if (data['account.accountPaymentMethodOptions'] != null &&
+                data.billingAccountAddress != null &&
+                data.accountPaymentMethod != null) {
+                _this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
+                _this.billingAccountAddress = data.billingAccountAddress;
+                _this.accountPaymentMethod = data.accountPaymentMethod;
+                _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
+            }
         };
+        this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
