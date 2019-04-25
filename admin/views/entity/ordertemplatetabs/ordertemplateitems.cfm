@@ -6,13 +6,13 @@
 
 <cfset rc.orderTemplateItemCollectionList = getHibachiScope().getService('OrderService').getOrderTemplateItemCollectionList() />
 
-<cfset rc.orderTemplateItemCollectionList.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDescription,sku.price',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) />
+<cfset rc.orderTemplateItemCollectionList.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) />
 <cfset rc.orderTemplateItemCollectionList.addDisplayProperty('orderTemplateItemID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
 <cfset rc.orderTemplateItemCollectionList.addDisplayProperty('quantity','',{isVisible=true,isSearchable=false,isDeletable=false,isEditable=rc.edit}) /> 
 <cfset rc.orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', rc.orderTemplate.getOrderTemplateID()) />
 
 <cfset rc.skuCollectionList = getHibachiScope().getService('SkuService').getSkuCollectionList() />
-<cfset rc.skuCollectionList.setDisplayProperties('skuName,skuCode,skuDescription',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) /> 
+<cfset rc.skuCollectionList.setDisplayProperties('skuName,skuCode,skuDefinition,product.productName',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) /> 
 <cfset rc.skuCollectionList.addDisplayProperty('skuID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
 <cfset rc.skuCollectionList.addDisplayProperty('price',getHibachiScope().rbKey('entity.sku.price'),{isVisible=true,isSearchable=true,isDeletable=false}) /> 
 <cfset rc.skuCollectionList.addDisplayProperty('imageFile',getHibachiScope().rbKey('entity.sku.imageFile'),{isVisible=false,isSearchable=true,isDeletable=false}) /> 
@@ -45,6 +45,7 @@
 
 				<hb:HibachiListingDisplay
 					recordEditEvent="#rc.editEvent#"
+					recordEditIcon="floppy-disk"
 					recordDeleteEvent="deleteOrderTemplateItem"
 					listingID='OrderTemplateDetailOrderItems'
 					collectionList="#rc.orderTemplateItemCollectionlist#"

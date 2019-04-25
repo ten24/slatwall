@@ -89330,6 +89330,7 @@ var SWListingDisplayController = /** @class */ (function () {
         this.hasRecordAddAction = false;
         this.hasRecordDetailAction = false;
         this.hasRecordEditAction = false;
+        this.recordEditIcon = 'pencil';
         this.hasRecordDeleteAction = false;
         this.searching = false;
         this.selectable = false;
@@ -89880,6 +89881,7 @@ var SWListingDisplay = /** @class */ (function () {
             recordEditQueryString: "@?",
             recordEditModal: "<?",
             recordEditDisabled: "<?",
+            recordEditIcon: "@?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
