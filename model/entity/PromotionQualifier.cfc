@@ -128,6 +128,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
 				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				variables.includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
 			}
 		}
 		return variables.includedSkusCollection;
@@ -140,6 +142,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 				variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
 				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
 				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 		}
