@@ -142,7 +142,6 @@ class SWAddSkuPriceModalLauncherController{
             },
             (reason)=>{
                 //error callback
-                console.log(reason);
                 this.saveSuccess = false; 
             }
         ).finally(()=>{       
