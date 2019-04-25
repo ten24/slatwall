@@ -91,6 +91,8 @@ Notes:
 			<hr>
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
+			
+			<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="scheduleOrderNextPlaceDateTime" 
 										edit="#rc.edit#" 
@@ -98,7 +100,7 @@ Notes:
 										fieldAttributes="sw-date-picker 
 														ng-model=""scheduleOrderNextPlaceDateTime""
 														data-end-day-of-the-month=""26""
-														data-end-date=""Date.parse(#dateFormat(dateAdd('m', now(), 3),'mm/dd/yyyy')#)""
+														data-end-date=""endDate""
 														autocomplete=""off""">
 
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
