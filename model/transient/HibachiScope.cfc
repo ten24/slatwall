@@ -119,10 +119,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				setCurrentRequestSitePathType('sitecode');
 			}
 			
+			/* TODO: Fix so admin does not have a request site. Causes issues with trying to set and get setting values in Slatwall admin
 			if(isNull(variables.currentRequestSite) && structKeyExists(session,'siteID')){
 				variables.currentRequestSite = getService('siteService').getSiteByCMSSiteID(session['siteID']);
 				setCurrentRequestSitePathType('cmsSiteID');
 			}
+			*/
 		}
 		
 		if(!isNull(variables.currentRequestSite)){
