@@ -57,6 +57,7 @@
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderTemplate#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller action="admin:entity.processOrderTemplate" entity="#rc.orderTemplate#" processContext="activate" type="list" hideDisabled="false" />
 			<hb:HibachiProcessCaller action="admin:entity.processOrderTemplate" entity="#rc.orderTemplate#" processContext="createAndPlaceOrder" type="list" hideDisabled="false" />
 		</hb:HibachiEntityActionBar>
 

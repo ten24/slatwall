@@ -1128,6 +1128,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.newOrder();
 	}
+	
+	public any function processOrderTemplate_activate(required any orderTemplate, any processObject, required struct data={}) {
+		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
+		return this.saveOrderTemplate(arguments.orderTemplate); 
+	} 
 
 	//begin order template functionality	
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
