@@ -62681,7 +62681,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod'
+                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -62700,6 +62700,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
         };
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
     }
     return SWAccountPaymentMethodModalController;
 }());
@@ -62776,8 +62777,10 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
         this.shippingAddressTitle = 'Shipping Address';
         this.shippingMethodTitle = 'Shipping Method';
         this.updateShippingInfo = function (data) {
+            _this.accountAddressOptions = data['account.accountAddressOptions'];
             _this.shippingAccountAddress = data.shippingAccountAddress;
             _this.shippingMethod = data.shippingMethod;
+            _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
         };
         this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
         if (this.shippingAccountAddress != null && this.shippingMethod != null) {
@@ -62859,8 +62862,8 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
         this.shippingAccountAddressTitle = 'Shipping account address';
         //view state properties
         this.hideSelectAccountAddress = false;
-        this.showCreateShippingAddress = false;
         this.$onInit = function () {
+            _this.showCreateShippingAddress = false;
             _this.baseEntityName = _this.swAccountShippingAddressCard.baseEntityName;
             _this.baseEntity = _this.swAccountShippingAddressCard.baseEntity;
             _this.baseEntityPrimaryID = _this.baseEntity[_this.$hibachi.getPrimaryIDPropertyNameByEntityName(_this.baseEntityName)];
@@ -62869,7 +62872,18 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             _this.countryCodeOptions = _this.swAccountShippingAddressCard.countryCodeOptions;
             _this.shippingMethodOptions = _this.swAccountShippingAddressCard.shippingMethodOptions;
             _this.stateCodeOptions = _this.swAccountShippingAddressCard.stateCodeOptions;
-            _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
+            if (!_this.hideSelectAccountAddress && _this.swAccountShippingAddressCard.shippingAccountAddress == null) {
+                _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
+            }
+            else {
+                for (var i = 0; i < _this.accountAddressOptions.length; i++) {
+                    var option = _this.accountAddressOptions[i];
+                    if (option['value'] === _this.swAccountShippingAddressCard.shippingAccountAddress.accountAddressID) {
+                        _this.baseEntity.shippingAccountAddress = option;
+                        break;
+                    }
+                }
+            }
             _this.baseEntity.shippingMethod = _this.shippingMethodOptions[0];
             _this.newAccountAddress = {
                 address: {}
@@ -62880,7 +62894,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod'
+                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions'
             };
             if (_this.showCreateShippingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -62893,6 +62907,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
         };
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
     }
     return SWAccountShippingMethodModalController;
 }());
@@ -62949,8 +62964,11 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
         this.updateBillingInfo = function (data) {
+            _this.accountAddressOptions = data['account.accountAddressOptions'];
+            _this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
             _this.billingAccountAddress = data.billingAccountAddress;
             _this.accountPaymentMethod = data.accountPaymentMethod;
+            _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
         };
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');

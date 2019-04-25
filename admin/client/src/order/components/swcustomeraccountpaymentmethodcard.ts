@@ -43,8 +43,11 @@ class SWCustomerAccountPaymentMethodCardController{
 	}
 	
 	public updateBillingInfo = (data) =>{
+		this.accountAddressOptions = data['account.accountAddressOptions'];
+		this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
 		this.billingAccountAddress = data.billingAccountAddress; 
 		this.accountPaymentMethod = data.accountPaymentMethod; 
+		this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
 	}
 }
 

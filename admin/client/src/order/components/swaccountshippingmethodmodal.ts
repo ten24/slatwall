@@ -39,7 +39,7 @@ class SWAccountShippingMethodModalController{
 	
     //view state properties
 	public hideSelectAccountAddress:boolean = false; 
-	public showCreateShippingAddress:boolean = false;
+	public showCreateShippingAddress:boolean;
 	
 
 	constructor( public $timeout,
@@ -49,10 +49,11 @@ class SWAccountShippingMethodModalController{
 				 public rbkeyService,
 				 public requestService
 	){
-		
+		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
 	}
 	
 	public $onInit = () =>{
+		this.showCreateShippingAddress = false;
 
 		this.baseEntityName = this.swAccountShippingAddressCard.baseEntityName;
 		this.baseEntity = this.swAccountShippingAddressCard.baseEntity;
@@ -64,8 +65,19 @@ class SWAccountShippingMethodModalController{
 		this.countryCodeOptions = this.swAccountShippingAddressCard.countryCodeOptions;
 		this.shippingMethodOptions = this.swAccountShippingAddressCard.shippingMethodOptions;
 		this.stateCodeOptions = this.swAccountShippingAddressCard.stateCodeOptions;
-
-        this.baseEntity.shippingAccountAddress = this.accountAddressOptions[0];
+        
+        if(!this.hideSelectAccountAddress  && this.swAccountShippingAddressCard.shippingAccountAddress == null){
+			this.baseEntity.shippingAccountAddress = this.accountAddressOptions[0];
+		} else {
+			for(var i=0; i<this.accountAddressOptions.length; i++){
+				var option = this.accountAddressOptions[i];
+				if(option['value'] === this.swAccountShippingAddressCard.shippingAccountAddress.accountAddressID){
+					this.baseEntity.shippingAccountAddress = option;
+					break;
+				}
+			}
+		}
+        
         this.baseEntity.shippingMethod = this.shippingMethodOptions[0];
 	
 	    this.newAccountAddress = {
@@ -78,7 +90,7 @@ class SWAccountShippingMethodModalController{
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext,
-			propertyIdentifiersList: 'shippingAccountAddress,shippingMethod'
+			propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions'
 		};
 		
 		if(this.showCreateShippingAddress){
