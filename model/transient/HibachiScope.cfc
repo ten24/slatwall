@@ -123,16 +123,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				variables.currentRequestSite = getService('siteService').getSiteByCMSSiteID(session['siteID']);
 				setCurrentRequestSitePathType('cmsSiteID');
 			}
-			
-			if(isNull(variables.currentRequestSite)){
-				variables.currentRequestSite = getService('siteService').newSite();
-			}
 		}
 		
-		if(variables.currentRequestSite.getNewFlag()){
-			return;
+		if(!isNull(variables.currentRequestSite)){
+			return variables.currentRequestSite;
 		}
-		return variables.currentRequestSite;
 	}
 	
 	public string function getCurrentRequestSitePathType(){
