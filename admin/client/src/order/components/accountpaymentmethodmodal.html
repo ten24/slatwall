@@ -8,7 +8,6 @@
     
     <sw-modal-content> 
         <div class="col-md-6">
-            
             <div class="form-group" ng-if="!swAccountPaymentMethodModal.hideSelectAccountAddress">
                     <label class="form-label" 
                             for="billingAccountAddress" 
@@ -17,13 +16,13 @@
                     
                     <select name="billingAccountAddress" 
                             class="form-control"
-                            ng-disabled="swAccountPaymentMethodModal.showCreateBillingAddress"
+                            ng-disabled="swAccountPaymentMethodModal.showCreateBillingAddress || !swAccountPaymentMethodModal.showCreateAccountPaymentMethod"
                             ng-model="swAccountPaymentMethodModal.baseEntity.billingAccountAddress"
                             ng-options="accountAddress as accountAddress.name for accountAddress in swAccountPaymentMethodModal.accountAddressOptions track by accountAddress.value">
                     </select> 
             </div>
                                 
-            <label class="control-label">
+            <label class="control-label" ng-if="swAccountPaymentMethodModal.showCreateAccountPaymentMethod">
                 <input type="checkbox" 
                     name="createBillingAddress" 
                     ng-disabled="swAccountPaymentMethodModal.hideSelectAccountAddress"
@@ -66,6 +65,7 @@
                     
                 <select class="form-control"
                         name="accountPaymentMethod"
+                        ng-change="swAccountPaymentMethodModal.updateAccountPaymentMethod()"
                         ng-disabled="swAccountPaymentMethodModal.showCreateAccountPaymentMethod"
                         ng-model="swAccountPaymentMethodModal.baseEntity.accountPaymentMethod"
                         ng-options="accountPaymentMethod as accountPaymentMethod.name for accountPaymentMethod in swAccountPaymentMethodModal.accountPaymentMethodOptions track by accountPaymentMethod.value">

@@ -80,14 +80,8 @@ class SWAccountPaymentMethodModalController{
 
 		if(!this.hideSelectAccountAddress  && this.swCustomerAccountPaymentMethodCard.billingAccountAddress == null){
 			this.baseEntity.billingAccountAddress = this.accountAddressOptions[0];
-		} else {
-			for(var i=0; i<this.accountAddressOptions.length; i++){
-				var option = this.accountAddressOptions[i];
-				if(option['value'] === this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID){
-					this.baseEntity.billingAccountAddress = option;
-					break;
-				}
-			}
+		} else if(this.swCustomerAccountPaymentMethodCard.billingAccountAddress != null) {
+			this.setBillingAccountAddress(this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID);
 		}
 		
 		if(!this.hideSelectAccountPaymentMethod  && this.swCustomerAccountPaymentMethodCard.accountPaymentMethod == null){
@@ -115,6 +109,20 @@ class SWAccountPaymentMethodModalController{
         	address:{}
 	    };
 		
+	}
+	
+	public setBillingAccountAddress = (billingAccountAddressID) =>{
+		for(var i=0; i<this.accountAddressOptions.length; i++){
+			var option = this.accountAddressOptions[i];
+			if(option['value'] === billingAccountAddressID){
+				this.baseEntity.billingAccountAddress = option;
+				break;
+			}
+		}
+	}
+	
+	public updateAccountPaymentMethod = () =>{
+		this.setBillingAccountAddress(this.baseEntity.accountPaymentMethod.billingAccountAddress_accountAddressID);
 	}
 	
 	public save = () =>{
