@@ -114,12 +114,33 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				// Step 1. Generate a "one time use token"
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 				
+				writeDump("*** responseData: ")
+				writeDump(responseData);
+
 				if (!responseBean.hasErrors()) {
+					requestData = {
+						'token' = responseData.token,
+						'card' = {
+							'encryptedNumber' = toBase64(encrypt(arguments.requestBean.getCreditCardNumber(), publicKey, "rsa" )),
+							'expirationMonth' = '1',// TODO: once working use: arguments.requestBean.getExpirationMonth()
+							'expirationYear' = '2024', // TODO: once working use: arguments.requestBean.getExpirationYear()
+							'cardHolderName' = 'Kevin Batchelor', // TODO: once working use: arguments.requestBean.getNameOnCreditCard()
+							'securityCode' = '123' // TODO: once working use: arguments.requestBean.getSecurityCode()
+						},
+						'procesingOptions' = {
+							'verifyAvs' = '3' // TODO: once working use: setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
+							// 'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
+						}
+					};
+					writeDump("***Save card: requestData");
+					writeDump(requestData);
 					
-					requestData = {};
-					
-					// Step 2. Save Card using the "one time use token"... this is the token we are really after
+					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
+					
+					writeDump("***Save card: responseData");
+					writeDump(responseData);
+					abort;
 					
 					if (!responseBean.hasErrors()) {
 						// Extract data and set as part of the responseBean
@@ -239,7 +260,28 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			
+<<<<<<< HEAD:Slatwall/integrationServices/nexio/Payment.cfc
 			// Make HTTP request to SOAP endpoint
+=======
+			var logPath = expandPath('/integrationServices/nexio/log');
+			if (!directoryExists(logPath)){
+				directoryCreate(logPath);
+			}
+			var timeSufix = getTickCount() & createHibachiUUID(); 
+			var httpRequestData = {
+				'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
+				'apiUrl'=apiUrl,
+				'username' = username,
+				'password' = password,
+				'httpContentTypeHeader' = 'application/json',
+				'publicKey' = getPublicKey(arguments.requestBean),
+				'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
+			};
+			
+			fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			
+			// Make HTTP request to endpoint
+>>>>>>> updates for reports:integrationServices/nexio/Payment.cfc
 			var httpResponse = httpRequest.send().getPrefix();
 			
 			writeDump([apiUrl,username,password,httpResponse]);
@@ -256,12 +298,55 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				// Public error message
 				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
 				
+<<<<<<< HEAD:Slatwall/integrationServices/nexio/Payment.cfc
 			// Server response successful, process SOAP body
+=======
+				// No response from server
+				if (httpResponse.status_code == 0) {
+					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
+
+				// Error response
+				} else {
+					arguments.responseBean.setStatusCode(httpResponse.status_code);
+					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
+
+					// Convert JSON response
+					responseData = deserializeJSON(httpResponse.fileContent);
+					
+					fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+
+					
+					if (structKeyExists(responseData, 'error')) {
+						arguments.responseBean.addMessage('errorCode', "#responseData.error#");
+					}
+
+					if (structKeyExists(responseData, 'message')) {
+						// Add additional instructions for unauthorized error.
+						if (httpResponse.status_code == '401') {
+							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";
+						}
+
+						arguments.responseBean.addMessage('errorMessage', "#httpResponse.statuscode#. #responseData.message#");
+					}
+				}
+
+			// Server response successful
+>>>>>>> updates for reports:integrationServices/nexio/Payment.cfc
 			} else {
 				
 				// Convert raw XML response to xmlObject
 				responseData = deserializeJSON(httpResponse.fileContent);
+				
+				fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+			
+				//*** TO DO: writeDump();
 			}
+<<<<<<< HEAD:Slatwall/integrationServices/nexio/Payment.cfc
+=======
+			
+			//writeDump([apiUrl,username,password,responseData,httpResponse]);
+			//abort;
+>>>>>>> updates for reports:integrationServices/nexio/Payment.cfc
 	
 			return responseData;
 		}
