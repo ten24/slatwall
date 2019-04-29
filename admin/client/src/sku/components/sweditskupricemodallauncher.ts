@@ -207,12 +207,9 @@ class SWEditSkuPriceModalLauncherController{
                 }
                 this.formService.resetForm(this.formService.getForm(this.formName));
                 
-                this.initData();
-                
                 this.listingService.getCollection(this.listingID); 
                 
                 this.listingService.notifyListingPageRecordsUpdate(this.listingID);
-                
             }
         });
         return savePromise; 

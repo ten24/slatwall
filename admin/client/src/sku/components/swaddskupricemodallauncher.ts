@@ -154,7 +154,6 @@ class SWAddSkuPriceModalLauncherController{
                 }
                 
                 this.formService.resetForm(this.formName);
-                this.initData();
                 this.listingService.notifyListingPageRecordsUpdate(this.listingID);
             }
         });
