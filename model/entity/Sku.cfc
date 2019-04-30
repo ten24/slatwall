@@ -1943,21 +1943,19 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 	public void function preUpdate(Struct oldData){
 		super.preUpdate(argumentCollection=arguments);
 		
-		var sql = "SELECT sp.skuPriceID FROM swskuPrice sp 
-				   LEFT JOIN swsku s ON sp.skuID = s.skuID
-				   WHERE sp.minQuantity IS NULL
-				   AND sp.maxQuantity IS NULL";
+		var sql = "	UPDATE swskuprice sp
+					LEFT JOIN swsku s ON sp.skuID = s.skuID
+					SET sp.price = :price, sp.currencyCode = :currencyCode
+					WHERE sp.minQuantity IS NULL
+					AND sp.maxQuantity IS NULL 
+					AND sp.priceGroupID IS NULL";
 		
-		var query = QueryExecute(sql);
-		var SkuPriceService = getService("SkuPriceService");
-		
-		if(!isNull(query["skuPriceID"][1])){
-			var skuPrice = SkuPriceService.getSkuPrice(query["skuPriceID"][1]);
-			skuPrice.setPrice(this.getPrice());
-			skuPrice.setCurrencyCode(this.getCurrencyCode());
-			
-			skuPrice = skuPriceService.saveSkuPrice(skuPrice);
+		var params = {
+			price = this.getPrice(),
+			currencyCode = this.getCurrencyCode()
 		}
+		
+		var query = QueryExecute(sql, params);
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================

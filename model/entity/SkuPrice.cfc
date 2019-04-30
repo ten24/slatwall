@@ -143,6 +143,15 @@ property name="personalVolume" ormtype="big_decimal";
 				getHibachiScope().addModifiedEntity(stock);
 			}
 		}
+		if( isNull(this.getMinQuantity()) && 
+			isNull(this.getMaxQuantity()) &&
+			isNull(this.getPriceGroup()) )
+		{
+			var sku = this.getSku();
+			sku.setPrice(this.getPrice());
+			sku.setCurrencyCode(this.getCurrencyCode());
+			sku = getService("SkuService").saveSku(sku);
+		}
 		
 		super.preUpdate(arguments.oldData);
 	}
