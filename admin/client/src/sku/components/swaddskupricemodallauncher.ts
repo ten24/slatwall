@@ -103,12 +103,9 @@ class SWAddSkuPriceModalLauncherController{
         this.observerService.notify("pullBindings");
     }
 
-    public initData = (pageRecord?:any) =>{
+    public initData = () =>{
         //these are populated in the link function initially
         this.skuPrice = this.skuPriceService.newSkuPrice();
-
-        this.pageRecord = pageRecord;
-        
         this.observerService.notify("pullBindings");
     }
     

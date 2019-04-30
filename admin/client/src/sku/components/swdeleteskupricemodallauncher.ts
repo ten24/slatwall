@@ -28,17 +28,15 @@ class SWDeleteSkuPriceModalLauncherController{
     public init = (pageRecord:any) =>{
         this.pageRecord = pageRecord;
         
-        if(angular.isDefined(pageRecord)){
-            var skuPriceData = {
-                skuPriceID : pageRecord.skuPriceID,
-                minQuantity : pageRecord.minQuantity,
-                maxQuantity : pageRecord.maxQuantity,
-                currencyCode : pageRecord.currencyCode, 
-                price : pageRecord.price
-            }
-            
-            this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+        var skuPriceData = {
+            skuPriceID : pageRecord.skuPriceID,
+            minQuantity : pageRecord.minQuantity,
+            maxQuantity : pageRecord.maxQuantity,
+            currencyCode : pageRecord.currencyCode, 
+            price : pageRecord.price
         }
+        
+        this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
     }
 
     public deleteSkuPrice = () => {

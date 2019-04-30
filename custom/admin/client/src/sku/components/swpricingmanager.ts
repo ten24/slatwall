@@ -14,7 +14,6 @@ class SWPricingManagerController extends PricingManagerController{
             this.skuPriceCollectionConfig.addDisplayProperty("sponsorVolume");
             this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume");
             this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume");
-            this.skuPriceCollectionConfig.addDisplayProperty("handlingFee");
         }
     }
 }

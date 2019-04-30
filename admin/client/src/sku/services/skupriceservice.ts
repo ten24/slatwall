@@ -154,6 +154,7 @@ export class SkuPriceService {
     public getPriceGroupOptions = () => {
         let priceGroupOptions;
         let priceGroupCollectionConfig = this.collectionConfigService.newCollectionConfig("PriceGroup");
+        priceGroupCollectionConfig.setDisplayProperties("priceGroupID,priceGroupCode,priceGroupName");
         priceGroupCollectionConfig.addFilter("activeFlag", true, "=");
         priceGroupCollectionConfig.setAllRecords(true);
         
@@ -174,6 +175,7 @@ export class SkuPriceService {
     public getCurrencyOptions = () =>{
         let currenyOptions;
         let currencyCollectionConfig = this.collectionConfigService.newCollectionConfig("Currency");
+        currencyCollectionConfig.setDisplayProperties("currencyCode");
         currencyCollectionConfig.addFilter("activeFlag", true, "=");
         currencyCollectionConfig.setAllRecords(true);
         
@@ -183,8 +185,7 @@ export class SkuPriceService {
     public getSkuCollectionConfig = (productID) =>{
         let config = this.collectionConfigService.newCollectionConfig("Sku");
         config.addFilter("product.productID", productID, "=");
-        config.setAllRecords(true);
-        
+
         return config;
     }
     
