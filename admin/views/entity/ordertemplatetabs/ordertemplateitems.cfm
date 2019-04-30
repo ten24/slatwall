@@ -8,7 +8,7 @@
 
 <cfset rc.orderTemplateItemCollectionList.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) />
 <cfset rc.orderTemplateItemCollectionList.addDisplayProperty('orderTemplateItemID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
-<cfset rc.orderTemplateItemCollectionList.addDisplayProperty('quantity','',{isVisible=true,isSearchable=false,isDeletable=false,isEditable=rc.edit}) /> 
+<cfset rc.orderTemplateItemCollectionList.addDisplayProperty('quantity',getHibachiScope().rbKey('entity.orderTemplateItem.quantity'),{isVisible=true,isSearchable=false,isDeletable=false,isEditable=rc.edit}) /> 
 <cfset rc.orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', rc.orderTemplate.getOrderTemplateID()) />
 
 <cfset rc.skuCollectionList = getHibachiScope().getService('SkuService').getSkuCollectionList() />
@@ -53,7 +53,7 @@
 				>
 				</hb:HibachiListingDisplay>				
 			
-				<cfif rc.edit >
+				<div>
 					<hb:HibachiListingDisplay 
 						recordProcessEvent="addOrderTemplateItem"
 						collectionList="#rc.skuCollectionList#"
@@ -61,7 +61,7 @@
 						usingPersonalCollection="false"
 					>
 					</hb:HibachiListingDisplay>	
-				</cfif> 
+				</div> 
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 </cfoutput>	

@@ -31,7 +31,6 @@ class SWCustomerAccountPaymentMethodCardController{
 				public observerService,
 				public rbkeyService
 	){
-		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
 		
 		this.title = this.rbkeyService.rbKey('define.billing');
@@ -44,20 +43,8 @@ class SWCustomerAccountPaymentMethodCardController{
 	}
 	
 	public updateBillingInfo = (data) =>{
-		
-		if( data['account.accountAddressOptions'] != null ){
-			this.accountAddressOptions = data['account.accountAddressOptions'];
-		}
-		
-		if( data['account.accountPaymentMethodOptions'] != null &&  
-			data.billingAccountAddress != null && 
-			data.accountPaymentMethod != null
-		){
-			this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
-			this.billingAccountAddress = data.billingAccountAddress; 
-			this.accountPaymentMethod = data.accountPaymentMethod; 
-			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
-		}
+		this.billingAccountAddress = data.billingAccountAddress; 
+		this.accountPaymentMethod = data.accountPaymentMethod; 
 	}
 }
 

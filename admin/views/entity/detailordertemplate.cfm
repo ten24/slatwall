@@ -56,10 +56,18 @@
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderTemplate#" edit="#rc.edit#">
-			<hb:HibachiProcessCaller action="admin:entity.processOrderTemplate" entity="#rc.orderTemplate#" processContext="activate" type="list" hideDisabled="false" />
-			<hb:HibachiProcessCaller action="admin:entity.processOrderTemplate" entity="#rc.orderTemplate#" processContext="createAndPlaceOrder" type="list" hideDisabled="false" />
-		</hb:HibachiEntityActionBar>
+
+		<sw-entity-action-bar data-base-query-string="orderTemplateID=#rc.orderTemplate.getOrderTemplateID()#"
+							  data-entity-action-details="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.entityActionDetails))#" 
+							  data-page-title="#rc.orderTemplate.getSimpleRepresentation()#" 
+							  data-cancel-event="cancelEditOrderTemplate"
+							  data-save-event="saveOrderTemplate"
+							  data-edit-event="editOrderTemplate"
+							  data-type="detail" 
+							  data-edit="#rc.edit#">
+						<sw-process-caller action="admin:entity.processOrderTemplate" data-process-context="activate" type="list"></sw-process-caller> 
+						<sw-process-caller action="admin:entity.processOrderTemplate" data-process-context="createAndPlaceOrder" type="list"></sw-process-caller> 
+		</sw-entity-action-bar>
 
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-4">
@@ -111,7 +119,7 @@
 
 		<hb:HibachiEntityDetailGroup object="#rc.orderTemplate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic.orderTemplate')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/ordertemplateitems" open="false" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/ordertemplateitems" open="true" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/orderhistory" open="false" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>

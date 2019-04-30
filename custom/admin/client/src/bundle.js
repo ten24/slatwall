@@ -62979,19 +62979,9 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
         this.updateBillingInfo = function (data) {
-            if (data['account.accountAddressOptions'] != null) {
-                _this.accountAddressOptions = data['account.accountAddressOptions'];
-            }
-            if (data['account.accountPaymentMethodOptions'] != null &&
-                data.billingAccountAddress != null &&
-                data.accountPaymentMethod != null) {
-                _this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
-                _this.billingAccountAddress = data.billingAccountAddress;
-                _this.accountPaymentMethod = data.accountPaymentMethod;
-                _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
-            }
+            _this.billingAccountAddress = data.billingAccountAddress;
+            _this.accountPaymentMethod = data.accountPaymentMethod;
         };
-        this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
@@ -76169,6 +76159,9 @@ var SWActionCallerController = /** @class */ (function () {
             else {
                 _this.actionUrl = '#!/entity/' + _this.action + '/' + _this.queryString.split('=')[1];
             }
+            if (angular.isUndefined(_this.display)) {
+                _this.display = true;
+            }
             _this.type = _this.type || 'link';
             if (angular.isDefined(_this.titleRbKey)) {
                 _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);
@@ -76345,7 +76338,7 @@ var SWActionCallerController = /** @class */ (function () {
         };
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
             var template = angular.element(html);
-            _this.$element.parent().append(template);
+            _this.$element.parent().prepend(template);
             $compile(template)($scope);
             //need to perform init after promise completes
             //this.init();
@@ -76363,6 +76356,7 @@ var SWActionCaller = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             action: "@?",
+            display: "=?",
             event: "@?",
             payload: "=",
             text: "@",
@@ -77504,15 +77498,53 @@ exports.SWDraggableContainer = SWDraggableContainer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWEntityActionBarController = /** @class */ (function () {
     //@ngInject
-    function SWEntityActionBarController(rbkeyService) {
+    function SWEntityActionBarController(observerService, rbkeyService) {
         var _this = this;
+        this.observerService = observerService;
         this.rbkeyService = rbkeyService;
-        this.init = function () {
+        this.$onInit = function () {
+            if (_this.edit == null) {
+                _this.edit = false;
+            }
             if (angular.isDefined(_this.pageTitleRbKey)) {
                 _this.pageTitle = _this.rbkeyService.getRBKey(_this.pageTitleRbKey);
             }
+            if (_this.entityActionDetails != null) {
+                _this.backAction = _this.entityActionDetails.backAction;
+                _this.cancelAction = _this.entityActionDetails.cancelAction;
+                _this.deleteAction = _this.entityActionDetails.deleteAction;
+                _this.editAction = _this.entityActionDetails.editAction;
+                _this.saveAction = _this.entityActionDetails.saveAction;
+            }
+            _this.cancelQueryString = _this.cancelQueryString || '';
+            _this.deleteQueryString = _this.deleteQueryString || '';
+            _this.editQueryString = _this.editQueryString || '';
+            _this.saveQueryString = _this.saveQueryString || '';
+            if (_this.baseQueryString != null) {
+                _this.cancelQueryString = _this.baseQueryString + _this.cancelQueryString;
+                _this.editQueryString = _this.baseQueryString + _this.editQueryString;
+                _this.deleteQueryString = _this.baseQueryString + _this.deleteQueryString;
+                _this.saveQueryString = _this.baseQueryString + _this.saveQueryString;
+            }
+            if (_this.editEvent != null) {
+                _this.editAction = '';
+                _this.observerService.attach(_this.toggleEditMode, _this.editEvent);
+            }
+            if (_this.cancelEvent != null) {
+                _this.cancelAction = '';
+                _this.observerService.attach(_this.toggleEditMode, _this.cancelEvent);
+            }
+            if (_this.saveEvent != null) {
+                _this.saveAction = '';
+                _this.observerService.attach(_this.toggleEditMode, _this.saveEvent);
+            }
+            _this.payload = {
+                'edit': _this.edit
+            };
         };
-        this.init();
+        this.toggleEditMode = function () {
+            _this.edit = !_this.edit;
+        };
     }
     return SWEntityActionBarController;
 }());
@@ -77530,24 +77562,37 @@ var SWEntityActionBar = /** @class */ (function () {
             pageTitle: "@?",
             pageTitleRbKey: "@?",
             edit: "=",
+            entityActionDetails: "<?",
+            baseQueryString: "@?",
             /*Action Callers (top buttons)*/
-            showcancel: "=",
-            showcreate: "=",
-            showedit: "=",
-            showdelete: "=",
+            showCancel: "=",
+            showCreate: "=",
+            showEdit: "=",
+            showDelete: "=",
             /*Basic Action Caller Overrides*/
+            createEvent: "@?",
             createModal: "=",
-            createAction: "=",
-            createQueryString: "=",
-            backAction: "=",
-            backQueryString: "=",
-            cancelAction: "=",
-            cancelQueryString: "=",
-            deleteAction: "=",
-            deleteQueryString: "=",
+            createAction: "@",
+            createQueryString: "@",
+            backEvent: "@?",
+            backAction: "@?",
+            backQueryString: "@?",
+            cancelEvent: "@?",
+            cancelAction: "@?",
+            cancelQueryString: "@?",
+            deleteEvent: "@?",
+            deleteAction: "@?",
+            deleteQueryString: "@?",
+            editEvent: "@?",
+            editAction: "@?",
+            editQueryString: "@?",
+            saveEvent: "@?",
+            saveAction: "@?",
+            saveQueryString: "@?",
             /*Process Specific Values*/
-            processAction: "=",
-            processContext: "="
+            processEvent: "@?",
+            processAction: "@?",
+            processContext: "@?"
         };
         this.controller = SWEntityActionBarController;
         this.controllerAs = "swEntityActionBar";
@@ -78631,15 +78676,8 @@ var SWProcessCallerController = /** @class */ (function () {
         this.$scope = $scope;
         this.$element = $element;
         this.$transclude = $transclude;
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.corePartialsPath = corePartialsPath;
-        this.utilityService = utilityService;
         this.type = this.type || 'link';
         this.queryString = this.queryString || '';
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$transclude = this.$transclude;
         this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath) + "processcaller.html").then(function (html) {
             var template = angular.element(html);
             _this.$element.parent().append(template);
@@ -78647,6 +78685,10 @@ var SWProcessCallerController = /** @class */ (function () {
         });
         if (angular.isDefined(this.titleRbKey)) {
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+        }
+        if (angular.isUndefined(this.title) && angular.isDefined(this.processContext)) {
+            var entityName = this.action.split('.')[1].replace('process', '');
+            this.title = this.rbkeyService.getRBKey('entity.' + entityName + '.process.' + this.processContext);
         }
         if (angular.isUndefined(this.text)) {
             this.text = this.title;
