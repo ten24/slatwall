@@ -153,7 +153,17 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				var requestData = {
 					'data' = {
 						'paymentMethod' = 'creditCard',
-						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
+						'amount' = 1.15,
+						'currency' = 'USD'
+					},
+					'procesingOptions' = {
+						'checkFraud' = true,
+						'verifyCvc' = false, // TODO: once working use: setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
+						'verifyAvs' = 0, // TODO: once working use: setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)
+						'verboseResponse' = true
+					},
+					'card' = {
+						'cardHolderName' = 'Kevin Batchelor'
 					}
 				};
 				
