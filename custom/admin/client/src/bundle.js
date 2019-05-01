@@ -5509,8 +5509,6 @@ var swdraggable_1 = __webpack_require__(751);
 var swdraggablecontainer_1 = __webpack_require__(752);
 var swentityactionbar_1 = __webpack_require__(753);
 var swentityactionbarbuttongroup_1 = __webpack_require__(754);
-var swentityeditmode_1 = __webpack_require__(910);
-var swentityviewmode_1 = __webpack_require__(911);
 var swexpandablerecord_1 = __webpack_require__(755);
 var swexpiringsessionnotifier_1 = __webpack_require__(756);
 var swgravatar_1 = __webpack_require__(758);
@@ -5695,8 +5693,6 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swDatePicker', swdatepicker_1.SWDatePicker.Factory())
     .directive('swEntityActionBar', swentityactionbar_1.SWEntityActionBar.Factory())
     .directive('swEntityActionBarButtonGroup', swentityactionbarbuttongroup_1.SWEntityActionBarButtonGroup.Factory())
-    .directive('swEntityEditMode', swentityeditmode_1.SWEntityEditMode.Factory())
-    .directive('swEntityViewMode', swentityviewmode_1.SWEntityViewMode.Factory())
     .directive('swExpandableRecord', swexpandablerecord_1.SWExpandableRecord.Factory())
     .directive('swExpiringSessionNotifier', swexpiringsessionnotifier_1.SWExpiringSessionNotifier.Factory())
     .directive('swGravatar', swgravatar_1.SWGravatar.Factory())
@@ -95179,102 +95175,8 @@ module.exports = __webpack_require__(305);
 
 
 /***/ }),
-/* 910 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
-var SWEntityEditModeController = /** @class */ (function () {
-    //@ngInject
-    function SWEntityEditModeController(observerService, rbkeyService) {
-        var _this = this;
-        this.observerService = observerService;
-        this.rbkeyService = rbkeyService;
-        this.$onInit = function () {
-            _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-        };
-        this.setEdit = function (payload) {
-            _this.edit = payload.edit;
-        };
-    }
-    return SWEntityEditModeController;
-}());
-var SWEntityEditMode = /** @class */ (function () {
-    //@ngInject
-    function SWEntityEditMode() {
-        this.restrict = 'EA';
-        this.scope = {};
-        this.transclude = true;
-        this.bindToController = {};
-        this.controller = SWEntityEditModeController;
-        this.controllerAs = "swEntityEditMode";
-        this.template = "\n        <div ng-if=\"swEntityEditMode.edit\" \n             ng-transclude>\n        </div>\n    ";
-        this.link = function (scope, element, attrs) {
-        };
-    }
-    SWEntityEditMode.Factory = function () {
-        var directive = function () { return new SWEntityEditMode(); };
-        directive.$inject = [];
-        return directive;
-    };
-    return SWEntityEditMode;
-}());
-exports.SWEntityEditMode = SWEntityEditMode;
-//	angular.module('slatwalladmin').directive('swEntityActionBar',['corePartialsPath',(corePartialsPath) => new SWEntityEditMode(corePartialsPath)]);
-
-
-/***/ }),
-/* 911 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
-var SWEntityViewModeController = /** @class */ (function () {
-    //@ngInject
-    function SWEntityViewModeController(observerService, rbkeyService) {
-        var _this = this;
-        this.observerService = observerService;
-        this.rbkeyService = rbkeyService;
-        this.$onInit = function () {
-            _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-        };
-        this.setEdit = function (payload) {
-            _this.edit = payload.edit;
-        };
-    }
-    return SWEntityViewModeController;
-}());
-var SWEntityViewMode = /** @class */ (function () {
-    //@ngInject
-    function SWEntityViewMode() {
-        this.restrict = 'EA';
-        this.scope = {};
-        this.transclude = true;
-        this.bindToController = {};
-        this.controller = SWEntityViewModeController;
-        this.controllerAs = "swEntityViewMode";
-        this.template = "\n        <div ng-if=\"!swEntityViewMode.edit\" \n             ng-transclude>\n        </div>\n    ";
-        this.link = function (scope, element, attrs) {
-        };
-    }
-    SWEntityViewMode.Factory = function () {
-        var directive = function () { return new SWEntityViewMode(); };
-        directive.$inject = [];
-        return directive;
-    };
-    return SWEntityViewMode;
-}());
-exports.SWEntityViewMode = SWEntityViewMode;
-//	angular.module('slatwalladmin').directive('swEntityActionBar',['corePartialsPath',(corePartialsPath) => new SWEntityViewMode(corePartialsPath)]);
-
-
-/***/ }),
+/* 910 */,
+/* 911 */,
 /* 912 */
 /***/ (function(module, exports, __webpack_require__) {
 
