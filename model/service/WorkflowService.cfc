@@ -47,7 +47,9 @@ Notes:
 
 */
 component extends="HibachiService" accessors="true" output="false" {
-	
+
+	property name="hibachiService" type="any";
+	property name="hibachiUtilityService" type="any";	
 	property name="hibachiEntityQueueDAO" type="any";
 	property name="workflowDAO" type="any";
 
@@ -174,7 +176,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
 			return arguments.workflowTrigger;
 		}
-		
 			//Change WorkflowTrigger runningFlag to TRUE
 			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
 	
@@ -333,7 +334,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
 		var actionSuccess = false;
-		
+	
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL
 			case 'email' :
@@ -402,8 +403,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break;
 			case 'processByQueue' :
-				if(structKeyExists(arguments,'data') && isArray(arguments.data)){
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(arrayToList(arguments.data), arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+				if(structKeyExists(arguments.data, 'collectionData')){
+					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
+					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName); 
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+					actionSucess = true; 
 				} else { 
 					actionSucess = false; 
 				}	
@@ -454,7 +458,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 		// Loop over all of the tasks for this workflow
-
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			// Check to see if the task is active and the entity object passes the conditions validation
 			if(

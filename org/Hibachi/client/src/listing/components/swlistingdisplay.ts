@@ -84,6 +84,7 @@ class SWListingDisplayController{
     public hasRecordEditAction:boolean=false;
     public recordEditEvent:string
     public recordEditAction:string;
+    public recordEditIcon:string='pencil';
     public hasRecordDeleteAction:boolean=false;
     public recordDeleteEvent:string
     public recordDeleteAction:string;
@@ -797,6 +798,7 @@ class SWListingDisplay implements ng.IDirective{
             recordEditQueryString:"@?",
             recordEditModal:"<?",
             recordEditDisabled:"<?",
+            recordEditIcon:"@?",
             
             recordDetailEvent:"@?",
             recordDetailAction:"@?",

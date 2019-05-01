@@ -25,6 +25,7 @@ class SWAccountShippingAddressCardController{
 				public rbkeyService
 	){
 		this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
+		this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateBillingSuccess');
 		
 		if(this.shippingAccountAddress != null && this.shippingMethod != null){
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
@@ -34,8 +35,16 @@ class SWAccountShippingAddressCardController{
 	}
 	
 	public updateShippingInfo = (data) =>{
-		this.shippingAccountAddress = data.shippingAccountAddress;
-		this.shippingMethod = data.shippingMethod; 
+		if( data['account.accountAddressOptions'] != null){
+			this.accountAddressOptions = data['account.accountAddressOptions'];
+		}
+		
+		if( data.shippingAccountAddress != null && data.shippingMethod != null) {
+			this.shippingAccountAddress = data.shippingAccountAddress;
+			this.shippingMethod = data.shippingMethod; 
+			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
+		}
+
 	}
 }
 

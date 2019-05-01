@@ -57,6 +57,7 @@
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderTemplate#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller action="admin:entity.processOrderTemplate" entity="#rc.orderTemplate#" processContext="activate" type="list" hideDisabled="false" />
 			<hb:HibachiProcessCaller action="admin:entity.processOrderTemplate" entity="#rc.orderTemplate#" processContext="createAndPlaceOrder" type="list" hideDisabled="false" />
 		</hb:HibachiEntityActionBar>
 
@@ -111,7 +112,7 @@
 		<hb:HibachiEntityDetailGroup object="#rc.orderTemplate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic.orderTemplate')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/ordertemplateitems" open="false" />
-
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/orderhistory" open="false" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

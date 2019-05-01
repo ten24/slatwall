@@ -9,7 +9,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
     }
 
     public string function getIntegrationTypes() {
-        return "fw1";
+        return "fw1,data";
     }
 
     public struct function getSettings() {

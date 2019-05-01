@@ -85,13 +85,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
 			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/producttypes" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/products" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/brands" />
-				<cfif rc.qualifierType eq "merchandise">
-					<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/options" />
-				</cfif>
 			<cfelseif rc.qualifierType eq "fulfillment">
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentmethods" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingmethods" />
