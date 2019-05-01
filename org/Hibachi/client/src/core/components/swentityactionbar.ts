@@ -88,10 +88,19 @@ class SWEntityActionBarController{
         this.payload = {
             'edit':this.edit
         };
+        
+        //there should only be one action bar on a page so no id
+        this.observerService.notify('swEntityActionBar', this.payload)
     }
     
     public toggleEditMode = () =>{
         this.edit = !this.edit;
+        
+        this.payload = {
+            'edit':this.edit
+        };
+        
+        this.observerService.notify('swEntityActionBar', this.payload)
     }
 
 }

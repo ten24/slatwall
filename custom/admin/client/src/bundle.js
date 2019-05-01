@@ -5509,6 +5509,7 @@ var swdraggable_1 = __webpack_require__(751);
 var swdraggablecontainer_1 = __webpack_require__(752);
 var swentityactionbar_1 = __webpack_require__(753);
 var swentityactionbarbuttongroup_1 = __webpack_require__(754);
+var swentityeditmode_1 = __webpack_require__(910);
 var swexpandablerecord_1 = __webpack_require__(755);
 var swexpiringsessionnotifier_1 = __webpack_require__(756);
 var swgravatar_1 = __webpack_require__(758);
@@ -5693,6 +5694,7 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swDatePicker', swdatepicker_1.SWDatePicker.Factory())
     .directive('swEntityActionBar', swentityactionbar_1.SWEntityActionBar.Factory())
     .directive('swEntityActionBarButtonGroup', swentityactionbarbuttongroup_1.SWEntityActionBarButtonGroup.Factory())
+    .directive('swEntityEditMode', swentityeditmode_1.SWEntityEditMode.Factory())
     .directive('swExpandableRecord', swexpandablerecord_1.SWExpandableRecord.Factory())
     .directive('swExpiringSessionNotifier', swexpiringsessionnotifier_1.SWExpiringSessionNotifier.Factory())
     .directive('swGravatar', swgravatar_1.SWGravatar.Factory())
@@ -62979,9 +62981,19 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
         this.updateBillingInfo = function (data) {
-            _this.billingAccountAddress = data.billingAccountAddress;
-            _this.accountPaymentMethod = data.accountPaymentMethod;
+            if (data['account.accountAddressOptions'] != null) {
+                _this.accountAddressOptions = data['account.accountAddressOptions'];
+            }
+            if (data['account.accountPaymentMethodOptions'] != null &&
+                data.billingAccountAddress != null &&
+                data.accountPaymentMethod != null) {
+                _this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
+                _this.billingAccountAddress = data.billingAccountAddress;
+                _this.accountPaymentMethod = data.accountPaymentMethod;
+                _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
+            }
         };
+        this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
@@ -77541,9 +77553,15 @@ var SWEntityActionBarController = /** @class */ (function () {
             _this.payload = {
                 'edit': _this.edit
             };
+            //there should only be one action bar on a page so no id
+            _this.observerService.notify('swEntityActionBar', _this.payload);
         };
         this.toggleEditMode = function () {
             _this.edit = !_this.edit;
+            _this.payload = {
+                'edit': _this.edit
+            };
+            _this.observerService.notify('swEntityActionBar', _this.payload);
         };
     }
     return SWEntityActionBarController;
@@ -95153,6 +95171,54 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(305);
+
+
+/***/ }),
+/* 910 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWEntityEditModeController = /** @class */ (function () {
+    //@ngInject
+    function SWEntityEditModeController(observerService, rbkeyService) {
+        var _this = this;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.$onInit = function () {
+            _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
+        };
+        this.setEdit = function (payload) {
+            _this.edit = payload.edit;
+        };
+    }
+    return SWEntityEditModeController;
+}());
+var SWEntityEditMode = /** @class */ (function () {
+    //@ngInject
+    function SWEntityEditMode() {
+        this.restrict = 'EA';
+        this.scope = {};
+        this.transclude = true;
+        this.bindToController = {};
+        this.controller = SWEntityEditModeController;
+        this.controllerAs = "swEntityEditMode";
+        this.template = "\n        <div ng-if=\"swEntityEditMode.edit\" \n             ng-transclude>\n        </div>\n    ";
+        this.link = function (scope, element, attrs) {
+        };
+    }
+    SWEntityEditMode.Factory = function () {
+        var directive = function () { return new SWEntityEditMode(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return SWEntityEditMode;
+}());
+exports.SWEntityEditMode = SWEntityEditMode;
+//	angular.module('slatwalladmin').directive('swEntityActionBar',['corePartialsPath',(corePartialsPath) => new SWEntityEditMode(corePartialsPath)]);
 
 
 /***/ })

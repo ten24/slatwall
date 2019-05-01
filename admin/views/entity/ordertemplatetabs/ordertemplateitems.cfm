@@ -53,7 +53,7 @@
 				>
 				</hb:HibachiListingDisplay>				
 			
-				<div>
+				<div sw-entity-edit-mode>
 					<hb:HibachiListingDisplay 
 						recordProcessEvent="addOrderTemplateItem"
 						collectionList="#rc.skuCollectionList#"
