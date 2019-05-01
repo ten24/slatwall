@@ -1948,7 +1948,8 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 					SET sp.price = :price, sp.currencyCode = :currencyCode
 					WHERE sp.minQuantity IS NULL
 					AND sp.maxQuantity IS NULL 
-					AND sp.priceGroupID IS NULL";
+					AND sp.priceGroupID IS NULL
+					AND sp.currencyCode = s.currencyCode";
 		
 		var params = {
 			price = this.getPrice(),

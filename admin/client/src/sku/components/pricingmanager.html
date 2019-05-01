@@ -126,30 +126,47 @@
                         </sw-listing-save-action>
                 </sw-listing-display>
            </sw-tab-content>
-           <sw-tab-content data-name="Pricing">  
-                <!--hack forcing listing id to pricing listing-->
-                <sw-listing-display
-                        data-has-search="true"
-                        data-is-angular-route="false"
-                        data-angular-links="false"
-                        data-has-action-bar="false"
-                        data-base-entity-name="SkuPrice"
-                        data-record-edit-event="EDIT_SKUPRICE"
-                        data-record-delete-event="DELETE_SKUPRICE"
-                        data-collection-config="swPricingManager.skuPriceCollectionConfig"
-                        data-name="pricingListing"
-                        data-using-personal-collection="true"
-                        data-show-report="false"
-                >
+           <sw-tab-content data-name="Pricing">
+                <div class="pull-right">
+                    <sw-action-caller
+                            data-event="EDIT_SKUPRICE"
+                            data-payload="undefined"
+                            data-class="btn btn-primary btn-md"
+                            data-icon="plus"
+                            data-text="Add Sku Price"
+                            data-iconOnly="false">
                         
-                </sw-listing-display>
-                <sw-edit-sku-price-modal-launcher></sw-edit-sku-price-modal-launcher>
+                    </sw-action-caller>
+                </div>
+                <!--hack forcing listing id to pricing listing-->
+                <div>
+                    <sw-listing-display
+                            data-has-search="true"
+                            data-is-angular-route="false"
+                            data-angular-links="false"
+                            data-has-action-bar="false"
+                            data-base-entity-name="SkuPrice"
+                            data-record-edit-event="EDIT_SKUPRICE"
+                            data-record-delete-event="DELETE_SKUPRICE"
+                            data-collection-config="swPricingManager.skuPriceCollectionConfig"
+                            data-name="pricingListing"
+                            data-using-personal-collection="true"
+                            data-show-report="false"
+                    >
+                            
+                    </sw-listing-display>
+                </div>
+                <!--<sw-edit-sku-price-modal-launcher></sw-edit-sku-price-modal-launcher>
                 <sw-add-sku-price-modal-launcher data-product-id="{{swPricingManager.productId}}">
                     <a href="#" title="Add Price" class="btn btn-default" data-target="#">
                         <i class="fa fa-plus"></i>
                         Add Sku Price
                     </a>
-                </sw-add-sku-price-modal-launcher>
+                </sw-add-sku-price-modal-launcher>-->
+                
+                <sw-sku-price-modal data-product-id="{{swPricingManager.productId}}">
+                    
+                </sw-sku-price-modal>
                 <sw-delete-sku-price-modal-launcher>
                 </sw-delete-sku-price-modal-launcher>
            </sw-tab-content>
