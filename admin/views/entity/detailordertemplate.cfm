@@ -54,6 +54,20 @@
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
 
+<cfset rc.processCallers = [
+	{
+		'action':'admin:entity.processOrderTemplate',
+		'processContext':'activate',
+		'type':'list'
+	},	
+	{
+		'action':'admin:entity.processOrderTemplate',
+		'processContext':'createAndPlaceOrder',
+		'type':'list'
+	}
+] />
+
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
 
@@ -63,10 +77,9 @@
 							  data-cancel-event="cancelEditOrderTemplate"
 							  data-save-event="saveOrderTemplate"
 							  data-edit-event="editOrderTemplate"
+							  data-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.processCallers))#"
 							  data-type="detail" 
 							  data-edit="#rc.edit#">
-						<sw-process-caller action="admin:entity.processOrderTemplate" data-process-context="activate" type="list"></sw-process-caller> 
-						<sw-process-caller action="admin:entity.processOrderTemplate" data-process-context="createAndPlaceOrder" type="list"></sw-process-caller> 
 		</sw-entity-action-bar>
 
 		<div class="panel-group s-pannel-group row">	

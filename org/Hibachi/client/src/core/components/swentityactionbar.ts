@@ -26,6 +26,8 @@ class SWEntityActionBarController{
     
     public payload;
     
+    public processCallers;
+    
     public saveEvent:string;
     public saveAction:string;
     public saveQueryString:string;
@@ -155,7 +157,9 @@ class SWEntityActionBar implements ng.IDirective{
         /*Process Specific Values*/
         processEvent:"@?",
         processAction:"@?",
-        processContext:"@?"
+        processContext:"@?",
+        
+        processCallers:"<?"
 
     };
     public controller=SWEntityActionBarController

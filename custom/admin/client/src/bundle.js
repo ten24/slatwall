@@ -77614,7 +77614,8 @@ var SWEntityActionBar = /** @class */ (function () {
             /*Process Specific Values*/
             processEvent: "@?",
             processAction: "@?",
-            processContext: "@?"
+            processContext: "@?",
+            processCallers: "<?"
         };
         this.controller = SWEntityActionBarController;
         this.controllerAs = "swEntityActionBar";
