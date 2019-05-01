@@ -6,9 +6,8 @@
 
 <cfset rc.orderTemplateItemCollectionList = getHibachiScope().getService('OrderService').getOrderTemplateItemCollectionList() />
 
-<cfset rc.orderTemplateItemCollectionList.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) />
+<cfset rc.orderTemplateItemCollectionList.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity',{isVisible=true,isSearchable=true,isDeletable=true,isEditable=false}) />
 <cfset rc.orderTemplateItemCollectionList.addDisplayProperty('orderTemplateItemID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
-<cfset rc.orderTemplateItemCollectionList.addDisplayProperty('quantity',getHibachiScope().rbKey('entity.orderTemplateItem.quantity'),{isVisible=true,isSearchable=false,isDeletable=false,isEditable=rc.edit}) /> 
 <cfset rc.orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', rc.orderTemplate.getOrderTemplateID()) />
 
 <cfset rc.skuCollectionList = getHibachiScope().getService('SkuService').getSkuCollectionList() />
@@ -33,27 +32,36 @@
 	'isVisible':true
 }) />
 
-<cfset rc.editEvent = '' />
-<cfif rc.edit>
-	<cfset rc.editEvent = 'editOrderTemplateItem' />
-</cfif> 
+<cfset rc.editEvent = 'editOrderTemplateItem' />
 
 <cfoutput>
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 
-				<hb:HibachiListingDisplay
-					recordEditEvent="#rc.editEvent#"
-					recordEditIcon="floppy-disk"
-					recordDeleteEvent="deleteOrderTemplateItem"
-					listingID='OrderTemplateDetailOrderItems'
-					collectionList="#rc.orderTemplateItemCollectionlist#"
-					usingPersonalCollection="false"
-				>
-				</hb:HibachiListingDisplay>				
-			
+				<div sw-entity-view-mode>
+					<hb:HibachiListingDisplay
+						recordDeleteEvent="deleteOrderTemplateItem"
+						listingID='OrderTemplateDetailOrderItems'
+						collectionList="#rc.orderTemplateItemCollectionlist#"
+						usingPersonalCollection="false"
+					>
+					</hb:HibachiListingDisplay>		
+				</div>	
+				
+				<cfset rc.orderTemplateItemCollectionList.addDisplayProperty('quantity',getHibachiScope().rbKey('entity.orderTemplateItem.quantity'),{isVisible=true,isSearchable=false,isDeletable=false,isEditable=true}) /> 
+
 				<div sw-entity-edit-mode>
+					<hb:HibachiListingDisplay
+						recordEditEvent="#rc.editEvent#"
+						recordEditIcon="floppy-disk"
+						recordDeleteEvent="deleteOrderTemplateItem"
+						listingID='OrderTemplateDetailOrderItems'
+						collectionList="#rc.orderTemplateItemCollectionlist#"
+						usingPersonalCollection="false"
+					>
+					</hb:HibachiListingDisplay>		
+					
 					<hb:HibachiListingDisplay 
 						recordProcessEvent="addOrderTemplateItem"
 						collectionList="#rc.skuCollectionList#"
