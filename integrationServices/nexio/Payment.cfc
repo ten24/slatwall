@@ -98,6 +98,52 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			return responseBean;
 		}
+
+		// Verifies that server meets Nexio specific minimum Lucee 5.3 requirement (RSA encryption introduced as new feature in Lucee 5.3 https://docs.lucee.org/guides/cookbooks/Encrypt_Decrypt.html)
+		public void function verifyServerCompatibility() {
+			if (!structKeyExists(variables, 'serverCompatibleFlag')) {
+				variables.serverCompatibleFlag = false;
+
+				if (structKeyExists(server,'lucee')) {
+
+					// Convert server version into semver components to verify compatibility
+					var semVer = {
+						versionLength = listLen(server.lucee.version, '.'),
+						fullVersion = server.lucee.version,
+						majorVersion = listFirst(server.lucee.version, '.'),
+						minorVersion = 0
+					}
+
+					if (semVer.versionLength >= 2) {
+						semVer.minorVersion = listGetAt(semVer.fullVersion, 2, '.');
+					}
+
+					// Verify version is 5.3 or above
+					if (semVer.majorVersion > 5 || (semVer.majorVersion == 5 && semVer.minorVersion >= 3)) {
+						variables.serverCompatibleFlag = true;
+					}
+				}
+			}
+
+			if (!variables.serverCompatibleFlag) {
+				throw('Nexio payment integration: Incompatible server version. Current version does not support the RSA encryption dependency. Upgrade server to at least version 5.3 to resolve issue.');
+			}
+		}
+
+		// Nexio relies on 3rd party TokenEx for tokenization. It uses PKCS #1 v1.5 as cipher algorithm for RSA encryption
+		private any function encryptCardNumber(required string cardNumber, required string publicKey) {
+			var secureRandom = createObject("java", "java.security.SecureRandom").init();
+			var cipher = createObject("java", "javax.crypto.Cipher").getInstance("RSA/ECB/PKCS1Padding", "SunJCE"); // This also is equivalent: getInstance("RSA/None/PKCS1Padding", "BC") for BouncyCastle (org.bouncycastle.jce.provider.BouncyCastleProvider)
+
+			// Convert public key from string to java Key object
+			// First need to convert raw string to ByteArray
+			var publicKeySpec = createObject('java', 'java.security.spec.X509EncodedKeySpec').init(toBinary(arguments.publicKey));
+			var keyFactory = createObject('java', 'java.security.KeyFactory').getInstance('RSA');
+			var key = keyFactory.generatePublic(publicKeySpec);
+			cipher.init(createObject("java", "javax.crypto.Cipher").ENCRYPT_MODE, key, secureRandom);
+			
+			return cipher.doFinal(toBinary(toBase64(arguments.cardNumber)));
+		}
 		
 		private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 			
@@ -113,15 +159,12 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				
 				// Step 1. Generate a "one time use token"
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
-				
-				writeDump("*** responseData: ")
-				writeDump(responseData);
 
 				if (!responseBean.hasErrors()) {
 					requestData = {
 						'token' = responseData.token,
 						'card' = {
-							'encryptedNumber' = toBase64(encrypt(arguments.requestBean.getCreditCardNumber(), publicKey, "rsa" )),
+							'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
 							'expirationMonth' = '1',// TODO: once working use: arguments.requestBean.getExpirationMonth()
 							'expirationYear' = '2024', // TODO: once working use: arguments.requestBean.getExpirationYear()
 							'cardHolderName' = 'Kevin Batchelor', // TODO: once working use: arguments.requestBean.getNameOnCreditCard()
@@ -260,9 +303,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			
-<<<<<<< HEAD:Slatwall/integrationServices/nexio/Payment.cfc
-			// Make HTTP request to SOAP endpoint
-=======
 			var logPath = expandPath('/integrationServices/nexio/log');
 			if (!directoryExists(logPath)){
 				directoryCreate(logPath);
@@ -281,7 +321,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 			
 			// Make HTTP request to endpoint
->>>>>>> updates for reports:integrationServices/nexio/Payment.cfc
 			var httpResponse = httpRequest.send().getPrefix();
 			
 			writeDump([apiUrl,username,password,httpResponse]);
@@ -298,9 +337,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				// Public error message
 				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
 				
-<<<<<<< HEAD:Slatwall/integrationServices/nexio/Payment.cfc
-			// Server response successful, process SOAP body
-=======
 				// No response from server
 				if (httpResponse.status_code == 0) {
 					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
@@ -331,7 +367,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				}
 
 			// Server response successful
->>>>>>> updates for reports:integrationServices/nexio/Payment.cfc
 			} else {
 				
 				// Convert raw XML response to xmlObject
@@ -341,12 +376,9 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 				//*** TO DO: writeDump();
 			}
-<<<<<<< HEAD:Slatwall/integrationServices/nexio/Payment.cfc
-=======
 			
 			//writeDump([apiUrl,username,password,responseData,httpResponse]);
 			//abort;
->>>>>>> updates for reports:integrationServices/nexio/Payment.cfc
 	
 			return responseData;
 		}
