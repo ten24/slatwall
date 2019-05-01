@@ -63450,6 +63450,7 @@ var swaccountshippingmethodmodal_1 = __webpack_require__(640);
 var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(641);
 var swordertemplatefrequencycard_1 = __webpack_require__(642);
 var swordertemplatefrequencymodal_1 = __webpack_require__(643);
+var swordertemplateitems_1 = __webpack_require__(912);
 var swordertemplatetotal_1 = __webpack_require__(644);
 var swordertemplateupcomingorderscard_1 = __webpack_require__(645);
 var swordertemplateupdateschedulemodal_1 = __webpack_require__(646);
@@ -63468,6 +63469,7 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .directive('swCustomerAccountPaymentMethodCard', swcustomeraccountpaymentmethodcard_1.SWCustomerAccountPaymentMethodCard.Factory())
     .directive('swOrderTemplateFrequencyCard', swordertemplatefrequencycard_1.SWOrderTemplateFrequencyCard.Factory())
     .directive('swOrderTemplateFrequencyModal', swordertemplatefrequencymodal_1.SWOrderTemplateFrequencyModal.Factory())
+    .directive('swOrderTemplateItems', swordertemplateitems_1.SWOrderTemplateItems.Factory())
     .directive('swOrderTemplateTotal', swordertemplatetotal_1.SWOrderTemplateTotal.Factory())
     .directive('swOrderTemplateUpcomingOrdersCard', swordertemplateupcomingorderscard_1.SWOrderTemplateUpcomingOrdersCard.Factory())
     .directive('swOrderTemplateUpdateScheduleModal', swordertemplateupdateschedulemodal_1.SWOrderTemplateUpdateScheduleModal.Factory());
@@ -95269,6 +95271,93 @@ var SWEntityViewMode = /** @class */ (function () {
 }());
 exports.SWEntityViewMode = SWEntityViewMode;
 //	angular.module('slatwalladmin').directive('swEntityActionBar',['corePartialsPath',(corePartialsPath) => new SWEntityViewMode(corePartialsPath)]);
+
+
+/***/ }),
+/* 912 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var SWOrderTemplateItemsController = /** @class */ (function () {
+    function SWOrderTemplateItemsController($hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.collectionConfigService = collectionConfigService;
+        this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
+        this.rbkeyService = rbkeyService;
+        this.edit = false;
+        this.$onInit = function () {
+            _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
+            _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
+            _this.viewOrderTemplateItemsCollection.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
+            _this.editOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
+            _this.editOrderTemplateItemsCollection.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.editOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), { isVisible: true, isSearchable: false, isDeletable: false, isEditable: true });
+            _this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
+            _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
+            _this.addSkuCollection.setDisplayProperties('skuName,skuCode,skuDefinition,product.productName', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('price', _this.rbkeyService.rbKey('entity.sku.price'), { isVisible: true, isSearchable: true, isDeletable: false });
+            _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
+            _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
+            _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
+            _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
+            _this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
+            _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
+            _this.skuColumns.push({
+                'title': _this.rbkeyService.rbKey('define.quantity'),
+                'propertyIdentifier': 'quantity',
+                'type': 'number',
+                'defaultValue': 1,
+                'isCollectionColumn': false,
+                'isEditable': true,
+                'isVisible': true
+            });
+        };
+        this.setEdit = function (payload) {
+            _this.edit = payload.edit;
+        };
+    }
+    return SWOrderTemplateItemsController;
+}());
+var SWOrderTemplateItems = /** @class */ (function () {
+    function SWOrderTemplateItems(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.orderPartialsPath = orderPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.restrict = "EA";
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<?'
+        };
+        this.controller = SWOrderTemplateItemsController;
+        this.controllerAs = "swOrderTemplateItems";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/ordertemplateitems.html";
+    }
+    SWOrderTemplateItems.Factory = function () {
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWOrderTemplateItems(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        directive.$inject = [
+            'orderPartialsPath',
+            'slatwallPathBuilder',
+            '$hibachi',
+            'rbkeyService'
+        ];
+        return directive;
+    };
+    return SWOrderTemplateItems;
+}());
+exports.SWOrderTemplateItems = SWOrderTemplateItems;
 
 
 /***/ })

@@ -11,6 +11,7 @@ import {SWAccountShippingMethodModal} from "./components/swaccountshippingmethod
 import {SWCustomerAccountPaymentMethodCard} from "./components/swcustomeraccountpaymentmethodcard";
 import {SWOrderTemplateFrequencyCard} from "./components/swordertemplatefrequencycard";
 import {SWOrderTemplateFrequencyModal} from "./components/swordertemplatefrequencymodal";
+import {SWOrderTemplateItems} from "./components/swordertemplateitems";
 import {SWOrderTemplateTotal} from "./components/swordertemplatetotal";
 import {SWOrderTemplateUpcomingOrdersCard} from "./components/swordertemplateupcomingorderscard";
 import {SWOrderTemplateUpdateScheduleModal} from "./components/swordertemplateupdateschedulemodal";
@@ -32,6 +33,7 @@ var ordermodule = angular.module('order',[coremodule.name])
 .directive('swCustomerAccountPaymentMethodCard',SWCustomerAccountPaymentMethodCard.Factory())
 .directive('swOrderTemplateFrequencyCard', SWOrderTemplateFrequencyCard.Factory())
 .directive('swOrderTemplateFrequencyModal', SWOrderTemplateFrequencyModal.Factory())
+.directive('swOrderTemplateItems', SWOrderTemplateItems.Factory())
 .directive('swOrderTemplateTotal', SWOrderTemplateTotal.Factory())
 .directive('swOrderTemplateUpcomingOrdersCard', SWOrderTemplateUpcomingOrdersCard.Factory())
 .directive('swOrderTemplateUpdateScheduleModal', SWOrderTemplateUpdateScheduleModal.Factory())
