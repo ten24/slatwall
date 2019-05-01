@@ -11,7 +11,7 @@ class SWPricingManagerController extends PricingManagerController{
             this.skuPriceCollectionConfig.addDisplayProperty("personalVolume");
             this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount");
             this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume");
-            this.skuPriceCollectionConfig.addDisplayProperty("sponsorVolume");
+            this.skuPriceCollectionConfig.addDisplayProperty("retailCommission");
             this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume");
             this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume");
         }
