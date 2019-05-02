@@ -103,7 +103,7 @@ Notes:
 		<cfset var success = true />
 		<cftry>
 			<!--- Send Multipart E-mail --->
-			<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
+			<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(getWhiteListedEmailAddresses(arguments.email.getEmailTo()))>
 				<cfmail attributeCollection="#cfmailAttributes#">
 					<cfif !isNull(arguments.email.getRelatedObject())>
 						<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
@@ -123,7 +123,7 @@ Notes:
 					</cfmailpart>
 				</cfmail>
 			<!--- Send HTML Only E-mail --->
-			<cfelseif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailTo())>
+			<cfelseif len(arguments.email.getEmailBodyHTML()) && len(getWhiteListedEmailAddresses(arguments.email.getEmailTo()))>
 
 				<cfset cfmailAttributes["type"] = "text/html" />
 
@@ -141,7 +141,7 @@ Notes:
 					<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
 				</cfmail>
 			<!--- Send Text Only E-mail --->
-			<cfelseif len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
+			<cfelseif len(arguments.email.getEmailBodyText()) && len(getWhiteListedEmailAddresses(arguments.email.getEmailTo()))>
 
 				<cfset cfmailAttributes["type"] = "text/plain" />
 
