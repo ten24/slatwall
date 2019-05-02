@@ -90,10 +90,7 @@ Notes:
 		<sw-listing-column data-property-identifier="firstName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="lastName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="company" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="primaryPhoneNumber.phoneNumber" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedGuestAccountFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="organizationFlag" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>
