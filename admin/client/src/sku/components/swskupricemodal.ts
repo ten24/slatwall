@@ -159,8 +159,14 @@ class SWSkuPriceModalController{
             this.skuPrice.$$setSku(this.sku);
             
         } else {
-            
+            //reference to form is being wiped
+            if(this.skuPrice){
+                var skuPriceForms = this.skuPrice.forms;
+            }
             this.skuPrice = this.skuPriceService.newSkuPrice();
+            if(skuPriceForms){
+                this.skuPrice.forms=skuPriceForms;
+            }
             
             this.skuPriceService.getSkuOptions(this.productId).then(
                 (response)=>{
@@ -202,8 +208,6 @@ class SWSkuPriceModalController{
                 }
             );
         }
-        
-        // this.observerService.notify("pullBindings");
     }
     
     public setSelectedPriceGroup = (priceGroupData) =>{
@@ -227,7 +231,8 @@ class SWSkuPriceModalController{
     
     public isDefaultSkuPrice = ():boolean =>{
         if(this.pageRecord){
-            if( !this.skuPrice.minQuantity.trim() &&
+            if( (this.skuPrice.sku.currencyCode == this.skuPrice.currencyCode) &&
+                !this.skuPrice.minQuantity.trim() &&
                 !this.skuPrice.maxQuantity.trim() &&
                 !this.skuPrice.priceGroup.priceGroupID.trim() &&
                 this.skuPrice.price.trim()){
@@ -245,33 +250,22 @@ class SWSkuPriceModalController{
     
     public save = () => {
         this.observerService.notify("updateBindings");
-        // var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
         if(this.pageRecord && this.submittedPriceGroup){
             this.priceGroup.priceGroupID = this.submittedPriceGroup.priceGroupID;
             this.priceGroup.priceGroupCode = this.submittedPriceGroup.priceGroupCode;
         }
         
         var form = this.formService.getForm(this.formName);
-        form.$setDirty(true);
-        for(var key in form){
-            if(key.charAt(0) !== '$' && angular.isObject(form[key])){
-                var inputField = form[key];
-                inputField.$dirty = true;
-            }
-        }
-        // console.log("skuprice form: ", form)
-
+        
         var savePromise = this.skuPrice.$$save();
       
         savePromise.then(
             (response)=>{ 
-               this.saveSuccess = true; 
-               this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
-               //hack, for whatever reason is not responding to getCollection event
+              this.saveSuccess = true; 
+              this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
+              //hack, for whatever reason is not responding to getCollection event
                 this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
-                
-               
-                // this.formService.resetForm(form);
+                this.formService.resetForm(form);
             },
             (reason)=>{
                 //error callback
@@ -286,7 +280,7 @@ class SWSkuPriceModalController{
                         this.skuPrice.data[key] = null;
                     }
                 }
-                this.formService.resetForm(this.formService.getForm(this.formName));
+                this.formService.resetForm(form);
                 
                 this.listingService.getCollection(this.listingID); 
                 
@@ -300,6 +294,9 @@ class SWSkuPriceModalController{
 class SWSkuPriceModal implements ng.IDirective{
     public template;
     public restrict = 'EA';
+    public require = {
+        ngForm : '?ngForm'
+    }
     public scope = {}; 
     public skuData = {}; 
     public imagePathToUse;

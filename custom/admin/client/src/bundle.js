@@ -33326,7 +33326,14 @@ var SWSkuPriceModalController = /** @class */ (function () {
                 _this.skuPrice.$$setSku(_this.sku);
             }
             else {
+                //reference to form is being wiped
+                if (_this.skuPrice) {
+                    var skuPriceForms = _this.skuPrice.forms;
+                }
                 _this.skuPrice = _this.skuPriceService.newSkuPrice();
+                if (skuPriceForms) {
+                    _this.skuPrice.forms = skuPriceForms;
+                }
                 _this.skuPriceService.getSkuOptions(_this.productId).then(function (response) {
                     _this.skuOptions = [];
                     for (var i = 0; i < response.records.length; i++) {
@@ -33357,7 +33364,6 @@ var SWSkuPriceModalController = /** @class */ (function () {
                     }
                 });
             }
-            // this.observerService.notify("pullBindings");
         };
         this.setSelectedPriceGroup = function (priceGroupData) {
             if (!priceGroupData.priceGroupID) {
@@ -33376,7 +33382,8 @@ var SWSkuPriceModalController = /** @class */ (function () {
         };
         this.isDefaultSkuPrice = function () {
             if (_this.pageRecord) {
-                if (!_this.skuPrice.minQuantity.trim() &&
+                if ((_this.skuPrice.sku.currencyCode == _this.skuPrice.currencyCode) &&
+                    !_this.skuPrice.minQuantity.trim() &&
                     !_this.skuPrice.maxQuantity.trim() &&
                     !_this.skuPrice.priceGroup.priceGroupID.trim() &&
                     _this.skuPrice.price.trim()) {
@@ -33390,27 +33397,18 @@ var SWSkuPriceModalController = /** @class */ (function () {
         };
         this.save = function () {
             _this.observerService.notify("updateBindings");
-            // var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
             if (_this.pageRecord && _this.submittedPriceGroup) {
                 _this.priceGroup.priceGroupID = _this.submittedPriceGroup.priceGroupID;
                 _this.priceGroup.priceGroupCode = _this.submittedPriceGroup.priceGroupCode;
             }
             var form = _this.formService.getForm(_this.formName);
-            form.$setDirty(true);
-            for (var key in form) {
-                if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
-                    var inputField = form[key];
-                    inputField.$dirty = true;
-                }
-            }
-            // console.log("skuprice form: ", form)
             var savePromise = _this.skuPrice.$$save();
             savePromise.then(function (response) {
                 _this.saveSuccess = true;
                 _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
                 //hack, for whatever reason is not responding to getCollection event
                 _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
-                // this.formService.resetForm(form);
+                _this.formService.resetForm(form);
             }, function (reason) {
                 //error callback
                 console.log("validation failed because: ", reason);
@@ -33422,7 +33420,7 @@ var SWSkuPriceModalController = /** @class */ (function () {
                             _this.skuPrice.data[key] = null;
                         }
                     }
-                    _this.formService.resetForm(_this.formService.getForm(_this.formName));
+                    _this.formService.resetForm(form);
                     _this.listingService.getCollection(_this.listingID);
                     _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
                 }
@@ -33449,6 +33447,9 @@ var SWSkuPriceModal = /** @class */ (function () {
         this.skuPartialsPath = skuPartialsPath;
         this.slatwallPathBuilder = slatwallPathBuilder;
         this.restrict = 'EA';
+        this.require = {
+            ngForm: '?ngForm'
+        };
         this.scope = {};
         this.skuData = {};
         this.transclude = true;
@@ -83475,7 +83476,6 @@ var HibachiValidationService = /** @class */ (function () {
                 value: valueStruct.value,
                 valid: valueStruct.valid
             };
-            console.log(modifiedData);
             return modifiedData;
         };
         this.getValidationByPropertyAndContext = function (entityInstance, property, context) {
@@ -83496,23 +83496,19 @@ var HibachiValidationService = /** @class */ (function () {
             var modifiedData = {};
             var valid = true;
             var forms = entityInstance.forms;
-            console.log(forms);
             _this.$log.debug('process base level data');
-            console.log("HERE!!!!");
             for (var f in forms) {
                 var form = forms[f];
                 form.$setSubmitted(); //Sets the form to submitted for the validation errors to pop up.
                 if (form.$dirty && form.$valid) {
                     for (var key in form) {
-                        // this.$log.debug('key:'+key);
-                        console.log('key:', key);
+                        _this.$log.debug('key:' + key);
                         if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
                             var inputField = form[key];
                             if (typeof inputField.$modelValue != 'undefined' && inputField.$modelValue !== '') {
                                 inputField.$dirty = true;
                             }
                             if (angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
-                                console.log("$modelValue Set!!!", inputField.$modelValue);
                                 if (angular.isDefined(entityInstance.metaData[key])
                                     && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
                                     && entityInstance.metaData[key].hb_formfieldtype === 'json') {
@@ -83535,7 +83531,6 @@ var HibachiValidationService = /** @class */ (function () {
             _this.$log.debug(modifiedData);
             _this.$log.debug('process parent data');
             if (angular.isDefined(entityInstance.parents)) {
-                console.log("Parent Defined!!!", entityInstance.parents);
                 for (var p in entityInstance.parents) {
                     var parentObject = entityInstance.parents[p];
                     var parentInstance = entityInstance.data[parentObject.name];
