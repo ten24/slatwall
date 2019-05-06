@@ -86,7 +86,7 @@ Notes:
 	<cfif rc.slatAction eq "admin:entity.listorder">
 		<cfset displayPropertyList &= "orderNumber,orderOpenDateTime,"/>	
 	</cfif>
-	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.company,createdDateTime,calculatedTotal'/>
+	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.company,orderOrigin.orderOriginName,createdDateTime,calculatedTotal'/>
 	<cfset rc.orderCollectionList.setDisplayProperties(
 		displayPropertyList,
 		{
