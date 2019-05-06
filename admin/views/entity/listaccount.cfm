@@ -76,26 +76,7 @@ Notes:
 
 	</hb:HibachiListingDisplay> --->
 
-	<!---<sw-listing-display data-using-personal-collection="true"
-			data-collection="'Account'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editaccount"
-			data-record-detail-action="admin:entity.detailaccount"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="accountID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="company" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="primaryPhoneNumber.phoneNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedGuestAccountFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="organizationFlag" ></sw-listing-column>
-	</sw-listing-display>--->
-	
+
 	
 	<cfset displayPropertyList = "calculatedGuestAccountFlag,organizationFlag"/>
 	<cfset rc.accountCollectionList.setDisplayProperties(
