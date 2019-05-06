@@ -57,7 +57,7 @@ component extends="HibachiDAO" {
 			return false;
 		}
 		
-		return isExpired = ORMExecuteQuery('
+		return ORMExecuteQuery('
 			SELECT si.serverInstanceExpired 
 			FROM #getApplicationKey()#ServerInstance si 
 			WHERE si.serverInstanceKey=:serverInstanceKey',
