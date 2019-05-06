@@ -83,25 +83,55 @@ Notes:
 	</hb:HibachiListingDisplay> --->
 	
 	<cfset displayPropertyList = ""/>
+	<cfset searchableDisplayPropertyList = "" />
 	<cfif rc.slatAction eq "admin:entity.listorder">
-		<cfset displayPropertyList &= "orderNumber,orderOpenDateTime,"/>	
+		<cfset displayPropertyList &= "orderOpenDateTime,"/>	
 	</cfif>
-	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.company,createdDateTime,calculatedTotal'/>
+	<cfset displayPropertyList &= 'createdDateTime,calculatedTotal'/>
+
 	<cfset rc.orderCollectionList.setDisplayProperties(
 		displayPropertyList,
 		{
 			isVisible=true,
-			isSearchable=true,
+			isSearchable=false,
 			isDeletable=true
 		}
 	)/>
-	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderType.typeName",title="#getHibachiScope().rbkey('entity.order.orderType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
-	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderStatusType.typeName",title="#getHibachiScope().rbkey('entity.order.orderStatusType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
+	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderType.typeName",title="#getHibachiScope().rbkey('entity.order.orderType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
+	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderStatusType.typeName",title="#getHibachiScope().rbkey('entity.order.orderStatusType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
 	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='orderID',columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
 	})/>
+	<!--- Searchables --->
+	<cfif rc.slatAction eq "admin:entity.listorder">
+		<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='orderNumber',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	</cfif>
+	
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.firstName',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.lastName',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.company',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	},prepend=true)/>
+
+
+	<!--- Searchables --->
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
 		usingPersonalCollection="true"
