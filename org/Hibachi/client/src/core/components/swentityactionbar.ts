@@ -27,6 +27,7 @@ class SWEntityActionBarController{
     public payload;
     
     public processCallers;
+    public swProcessCallers;
     
     public saveEvent:string;
     public saveAction:string;
@@ -70,7 +71,19 @@ class SWEntityActionBarController{
             this.editQueryString = this.baseQueryString + this.editQueryString;
             this.deleteQueryString = this.baseQueryString + this.deleteQueryString;
             this.saveQueryString = this.baseQueryString + this.saveQueryString;
+
+            if(this.processCallers != null){
+                for(var i=0; i<this.processCallers.length; i++){
+                    if(this.processCallers[i].queryString != null){
+                        this.processCallers[i].queryString = this.baseQueryString + this.processCallers[i].queryString;
+                    } else {
+                        this.processCallers[i].queryString = this.baseQueryString;
+                    }
+                }
+            }
         }
+
+        this.swProcessCallers = this.processCallers;
         
         if(this.editEvent != null){
             this.editAction = '';
