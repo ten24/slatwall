@@ -256,6 +256,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
+			globalCollectionKeywordWildcardConfig={fieldType='select', defaultValue="both", valueOptions=[{name="wildcard on both sides %example%",value="both"}, {name="wildcard on left sides %example",value="left"}, {name="wildcard on right sides example%",value="right"}]},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
