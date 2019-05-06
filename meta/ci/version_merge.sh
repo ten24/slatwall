@@ -133,6 +133,7 @@ elif [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ]; then
       echo 'pull slatwall - develop'
       git pull origin develop --no-edit
       git checkout develop -- custom
+      git reset custom
       # Read all the conflicts of the repository
       conflicts=$(git diff --name-only --diff-filter=U)
     

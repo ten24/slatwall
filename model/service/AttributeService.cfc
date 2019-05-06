@@ -50,10 +50,9 @@ Notes:
 component  extends="HibachiService" accessors="true" {
 
 	property name="attributeDAO";
-
+	property name="hibachiCacheDAO";
+	
 	// ===================== START: Logical Methods ===========================
-
-
 
 	private struct function getAttributeSetMetaData(required attributeSet){
 		var attributeSetMetaDataCacheKey = "attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#";
@@ -263,10 +262,7 @@ component  extends="HibachiService" accessors="true" {
 		
 		//if we are turning this into a custom property, we want to reload all servers to make sure things work properly
 		if(attribute.getCustomPropertyFlag()){
-			var serverInstanceSmartList = this.getServerInstanceSmartList();
-			for(var serverInstance in serverInstanceSmartList.getRecords()){
-				serverInstance.setServerInstanceExpired(true);
-			}	
+			getHibachiCacheDAO().setAllServerInstancesExpired();
 		}
 
 		return arguments.attribute;

@@ -2872,7 +2872,49 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
-			if(listfindnocase("between,not between,>,>=,<,<=,gt,gte,lt,lte",arguments.filter.comparisonOperator)){
+			if( listfindnocase("between,not between",arguments.filter.comparisonOperator) && listFind('integer,float,big_decimal,string',arguments.filter.ormtype)){
+				var ranges = listToArray(arguments.filter.value,'-');
+				if(arraylen(ranges) > 1){
+					var fromValue = ranges[1];
+ 					var toValue = ranges[2];
+ 					var fromParamID = getParamID();
+ 					addHQLParam(fromParamID,fromValue);
+ 					var toParamID = getParamID();
+ 					addHQLParam(toParamID,toValue);
+ 					predicate = ":#fromParamID# AND :#toParamID#";
+ 				}else{
+ 					if(left(arguments.filter.value,1) == '-'){
+ 						var toValue = ranges[1];
+ 						var toParamID = getParamID();
+ 						addHQLParam(toParamID,toValue);
+ 						var minValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
+ 
+ 						minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
+ 
+ 						minValueCollection.setPageRecordsShow(1);
+ 						var minValue = 0;
+ 						var minValuePageRecords = minValueCollection.getPageRecords();
+ 						if(arraylen(minValuePageRecords)){
+ 							minValue = minValuePageRecords[1]['minValue'];
+ 						}
+ 						predicate = "#minValue# AND :#toParamID#";
+ 					}else{
+ 						var fromValue = ranges[1];
+ 						var fromParamID = getParamID();
+ 						addHQLParam(fromParamID,fromValue);
+ 						var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
+ 						maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
+ 						maxValueCollection.setPageRecordsShow(1);
+ 						var maxValue = 0; // 2,147,483,647
+ 						var maxValuePageRecords = maxValueCollection.getPageRecords();
+ 						if(arraylen(maxValuePageRecords)){
+ 							maxValue = maxValueCollection.getPageRecords()[1]['maxValue'];
+ 						}
+ 
+						predicate = ":#fromParamID# AND #maxValue#";
+					}
+				}
+			}else if(listfindnocase("between,not between,>,>=,<,<=,gt,gte,lt,lte",arguments.filter.comparisonOperator)){
 
 
 				if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
@@ -2953,50 +2995,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 
-			}else if( listfindnocase("between,not between",arguments.filter.comparisonOperator) && listFind('integer,float,big_decimal,string',arguments.filter.ormtype)){
-				var ranges = listToArray(arguments.filter.value,'-');
-				if(arraylen(ranges) > 1){
-					var fromValue = ranges[1];
- 					var toValue = ranges[2];
- 					var fromParamID = getParamID();
- 					addHQLParam(fromParamID,fromValue);
- 					var toParamID = getParamID();
- 					addHQLParam(toParamID,toValue);
- 
- 					predicate = ":#fromParamID# AND :#toParamID#";
- 				}else{
- 					if(left(arguments.filter.value,1) == '-'){
- 						var toValue = ranges[1];
- 						var toParamID = getParamID();
- 						addHQLParam(toParamID,toValue);
- 						var minValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
- 
- 						minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
- 
- 						minValueCollection.setPageRecordsShow(1);
- 						var minValue = 0;
- 						var minValuePageRecords = minValueCollection.getPageRecords();
- 						if(arraylen(minValuePageRecords)){
- 							minValue = minValuePageRecords[1]['minValue'];
- 						}
- 						predicate = "#minValue# AND :#toParamID#";
- 					}else{
- 						var fromValue = ranges[1];
- 						var fromParamID = getParamID();
- 						addHQLParam(fromParamID,fromValue);
- 						var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
- 						maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
- 						maxValueCollection.setPageRecordsShow(1);
- 						var maxValue = 0;
- 						var maxValuePageRecords = maxValueCollection.getPageRecords();
- 						if(arraylen(maxValuePageRecords)){
- 							maxValue = maxValueCollection.getPageRecords()[1]['maxValue'];
- 						}
- 
-						predicate = ":#fromParamID# AND #maxValue#";
-					}
-				}
-			}else{
+			}else {
 				var paramID = getParamID();
 				
 				addHQLParam(paramID,arguments.filter.value);
@@ -3801,12 +3800,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			for(var column in columns) {
 
 
-				var currentFilter = {
-					"comparisonOperator" = "like",
-					"value"="%#keyword#%"
-				};
-
-
+				var currentFilter = { "comparisonOperator" = "like"}; //
+				
+				var wildcrdPosition = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
+				switch(wildcrdPosition){
+					case "left":
+							currentFilter['value']="%#keyword#";
+						break;
+					case "right":
+							currentFilter['value']="#keyword#%";
+						break;
+					case "both":
+					default:
+							currentFilter['value']="%#keyword#%";
+						break;
+				}
+				
 				if ((
 					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
 					) || (
