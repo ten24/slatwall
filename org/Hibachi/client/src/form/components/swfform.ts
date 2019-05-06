@@ -28,7 +28,8 @@ class SWFFormController {
         public $hibachi,
         public $element,
         public validationService,
-        public hibachiValidationService
+        public hibachiValidationService,
+        public observerService
     ){
 
     }

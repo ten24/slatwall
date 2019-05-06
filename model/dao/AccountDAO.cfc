@@ -372,6 +372,21 @@ Notes:
 			<cfreturn accountAuthentication />
 		</cfif>
 	</cffunction>
+	
+	<cffunction name="removeAccountFromAccountAddress">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccountAddress
+			SET
+				accountID = null
+			WHERE
+				accountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="removeAccountFromAuditProperties" returntype="void" access="public">
 		<cfargument name="accountID" type="string" required="true" />

@@ -263,6 +263,51 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
+private void function populateWithAddressVerification(required struct rc){
+		if(
+			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
+			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
+		){
+
+			rc.addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.orderFulfillment.getShippingAddress().getAddressID());
+
+			if(structKeyExists(rc,'addressVerificationStruct') && structKeyExists(rc.addressVerificationStruct,"suggestedAddress")){
+				rc.suggestedAddressName = getService("AddressService").getAddressName(rc.addressVerificationStruct.suggestedAddress);
+				rc.addressVerificationStruct.message = rc.$.slatwall.rbKey('admin.entity.cannotVerifyAddress');
+			}
+
+		}
+	}
+
+	//Order Fulfillment
+
+	public void function detailOrderFulfillment(required struct rc) {
+		genericDetailMethod(entityName="OrderFulfillment", rc=arguments.rc);
+		this.populateWithAddressVerification(arguments.rc);
+	}
+
+	public void function editOrderFulfillment(required struct rc) {
+		genericEditMethod(entityName="OrderFulfillment", rc=arguments.rc);
+		this.populateWithAddressVerification(arguments.rc);
+	}
+
+	public void function updateAddressWithSuggestedAddress(required struct rc){
+		var addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.addressID);
+		var address = getService("AddressService").getAddress(rc.addressID);
+		var orderFulfillment = getService("FulfillmentService").getOrderFulfillment(rc.orderFulfillmentID);
+
+		address.populate(addressVerificationStruct.suggestedAddress);
+		address.setVerifiedByIntegrationFlag(true);
+
+		orderFulfillment.setverifiedShippingAddressFlag(true);
+
+		getService("AddressService").saveAddress(address);
+		getService("FulfillmentService").saveOrderFulfillment(orderFulfillment);
+
+		getFW().redirect( action="admin:entity.detailorderfulfillment", preserve="rc",queryString="orderFulfillmentID=#rc.orderFulfillmentID#" );
+
+	}
+	
 	public void function before(required struct rc){
 		var sites = getService('siteService').getSiteSmartList();
 		sites.addFilter('activeFlag', 1);
