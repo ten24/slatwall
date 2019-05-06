@@ -18,11 +18,7 @@
 <cfset local.ordersCollection.addDisplayProperty('createdDateTime|DESC') />
 <cfset local.ordersCollection.applyData()>
 
-<cfif $.slatwall.content().getUrlTitle() EQ "order-history" OR $.slatwall.content().getUrlTitle() EQ "order">
-    <cfset local.ordersCollection.setPageRecordsShow(10)>
-<cfelse>
-    <cfset local.ordersCollection.setPageRecordsShow(3)>
-</cfif>
+<cfset local.ordersCollection.setPageRecordsShow(10)>
 
 <cfset local.orders = local.ordersCollection.getPageRecords() />
 
