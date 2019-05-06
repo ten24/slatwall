@@ -42,6 +42,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public any function hasCachedValue( required string key ) {
+		
+		verifyCacheKey(arguments.key);
+
 		// If using the internal cache, then check there
 		if( getInternalCacheFlag() && 
 			structKeyExists(getCache(), arguments.key) && 
@@ -110,6 +113,8 @@ component accessors="true" output="false" extends="HibachiService" {
 	} 
 		
 	public any function getCachedValue( required string key ) {
+		verifyCacheKey(arguments.key);
+
 		// If using the internal cache, then check there
 		if(getInternalCacheFlag() && structKeyExists(getCache(), key) && (!structKeyExists(getCache()[key],"expirationDateTime") || getCache()[key].expirationDateTime > now()) ) {
 			return getCache()[ arguments.key ].value;
@@ -120,9 +125,17 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 	
+	private void function verifyCacheKey(required string key){
+		if(isNUll(arguments.key) || !Len(arguments.key)){
+			throw("Cache Key can't be null or emply");
+		}
+	}
+	
 	public any function setCachedValue( required string key, required any value, date expirationDateTime ) {
 		// If using the internal cache, then set value there
-
+		
+		verifyCacheKey(arguments.key);
+		
 		var dataToCache = {
 			value = arguments.value,
 			reset = false
@@ -141,6 +154,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public any function resetCachedKey( required string key ) {
+
+		verifyCacheKey(arguments.key);
+
 		// If using the internal cache, then reset there
 		if(getInternalCacheFlag()) {
 			if(!structKeyExists(getCache(), arguments.key)) {
@@ -164,6 +180,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public any function resetCachedKeyByPrefix( required string keyPrefix, boolean waitForThreadComplete=false ) {
+		
+		verifyCacheKey(arguments.keyPrefix);
+
 		// Because there could be lots of keys potentially we do this in a thread
 		var threadName="hibachiCacheService_resetCachedKeyByPrefix_#replace(createUUID(),'-','','ALL')#";
 		thread name="#threadName#" keyPrefix=arguments.keyPrefix {

@@ -658,6 +658,8 @@ class PublicService {
     /** Selects shippingAddress*/
     public selectShippingAccountAddress = (accountAddressID,orderFulfillmentID)=>{
         
+        this.observerService.notify("shippingAddressSelected",{"accountAddressID":accountAddressID});
+        
         let fulfillmentIndex = this.cart.orderFulfillments.findIndex(fulfillment => fulfillment.orderFulfillmentID == orderFulfillmentID);
         let oldAccountAddressID;
         
