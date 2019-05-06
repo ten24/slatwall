@@ -3800,12 +3800,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			for(var column in columns) {
 
 
-				var currentFilter = {
-					"comparisonOperator" = "like",
-					"value"="%#keyword#%"
-				};
-
-
+				var currentFilter = { "comparisonOperator" = "like"}; //
+				
+				var wildcrdPosition = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
+				switch(wildcrdPosition){
+					case "left":
+							currentFilter.value="%#keyword#"
+						break;
+					case "right":
+							currentFilter.value="#keyword#%"
+						break;
+					case "both":
+					default:
+							currentFilter.value="%#keyword#%"
+						break;
+				}
+				
 				if ((
 					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
 					) || (
