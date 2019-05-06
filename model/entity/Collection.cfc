@@ -3805,14 +3805,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var wildcrdPosition = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
 				switch(wildcrdPosition){
 					case "left":
-							currentFilter['value']="%#keyword#"
+							currentFilter['value']="%#keyword#";
 						break;
 					case "right":
-							currentFilter['value']="#keyword#%"
+							currentFilter['value']="#keyword#%";
 						break;
 					case "both":
 					default:
-							currentFilter['value']="%#keyword#%"
+							currentFilter['value']="%#keyword#%";
 						break;
 				}
 				
