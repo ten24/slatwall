@@ -76,7 +76,11 @@ Notes:
 
 	</hb:HibachiListingDisplay> --->
 
+<<<<<<< HEAD
 	<!---<sw-listing-display data-using-personal-collection="true"
+=======
+	<sw-listing-display data-using-personal-collection="true"
+>>>>>>> parent of c444d5b205... Delete listaccount.cfm
 			data-collection="'Account'"
 			data-edit="false"
 			data-has-search="true"
@@ -94,6 +98,7 @@ Notes:
 		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="calculatedGuestAccountFlag" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="organizationFlag" ></sw-listing-column>
+<<<<<<< HEAD
 	</sw-listing-display>--->
 	
 	
@@ -143,6 +148,12 @@ Notes:
 		recordDetailAction="admin:entity.detail#lcase(rc.accountCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
+=======
+	</sw-listing-display>
+	
+	
+	
+>>>>>>> parent of c444d5b205... Delete listaccount.cfm
 	
 	
 
