@@ -29275,6 +29275,7 @@ exports.combineAll = combineAll;
 
 "use strict";
 
+<<<<<<< HEAD
 var concat_1 = __webpack_require__(28);
 var concat_2 = __webpack_require__(28);
 exports.concatStatic = concat_2.concat;
@@ -29332,6 +29333,266 @@ function concat() {
     var observables = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         observables[_i - 0] = arguments[_i];
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swSkuPriceModalHTML = __webpack_require__(314);
+var SWSkuPriceModalController = /** @class */ (function () {
+    //@ngInject
+    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.formService = formService;
+        this.listingService = listingService;
+        this.observerService = observerService;
+        this.skuPriceService = skuPriceService;
+        this.utilityService = utilityService;
+        this.scopeService = scopeService;
+        this.$scope = $scope;
+        this.baseName = "j-add-sku-item-";
+        this.currencyCodeEditable = false;
+        this.priceGroupEditable = false;
+        this.currencyCodeOptions = [];
+        this.saveSuccess = true;
+        this.updateCurrencyCodeSelector = function (args) {
+            if (args != 'All') {
+                _this.skuPrice.data.currencyCode = args;
+                _this.currencyCodeEditable = false;
+            }
+            else {
+                _this.currencyCodeEditable = true;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.initData = function (pageRecord) {
+            _this.pageRecord = pageRecord;
+            if (pageRecord) {
+                var skuPriceData = {
+                    skuPriceID: pageRecord.skuPriceID,
+                    minQuantity: pageRecord.minQuantity,
+                    maxQuantity: pageRecord.maxQuantity,
+                    currencyCode: pageRecord.currencyCode,
+                    price: pageRecord.price
+                };
+                var skuData = {
+                    skuID: pageRecord["sku_skuID"],
+                    skuCode: pageRecord["sku_skuCode"],
+                    calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+                };
+                var priceGroupData = {
+                    priceGroupID: pageRecord["priceGroup_priceGroupID"],
+                    priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
+                };
+                //reference to form is being wiped
+                if (_this.skuPrice) {
+                    var skuPriceForms = _this.skuPrice.forms;
+                }
+                _this.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+                if (skuPriceForms) {
+                    _this.skuPrice.forms = skuPriceForms;
+                }
+                if (_this.sku) {
+                    var skuForms = _this.sku.forms;
+                }
+                _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+                if (skuForms) {
+                    _this.skuPrice.forms = skuForms;
+                }
+                if (_this.priceGroup) {
+                    var priceGroupForms = _this.priceGroup.forms;
+                }
+                _this.priceGroup = _this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+                if (priceGroupForms) {
+                    _this.priceGroup.forms = priceGroupForms;
+                }
+                _this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                    _this.priceGroupOptions = response.records;
+                    _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+                }).finally(function () {
+                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                    for (var i = 0; i < _this.priceGroupOptions.length; i++) {
+                        if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
+                            _this.selectedPriceGroup = _this.priceGroupOptions[i];
+                            console.log(_this.selectedPriceGroup);
+                        }
+                    }
+                    _this.priceGroupEditable = false;
+                    if (!_this.selectedPriceGroup['priceGroupID']) {
+                        _this.priceGroupEditable = true;
+                    }
+                });
+                _this.skuPriceService.getCurrencyOptions().then(function (response) {
+                    if (response.records.length) {
+                        _this.currencyCodeOptions = [];
+                        for (var i = 0; i < response.records.length; i++) {
+                            _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                        }
+                        _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                        _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                        for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
+                            if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
+                                _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
+                            }
+                        }
+                    }
+                });
+                _this.skuPrice.$$setPriceGroup(_this.priceGroup);
+                _this.skuPrice.$$setSku(_this.sku);
+            }
+            else {
+                //reference to form is being wiped
+                if (_this.skuPrice) {
+                    var skuPriceForms = _this.skuPrice.forms;
+                }
+                _this.skuPrice = _this.skuPriceService.newSkuPrice();
+                if (skuPriceForms) {
+                    _this.skuPrice.forms = skuPriceForms;
+                }
+                _this.skuPriceService.getSkuOptions(_this.productId).then(function (response) {
+                    _this.skuOptions = [];
+                    for (var i = 0; i < response.records.length; i++) {
+                        _this.skuOptions.push({ skuCode: response.records[i]['skuCode'], skuID: response.records[i]['skuID'] });
+                    }
+                }).finally(function () {
+                    if (angular.isDefined(_this.skuOptions) && _this.skuOptions.length == 1) {
+                        _this.setSelectedSku(_this.skuOptions[0]);
+                    }
+                });
+                _this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                    _this.priceGroupOptions = response.records;
+                    _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+                }).finally(function () {
+                    if (angular.isDefined(_this.priceGroupOptions) && _this.priceGroupOptions.length) {
+                        _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                        _this.priceGroupEditable = true;
+                    }
+                });
+                _this.skuPriceService.getCurrencyOptions().then(function (response) {
+                    if (response.records.length) {
+                        _this.currencyCodeOptions = [];
+                        for (var i = 0; i < response.records.length; i++) {
+                            _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                        }
+                        _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                        _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                    }
+                });
+            }
+        };
+        this.setSelectedPriceGroup = function (priceGroupData) {
+            if (!priceGroupData.priceGroupID) {
+                _this.submittedPriceGroup = {};
+                return;
+            }
+            _this.submittedPriceGroup = { priceGroupID: priceGroupData['priceGroupID'] };
+        };
+        this.setSelectedSku = function (skuData) {
+            if (!angular.isDefined(skuData['skuID'])) {
+                return;
+            }
+            _this.selectedSku = { skuCode: skuData['skuCode'], skuID: skuData['skuID'] };
+            _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+            _this.submittedSku = { skuID: skuData['skuID'] };
+        };
+        this.isDefaultSkuPrice = function () {
+            if (_this.pageRecord) {
+                if ((_this.skuPrice.sku.currencyCode == _this.skuPrice.currencyCode) &&
+                    !_this.skuPrice.minQuantity.trim() &&
+                    !_this.skuPrice.maxQuantity.trim() &&
+                    !_this.skuPrice.priceGroup.priceGroupID.trim() &&
+                    _this.skuPrice.price.trim()) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        this.$onDestroy = function () {
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+        };
+        this.save = function () {
+            _this.observerService.notify("updateBindings");
+            if (_this.pageRecord && _this.submittedPriceGroup) {
+                _this.priceGroup.priceGroupID = _this.submittedPriceGroup.priceGroupID;
+                _this.priceGroup.priceGroupCode = _this.submittedPriceGroup.priceGroupCode;
+            }
+            var form = _this.formService.getForm(_this.formName);
+            var savePromise = _this.skuPrice.$$save();
+            savePromise.then(function (response) {
+                _this.saveSuccess = true;
+                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+                _this.formService.resetForm(form);
+            }, function (reason) {
+                //error callback
+                console.log("validation failed because: ", reason);
+                _this.saveSuccess = false;
+            }).finally(function () {
+                if (_this.saveSuccess) {
+                    for (var key in _this.skuPrice.data) {
+                        if (key != 'sku' && key != 'currencyCode') {
+                            _this.skuPrice.data[key] = null;
+                        }
+                    }
+                    _this.formService.resetForm(form);
+                    _this.listingService.getCollection(_this.listingID);
+                    _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                }
+            });
+            return savePromise;
+        };
+        this.uniqueName = this.baseName + this.utilityService.createID(16);
+        this.formName = "skuPriceForm" + this.utilityService.createID(16);
+        this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+    }
+    return SWSkuPriceModalController;
+}());
+exports.SWSkuPriceModalController = SWSkuPriceModalController;
+var SWSkuPriceModal = /** @class */ (function () {
+    function SWSkuPriceModal($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.observerService = observerService;
+        this.scopeService = scopeService;
+        this.collectionConfigService = collectionConfigService;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.require = {
+            ngForm: '?ngForm'
+        };
+        this.scope = {};
+        this.skuData = {};
+        this.transclude = true;
+        this.bindToController = {
+            sku: "=?",
+            pageRecord: "=?",
+            productId: "@?",
+            minQuantity: "@?",
+            maxQuantity: "@?",
+            priceGroupId: "@?",
+            currencyCode: "@?",
+            eligibleCurrencyCodeList: "@?",
+            defaultCurrencyOnly: "=?",
+            disableAllFieldsButPrice: "=?"
+        };
+        this.controller = SWSkuPriceModalController;
+        this.controllerAs = "swSkuPriceModal";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = swSkuPriceModalHTML;
+>>>>>>> origin/develop-team-dh-new-price-listing
     }
     return function (source) { return source.lift.call(concat_1.concat.apply(void 0, [source].concat(observables))); };
 }
@@ -62989,14 +63250,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             if (!_this.hideSelectAccountAddress && _this.swCustomerAccountPaymentMethodCard.billingAccountAddress == null) {
                 _this.baseEntity.billingAccountAddress = _this.accountAddressOptions[0];
             }
-            else {
-                for (var i = 0; i < _this.accountAddressOptions.length; i++) {
-                    var option = _this.accountAddressOptions[i];
-                    if (option['value'] === _this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID) {
-                        _this.baseEntity.billingAccountAddress = option;
-                        break;
-                    }
-                }
+            else if (_this.swCustomerAccountPaymentMethodCard.billingAccountAddress != null) {
+                _this.setBillingAccountAddress(_this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID);
             }
             if (!_this.hideSelectAccountPaymentMethod && _this.swCustomerAccountPaymentMethodCard.accountPaymentMethod == null) {
                 _this.baseEntity.accountPaymentMethod = _this.accountPaymentMethodOptions[0];
@@ -63021,12 +63276,24 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                 address: {}
             };
         };
+        this.setBillingAccountAddress = function (billingAccountAddressID) {
+            for (var i = 0; i < _this.accountAddressOptions.length; i++) {
+                var option = _this.accountAddressOptions[i];
+                if (option['value'] === billingAccountAddressID) {
+                    _this.baseEntity.billingAccountAddress = option;
+                    break;
+                }
+            }
+        };
+        this.updateAccountPaymentMethod = function () {
+            _this.setBillingAccountAddress(_this.baseEntity.accountPaymentMethod.billingAccountAddress_accountAddressID);
+        };
         this.save = function () {
             var formDataToPost = {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod'
+                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -63045,6 +63312,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
         };
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
     }
     return SWAccountPaymentMethodModalController;
 }());
@@ -63121,10 +63390,17 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
         this.shippingAddressTitle = 'Shipping Address';
         this.shippingMethodTitle = 'Shipping Method';
         this.updateShippingInfo = function (data) {
-            _this.shippingAccountAddress = data.shippingAccountAddress;
-            _this.shippingMethod = data.shippingMethod;
+            if (data['account.accountAddressOptions'] != null) {
+                _this.accountAddressOptions = data['account.accountAddressOptions'];
+            }
+            if (data.shippingAccountAddress != null && data.shippingMethod != null) {
+                _this.shippingAccountAddress = data.shippingAccountAddress;
+                _this.shippingMethod = data.shippingMethod;
+                _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
+            }
         };
         this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
+        this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateBillingSuccess');
         if (this.shippingAccountAddress != null && this.shippingMethod != null) {
             this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
         }
@@ -63204,8 +63480,8 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
         this.shippingAccountAddressTitle = 'Shipping account address';
         //view state properties
         this.hideSelectAccountAddress = false;
-        this.showCreateShippingAddress = false;
         this.$onInit = function () {
+            _this.showCreateShippingAddress = false;
             _this.baseEntityName = _this.swAccountShippingAddressCard.baseEntityName;
             _this.baseEntity = _this.swAccountShippingAddressCard.baseEntity;
             _this.baseEntityPrimaryID = _this.baseEntity[_this.$hibachi.getPrimaryIDPropertyNameByEntityName(_this.baseEntityName)];
@@ -63214,7 +63490,20 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             _this.countryCodeOptions = _this.swAccountShippingAddressCard.countryCodeOptions;
             _this.shippingMethodOptions = _this.swAccountShippingAddressCard.shippingMethodOptions;
             _this.stateCodeOptions = _this.swAccountShippingAddressCard.stateCodeOptions;
-            _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
+            _this.hideSelectAccountAddress = _this.accountAddressOptions.length === 0;
+            _this.showCreateShippingAddress = _this.hideSelectAccountAddress;
+            if (!_this.hideSelectAccountAddress && _this.swAccountShippingAddressCard.shippingAccountAddress == null) {
+                _this.baseEntity.shippingAccountAddress = _this.accountAddressOptions[0];
+            }
+            else {
+                for (var i = 0; i < _this.accountAddressOptions.length; i++) {
+                    var option = _this.accountAddressOptions[i];
+                    if (option['value'] === _this.swAccountShippingAddressCard.shippingAccountAddress.accountAddressID) {
+                        _this.baseEntity.shippingAccountAddress = option;
+                        break;
+                    }
+                }
+            }
             _this.baseEntity.shippingMethod = _this.shippingMethodOptions[0];
             _this.newAccountAddress = {
                 address: {}
@@ -63225,7 +63514,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod'
+                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions'
             };
             if (_this.showCreateShippingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -63238,6 +63527,8 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
         };
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
+        this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
     }
     return SWAccountShippingMethodModalController;
 }());
@@ -63294,9 +63585,19 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
         this.updateBillingInfo = function (data) {
-            _this.billingAccountAddress = data.billingAccountAddress;
-            _this.accountPaymentMethod = data.accountPaymentMethod;
+            if (data['account.accountAddressOptions'] != null) {
+                _this.accountAddressOptions = data['account.accountAddressOptions'];
+            }
+            if (data['account.accountPaymentMethodOptions'] != null &&
+                data.billingAccountAddress != null &&
+                data.accountPaymentMethod != null) {
+                _this.accountPaymentMethodOptions = data['account.accountPaymentMethodOptions'];
+                _this.billingAccountAddress = data.billingAccountAddress;
+                _this.accountPaymentMethod = data.accountPaymentMethod;
+                _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
+            }
         };
+        this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
@@ -89473,6 +89774,7 @@ var SWListingDisplayController = /** @class */ (function () {
         this.hasRecordAddAction = false;
         this.hasRecordDetailAction = false;
         this.hasRecordEditAction = false;
+        this.recordEditIcon = 'pencil';
         this.hasRecordDeleteAction = false;
         this.searching = false;
         this.selectable = false;
@@ -90037,6 +90339,7 @@ var SWListingDisplay = /** @class */ (function () {
             recordEditQueryString: "@?",
             recordEditModal: "<?",
             recordEditDisabled: "<?",
+            recordEditIcon: "@?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",

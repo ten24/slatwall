@@ -62,7 +62,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="maximumItemPrice" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.unlimited";
 	property name="minimumFulfillmentWeight" ormtype="big_decimal" hb_formatType="weight" hb_nullRBKey="define.0";
 	property name="maximumFulfillmentWeight" ormtype="big_decimal" hb_formatType="weight" hb_nullRBKey="define.unlimited";
-	property name="rewardMatchingType" ormtype="string" hb_formatType="rbKey" hb_formFieldType="select";
+	property name="includedSkusCollectionConfig" ormtype="text";
+	property name="excludedSkusCollectionConfig" ormtype="text";
 	
 	// Related Entities (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -74,6 +75,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoQualShippingMethod" fkcolumn="promotionQualifierID" inversejoincolumn="shippingMethodID";
 	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoQualShipAddressZone" fkcolumn="promotionQualifierID" inversejoincolumn="addressZoneID";
 	
+	// Deprecated Properties
+	property name="rewardMatchingType" ormtype="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoQualBrand" fkcolumn="promotionQualifierID" inversejoincolumn="brandID";
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoQualOption" fkcolumn="promotionQualifierID" inversejoincolumn="optionID";
 	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoQualSku" fkcolumn="promotionQualifierID" inversejoincolumn="skuID";
@@ -85,6 +88,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoQualExclSku" fkcolumn="promotionQualifierID" inversejoincolumn="skuID";
 	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPromoQualExclProduct" fkcolumn="promotionQualifierID" inversejoincolumn="productID";
 	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoQualExclProductType" fkcolumn="promotionQualifierID" inversejoincolumn="productTypeID";
+	// End Deprecated Properties
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -97,6 +101,9 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 
 	// Non-persistent entities
 	property name="qualifierApplicationTypeOptions" type="array" persistent="false";
+	property name="includedSkusCollection" persistent="false";
+	property name="excludedSkusCollection" persistent="false";
+	property name="skuCollection" persistent="false";
 	
 	public string function getSimpleRepresentation() {
 		return "#rbKey('entity.promotionQualifier')# - #getFormattedValue('qualifierType')#";
@@ -112,6 +119,52 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 			{name=rbKey('entity.promotionQualifier.rewardMatchingType.productType'), value="productType"},
 			{name=rbKey('entity.promotionQualifier.rewardMatchingType.brand'), value="brand"}
 		];
+	}
+	
+	public any function getIncludedSkusCollection(){
+		if(isNull(variables.includedSkusCollection)){
+			var collectionConfig = getIncludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				variables.includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+			}
+		}
+		return variables.includedSkusCollection;
+	}
+	
+	public any function getExcludedSkusCollection(){
+		if(isNull(variables.excludedSkusCollection)){
+			var collectionConfig = getExcludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
+			}
+		}
+		return variables.excludedSkusCollection;
+	}
+	
+	public any function getSkuCollection(){
+		if(isNull(variables.skuCollection)){
+			if(isNull(getExcludedSkusCollection())){
+				return getIncludedSkusCollection();
+			}
+			
+			if(!isNull(getIncludedSkusCollection())){
+				var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+				var excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
+				
+				skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
+			}
+			variables.skuCollection = skuCollection;
+		}
+		return variables.skuCollection;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -135,6 +188,52 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		}
 		structDelete(variables, "promotionPeriod");
 	}
+	
+	// Collection Skus
+	
+	public boolean function hasSkuBySkuID(required any skuID){
+		var skuCollection = getSkuCollection();
+		skuCollection.addFilter('skuID',arguments.skuID,'=');
+		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
+		skuCollection.removeFilter('skuID',arguments.skuID);
+		return hasSku;
+	}
+	
+	public boolean function hasOrderItemSku(required any orderItem){
+		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
+	}
+	
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
+
+	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentationPropertyName() {
+		return "qualifierType";
+	}
+	
+	public boolean function isDeletable() {
+		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
+	}
+	
+	// ==================  END:  Overridden Methods ========================
+	
+	// =================== START: ORM Event Hooks  =========================
+	
+	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
 	
 	// Brands (many-to-many - owner)
 	public void function addBrand(required any brand) {
@@ -335,38 +434,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 			arrayDeleteAt(arguments.productType.getPromotionQualifierExclusions(), thatIndex);
 		}
 	}
-	
-	// =============  END:  Bidirectional Helper Methods ===================
-
-	// =============== START: Custom Validation Methods ====================
-	
-	// ===============  END: Custom Validation Methods =====================
-	
-	// =============== START: Custom Formatting Methods ====================
-	
-	// ===============  END: Custom Formatting Methods =====================
-	
-	// ============== START: Overridden Implicet Getters ===================
-	
-	// ==============  END: Overridden Implicet Getters ====================
-
-	// ================== START: Overridden Methods ========================
-	
-	public string function getSimpleRepresentationPropertyName() {
-		return "qualifierType";
-	}
-	
-	public boolean function isDeletable() {
-		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
-	}
-	
-	// ==================  END:  Overridden Methods ========================
-	
-	// =================== START: ORM Event Hooks  =========================
-	
-	// ===================  END:  ORM Event Hooks  =========================
-	
-	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
 	

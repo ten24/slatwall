@@ -596,14 +596,16 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			variables.accountPaymentMethodOptions = [];	
 			
 			var accountPaymentMethodCollectionList = getService('AccountService').getAccountPaymentMethodCollectionList(); 
-			accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName, creditCardLastFour, creditCardType, accountPaymentMethodID|value');
+			accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName, billingAccountAddress.accountAddressID, creditCardLastFour, creditCardType, accountPaymentMethodID|value');
+			accountPaymentMethodCollectionList.addFilter('activeFlag', true);
 			accountPaymentMethodCollectionList.addFilter('account.accountID', getAccountID());
 			
 			var paymentMethods = accountPaymentMethodCollectionList.getRecords();
 			for(var paymentMethod in paymentMethods){
 				var paymentMethodOption = {
 					"name": paymentMethod['accountPaymentMethodName'] & ' - ' & paymentMethod['creditCardType'] & ' *' & paymentMethod['creditCardLastFour'],
-					"value": paymentMethod['value']  
+					"value": paymentMethod['value'],
+					"billingAccountAddress_accountAddressID": paymentMethod['billingAccountAddress_accountAddressID'] 
 				};
 				arrayAppend(variables.accountPaymentMethodOptions, paymentMethodOption); 
 			} 

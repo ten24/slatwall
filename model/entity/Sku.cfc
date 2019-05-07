@@ -1943,17 +1943,25 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 	public void function preUpdate(Struct oldData){
 		super.preUpdate(argumentCollection=arguments);
 		
-		var sql = "	UPDATE swskuprice sp
-					LEFT JOIN swsku s ON sp.skuID = s.skuID
-					SET sp.price = :price, sp.currencyCode = :currencyCode
-					WHERE sp.minQuantity IS NULL
-					AND sp.maxQuantity IS NULL 
-					AND sp.priceGroupID IS NULL
-					AND sp.currencyCode = s.currencyCode";
+		var sql =  "UPDATE 
+						swskuprice 
+					SET 
+						price = :price 
+					WHERE 
+						minQuantity IS NULL 
+					AND 
+						maxQuantity IS NULL 
+					AND 
+						priceGroupID IS NULL 
+					AND 
+						currencyCode = :currencyCode 
+					AND 
+						skuID = :skuID";
 		
 		var params = {
 			price = this.getPrice(),
-			currencyCode = this.getCurrencyCode()
+			currencyCode = this.getCurrencyCode(),
+			skuID = this.getSkuID()
 		}
 		
 		var query = QueryExecute(sql, params);

@@ -30,6 +30,7 @@
 	<cfparam name="attributes.recordEditQueryString" type="string" default="" />
 	<cfparam name="attributes.recordEditModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditDisabled" type="boolean" default="false" />
+	<cfparam name="attributes.recordEditIcon" type="string" default="" />
 	<cfparam name="attributes.recordDetailEvent" type="string" default="" />
 	<cfparam name="attributes.recordDetailAction" type="string" default="" />
 	<cfparam name="attributes.recordDetailActionProperty"type="string" default="" />
@@ -141,6 +142,9 @@
 				data-has-search="true"
 				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
+				<cfif len(attributes.recordEditIcon)>
+					record-edit-icon="#attributes.recordEditIcon#"
+				</cfif> 
 				record-detail-event="#attributes.recordDetailEvent#"
 				record-detail-action="#attributes.recordDetailAction#"
 				record-detail-modal="#attributes.recordDetailModal#"
