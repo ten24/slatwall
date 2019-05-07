@@ -717,6 +717,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			collectionOptions.periodInterval=periodInterval;
 		}
 		
+		if(structKeyExists(arguments.data, "enableAveragesAndSums")){ 
+			collectionOptions['enableAveragesAndSums'] = arguments.data['enableAveragesAndSums']
+		}
+		
 		return collectionOptions;
 	}
 
@@ -880,6 +884,10 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setReportFlag(1);
 			}
 			
+			if(structKeyExists(collectionOptions,'enableAveragesAndSums') && collectionOptions.enableAveragesAndSums){ 
+				//XXX we should receive "enableAveragesAndSums = truthy" from forntend "to get the averages and sums"; By defalut the flag is "disableAveragesAndSumsFlag = true" i.e. no averages and sums
+				collectionEntity.setDisableAveragesAndSumsFlag(false);
+			}
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 
