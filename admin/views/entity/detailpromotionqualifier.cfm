@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.qualifierType" type="string" default="#rc.promotionQualifier.getQualifierType()#" />
 <cfparam name="rc.edit" type="boolean" default="true">
-<cfset rc.edit = true>
+
 <!--- prevent editing promotion qualifier if its promotion period has expired --->
 <cfif rc.edit and rc.promotionperiod.isExpired()>
 	<cfset rc.edit = false />
@@ -67,7 +67,9 @@ Notes:
 	<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod_inprogress.editdisabled_info') />
 </cfif>
 <cfset local.qualifierType = rc.promotionQualifier.getQualifierType() />
-
+<cfif local.qualifierType EQ 'order' >
+	<cfset rc.edit = true>
+</cfif>
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.promotionQualifier#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionQualifier#" edit="#rc.edit#" 
