@@ -135,6 +135,8 @@ class SWAccountPaymentMethodModalController{
 		
 		if(this.showCreateBillingAddress){
 			formDataToPost.newAccountAddress = this.newAccountAddress;
+			formDataToPost.newAccountAddress.stateCode = this.newAccountAddress.stateCode.stateCode;
+			formDataToPost.newAccountAddress.countryCode = this.newAccountAddress.countryCode.countryCode;
 		} else {
 			formDataToPost.billingAccountAddress = this.baseEntity.billingAccountAddress;
 		}
