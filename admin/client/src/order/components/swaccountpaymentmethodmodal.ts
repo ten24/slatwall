@@ -51,6 +51,8 @@ class SWAccountPaymentMethodModalController{
 				 public rbkeyService,
 				 public requestService
 	){
+		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateBillingSuccess');
+		this.observerService.attach(this.$onInit, 'OrderTemplateUpdateShippingSuccess');
 	}
 	
 	public $onInit = () =>{
@@ -78,14 +80,8 @@ class SWAccountPaymentMethodModalController{
 
 		if(!this.hideSelectAccountAddress  && this.swCustomerAccountPaymentMethodCard.billingAccountAddress == null){
 			this.baseEntity.billingAccountAddress = this.accountAddressOptions[0];
-		} else {
-			for(var i=0; i<this.accountAddressOptions.length; i++){
-				var option = this.accountAddressOptions[i];
-				if(option['value'] === this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID){
-					this.baseEntity.billingAccountAddress = option;
-					break;
-				}
-			}
+		} else if(this.swCustomerAccountPaymentMethodCard.billingAccountAddress != null) {
+			this.setBillingAccountAddress(this.swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressID);
 		}
 		
 		if(!this.hideSelectAccountPaymentMethod  && this.swCustomerAccountPaymentMethodCard.accountPaymentMethod == null){
@@ -115,12 +111,26 @@ class SWAccountPaymentMethodModalController{
 		
 	}
 	
+	public setBillingAccountAddress = (billingAccountAddressID) =>{
+		for(var i=0; i<this.accountAddressOptions.length; i++){
+			var option = this.accountAddressOptions[i];
+			if(option['value'] === billingAccountAddressID){
+				this.baseEntity.billingAccountAddress = option;
+				break;
+			}
+		}
+	}
+	
+	public updateAccountPaymentMethod = () =>{
+		this.setBillingAccountAddress(this.baseEntity.accountPaymentMethod.billingAccountAddress_accountAddressID);
+	}
+	
 	public save = () =>{
 		var formDataToPost:any = {
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext,
-			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod'
+			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'
 		};
 		
 		if(this.showCreateBillingAddress){
@@ -131,6 +141,7 @@ class SWAccountPaymentMethodModalController{
 		
 		if(this.showCreateAccountPaymentMethod){
 			formDataToPost.newAccountPaymentMethod = this.newAccountPaymentMethod;
+			formDataToPost.newAccountPaymentMethod.expirationYear = this.newAccountPaymentMethod.expirationYear.VALUE;
 		} else {
 			formDataToPost.accountPaymentMethod = this.baseEntity.accountPaymentMethod;
 		}

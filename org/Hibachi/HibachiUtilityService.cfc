@@ -74,7 +74,15 @@
 		public string function camelCaseToTitleCase(required string stringValue){
 			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
-		
+
+		public string function arrayOfStructsToList(required array structs, required string structKeyForList){
+			var listToReturn = "";
+			for(var record in arguments.structs){
+				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList]);
+			} 
+			return listToReturn; 
+		}
+
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
@@ -1484,6 +1492,8 @@
 	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
+        <cfset local.timezoneOffset = getTimeZoneInfo().utcTotalOffset />
+        <cfset local.utcDate.setTime(local.utcDate.getTime() - (local.timezoneOffset * 1000) ) />
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
     

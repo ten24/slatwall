@@ -1760,7 +1760,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function updateReport( page ) {
-	
+		if(jQuery("#hibachi-report").length){
 		var data = {
 			slatAction: 'admin:report.default',
 			reportID: jQuery('input[name="reportID"]').val(),
@@ -1827,6 +1827,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				removeLoadingDiv( 'hibachi-report' );
 			}
 		});
+		}
 	
 	}
 	

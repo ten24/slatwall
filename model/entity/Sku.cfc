@@ -56,7 +56,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="publishedEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time period when this product can be published.";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
-	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE";
+	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE" hb_translate="false";
 	property name="eventAttendanceCode" ormtype="string" length="8" hint="Unique code to track event attendance";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -798,6 +798,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		if(!structKeyExists(variables, "assignedOrderItemAttributeSetSmartList")) {
 
 			variables.assignedOrderItemAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
+			
 			variables.assignedOrderItemAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('attributeSetObject', 'OrderItem');
@@ -814,8 +815,9 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			if(!isNull(getProduct().getBrand())) {
 				wc &= " OR aslatwallbrand.brandID = '#getProduct().getBrand().getBrandID()#'";
 			}
-			wc &= " OR aslatwallsku.skuID = '#getSkuID()#'";
-			wc &= ")";
+			wc &= " OR aslatwallsku.skuID = '#getSkuID()#')";
+			wc &= " AND aslatwallattributeset.attributeSetName IS NOT NULL";
+			
 
 			variables.assignedOrderItemAttributeSetSmartList.addWhereCondition( wc );
 		}

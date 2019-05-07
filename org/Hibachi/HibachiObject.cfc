@@ -233,7 +233,7 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	public string function rbKey(required string key) {
-		return getHibachiScope().rbKey(arguments.key);
+		return getHibachiScope().rbKey(argumentCollection=arguments);
 	}
 	
 	public string function hibachiHTMLEditFormat(required any html=""){

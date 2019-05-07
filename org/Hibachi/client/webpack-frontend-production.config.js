@@ -42,7 +42,7 @@ devConfig.plugins =  [
     new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-	    mangle: true,
+	    mangle: false,
 	    minimize: true,
 	    compress: {
 	         // remove warnings

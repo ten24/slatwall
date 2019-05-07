@@ -983,13 +983,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
+	public any function processOrderTemplate_removePromotionCode(required any orderTemplate, required any processObject) { 
+		var promotionCode = getPromotionService().getPromotionCode(arguments.processObject.getPromotionCodeID());
+		
+		if(arguments.orderTemplate.hasPromotionCode( promotionCode )) {
+			arguments.orderTemplate.removePromotionCode( promotionCode );
+		}
+		
+		return arguments.orderTemplate;
+	} 
+
+	public any function processOrderTemplate_addPromotionCode(required any orderTemplate, required any processObject) { 
+		var promotionCode = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
+	
+		if( isNull(promotionCode) || !promotionCode.getPromotion().getActiveFlag() ){
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+		} else if(!arguments.orderTemplate.hasPromotionCode( promotionCode )) {
+			arguments.orderTemplate.addPromotionCode( promotionCode );
+		}
+	
+		return arguments.orderTemplate;	 
+	} 
+
 	public any function processOrder_addPromotionCode(required any order, required any processObject) {
 		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 		//if we can't find a promotion or the promotion is no longer active then show the invalid promo message
 		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
 		//if we have a promotion but it doesn't fall within the promos startData end date show invalid datetime message
-		} else if ( (!isNull(pc.getStartDateTime()) && pc.getStartDateTime() > now()) || (!isNull(pc.getEndDateTime()) && pc.getEndDateTime() < now()) || !pc.getPromotion().getCurrentFlag()) {
+		} else if ( !pc.getCurrentFlag() || !pc.getPromotion().getCurrentFlag()) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'), true);
 		//if we find an promocode is only valid for specific accounts and the order account is not in the list then show invalid account message
 		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {
@@ -1128,6 +1150,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.newOrder();
 	}
+	
+	public any function processOrderTemplate_activate(required any orderTemplate, any processObject, required struct data={}) {
+		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
+		return this.saveOrderTemplate(arguments.orderTemplate); 
+	} 
 
 	//begin order template functionality	
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
@@ -1153,6 +1180,68 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return arguments.orderTemplate;
+	}
+
+	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, required any processObject, required struct data={}){
+
+		var newOrder = this.newOrder(); 
+
+		var processOrderCreate = newOrder.getProcessObject('create'); 
+		processOrderCreate.setNewAccountFlag(false); 
+		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
+		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
+		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
+		//do we need location
+	
+		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
+	
+		if(newOrder.hasErrors()){
+			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			return arguments.orderTemplate; 
+		} 
+
+		newOrder.setOrderTemplate(arguments.orderTemplate);
+		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
+		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
+
+		newOrder = this.saveOrder(newOrder); 
+
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity'); 
+		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+
+		var orderTemplateItems = orderTemplateItemCollection.getRecords(); 
+		for(var orderTemplateItem in orderTemplateItems){ 
+
+			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
+			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
+			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
+
+			newOrder = this.processOrder_addOrderItem(newOrder, processOrderAddOrderItem);
+
+			if(newOrder.hasErrors()){
+				arguments.orderTemplate.addErrors(newOrder.getErrors());
+				return arguments.orderTemplate; 
+			}
+		} 		
+
+		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
+		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
+		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
+
+		//newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
+		
+		if(newOrder.hasErrors()){
+			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			return arguments.orderTemplate;
+		}
+
+		//place order
+
+		return arguments.orderTemplate; 
 	}
 
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
@@ -1248,7 +1337,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var account = arguments.orderTemplate.getAccount(); 
 
-	if(!isNull(processObject.getNewAccountAddress())){
+		if(!isNull(processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1264,13 +1353,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
 			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
-		}	
+		} 	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
 			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
 
-			accountPaymentMethod.setAccount(account); 
+			accountPaymentMethod.setAccount(account);
+			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
+
+			//set payment method as credit card
+			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a')); 
 
 			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 

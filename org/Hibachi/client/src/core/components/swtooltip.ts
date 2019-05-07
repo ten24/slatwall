@@ -65,10 +65,8 @@ class SWTooltip implements ng.IDirective{
                 tooltipStyle.left = (-1 * (elementPosition.left + element[0].offsetLeft - 5)) + "px";
                 element.find(".tooltip-inner")[0].style.maxWidth = "none";
                 break;
-              default: 
-              //right is the default
-                tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5) + "px"; 
-                tooltipStyle.left = (elementPosition.left + element[0].offsetWidth - 5) + "px";
+              case 'right':
+                break;
           }   
       }   
     }

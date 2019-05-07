@@ -66,6 +66,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="siteService" type="any";
 	property name="taskService" type="any";
 	property name="taxService" type="any";
+	property name="translationService" type="any";
 	property name="typeService" type="any";
 	property name="skuService" type="any";
 
@@ -218,6 +219,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAllowThirdPartyShippingAccount={fieldType="yesno",defaultValue=0},
+			globalDisableSearchSettings={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
@@ -252,11 +254,14 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
+			globalLocale = {fieldType="select",defaultValue="en_us"},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
+			globalTranslateEntities = {fieldType="multiselect",defaultValue="Product,Sku"},
+			globalTranslateLocales = {fieldType="multiselect",defaultValue="en_us"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
@@ -346,6 +351,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			productTypeMetaKeywordsString = {fieldType="textarea", defaultValue="${productTypeName}, ${parentProductType.productTypeName}"},
 
 			// Site
+			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
@@ -572,6 +578,12 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
+			case "globalLocale":
+				return getHibachiRBService().getAvailableLocaleOptions();
+			case "globalTranslateEntities":
+				return getTranslationService().getEntityNameOptions();
+			case "globalTranslateLocales":
+				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
@@ -582,6 +594,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
 			case "productImageOptionCodeDelimiter":
 				return ['-','_'];
+			case "siteAvailableLocales":
+				return getTranslationService().getSiteAvailableLocalesOptions();
 			case "siteForgotPasswordEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
@@ -957,10 +971,12 @@ component extends="HibachiService" output="false" accessors="true" {
 
 				// Attempt object level value resolution without site context if necessary
 				if (!foundValue) {
-					// Delete any siteID from settingRelationship if present
-					structDelete(settingDetails.settingRelationships, 'siteID');
+					// Delete any siteID from settingRelationship if present unless the base object is a Site entity itself (otherwise we still want the siteID filter applied because it will appear identical if overridden at global level with siteID being null)
+					if (arguments.object.getClassName() != 'Site') {
+						structDelete(settingDetails.settingRelationships, 'siteID');
+					}
 
-					// Now try just object level value resolution without siteID in settingRelationships
+					// Now try just object level value resolution without siteID in settingRelationships except if Site of course.
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
 						foundValue = true;
@@ -1078,8 +1094,8 @@ component extends="HibachiService" output="false" accessors="true" {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
 
-				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also
-				if (settingDetails.siteProvided) {
+				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also (Edge case to exclude Site. No reason to introduce unecessary complexity by allowing Site to also specify site settings!)
+				if (settingDetails.siteProvided && (isNull(arguments.object) || arguments.object.getClassName() != 'Site')) {
 					// Trying site level value resolution with the siteID and any other specified relationships
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {

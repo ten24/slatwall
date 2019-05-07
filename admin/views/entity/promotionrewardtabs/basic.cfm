@@ -11,6 +11,10 @@
 			<input type="hidden" name="promotionperiod.promotionperiodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 			<input type="hidden" name="promotionperiodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 			
+			<cfif rc.promotionReward.isNew() >
+				<input type="hidden" name="includedSkusCollectionConfig" value="#$.slatwall.getService('hibachiUtilityService').hibachiHTMLEditFormat(rc.promotionReward.getIncludedSkusCollection().getCollectionConfig())#">
+			</cfif>
+			
 			<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amountType" fieldType="select" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amount" edit="#rc.edit#" />
 			<hb:HibachiDisplayToggle selector="select[name=amountType]" showValues="percentageOff" loadVisable="#rc.promotionReward.getNewFlag() || rc.promotionReward.getValueByPropertyIdentifier('amountType') eq 'percentageOff'#">

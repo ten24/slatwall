@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,clone,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAPIAccessKey" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,clone,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAPIAccessKey,updatePrimaryEmailAddress" {
 
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -69,6 +69,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	//calucluated property
 	property name="calculatedAdminIcon" ormtype="string";
 	property name="calculatedFullName" ormtype="string";
+	property name="calculatedGuestAccountFlag" ormtype="boolean";
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 
@@ -595,14 +596,16 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			variables.accountPaymentMethodOptions = [];	
 			
 			var accountPaymentMethodCollectionList = getService('AccountService').getAccountPaymentMethodCollectionList(); 
-			accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName, creditCardLastFour, creditCardType, accountPaymentMethodID|value');
+			accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodName, billingAccountAddress.accountAddressID, creditCardLastFour, creditCardType, accountPaymentMethodID|value');
+			accountPaymentMethodCollectionList.addFilter('activeFlag', true);
 			accountPaymentMethodCollectionList.addFilter('account.accountID', getAccountID());
 			
 			var paymentMethods = accountPaymentMethodCollectionList.getRecords();
 			for(var paymentMethod in paymentMethods){
 				var paymentMethodOption = {
 					"name": paymentMethod['accountPaymentMethodName'] & ' - ' & paymentMethod['creditCardType'] & ' *' & paymentMethod['creditCardLastFour'],
-					"value": paymentMethod['value']  
+					"value": paymentMethod['value'],
+					"billingAccountAddress_accountAddressID": paymentMethod['billingAccountAddress_accountAddressID'] 
 				};
 				arrayAppend(variables.accountPaymentMethodOptions, paymentMethodOption); 
 			} 
@@ -1037,6 +1040,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public string function getSimpleRepresentation() {
 		return getFullName();
+	}
+
+	public string function getSimpleRepresentationPropertyName(){
+		return 'calculatedFullName';
 	}
 
 	// ==================  END:  Overridden Methods ========================

@@ -24,7 +24,16 @@ class SWListingDisplayController{
     public collection;
     public childPropertyName;
     public colorFilters = [];
-    public columns = [];
+    public _columns = [];
+    
+    get columns(): Array<any> {
+        return this._columns;
+    }
+    set columns(newArray: Array<any>) {
+        this._columns = newArray;
+        this.columnCount = this._columns.length;
+    }
+    
     public columnCount;
     public commonProperties;
     public customListingControls:boolean;
@@ -75,6 +84,7 @@ class SWListingDisplayController{
     public hasRecordEditAction:boolean=false;
     public recordEditEvent:string
     public recordEditAction:string;
+    public recordEditIcon:string='pencil';
     public hasRecordDeleteAction:boolean=false;
     public recordDeleteEvent:string
     public recordDeleteAction:string;
@@ -240,6 +250,7 @@ class SWListingDisplayController{
         this.$transclude(this.$scope,()=>{});
 
         this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
+        
         if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
@@ -769,6 +780,7 @@ class SWListingDisplay implements ng.IDirective{
             recordEditQueryString:"@?",
             recordEditModal:"<?",
             recordEditDisabled:"<?",
+            recordEditIcon:"@?",
             
             recordDetailEvent:"@?",
             recordDetailAction:"@?",
