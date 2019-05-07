@@ -89,7 +89,7 @@ Notes:
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
 			<cfelseif rc.qualifierType eq "order" >
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/orders" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true/>
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/orders" open="true" text="#$.slatwall.rbKey('entity.order_plural')#" showOnCreateFlag=true/>
 			<cfelseif rc.qualifierType eq "fulfillment">
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentmethods" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingmethods" />
