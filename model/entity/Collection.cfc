@@ -1740,6 +1740,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								structKeyExists(join,'aggregateFilter')
 								&& join.aggregateFilter
 							)||(
+								structKeyExists(join,'aggregateColumn')
+								&& join.aggregateColumn
+							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
 							)||(
@@ -3078,6 +3081,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var countHQLSelections = "";
 		var countHQLSuffix = "";
 		
+		if(
+			hasAggregateFilter() 
+			||
+			hasExclusiveToManyFilter(getRunningGetRecordsCount())
+			||
+			(
+				hasGroupBys()
+				&& !getprimaryIDFound()
+			)
+		){
+			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
+			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
+ 		}else{
+ 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
+ 			var countHQLSuffix = getHQL(true,false,false,false,true);
+		}
+		
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
@@ -3112,22 +3132,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		
-		if(
-			hasAggregateFilter() 
-			||
-			hasExclusiveToManyFilter(getRunningGetRecordsCount())
-			||
-			(
-				hasGroupBys()
-				&& !getprimaryIDFound()
-			)
-		){
-			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
-			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
- 		}else{
- 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
- 			var countHQLSuffix = getHQL(true,false,false,false,true);
-		}
+		
 
 
 		HQL = countHQLSelections & ') ' & countHQLSuffix;
@@ -3397,6 +3402,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function addTotalAvgAggregate(required struct column){
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
 		var found = false;
 		for(var item in variables.totalAvgAggregates){
 			if(item.propertyIdentifier == column.propertyIdentifier){
@@ -3411,6 +3417,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public void function addTotalSumAggregate(required struct column){
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
 		var found = false;
 		for(var item in variables.totalSumAggregates){
 			if(item.propertyIdentifier == column.propertyIdentifier){
