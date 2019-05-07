@@ -255,20 +255,17 @@ Notes:
 	<cffunction name="getPromotionCodeUseCount" returntype="numeric" access="public">
 		<cfargument name="promotionCode" required="true" type="any" />
 
-		<cfset var results = ormExecuteQuery("SELECT count(o.orderID) as count FROM
-					SlatwallPromotionCode pc
-				  INNER JOIN
-				  	pc.orders o
-				WHERE
-					o.orderStatusType.systemCode != :ostNotPlaced
-				  AND
-				  	pc.promotionCodeID = :promotionCodeID
-					", {
-						ostNotPlaced = "ostNotPlaced",
-						promotionCodeID = arguments.promotionCode.getPromotionCodeID()
-				}) />
+		<cftransaction isolation="read_uncommitted">
+			<cfquery name="results">
+			SELECT count(swOrder.orderID) as count
+			FROM SwOrderPromotionCode 
+			INNER JOIN SwOrder on SwOrderPromotionCode.orderID=SwOrder.orderID AND SwOrder.orderNumber is not null
+			WHERE SwOrderPromotionCode.promotionCodeID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionCode.getPromotionCodeID()#">
 
-		<cfreturn results[1] />
+			</cfquery>
+		</cftransaction>
+
+		<cfreturn results.count />
 
 	</cffunction>
 
@@ -864,6 +861,33 @@ Notes:
 		</cfquery>
 
 		<cfreturn noQualifierDiscountsQuery >
+	</cffunction>
+
+<!--- Adds new promotion codes based on a list --->
+	<!--- Inserts a new promoCode record: 
+			PromoCodeID
+			PromotionCode
+			PromotionID
+			MaximumUseCount
+			MaximumAccountUseCount										 --->
+	<cffunction name="generatePromoCodesFromPromoCodeList" returntype="any" access="public">
+		<cfargument name="promoCodeList" type="any">
+		<cfargument name="promotion" type="any">
+		<cfargument name="maxUseCount" type="any">
+		
+		<cfset insertValues = "">
+		<cfset createPromotionCodesQuery = "">
+		<cfset listAsArray = listToArray(promoCodeList)>
+
+		<cfloop array="#listAsArray#" index="local.currentPromotionCode">
+			<cfset insertValues = listAppend(insertValues, "('#getHibachiScope().createHibachiUUID()#', '#local.currentPromotionCode#', '#promotion.getPromotionID()#', '#maxUseCount#', '#maxUseCount#')")>
+		</cfloop>
+
+		<cfquery name="local.createPromotionCodesQuery" dbtype="query">
+				INSERT INTO SwPromotionCode ('promotionCodeID', 'promotionCode', 'PromotionID', 'MaximumUseCount', 'MaximumAccountUseCount') VALUES #insertValues#
+		</cfquery>
+
+		<cfreturn createPromotionCodesQuery>
 	</cffunction>
 
 </cfcomponent>
