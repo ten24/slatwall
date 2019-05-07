@@ -75,7 +75,7 @@ Notes:
 
 <!--- Show a message if the user has not yet selected a product type, sku, etc...when reward type is merchandise --->
 <cfif not rc.promotionperiod.isExpired() and not rc.edit and rc.promotionReward.getRewardType() eq "merchandise">
-	<cfif not arrayLen(rc.promotionReward.getSkus()) and not arrayLen(rc.promotionReward.getProducts()) and not arrayLen(rc.promotionReward.getProductTypes())>
+	<cfif isNull(rc.promotionReward.getIncludedSkusCollectionConfig()) AND isNull(rc.promotionReward.getExcludedSkusCollectionConfig())>
 		<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod.productortypeorskunotdefined_info') />
 	</cfif>
 </cfif>

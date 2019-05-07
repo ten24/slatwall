@@ -1,4 +1,4 @@
- <!---
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -46,25 +46,17 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.cyclecountgroup" type="any">
+<cfparam name="rc.promotionQualifier" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.cyclecountgroup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.cyclecountgroup#" edit="#rc.edit#">
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.cyclecountgroup#">
-			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountgrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="locations" edit="#rc.edit#">
-			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="locationCollections" text="Location Collections" edit="#rc.edit#">
-			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="skuCollection" text="Sku Collection" edit="#rc.edit#">
-			<swa:SlatwallAdminTabComments object="#rc.cyclecountgroup#" />
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
+	<div class="col-md-6">
+        <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getIncludedOrdersCollection()#" title="Included Orders" collectionConfigFieldName="includedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+	</div>
+	<div class="col-md-6">
+	    <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getExcludedOrdersCollection()#" title="Excluded Orders" collectionConfigFieldName="excludedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+	</div>
 </cfoutput>

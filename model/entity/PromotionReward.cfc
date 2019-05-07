@@ -197,7 +197,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
 				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
-				variables.includedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 			variables.includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
 			variables.includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
@@ -218,6 +217,13 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			}
 		}
 		return variables.excludedSkusCollection;
+	}
+	
+	public void function saveIncludedSkusCollection(){
+		setIncludedSkusCollectionConfig(getIncludedSkusCollection().getCollectionConfig());
+	}
+	public void function saveExcludedSkusCollection(){
+		setExcludedSkusCollectionConfig(getExcludedSkusCollection().getCollectionConfig());
 	}
 	
 	public any function getSkuCollection(){

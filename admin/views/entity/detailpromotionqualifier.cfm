@@ -54,8 +54,8 @@ Notes:
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionQualifier.getPromotionPeriod()#" />
 <cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.qualifierType" type="string" default="#rc.promotionQualifier.getQualifierType()#" />
-<cfparam name="rc.edit" type="boolean">
-
+<cfparam name="rc.edit" type="boolean" default="true">
+<cfset rc.edit = true>
 <!--- prevent editing promotion qualifier if its promotion period has expired --->
 <cfif rc.edit and rc.promotionperiod.isExpired()>
 	<cfset rc.edit = false />
@@ -83,9 +83,13 @@ Notes:
 		<input type="hidden" name="promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		
 		<hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
-			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cfif rc.qualifierType neq "order" >
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			</cfif>
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
+			<cfelseif rc.qualifierType eq "order" >
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/orders" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true/>
 			<cfelseif rc.qualifierType eq "fulfillment">
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentmethods" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingmethods" />
