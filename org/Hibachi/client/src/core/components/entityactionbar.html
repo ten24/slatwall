@@ -186,5 +186,13 @@
 		</div>
 	</nav>
 </div>
+
 <ng-transclude ng-if="swEntityActionBar.modal"></ng-transclude>
-<!--<hb:HibachiMessageDisplay />-->
+
+<div ng-repeat="message in swEntityActionBar.messages"
+		 class="alert alert-{{message.messageType}} fade in">
+
+		 <a class="close" data-dismiss="alert"><i class="fa fa-times"></i></a>
+
+		 {{message.message}}
+</div>

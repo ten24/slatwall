@@ -77840,6 +77840,7 @@ var SWEntityActionBar = /** @class */ (function () {
             edit: "=",
             entityActionDetails: "<?",
             baseQueryString: "@?",
+            messages: "<?",
             /*Action Callers (top buttons)*/
             showCancel: "=",
             showCreate: "=",

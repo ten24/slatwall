@@ -1217,7 +1217,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
 			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
 			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
-
+			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
+			processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
+	
 			newOrder = this.processOrder_addOrderItem(newOrder, processOrderAddOrderItem);
 
 			if(newOrder.hasErrors()){
@@ -1230,7 +1232,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
 		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
 
-		//newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
 	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
@@ -1239,7 +1241,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate;
 		}
 
-		//place order
+		newOrder = this.processOrder_placeOrder(newOrder);
+		
+		if(newOrder.hasErrors()){
+			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			return arguments.orderTemplate;
+		}
 
 		return arguments.orderTemplate; 
 	}
@@ -1364,6 +1371,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			//set payment method as credit card
 			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a')); 
+
+			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 
 			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 

@@ -20,6 +20,8 @@ class SWEntityActionBarController{
     public editAction:string;
     public editQueryString:string;
     public entityActionDetails;
+
+    public messages;
     
     public pageTitle:string; 
     public pageTitleRbKey:string; 
@@ -134,6 +136,7 @@ class SWEntityActionBar implements ng.IDirective{
         edit:"=",
         entityActionDetails:"<?",
         baseQueryString:"@?",
+        messages:"<?",
         
         /*Action Callers (top buttons)*/
         showCancel:"=",
