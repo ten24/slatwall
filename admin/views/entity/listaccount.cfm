@@ -92,5 +92,5 @@ Notes:
 		<sw-listing-column data-property-identifier="company" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
 	</sw-listing-display>
-	
+
 </cfoutput>
