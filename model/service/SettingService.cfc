@@ -1270,7 +1270,7 @@ component extends="HibachiService" output="false" accessors="true" {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+			getHibachiCacheService().updateServerInstanceSettingsCache();
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
