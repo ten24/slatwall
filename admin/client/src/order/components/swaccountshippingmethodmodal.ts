@@ -99,8 +99,8 @@ class SWAccountShippingMethodModalController{
 		
 		if(this.showCreateShippingAddress){
 			formDataToPost.newAccountAddress = this.newAccountAddress;
-			formDataToPost.newAccountAddress.stateCode = this.newAccountAddress.stateCode.stateCode;
-			formDataToPost.newAccountAddress.countryCode = this.newAccountAddress.countryCode.countryCode;
+			formDataToPost.newAccountAddress.address.stateCode = this.newAccountAddress.address.stateCode.stateCode;
+			formDataToPost.newAccountAddress.address.countryCode = this.newAccountAddress.address.countryCode.countryCode;
 		} else {
 			formDataToPost.shippingAccountAddress = this.baseEntity.shippingAccountAddress;
 		}

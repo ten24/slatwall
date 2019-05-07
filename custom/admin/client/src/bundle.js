@@ -62691,6 +62691,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
+                formDataToPost.newAccountAddress.address.stateCode = _this.newAccountAddress.address.stateCode.stateCode;
+                formDataToPost.newAccountAddress.address.countryCode = _this.newAccountAddress.address.countryCode.countryCode;
             }
             else {
                 formDataToPost.billingAccountAddress = _this.baseEntity.billingAccountAddress;
@@ -62912,6 +62914,8 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             };
             if (_this.showCreateShippingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
+                formDataToPost.newAccountAddress.address.stateCode = _this.newAccountAddress.address.stateCode.stateCode;
+                formDataToPost.newAccountAddress.address.countryCode = _this.newAccountAddress.address.countryCode.countryCode;
             }
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
