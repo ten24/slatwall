@@ -46,39 +46,34 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+    <cfimport prefix="swa" taglib="../../../tags" />
+    <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+    <hb:HibachiEntityActionBar type="listing" showCreate="false">
+    
+    	<hb:HibachiEntityActionBarButtonGroup>
+    		<hb:HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
+    	</hb:HibachiEntityActionBarButtonGroup>
+    </hb:HibachiEntityActionBar>
 
-<cfparam name="rc.countrySmartList" type="any" />
+    <cfset countryCollectionList = getHibachiScope().getService('currencyService').getCountryCollectionList()>
+	<cfset serchableDisplayProperties = "countryCode,countryName,activeFlag"/>
+	<cfset countryCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset rc.containerPresetCollectionList.addDisplayProperty( displayProperty='containerPresetID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.countrySmartList#" showCreate="false">
-
-	<!--- Create --->
-	<hb:HibachiEntityActionBarButtonGroup>
-		<hb:HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
-	</hb:HibachiEntityActionBarButtonGroup>
-</hb:HibachiEntityActionBar>
-
-<!--- <hb:HibachiListingDisplay smartList="#rc.countrySmartList#"
-						  recordDetailAction="admin:entity.detailcountry"
-						  recordEditAction="admin:entity.editcountry">
-
-	<hb:HibachiListingColumn propertyIdentifier="countryName" />
-	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay> --->
-
-<sw-listing-display data-using-personal-collection="true"
-    data-collection="'Country'"
-    data-edit="false"
-    data-has-search="true"
-    record-edit-action="admin:entity.editcountry"
-    record-detail-action="admin:entity.detailcountry"
-    data-is-angular-route="false"
-    data-angular-links="false"
-    data-has-action-bar="false"
->
-    <sw-listing-column data-property-identifier="countryCode" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="countryName" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-</sw-listing-display>
+    <hb:HibachiListingDisplay 
+    		collectionList="#countryCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(countryCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(countryCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
