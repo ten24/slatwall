@@ -97,5 +97,6 @@ Notes:
 		recordDetailAction="admin:entity.detail#lcase(appCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
+	
 
 </cfoutput>
