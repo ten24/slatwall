@@ -62,8 +62,11 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
+
+    <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
+
 	<cfset serchableDisplayProperties = "firstName,lastName,primaryEmailAddress.emailAddress,company"/>
-	<cfset rc.accountCollectionList.setDisplayProperties(
+	<cfset accountCollectionList.setDisplayProperties(
 	serchableDisplayProperties,
 	{
 		isVisible=true,
@@ -72,7 +75,7 @@ Notes:
 	})/>
 	
 	<cfset nonSerchableDisplayProperties = "calculatedGuestAccountFlag,organizationFlag"/>
-	<cfset rc.accountCollectionList.addDisplayProperties(
+	<cfset accountCollectionList.addDisplayProperties(
 		nonSerchableDisplayProperties, 
 		{
 			isVisible=true,
@@ -90,14 +93,11 @@ Notes:
 	})/>
 	
 	<hb:HibachiListingDisplay 
-		collectionList="#rc.accountCollectionList#"
+		collectionList="#accountCollectionList#"
 		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(rc.accountCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(rc.accountCollectionList.getCollectionObject())#"
+		recordEditAction="admin:entity.edit#lcase(accountCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(accountCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
-	
-	
-
 
 </cfoutput>
