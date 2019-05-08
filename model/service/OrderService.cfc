@@ -984,7 +984,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrderTemplate_removePromotionCode(required any orderTemplate, required any processObject) { 
-		var promotionCode = getPromotionService().getPromotionCode(arguments.processObject.getPromotionCodeID());
+		var promotionCode = arguments.processObject.getPromotionCode();
 		
 		if(arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.removePromotionCode( promotionCode );
@@ -1184,6 +1184,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, required any processObject, required struct data={}){
 
+		//check if order template has an active status
+
 		var newOrder = this.newOrder(); 
 
 		var processOrderCreate = newOrder.getProcessObject('create'); 
@@ -1217,16 +1219,40 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
 			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
 			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
-			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
-			processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
-	
+			
+			if(isNull(orderFulfillment)){
+				processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
+				processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
+			} else { 
+				processOrderAddOrderItem.setOrderFulfillmentID(orderFulfillment.getOrderFulfillmentID());
+			} 	
+
 			newOrder = this.processOrder_addOrderItem(newOrder, processOrderAddOrderItem);
+
+			if(isNull(orderFulfillment)){
+				var orderFulfillment = newOrder.getOrderFulfillments()[1];
+			} 
 
 			if(newOrder.hasErrors()){
 				arguments.orderTemplate.addErrors(newOrder.getErrors());
 				return arguments.orderTemplate; 
 			}
 		} 		
+
+		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
+
+		for(var promotionCode in promotionCodes){
+			var processOrderAddPromotionCode = newOrder.getProcessObject('addPromotionCode');
+			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
+			
+			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
+			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
+
+			var processOrderTemplateRemovePromotionCode = arguments.orderTemplate.getProcessObject('removePromotionCode');
+			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
+	
+			arguments.orderTemplate = this.processOrderTemplate_removePromotionCode(arguments.orderTemplate, processOrderTemplateRemovePromotionCode);  
+		} 
 
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
 		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
@@ -1247,6 +1273,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addErrors(newOrder.getErrors());
 			return arguments.orderTemplate;
 		}
+
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime()));
 
 		return arguments.orderTemplate; 
 	}
