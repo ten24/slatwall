@@ -62,32 +62,33 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.brandSmartList#"
-							recordDetailAction="admin:entity.detailbrand"
-							recordEditAction="admin:entity.editbrand"
-							showCreate="false">
+	
+	<cfset brandCollectionList = getHibachiScope().getService('brandService').getBrandCollectionList()>
+	<cfset serchableDisplayProperties = "brandName,brandWebsite,activeFlag"/>
+	<cfset brandCollectionList.setDisplayProperties(
+	serchableDisplayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
 
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="brandName" />
-		<hb:HibachiListingColumn propertyIdentifier="brandWebsite" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'Brand'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editbrand"
-		record-detail-action="admin:entity.detailbrand"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	<cfset rc.brandCollectionList.addDisplayProperty(
+	displayProperty='brandID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#brandCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(brandCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(brandCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="brandID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="brandName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="brandWebsite" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 
