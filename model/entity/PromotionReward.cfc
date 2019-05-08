@@ -220,10 +220,12 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	}
 	
 	public void function saveIncludedSkusCollection(){
-		setIncludedSkusCollectionConfig(getIncludedSkusCollection().getCollectionConfig());
+		var collectionConfig = serializeJSON(getIncludedSkusCollection().getCollectionConfigStruct());
+		setIncludedSkusCollectionConfig(collectionConfig);
 	}
 	public void function saveExcludedSkusCollection(){
-		setExcludedSkusCollectionConfig(getExcludedSkusCollection().getCollectionConfig());
+		var collectionConfig = serializeJSON(getExcludedSkusCollection().getCollectionConfigStruct());
+		setExcludedSkusCollectionConfig(collectionConfig);
 	}
 	
 	public any function getSkuCollection(){

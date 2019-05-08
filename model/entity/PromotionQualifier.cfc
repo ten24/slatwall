@@ -159,10 +159,12 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	
 	public void function saveIncludedSkusCollection(){
-		setIncludedSkusCollectionConfig(getIncludedSkusCollection().getCollectionConfig());
+		var collectionConfig = serializeJSON(getIncludedSkusCollection().getCollectionConfigStruct());
+		setIncludedSkusCollectionConfig(collectionConfig);
 	}
 	public void function saveExcludedSkusCollection(){
-		setExcludedSkusCollectionConfig(getExcludedSkusCollection().getCollectionConfig());
+		var collectionConfig = serializeJSON(getExcludedSkusCollection().getCollectionConfigStruct());
+		setExcludedSkusCollectionConfig(collectionConfig);
 	}
 	
 	public any function getSkuCollection(){
@@ -171,7 +173,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 				if(isNull(getIncludedSkusCollectionConfig())){
 					return;
 				}
-				return getIncludedSkusCollection();
+				return getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
 			}
 			
 			if(!isNull(getIncludedSkusCollectionConfig())){
@@ -237,10 +239,12 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	
 	public void function saveIncludedOrdersCollection(){
-		setIncludedOrdersCollectionConfig(getIncludedOrdersCollection().getCollectionConfig());
+		var collectionConfig = serializeJSON(getIncludedOrdersCollection().getCollectionConfigStruct());
+		setIncludedOrdersCollectionConfig(collectionConfig);
 	}
 	public void function saveExcludedOrdersCollection(){
-		setExcludedOrdersCollectionConfig(getExcludedOrdersCollection().getCollectionConfig());
+		var collectionConfig = serializeJSON(getExcludedOrdersCollection().getCollectionConfigStruct());
+		setExcludedOrdersCollectionConfig(collectionConfig);
 	}
 	
 	public any function getOrderCollection(){
