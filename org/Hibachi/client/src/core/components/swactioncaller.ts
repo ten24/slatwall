@@ -4,6 +4,7 @@
 class SWActionCallerController{
     public type:string;
     public confirm:any;
+    public display:boolean;
     public event:string;
     public payload:any;
     public action:string;
@@ -39,7 +40,7 @@ class SWActionCallerController{
 
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
-            this.$element.parent().append(template);
+            this.$element.parent().prepend(template);
             $compile(template)($scope);
             //need to perform init after promise completes
             //this.init();
@@ -61,7 +62,11 @@ class SWActionCallerController{
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
         }
-
+    
+        if(angular.isUndefined(this.display)){
+            this.display = true;
+        }
+        
         this.type = this.type || 'link';
         
         if(angular.isDefined(this.titleRbKey)){
@@ -257,6 +262,7 @@ class SWActionCaller implements ng.IDirective{
     public scope:any={};
     public bindToController:any={
         action:"@?",
+        display:"=?",
         event:"@?",
         payload: "=",
         text:"@",

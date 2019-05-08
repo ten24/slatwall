@@ -983,13 +983,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
+	public any function processOrderTemplate_removePromotionCode(required any orderTemplate, required any processObject) { 
+		var promotionCode = getPromotionService().getPromotionCode(arguments.processObject.getPromotionCodeID());
+		
+		if(arguments.orderTemplate.hasPromotionCode( promotionCode )) {
+			arguments.orderTemplate.removePromotionCode( promotionCode );
+		}
+		
+		return arguments.orderTemplate;
+	} 
+
+	public any function processOrderTemplate_addPromotionCode(required any orderTemplate, required any processObject) { 
+		var promotionCode = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
+	
+		if( isNull(promotionCode) || !promotionCode.getPromotion().getActiveFlag() ){
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+		} else if(!arguments.orderTemplate.hasPromotionCode( promotionCode )) {
+			arguments.orderTemplate.addPromotionCode( promotionCode );
+		}
+	
+		return arguments.orderTemplate;	 
+	} 
+
 	public any function processOrder_addPromotionCode(required any order, required any processObject) {
 		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 		//if we can't find a promotion or the promotion is no longer active then show the invalid promo message
 		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
 		//if we have a promotion but it doesn't fall within the promos startData end date show invalid datetime message
-		} else if ( (!isNull(pc.getStartDateTime()) && pc.getStartDateTime() > now()) || (!isNull(pc.getEndDateTime()) && pc.getEndDateTime() < now()) || !pc.getPromotion().getCurrentFlag()) {
+		} else if ( !pc.getCurrentFlag() || !pc.getPromotion().getCurrentFlag()) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'), true);
 		//if we find an promocode is only valid for specific accounts and the order account is not in the list then show invalid account message
 		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {

@@ -5,6 +5,5 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<sw-order-template-items data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"></sw-order-template-items>
-</cfoutput>	
-
+	 <sw-order-template-promotions data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"></sw-order-template-promotions>
+</cfoutput>

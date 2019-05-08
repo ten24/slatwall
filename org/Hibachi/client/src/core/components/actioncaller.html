@@ -1,7 +1,7 @@
 <!--
 <cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
 -->
-<a  ng-if="swActionCaller.type === 'link'"
+<a  ng-if="swActionCaller.display && swActionCaller.type === 'link'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	target="_self" 
@@ -10,10 +10,10 @@
 	data-confirm="{{swActionCaller.confirmtext}}"
 	href="##"
 	>
-	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>
 
-<a  ng-if="swActionCaller.type === 'ajaxlink'"
+<a  ng-if="swActionCaller.display && swActionCaller.type === 'ajaxlink'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	data-disabled="{{swActionCaller.disabledtext}}"
@@ -21,28 +21,28 @@
 	role="button"
 	ng-click="swActionCaller.submit()"
 	>
-	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>
 
-<a ng-if="swActionCaller.type === 'event'"
+<a ng-if="swActionCaller.display && swActionCaller.type === 'event'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-click="swActionCaller.emit()"
 	>
-	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>
 
 <!--
 		<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
 		<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif>
 		-->
-<li ng-if="swActionCaller.type === 'list'">
+<li ng-if="swActionCaller.display && swActionCaller.type === 'list'">
 	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}}" 
 		target="_self" 
 		ng-href="{{swActionCaller.actionUrl}}"
 		>
-		<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+		<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 	</a>
 </li>
 
@@ -51,7 +51,7 @@
 	<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
 	<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif><cfif swActionCaller.submit>type="submit"</cfif><cfif len(swActionCaller.id)>id="#swActionCaller.id#"</cfif>>
 	-->
-<button ng-if="swActionCaller.type ==='button'" 
+<button ng-if="swActionCaller.display && swActionCaller.type ==='button'" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-attr-title="{{swActionCaller.title}}"
 	ng-click="swActionCaller.submit()"
