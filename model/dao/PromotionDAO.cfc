@@ -869,7 +869,7 @@ Notes:
 			PromotionCode
 			PromotionID
 			MaximumUseCount
-			MaximumAccountUseCount										 --->
+			MaximumAccountUseCount	--->
 	<cffunction name="generatePromoCodesFromPromoCodeList" returntype="any" access="public">
 		<cfargument name="promoCodeList" type="any">
 		<cfargument name="promotion" type="any">
