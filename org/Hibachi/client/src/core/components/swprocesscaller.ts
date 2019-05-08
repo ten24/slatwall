@@ -4,31 +4,42 @@
 
 class SWProcessCallerController{
 	public utilityService;
+    
+    public action:string;
     public title:string;
     public titleRbKey:string;
     public text:string; 
 	public type:string;
 	public queryString:string;
+	public processContext:string;
 	//@ngInject
-	constructor(private rbkeyService, public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public corePartialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService,
-			hibachiPathBuilder){
-		this.$templateRequest = $templateRequest;
-		this.$compile = $compile;
-		this.corePartialsPath = corePartialsPath;
-		this.utilityService = utilityService;
+	constructor( private rbkeyService, 
+				 public $templateRequest:ng.ITemplateRequestService, 
+				 public $compile:ng.ICompileService,
+				 public corePartialsPath,
+				 public $scope,
+				 public $element,
+				 public $transclude:ng.ITranscludeFunction,utilityService,
+			     hibachiPathBuilder
+	){
 		this.type = this.type || 'link';
 		this.queryString = this.queryString || '';
-		this.$scope = $scope;
-		this.$element = $element;
-		this.$transclude = this.$transclude;
+	
 		this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"processcaller.html").then((html)=>{
 			var template = angular.element(html);
 			this.$element.parent().append(template);
 			$compile(template)(this.$scope);
 		});
+		
         if(angular.isDefined(this.titleRbKey)){
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
         }
+        
+        if(angular.isUndefined(this.title) && angular.isDefined(this.processContext)){
+        	var entityName = this.action.split('.')[1].replace('process','');
+        	this.title = this.rbkeyService.getRBKey('entity.' + entityName + '.process.' + this.processContext);
+        }
+        
         if(angular.isUndefined(this.text)){
             this.text = this.title;
         }

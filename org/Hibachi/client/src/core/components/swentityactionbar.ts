@@ -2,19 +2,109 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWEntityActionBarController{
-    public pageTitle; 
-    public pageTitleRbKey; 
     
-    public init = () =>{
+    public backAction:string;
+    
+    public baseQueryString:string;
+    
+    public cancelEvent:string;
+    public cancelAction:string;
+    public cancelQueryString:string; 
+    
+    public deleteAction:string;
+    public deleteQueryString:string;
+    
+    public edit:boolean;
+    
+    public editEvent:string;
+    public editAction:string;
+    public editQueryString:string;
+    public entityActionDetails;
+    
+    public pageTitle:string; 
+    public pageTitleRbKey:string; 
+    
+    public payload;
+    
+    public processCallers;
+    
+    public saveEvent:string;
+    public saveAction:string;
+    public saveQueryString:string;
+    
+    public type:string;
+
+    
+    //@ngInject
+    constructor( private observerService,
+                 private rbkeyService
+    ){
+        
+    }
+    
+    public $onInit = () =>{
+        
+        if(this.edit == null){
+            this.edit = false; 
+        }
+        
         if(angular.isDefined(this.pageTitleRbKey)){
             this.pageTitle = this.rbkeyService.getRBKey(this.pageTitleRbKey);
         }
+        
+        if(this.entityActionDetails != null){
+            this.backAction = this.entityActionDetails.backAction;
+            this.cancelAction = this.entityActionDetails.cancelAction; 
+            this.deleteAction = this.entityActionDetails.deleteAction;
+            this.editAction = this.entityActionDetails.editAction;
+            this.saveAction = this.entityActionDetails.saveAction;
+        }
+        
+        this.cancelQueryString = this.cancelQueryString || '';
+        this.deleteQueryString = this.deleteQueryString || '';
+        this.editQueryString = this.editQueryString || '';
+        this.saveQueryString = this.saveQueryString || '';
+        
+        if(this.baseQueryString != null){
+            this.cancelQueryString = this.baseQueryString + this.cancelQueryString;
+            this.editQueryString = this.baseQueryString + this.editQueryString;
+            this.deleteQueryString = this.baseQueryString + this.deleteQueryString;
+            this.saveQueryString = this.baseQueryString + this.saveQueryString;
+        }
+        
+        if(this.editEvent != null){
+            this.editAction = '';
+            this.observerService.attach(this.toggleEditMode, this.editEvent);
+        }
+        
+        if(this.cancelEvent != null){
+            this.cancelAction = '';
+            this.observerService.attach(this.toggleEditMode, this.cancelEvent); 
+        }
+        
+        if(this.saveEvent != null){
+            this.saveAction = '';
+            this.observerService.attach(this.toggleEditMode, this.saveEvent); 
+        }
+        
+        this.payload = {
+            'edit':this.edit
+        };
+        
+        //there should only be one action bar on a page so no id
+        this.observerService.notify('swEntityActionBar', this.payload)
+    }
+    
+    public toggleEditMode = () =>{
+        this.edit = !this.edit;
+        
+        this.payload = {
+            'edit':this.edit
+        };
+        
+        this.observerService.notify('swEntityActionBar', this.payload)
     }
 
-    //@ngInject
-    constructor(private rbkeyService){
-        this.init();
-    }
 }
 
 class SWEntityActionBar implements ng.IDirective{
@@ -29,29 +119,47 @@ class SWEntityActionBar implements ng.IDirective{
         pageTitle:"@?",
         pageTitleRbKey:"@?",
         edit:"=",
+        entityActionDetails:"<?",
+        baseQueryString:"@?",
+        
         /*Action Callers (top buttons)*/
-        showcancel:"=",
-        showcreate:"=",
-        showedit:"=",
-        showdelete:"=",
+        showCancel:"=",
+        showCreate:"=",
+        showEdit:"=",
+        showDelete:"=",
 
         /*Basic Action Caller Overrides*/
+        createEvent:"@?",
         createModal:"=",
-        createAction:"=",
-        createQueryString:"=",
+        createAction:"@",
+        createQueryString:"@",
 
-        backAction:"=",
-        backQueryString:"=",
+        backEvent:"@?",
+        backAction:"@?",
+        backQueryString:"@?",
 
-        cancelAction:"=",
-        cancelQueryString:"=",
+        cancelEvent:"@?",
+        cancelAction:"@?",
+        cancelQueryString:"@?",
 
-        deleteAction:"=",
-        deleteQueryString:"=",
+        deleteEvent:"@?", 
+        deleteAction:"@?",
+        deleteQueryString:"@?",
+        
+        editEvent:"@?",
+        editAction:"@?",
+        editQueryString:"@?",
+        
+        saveEvent:"@?",
+        saveAction:"@?",
+        saveQueryString:"@?",
 
         /*Process Specific Values*/
-        processAction:"=",
-        processContext:"="
+        processEvent:"@?",
+        processAction:"@?",
+        processContext:"@?",
+        
+        processCallers:"<?"
 
     };
     public controller=SWEntityActionBarController
