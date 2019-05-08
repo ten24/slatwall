@@ -62,62 +62,34 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
-
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
-
-	</hb:HibachiListingDisplay> --->
-
-
-	
-	<cfset displayPropertyList = "calculatedGuestAccountFlag,organizationFlag"/>
+	<cfset serchableDisplayProperties = "firstName,lastName,primaryEmailAddress.emailAddress,company"/>
 	<cfset rc.accountCollectionList.setDisplayProperties(
-		displayPropertyList,
+	serchableDisplayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset nonSerchableDisplayProperties = "calculatedGuestAccountFlag,organizationFlag"/>
+	<cfset rc.accountCollectionList.addDisplayProperties(
+		nonSerchableDisplayProperties, 
 		{
 			isVisible=true,
 			isSearchable=false,
 			isDeletable=true
 		}
 	)/>
-	
 
-	
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='firstName',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='lastName',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='primaryEmailAddress.emailAddress',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='company',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	},prepend=true)/>
-	
-	
-		<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='accountID',columnConfig={
+	<cfset rc.accountCollectionList.addDisplayProperty(
+	displayProperty='accountID',
+	columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
 	})/>
-		<hb:HibachiListingDisplay 
+	
+	<hb:HibachiListingDisplay 
 		collectionList="#rc.accountCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(rc.accountCollectionList.getCollectionObject())#"
