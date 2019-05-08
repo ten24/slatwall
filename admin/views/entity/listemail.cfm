@@ -60,7 +60,7 @@ Notes:
 		isDeletable=true
 	})/>
 	
-	<cfset rc.emailCollectionList.addDisplayProperty(displayProperty='emailID', columnConfig={
+	<cfset emailCollectionList.addDisplayProperty(displayProperty='emailID', columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
