@@ -75,11 +75,11 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			password = setting(settingName='passwordLive', requestBean=arguments.requestBean);
 		}
 		
-		//writedump(var=arguments.transactionName, top=2, abort=true );
+		// writedump(var=arguments.body, top=2, abort=true );
 		
 		// Append appropriate API Resource
-		if (arguments.transactionName == 'transfer') {
-			apiUrl &= '/transfers';
+		if (arguments.requestBean.getTransactionType() == 'authorize') {
+			apiUrl &= '/rest/v3/transfers';
 		}
 		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
@@ -90,31 +90,17 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#");
 		httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 		httpRequest.addParam(type="header", name="Accept", value='application/json');
-		httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
+		httpRequest.addParam(type="body", value=serializeJSON(arguments.body));
 		
-		// QUESTION: How do we set up IP address whitelisting? Through GoodData?
+		//writeDump(var='#username#:#password#', abort=true);
 
-		// Request Logs
-		var logPath = expandPath('Slatwall/integrationServices/hyperWallet/log');
-		if (!directoryExists(logPath)){
-			directoryCreate(logPath);
-		}
-		var timeSufix = getTickCount() & createHibachiUUID();
-		var httpRequestData = {
-			'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-			'apiUrl'=apiUrl,
-			'username' = username,
-			'password' = password,
-			'httpContentTypeHeader' = 'application/json',
-			// 'publicKey' = getPublicKey(arguments.requestBean),
-			// 'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-		};
-		fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
-		
 		// Make HTTP request to endpoint
 		var httpResponse = httpRequest.send().getPrefix();
-
+		
+		writeDump(var=httpResponse, top=2, abort=true);
+		
 		var responseData = {};
+		
 		// Server error handling - Unavailable or Communication Problem
 		if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 			arguments.responseBean.setStatusCode("ERROR");
@@ -137,7 +123,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
-				fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+				// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 			
 				if (structKeyExists(responseData, 'error')) {
 					arguments.responseBean.addMessage('errorCode', "#responseData.error#");
@@ -163,31 +149,41 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 
 		}
+		
 		//writeDump(var=responseData, top=2, abort=true );
+		
 		return responseData;
 	}
-	
-	// public any function sendRequestToTransfer(required any requestBean) {}
 	
 	public any function processTransfer(required any requestBean) {
 		var responseBean = getTransient('ExternalTransactionResponseBean');
 		
-		// Set default currency
-		// if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
-		// 	arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
-		// }
-		
-		// Adding currency to transaction message for admin purposes
-		//responseBean.addMessage('transactionCurrencyCode', arguments.requestBean.getTransactionCurrencyCode());
-		
-		//writeDump(var=arguments.requestBean.getTransactionType(), top=2, abort=true );
+		//writeDump(var=responseBean, top=2, abort=true );
 
 		// Execute request
-		// if (arguments.requestBean.getTransactionType() == "transfer") {
-		// 	sendRequestToTransfer(arguments.requestBean, responseBean);
-		// } else {
-		// 	throw("HyperWallet Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
-		// }
+		if (arguments.requestBean.getTransactionType() == "authorize") {
+			
+			var responseBody = '{
+				"profileType": "INDIVIDUAL",
+				"country": "US",
+				"clientUserId": "t-1556733381649",
+				"firstName": "Irta",
+				"lastName": "John",
+				"email": "irta.john@ten24web.com",
+				"dateOfBirth": "1990-03-27",
+				"addressLine1": "20 Franklin St Suite 400",
+				"city": "Worcester",
+				"stateProvince": "MA",
+				"postalCode": "01608",
+				"programToken": "prg-f0bfa8b9-a317-46f1-b330-6697a185541d"
+			}';
+			
+			//responseBean =  sendHttpAPIRequest(arguments.requestBean, responseBean, '{}');
+			sendHttpAPIRequest(arguments.requestBean, responseBean, responseBody);
+		
+		} else {
+			throw("HyperWallet Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+		}
 		
 		// if (!responseBean.hasErrors()) {
 		// 	requestData = {
@@ -219,6 +215,4 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		return responseBean;
 		
 	}
-	
-
 }

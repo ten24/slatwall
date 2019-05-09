@@ -15,28 +15,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('hyperWallet');
 		var paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
 
-		// 	var cards = [
-		// 		'4111111111111111', // 1. Visa
-		// 	];
-	
 		var transactionTypes = [
-			'transfer',			// 1
+			'generateToken',			// 1
+			'authorizeAndCharge',		// 2
+			'authorize', 				// 3
+			'chargePreAuthorization', 	// 4
+			'credit',					// 5
+			'void'						// 6
 		];
 
 		var values = {
-		// selectedMerchant = '100161',
 			currencyCode = 'USD',
-		// 	testMode = true,
 			amount = 10.00,
-		// 	expMonth = '03',
-		// 	expYear = '20',
-		// 	cvn = '111', // 222 to invoke Failure
-		// 	cardNumber = cards[1],
-			transactionType = transactionTypes[1],
-		// 	providerToken = '', // token_ex
-		// 	originalAuthorizationProviderTransactionID = '', // authorizationID
-		// 	originalChargeProviderTransactionID = '' // chargeID
-		};
+			transactionType = transactionTypes[3]};
 	
 		// Setup objects
 		var paymentTransaction = request.slatwallScope.getBean("paymentService").newPaymentTransaction();
@@ -54,23 +45,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		emailAddress.setEmailAddress('irta.john@ten24web.com');		
 		account.setPrimaryEmailAddress(emailAddress);
 		account.setAccountID(request.slatwallScope.getService("hibachiService").createHibachiUUID());
-		// account.setFirstName("Jane");
-		// account.setLastName("Smith");
-		// address.setStreetAddress("123 ABC Street");
-		// address.setStreet2Address("2nd Floor");
-		// address.setCity("Worcester");
-		// address.setStateCode("MA");
-		// address.setPostalCode("01602");
-		// address.setCountryCode("US");
-		
-		//writeDump(var=account.getAccountPaymentMethods()[1].getAccountPaymentMethodName(), top=1);
-		//writeDump(var=account.getAccountPaymentMethods()[1].getCurrencyCode(), top=1);
-		//writeDump(var=account.getAccountPaymentMethods()[1], top=1, abort=true);
-	
+
 		payment.copyFromAccountPaymentMethod(account.getAccountPaymentMethods()[1]);
 		
-		//writeDump(var=payment.getAmount(), top=1, abort=true)
-
 		// Setup requestBean
 		var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
 		requestBean.setTransactionID(request.slatwallScope.getService("hibachiService").createHibachiUUID());
@@ -78,34 +55,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		requestBean.setTransactionCurrencyCode(payment.getCurrencyCode());
 		requestBean.setTransactionType(values.transactionType);
 		
-		//writeDump(var=requestBean, top=1, abort=true);
-		// 	// Token from generateToken
-		// 	if (len(values.providerToken)) {
-		// 		requestBean.setProviderToken(values.providerToken);
-		// 	}
-	
-		// 	// AuthorizationID to use for 'chargePreAuthorization'
-		// 	if (len(values.originalAuthorizationProviderTransactionID)) {
-		// 		requestBean.setOriginalAuthorizationProviderTransactionID(values.originalAuthorizationProviderTransactionID);
-		// 	}
-	
-		// 	// ChargeID to use for 'credit' or 'void'
-		// 	if (len(values.originalChargeProviderTransactionID)) {
-		// 		requestBean.setOriginalChargeProviderTransactionID(values.originalChargeProviderTransactionID);
-		// 	}
-	
-		// 	requestBean.populatePaymentInfoWithOrderPayment( paymentTransaction.getPayment() );
-	
-		// 	// Verfify that we don't execute a transaction larger than 1.10 cents in live mode
-		// 	if (!values.testMode && requestBean.getTransactionAmount() > 1.10) {
-		// 		requestBean.setTransactionAmount(.05);
-		// 	}
-	
-		// 	// Manual test override without needed to set integration testMode=false
-		// 	// requestBean.getOrder().setTestOrderFlag(values.testMode);
-		// 	writeDump("***Test mode: ");
-		// 	writeDump({testMode = paymentIntegrationCFC.getTestModeFlag(requestBean, 'testMode'), transactionAmount = requestBean.getTransactionAmount()});
-			
 		// Run transaction
 		var responseBean = paymentIntegrationCFC.processTransfer(requestBean);
 			

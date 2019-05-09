@@ -65,35 +65,18 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		var settings = {
 			apiUrlLive = {fieldType="text", defaultValue="https://api.hyperwallet.com"},
 			apiUrlTest = {fieldType="text", defaultValue="https://api.sandbox.hyperwallet.com"},
-			merchantIDLive = {fieldType="text"},
-			merchantIDTest = {fieldType="text"},
 			passwordLive = {fieldType="password", encryptValue=true},
 			passwordTest = {fieldType="password", encryptValue=true},
-			publicKeyLive = {fieldType="text"},
-			publicKeyTest = {fieldType="text"},
 			testMode = {fieldType="yesno", defaultValue="1"},
 			usernameLive = {fieldType="text"},
 			usernameTest = {fieldType="text"},
-			verifyAvsSetting = {fieldType="select", defaultValue="3",
-				valueOptions=[
-				{name="Do not perform AVS check", value="0"},
-				{name="Always save card regardless of result", value="1"},
-				{name="Do not save card if the address match fails", value="2"},
-				{name="Do not save card if the postal code match fails", value="3"},
-				{name="Do not save the card if either the address match fails OR the postal code match fails", value="4"},
-				{name="Do not save the card if both the address match AND the postal code match fail",value="5"}
-			]},
-			verifyCvcFlag = {fieldType="yesno", defaultValue="1"}
 		};
 		
 		return settings;
 	}
 
 	public boolean function getAllowSiteSpecificSettingsFlag() {
-		return true;
+		return false;
 	}
 
-	public string function getAllowedSiteSettingNames() {
-		return "merchantIDTest,merchantIDLive";
-	}
 }
