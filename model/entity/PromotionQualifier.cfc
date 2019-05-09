@@ -308,7 +308,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
 	}
 	
-	// Collection Hors d'oeuvres
+	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
 		var orderCollection = getOrderCollection();
 		if(isNull(orderCollection)){
