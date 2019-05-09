@@ -291,6 +291,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		return variables.site;
 	}
+
+	public void function setSite(any site) {
+		if (isNull(arguments.site)) {
+			structDelete(variables, 'site');
+			structDelete(variables, 'currentRequestSite');
+		} else {
+			variables.site = arguments.site;
+			setCurrentRequestSite(arguments.site);
+		}
+	}
 	
 	// ================= Smart List Helper Methods =====================
 	
