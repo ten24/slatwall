@@ -105,6 +105,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getIntegrationCFC(required any integration) {
 		if(!structKeyExists(variables.integrationCFCs, arguments.integration.getIntegrationPackage())) {
+			
+			// Verify the cfc file exists before attempting to instantiate.
+			if (!fileExists(expandPath("/Slatwall/integrationServices/#arguments.integration.getIntegrationPackage()#/Integration.cfc"))) {
+				return;
+			}
+			
 			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Integration").init();
 			//populateIntegrationCFCFromIntegration(integrationCFC, arguments.integration);
 			variables.integrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;

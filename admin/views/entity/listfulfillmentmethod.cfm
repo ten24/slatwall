@@ -60,17 +60,6 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<!--- <hb:HibachiListingDisplay smartList="#rc.fulfillmentMethodSmartList#"
-		recordEditAction="admin:entity.editfulfillmentmethod"
-		recordDetailAction="admin:entity.detailfulfillmentmethod"
-		sortProperty="sortOrder">
-
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethodName" />
-	<hb:HibachiListingColumn propertyIdentifier="fulfillmentMethodType" />
-	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="autoFulfillFlag" />
-</hb:HibachiListingDisplay> --->
-
     <sw-listing-display data-using-personal-collection="true"
         data-collection="'FulfillmentMethod'"
         data-edit="false"
@@ -87,3 +76,25 @@ Notes:
         <sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
         <sw-listing-column data-property-identifier="autoFulfillFlag" ></sw-listing-column>
     </sw-listing-display>
+
+    <cfset fulfillmentMethodCollectionList = getHibachiScope().getService('fulfillmentService').getFulfillmentMethodCollectionList()>
+	<cfset serchableDisplayProperties = "fulfillmentMethodName,fulfillmentMethodType,activeFlag,autoFulfillFlag"/>
+	<cfset fulfillmentMethodCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset fulfillmentMethodCollectionList.addDisplayProperty( displayProperty='fulfillmentMethodID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+
+    <hb:HibachiListingDisplay 
+    		collectionList="#fulfillmentMethodCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(fulfillmentMethodCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(fulfillmentMethodCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>

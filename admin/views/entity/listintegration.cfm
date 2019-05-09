@@ -76,5 +76,27 @@ Notes:
         <sw-listing-column data-property-identifier="integrationName" tdclass="primary" ></sw-listing-column>
         <sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
     </sw-listing-display>
+    
+	<cfset integrationCollectionList = getHibachiScope().getService('integrationService').getIntegrationCollectionList()>
+	<cfset serchableDisplayProperties = "integrationName,activeFlag"/>
+	<cfset integrationCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset integrationCollectionList.addDisplayProperty(displayProperty='integrationID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#integrationCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(integrationCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(integrationCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
