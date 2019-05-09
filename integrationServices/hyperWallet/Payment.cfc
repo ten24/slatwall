@@ -75,6 +75,13 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			password = setting(settingName='passwordLive', requestBean=arguments.requestBean);
 		}
 		
+		//writedump(var=arguments.transactionName, top=2, abort=true );
+		
+		// Append appropriate API Resource
+		if (arguments.transactionName == 'transfer') {
+			apiUrl &= '/transfers';
+		}
+		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
 		httpRequest.setUrl(apiUrl);
@@ -83,15 +90,12 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#");
 		httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 		httpRequest.addParam(type="header", name="Accept", value='application/json');
-		//httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
+		httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 		
 		// QUESTION: How do we set up IP address whitelisting? Through GoodData?
-		
-		writeDump("***httpRequest");
-		writeDump(httpRequest)
 
 		// Request Logs
-		var logPath = expandPath('/integrationServices/hyperWallet/log');
+		var logPath = expandPath('Slatwall/integrationServices/hyperWallet/log');
 		if (!directoryExists(logPath)){
 			directoryCreate(logPath);
 		}
@@ -159,43 +163,62 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 
 		}
-
+		//writeDump(var=responseData, top=2, abort=true );
 		return responseData;
 	}
+	
+	// public any function sendRequestToTransfer(required any requestBean) {}
 	
 	public any function processTransfer(required any requestBean) {
 		var responseBean = getTransient('ExternalTransactionResponseBean');
 		
-		//writeDump(var=responseBean, top=1)
-		// verifyServerCompatibility();
-
-		// var responseBean = getTransient('ExternalTransactionResponseBean');
-		
-		// // Set default currency
+		// Set default currency
 		// if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
 		// 	arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
 		// }
 		
-		// // Adding currency to transaction message for admin purposes
-		// responseBean.addMessage('transactionCurrencyCode', arguments.requestBean.getTransactionCurrencyCode());
+		// Adding currency to transaction message for admin purposes
+		//responseBean.addMessage('transactionCurrencyCode', arguments.requestBean.getTransactionCurrencyCode());
+		
+		//writeDump(var=arguments.requestBean.getTransactionType(), top=2, abort=true );
 
-		// // Execute request
-		// if (arguments.requestBean.getTransactionType() == "generateToken") {
-		// 	sendRequestToGenerateToken(arguments.requestBean, responseBean);
-		// } else if (arguments.requestBean.getTransactionType() == "authorize") {
-		// 	sendRequestToAuthorize(arguments.requestBean, responseBean);
-		// } else if (arguments.requestBean.getTransactionType() == "authorizeAndCharge") {
-		// 	sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
-		// } else if (arguments.requestBean.getTransactionType() == "chargePreAuthorization") {
-		// 	sendRequestToChargePreAuthorization(arguments.requestBean, responseBean);
-		// } else if (arguments.requestBean.getTransactionType() == "credit") {
-		// 	sendRequestToCredit(arguments.requestBean, responseBean);
-		// } else if (arguments.requestBean.getTransactionType() == "void") {
-		// 	sendRequestToVoid(arguments.requestBean, responseBean);
+		// Execute request
+		// if (arguments.requestBean.getTransactionType() == "transfer") {
+		// 	sendRequestToTransfer(arguments.requestBean, responseBean);
 		// } else {
-		// 	throw("HyperWallet Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+		// 	throw("HyperWallet Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		// }
 		
-		// return responseBean;
+		// if (!responseBean.hasErrors()) {
+		// 	requestData = {
+		// 		'token' = responseData.token,
+		// 		'card' = {
+		// 			'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
+		// 			'expirationMonth' = '1',// TODO: once working use: arguments.requestBean.getExpirationMonth()
+		// 			'expirationYear' = '2022', // TODO: once working use: arguments.requestBean.getExpirationYear()
+		// 			'cardHolderName' = 'Irta John', // TODO: once working use: arguments.requestBean.getNameOnCreditCard()
+		// 			'securityCode' = '123' // TODO: once working use: arguments.requestBean.getSecurityCode()
+		// 		},
+		// 		'procesingOptions' = {
+		// 			'verifyAvs' = '3' // TODO: once working use: setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
+		// 			// 'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
+		// 		}
+		// 	};
+			// if (!responseBean.hasErrors()) {
+			// 	// Extract data and set as part of the responseBean
+			// 	arguments.responseBean.setProviderToken();
+			// 	arguments.responseBean.setAmountReceived();
+			// 	arguments.responseBean.setAmountCredited();
+			// 	arguments.requestBean.getOriginalProviderTransactionID()
+			// }
+		// } else {
+		// 	throw('ResponseBean Error');
+		// }
+		
+		//writeDump(var=responseBean, top=2, abort=true );
+		return responseBean;
+		
 	}
+	
+
 }
