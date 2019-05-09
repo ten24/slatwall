@@ -66,8 +66,10 @@ Notes:
 	<cfset rc.edit = false>
 	<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod_inprogress.editdisabled_info') />
 </cfif>
-<cfset local.qualifierType = rc.promotionQualifier.getQualifierType() />
-<cfif local.qualifierType EQ 'order' >
+<cfif rc.qualifierType EQ 'order' >
+	<cfif isNull(rc.promotionQualifier.getQualifierType()) >
+		<cfset rc.promotionQualifier.setQualifierType('order') />
+	</cfif>
 	<cfset rc.edit = true>
 </cfif>
 <cfoutput>
