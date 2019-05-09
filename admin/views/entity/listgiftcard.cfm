@@ -56,26 +56,6 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!---sw-listing-display data-using-personal-collection="true"
-			data-collection="'GiftCard'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailgiftcard"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="giftCardID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag"></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedBalanceAmount"></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerEmailAddress"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
-	</sw-listing-display--->
-
-
     <cfset giftcardCollectionList = getHibachiScope().getService('giftCardService').getGiftcardCollectionList()>
 	<cfset serchableDisplayProperties = "ownerFirstName,ownerLastName,ownerEmailAddress,createdDateTime,giftCardCode,calculatedBalanceAmount,activeFlag"/>
 	<cfset giftcardCollectionList.setDisplayProperties( serchableDisplayProperties, {
