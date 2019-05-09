@@ -49,9 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.giftCardSmartList" type="any" />
+
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
 		<hb:HibachiEntityActionBarButtonGroup>
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
