@@ -56,48 +56,27 @@ Notes:
 
 	<hb:HibachiEntityActionBar type="listing" object="#rc.stockSmartList#" showCreate="false" />
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.stockSmartList#"
-			recordEditAction="admin:entity.editstock"
-			recorddetailaction="admin:entity.detailstock">
+	
+    <cfset stockCollectionList = getHibachiScope().getService('stockService').getStockCollectionList()>
+	<cfset serchableDisplayProperties = "sku.skuCode,sku.product.productName,sku.product.productCode,sku.product.productType.productTypeName,sku.product.brand.brandName,location.locationName,calculatedQOH,calculatedQNC,calculatedQATS,calculatedCurrentSkuPrice,averageCost,averageLandedCost,location.currencyCode"/>
+	<cfset stockCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset stockCollectionList.addDisplayProperty( displayProperty='stockID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
-		<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQOH" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-    <hb:HibachiListingColumn propertyIdentifier="calculatedAverageCost" />
-		<hb:HibachiListingColumn propertyIdentifier="averageLandedCost" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'Stock'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editstock"
-		record-detail-action="admin:entity.detailstock"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="stockID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="sku.skuCode" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="sku.product.productName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="sku.product.productCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="sku.product.productType.productTypeName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="sku.product.brand.brandName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="location.locationName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedQOH" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedQNC" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedQATS" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedCurrentSkuPrice" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="averageCost" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="averageLandedCost" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="location.currencyCode" ></sw-listing-column>
-	</sw-listing-display>
-
+    <hb:HibachiListingDisplay 
+    		collectionList="#stockCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(stockCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(stockCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>
