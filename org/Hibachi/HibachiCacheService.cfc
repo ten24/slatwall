@@ -20,12 +20,16 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 		return super.init();
 	}
-	
-	public any function getServerInstanceByServerInstanceIPAddress(required any serverInstanceIPAddress){
-		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
-		
+
+	public any function getServerInstanceByServerInstanceKey(required string serverInstanceKey, boolean returnNewIfNotFound, string serverInstanceIPAddress){
+		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
+
 		if(isNull(serverInstance) || serverInstance.getNewFlag()){
+			if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
+				arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
+			}
 			serverInstance = this.newServerInstance();
+			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
 			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			serverInstance.setServerInstanceExpired(false);
 			serverInstance.setSettingsExpired(false);
@@ -33,9 +37,8 @@ component accessors="true" output="false" extends="HibachiService" {
 			this.saveServerInstance(serverInstance); 
 			getHibachiScope().flushOrmSession();
 		}
-		return serverInstance;
-	}
-	
+		return serverInstance;	
+	} 
 	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return getDao('HibachiCacheDAO').getDatabaseCacheByDatabaseCacheKey(arguments.databaseCacheKey);
@@ -85,28 +88,39 @@ component accessors="true" output="false" extends="HibachiService" {
 		return false;
 	}
 	
-	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
-		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+	public void function updateServerInstanceCache(string serverInstanceKey){
+		if(!structKeyExists(arguments, 'serverInstanceKey')){
+			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
+		}
+		var serverInstance = this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
 		getDao('hibachiCacheDao').updateServerInstanceCache(serverInstance);
 	}
 	
-	public void function updateServerInstanceSettingsCache(required string serverInstanceIPAddress){
-		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+	public void function updateServerInstanceSettingsCache(string serverInstanceKey){
+		if(!structKeyExists(arguments, 'serverInstanceKey')){
+			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
+		}
+		var serverInstance = this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	
-	public boolean function isServerInstanceCacheExpired(required string serverInstanceIPAddress){
-		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
+	public boolean function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(argumentCollection=arguments);
 		if(isNull(isExpired)){
-			this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			return false;
 		}else{
 			return isExpired;
-		}
+		}	
 	} 
 	
-	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceIPAddress){
-		return getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(arguments.serverInstanceIPAddress);
+	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(argumentCollection=arguments);
+		if(isNull(isExpired)){
+			return true;
+		}else{
+			return isExpired;
+		}	
+
 	} 
 		
 	public any function getCachedValue( required string key ) {

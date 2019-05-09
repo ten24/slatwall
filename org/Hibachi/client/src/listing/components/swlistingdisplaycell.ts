@@ -5,6 +5,7 @@ class SWListingDisplayCellController{
     /* local state variables */
     public swListingDisplay:any;
     public pageRecord:any;
+    public pageRecordKey:string;
     public column:any;
     public popover:any;
     public value:any;
@@ -26,23 +27,28 @@ class SWListingDisplayCellController{
         public utilityService,
         public $scope
     ){
-        this.hibachiPathBuilder = hibachiPathBuilder;
-        this.listingPartialPath = listingPartialPath;
-        this.$scope = $scope;
-        if(!this.value && this.pageRecord && this.column){
-            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
+        
+        if(!this.pageRecordKey && this.column){
+            this.pageRecordKey = this.listingService.getPageRecordKey(this.column.propertyIdentifier);
         }
+        
+        if(!this.value && this.pageRecord && this.pageRecordKey){
+            this.value = this.pageRecord[this.pageRecordKey];        
+        }
+        
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
+        
         if(this.column.action && this.column.queryString){
+            
             this.hasActionCaller = true;
             this.actionCaller = {
                 action:this.column.action
             }
-            if(this.column.queryString){
-                this.actionCaller.queryString=this.utilityService.replaceStringWithProperties(this.column.queryString,this.pageRecord);
-            }
+            
+            this.actionCaller.queryString=this.utilityService.replaceStringWithProperties(this.column.queryString,this.pageRecord);
+            
         }
 
         if(this.cellView){
@@ -63,7 +69,7 @@ class SWListingDisplayCellController{
             }
             this.templateVariables["listingDisplayID"] = this.swListingDisplay.tableID; 
         
-        }else if(!this.hasActionCaller){
+        } else if(!this.hasActionCaller){
             
             this.templateUrl = this.getDirectiveTemplate();
         }
@@ -71,23 +77,43 @@ class SWListingDisplayCellController{
 
     }
 
+    public hasAggregate = ()=>{
+        return this.column.aggregate && this.column.aggregate.aggregateFunction && this.column.aggregate.aggregateFunction.length;
+    }
+
     public getDirectiveTemplate = ()=>{
         
-        var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycell.html';
+        var basePartialPath = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath);
         
-        if(this.expandable || (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary')){
-            templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplayselectablecellexpandable.html';
+        if(this.column.isEditable){
+            
+            if(!this.column.type){
+                this.column.type = 'text';
+            }
+            
+            if(this.column.defaultValue){
+                this.pageRecord[this.column.propertyIdentifier] = this.column.defaultValue;
+            }
+            
+            return basePartialPath + 'listingdisplaycelledit.html';
         }
-
-        if(!this.swListingDisplay.expandable || !this.column.tdclass || this.column.tdclass !== 'primary'){
+        
+        var templateUrl = basePartialPath + 'listingdisplaycell.html';
+        
+        var listingDisplayIsExpandableAndPrimaryColumn = (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary');
+        
+        if(this.expandable || listingDisplayIsExpandableAndPrimaryColumn){
+            templateUrl = basePartialPath + 'listingdisplayselectablecellexpandable.html';
+        } else if(!listingDisplayIsExpandableAndPrimaryColumn){
+            
             if(this.column.ormtype === 'timestamp'){
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycelldate.html';
-            }else if(this.column.type==='currency'){
-                if(this.column.aggregate && this.pageRecord){
+                templateUrl = basePartialPath + 'listingdisplaycelldate.html';
+            }else if(this.column.type === 'currency'){
+                if(this.hasAggregate() && this.pageRecord){
                     var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
                     this.value = this.pageRecord[pageRecordKey];
                 }
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
+                templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
             }else if([
                 "double", 
                 "float", 
@@ -97,13 +123,23 @@ class SWListingDisplayCellController{
                 "big_decimal"
             ].indexOf(this.column.ormtype) != -1){  
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellnumeric.html'; 
-            }else if(this.column.aggregate){
+            }else if(this.hasAggregate()){
                 this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellaggregate.html';
+                templateUrl = basePartialPath + 'listingdisplaycellaggregate.html';
             }
+        
+            
         }
 
         return templateUrl;
+    }
+    
+    //prevent listing display edit cell from submitting the form if enter key is pressed
+    public handleKeyPress = (keyEvent) =>{
+        if (keyEvent.keyCode === 13) {
+            keyEvent.preventDefault();
+            keyEvent.stopPropagation();
+        }
     }
 }
 

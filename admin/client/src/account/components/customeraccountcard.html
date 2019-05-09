@@ -1,0 +1,37 @@
+<div class="j-panel panel panel-default">
+	<div class="panel-heading">
+		<h4 class="panel-title" ng-bind="swCustomerAccountCard.title"></h4>
+	</div>
+	<content class="s-body-box" ng-if="swCustomerAccountCard.account">
+		<ul class="list-unstyled">
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.fullNameTitle"></div>
+					<div class="col-xs-6 s-value">
+						<a  href="{{swCustomerAccountCard.detailAccountLink}}" 
+							ng-bind="swCustomerAccountCard.account.calculatedFullName"></a>
+					</div>
+				</div>
+			</li>
+	
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.emailTitle"></div>
+					<div class="col-xs-6 s-value">
+						<a  href="mailto:{{swCustomerAccountCard.account.primaryEmailAddress_emailAddress}}" 
+							ng-bind="swCustomerAccountCard.account.primaryEmailAddress_emailAddress">
+						</a>
+					</div>
+				</div>
+			</li>
+			
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title" ng-bind="swCustomerAccountCard.phoneTitle"></div>
+					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.account.primaryPhoneNumber_phoneNumber"></div>
+				</div>
+			</li>
+	
+		</ul>
+	</content>
+</div>

@@ -5,6 +5,7 @@
 		<column name="typeIDPath" />
 		<column name="parentTypeID" />
 		<column name="typeName" update="false" />
+		<column name="typeDescription" update="false" />
 		<column name="systemCode" update="false" />
 		<column name="sortOrder" update="false" />
 		<column name="childRequiresSystemCodeFlag" datatype="bit" />
@@ -43,7 +44,7 @@
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8d" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8d" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Address" systemCode="cttAddress" sortOrder="5" />
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8f" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8f" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Account" systemCode="cttAccount" sortOrder="6" />
 		<Record typeID="447df331c2c2c3b093212519e8c1ae8g" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,447df331c2c2c3b093212519e8c1ae8g" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Category" systemCode="cttCategory" sortOrder="7" />
-		<Record typeID="447df331c2c2c3b033312519e8c1ae8h" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,447df331c2c2c3b033312519e8c1ae8h" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Attribute" systemCode="cttAttribute" sortOrder="7" />
+		<Record typeID="447df331c2c2c3b033312519e8c1ae8h" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,447df331c2c2c3b033312519e8c1ae8h" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Attribute" systemCode="cttAttribute" sortOrder="8" />
 
 		<Record typeID="bb6fd9cff5afa5112ad66560b6a887dd" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd" parentTypeID="NULL" typeName="Event Registration Status Types" systemCode="eventRegistrationStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="b89ae134f66e795e53c858b92360ded7" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b89ae134f66e795e53c858b92360ded7" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" typeName="Attended" systemCode="erstAttended" sortOrder="1" />
@@ -69,6 +70,19 @@
 		<Record typeID="444df2b7d7dcce8a3aa485f80264ac3a" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b7d7dcce8a3aa485f80264ac3a" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="On Hold" systemCode="ostOnHold" sortOrder="4" />
 		<Record typeID="444df2b8b98441f8e8fc6b5b4266548c" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b8b98441f8e8fc6b5b4266548c" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Closed" systemCode="ostClosed" sortOrder="5" />
 		<Record typeID="444df2b90f62f72711eb5b3c90848e7e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b90f62f72711eb5b3c90848e7e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Canceled" systemCode="ostCanceled" sortOrder="6" />
+
+		
+		<Record typeID="2c948084697d51bd01697d5402d40005" typeIDPath="2c948084697d51bd01697d5402d40005" parentTypeID="NULL" typeName="Order Template Types" systemCode="orderTemplateType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c948084697d51bd01697d5725650006" typeIDPath="2c948084697d51bd01697d5402d40005,2c948084697d51bd01697d5725650006" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Schedule Order Template" systemCode="ottSchedule" sortOrder="1"/>
+
+		<Record typeID="2c948084697d51bd01697d5996d80007" typeIDPath="2c948084697d51bd01697d5996d80007" parentTypeID="NULL" typeName="Order Template Status Types" systemCode="orderTemplateStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c948084697d51bd01697d9a592d0009" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9a592d0009" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Draft" systemCode="otstDraft" />
+		<Record typeID="2c948084697d51bd01697d9be217000a" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9be217000a" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Active" systemCode="otstActive" />
+		<Record typeID="2c948084697d51bd01697d9d9492000b" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9d9492000b" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Inactive" systemCode="otstInactive" />
+		
+		<Record typeID="2c9280846a023949016a028c33ff000b" typeIDPath="2c9280846a023949016a028c33ff000b" parentTypeID="NULL" typeName="Order Template Schedule Date Change Reason Type" systemCode="orderTemplateScheduleDateChangeReasonType" childRequiresSystemCodeFlag="1" />
+
+		<Record typeID="2c9280846a023949016a029455f0000c" typeIDPath="2c9280846a023949016a028c33ff000b,2c9280846a023949016a029455f0000c" parentTypeID="2c9280846a023949016a028c33ff000b" typeName="Other" typeDescription="Other" systemCode="otsdcrtOther" />
 
 		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661" parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e9a6622ad1614ea75cd5b982ce" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2e9a6622ad1614ea75cd5b982ce" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Sale" systemCode="oitSale" sortOrder="1" />

@@ -135,9 +135,9 @@ Notes:
 
 						<!--- get setting details  --->
 						<cfif isObject(thisSetting.settingObject)>
-							<cfset thisSetting.settingDetails = thisSetting.settingObject.getSettingDetails(settingName=thisSetting.settingName, filterEntities=duplicate(thisSetting.settingFilterEntities)) />
+							<cfset thisSetting.settingDetails = thisSetting.settingObject.getSettingDetails(settingName=thisSetting.settingName, filterEntities=thisSetting.settingFilterEntities) />
 						<cfelse>
-							<cfset thisSetting.settingDetails = thisSetting.hibachiScope.getService("settingService").getSettingDetails(settingName=thisSetting.settingName, filterEntities=duplicate(thisSetting.settingFilterEntities)) />
+							<cfset thisSetting.settingDetails = thisSetting.hibachiScope.getService("settingService").getSettingDetails(settingName=thisSetting.settingName, filterEntities=thisSetting.settingFilterEntities) />
 						</cfif>
 
 						<cfset settingFilterEntitiesName = thisSetting.settingFilterEntitiesName />

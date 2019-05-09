@@ -101,6 +101,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function setupOrderItemQualifiedDiscounts(required any order, required struct orderItemQualifiedDiscounts){
+		
 		// Loop over orderItems and add Sale Prices to the qualified discounts
 
 		for(var orderItem in arguments.order.getOrderItems()) {
@@ -209,6 +210,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ]) {
 						// Check the reward settings to see if this orderItem applies
 						if( getOrderItemInReward(arguments.promotionReward, orderItem) ) {
+
 							var qualificationQuantity = arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ];
 							if((qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification) lt arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder) {
 								arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder = (qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification);
@@ -411,8 +413,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderItemQualifiedDiscounts = {};
 	
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
-	
-				// Loop over all Potential Discounts that require qualifications
+
+				// Loop over all Potential Discounts that require qualifications or use a Sku collection
 				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 				var orderRewards = false;
 	
@@ -452,7 +454,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
 				removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-	
+
 				// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
 				applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 	
@@ -727,7 +729,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			};
 
 			if( getOrderItemInQualifier(qualifier=qualifier, orderItem=orderItem) ){
-
 				qualifiedOrderItemDetails.qualificationCount = orderItem.getQuantity();
 				qualifiedItemsQuantity += orderItem.getQuantity();
 
@@ -831,25 +832,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderItemQualifierCount = thisOrderItem.getQuantity();
 
 					// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
-					if(
-						!getOrderItemInQualifier(qualifier=qualifier, orderItem=thisOrderItem)
-						||
-						// Then check the match type of based on the current orderitem, and the orderItem we are getting a count for
-						( qualifier.getRewardMatchingType() == "sku" && thisOrderItem.getSku().getSkuID() != arguments.orderItem.getSku().getSkuID() )
-						||
-						( qualifier.getRewardMatchingType() == "product" && thisOrderItem.getSku().getProduct().getProductID() != arguments.orderItem.getSku().getProduct().getProductID() )
-						||
-						( qualifier.getRewardMatchingType() == "productType" && thisOrderItem.getSku().getProduct().getProductType().getProductTypeID() != arguments.orderItem.getSku().getProduct().getProductType().getProductTypeID() )
-						||
-						( qualifier.getRewardMatchingType() == "brand" && isNull(thisOrderItem.getSku().getProduct().getBrand()))
-						||
-						( qualifier.getRewardMatchingType() == "brand" && isNull(arguments.orderItem.getSku().getProduct().getBrand()))
-						||
-						( qualifier.getRewardMatchingType() == "brand" && thisOrderItem.getSku().getProduct().getBrand().getBrandID() != arguments.orderItem.getSku().getProduct().getBrand().getBrandID() )
-						) {
-
+					if(!getOrderItemInQualifier(qualifier=qualifier, orderItem=thisOrderItem)){
 						orderItemQualifierCount = 0;
-
 					}
 
 					qualifierCount += orderItemQualifierCount;
@@ -880,7 +864,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	public boolean function getOrderItemInQualifier(required any qualifier, required any orderItem) {
-
+		var skuCollection = qualifier.getSkuCollection();
+		if(!isNull(skuCollection)){
+			return qualifier.hasOrderItemSku(arguments.orderItem);
+		}
+		//BEGIN DEPRECATED LOGIC
 		// START: Check Exclusions
 
 		var hasExcludedProductType = false;
@@ -959,69 +947,74 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public boolean function getOrderItemInReward(required any reward, required any orderItem) {
-
-		// START: Check Exclusions
-		var hasExcludedProductType = false;
-		// Check all of the exclusions for an excluded product type
-		if(arrayLen(arguments.reward.getExcludedProductTypes())) {
-			var excludedProductTypeIDList = "";
-			for(var i=1; i<=arrayLen(arguments.reward.getExcludedProductTypes()); i++) {
-				excludedProductTypeIDList = listAppend(excludedProductTypeIDList, arguments.reward.getExcludedProductTypes()[i].getProductTypeID());
-			}
-
-			for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
-				if(listFindNoCase(excludedProductTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
-					hasExcludedProductType = true;
-					break;
+		var skuCollection = reward.getSkuCollection();
+		if(!isNull(skuCollection)){
+			return reward.hasOrderItemSku(arguments.orderItem);
+		//BEGIN DEPRECATED LOGIC
+		}else{
+			// START: Check Exclusions
+			var hasExcludedProductType = false;
+			// Check all of the exclusions for an excluded product type
+			if(arrayLen(arguments.reward.getExcludedProductTypes())) {
+				var excludedProductTypeIDList = "";
+				for(var i=1; i<=arrayLen(arguments.reward.getExcludedProductTypes()); i++) {
+					excludedProductTypeIDList = listAppend(excludedProductTypeIDList, arguments.reward.getExcludedProductTypes()[i].getProductTypeID());
+				}
+	
+				for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+					if(listFindNoCase(excludedProductTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+						hasExcludedProductType = true;
+						break;
+					}
 				}
 			}
-		}
-
-		// If anything is excluded then we return false
-		if(	hasExcludedProductType
-			||
-			arguments.reward.hasExcludedProduct( arguments.orderItem.getSku().getProduct() )
-			||
-			arguments.reward.hasExcludedSku( arguments.orderItem.getSku() )
-			||
-			( arrayLen( arguments.reward.getExcludedBrands() ) && ( isNull( arguments.orderItem.getSku().getProduct().getBrand() ) || arguments.reward.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) )
-			||
-			( arguments.reward.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ) )
-			) {
+	
+			// If anything is excluded then we return false
+			if(	hasExcludedProductType
+				||
+				arguments.reward.hasExcludedProduct( arguments.orderItem.getSku().getProduct() )
+				||
+				arguments.reward.hasExcludedSku( arguments.orderItem.getSku() )
+				||
+				( arrayLen( arguments.reward.getExcludedBrands() ) && ( isNull( arguments.orderItem.getSku().getProduct().getBrand() ) || arguments.reward.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) )
+				||
+				( arguments.reward.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ) )
+				) {
+				return false;
+			}
+	
+			// START: Check Inclusions
+			if(arrayLen(arguments.reward.getProductTypes())) {
+				var includedPropertyTypeIDList = "";
+	
+				var productTypes = [];
+	
+				for(var i=1; i<=arrayLen(arguments.reward.getProductTypes()); i++) {
+					includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, arguments.reward.getProductTypes()[i].getProductTypeID());
+				}
+	
+				for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+					if(listFindNoCase(includedPropertyTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+						return true;
+					}
+				}
+			}
+	
+			if(arguments.reward.hasProduct( arguments.orderItem.getSku().getProduct() )) {
+				return true;
+			}
+			if(arguments.reward.hasSku( arguments.orderItem.getSku() )) {
+				return true;
+			}
+			if(!isNull(arguments.orderItem.getSku().getProduct().getBrand()) && arguments.reward.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() )) {
+				return true;
+			}
+			if(arguments.reward.hasAnyOption( arguments.orderItem.getSku().getOptions() )) {
+				return true;
+			}
+			
 			return false;
 		}
-
-		// START: Check Inclusions
-		if(arrayLen(arguments.reward.getProductTypes())) {
-			var includedPropertyTypeIDList = "";
-
-			var productTypes = [];
-
-			for(var i=1; i<=arrayLen(arguments.reward.getProductTypes()); i++) {
-				includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, arguments.reward.getProductTypes()[i].getProductTypeID());
-			}
-
-			for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
-				if(listFindNoCase(includedPropertyTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
-					return true;
-				}
-			}
-		}
-
-		if(arguments.reward.hasProduct( arguments.orderItem.getSku().getProduct() )) {
-			return true;
-		}
-		if(arguments.reward.hasSku( arguments.orderItem.getSku() )) {
-			return true;
-		}
-		if(!isNull(arguments.orderItem.getSku().getProduct().getBrand()) && arguments.reward.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() )) {
-			return true;
-		}
-		if(arguments.reward.hasAnyOption( arguments.orderItem.getSku().getOptions() )) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode) {

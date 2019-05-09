@@ -90,6 +90,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/giftcards" count="#rc.account.getGiftCardsCount()#" />
 			<hb:HibachiEntityDetailItem property="priceGroups" />
 			<hb:HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/ordertemplates" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="accountPayments" />
 			<hb:HibachiEntityDetailItem property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />

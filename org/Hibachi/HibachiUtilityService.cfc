@@ -710,7 +710,7 @@
 				return "";
 			}
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				var sanitizedString = htmlEditFormat(arguments.html);
+				var sanitizedString = esapiEncode('html', arguments.html);
 			}else{
 				var sanitizedString = encodeForHTML(arguments.html);
 			}
@@ -1484,6 +1484,8 @@
 	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
+        <cfset local.timezoneOffset = getTimeZoneInfo().utcTotalOffset />
+        <cfset local.utcDate.setTime(local.utcDate.getTime() - (local.timezoneOffset * 1000) ) />
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
     

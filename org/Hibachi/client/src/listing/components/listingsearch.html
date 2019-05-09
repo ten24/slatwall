@@ -21,7 +21,9 @@
                 data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.swListingDisplay.searchText"
                 data-ng-disabled="!swListingSearch.selectedSearchColumn"
                 data-ng-click="swListingSearch.addSearchFilter()">
-                <i class="glyphicon glyphicon-plus"></i>
+                <span sw-tooltip class="tool-tip-item" data-text="Add Search to Filter List" data-position="bottom">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </span>
         </button>
     </span>
     

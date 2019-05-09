@@ -49,13 +49,9 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-
-<cfparam name="rc.orderSmartList" type="any" />
-
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" showCreate="false">
 
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>

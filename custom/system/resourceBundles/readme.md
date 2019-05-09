@@ -1,1 +1,0 @@
-This is where all generated resourceBundles go

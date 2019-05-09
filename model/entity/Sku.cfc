@@ -52,6 +52,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
 	property name="publishedFlag" ormtype="boolean" default="0";
+	property name="publishedStartDateTime" ormtype="timestamp" description="This field can be set to restrict the beginning of a time period when this product can be published.";
+	property name="publishedEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time period when this product can be published.";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE" hb_translate="false";
@@ -216,7 +218,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
-	
+		//CUSTOM PROPERTIES BEGIN
+property name="disableOnFlexshipFlag" ormtype="boolean";
+    property name="disableOnRegularOrderFlag" ormtype="boolean";
+    property name="onTheFlyKitFlag" ormtype="boolean";
+    property name="personalVolume" ormtype="big_decimal";
+    property name="taxableAmount" ormtype="big_decimal";
+    property name="commissionableVolume" ormtype="big_decimal";
+    property name="sponsorVolume" ormtype="big_decimal";
+    property name="productPackVolume" ormtype="big_decimal";
+    property name="retailValueVolume" ormtype="big_decimal";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -787,6 +798,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "assignedOrderItemAttributeSetSmartList")) {
 
 			variables.assignedOrderItemAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
+			
 			variables.assignedOrderItemAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('attributeSetObject', 'OrderItem');
@@ -803,8 +815,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			if(!isNull(getProduct().getBrand())) {
 				wc &= " OR aslatwallbrand.brandID = '#getProduct().getBrand().getBrandID()#'";
 			}
-			wc &= " OR aslatwallsku.skuID = '#getSkuID()#'";
-			wc &= ")";
+			wc &= " OR aslatwallsku.skuID = '#getSkuID()#')";
+			wc &= " AND aslatwallattributeset.attributeSetName IS NOT NULL";
+			
 
 			variables.assignedOrderItemAttributeSetSmartList.addWhereCondition( wc );
 		}

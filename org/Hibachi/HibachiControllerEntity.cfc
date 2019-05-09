@@ -149,7 +149,9 @@ component output="false" accessors="true" extends="HibachiController" {
 			if ( structKeyExists(arguments.missingMethodArguments, 'rc') ) {
 				var entityName = arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName;
 				if (!hasBean(entityName)) {
-					getFW().onMissingView();
+					if(!structKeyExists(arguments.missingMethodArguments.rc,'viewPath')){
+						getFW().onMissingView();
+					}
 					return;
 				}
 			}

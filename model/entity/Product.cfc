@@ -56,6 +56,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE" hb_translate="false" description="A unique value that identifies this product and only this product.  This could also be though of as a 'Model Number' but should not be confused with skuCode which identifies the actual unit being sold.";
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General marketing description of the product.";
 	property name="publishedFlag" ormtype="boolean" default="false" description="This flag is used to determine if the product should be available for sale as published on the frontend of a website.";
+	property name="publishedStartDateTime" ormtype="timestamp" description="This field can be set to restrict the beginning of a time period when this product can be published.";
+	property name="publishedEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time period when this product can be published.";
 	property name="sortOrder" ormtype="integer" description="The sort order value can be used to manually organize all of the products in your catalog.";
 	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
@@ -152,7 +154,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="productBenefits" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="productIngredients" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="productWeSayNoTo" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="productDirections" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";//CUSTOM PROPERTIES END
+
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();

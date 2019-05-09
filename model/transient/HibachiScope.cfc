@@ -119,10 +119,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				setCurrentRequestSitePathType('sitecode');
 			}
 			
+			/* TODO: Fix so admin does not have a request site. Causes issues with trying to set and get setting values in Slatwall admin
 			if(isNull(variables.currentRequestSite) && structKeyExists(session,'siteID')){
 				variables.currentRequestSite = getService('siteService').getSiteByCMSSiteID(session['siteID']);
 				setCurrentRequestSitePathType('cmsSiteID');
 			}
+			*/
 		}
 		
 		if(!isNull(variables.currentRequestSite)){
@@ -163,16 +165,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public string function renderJSObject() {
-		var config = {};
-		config[ 'baseURL' ] = getApplicationValue('baseURL');
-		config[ 'action' ] = getApplicationValue('action');
-		config[ 'dateFormat' ] = setting('globalDateFormat');
-		config[ 'timeFormat' ] = setting('globalTimeFormat');
-		config[ 'rbLocale' ] = '#getRBLocale()#';
-		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
-		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
-		config[ 'applicationKey' ] = '#getApplicationValue('applicationKey')#';
-		config[ 'attributeCacheKey' ] = '#getService('hibachiService').getAttributeCacheKey()#';
+		var config = getService('HibachiSessionService').getConfig();
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';

@@ -44,6 +44,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	property name="updateData" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	property name="processMethod" ormtype="string";
 	property name="webhookURL" ormtype="string";
+	property name="uniqueFlag" ormtype="boolean";
 	
 	// Calculated Properties
 
@@ -78,7 +79,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 			Print || Email || Update || Process || Import || Export || Delete
 		*/
 		var actionTypeOptions = [];
-		var valuesList = 'print,email,delete,process,webhook';
+		var valuesList = 'print,email,delete,process,processByQueue,webhook';
 		var valuesArray = ListToArray(valuesList);
 		
 		for(var value in valuesArray){
@@ -144,6 +145,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		switch(variables.actionType){
 			case 'delete':
 			case 'process':
+			case 'processByQueue':
 				var crudType = 'delete';
 				break;
 			case 'print':

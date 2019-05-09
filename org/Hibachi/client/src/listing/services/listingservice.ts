@@ -7,6 +7,7 @@ import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes
 class ListingService{
 
     private listingDisplays = {};
+    private pageRecordKeys = {};
     private state = {};
     public listingDisplayStore: Store.IStore;
 
@@ -237,6 +238,9 @@ class ListingService{
     }
 
     public getPageRecordKey = (propertyIdentifier)=>{
+        if(this.pageRecordKeys[propertyIdentifier] != null){
+            return this.pageRecordKeys[propertyIdentifier];
+        }
         if(propertyIdentifier){
             var propertyIdentifierWithoutAlias = '';
             if(propertyIdentifier.indexOf('_') === 0){
@@ -250,7 +254,8 @@ class ListingService{
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
-            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
+           this.pageRecordKeys[propertyIdentifier] = this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
+           return this.pageRecordKeys[propertyIdentifier];
         }
         return '';
     };
@@ -475,7 +480,10 @@ class ListingService{
         if(this.getListing(listingID).multiSlot == false){
         	this.$timeout(()=>{
             this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collectionData.collectionConfig);
-            this.getListing(listingID).columns = this.getListing(listingID).collectionConfig.columns;
+                //only override columns if they were not specified programmatically (editable listing displays, with non-persistent columns)
+                if(this.getListing(listingID).listingColumns == null){
+                    this.getListing(listingID).columns = this.getListing(listingID).collectionConfig.columns;
+                }
         	});
         }
 
@@ -836,16 +844,16 @@ class ListingService{
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
                 if(this.getListing(listingID).multiSlot){
                 	this.getListing(listingID).collectionConfig.getEntity().then(
-                    (data)=>{
-                        this.getListing(listingID).collectionData = data;
-                        this.setupDefaultCollectionInfo(listingID);
-                        this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
-                        this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
-                    },
-                    (reason)=>{
-                        throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
-                    }
-                );
+                        (data)=>{
+                            this.getListing(listingID).collectionData = data;
+                            this.setupDefaultCollectionInfo(listingID);
+                            this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
+                            this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                        },
+                        (reason)=>{
+                            throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
+                        }
+                    );
                 }else{
                 	this.getListing(listingID).collectionPromise.then(
                     (data)=>{
@@ -863,7 +871,6 @@ class ListingService{
             };
 
         } else {
-
             return () =>{
                 this.getListing(listingID).collectionData = {};
                 this.getListing(listingID).collectionData.pageRecords = [];

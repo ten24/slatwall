@@ -45,7 +45,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Right now this logic only runs if CSRF token is present, not as secure as it could be. 
 		if(structKeyExists(arguments.rc, "csrf") && !this.verifyCSRFToken(arguments.rc.csrf)){
 				
-				this.logHibachi("CSRF FAILED - Expected: " & getSessionValue("hibachiCSRFToken") & ' Recieved: ' & arguments.rc.csrf, true); 
 				getHibachiScope().showMessage(getHibachiScope().rbKey("admin.define.csrfinvalid"),"success");
 	
 				//If the token is invalid we don't know if the original request was successful or not, right now this logic assumes success (not ideal)
