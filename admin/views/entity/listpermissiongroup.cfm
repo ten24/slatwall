@@ -61,26 +61,27 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.permissionGroupSmartList#"
-							  recordDetailAction="admin:entity.detailpermissiongroup"
-							  recordEditAction="admin:entity.editpermissiongroup">
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'PermissionGroup'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editpermissiongroup"
-			data-record-detail-action="admin:entity.detailpermissiongroup"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="permissionGroupID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="permissionGroupName" tdclass="primary" ></sw-listing-column>
-	</sw-listing-display>
+	
+	<cfset permissionGroupCollectionList = getHibachiScope().getService('accountService').getPermissionGroupCollectionList()>
+	<cfset serchableDisplayProperties = "permissionGroupName"/>
+	<cfset permissionGroupCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset permissionGroupCollectionList.addDisplayProperty(displayProperty='permissionGroupID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#permissionGroupCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(permissionGroupCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(permissionGroupCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
