@@ -75,13 +75,17 @@ Notes:
 
 <!--- Show a message if the user has not yet selected a product type, sku, etc...when reward type is merchandise --->
 <cfif not rc.promotionperiod.isExpired() and not rc.edit and rc.promotionReward.getRewardType() eq "merchandise">
-	<cfif not arrayLen(rc.promotionReward.getSkus()) and not arrayLen(rc.promotionReward.getProducts()) and not arrayLen(rc.promotionReward.getProductTypes())>
+	<cfif isNull(rc.promotionReward.getIncludedSkusCollectionConfig()) AND isNull(rc.promotionReward.getExcludedSkusCollectionConfig())>
 		<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod.productortypeorskunotdefined_info') />
 	</cfif>
 </cfif>
 
 <cfif not isnull(rc.promotionReward.getAmountType())>
-	<cfset rc.amountType=rc.promotionReward.getAmountType()>
+	<cfset rc.amountType=rc.promotionReward.getAmountType() >
+</cfif>
+
+<cfif rc.rewardType eq "canPlaceOrder" >
+	<cfset arrayAppend(rc.messages,{message=rc.$.slatwall.rbKey('admin.pricing.promotionreward.canPlaceOrder'),messageType="info"}) />
 </cfif>
 
 <cfoutput>
@@ -92,22 +96,24 @@ Notes:
 							  backAction="admin:entity.detailpromotionperiod" 
 							  backQueryString="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabPromotionRewards" 
 							  deleteQueryString="redirectAction=admin:entity.detailpromotionperiod&promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#" />
-		
 		<hb:HibachiEntityDetailGroup object="#rc.promotionreward#">
-			<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cfif rc.amountType neq 'percentage'>
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
+			<cfif rc.rewardType neq "canPlaceOrder" OR rc.promotionReward.getNewFlag() >
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			</cfif>
-			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skuprices" />
-			<cfelseif rc.rewardType eq "fulfillment">
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
+			<cfif rc.rewardType neq "canPlaceOrder">
+				<cfif rc.amountType neq 'percentage'>
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
+				</cfif>
+				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skuprices" />
+				<cfelseif rc.rewardType eq "fulfillment">
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
+				</cfif>
+				<hb:HibachiEntityDetailItem property="eligiblePriceGroups" />
 			</cfif>
-			<hb:HibachiEntityDetailItem property="eligiblePriceGroups" />
 		</hb:HibachiEntityDetailGroup>
-
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
