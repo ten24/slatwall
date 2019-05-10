@@ -2496,6 +2496,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setExcludeOrderBy(false);
 
 	}
+	
+	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
+		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
+			variables.scrollableRecords = getService('ORMService').getScrollableRecordsByCollectionList(collectionList=this,ormSession=arguments.ormSession);
+		}
+
+		return variables.scrollableRecords;
+	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
@@ -2551,6 +2559,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							HQLParams = getHQLParams();
 
 							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+							
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
 								var record = {};

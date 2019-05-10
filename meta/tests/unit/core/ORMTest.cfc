@@ -60,20 +60,27 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
     	    }*/
 
 	    
-	        usescrollable();
+	        usescrollableCollectionList();
 	        //abort;
 	}
 	
 	
 	
-	private void function usescrollable(){
+	private void function usescrollableSmartList(){
+		
+		local.accountSmartlist = request.slatwallScope.getService('hibachiService').getAccountSmartList();
+		accountSmartlist.addOrder('accountID|ASC');
+		accountSmartlist.setPageRecordsShow(1);
+		local.account=local.accountSmartlist.getPageRecords()[1];
+		local.account.setFirstName("potato");
+		
 	    local.ormSession = ormGetSessionFactory().openSession();
 	    local.tx = local.ormSession.beginTransaction();
 		//Test smartList 
 	
 	    var orderSmartlist = request.slatwallScope.getService('hibachiService').getOrderSmartList();
 	    orderSmartList.addOrder('orderID|ASC');
-	    var totalRecords = 1000;
+	    var totalRecords = 5;
 	    orderSmartlist.setPageRecordsShow(totalRecords);
 	    local.slScrollableRecords = orderSmartlist.getScrollableRecords(refresh=true,readOnlyMode=false,ormSession=local.ormSession);
 		local.total = 0;
@@ -117,6 +124,66 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 		tx.commit();
 		local.ormSession.close();
+		
+		
+		ormflush();
+	}
+	
+	private void function usescrollableCollectionList(){
+		
+	    local.ormSession = ormGetSessionFactory().openSession();
+	    local.tx = local.ormSession.beginTransaction();
+		//Test smartList 
+	
+	    var orderCollectionlist = request.slatwallScope.getService('hibachiService').getOrderCollectionList();
+	    orderCollectionList.setDisplayProperties('fulfillmentChargeTotal');
+	    orderCollectionlist.setOrderBy('orderID|ASC');
+	    var totalRecords = 5;
+	    orderCollectionlist.setPageRecordsShow(totalRecords);
+	    local.slScrollableRecords = orderCollectionlist.getScrollableRecords(refresh=true,readOnlyMode=false,ormSession=local.ormSession);
+		local.total = 0;
+		local.i = 0;
+		var entitiesToEvict = [];
+		try{
+			while (slScrollableRecords.next()) {
+				local.i++;
+				if (arrayLen(slScrollableRecords.get())){
+				    local.order = slScrollableRecords.get()[1]; //returns an array of results, just need the first entity.
+				    //local.str = local.i & local.audit.getAuditID() & local.audit.getAuditDateTime() & local.audit.getSessionAccountFullName() & local.audit.getSessionAccountEmailAddress() & local.audit.getAuditType() & local.audit.getTitle() & local.audit.getBaseObject()
+				    //local.total += local.sku.getskuID();
+				    // process row then release reference
+				    //flush first before evict if not readOnlyMode and making changes to entities.
+				    local.order.updateCalculatedProperties();
+				    local.order.setOrderNumber(124);
+				    debug(i);
+				    debug(local.order.getOrderID());
+				    arrayAppend(entitiesToEvict,local.order);
+				    if(local.i % 20 == 0 || totalRecords==i){
+				    	
+				    	local.ormSession.flush();
+				    	debug('flush');
+				    	
+				    	for(var entityToEvict in entitiesToEvict){
+							local.ormSession.evict(entityToEvict);				    	
+				    	}
+				    	//local.ormSession.clear();
+				    }
+				    //local.ormSession.evict(local.order);
+				    
+			    }
+			   
+			    
+			}
+			
+			local.slScrollableRecords.close(); //close the connection always!
+		}catch(var scrollableError){
+			local.slScrollableRecords.close(); 
+			throw();
+		}
+		tx.commit();
+		local.ormSession.close();
+		
+		
 	}
 
 }

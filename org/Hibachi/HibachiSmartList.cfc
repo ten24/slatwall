@@ -217,37 +217,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
-		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
-			var query = arguments.ormSession.createQuery(getHQL());
-			var parameters = getHQLParams();
-
-			//Add all of the params.
-			for (var param in parameters){
-				query.setParameter(param, parameters[param]);
-			}
-
-			//Set the pagination info.
-			query.setFirstResult(getPageRecordsStart()-1);
-			query.setMaxResults(getPageRecordsShow());
-
-			//always read only for now.
-			query.setReadOnly(arguments.readOnlyMode);
-			if (getPageRecordsShow() >= 1000){
-				var fetchSize = 1000;
-				query.setFetchSize(fetchSize); //or Integer.MIN_VALUE This is the same as pageSize
-			}else if (getPageRecordsShow() >= 100){
-				var fetchSize = 100;//getPageRecordsShow() / 4; //4 versus 25
-				query.setFetchSize(fetchSize); //or Integer.MIN_VALUE This is the same as pageSize
-			}else{
-				query.setFetchSize(getPageRecordsShow()); //or Integer.MIN_VALUE This is the same as pageSize
-			}
-
-			//Depending on the size of the result, set a reasonable fetchSize. In our case, lets use the pageSize
-			variables.records = query.scroll();
-			return variables.records;
+		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
+			variables.scrollableRecords = getService('ORMService').getScrollableRecordsBySmartList(smartList=this,ormSession=arguments.ormSession);
 		}
 
-		return variables.records;
+		return variables.scrollableRecords;
 	}
 	
 	public string function joinRelatedProperty(required string parentEntityName, required string relatedProperty, string joinType="", boolean fetch=false, boolean isAttribute=false) {
