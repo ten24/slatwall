@@ -63,13 +63,21 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 
 	public struct function getSettings() {
 		var settings = {
+			//accountTokenTest = {fieldType="text"},
 			apiUrlLive = {fieldType="text", defaultValue="https://api.hyperwallet.com"},
 			apiUrlTest = {fieldType="text", defaultValue="https://api.sandbox.hyperwallet.com"},
+			//clientTransferIdLive = {fieldType="text"},
+			//clientTransferIdTest = {fieldType="text"},
+			destinationTokenLive = {fieldType="text"},
+			destinationTokenTest = {fieldType="text"},
 			passwordLive = {fieldType="password", encryptValue=true},
 			passwordTest = {fieldType="password", encryptValue=true},
+			programTokenTest = {fieldType="text"},
+			//sourceTokenLive = {fieldType="text"},
+			//sourceTokenTest = {fieldType="text"},
 			testMode = {fieldType="yesno", defaultValue="1"},
 			usernameLive = {fieldType="text"},
-			usernameTest = {fieldType="text"},
+			usernameTest = {fieldType="text"}
 		};
 		
 		return settings;
