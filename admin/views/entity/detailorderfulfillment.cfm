@@ -54,6 +54,15 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+
+	<cfif 
+		rc.edit AND structKeyExists(rc,"addressVerificationStruct") 
+		AND rc.orderFulfillment.getQuantityUndelivered() 
+		AND NOT isNull(setting("globalShippingIntegrationForAddressVerification"))
+	>
+		<hb:HibachiAddressVerificationModal />
+	</cfif>
+	
 	<hb:HibachiEntityDetailForm object="#rc.orderFulfillment#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderFulfillment#" edit="#rc.edit#" backaction="admin:entity.detailorder" backquerystring="orderID=#rc.orderFulfillment.getOrder().getOrderID()#">
 			<hb:HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="fulfillItems" type="list" />
