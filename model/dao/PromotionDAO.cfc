@@ -256,7 +256,7 @@ Notes:
 		<cfargument name="promotionCode" required="true" type="any" />
 
 		<cftransaction isolation="read_uncommitted">
-			<cfquery name="results">
+			<cfquery name="local.results">
 			SELECT count(swOrder.orderID) as count
 			FROM SwOrderPromotionCode 
 			INNER JOIN SwOrder on SwOrderPromotionCode.orderID=SwOrder.orderID AND SwOrder.orderNumber is not null
@@ -265,7 +265,7 @@ Notes:
 			</cfquery>
 		</cftransaction>
 
-		<cfreturn results.count />
+		<cfreturn local.results.count />
 
 	</cffunction>
 
@@ -875,12 +875,12 @@ Notes:
 		<cfargument name="promotion" type="any">
 		<cfargument name="maxUseCount" type="any">
 		
-		<cfset insertValues = "">
-		<cfset createPromotionCodesQuery = "">
+		<cfset var insertValues = "">
+		<cfset var createPromotionCodesQuery = "">
 		<cfset listAsArray = listToArray(promoCodeList)>
 
 		<cfloop array="#listAsArray#" index="local.currentPromotionCode">
-			<cfset insertValues = listAppend(insertValues, "('#getHibachiScope().createHibachiUUID()#', '#local.currentPromotionCode#', '#promotion.getPromotionID()#', '#maxUseCount#', '#maxUseCount#')")>
+			<cfset var insertValues = listAppend(insertValues, "('#getHibachiScope().createHibachiUUID()#', '#local.currentPromotionCode#', '#promotion.getPromotionID()#', '#maxUseCount#', '#maxUseCount#')")>
 		</cfloop>
 
 		<cfquery name="local.createPromotionCodesQuery" dbtype="query">
