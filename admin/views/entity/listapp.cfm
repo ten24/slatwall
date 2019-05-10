@@ -50,11 +50,11 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<!---<cfparam name="rc.appSmartList" type="any" />--->
+<cfparam name="rc.appSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.appSmartList#" showCreate="false">
 
 	<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
