@@ -92,6 +92,7 @@ Notes:
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(addressZoneCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(addressZoneCollectionList.getCollectionObject())#"
+		recordDeleteAction="admin:entity.delete#lcase(addressZoneCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
 
