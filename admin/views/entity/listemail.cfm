@@ -49,8 +49,10 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.emailSmartList" type="any" />	
+
 <cfoutput>
-	<hb:HibachiEntityActionBar type="listing" showCreate="false" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" showCreate="false" />
 
     <cfset emailCollectionList = getHibachiScope().getService('emailService').getEmailCollectionList()>
 	<cfset serchableDisplayProperties = "emailSubject,emailTo,createdDateTime"/>
