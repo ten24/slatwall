@@ -49,9 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.currencySmartList" type="any" />	
+
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.currencySmartList#" showCreate="false">
 		<hb:HibachiEntityActionBarButtonGroup>
 			<hb:HibachiActionCaller action="admin:entity.createcurrency" entity="currency" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
