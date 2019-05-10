@@ -50,26 +50,15 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<!---<cfparam name="rc.attributeSetSmartList" type="any" />--->
+<cfparam name="rc.attributeSetSmartList" type="any" />
 
-<hb:HibachiEntityActionBar type="listing"  showCreate="false">
+<hb:HibachiEntityActionBar type="listing" object="#rc.attributeSetSmartList#" showCreate="false">
 
 	<!--- Create --->
 	<hb:HibachiEntityActionBarButtonGroup>
 		<hb:HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn btn-primary" icon="plus icon-white"  modal="true" />
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
-
-<!--- <hb:HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
-						   recordDetailAction="admin:entity.detailattributeset"
-						   recordEditAction="admin:entity.editattributeset"
-						   sortProperty="sortOrder">
-
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
-	<hb:HibachiListingColumn propertyIdentifier="attributeSetObject" />
-	<hb:HibachiListingColumn propertyIdentifier="globalFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay> --->
 
 <cfset attributeSetCollectionList = getHibachiScope().getService('attributeService').getattributeSetCollectionList()>
 	<cfset serchableDisplayProperties = "attributeSetName,attributeSetObject"/>
@@ -99,7 +88,7 @@ Notes:
 		isDeletable=false
 	})/>
 	
-		<hb:HibachiListingDisplay 
+	<hb:HibachiListingDisplay 
 		collectionList="#attributeSetCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(attributeSetCollectionList.getCollectionObject())#"
