@@ -49,24 +49,26 @@ Notes:
     <cfimport prefix="swa" taglib="../../../tags" />
     <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-    <hb:HibachiEntityActionBar type="listing" showCreate="false">
+<cfparam name="rc.countrySmartList" type="any" />
+
+    <hb:HibachiEntityActionBar type="listing" object="#rc.countrySmartList#" showCreate="false">
     
     	<hb:HibachiEntityActionBarButtonGroup>
     		<hb:HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
     	</hb:HibachiEntityActionBarButtonGroup>
     </hb:HibachiEntityActionBar>
 
-    <cfset countryCollectionList = getHibachiScope().getService('currencyService').getCountryCollectionList()>
-	<cfset serchableDisplayProperties = "countryCode,countryName,activeFlag"/>
+    <cfset countryCollectionList = getHibachiScope().getService('addressService').getCountryCollectionList()>
+	<cfset serchableDisplayProperties = "countryName,activeFlag"/>
 	<cfset countryCollectionList.setDisplayProperties( serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
 	})/>
 	
-	<cfset rc.containerPresetCollectionList.addDisplayProperty( displayProperty='containerPresetID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
+	<cfset countryCollectionList.addDisplayProperty( displayProperty='countryCode', columnConfig={
+		isVisible=true,
+		isSearchable=true,
 		isDeletable=false
 	})/>
 
