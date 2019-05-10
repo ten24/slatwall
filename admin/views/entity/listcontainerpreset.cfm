@@ -67,7 +67,7 @@ Notes:
 	})/>
 
 
-	<cfset containerPresetCollectionList.addDisplayProperty(
+	<cfset rc.containerPresetCollectionList.addDisplayProperty(
 	displayProperty='containerPresetID',
 	columnConfig={
 		isVisible=false,
@@ -75,7 +75,7 @@ Notes:
 		isDeletable=false
 	})/>
 
-	<hb:HibachiListingDisplay 
+<hb:HibachiListingDisplay 
 		collectionList="#containerPresetCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(containerPresetCollectionList.getCollectionObject())#"
