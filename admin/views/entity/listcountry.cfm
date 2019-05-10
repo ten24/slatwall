@@ -51,11 +51,7 @@ Notes:
 
 <cfparam name="rc.countrySmartList" type="any" />
 
-    <hb:HibachiEntityActionBar type="listing" object="#rc.countrySmartList#" showCreate="false">
-    
-    	<hb:HibachiEntityActionBarButtonGroup>
-    		<hb:HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
-    	</hb:HibachiEntityActionBarButtonGroup>
+    <hb:HibachiEntityActionBar type="listing" object="#rc.countrySmartList#" showCreate="true">
     </hb:HibachiEntityActionBar>
 
     <cfset countryCollectionList = getHibachiScope().getService('addressService').getCountryCollectionList()>
