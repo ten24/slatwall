@@ -49,9 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.emailTemplateSmartList" type="any" />
+
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.emailTemplateSmartList#" showCreate="false">
 
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
