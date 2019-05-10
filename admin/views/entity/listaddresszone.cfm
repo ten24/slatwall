@@ -49,9 +49,9 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.addressZoneSmartList" type="any" />	
 
-
-<hb:HibachiEntityActionBar type="listing" showCreate="false">
+<hb:HibachiEntityActionBar type="listing" object="#rc.addressZoneSmartList#" showCreate="false">
 
 	<!--- Create --->
 	<hb:HibachiEntityActionBarButtonGroup>
