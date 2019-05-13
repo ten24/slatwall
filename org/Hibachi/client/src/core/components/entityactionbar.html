@@ -34,8 +34,9 @@
 
 						<sw-process-caller ng-repeat="process in swEntityActionBar.swProcessCallers"
 										   data-action="{{process.action}}"
-											 data-process-context="{{process.processContext}}"
-											 data-query-string="{{process.queryString}}"
+										   data-modal="process.modal"
+										   data-process-context="{{process.processContext}}"
+										   data-query-string="{{process.queryString}}"
 										   data-type="list">
 				
 						</sw-process-caller>

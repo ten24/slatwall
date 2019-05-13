@@ -58,13 +58,16 @@
 	{
 		'action':'admin:entity.processOrderTemplate',
 		'processContext':'activate',
-		'type':'list'
 	},	
 	{
 		'action':'admin:entity.processOrderTemplate',
 		'processContext':'createAndPlaceOrder',
-		'type':'list'
-	}
+	},	
+	{
+		'action':'admin:entity.preProcessOrderTemplate',
+		'processContext':'cancel',
+		'modal' : true 
+	} 
 ] />
 
 

@@ -5,6 +5,7 @@ class SWActionCallerController{
     public type:string;
     public confirm:any;
     public display:boolean;
+    public modal:boolean;
     public event:string;
     public payload:any;
     public action:string;
@@ -49,6 +50,8 @@ class SWActionCallerController{
 
 
     public $onInit = ():void =>{
+
+        console.log('so modal???', this.modal);
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
