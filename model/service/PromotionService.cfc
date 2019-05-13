@@ -361,7 +361,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
-		
+		arguments.order.updateCalculatedProperties(true);
+		getHibachiScope().flushOrmSession();
 		if(arguments.order.isOrderPaidFor()){
 			return;
 		}
@@ -644,18 +645,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	private void function getQualifierQualificationDetailsForOrder(required any qualifier, required any order, required struct qualifierDetails){
 		// Set the qualification count to 1 because that is the max for an order qualifier
-		arguments.qualifierDetails.qualificationCount = 1;
+		arguments.qualifierDetails.qualificationCount = 0;
 
-		// Minimum Order Quantity
-		if(	( !isNull(arguments.qualifier.getMinimumOrderQuantity()) && arguments.qualifier.getMinimumOrderQuantity() > arguments.order.getTotalSaleQuantity() )
-			||
-			( !isNull(arguments.qualifier.getMaximumOrderQuantity()) && arguments.qualifier.getMaximumOrderQuantity() < arguments.order.getTotalSaleQuantity() )
-			||
-			( !isNull(arguments.qualifier.getMinimumOrderSubtotal()) && arguments.qualifier.getMinimumOrderSubtotal() > arguments.order.getSubtotal() )
-			||
-			( !isNull(arguments.qualifier.getMaximumOrderSubtotal()) && arguments.qualifier.getMaximumOrderSubtotal() < arguments.order.getSubtotal() )
-		) {
-			arguments.qualifierDetails.qualificationCount = 0;
+		if( arguments.qualifier.hasOrderByOrderID( arguments.order.getOrderID() ) ){
+			arguments.qualifierDetails.qualificationCount = 1;
 		}
 	}
 
@@ -823,30 +816,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Check to make sure that this is an orderItem type of qualifier
 			if(listFindNoCase("merchandise,subscription,contentAccess", qualifier.getQualifierType())) {
+				
+				// Setup a local var for this orderItem
+				var orderItemQualifierCount = arguments.orderItem.getQuantity();
 
-				// Loop over the orderItems and see how many times this item has been qualified
-				for(var o=1; o<=arrayLen(arguments.order.getOrderItems()); o++) {
-
-					// Setup a local var for this orderItem
-					var thisOrderItem = arguments.order.getOrderItems()[o];
-					var orderItemQualifierCount = thisOrderItem.getQuantity();
-
-					// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
-					if(!getOrderItemInQualifier(qualifier=qualifier, orderItem=thisOrderItem)){
-						orderItemQualifierCount = 0;
-					}
-
-					qualifierCount += orderItemQualifierCount;
-
+				// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
+				if(!getOrderItemInQualifier(qualifier=qualifier, orderItem=arguments.orderItem)){
+					orderItemQualifierCount = 0;
 				}
 
+				qualifierCount += orderItemQualifierCount;
+				
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
 				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifier.getMinimumItemQuantity() != 0 ) {
 					qualifierCount = int(qualifierCount / qualifier.getMinimumItemQuantity() );
 				}
 
 				// If this particular qualifier has less qualifications than the previous, well use the lower of the two qualifier counts
-				if(qualifierCount lt allQualifiersCount) {
+				if(qualifierCount < allQualifiersCount) {
 					allQualifiersCount = qualifierCount;
 				}
 
@@ -864,157 +851,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	public boolean function getOrderItemInQualifier(required any qualifier, required any orderItem) {
-		var skuCollection = qualifier.getSkuCollection();
-		if(!isNull(skuCollection)){
-			return qualifier.hasOrderItemSku(arguments.orderItem);
-		}
-		//BEGIN DEPRECATED LOGIC
-		// START: Check Exclusions
-
-		var hasExcludedProductType = false;
-		// Check all of the exclusions for an excluded product type
-		if(arrayLen(arguments.qualifier.getExcludedProductTypes())) {
-			var excludedProductTypeIDList = "";
-			for(var i=1; i<=arrayLen(arguments.qualifier.getExcludedProductTypes()); i++) {
-				excludedProductTypeIDList = listAppend(excludedProductTypeIDList, arguments.qualifier.getExcludedProductTypes()[i].getProductTypeID());
-			}
-
-			for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
-				if(listFindNoCase(excludedProductTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
-					hasExcludedProductType = true;
-					break;
-				}
-			}
-		}
-		// If anything is excluded then we return false
-		if(	hasExcludedProductType
-			||
-			( !isNull(qualifier.getMinimumItemPrice()) && qualifier.getMinimumItemPrice() > arguments.orderItem.getPrice() )
-			||
-			( !isNull(qualifier.getMaximumItemPrice()) && qualifier.getMaximumItemPrice() < arguments.orderItem.getPrice() )
-			||
-			!isNull(arguments.orderItem.getSku()) && (
-				arguments.qualifier.hasExcludedSku( arguments.orderItem.getSku() )
-				||
-				!isnull(arguments.orderItem.getSku().getProduct()) && (
-					( arguments.qualifier.hasExcludedProduct( arguments.orderItem.getSku().getProduct() ))
-					||
-					( arrayLen( arguments.qualifier.getExcludedBrands() ) && ( isNull( arguments.orderItem.getSku().getProduct().getBrand() ) || arguments.qualifier.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) )
-
-				)
-				||
-				( arguments.qualifier.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ))
-
-			 )
-			) {
-			return false;
-		}
-
-		// START: Check Inclusions
-
-		if(arrayLen(arguments.qualifier.getProductTypes())) {
-			var includedPropertyTypeIDList = "";
-
-			for(var i=1; i<=arrayLen(arguments.qualifier.getProductTypes()); i++) {
-				includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, arguments.qualifier.getProductTypes()[i].getProductTypeID());
-			}
-
-			for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
-				if(listFindNoCase(includedPropertyTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
-					return true;
-				}
-			}
-		}
-		if(!isNull(arguments.orderItem.getSku())){
-			if(arguments.qualifier.hasSku( arguments.orderItem.getSku() )) {
-				return true;
-			}
-			if(!isNull(arguments.orderItem.getSku().getProduct())){
-				if(arguments.qualifier.hasProduct( arguments.orderItem.getSku().getProduct() )) {
-					return true;
-				}
-				if(!isNull(arguments.orderItem.getSku().getProduct().getBrand()) && arguments.qualifier.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() )) {
-					return true;
-				}
-			}
-			if(arguments.qualifier.hasAnyOption( arguments.orderItem.getSku().getOptions() )) {
-				return true;
-			}
-		}
-
-
-		return false;
+		return (qualifier.hasOrderItemSku(arguments.orderItem) 
+			&&
+			( isNull(qualifier.getMinimumItemPrice()) || qualifier.getMinimumItemPrice() <= arguments.orderItem.getPrice() )
+			&&
+			( isNull(qualifier.getMaximumItemPrice()) || qualifier.getMaximumItemPrice() >= arguments.orderItem.getPrice() )
+		);
+		
 	}
 
 	public boolean function getOrderItemInReward(required any reward, required any orderItem) {
-		var skuCollection = reward.getSkuCollection();
-		if(!isNull(skuCollection)){
-			return reward.hasOrderItemSku(arguments.orderItem);
-		//BEGIN DEPRECATED LOGIC
-		}else{
-			// START: Check Exclusions
-			var hasExcludedProductType = false;
-			// Check all of the exclusions for an excluded product type
-			if(arrayLen(arguments.reward.getExcludedProductTypes())) {
-				var excludedProductTypeIDList = "";
-				for(var i=1; i<=arrayLen(arguments.reward.getExcludedProductTypes()); i++) {
-					excludedProductTypeIDList = listAppend(excludedProductTypeIDList, arguments.reward.getExcludedProductTypes()[i].getProductTypeID());
-				}
-	
-				for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
-					if(listFindNoCase(excludedProductTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
-						hasExcludedProductType = true;
-						break;
-					}
-				}
-			}
-	
-			// If anything is excluded then we return false
-			if(	hasExcludedProductType
-				||
-				arguments.reward.hasExcludedProduct( arguments.orderItem.getSku().getProduct() )
-				||
-				arguments.reward.hasExcludedSku( arguments.orderItem.getSku() )
-				||
-				( arrayLen( arguments.reward.getExcludedBrands() ) && ( isNull( arguments.orderItem.getSku().getProduct().getBrand() ) || arguments.reward.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) )
-				||
-				( arguments.reward.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ) )
-				) {
-				return false;
-			}
-	
-			// START: Check Inclusions
-			if(arrayLen(arguments.reward.getProductTypes())) {
-				var includedPropertyTypeIDList = "";
-	
-				var productTypes = [];
-	
-				for(var i=1; i<=arrayLen(arguments.reward.getProductTypes()); i++) {
-					includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, arguments.reward.getProductTypes()[i].getProductTypeID());
-				}
-	
-				for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
-					if(listFindNoCase(includedPropertyTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
-						return true;
-					}
-				}
-			}
-	
-			if(arguments.reward.hasProduct( arguments.orderItem.getSku().getProduct() )) {
-				return true;
-			}
-			if(arguments.reward.hasSku( arguments.orderItem.getSku() )) {
-				return true;
-			}
-			if(!isNull(arguments.orderItem.getSku().getProduct().getBrand()) && arguments.reward.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() )) {
-				return true;
-			}
-			if(arguments.reward.hasAnyOption( arguments.orderItem.getSku().getOptions() )) {
-				return true;
-			}
-			
-			return false;
-		}
+		return reward.hasOrderItemSku(arguments.orderItem);
 	}
 
 	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode) {
@@ -1066,27 +913,110 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ----------------- END: Apply Promotion Logic -------------------------
 
-	public struct function getSalePriceDetailsForProductSkus(required string productID, string currencyCode='') {
-		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getSalePricePromotionRewardsQuery(productID = arguments.productID,currencyCode = arguments.currencyCode), "skuID");
-
-		for(var key in priceDetails) {
-			if(priceDetails[key].roundingRuleID != "") {
-				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
-			}
-			priceDetails[key].salePrice=round(priceDetails[key].salePrice*100)/100; //Round to 2 decimals
+	public struct function getSalePriceDetailsForProductSkus(required string productID, string currencyCode) {
+		var args = {productID=arguments.productID};
+		if(!isNull(arguments.currencyCode)){
+			args.currencyCode = arguments.currencyCode;
 		}
+		var priceDetails = getProductSkuSalePricesByPromoRewardSkuCollection( argumentCollection=args );
+
+		priceDetails = getRoundedPriceDetails(priceDetails);
+
 		return priceDetails;
 	}
 
 	public struct function getSalePriceDetailsForOrderItem(required any orderItem) {
-		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getOrderItemSalePricePromotionRewardsQuery(orderItem = arguments.orderItem), "orderItemID");
 
-		for(var key in priceDetails) {
-			if(priceDetails[key].roundingRuleID != "") {
-				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
+		var priceDetails = getOrderItemSalePricesByPromoRewardSkuCollection( arguments.orderItem );
+
+		priceDetails = getRoundedPriceDetails(priceDetails);
+
+		return priceDetails;
+	}
+
+	public struct function getRoundedPriceDetails(required struct priceDetails){
+		for(var key in arguments.priceDetails) {
+			if(arguments.priceDetails[key].roundingRuleID != "") {
+				arguments.priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=arguments.priceDetails[key].salePrice, roundingRuleID=arguments.priceDetails[key].roundingRuleID);
 			}
 		}
+		return arguments.priceDetails;
+	}
 
+	public struct function getProductSkuSalePricesByPromoRewardSkuCollection( required string productID, string currencyCode ){
+		var product = getService('productService').getProduct( arguments.productID );
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true );
+
+		var skus = product.getSkus();
+		var priceDetails = {};
+
+		for(var sku in skus){
+			if(!isNull(arguments.currencyCode)){
+				var originalPrice = sku.getPriceByCurrencyCode(arguments.currencyCode);
+			}else{
+				var originalPrice = sku.getPrice();
+				arguments.currencyCode = '';
+			}
+			var skuPriceDetails = getPriceDetailsForPromoRewards(
+														promoRewards=activePromotionRewardsWithSkuCollection,
+														skuID=sku.getSkuID(),
+														originalPrice=originalPrice,
+														currencyCode=arguments.currencyCode);
+			structAppend(priceDetails,{'#sku.getSkuID()#':skuPriceDetails});
+		}
+		return priceDetails;
+	}
+
+	public struct function getOrderItemSalePricesByPromoRewardSkuCollection(required any orderItem){
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true );
+		var originalPrice = arguments.orderItem.getSkuPrice();
+		var currencyCode = arguments.orderItem.getCurrencyCode();
+
+		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
+														skuID=arguments.orderItem.getSkuID(),
+														originalPrice=originalPrice,
+														currencyCode=currencyCode );
+
+		return {'#arguments.orderItem.getOrderItemID()#':priceDetails};
+	}
+
+	public struct function getPriceDetailsForPromoRewards(required array promoRewards, 
+															required string skuID,
+															required string originalPrice,
+															string currencyCode = ''){
+		var priceDetails = {
+			originalPrice:arguments.originalPrice,
+			promotionID:'',
+			roundingRuleID:'',
+			salePrice:arguments.originalPrice,
+			salePriceDiscountType:'',
+			salePriceExpirationDateTime:''
+		};
+		var discountAmount = 0;
+		for( var promoReward in promoRewards ){
+			if( promoReward.hasSkuBySkuID( arguments.skuID ) ){
+				var promoDiscountAmount = getDiscountAmount( promoReward, 
+															originalPrice, 
+															1,
+															currencyCode);
+				if(promoDiscountAmount > discountAmount){
+					discountAmount = promoDiscountAmount;
+					priceDetails.promotionID = promoReward.getPromotionPeriod().getPromotion().getPromotionID();
+					priceDetails.salePriceExpirationDateTime = promoReward.getPromotionPeriod().getEndDateTime();
+					if(isNull(priceDetails.salePriceExpirationDateTime)){
+						priceDetails.salePriceExpirationDateTime = '';
+					}
+
+					if(!isNull(promoReward.getRoundingRule())){
+						priceDetails.roundingRuleID = promoReward.getRoundingRule().getRoundingRuleID();
+					}
+
+					var amountType = promoReward.getAmountType();
+					priceDetails.salePriceDiscountType = amountType;
+					priceDetails.salePrice = originalPrice - discountAmount;
+				}
+			}
+		}
 		return priceDetails;
 	}
 

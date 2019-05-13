@@ -52,10 +52,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="promotionQualifierID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="qualifierType" ormtype="string" hb_formatType="rbKey";
 	
-	property name="minimumOrderQuantity" ormtype="integer" hb_nullRBKey="define.0";
-	property name="maximumOrderQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";
-	property name="minimumOrderSubtotal" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
-	property name="maximumOrderSubtotal" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.unlimited";
 	property name="minimumItemQuantity" ormtype="integer" hb_nullRBKey="define.0";
 	property name="maximumItemQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";
 	property name="minimumItemPrice" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
@@ -64,6 +60,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="maximumFulfillmentWeight" ormtype="big_decimal" hb_formatType="weight" hb_nullRBKey="define.unlimited";
 	property name="includedSkusCollectionConfig" ormtype="text";
 	property name="excludedSkusCollectionConfig" ormtype="text";
+	property name="includedOrdersCollectionConfig" ormtype="text";
+	property name="excludedOrdersCollectionConfig" ormtype="text";
 	
 	// Related Entities (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -90,6 +88,12 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoQualExclProductType" fkcolumn="promotionQualifierID" inversejoincolumn="productTypeID";
 	// End Deprecated Properties
 	
+	property name="minimumOrderQuantity" ormtype="integer" hb_nullRBKey="define.0";
+	property name="maximumOrderQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";
+	property name="minimumOrderSubtotal" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
+	property name="maximumOrderSubtotal" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.unlimited";
+	// End Deprecated Properties
+	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
@@ -103,7 +107,10 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="qualifierApplicationTypeOptions" type="array" persistent="false";
 	property name="includedSkusCollection" persistent="false";
 	property name="excludedSkusCollection" persistent="false";
+	property name="includedOrdersCollection" persistent="false";
+	property name="excludedOrdersCollection" persistent="false";
 	property name="skuCollection" persistent="false";
+	property name="orderCollection" persistent="false";
 	
 	public string function getSimpleRepresentation() {
 		return "#rbKey('entity.promotionQualifier')# - #getFormattedValue('qualifierType')#";
@@ -150,21 +157,116 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		return variables.excludedSkusCollection;
 	}
 	
+	
+	public void function saveIncludedSkusCollection(){
+		var collectionConfig = serializeJSON(getIncludedSkusCollection().getCollectionConfigStruct());
+		setIncludedSkusCollectionConfig(collectionConfig);
+	}
+	public void function saveExcludedSkusCollection(){
+		var collectionConfig = serializeJSON(getExcludedSkusCollection().getCollectionConfigStruct());
+		setExcludedSkusCollectionConfig(collectionConfig);
+	}
+	
 	public any function getSkuCollection(){
 		if(isNull(variables.skuCollection)){
-			if(isNull(getExcludedSkusCollection())){
-				return getIncludedSkusCollection();
+			if(isNull(getExcludedSkusCollectionConfig())){
+				if(isNull(getIncludedSkusCollectionConfig())){
+					return;
+				}
+				return getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
 			}
 			
-			if(!isNull(getIncludedSkusCollection())){
+			if(!isNull(getIncludedSkusCollectionConfig())){
 				var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
-				var excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
-				
-				skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
+			}else{
+				var skuCollection = getService('hibachiCollectionService').getSkuCollectionList();
 			}
+			var excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
+			
+			skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
 			variables.skuCollection = skuCollection;
 		}
 		return variables.skuCollection;
+	}
+	
+	public any function getIncludedOrdersCollection(){
+		if(isNull(variables.includedOrdersCollection)){
+			var collectionConfig = getIncludedOrdersCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.includedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
+			}else{
+				variables.includedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
+				variables.includedOrdersCollection.setDisplayProperties('orderNumber,currencyCode,createdDateTime,calculatedSubTotal,calculatedTotalQuantity',{
+					'isDeletable':true,
+					'isVisible':true,
+					'isSearchable':true,
+					'isExportable':true
+				});
+				variables.includedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
+					'isDeletable':false,
+					'isVisible':false,
+					'isSearchable':false,
+					'isExportable':true
+				});
+			}
+		}
+		return variables.includedOrdersCollection;
+	}
+	
+	public any function getExcludedOrdersCollection(){
+		if(isNull(variables.excludedOrdersCollection)){
+			var collectionConfig = getExcludedOrdersCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.excludedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
+			}else{
+				variables.excludedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
+				variables.excludedOrdersCollection.setDisplayProperties('orderNumber,currencyCode,createdDateTime,calculatedSubTotal,calculatedTotalQuantity',{
+					'isDeletable':true,
+					'isVisible':true,
+					'isSearchable':true,
+					'isExportable':true
+				});
+				variables.excludedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
+					'isDeletable':false,
+					'isVisible':false,
+					'isSearchable':false,
+					'isExportable':true
+				});
+			}
+		}
+		return variables.excludedOrdersCollection;
+	}
+	
+	
+	public void function saveIncludedOrdersCollection(){
+		var collectionConfig = serializeJSON(getIncludedOrdersCollection().getCollectionConfigStruct());
+		setIncludedOrdersCollectionConfig(collectionConfig);
+	}
+	public void function saveExcludedOrdersCollection(){
+		var collectionConfig = serializeJSON(getExcludedOrdersCollection().getCollectionConfigStruct());
+		setExcludedOrdersCollectionConfig(collectionConfig);
+	}
+	
+	public any function getOrderCollection(){
+		if(isNull(variables.orderCollection)){
+			if(isNull(getExcludedOrdersCollectionConfig())){
+				if(isNull(getIncludedOrdersCollectionConfig())){
+					return;
+				}
+				return getIncludedOrdersCollection();
+			}
+			
+			if(!isNull(getIncludedOrdersCollectionConfig())){
+				var orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
+			}else{
+				var orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
+			}
+			var excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
+			
+			orderCollection.addFilter('orderID',excludedOrderIDs,'not in');
+			variables.orderCollection = orderCollection;
+		}
+		return variables.orderCollection;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -193,6 +295,9 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	public boolean function hasSkuBySkuID(required any skuID){
 		var skuCollection = getSkuCollection();
+		if(isNull(skuCollection)){
+			return false;
+		}
 		skuCollection.addFilter('skuID',arguments.skuID,'=');
 		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
 		skuCollection.removeFilter('skuID',arguments.skuID);
@@ -201,6 +306,18 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	public boolean function hasOrderItemSku(required any orderItem){
 		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
+	}
+	
+	// Collection Orders
+	public boolean function hasOrderByOrderID(required any orderID){
+		var orderCollection = getOrderCollection();
+		if(isNull(orderCollection)){
+			return false;
+		}
+		orderCollection.addFilter('orderID',arguments.orderID,'=');
+		var hasOrder = arrayLen(orderCollection.getRecords(refresh=true));
+		orderCollection.removeFilter('orderID',arguments.orderID);
+		return hasOrder;
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

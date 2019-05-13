@@ -46,36 +46,17 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.translation" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.promotionQualifier" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-<hb:HibachiEntityProcessForm entity="#getHibachiScope().getService('translationService').newTranslation()#" edit="#rc.edit#" sRedirectAction="admin:entity.detail#rc.processObject.getBaseObject()#" sRedirectQS="#getHibachiScope().getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.processObject.getBaseObject())#=#rc.processObject.getBaseID()#">
-	<input type="hidden" name="baseObject" value="#rc.processObject.getBaseObject()#">
-    <input type="hidden" name="baseID" value="#rc.processObject.getBaseID()#">
-    <input type="hidden" name="basePropertyName" value="#rc.processObject.getBasePropertyName()#">
-
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.translation#">
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-
-            <cfset rc.localeOptions = getHibachiScope().getService('hibachiRBService').getAvailableLocaleOptions(localeFilterList=getHibachiScope().getService('settingService').getSettingValue('globalTranslateLocales')) />
-            <cfset defaultLocale = getHibachiScope().getService('settingService').getSettingValue('globalLocale') />
-            <cfloop from="1" to="#arrayLen(rc.localeOptions)#" index="i">
-                <cfif defaultLocale neq rc.localeOptions[i].value>
-                  <input type="hidden" name="translationData[#i#].locale" value="#rc.localeOptions[i].value#">
-                  <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="" edit="#rc.edit#" title="#rc.localeOptions[i].name#">
-                </cfif>
-            </cfloop>
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
-</hb:HibachiEntityProcessForm>
+	<div class="col-md-6">
+        <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getIncludedOrdersCollection()#" title="Included Orders" collectionConfigFieldName="includedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+	</div>
+	<div class="col-md-6">
+	    <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getExcludedOrdersCollection()#" title="Excluded Orders" collectionConfigFieldName="excludedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+	</div>
 </cfoutput>
