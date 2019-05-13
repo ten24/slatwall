@@ -52,11 +52,10 @@ Notes:
 <cfparam name="rc.countrySmartList" type="any" />
 
     <hb:HibachiEntityActionBar type="listing" object="#rc.countrySmartList#" showCreate="false">
-    </hb:HibachiEntityActionBar>
-
     	<hb:HibachiEntityActionBarButtonGroup>
     		<hb:HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
     	</hb:HibachiEntityActionBarButtonGroup>
+    	 </hb:HibachiEntityActionBar>
     	
     <cfset countryCollectionList = getHibachiScope().getService('addressService').getCountryCollectionList()>
 	<cfset serchableDisplayProperties = "countryName,activeFlag"/>
