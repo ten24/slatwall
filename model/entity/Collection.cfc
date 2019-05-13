@@ -647,11 +647,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
-
 		var collectionConfig = this.getCollectionConfigStruct();
 		collectionConfig["columns"] = [];
 		this.setCollectionConfigStruct(collectionConfig);
 
+
+		var displayProperties = listToArray(arguments.displayPropertiesList);
+		for(var displayProperty in displayProperties){
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
+		}
+
+	}
+	
+	//XXX only to be called after setDisplayProperties, to be used as an utility function
+	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){

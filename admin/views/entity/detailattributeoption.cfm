@@ -73,7 +73,7 @@ Notes:
 					<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
 				</cfloop>
 				<cfif not rc.attributeOption.getNewFlag()>
-					<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/entitycollection" open="false" text="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#" showOnCreateFlag=false />
+					<hb:HibachiEntityDetailItem count="#rc.attributeOption.getEntityWithOptionSmartList().getRecordsCount()#" view="admin:entity/attributeoptiontabs/entitycollection" open="false" text="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#" showOnCreateFlag=false />
 				</cfif>
 			</hb:HibachiEntityDetailGroup>
 		</hb:HibachiEntityDetailForm>

@@ -64,31 +64,26 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
-							   recorddetailaction="admin:entity.detailloyaltyterm"
-							   recordEditAction="admin:entity.editloyaltyterm">
-
-		<hb:HibachiListingColumn propertyIdentifier="loyaltyTermName" />
-		<hb:HibachiListingColumn propertyIdentifier="loyaltyTermStartDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />
-		<hb:HibachiListingColumn propertyIdentifier="term.termName" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'LoyaltyTerm'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editloyaltyterm"
-			data-record-detail-action="admin:entity.detailloyaltyterm"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="loyaltyTermID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="loyaltyTermName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="loyaltyTermStartDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="loyalty.loyaltyName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="term.termName" ></sw-listing-column>
-	</sw-listing-display>
+	<cfset loyaltyTermCollectionList = getHibachiScope().getService('loyaltyService').getLoyaltyTermCollectionList()>
+	<cfset serchableDisplayProperties = "loyaltyTermName,loyaltyTermStartDateTime,loyalty.loyaltyName,term.termName"/>
+	<cfset loyaltyTermCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset loyaltyTermCollectionList.addDisplayProperty(displayProperty='loyaltyTermID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#loyaltyTermCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(loyaltyTermCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(loyaltyTermCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

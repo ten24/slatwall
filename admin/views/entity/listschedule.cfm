@@ -61,26 +61,27 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createschedule" entity="schedule" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-
-	<!--- <hb:HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
-							  recorddetailaction="admin:entity.detailschedule"
-	                          recordeditaction="admin:entity.editschedule">
-
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'Schedule'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editschedule"
-		record-detail-action="admin:entity.detailschedule"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset scheduleCollectionList = getHibachiScope().getService('emailService').getScheduleCollectionList()>
+	<cfset serchableDisplayProperties = "scheduleName"/>
+	<cfset scheduleCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset scheduleCollectionList.addDisplayProperty(displayProperty='scheduleID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#scheduleCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(scheduleCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(scheduleCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="scheduleID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="scheduleName" search="true" tdclass="primary" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
