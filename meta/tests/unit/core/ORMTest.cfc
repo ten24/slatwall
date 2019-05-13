@@ -96,7 +96,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				    // process row then release reference
 				    //flush first before evict if not readOnlyMode and making changes to entities.
 				    local.order.updateCalculatedProperties();
-				    local.order.setOrderNumber(123);
+				    local.order.setOrderNumber(125);
 				    debug(i);
 				    debug(local.order.getOrderID());
 				    arrayAppend(entitiesToEvict,local.order);
@@ -154,9 +154,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				    // process row then release reference
 				    //flush first before evict if not readOnlyMode and making changes to entities.
 				    local.order.updateCalculatedProperties();
-				    local.order.setOrderNumber(124);
+				    local.order.setOrderNumber('124');
 				    debug(i);
 				    debug(local.order.getOrderID());
+				    debug(local.order.getOrderNumber());
 				    arrayAppend(entitiesToEvict,local.order);
 				    if(local.i % 20 == 0 || totalRecords==i){
 				    	

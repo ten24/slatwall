@@ -83,7 +83,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         numeric pageRecordsShow=20,
         numeric pageRecordsStart=1,
         numeric fetchSize=1000,
-        boolean readOnlyMode=true, 
+        boolean readOnlyMode=false, 
         any ormSession=getORMSession()
     ) {
 		var query = arguments.ormSession.createQuery(arguments.HQL);
