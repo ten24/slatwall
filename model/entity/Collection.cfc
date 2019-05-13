@@ -1728,9 +1728,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var validJoins = [];
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
 			for(var join in getCollectionConfigStruct()["joins"]){
-				if(recordsCountJoin){
-					writedump(join);
-				}
 				if(
 					!arguments.recordsCountJoin
 					||(
@@ -1754,9 +1751,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					)
 				){
 					arrayAppend(validJoins,join);	
-				}
-				if(recordsCountJoin){
-					abort;
 				}
 			}
 		}
