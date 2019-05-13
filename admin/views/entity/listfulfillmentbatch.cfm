@@ -86,6 +86,31 @@ Notes:
 				</sw-collection-filters>
 			</sw-collection-config>
 		</sw-collection-configs>
-		
-		
+				
 	</sw-listing-display>
+		
+	<cfset fulfillmentBatchCollectionList = getHibachiScope().getService('fulfillmentService').getFulfillmentBatchCollectionList()>
+	<cfset serchableDisplayProperties = "fulfillmentBatchNumber,fulfillmentBatchName,description,assignedAccount.calculatedFullName"/>
+	<cfset fulfillmentBatchCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+
+	<cfset fulfillmentBatchCollectionList.addDisplayProperty( displayProperty='fulfillmentBatchID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<cfset fulfillmentBatchCollectionList.addFilter('fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode','ofstUnfulfilled,ofstPartiallyFulfilled','IN')/>
+
+
+    <hb:HibachiListingDisplay 
+    		collectionList="#fulfillmentBatchCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(fulfillmentBatchCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(fulfillmentBatchCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
+
