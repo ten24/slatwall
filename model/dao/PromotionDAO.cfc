@@ -880,7 +880,7 @@ Notes:
 		<cfset listAsArray = listToArray(promoCodeList)>
 
 		<cfloop array="#listAsArray#" index="local.currentPromotionCode">
-			<cfset var insertValues = listAppend(insertValues, "('#getHibachiScope().createHibachiUUID()#', '#local.currentPromotionCode#', '#promotion.getPromotionID()#', '#maxUseCount#', '#maxUseCount#')")>
+			<cfset insertValues = listAppend(insertValues, "('#getHibachiScope().createHibachiUUID()#', '#local.currentPromotionCode#', '#promotion.getPromotionID()#', '#maxUseCount#', '#maxUseCount#')")>
 		</cfloop>
 
 		<cfquery name="local.createPromotionCodesQuery" dbtype="query">
