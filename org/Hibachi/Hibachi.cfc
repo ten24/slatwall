@@ -137,9 +137,6 @@ component extends="framework.one" {
 		return 'production';
 	}
 	
-	public void function setDatasource(required string datasourceName){
-		this.datasource.name=arguments.datasourceName;
-	}
 	
 	public string function getDatasource(){
 		return this.datasource.name;
