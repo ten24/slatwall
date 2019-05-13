@@ -34,7 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
-	
+
 	You may copy and distribute the modified version of this program that meets
 	the above guidelines as a combined work under the terms of GPL for this program,
 	provided that you include the source code of that other code when and as the
@@ -61,7 +61,7 @@ Notes:
 			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-	
+
 	<!--- <hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
 							   recordEditAction="admin:entity.editaccount"
 							   recordDetailAction="admin:entity.detailaccount">
@@ -90,5 +90,5 @@ Notes:
 		<sw-listing-column data-property-identifier="company" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
 	</sw-listing-display>
-	
+
 </cfoutput>
