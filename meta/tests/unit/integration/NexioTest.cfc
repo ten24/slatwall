@@ -11,8 +11,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	 */
 	public void function processCreditCard() {
 
-		var integrationCFC = getBean("integrationService").getIntegrationByIntegrationPackage('nexio');
-		var paymentIntegrationCFC = createMock(object=getBean("integrationService").getPaymentIntegrationCFC(integrationCFC));
+		var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('nexio');
+		var paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
 
 		var cards = [
 			'4111111111111111', // 1. Visa
@@ -50,21 +50,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		// Setup objects
-		var paymentTransaction = getBean("paymentService").newPaymentTransaction();
-		var payment = getBean("paymentService").newOrderPayment();
-		var order = createMock(object=getBean('orderService').newOrder());
-		var account = createMock(object=getBean('accountService').newAccount());
-		var address = createMock(object=getBean('addressService').newAddress());
-		var emailAddress = createMock(object=getBean('accountService').newAccountEmailAddress());
+		var paymentTransaction = request.slatwallScope.getBean("paymentService").newPaymentTransaction();
+		var payment = request.slatwallScope.getBean("paymentService").newOrderPayment();
+		var order = createMock(object=request.slatwallScope.getBean('orderService').newOrder());
+		var account = createMock(object=request.slatwallScope.getBean('accountService').newAccount());
+		var address = createMock(object=request.slatwallScope.getBean('addressService').newAddress());
+		var emailAddress = createMock(object=request.slatwallScope.getBean('accountService').newAccountEmailAddress());
 		paymentTransaction.setOrderPayment(payment);
 		payment.setOrder(order);
 		order.setAccount(account);
-		order.setOrderID(getHibachiScope().createHibachiUUID());
+		order.setOrderID(request.slatwallScope.getService("hibachiService").createHibachiUUID());
 		order.setBillingAddress(address);
 		emailAddress.setAccount(account);
 		emailAddress.setEmailAddress('todd.hatcher@ten24web.com');		
 		account.setPrimaryEmailAddress(emailAddress);
-		account.setAccountID(getHibachiScope().createHibachiUUID());
+		account.setAccountID(request.slatwallScope.getService("hibachiService").createHibachiUUID());
 		account.setFirstName("Todd");
 		account.setLastName("Hatcher");
 		address.setStreetAddress("16112 Cherrywood St.");
@@ -82,8 +82,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		payment.setExpirationYear(values.expYear);
 
 		// Setup requestBean
-		var requestBean = getHibachiScope().getTransient('creditCardTransactionRequestBean');
-		requestBean.setTransactionID(getHibachiScope().createHibachiUUID());
+		var requestBean = request.slatwallScope.getTransient('creditCardTransactionRequestBean');
+		requestBean.setTransactionID(request.slatwallScope.getService("hibachiService").createHibachiUUID());
 		requestBean.setTransactionAmount(payment.getAmount());
 		requestBean.setTransactionCurrencyCode(payment.getCurrencyCode());
 		requestBean.setTransactionType(values.transactionType);
@@ -162,12 +162,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		// Manual test override without needed to set integration testMode=false
 		// requestBean.getOrder().setTestOrderFlag(values.testMode);
-		writeDump("***Test mode: ");
-		writeDump({testMode = paymentIntegrationCFC.getTestModeFlag(requestBean, 'testMode'), transactionAmount = requestBean.getTransactionAmount()});
+		// writeDump("***Test mode: ");
+		// writeDump({testMode = paymentIntegrationCFC.getTestModeFlag(requestBean, 'testMode'), transactionAmount = requestBean.getTransactionAmount()});
+
+		// writeDump(var=paymentIntegrationCFC.processCreditCard(requestBean), top=1, abort=true);
 		
 		// Run transaction
 		var responseBean = paymentIntegrationCFC.processCreditCard(requestBean);
-		
 		// Debugging
 		debug({errors=responseBean.getErrors(), messages=responseBean.getMessages(), properties=[
 			{'avsCode' = responseBean.getAVSCode()},

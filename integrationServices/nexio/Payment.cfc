@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
     
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
     - You also meet the terms and conditions of the license of each 
       independent module 
     - You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
     - Your custom code must not alter or create any files inside Slatwall, 
       except in the following directories:
         /integrationServices/
-
     You may copy and distribute the modified version of this program that meets 
     the above guidelines as a combined work under the terms of GPL for this program, 
     provided that you include the source code of that other code when and as the 
@@ -42,12 +39,10 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 
-component accessors="true" output="false" displayname="Stripe" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
+component accessors="true" output="false" displayname="Nexio" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
 
 		public any function init() {
 			return this;
@@ -57,6 +52,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			return "creditCard";
 		}
 
+		// Override allow site settings
 		public any function setting(required any requestBean) {
 			// Allows settings to be requested in the context of the site where the order was created
 			if (!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
@@ -67,8 +63,23 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			return super.setting(argumentCollection=arguments);
 		}
+
+		// Helper method to get proper public key value
+		private string function getPublicKey(required any requestBean) {
+			var publicKey = setting(settingName='publicKeyTest', requestBean=arguments.requestBean);
+			
+			// Set Live Endpoint Url if not testing
+			if (!getTestModeFlag(arguments.requestBean, 'testMode')) {
+				publicKey = setting(settingName='publicKeyLive', requestBean=arguments.requestBean);
+			}
+
+			return publicKey;
+		}
 		
+		// The main entry point to process credit card (Slatwall convention)
 		public any function processCreditCard(required any requestBean) {
+			verifyServerCompatibility();
+
 			var responseBean = getTransient('CreditCardTransactionResponseBean');
 			
 			// Set default currency
@@ -78,7 +89,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			// Adding currency to transaction message for admin purposes
 			responseBean.addMessage('transactionCurrencyCode', arguments.requestBean.getTransactionCurrencyCode());
-			
+
 			// Execute request
 			if (arguments.requestBean.getTransactionType() == "generateToken") {
 				sendRequestToGenerateToken(arguments.requestBean, responseBean);
@@ -93,7 +104,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			} else if (arguments.requestBean.getTransactionType() == "void") {
 				sendRequestToVoid(arguments.requestBean, responseBean);
 			} else {
-				throw("CyberSource Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+				throw("Nexio Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 			}
 			
 			return responseBean;
@@ -146,10 +157,12 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 		}
 		
 		private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
-			
+
 			// We are expecting there is no provider token yet, however if accountPaymentMethod is used and attempt to generate another token prevent and short circuit
 			if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 				
+				var publicKey = getPublicKey(arguments.requestBean);
+
 				var requestData = {
 					'data' = {
 						'paymentMethod' = 'creditCard',
@@ -166,8 +179,8 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 						'cardHolderName' = 'Kevin Batchelor'
 					}
 				};
-				
-				// Step 1. Generate a "one time use token"
+
+				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 
 				if (!responseBean.hasErrors()) {
@@ -185,15 +198,15 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 							// 'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
 						}
 					};
-					writeDump("***Save card: requestData");
-					writeDump(requestData);
+					// writeDump("***Save card: requestData");
+					// writeDump(requestData);
 					
 					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 					
-					writeDump("***Save card: responseData");
-					writeDump(responseData);
-					abort;
+					// writeDump("***Save card: responseData");
+					// writeDump(responseData);
+					// abort;
 					
 					if (!responseBean.hasErrors()) {
 						// Extract data and set as part of the responseBean
@@ -305,15 +318,16 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			}
 			
 			var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
+			//writeDump(var=username, top=2, abort=true);
 			var httpRequest = new http();
 			httpRequest.setUrl(apiUrl);
 			httpRequest.setMethod('post');
 			httpRequest.setCharset('UTF-8');
-			httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#");
+			httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#"); // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			
-			var logPath = expandPath('/integrationServices/nexio/log');
+			var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
 			if (!directoryExists(logPath)){
 				directoryCreate(logPath);
 			}
@@ -328,24 +342,22 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
 			};
 			
+			
 			fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 			
 			// Make HTTP request to endpoint
 			var httpResponse = httpRequest.send().getPrefix();
-			
-			writeDump([apiUrl,username,password,httpResponse]);
-			abort;
 	
 			var responseData = {};
 			// Server error handling - Unavailable or Communication Problem
-			if (left(httpResponse.statusCode, 1) == 5 || left(httpResponse.statusCode, 1) == 4) {
+			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-
-				// Only for admin purposes
-				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#");
 
 				// Public error message
 				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
+
+				// Only for admin purposes
+				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
 				
 				// No response from server
 				if (httpResponse.status_code == 0) {
@@ -359,7 +371,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 					// Convert JSON response
 					responseData = deserializeJSON(httpResponse.fileContent);
 					
-					fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+					fileWrite('#logPath#/5May#timeSufix#_response.json',httpResponse.fileContent);
 
 					
 					if (structKeyExists(responseData, 'error')) {
@@ -378,11 +390,12 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 
 			// Server response successful
 			} else {
-				
-				// Convert raw XML response to xmlObject
+				arguments.responseBean.setStatusCode(httpResponse.status_code);
+
+				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
-				fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+				fileWrite('#logPath#/5May#timeSufix#_response.json',httpResponse.fileContent);
 			
 				//*** TO DO: writeDump();
 			}
@@ -396,12 +409,10 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 		/** EXAMPLE IMPLEMENTATION
 		public any function processCreditCard(required any requestBean) {
 			var responseBean = getTransient('CreditCardTransactionResponseBean');
-
 			// Set default currency, CyberSource SOAP API requires a currency for tokenization
 			if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
 				arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
 			}
-
 			// Adding currency to transaction message for admin purposes
 			responseBean.addMessage('transactionCurrencyCode', arguments.requestBean.getTransactionCurrencyCode());
 	
@@ -421,7 +432,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			} else {
 				throw("CyberSource Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 			}
-
 			// Output merchantID for admin troubleshooting purposes, masked for better security
 			var merchantID = setting(settingName='merchantID', requestBean=arguments.requestBean);
 			var maxCharactersToReveal = min(8, len(merchantID));
@@ -451,7 +461,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 					arguments.requestMessageData.firstName = trim(arguments.requestBean.getNameOnCreditCard());
 				}
 			}
-
 			// Set email if available
 			arguments.requestMessageData.email = "no-email@noemail.com";
 			if (!isNull(arguments.requestBean.getAccountPrimaryEmailAddress()) && len(arguments.requestBean.getAccountPrimaryEmailAddress())) {
@@ -494,11 +503,9 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 					'JCB' = {value='007', cvNumberSupported=true, tokenizationAutoAuthSupported=true},
 					'Maestro' = {value='024', cvNumberSupported=false, tokenizationAutoAuthSupported=true} 
 				};
-
 				// Only for admin purposes
 				arguments.responseBean.addMessage('configCvNumberVerificationEnabled', yesNoFormat(setting(settingName='verifyCVNumber', requestBean=arguments.requestBean)));
 				arguments.responseBean.addMessage('configCardType', arguments.requestBean.getCreditCardType());
-
 				// Configure cardType messageData if credit card type is supported by CyberSource processor
 				// And also configure cvNumber messageData if verification is requested and is supported
 				if (!isNull(arguments.requestBean.getCreditCardType()) && structKeyExists(cardTypes, arguments.requestBean.getCreditCardType())) {
@@ -508,12 +515,10 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 					
 					// Configure to verify CVN
 					if (setting(settingName='verifyCVNumber', requestBean=arguments.requestBean)) {
-
 						// Only if the credit card type supports CVN verification
 						if (cardTypes[arguments.requestBean.getCreditCardType()].cvNumberSupported) {
 							// Only for admin purposes
 							arguments.responseBean.addMessage('configCvNumberCardTypeVerificationSupported', yesNoFormat(true));
-
 							// If a securityCode was provided update flag for template logic
 							if (!isNull(arguments.requestBean.getSecurityCode()) && len(arguments.requestBean.getSecurityCode())) {
 								arguments.requestMessageData.verifyCVNumberFlag = true;
@@ -524,12 +529,10 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 							if (!arguments.requestMessageData.verifyCVNumberFlag) {
 								// Public error message
 								arguments.responseBean.addError('cvn', rbKey('cyberSource.error.cvv_invalid'));
-
 								// Only for admin purposes
 								arguments.responseBean.addMessage('cvnMatchError', "Security Code Not Provided: #rbKey('cyberSource.error.cvv_invalid')#");
 							}
 							
-
 						// CNV verification is not support by credit card type, for admin purposes
 						} else {
 							arguments.responseBean.addMessage('configCvNumberCardTypeVerificationSupported', yesNoFormat(false));
@@ -540,7 +543,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 					arguments.responseBean.addMessage('configCvNumberCardTypeVerificationSupported', yesNoFormat(false));
 				}
 			}
-
 			// Only for admin purposes
 			arguments.responseBean.addMessage('apiRequestCVNumberProvided', yesNoFormat(arguments.requestMessageData.verifyCVNumberFlag));
 			arguments.responseBean.addMessage('apiRequestCardTypeProvided', yesNoFormat(arguments.requestMessageData.cardTypeSupportedFlag));
@@ -557,7 +559,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			local.requestMessageData['requestMessageTemplateFileName'] = arguments.requestMessageTemplateFileName;
 			local.requestMessageData['transactionKey'] = setting(settingName='transactionKeyTest', requestBean=arguments.requestBean);
 			local.requestMessageData['soapApiVersion'] = setting(settingName='soapApiVersion', requestBean=arguments.requestBean);
-
 			// Must be unique, otherwise CyberSource request results in error response
 			if (!isNull( arguments.requestBean.getTransactionID())){
 				local.requestMessageData['merchantReferenceCode'] = arguments.requestBean.getTransactionID();
@@ -602,15 +603,12 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			// Server error handling - Unavailable or Communication Problem
 			if (left(httpResponse.statusCode, 1) == 5 || left(httpResponse.statusCode, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-
 				var faultString = "";
 				try {
 					faultString = xmlSearch(xmlParse(httpResponse.fileContent), "//*[local-name() = 'Fault']/*[local-name() = 'faultstring']")[1].xmlText;
 				} catch (any e) {}
-
 				// Only for admin purposes
 				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('cyberSource.error.serverCommunication_admin')# #httpResponse.statusCode#" & (len(faultString) ? ", faultstring: '#trim(faultString)#'" : ""));
-
 				// Public error message
 				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('cyberSource.error.serverCommunication_public')#");
 				
@@ -635,7 +633,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			// Set providerTransactionID with 'requestID' value, requestID is always present whether SOAP response is success or error
 			arguments.responseBean.setProviderTransactionID(xmlSearch(responseData.xml, "//*[local-name() = 'requestID']")[1].xmlText);
-
 			// Extract the AVS code if present.
 			var avsCodeResult = xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'avsCode']");
 			if (arrayLen(avsCodeResult)) {
@@ -652,34 +649,26 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			if (arrayLen(cvCodeResult)) {
 				// Resource: http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SO_API/Credit_Cards_SO_API.pdf#page=427
 				arguments.responseBean.setSecurityCodeMatchFlag(cvCodeResult[1].xmlText == 'M');
-
 				// Start special handling for cvNumber errors.
 				var cvNumberErrorWasSimulatedFlag = false;
-
 				// Test mode only logic for simulating cvNumber error
 				// NOTE: During simluation CyberSource test mode will still show a successful transaction in the CyberSource Business Center "Test" backend
 				// 		 CyberSource cannot differentiate our intent, we can only control our end of the logic and behavior for simulating an CVN error in this way
 				if (getTestModeFlag(arguments.requestBean, 'testMode')) {
-
 					// Setting stores a cvNumber which triggers when to simulate the cvNumber error (eg. "234")
 					var simulateErrorCVNumberValue = setting(settingName='simulateErrorCVNumberValue', requestBean=arguments.requestBean);
-
 					// Check if provided securityCode is trying to simulate error
 					if (len(simulateErrorCVNumberValue) && !isNull(arguments.requestBean.getSecurityCode()) && len(arguments.requestBean.getSecurityCode()) && arguments.requestBean.getSecurityCode() == simulateErrorCVNumberValue) {
 						// Public error message
 						arguments.responseBean.addError('cvn', rbKey('cyberSource.error.cvv_invalid'));
-
 						// Only for admin purposes
 						arguments.responseBean.addMessage('cvnMatchError', "Simulated error: #rbKey('cyberSource.error.cvv_invalid')#");
-
 						// Flag so we don't stack error messages in addition to the simulated error
 						cvNumberErrorWasSimulatedFlag = true;
 					}				
 				}
-
 				// Setting indicates which modes we want transaction errors to occur if there is CV security code mismatch
 				var requireCVNumberMatchMode = setting(settingName='requireCVNumberMatchMode', requestBean=arguments.requestBean);
-
 				// Check the cvNumber match result provided as part of CyberSource response only if integration setting indicates so
 				// NOTE: only executes for test mode if setting condition is met AND we haven't already simulated a cvNumber error
 				if (
@@ -689,38 +678,31 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 					if (isBoolean(arguments.responseBean.getSecurityCodeMatchFlag()) && !arguments.responseBean.getSecurityCodeMatchFlag()) {
 						// Public error message
 						arguments.responseBean.addError('cvn', rbKey('cyberSource.error.cvv_invalid'));
-
 						// Only for admin purposes
 						arguments.responseBean.addMessage('cvnMatchError', rbKey('cyberSource.error.cvv_invalid'));
 					}
 				}
 			}
-
 			// Extract the reference code
 			var referenceCodeResult = xmlSearch(responseData.xml, "//*[local-name() = 'merchantReferenceCode']");
 			if (arrayLen(referenceCodeResult)) {
 				// Only for admin purposes
 				arguments.responseBean.addMessage('apiRequestMerchantReferenceNumber', referenceCodeResult[1].xmlText);
 			}
-
 			// Handle any defined SOAP API errors
 			var reasonCode = xmlSearch(responseData.xml, "//*[local-name() = 'reasonCode']")[1].xmlText;
 			if (responseBean.getStatusCode() != "ACCEPT" || reasonCode != "100") {
 				var errorMessage = "";
-
 				// Only for admin purposes
 				arguments.responseBean.addMessage('reasonCode', "Decision: '#arguments.responseBean.getStatusCode()#' - #reasonCode# - "& rbKey('cyberSource.reasonCode.#reasonCode#'));
-
 				// GlobalPayments CyberSource connectivity testing requires obfuscating reason code error details for certain errors to the public
 				if (listFindNoCase('201,203,204,205,208,210,211', reasonCode)) {
 					errorMessage = rbKey('cyberSource.reasonCode.2XX.sensitiveErrors');
 				} else {
 					errorMessage = rbKey('cyberSource.reasonCode.2XX.processingErrors');
 				}
-
 				// Only for admin purposes
 				arguments.responseBean.addMessage('transactionError', errorMessage);
-
 				// Special CVN error handling might have already added error message
 				if (!arguments.responseBean.hasError('cvn')) {
 					// Set the public friendly error message
@@ -733,13 +715,11 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 				var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-
 				if (!arguments.responseBean.hasErrors()) {
 					// cardType is valid cardType is required for tokenization and functionality must be available from CyberSource for specific card type
 					if (!structKeyExists(requestMessageData, 'cardType')) {
 						// Only for admin purposes
 						arguments.responseBean.addMessage('cardType', "No tokenization is available for '#arguments.requestBean.getCreditCardType()#' credit cards.");
-
 						// Public error message
 						arguments.responseBean.addError('cardType', "#rbKey('cyberSource.error.cardTypeInvalid')# card type: '#arguments.requestBean.getCreditCardType()#'");
 		
@@ -748,25 +728,21 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 						// Set autoAuth override the default setting in CyberSource Business Center based on the integration setting
 						// CyberSource Business Center > Payment Tokenization > Settings > Perform an automatic pre-authorization before creating profile
 						requestMessageData.disableAutoAuth = setting(settingName='disableAutoAuth', requestBean=arguments.requestBean);
-
 						var soapRequestBody = populateSOAPRequestBody("generateTokenTemplate.cfm", requestBean, requestMessageData);
 						var responseData = sendHttpSOAPRequest(requestBean=arguments.requestBean, responseBean=arguments.responseBean, body=soapRequestBody);
 						
 						// Only for admin purposes
 						arguments.responseBean.addMessage('apiRequestTokenizationWithAutoAuthEnabled', yesNoFormat(!requestMessageData.disableAutoAuth));
-
 						if (!responseBean.hasErrors()) {
 		
 							// Extract subscriptionID and set it as part of the responseBean
 							var subscriptionID = xmlSearch(responseData.xml, "//*[local-name() = 'paySubscriptionCreateReply']/*[local-name() = 'subscriptionID']")[1].xmlText;
 							arguments.responseBean.setProviderToken(subscriptionID);
-
 							// Extract the preAuthorization code
 							var autoPreAuthorizatonCodeResult = xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'authorizationCode']");
 							if (arrayLen(autoPreAuthorizatonCodeResult)) {
 								arguments.responseBean.setAuthorizationCode(autoPreAuthorizatonCodeResult[1].xmlText);
 							}
-
 							// Extract the preAuthorization amount. This should be 0.00 or 1.00, depends on the payment processor and card type.
 							// Visa and MasterCard allow zero dollar pre-authorizations
 							var autoPreAuthorizationAmountResult = xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'amount']");
@@ -776,14 +752,12 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 						}
 					}
 				}
-
 			// Uneccessary to make API request because same token generated during accountPaymentMethod create is valid for subsequent authorization requests
 			// Manually populate responseBean with the relevant data
 			} else {
 				arguments.responseBean.setStatusCode("INTERALTOKENOBTAINED");
 				arguments.responseBean.setProviderToken(requestBean.getProviderToken());
 				arguments.responseBean.setProviderTransactionID(requestBean.getOriginalProviderTransactionID());
-
 				// Only for admin purposes
 				arguments.responseBean.addMessage('internalTokenObtained', rbKey('cyberSource.info.internalTokenObtained'));
 			}
@@ -855,7 +829,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 	
 		private void function sendRequestToCredit(required any requestBean, required any responseBean) {
 			var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-
 			if (!arguments.responseBean.hasErrors()) {
 				// creditCaptureRequestID can also be set as the providerTransactionID from the originalAuthorizationProviderTransactionID only if the charge has already been voided
 				if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
