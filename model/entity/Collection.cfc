@@ -681,6 +681,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		collectionConfig["isDistinct"] = arguments.isDistinct;
 		this.setCollectionConfigStruct(collectionConfig);
 	}
+	
+	//XXX only to be called after setDisplayProperties, to be used as an utility function
+	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
+
+		var displayProperties = listToArray(arguments.displayPropertiesList);
+		for(var displayProperty in displayProperties){
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
+		}
+
+	}
 
 	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}, boolean prepend=false){
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -2494,13 +2504,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 	
-	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
-		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
-			variables.scrollableRecords = getService('ORMService').getScrollableRecordsByCollectionList(collectionList=this,ormSession=arguments.ormSession);
-		}
 
-		return variables.scrollableRecords;
-	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
