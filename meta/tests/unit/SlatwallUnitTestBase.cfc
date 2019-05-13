@@ -57,8 +57,10 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.slatwallFW1Application.setDatasource(variables.slatwallFW1Application.getDatasource()&'-test');
-		variables.slatwallFW1Application.onApplicationStart();
+		if(!(structKeyExists(url,'reporter') && url.reporter=='JUnit') && right(variables.slatwallFW1Application.getDatasource(),5) neq '-test'){
+			throw('datasource should be named [proj]-test for unit tests');
+		}
+		
 		variables.mockService = createMock('Slatwall.meta.tests.unit.mockService');
 	}
 
