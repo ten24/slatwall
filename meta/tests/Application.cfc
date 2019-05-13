@@ -46,20 +46,21 @@
 Notes:
 
 */
-component extends="meta.testbox.Application"{
+component extends="testbox.Application"{
 
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
-
+    
 	this.sessionManagement = true;
 
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
 	
 	this.mappings[ '/framework' ] =  "#this.mappings['/Slatwall']#/org/Hibachi/framework";
 	this.mappings[ "/mxunit" ] = expandPath( "/testbox/system/compat" );
-	
+	this.mappings["/testbox"] = "#this.mappings['/Slatwall']#/meta/tests/testbox";
+	this.mappings["/meta"] = "#this.mappings['/Slatwall']#/meta";
 	this.ormEnabled = true;
 	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
 	this.ormSettings.dbcreate = "update";
@@ -67,7 +68,6 @@ component extends="meta.testbox.Application"{
 	this.ormsettings.eventhandling = true;
 	this.ormSettings.automanageSession = false;
 	setting requestTimeOut="0";
-
 	
 
 }
