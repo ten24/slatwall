@@ -18,6 +18,8 @@ class SWAccountShippingAddressCardController{
 	public baseEntityName:string;
 	public baseEntity;
 	
+	public includeModal = true;
+	
 	public defaultCountryCode:string;
 
 	constructor(public $hibachi,
@@ -31,6 +33,10 @@ class SWAccountShippingAddressCardController{
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
 		} else {
 			this.modalButtonText = this.rbkeyService.rbKey('define.add')  + ' ' + this.title; 
+		}
+		
+		if(this.baseEntityName === 'OrderTemplate' && this.baseEntity['orderTemplateStatusType_systemCode'] === 'otstCancelled'){
+			this.includeModal = false;
 		}
 	}
 	

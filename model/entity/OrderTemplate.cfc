@@ -98,6 +98,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="scheduledOrderDates" persistent="false";
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
+		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 

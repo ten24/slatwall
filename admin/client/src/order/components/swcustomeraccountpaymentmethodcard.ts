@@ -27,6 +27,8 @@ class SWCustomerAccountPaymentMethodCardController{
 	
 	public stateCodeOptions;
 	
+	public includeModal=true;
+	
 	constructor(public $hibachi,
 				public observerService,
 				public rbkeyService
@@ -40,6 +42,10 @@ class SWCustomerAccountPaymentMethodCardController{
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
 		} else {
 			this.modalButtonText = this.rbkeyService.rbKey('define.add')  + ' ' + this.title; 
+		}
+		
+		if(this.baseEntityName === 'OrderTemplate' && this.baseEntity['orderTemplateStatusType_systemCode'] === 'otstCancelled'){
+			this.includeModal = false;
 		}
 	}
 	

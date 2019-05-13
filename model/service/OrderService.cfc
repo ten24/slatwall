@@ -1151,12 +1151,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return this.newOrder();
 	}
 	
+	//begin order template functionality	
 	public any function processOrderTemplate_activate(required any orderTemplate, any processObject, required struct data={}) {
+		
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstDraft'){
+			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be activated if it''s a draft');
+			return arguments.orderTemplate;
+		} 
+
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
 
-	//begin order template functionality	
+	public any function processOrderTemplate_cancel(required any orderTemplate, any processObject, required struct data={}) { 
+		
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstActive'){
+			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
+			return arguments.orderTemplate;
+		} 
+		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getType(arguments.data.orderTemplateCancellationReasonType.typeID));
+		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		return this.saveOrderTemplate(arguments.orderTemplate); 
+	} 
+
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
 
 		if(arguments.processObject.getNewAccountFlag()) {

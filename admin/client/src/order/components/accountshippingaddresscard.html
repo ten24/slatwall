@@ -28,7 +28,8 @@
 			</ul>
 		</div>
 		
-		<sw-account-shipping-method-modal data-modal-button-text="{{swAccountShippingAddressCard.modalButtonText}}">
+		<sw-account-shipping-method-modal   ng-if="swAccountShippingAddressCard.includeModal"
+											data-modal-button-text="{{swAccountShippingAddressCard.modalButtonText}}">
 		</sw-account-shipping-method-modal>
 	</content>
 </div>

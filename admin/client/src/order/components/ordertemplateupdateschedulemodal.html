@@ -4,7 +4,7 @@
                    data-save-disabled="!swOrderTemplateUpdateScheduleModal.form.$dirty">
     
     <sw-modal-button>
-        <button type="button" class="btn btn-default">
+        <button type="button" class="btn btn-default" ng-disabled="swOrderTemplateUpdateScheduleModal.orderTemplate['orderTemplateStatusType_systemCode'] === 'otstCancelled'">
             Push Out Next Delivery
         </button>
     </sw-modal-button>
