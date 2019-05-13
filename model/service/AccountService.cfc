@@ -1853,8 +1853,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromSubscriptionUsages( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromAccountPaymentMethods(accountAddressID = arguments.accountAddress.getAccountAddressID());
 		   
-		    arguments.accountAddress.removeAccount();
-            arguments.accountAddress.setAddress(javaCast("null","")); 
+		    getAccountDAO().removeAccountFromAccountAddress(arguments.accountAddress.getAccountAddressID());
+            arguments.accountAddress.setAddress(javaCast("null",""));  
 
 		}
 
