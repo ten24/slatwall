@@ -155,7 +155,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 
-		
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -575,10 +574,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				if(len(trim(accountAddress['address_stateCode']))){
 					addressName &= accountAddress['address_stateCode'] & ', ';
 				}	
-				
-				if(len(trim(accountAddress['address_stateCode']))){
-					addressName &= accountAddress['address_stateCode'] & ', ';
-				}
 
 				var accountAddressOption = {
 					"name":  addressName & accountAddress['address_countryCode'],
