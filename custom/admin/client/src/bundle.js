@@ -76426,7 +76426,6 @@ var SWActionCallerController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.$onInit = function () {
-            console.log('so modal???', _this.modal);
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();

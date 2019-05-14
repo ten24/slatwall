@@ -97,6 +97,68 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
 
+	public struct function getStructRepresentation(){ 
+		var orderTemplateStruct = super.getStructRepresentation(); 
+		orderTemplateStruct['subtotal'] = this.getSubtotal();
+		orderTemplateStruct['fulfillmentTotal'] = this.getFulfillmentTotal();
+		orderTemplateStruct['total'] = this.getTotal();
+
+		return orderTemplateStruct;  
+	}  
+
+	public numeric function getFulfillmentTotal() {
+		var transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+		transientOrderFulfillment.setCurrencyCode(this.getCurrencyCode());
+		transientOrderFulfillment.setFulfillmentMethod(this.getShippingMethod().getFulfillmentMethod());  	
+		transientOrderFulfillment.setShippingMethod(this.getShippingMethod());  	
+		transientOrderFulfillment.setShippingAddress(this.getShippingAddress()); 
+
+		//need order
+
+		var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
+		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+	
+		var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
+		
+		var fulfillmentTotal = 0;
+	
+		for(var orderTemplateItem in orderTemplateItemRecords){ 
+			var orderItem = new Slatwall.model.entity.OrderItem(); 
+
+			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+			
+			orderItem.setSku(sku);
+			orderItem.setquantity(orderTemplateItem['quantity']);
+
+			transientOrderFulfillment.addOrderFulfillmentItem(orderItem);  
+		}
+
+		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment); 
+
+		return transientOrderFulfillment.getFulfillmentCharge(); 
+
+	}
+
+	public numeric function getSubtotal(){
+		var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
+		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+	
+		var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
+
+		var subtotal = 0; 
+
+		for(var orderTemplateItem in orderTemplateItemRecords){ 
+			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+			subtotal += sku.getPriceByCurrencyCode(this.getCurrencyCode(), orderTemplateItem['quantity']); 	
+		} 
+	
+		return subtotal; 
+	}
+
+	public numeric function getTotal(){ 
+		return this.getSubtotal(); 
+	} 
+
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
