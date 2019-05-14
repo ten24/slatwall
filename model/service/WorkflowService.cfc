@@ -317,7 +317,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
-	private boolean function executeTaskAction(required any workflowTaskAction, required any entity, required string type, struct data = {}){
 		var actionSuccess = false;
 		
 		switch (workflowTaskAction.getActionType()) {
