@@ -628,6 +628,7 @@ component extends="framework.one" {
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
 		createHibachiScope();
+
 		if(
 			(
 				hasReloadKey()
@@ -638,6 +639,8 @@ component extends="framework.one" {
 
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
+			
+
 			// If not, lock the application until this is finished
 			lock scope="Application" timeout="2400"  {
 
@@ -1078,13 +1081,35 @@ component extends="framework.one" {
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
 		}
+		
 		if(!getHibachiScope().getORMHasErrors()) {
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
+		
+		
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
+		
+		//Process request entity queue
+		var entityQueueData = getHibachiScope().getEntityQueueData();
+		var entityQueueDataLength = structCount(entityQueueData);
+		if(entityQueueDataLength > 0){
+			
+			var entityQueueArray = [];
+			var currentIndex = 1;
+			var limit = getHibachiScope().setting('globalEntityQueueDataProcessCount');
+			for(var i in entityQueueData){
+				if(limit > 0 && limit >= currentIndex){
+					break;
+				}
+				arrayAppend(entityQueueArray, entityQueueData[i]);
+				currentIndex++;
+			}
+			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+		}
 		getHibachiScope().getProfiler().logProfiler();
+		
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed
