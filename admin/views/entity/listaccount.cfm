@@ -62,89 +62,42 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
 
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
+    <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
-	</hb:HibachiListingDisplay> --->
-
-	<!---<sw-listing-display data-using-personal-collection="true"
-			data-collection="'Account'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editaccount"
-			data-record-detail-action="admin:entity.detailaccount"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="accountID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="company" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="primaryPhoneNumber.phoneNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedGuestAccountFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="organizationFlag" ></sw-listing-column>
-	</sw-listing-display>--->
+	<cfset serchableDisplayProperties = "firstName,lastName,primaryEmailAddress.emailAddress,company"/>
+	<cfset accountCollectionList.setDisplayProperties(
+	serchableDisplayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
 	
-	
-	<cfset displayPropertyList = "calculatedGuestAccountFlag,organizationFlag"/>
-	<cfset rc.accountCollectionList.setDisplayProperties(
-		displayPropertyList,
+	<cfset nonSerchableDisplayProperties = "calculatedGuestAccountFlag,organizationFlag"/>
+	<cfset accountCollectionList.addDisplayProperties(
+		nonSerchableDisplayProperties, 
 		{
 			isVisible=true,
 			isSearchable=false,
 			isDeletable=true
 		}
 	)/>
-	
 
-	
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='firstName',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='lastName',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='primaryEmailAddress.emailAddress',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='company',columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	},prepend=true)/>
-	
-	
-		<cfset rc.accountCollectionList.addDisplayProperty(displayProperty='accountID',columnConfig={
+	<cfset rc.accountCollectionList.addDisplayProperty(
+	displayProperty='accountID',
+	columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
 	})/>
-		<hb:HibachiListingDisplay 
-		collectionList="#rc.accountCollectionList#"
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#accountCollectionList#"
 		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(rc.accountCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(rc.accountCollectionList.getCollectionObject())#"
+		recordEditAction="admin:entity.edit#lcase(accountCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(accountCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
-	
-	
-
 
 </cfoutput>
