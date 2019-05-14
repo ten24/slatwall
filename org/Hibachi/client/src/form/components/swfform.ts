@@ -17,6 +17,8 @@ class SWFFormController {
     public loading:boolean;
     public errors:any;
     public fileFlag:boolean = false;
+    public errorToDisplay:string; //very first error returned from call
+    public uploadProgressPercentage:any = 0;
     
     // @ngInject
     constructor(
@@ -26,7 +28,8 @@ class SWFFormController {
         public $hibachi,
         public $element,
         public validationService,
-        public hibachiValidationService
+        public hibachiValidationService,
+        public observerService
     ){
 
     }
@@ -42,6 +45,17 @@ class SWFFormController {
             }
         }
         return formData;
+    }
+    
+    private calculateFileUploadProgress = (xhr)=>{
+        xhr.upload.addEventListener("progress",(event)=>{
+            if (event.lengthComputable) {
+                this.$timeout(()=>{
+                    var uploadProgressPercentage = event.loaded / event.total;
+                    this.uploadProgressPercentage = Math.floor(uploadProgressPercentage * 100);
+                });
+            }
+       }, false);
     }
     
     public getFileFromFormData = (formData)=>{
@@ -95,7 +109,9 @@ class SWFFormController {
             formData.append("returnJsonObjects","cart,account");
             var xhr = new XMLHttpRequest();
             xhr.open('POST', url, true);
-    
+            
+            this.calculateFileUploadProgress(xhr);
+        
             xhr.onload = (result)=>{
                 var response = JSON.parse(xhr.response);
                 if (xhr.status === 200) {
@@ -118,6 +134,9 @@ class SWFFormController {
         this.successfulActions = result.successfulActions;
         this.failureActions = result.failureActions;
         this.errors = result.errors;
+        if(result.errors && Object.keys(result.errors).length){
+            this.errorToDisplay = result.errors[Object.keys(result.errors)[0]][0]; //getting first key in object and first error in array
+        }
         if(result.successfulActions.length)
         {
             //if we have an array of actions and they're all complete, or if we have just one successful action

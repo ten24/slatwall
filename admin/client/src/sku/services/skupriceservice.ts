@@ -29,7 +29,7 @@ export class SkuPriceService {
 
     public getRelatedSkuPriceCollectionConfig = (skuID,currencyCode,minQuantity,maxQuantity) =>{
         var relatedSkuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
-        relatedSkuPriceCollectionConfig.addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price");
+        relatedSkuPriceCollectionConfig.addDisplayProperty("skuPriceID,sku.skuID,minQuantity,maxQuantity,currencyCode,price,priceGroup.priceGroupID");
         relatedSkuPriceCollectionConfig.addFilter("minQuantity",minQuantity,"=");
         relatedSkuPriceCollectionConfig.addFilter("maxQuantity",maxQuantity,"=");
         relatedSkuPriceCollectionConfig.addFilter("currencyCode",currencyCode,"!=");
@@ -49,7 +49,8 @@ export class SkuPriceService {
         this.skuPriceHasEntityPromises[skuID] = this.skuPriceHasEntityDeferred[skuID].promise;
         if(angular.isUndefined(this.skuPriceCollectionConfigs[skuID])){
             this.skuPriceCollectionConfigs[skuID] = this.collectionConfigService.newCollectionConfig("SkuPrice"); 
-            this.skuPriceCollectionConfigs[skuID].addDisplayProperty("skuPriceID,minQuantity,maxQuantity,currencyCode,price,sku.skuID");
+            //get info to compare for line items
+            this.skuPriceCollectionConfigs[skuID].addDisplayProperty("skuPriceID,minQuantity,maxQuantity,currencyCode,price,sku.skuID,priceGroup.priceGroupID,priceGroup.priceGroupCode");
             this.skuPriceCollectionConfigs[skuID].addFilter("sku.skuID",skuID,"=");
             this.skuPriceCollectionConfigs[skuID].addOrderBy("currencyCode|asc");
             this.skuPriceCollectionConfigs[skuID].setAllRecords(true);
@@ -61,7 +62,11 @@ export class SkuPriceService {
         if(refresh){
             this.skuPriceGetEntityPromises[skuID].then( (response) => {
                 angular.forEach(response.records, (value, key)=>{
-                    this.setSkuPrices(skuID, [this.$hibachi.populateEntity("SkuPrice", value)]);
+                    var skuPrice = this.$hibachi.populateEntity("SkuPrice", value);
+                    var priceGroup = this.$hibachi.populateEntity('PriceGroup',{priceGroupID:value.priceGroup_priceGroupID,priceGroupCode:value.priceGroup_priceGroupCode});
+                    skuPrice.$$setPriceGroup(priceGroup);
+                    var skuPrices = [skuPrice];
+                    this.setSkuPrices(skuID, skuPrices);
                 }); 
             },
             (reason) => {
@@ -271,7 +276,7 @@ export class SkuPriceService {
         return promise; 
     }
 
-    public getSkuPricesForQuantityRange = (skuID, minQuantity, maxQuantity, eligibleCurrencyCodes?) => {
+    public getSkuPricesForQuantityRange = (skuID, minQuantity, maxQuantity, eligibleCurrencyCodes?,priceGroupID?) => {
         var deferred = this.$q.defer(); 
         var promise = deferred.promise; 
         var skuPriceSet = []; 
@@ -281,7 +286,7 @@ export class SkuPriceService {
                 for(var i=0; i < skuPrices.length; i++){
                     var skuPrice = skuPrices[i];
                     if( 
-                        this.isQuantityRangeSkuPrice(skuPrice.data, minQuantity, maxQuantity)
+                        this.isQuantityRangeSkuPrice(skuPrice.data, minQuantity, maxQuantity,priceGroupID)
                     ){
                         skuPriceSet.push(skuPrice);
                     }
@@ -305,10 +310,15 @@ export class SkuPriceService {
         if(this.hasSkuPrices(skuID)){
             for(var i=0; i < this.getSkuPrices(skuID).length; i++){
                 var savedSkuPriceData = this.getSkuPrices(skuID)[i].data; 
+                var priceGroupID = undefined;
+                if(skuPrice.data.priceGroup){
+                    priceGroupID = skuPrice.data.priceGroup.$$getID() || skuPrice.data.priceGroup_priceGroupID;
+                }
+                
                 if( savedSkuPriceData.currencyCode == skuPrice.data.currencyCode &&
                     ( ( this.isBaseSkuPrice(savedSkuPriceData) &&
                         this.isBaseSkuPrice(savedSkuPriceData) == this.isBaseSkuPrice(skuPrice.data) 
-                      ) || this.isQuantityRangeSkuPrice(savedSkuPriceData, skuPrice.data.minQuantity, skuPrice.data.maxQuantity)
+                      ) || this.isQuantityRangeSkuPrice(savedSkuPriceData, skuPrice.data.minQuantity, skuPrice.data.maxQuantity,priceGroupID)
                     )
                 ){
                     return i; 
@@ -319,13 +329,41 @@ export class SkuPriceService {
     }
 
     private isBaseSkuPrice = (skuPriceData)=>{
-        return isNaN(parseInt(skuPriceData.minQuantity)) && isNaN(parseInt(skuPriceData.maxQuantity));
+        return isNaN(parseInt(skuPriceData.minQuantity)) && isNaN(parseInt(skuPriceData.maxQuantity)) && !(skuPriceData.priceGroup && skuPriceData.priceGroup.$$getID().trim().length);
     }
 
-    private isQuantityRangeSkuPrice = (skuPriceData, minQuantity, maxQuantity) =>{
-         var minQuantityMatch = (parseInt(skuPriceData.minQuantity) == parseInt(minQuantity)); 
-         var maxQuantityMatch = (parseInt(skuPriceData.maxQuantity) == parseInt(maxQuantity));
-         return minQuantityMatch && maxQuantityMatch;
+    private isQuantityRangeSkuPrice = (skuPriceData, minQuantity, maxQuantity, priceGroupID) =>{
+         var minQuantityMatch = (parseInt(skuPriceData.minQuantity) == parseInt(minQuantity)) 
+            || (
+                isNaN(parseInt(skuPriceData.minQuantity)) 
+                && isNaN(parseInt(minQuantity))
+            ); 
+         var maxQuantityMatch = (
+                parseInt(skuPriceData.maxQuantity) == parseInt(maxQuantity)
+            )|| (
+                isNaN(parseInt(skuPriceData.maxQuantity)) 
+                && isNaN(parseInt(maxQuantity))
+            );
+            
+            var priceGroupMatch = false;
+            
+            if(typeof priceGroupID !== 'undefined' && typeof skuPriceData.priceGroup_priceGroupID !== 'undefined'){
+                
+                if(skuPriceData.priceGroup_priceGroupID.length){
+                    priceGroupMatch = skuPriceData.priceGroup_priceGroupID == priceGroupID
+                }else{
+                    skuPriceData.priceGroup_priceGroupID == priceGroupID
+                }
+            }else{
+                if(typeof priceGroupID=='undefined'
+                && typeof skuPriceData.priceGroup_priceGroupID == 'undefined'){
+                    priceGroupMatch = true;
+                }else{
+                    priceGroupMatch = false;
+                }
+            }
+            
+         return minQuantityMatch && maxQuantityMatch && priceGroupMatch;
     }
 
     public sortSkuPrices = (skuPriceSet)=>{

@@ -65,6 +65,9 @@ Notes:
 		<cfif not isNull(rc.email.getEmailBodyText()) and len(rc.email.getEmailBodyText())>
 			<input type="hidden" name="EmailBodyText" value="#rc.email.getEmailBodyText()#" />
 		</cfif>
+		<cfif not isNull(rc.email.getLogEmailFlag())>
+			<input type="hidden" name="LogEmailFlag" value="#rc.email.getLogEmailFlag()#" />
+		</cfif>
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>

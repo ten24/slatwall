@@ -100,7 +100,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var skus = getSkuDAO().getProductSkus(product=arguments.product, fetchOptions=arguments.fetchOptions, joinType=arguments.joinType);
 
 		if(arguments.sorted && arrayLen(skus) gt 1 && arrayLen(skus[1].getOptions())) {
-			var sortedSkuIDQuery = getSkuDAO().getSortedProductSkusID( productID = arguments.product.getProductID() );
+			var sortedSkuIDQuery = getSkuDAO().getSortedProductSkusID( productID = arguments.product.getProductID() , joinType=arguments.joinType );
 			var sortedArray = arrayNew(1);
 			var sortedArrayReturn = arrayNew(1);
 
@@ -617,28 +617,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processSku_updateInventoryCalculationsForLocations(required any sku) {
 		
-		var locationCollection = getLocationService().getLocationSmartList();
-		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
-		var locations = locationCollection.getRecords();
-		
-		// Update calculations for each location
-		for (var location in locations) {
+		if( arguments.sku.setting('skuTrackInventoryFlag')){
 
-			// Attempt to load entity or create new entity if it did not previously exist
-			var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(arguments.sku.getSkuID(), location.getLocationID());
-
-			// Sku and Location entity references should already be populated for existing entity
-			if (skuLocationQuantity.getNewFlag()) {
-				skuLocationQuantity.setSku(arguments.sku);
-				skuLocationQuantity.setLocation(location);
-			}
+			var locationCollection = getLocationService().getLocationSmartList();
+			// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
+			var locations = locationCollection.getRecords();
 			
-			// Populate with updated calculated values and sku/location relationships
-			skuLocationQuantity.updateCalculatedProperties(true);
-			this.saveSkuLocationQuantity(skuLocationQuantity);
-		}
+			// Update calculations for each location
+			for (var location in locations) {
 
-		return arguments.sku;
+				// Attempt to load entity or create new entity if it did not previously exist
+				var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(arguments.sku.getSkuID(), location.getLocationID());
+
+				// Sku and Location entity references should already be populated for existing entity
+				if (skuLocationQuantity.getNewFlag()) {
+					skuLocationQuantity.setSku(arguments.sku);
+					skuLocationQuantity.setLocation(location);
+				}
+				
+				// Populate with updated calculated values and sku/location relationships
+				skuLocationQuantity.updateCalculatedProperties(true);
+				this.saveSkuLocationQuantity(skuLocationQuantity);
+			}
+
+			return arguments.sku;
+
+		}
 	}
 
 	// =====================  END: Process Methods ============================

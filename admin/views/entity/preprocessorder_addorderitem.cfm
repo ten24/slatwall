@@ -96,6 +96,7 @@ Notes:
 							<cfelse>
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 							</cfif>
+							<input type="hidden" name="oldQuantity" value="#rc.processObject.getQuantity()#">
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
 
 							<!--- Manual Gift Card Code Entry --->
@@ -191,13 +192,14 @@ Notes:
 									<br>
 								</cfloop>
 							</cfif>
-
 							<!--- Order Item Custom Attributes --->
 							<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
-								<hr />
-								<h5>#attributeSet.getAttributeSetName()#</h5>
-								<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
-							</cfloop>
+								<cfif not isNull(attributeSet.getAttributeSetName())>
+									<hr />
+									<h5>#attributeSet.getAttributeSetName()#</h5>
+									<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
+								</cfif>
+							</cfloop> 
 
 							<!--- Order Fulfillment --->
 							<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">

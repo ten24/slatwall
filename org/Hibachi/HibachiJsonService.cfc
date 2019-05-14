@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		config[ 'modelConfig' ] = getModel();
 		json['data'] = config;
 		json = serializeJson(json);
-		var configDirectoryPath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/';
+		var configDirectoryPath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/system/';
 		if(!directoryExists(configDirectoryPath)){
 			directoryCreate(configDirectoryPath);
 		}
@@ -108,7 +108,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     		directorylisting = directorylist(rbpath,false,"name","*.properties");
     	}
     	
-    	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/config/resourceBundles";
+    	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/resourceBundles";
+    	
+    	var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
+    	
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
         }
@@ -129,10 +132,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        //cache RB for 1 day or until a reload
 	        //lcase all the resourceBundle keys so we can have consistent casing for the js
 	        for(var key in resourceBundle){
+		    key = REReplace(trim(key), '[^\x00-\x7F]', '', "ALL");
+	            if(!len(key)){
+	                continue;
+	            }
 	            data[lcase(key)] = resourceBundle[key];
 	        }
 	        var json = serializeJson(data);
-			var filePath = customrbpath & '/#locale#.json';
+			var filePath = systemrbpath & '/#locale#.json';
 	        fileWrite(filePath,json,'utf-8');
     	}
         

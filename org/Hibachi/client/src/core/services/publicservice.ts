@@ -12,6 +12,7 @@ class PublicService {
     public countries:any;
     public addressOptions:any;
     public requests:{ [action: string]: PublicRequest; }={};
+    public messages:any;
     public errors:{[key:string]:any}={};
     public newBillingAddress:any;
     public newCardInfo:any;
@@ -436,6 +437,9 @@ class PublicService {
             this.cart.request = request;
         }
         this.errors = response.errors;
+        if(response.messages){
+            this.messages = response.messages;
+        }
     }
 
     public runCheckoutAdjustments = (response) =>{
@@ -653,8 +657,26 @@ class PublicService {
     
     /** Selects shippingAddress*/
     public selectShippingAccountAddress = (accountAddressID,orderFulfillmentID)=>{
-        this.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:orderFulfillmentID});
+        
+        this.observerService.notify("shippingAddressSelected",{"accountAddressID":accountAddressID});
+        
+        let fulfillmentIndex = this.cart.orderFulfillments.findIndex(fulfillment => fulfillment.orderFulfillmentID == orderFulfillmentID);
+        let oldAccountAddressID;
+        
+        if(this.cart.orderFulfillments[fulfillmentIndex] && this.cart.orderFulfillments[fulfillmentIndex].accountAddress){
+            oldAccountAddressID = this.cart.orderFulfillments[fulfillmentIndex].accountAddress.accountAddressID;
+        }
+        this.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:orderFulfillmentID}).then(result=>{
+            if(result && result.failureActions && result.failureActions.length){
+                this.$timeout(()=>{
+                    if(oldAccountAddressID){
+                        this.cart.orderFulfillments[fulfillmentIndex].accountAddress.accountAddressID = oldAccountAddressID;
+                    }
+                });
+            }  
+        });
     }
+
     
      /** Selects shippingAddress*/
     public selectBillingAccountAddress = (accountAddressID)=>{

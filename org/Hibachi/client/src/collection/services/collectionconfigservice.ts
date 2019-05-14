@@ -93,6 +93,7 @@ class CollectionConfig {
     public periodInterval:string="";
 
     get collectionConfigString():string {
+        
         return angular.toJson(this.getCollectionConfig(false));
     }
 
@@ -160,6 +161,14 @@ class CollectionConfig {
             jsonCollection = angular.fromJson(jsonCollection);
         }
         
+        if(angular.isDefined(jsonCollection['ORDERBY']) && !angular.isDefined(jsonCollection.orderBy)){
+            jsonCollection.orderBy = jsonCollection['ORDERBY'];
+        }
+
+        if(angular.isDefined(jsonCollection['PERIODINTERVAL']) && !angular.isDefined(jsonCollection.periodInterval)){
+            jsonCollection.periodInterval = jsonCollection['PERIODINTERVAL'];
+        }
+        
 
         this.baseEntityAlias = jsonCollection.baseEntityAlias;
         this.baseEntityName = jsonCollection.baseEntityName;
@@ -169,6 +178,27 @@ class CollectionConfig {
         }
         if(angular.isDefined(jsonCollection.filterGroups)){
             this.validateFilter(jsonCollection.filterGroups);
+            
+            //backend collections don't add displayValue and displayPropertyIdentifier to their configs
+            // so let's fix that
+            for(let filterGroup of jsonCollection.filterGroups){
+
+                for(let filter of filterGroup['filterGroup']){
+                
+                    if(!filter.displayPropertyIdentifier && filter.propertyIdentifier){
+                        let convertedPropertyIdentifier = filter.propertyIdentifier.replace(/_/g, '.');
+                        if(convertedPropertyIdentifier[0] === "."){
+                            convertedPropertyIdentifier = convertedPropertyIdentifier.substr(1);
+                        }
+                        filter.displayPropertyIdentifier =  this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,convertedPropertyIdentifier)+"."+this.utilityService.listLast(convertedPropertyIdentifier,'.'));
+                    }
+
+                    if(!filter.displayValue){
+                        filter.displayValue = filter.value;
+                    }
+                }
+            }
+            
             this.filterGroups = jsonCollection.filterGroups;
         }
         this.columns = jsonCollection.columns;
@@ -336,6 +366,16 @@ class CollectionConfig {
         }
         return propertyIdentifier;
     };
+    
+    public hasNonPersistentProperty=()=>{
+        for(var i in this.columns){
+            var column = this.columns[i];
+            if(angular.isDefined(column.persistent) && column.persistent === false){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
         if(!this.columns || this.isReport() || options.aggregate != null || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
@@ -461,7 +501,7 @@ class CollectionConfig {
         }
         var column = {
             propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier, true),
-            title : this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier)),
+            title : this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier, '.')),
             aggregate:{
                 aggregateFunction:aggregateFunction,
                 aggregateAlias:aggregateAlias
@@ -842,6 +882,27 @@ class CollectionConfig {
         });
         return false;
     };
+    
+    public hasPeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                return true;
+            }            
+        }
+        return false;
+    }
+    
+    public removePeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                columns.splice(i, 1);
+                return;
+            }            
+        }
+        return;
+    }
     
     public getPeriodColumnFromColumns(columns:any){
         for(var i in columns){

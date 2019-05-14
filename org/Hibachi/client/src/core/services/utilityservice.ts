@@ -377,7 +377,7 @@ class UtilityService extends BaseService{
     //utility service toJson avoids circular references
     public toJson = (obj) =>{
         var seen = [];
-
+        
         return JSON.stringify(obj, (key, val)=>{
             if (val != null && typeof val == "object") {
                 if (seen.indexOf(val) >= 0) {

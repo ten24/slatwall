@@ -125,7 +125,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
 
-		var checksumFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#/') & 'custom/config/dbDataChecksums.txt.cfm';  
+		var checksumFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#/') & 'custom/system/dbDataChecksums.txt.cfm';  
 	
 		if(!fileExists(checksumFilePath)){
 			fileWrite(checksumFilePath, '');	
@@ -186,7 +186,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}
 		} while (runPopulation);
-		var insertDataFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/' & 'insertedData.txt.cfm';
+		var insertDataFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/system/' & 'insertedData.txt.cfm';
 		
 		if(structKeyExists(variables, 'insertedData')){
 			FileWrite(insertDataFilePath, variables.insertedData);

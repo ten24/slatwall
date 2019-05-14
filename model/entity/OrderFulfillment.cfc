@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems,manualFulfillmentCharge" {
+component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems,manualFulfillmentCharge,manualHandlingFee" {
 
 	// Persistent Properties
 	property name="orderFulfillmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -54,14 +54,23 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="currencyCode" ormtype="string" length="3";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="manualFulfillmentChargeFlag" ormtype="boolean" hb_populateEnabled="false";
+	property name="manualHandlingFeeFlag" ormtype="boolean" hb_populateEnabled="false";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="estimatedShippingDate" ormtype="timestamp";
 	property name="pickupDate" ormtype="timestamp" hb_populateenabled="true";
 	property name="thirdPartyShippingAccountIdentifier" column="thirdPartyShipAccntIdentifier" ormtype="string";
 	property name="handlingFee" ormtype="big_decimal" hb_formatType="currency";
+	property name="verifiedShippingAddressFlag" ormtype="boolean";
+ 
+	//for shipping integration saves response with success or why a shipping integration failed
+	property name="lastStatusCode" ormtype="string";			// @hint this is the status code that was passed back in the response bean
+	property name="lastMessage" ormtype="string" length="4000"; // @hint this is a pipe and tilda delimited list of any messages that came back in the response.
+	
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedShippingIntegrationName" ormtype="string";
+	
 	//hash of the integrationResponse used to decide if we need to rebuild the shippingMethodOptions
 	property name="fulfillmentMethodOptionsCacheKey" column="fulfillMethOptionsCacheKey" ormtype="string" hb_auditable="false";
 	
@@ -100,7 +109,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-
+	property name="containerStruct" type="struct" persistent="false";
 	property name="accountAddressOptions" type="array" persistent="false";
 	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
@@ -127,7 +136,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
     property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
     property name="shipmentItemMultiplier" type="numeric" persistent="false";
-    
+    property name="shippingIntegrationName" type="string" persistent="false";
+ 	property name="suggestedShippingAddressName" type="string" persistent="false";
+   	property name="suggestedShippingAddressStruct" type="any" persistent="false";
+   	
 	// Deprecated
 	property name="discountTotal" persistent="false";
 	property name="shippingCharge" persistent="false";
@@ -135,6 +147,32 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
+	
+	public boolean function getVerifiedShippingAddressFlag(){
+		if( !isNull(this.getShippingAddress()) ){
+			return this.getShippingAddress().getVerifiedByIntegrationFlag();
+		} else {
+			return false;
+		}
+	}
+
+	public string function getSuggestedShippingAddressName(){
+		if( !isNull(this.getShippingAddress()) ){
+			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
+			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
+				return getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
+			}
+		}
+	}
+
+	public any function getSuggestedShippingAddressStruct(){
+		if( !isNull(this.getShippingAddress()) ){
+			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
+			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
+				return verificationStruct.suggestedAddress;
+			}
+		}
+	}
 
 	public void function removeAccountAddress() {
 		structDelete(variables, "accountAddress");
@@ -486,6 +524,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	    		for(var i=1; i<=arrayLen(getFulfillmentShippingMethodOptions()); i++) {
 	    			if(getShippingMethod().getShippingMethodID() == getFulfillmentShippingMethodOptions()[i].getShippingMethodRate().getShippingMethod().getShippingMethodID()) {
 	    				variables.selectedShippingMethodOption = getFulfillmentShippingMethodOptions()[i];
+	    				break;
 	    			}
 	    		}
 	    	}
@@ -693,6 +732,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return variables.manualFulfillmentChargeFlag;
 	}
 
+	public struct function getContainerStruct() {
+		if(!structKeyExists(variables,'containerStruct')){
+			variables.containerStruct = getService('containerService').getContainerDetails(this);
+		}
+		return variables.containerStruct;
+	}
+
 	public any function getShippingAddress() {
 		// Check Here
 		if(structKeyExists(variables, "shippingAddress")) {
@@ -728,8 +774,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 					variables.shippingMethod = arguments.shippingMethod;
 
 					// Set the charge
-					if(!getManualfulfillmentChargeFlag()) {
+					if(!getManualfulfillmentChargeFlag() && (isNull(getThirdPartyShippingAccountIdentifier()) || !len(getThirdPartyShippingAccountIdentifier()))) {
 						setFulfillmentCharge( getFulfillmentShippingMethodOptions()[i].getTotalCharge() );
+					}else if(len(getThirdPartyShippingAccountIdentifier())){
+						setFulfillmentCharge(0);
 					}
 				}
 			}

@@ -85,7 +85,7 @@ component  accessors="true" output="false"
 			return theMethod(argumentCollection = methodArguments);
 		}
 		
-		throw("You have attempted to call the method #arguments.methodName# which does not exist in #getClassFullName()#");
+		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
     
     /**
@@ -99,20 +99,25 @@ component  accessors="true" output="false"
         var imageHeight = 60;
         var imageWidth  = 60;
         
-        if(arguments.data.profileName == "medium"){
-            imageHeight = 90;
-            imageWidth  = 90;
-        }else if (arguments.data.profileName == "large"){
-            imageHeight = 150;
-            imageWidth  = 150;
+        if(arguments.data.profileName == "small"){
+            imageHeight = getService('SettingService').getSettingValue('productImageSmallHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageSmallWidth');
+            
+        }else if (arguments.data.profileName == "medium"){
+            imageHeight = getService('SettingService').getSettingValue('productImageMediumHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageMediumWidth');
+        }
+        else if (arguments.data.profileName == "large"){
+            imageHeight = getService('SettingService').getSettingValue('productImageLargeHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageLargeWidth');
         }
         else if (arguments.data.profileName == "xlarge"){
-            imageHeight = 250;
-            imageWidth  = 250;
+            imageHeight = getService('SettingService').getSettingValue('productImageXLargeHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productImageXLargeWidth');
         }
         else if (arguments.data.profileName == "listing"){
-            imageHeight = 263;
-            imageWidth  = 212;
+            imageHeight = getService('SettingService').getSettingValue('productListingImageHeight');
+            imageWidth  = getService('SettingService').getSettingValue('productListingImageWidth');
         }
         arguments.data.ajaxResponse['resizedImagePaths'] = {};
         var skus = [];
@@ -121,11 +126,10 @@ component  accessors="true" output="false"
         var skuSmartList = getService('skuService').getSkuSmartList();
         skuSmartList.addInFilter('skuID',data.skuIDs);
         
-        if( skuSmartList.getRecordsCount() > 0){
-            var skus = skuSmartList.getRecords();
-            
-            for  (var sku in skus){
-                arguments.data.ajaxResponse['resizedImagePaths'][sku.getSkuID()] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
+        for (var skuID in data.skuIDs){
+            var sku = getService('SkuService').getSku(skuID);
+            if(!isNull(sku)){
+                arguments.data.ajaxResponse['resizedImagePaths'][skuID] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
             }
         }
         arguments.data.returnJsonObjects = "";
@@ -228,6 +232,22 @@ component  accessors="true" output="false"
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
+    }
+    
+    public any function updatePrimaryEmailAddress(required struct data) {
+        var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'updatePrimaryEmailAddress');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('updatePrimaryEmailAddress').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.updatePrimaryAccountEmailAddress",account.hasErrors());
+    }
+    
+    public any function updatePassword(requried struct data) {
+        var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'updatePassword');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('updatePassword').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.updatePassword",account.hasErrors());
     }
     
     /**
@@ -441,6 +461,13 @@ component  accessors="true" output="false"
         }
     }
     
+   public void function verifyAddress(required data){
+        param name="data.accountAddressID" default="";
+
+        data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
+        getHibachiScope().addActionResult("verifyAddress",false);
+    }
+    
     public void function addEditAccountAddress(required data){
         if(structKeyExists(data,'accountAddressID') && len(data['accountAddressID'])){
             param name="data.countrycode" default="US";
@@ -460,6 +487,7 @@ component  accessors="true" output="false"
        	     	if (!savedAccountAddress.hasErrors()){
        	     		getDao('hibachiDao').flushOrmSession();
                     data.accountAddressID = savedAccountAddress.getAccountAddressID();
+                    data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
        	     	}
           	}else{
               this.addErrors(data, address.getErrors());
@@ -490,7 +518,8 @@ component  accessors="true" output="false"
           getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
-            data.accountAddressID = savedAccountAddress.getAccountAddressID();
+                data.accountAddressID = savedAccountAddress.getAccountAddressID();
+                data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
    	     	}
       	}else{
           this.addErrors(data, newAddress.getErrors());
@@ -772,6 +801,11 @@ component  accessors="true" output="false"
             var order = getHibachiScope().cart();
             order.setBillingAddress(savedAddress);
             
+            var orderPayments = order.getOrderPayments();
+            if(arrayLen(orderPayments)){
+               orderPayments[1].setBillingAddress(savedAddress); 
+            }
+            
             getService("OrderService").saveOrder(order);
         }
         if(savedAddress.hasErrors()){
@@ -888,8 +922,10 @@ component  accessors="true" output="false"
         
         if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var subscriptionUsage = getSubscriptionService().saveSubscriptionUsage( subscriptionUsage, arguments.data );
+            if(subscriptionUsage.hasErrors()){
+                addErrors(arguments.data,subscriptionUsage.getErrors());
+            }
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
-            return subscriptionUsage;
         } else {
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", true );
         }
@@ -909,16 +945,48 @@ component  accessors="true" output="false"
         
         if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.data, 'renew' );
+            if(subscriptionUsage.hasErrors()){
+                addErrors(arguments.data,subscriptionUsage.getErrors());
+            }
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
-            return subscriptionUsage;
         } else {
             getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", true );
         }
     }
     
+    /** 
+     * @http-context cancelSubscriptionUsage
+     * @description Subscription Usage - Cancel
+     * @http-return <b>(200)</b> Successfully Cancelled or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod SubscriptionUsage_Cancel
+     */
+    public void function cancelSubscriptionUsage(required struct data) {
+        param name="arguments.data.subscriptionUsageID" default="";
+        
+        var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( arguments.data.subscriptionUsageID );
+        
+        if(!structKeyExists(arguments.data,'effectiveDateTime')){
+            arguments.data.effectiveDateTime = subscriptionUsage.getExpirationDate();
+        }
+        
+        if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.data, 'cancel' );
+            if(subscriptionUsage.hasErrors()){
+                addErrors(arguments.data,subscriptionUsage.getErrors());
+            }
+            getHibachiScope().addActionResult( "public:account.cancelSubscriptionUsage", subscriptionUsage.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:account.cancelSubscriptionUsage", true );
+        }
+    }
+    
     /** exposes the cart and account */
     public void function getCartData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getCartData();
+        if(!structKeyExists(arguments.data,'cartDataOptions') || !len(arguments.data['cartDataOptions'])){
+            arguments.data['cartDataOptions']='full';
+        }
+    
+        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
     }
     
     public void function getAccountData(any data) {
@@ -1444,7 +1512,9 @@ component  accessors="true" output="false"
             }else{
               this.addErrors(data,order.getErrors());
             }
-
+            if(getHibachiScope().getAccount().getGuestAccountFlag()){
+                getHibachiScope().getSession().removeAccount();
+            }
         }
 
     

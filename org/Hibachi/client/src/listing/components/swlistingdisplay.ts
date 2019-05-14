@@ -24,7 +24,16 @@ class SWListingDisplayController{
     public collection;
     public childPropertyName;
     public colorFilters = [];
-    public columns = [];
+    public _columns = [];
+    
+    get columns(): Array<any> {
+        return this._columns;
+    }
+    set columns(newArray: Array<any>) {
+        this._columns = newArray;
+        this.columnCount = this._columns.length;
+    }
+    
     public columnCount;
     public commonProperties;
     public customListingControls:boolean;
@@ -74,7 +83,8 @@ class SWListingDisplayController{
     public searching:boolean = false;
     public searchText;
 
-    public selectFieldName;
+	public selectFieldName;
+	public selectValue;
     public selectable:boolean = false;
     public showOrderBy:boolean;
     public showExport:boolean;
@@ -164,8 +174,7 @@ class SWListingDisplayController{
              (this.baseEntityName) 
              && (
                  this.usingPersonalCollection 
-                 && this.localStorageService.hasItem('selectedPersonalCollection') 
-                 && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]
+                 && this.listingService.hasPersonalCollectionSelected(this.baseEntityName)
              )
              && (
                 angular.isUndefined(this.personalCollectionIdentifier) 
@@ -175,9 +184,8 @@ class SWListingDisplayController{
                 )
             )
         ){
-            var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
-            personalCollection.setDisplayProperties('collectionConfig');
-            personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
+            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
+           
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
@@ -225,8 +233,7 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
-        
-        if(this.collectionConfig.keywords && this.collectionConfig.keywords.length){
+        if(this.collectionConfig && this.collectionConfig.keywords && this.collectionConfig.keywords.length){
             this.searchText = this.collectionConfig.keywords;
         }
 
@@ -264,6 +271,10 @@ class SWListingDisplayController{
             if(this.columns && this.columns.length){
                 this.collectionConfig.columns = this.columns;
             }
+            //setup selectable
+            this.listingService.setupSelect(this.tableID);
+            this.listingService.setupMultiselect(this.tableID);
+            this.listingService.setupExampleEntity(this.tableID);
             this.setupCollectionPromise();
 
         }
@@ -525,7 +536,7 @@ class SWListingDisplayController{
     public hasNumerical=()=>{
         
         // Iterate over columns, find out if we have any numericals and return
-        if(this.columns.length){
+        if(this.columns != null && this.columns.length){
             return this.columns.reduce((totalNumericalCols, col) => {
                 return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
             });    
@@ -566,6 +577,9 @@ class SWListingDisplayController{
         });
     };
 
+	public select = (selectValue)=>{
+        this.selectValue = selectValue; 
+    }
 
     public getPageRecordKey = (propertyIdentifier)=>{
        return this.listingService.getPageRecordKey(propertyIdentifier);
@@ -626,7 +640,7 @@ class SWListingDisplayController{
             }
             $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
             $('#formExport')
-                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig).replace(/'/g,'&#39;') + "' />")
                 .submit()
                 .remove();
         }
@@ -644,7 +658,7 @@ class SWListingDisplayController{
             .append("<input type='hidden' name='processContext' value='addToQueue' />")
             .append("<input type='hidden' name='printID' value='' />")
             .append("<input type='hidden' name='printTemplateID' value='" + printTemplateID +"' />")
-            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />");
+            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig).replace(/'/g,'&#39;') + "' />");
         
         $('#formPrint')
             .submit()
@@ -779,7 +793,7 @@ class SWListingDisplay implements ng.IDirective{
             sortContextIDValue:"@?",
 
             /*Single Select*/
-            selectFiledName:"@?",
+            selectFieldName:"@?",
             selectValue:"@?",
             selectTitle:"@?",
 

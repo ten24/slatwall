@@ -50,6 +50,8 @@ component output="false" accessors="true" extends="HibachiController" {
     public any function before( required struct rc ) {
 
         arguments.rc.apiRequest = true;
+        
+        request.layout = false;
 
         getFW().setView("public:main.blank");
         arguments.rc.headers["Content-Type"] = "application/json";
@@ -479,14 +481,22 @@ component output="false" accessors="true" extends="HibachiController" {
 	public void function getProcessMethodOptionsByEntityName(required struct rc){
 		var processOptions = [];
 		var allProcessMethods = getHibachiService().getEntitiesProcessContexts();
-		if(structKeyExists(allProcessMethods, arguments.rc.entityName)){
-			for(var processMethod in allProcessMethods[arguments.rc.entityName]){
-				arrayAppend(processOptions, {
-					'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
-					'value' = 'process#arguments.rc.entityName#_#processMethod#'
-				});
-			}
+		if(!structKeyExists(allProcessMethods, arguments.rc.entityName)){
+		    allProcessMethods[arguments.rc.entityName] = [];
 		}
+		
+		if(!arrayFindNoCase(allProcessMethods[arguments.rc.entityName], 'updateCalculatedProperties')){
+		    // Add missing method
+		    arrayAppend(allProcessMethods[arguments.rc.entityName], 'updateCalculatedProperties');
+		}
+		
+		for(var processMethod in allProcessMethods[arguments.rc.entityName]){
+			arrayAppend(processOptions, {
+				'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
+				'value' = 'process#arguments.rc.entityName#_#processMethod#'
+			});
+		}
+		
 		arguments.rc.apiResponse.content['data'] = processOptions;
 	}
 
@@ -670,13 +680,6 @@ component output="false" accessors="true" extends="HibachiController" {
             handle accessing collections by id
         */
         param name="arguments.rc.propertyIdentifiers" default="";
-		
-		if(structKeyExists(arguments.rc, "p:show")){
-			var globalAPIPageShowLimit = getService("SettingService").getSettingValue("globalAPIPageShowLimit");
-			if(arguments.rc["p:show"] > globalAPIPageShowLimit){
-				arguments.rc["p:show"] = globalAPIPageShowLimit; 
-			}	
-		}
        
 		if(!structKeyExists(arguments.rc, "dirtyReadFlag")){
  			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 
@@ -822,7 +825,13 @@ component output="false" accessors="true" extends="HibachiController" {
 	        }
 
 	        if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
-	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
+	            if(structKeyExists(entity.getHibachiErrors().getErrors(),'processObjects')){
+	                var processObject = entity.getProcessObject(entity.getHibachiErrors().getErrors()['processObjects'][1]);
+	                var errors = processObject.getErrors();
+	            }else{
+	                var errors = entity.getHibachiErrors().getErrors();
+	            }
+                arguments.rc.apiResponse.content.errors = errors;
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
 	        

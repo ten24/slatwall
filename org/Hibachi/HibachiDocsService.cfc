@@ -19,8 +19,17 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 			entityDocData['extends'] = getExtended(object);
 			entityDocData['functions'] = getFunctions(object);
-			entityDocData['properties'] = object.properties;
-    		
+			
+			var objectProperties = [];
+			for(var prop in object.properties){
+				var objectProperty = {};
+				for(var key in prop){
+					objectProperty[lcase(key)]= prop[key];
+				}
+				arrayAppend(objectProperties,objectProperty);
+			}
+			
+			entityDocData['properties'] = objectProperties;
     		for(var property in entityDocData['properties']){
     			//use description on the property else find an rbkey hint
     			if(!structKeyExists(property,'description')){
@@ -32,6 +41,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						property['description'] = "";
 					}
     			}
+    			
     		}
     		
     		if(structKeyExists(object,'description')){
@@ -279,7 +289,15 @@ component accessors="true" output="false" extends="HibachiService" {
 				serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 			}
 			if(structKeyExists(componentMetaData,'properties')){
-				serviceComponentMetaData[componentName]['properties'] = componentMetaData.properties;
+				var objectProperties = [];
+				for(var prop in componentMetaData.properties){
+					var objectProperty = {};
+					for(var key in prop){
+						objectProperty[lcase(key)]= prop[key];
+					}
+					arrayAppend(objectProperties,objectProperty);
+				}
+				serviceComponentMetaData[componentName]['properties'] = objectProperties;
 			}
 		}
 		return serviceComponentMetaData;
@@ -325,19 +343,31 @@ component accessors="true" output="false" extends="HibachiService" {
 			if(structKeyExists(componentMetaData,'functions')){
 				processComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 			}
+			
+			
+			
 			if(structKeyExists(componentMetaData,'properties')){
-					for(var property in componentMetaData['properties']){
-		    			//use description on the property else find an rbkey hint
-		    			if(!structKeyExists(property,'description')){
-		    				property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_description');
-		    				if(right(property['description'], "8") == "_missing") {
-		    					property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_hint');
-		    				}
-		    				if(right(property['description'], "8") == "_missing") {
-								property['description'] = "";
-							}
-		    			}
-		    		}
+				var objectProperties = [];
+				for(var prop in componentMetaData['properties']){
+					var objectProperty = {};
+					for(var key in prop){
+						objectProperty[lcase(key)]= prop[key];
+					}
+					arrayAppend(objectProperties,objectProperty);
+				}
+				componentMetaData['properties'] = objectProperties;
+				for(var property in componentMetaData['properties']){
+	    			//use description on the property else find an rbkey hint
+	    			if(!structKeyExists(property,'description')){
+	    				property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_description');
+	    				if(right(property['description'], "8") == "_missing") {
+	    					property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_hint');
+	    				}
+	    				if(right(property['description'], "8") == "_missing") {
+							property['description'] = "";
+						}
+	    			}
+	    		}
 				processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
 			}
 				
@@ -425,7 +455,18 @@ component accessors="true" output="false" extends="HibachiService" {
     			functionItem['returntype'] = f.RETURNTYPE;
     		}
     		if(structKeyExists(f,'PARAMETERS')){
-    			functionItem['parameters'] = f.PARAMETERS;
+    			var parameters = [];
+    			for(var parameter in f.PARAMETERS){
+    				var parameterstruct = {};
+    				for(var key in parameter){
+    					parameterstruct[lcase(key)]= parameter[key];
+    				}
+    				if(!structIsEmpty(parameterStruct)){
+    					arrayAppend(parameters,parameterStruct);
+    				}
+    			}	
+    		
+    			functionItem['parameters'] = parameters;
     		}
     		if(structKeyExists(f,'DESCRIPTION')){
     			functionItem['description'] = f.DESCRIPTION;

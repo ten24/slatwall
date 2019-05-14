@@ -1,5 +1,6 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 <cfif thisTag.executionMode is "start">
+	<cfparam name="attributes.hibachiScope" default="#request.context.fw.getHibachiScope()#" type="any"/>
 	<cfparam name="attributes.fieldType" type="string" />
 	<cfparam name="attributes.fieldName" type="string" />
 	<cfparam name="attributes.fieldClass" type="string" default="" />
@@ -233,11 +234,15 @@
 										<cfelseif key eq "value">
 											<cfset thisOptionValue = option[ key ] />
 										<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#encodeForHTML(option[key])#"', ' ') />
+											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#request.context.fw.getHibachiScope().hibachiHtmlEditFormat(option[key])#"', ' ') />
 										</cfif>
 									</cfif>
 								</cfloop>
 							</cfif>
+							<cfset thisOptionValue = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionValue)>
+							<cfset thisOptionName = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionName)>
+							<cfset thisOptionData = thisOptionData>
+
 							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
 						</cfloop>
 					</select>
@@ -251,35 +256,48 @@
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
-				<cfset suggestionsID = reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all') & "-suggestions" />
-				<div class="autoselect-container">
-					<input type="hidden" name="#attributes.fieldName#" value="#attributes.value#" />
-					<input type="text" name="#reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
-					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
-					<div class="autocomplete-options" style="display:none;">
-						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">
-							<cfif len(attributes.value)>
-								<li>
-									<a href="##" class="textautocompleteadd" data-acvalue="#attributes.value#" data-acname="#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#">
-									<cfset thisTag.counter = 0 />
-									<cfloop list="#attributes.autocompletePropertyIdentifiers#" index="pi">
-										<cfset thisTag.counter++ />
-										<cfif thisTag.counter lte 2 and pi neq "adminIcon">
-											<span class="#listLast(pi,".")# first">
-										<cfelse>
-											<span class="#listLast(pi,".")#">
-										</cfif>
-										#attributes.autocompleteSelectedValueDetails[ pi ]#</span>
-									</cfloop>
-									</a>
-								</li>
-							</cfif>
-						</ul>
-					</div>
-					<cfif len(attributes.modalCreateAction)>
-						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
-					</cfif>
-				</div>
+			
+				<cfscript>
+					if(attributes.object.isPersistent()){
+						lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
+						propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
+					}else{
+						lastEntityName = attributes.object.getClassName();
+						propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
+					}
+					
+					relatedEntity = listLast(attributes.property,'.');
+					propertyMetaData = propsStruct[relatedEntity];
+					if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
+						primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+						simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+					}else{
+					}
+					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
+				</cfscript>
+				
+				<sw-typeahead-input-field
+					data-entity-name="#propertyMetaData.cfc#"
+			        data-property-to-save="#primaryIDName#"
+			        data-property-to-show="#simpleRepresentationName#"
+			        data-properties-to-load="#primaryIDName#,#simpleRepresentationName#"
+			        data-show-add-button="true"
+			        data-show-view-button="true"
+			        data-placeholder-rb-key="#propertynamerbkey#"
+			        data-placeholder-text="Search #propertynamerbkey#"
+			        data-multiselect-mode="false"
+			        data-filter-flag="false"
+			        data-selected-format-string="##"
+			        data-field-name="#attributes.fieldName#"
+			        data-initial-entity-id="#attributes.value#"
+			        data-max-records="20"
+			        data-order-by-list="#simpleRepresentationName#|ASC">
+			
+
+
+					<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
+	
+				</sw-typeahead-input-field>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="typeahead">

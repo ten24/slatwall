@@ -29,7 +29,15 @@
  		    };
  		    return formattedStructKeyList;
  		}	
- 		
+
+		public function removeListValue(required string list, required string value){ 
+			var listIndex = listFindNoCase(arguments.list, arguments.value);
+			if(listIndex != 0){
+				return listDeleteAt(arguments.list, listIndex); 
+			} 
+			return arguments.list; 	
+		} 
+
  		public any function getQueryLabels(required any query){
  			var qryColumns = "";
  			for (var column in getMetaData(arguments.query)){
@@ -330,7 +338,9 @@
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
 
-			for(var propertyIdentifier in listToArray(arguments.propertyIdentifierList)) {
+			var propertyIdentifierArray = listToArray(arguments.propertyIdentifierList);
+			for(var i=1; i <= arraylen(propertyIdentifierArray);i++) {
+				var propertyIdentifier = propertyIdentifierArray[i];
 				if( listFindNoCase(arguments.availablePropertyIdentifierList, trim(propertyIdentifier)) ) {
 					buildPropertyIdentifierDataStruct(arguments.object, trim(propertyIdentifier), responseData);
 				}
@@ -691,7 +701,7 @@
 			}
 		}
 
-		public string function hibachiHTMLEditFormat(required any html=""){
+		public string function hibachiHTMLEditFormat(required any html="", boolean angularSanitize=true){
 			//If its something that can be turned into a string, make sure its a string.
 			if (isSimpleValue(arguments.html)){
 				arguments.html = "#arguments.html#";
@@ -702,9 +712,11 @@
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
 				var sanitizedString = htmlEditFormat(arguments.html);
 			}else{
-				var sanitizedString = encodeForHTML(arguments.html);	
+				var sanitizedString = encodeForHTML(arguments.html);
 			}
-			sanitizedString = sanitizeForAngular(sanitizedString);
+			if(arguments.angularSanitize){
+				sanitizedString = sanitizeForAngular(sanitizedString);
+			}
 			return sanitizedString;
 		}
 		
@@ -718,7 +730,9 @@
 
 		public string function sanitizeForAngular(required string html){
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+				arguments.html = ReReplace(arguments.html,'%7B',chr(123)&chr(002),'all');
+				return arguments.html;
 			}else{
 				return ReReplace(ReReplace(arguments.html,'&##x7b;',chr(123)&chr(002),'all'),'&##x7d;','}','all');
 			}
@@ -837,10 +851,12 @@
 				if (migrateLegacyKeyFlag) {
 					arrayAppend(passwords, {'legacyKey'=legacyKey, 'legacyEncryptionAlgorithm'=getLegacyEncryptionAlgorithm(), 'legacyEncryptionEncoding'=getLegacyEncryptionEncoding(), 'legacyEncryptionKeySize'=getLegacyEncryptionKeySize()});
 					writeEncryptionPasswordFile(passwords);
+					
+					// Remove legacy key file from file system
+					// Commented out 2018-10-30 because the application initialization calls EncryptionService.verifyEncryptionKeyExists() which will recreate the key.xml.cfm during next reload
+					// And the encryption key stored in key.xml.cfm will be ported into the password.txt.cfm with unbound file growth
+					// removeLegacyEncryptionKeyFile();
 				}
-
-				// Remove legacy key file from file system
-				removeLegacyEncryptionKeyFile();
 			}
 
 			var legacyPasswords = [];
@@ -885,7 +901,7 @@
 		}
 
 		private string function getEncryptionKeyLocation() {
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/system/');
 		}
 
 		private string function getEncryptionKeyFileName() {
@@ -1029,10 +1045,12 @@
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
 
-					var value = arguments.queryData[colArray[j]][i];
+					var value = replace(arguments.queryData[colArray[j]][i],'"',"'",'all');
+
+					value = '"#value#"'; //let's wrap the whole thing in double quotes to make sure spaces and newlines get preserved
 
 					// create our row
-					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
+					thisRow[j] = replace( value,',','','all');
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
@@ -1230,7 +1248,7 @@
 			<cfset local.thisField = Trim(local.thisField) />
 
 			<!--- If the field has a dot or a bracket... --->
-			<cfif hasFormCollectionSyntax(local.thisField)>
+			<cfif hasFormCollectionSyntax(local.thisField) AND !isStruct(arguments.formScope[local.thisField])>
 
 				<!--- Add collection to list if not present. --->
 				<cfset local.tempStruct['formCollectionsList'] = addCollectionNameToCollectionList(local.tempStruct['formCollectionsList'], local.thisField) />
@@ -1466,7 +1484,14 @@
 	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
+        <cfset local.timezoneOffset = getTimeZoneInfo().utcTotalOffset />
+        <cfset local.utcDate.setTime(local.utcDate.getTime() - (local.timezoneOffset * 1000) ) />
         <cfreturn round( local.utcDate.getTime() / 1000 )>
+    </cffunction>
+    
+    <cffunction name="getTimeByUtc" returntype="any">
+    	<cfargument name="utctimestamp" type="numeric"/>
+    	<cfreturn dateAdd("s", arguments.utctimestamp, createDateTime(1970, 1, 1, 0, 0, 0))/>
     </cffunction>
 
     <cffunction name="convertBase64GIFToBase64PDF" output="false">
@@ -1657,5 +1682,41 @@
 		
 		<cfset var uuid = left(arguments.idString,8) & '-' & mid(arguments.idString,9,4) & '-' & mid(arguments.idString,13,4) & '-' & right(arguments.idString,16)/>
 		<cfreturn isValid('uuid',uuid)/>
+	</cffunction>
+	
+	<!--- Given a total number of strings to generate, and a length for each string, generates a list. --->
+	<cffunction name="generateRandomStrings" output="no" returntype="string">
+		<cfargument name="length" type="numeric" required="yes">
+		<cfargument name="total" type="numeric" required="yes">
+		
+		
+		<!--- Local vars --->
+		<cfset var listOfAccessCodes = "">
+	    <cfset var j = "" > 
+	    <cfloop  index = "j" from = "1" to = "#total#"> 
+			<cfset var result="">
+			<cfset var i = "" >
+			<!--- Create string --->
+			<cfloop index="i" from="1" to="#ARGUMENTS.length#">
+				<!--- Random character in range A-Z --->
+				<cfif i mod 5 eq 0>
+					<cfset result= result & chr(randRange(49, 57))>
+			    <cfelseif i mod 3 eq 0 and j mod 2 eq 0>
+					<cfset result= result & chr(randRange(49, 57))>
+				<cfelse>
+					<cfset result= result & chr(randRange(65, 90))>    
+			    </cfif>
+	
+			</cfloop>
+	
+			<cfif listFind(listOfAccessCodes, result) eq 0>
+			    <cfset listOfAccessCodes = listAppend(listOfAccessCodes, result)>
+			<cfelse>
+			    <cfset j = j - 1>    <!--- resets the counter by one if there was a dupe. --->
+			</cfif>
+
+	    </cfloop>
+		<!--- Return it --->
+		<cfreturn listOfAccessCodes>
 	</cffunction>
 </cfcomponent>

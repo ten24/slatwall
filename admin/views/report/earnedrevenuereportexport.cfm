@@ -12,12 +12,6 @@
 <cfset currentMonth = Month(rc.minDate)/>
 <cfset currentYear = Year(rc.minDate)/>
                 
-<cfloop from="#currentMonth-1#" to="#to-1#" index="w">
-    <cfif w % 12 eq 1 and w neq 1>
-        <cfset currentYear++/>
-    </cfif>
-        #possibleMonths[w%12+1]# - #currentYear#
-</cfloop>
 
 <cfset colNamesList = 'Headers'/>
 <cfset data = [5]/>
@@ -50,9 +44,6 @@
     <cfset possibleYearTotal = []/>--->
 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
     <cfset possibleMonth = possibleMonths[i%12+1]/>
-    <cfif i%12 eq 1>
-        <cfset currentYear++/>
-    </cfif>
     <cfset colName = "#possibleMonth##currentYear#"/>
     <cfset colNamesList = listAppend(colNamesList,colName)/>
     

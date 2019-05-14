@@ -98,7 +98,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			"attribute",
 			"physical",
 			"location",
-			"integration"
+			"integration",
+			"order"
 		];
 	}
 
@@ -216,6 +217,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAllowThirdPartyShippingAccount={fieldType="yesno",defaultValue=0},
+			globalDisableSearchSettings={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
@@ -254,6 +256,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
+			globalCollectionKeywordWildcardConfig={fieldType='select', defaultValue="both", valueOptions=[{name="wildcard on both sides %example%",value="both"}, {name="wildcard on left sides %example",value="left"}, {name="wildcard on right sides example%",value="right"}]},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
@@ -266,6 +269,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
+			globalShippingIntegrationForAddressVerification = {fieldtype="select"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalS3Bucket = {fieldtype="text"},
@@ -273,6 +277,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			
@@ -292,6 +298,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//Order Fulfillment
 			orderFulfillmentEmailTemplate = {fieldtype="select", defaultValue=""},
+			
+			//Order
+			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
 
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
@@ -390,6 +399,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingWeight = {fieldType="text", defaultValue=1},
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
+			skuStockHold = {fieldType="yesno", defaultValue=0},
+			skuStockHoldTime = {fieldType="text", defaultValue=0,  validate={dataType="numeric"}},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
@@ -431,6 +442,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			productImageMediumHeight = {fieldType="text", defaultValue="300", formatType="pixels", validate={dataType="numeric", required=true}},
 			productImageLargeWidth = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
 			productImageLargeHeight = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
+			productImageXLargeWidth = {fieldType="text", defaultValue="800", formatType="pixels", validate={dataType="numeric", required=true}},
+			productImageXLargeHeight = {fieldType="text", defaultValue="800", formatType="pixels", validate={dataType="numeric", required=true}},
+			productListingImageHeight = {fieldType="text", defaultValue="263", formatType="pixels", validate={dataType="numeric", required=true}},
+			productListingImageWidth = {fieldType="text", defaultValue="212", formatType="pixels", validate={dataType="numeric", required=true}},
 			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
 
 		};
@@ -556,6 +571,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
+			case "globalShippingIntegrationForAddressVerification":
+				return getShippingIntegrationOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
@@ -643,6 +660,17 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 		return sl;
+	}
+
+
+	public array function getShippingIntegrationOptions() {
+		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
+		integrationCollectionList.addFilter('activeFlag', '1');
+		integrationCollectionList.addFilter('installedFlag', '1');
+		integrationCollectionList.addFilter('integrationTypeList', 'shipping',"in");
+		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
+		var options = integrationCollectionList.getRecords();
+		return options;
 	}
 
 	public array function getCustomIntegrationOptions() {
@@ -1245,21 +1273,12 @@ component extends="HibachiService" output="false" accessors="true" {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+			getHibachiCacheService().updateServerInstanceSettingsCache();
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
-			}
-
-
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-			var serverInstanceSmartList = this.getServerInstanceSmartList();
-			serverInstanceSmartList.addWhereCondition("a#lcase(getDao('hibachiDao').getApplicationKey())#serverinstance.serverInstanceID != '#serverInstance.getServerInstanceID()#'");
-			for(var serverInstance in serverInstanceSmartList.getRecords()){
-				serverInstance.setServerInstanceExpired(true);
-
 			}
 		}
 

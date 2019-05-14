@@ -222,9 +222,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// If this integration is active lets register all of its event handlers, and decorate the getBeanFactory() with it
 				if( integration.getEnabledFlag() ) {
+					var beanFactory = getBeanFactory();
 					
 					for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
-						getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
+					
+						var beanComponentPath = integrationCFC.getEventHandlers()[e];
+						var beanName = listLast(beanComponentPath,'.');
+						if(!(
+								len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage
+							)
+						) {
+							beanName=integrationPackage&beanName;
+						}
+						if(!beanFactory.containsBean(beanName)){
+							beanFactory.declareBean( beanName, beanComponentPath, true );
+							if(len(beanName) < len('Handler') || right(beanName,len('Handler'))!='Handler'){
+								beanFactory.addAlias(beanName&'Handler',beanName);
+							}
+						}
 					}
 					
 					if(arrayLen(integrationCFC.getEventHandlers())) {
@@ -232,7 +247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
-						var beanFactory = getBeanFactory();
+						
 						//if we have entities then copy them into root model/entity
 						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model/entity")){
 							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
@@ -247,7 +262,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 						
-						var integrationBF = new framework.aop("/Slatwall/integrationServices/#integrationPackage#/model", {
+						var integrationBF = new framework.hibachiaop("/Slatwall/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"],
 							omitDirectoryAliases = getApplicationValue("hibachiConfig").beanFactoryOmitDirectoryAliases
@@ -269,7 +284,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 						}
-						setBeanFactory(beanFactory);
 					}
 
 				}

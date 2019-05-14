@@ -22,8 +22,8 @@
     <cfset earnedRevenueCollectionList.setPeriodInterval('Month')/>
     <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soditDelivered')/>
     <cfset earnedRevenueCollectionList.addFilter('quantity',1,">=",'AND','SUM')/>
-    <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
-    <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
+    <cfset earnedRevenueCollectionList.addFilter('createdDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
+    <cfset earnedRevenueCollectionList.addFilter('createdDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
     
     
     <!---Collection list for refunded items--->
@@ -36,8 +36,8 @@
     <cfset refundedRevenueCollectionList.setPeriodInterval('Month')/>
     <cfset refundedRevenueCollectionList.addFilter('quantity',1,">=",'AND','SUM')/>
     <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soditRefunded')/>
-    <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
-    <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
+    <cfset refundedRevenueCollectionList.addFilter('createdDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
+    <cfset refundedRevenueCollectionList.addFilter('createdDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
     
     <!---used to determine when to end the loop--->
     <cfset currentMonth = Month(rc.maxDate)/>
@@ -67,10 +67,14 @@
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
     <cfset currentMonth = Month(rc.minDate)/>
-	<cfset currentYear = Year(rc.minDate)/>
-	<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
-	<cfset to = currentMonth + diff/>
     
+	<cfset currentYear = Year(rc.minDate)/>
+	
+	<cfset monthbegin = createDateTime(Year(rc.minDate),Month(rc.minDate),DaysInMonth(rc.minDate),0,0,0)/>
+    <cfset monthend = createDateTime(Year(rc.maxDate),Month(rc.maxDate),DaysInMonth(rc.maxDate),23,59,59)/>
+	<cfset diff = DateDiff('m',monthbegin,monthend)/>
+	<cfset to = currentMonth + diff/>
+	
     <cfset subscriptionsEarning = []/>
     <cfset earned = []/>
     <cfset taxAmount = []/>
@@ -98,58 +102,81 @@
         <cfset refunded[index] = dataRecord['earnedSUM']/>
         <cfset refundedTaxAmount[index] = dataRecord['taxAmountSUM']/>
     </cfloop>
-    
     <table class="table table-bordered s-detail-content-table">
         <thead>
             <tr>
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="w">
-                    <cfif w % 12 eq 1 and w neq 1>
+                    <cfif w % 12 eq 0 and w neq 0 >
                         <cfset currentYear++/>
                     </cfif>
                     <th>
                         #possibleMonths[w%12+1]# - #currentYear#
                     </th>
                 </cfloop>
+                <th>
+                    Total
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Subscriptions Earning</td>
+                <cfset totalSubscriptionsEarning=0/>
                 <cfloop array="#subscriptionsEarning#" index="subscriptionsEarningRecord">
                     <td>#subscriptionsEarningRecord#</td>
+                    <cfset totalSubscriptionsEarning += subscriptionsEarningRecord/>
                 </cfloop>
+                <td>#totalSubscriptionsEarning#</td>
             </tr>
             <tr>
                 <td>Earned Revenue</td>
+                <cfset totalEarnedRevenue=0/>
                 <cfloop array="#earned#" index="earnRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(earnRecord,'currency')#</td>
+                    <cfset totalEarnedRevenue+=earnRecord/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalEarnedRevenue,'currency')#</td>
             </tr>
             <tr>
                 <td>Tax</td>
+                <cfset totalTax=0/>
                 <cfloop array="#taxAmount#" index="taxAmountRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(taxAmountRecord,'currency')#</td>
+                    <cfset totalTax+=taxAmountRecord/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalTax,'currency')#</td>
             </tr>
              <tr>
                 <td>Refunded Revenue</td>
+                <cfset totalRefunded = 0/>
                 <cfloop array="#refunded#" index="refundRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(refundRecord,'currency')#</td>
+                    <cfset totalRefunded += refundRecord/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalRefunded,'currency')#</td>
             </tr>
             <tr>
                 <td>Refunded Tax</td>
+                <cfset totalRefundedTax = 0/>
                 <cfloop array="#refundedTaxAmount#" index="refundedTaxAmountRecord">
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(refundedTaxAmountRecord,'currency')#</td>
+                    <cfset totalRefundedTax += refundedTaxAmountRecord/>
                 </cfloop>
+                
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalRefundedTax,'currency')#</td>
             </tr>
             <tr>
                 <td>Total</td>
+                <cfset TotalEarned = 0/>
                 <cfloop from="1" to="#arraylen(taxAmount)#" index="i">
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(earned[i]+taxAmount[i]-refunded[i]-refundedTaxAmount[i],'currency')#</td>
+                    <cfset total = earned[i]+taxAmount[i]-refunded[i]-refundedTaxAmount[i]/>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(total,'currency')#</td>
+                    <cfset TotalEarned += total/>
                 </cfloop>
+                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(TotalEarned,'currency')#</td>
             </tr>
+            
         </tbody>
     </table>
     <cfif showProducts>

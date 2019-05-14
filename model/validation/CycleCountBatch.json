@@ -1,5 +1,6 @@
 {
 	"properties":{
-		"statusCode":		[{"contexts":"edit,delete","eq":"ccbstOpen"}]
+		"statusCode":		[{"contexts":"edit,delete","eq":"ccbstOpen"}],
+		"location":			[{"contexts":"save","required":true}]
 	}
-} 
+}  

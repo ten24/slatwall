@@ -67,35 +67,65 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	){
 		
 		var deferredRevenueData = getSubscriptionDAO().getDeferredRevenueData(argumentCollection=arguments);
+		var deferredRevenueLeftToBeRecognizedData = getSubscriptionDAO().getDeferredRevenueLeftToBeRecognizedData(argumentCollection=arguments);
+		
 		var deferredActiveSubscriptionData = getSubscriptionDAO().getDeferredActiveSubscriptionData(argumentCollection=arguments);
 		var deferredExpiringSubscriptionData = getSubscriptionDAO().getDeferredExpiringSubscriptionData(argumentCollection=arguments);
 		
 		var possibleMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 		var from = Month(arguments.minDate);
-		var diff = DateDiff('m',arguments.minDate,arguments.maxDate);
+		var diff = DateDiff('m',createDateTime(Year(arguments.minDate),Month(arguments.minDate),1,0,0,0),createDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),0,0,0));
 		var to = from + diff;
 		var startYear = Year(arguments.minDate);
 		var monthData = {};
-		var dateDiffInMonths = DateDiff('m',arguments.minDate,arguments.maxDate);
+		var dateDiffInMonths = DateDiff('m',createDateTime(Year(arguments.minDate),Month(arguments.minDate),1,0,0,0),createDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),0,0,0));
 		//look over months in the future
-		for(var i=from-1;i <= to;i++){
-			if(i % 12 == 1){
+		var deferredRevenueOverTime = 0;
+		var deferredTaxOverTime = 0;
+		for(var i=from-1;i <= to-1;i++){
+			if(i % 12 == 0 && i != 0){
 				startYear++;
 			}
 			
 			var monthNamePattern = startYear&'-'&possibleMonths[i % 12 +1];
 			monthData[monthNamePattern]={};
 			
+			if(!isNull(deferredRevenueLeftToBeRecognizedData)){
+				for(var k=1; k <= deferredRevenueLeftToBeRecognizedData.recordCount;k++){
+					var currentRecord = QueryGetRow(deferredRevenueLeftToBeRecognizedData,k);
+					if(currentRecord.thisMonth == monthNamePattern){
+						monthData[monthNamePattern]['deferredRevenueLeftToBeRecognized'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeRecognized,'decimal');
+						monthData[monthNamePattern]['deferredTaxLeftToBeRecognized'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTaxLeftToBeRecognized,'decimal');
+						monthData[monthNamePattern]['deferredTotalLeftToBeRecognized'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenueLeftToBeRecognized+currentRecord.deferredTaxLeftToBeRecognized,'decimal');
+						break;
+					}
+				}
+			}
+			
+			//format deferredRevenue 
+			
 			if(!isNull(deferredRevenueData)){
+				
 				for(var j=1; j <= deferredRevenueData.recordCount;j++){
 					var currentRecord = QueryGetRow(deferredRevenueData,j);
 					if(currentRecord.thisMonth == monthNamePattern){
 						monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue,'decimal');
 						monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTax,'decimal');
 						monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue+currentRecord.deferredTax,'decimal');
+						//check if we have left to be collected and reduce it by what we expect to collect
+						if(structKeyExists(monthData[monthNamePattern],'deferredRevenueLeftToBeRecognized')){
+							deferredRevenueOverTime += monthData[monthNamePattern]['deferredRevenue'];
+							deferredTaxOverTime += monthData[monthNamePattern]['deferredTax'];
+						}
+						
+						break;
 					}
 				}
 			}
+			
+			monthData[monthNamePattern]['deferredRevenueLeftToBeRecognized'] -= deferredRevenueOverTime;
+			monthData[monthNamePattern]['deferredTaxLeftToBeRecognized'] -= deferredTaxOverTime;
+			monthData[monthNamePattern]['deferredTotalLeftToBeRecognized'] -= (deferredRevenueOverTime + deferredTaxOverTime);
 			
 			if(!structKeyExists(monthData[monthNamePattern],'deferredRevenue')){
 				monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(0,'decimal');
@@ -129,6 +159,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					if(currentRecord.thisMonth == monthNamePattern){
 						monthData[monthNamePattern]['expiringSubscriptions'] = currentRecord.subscriptionUsageCount;
+						break;
 					}
 				}
 			}
@@ -138,6 +169,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}
+		
 		return monthData;
 		
 	}

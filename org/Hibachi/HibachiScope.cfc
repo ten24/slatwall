@@ -83,7 +83,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				try {
 					variables.profiler = createObject(profilerComponentPath);
 					break;
-				} catch (any e) {instantiationError = e}
+				} catch (any e) {instantiationError = e;}
 			}
 			
 			if (!structKeyExists(variables, 'profiler')) {
@@ -351,6 +351,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return getSession().getAccount();
 	}
 
+	public string function generateCSRFToken(boolean forceNew=false,string tokenName='hibachiCSRFToken' ){  
+		return getService("hibachiSessionService").generateCSRFToken(arguments.forceNew,arguments.tokenName);
+	}
+
+	public boolean function verifyCSRFToken(required string requestToken){
+		return getService("hibachiSessionService").verifyCSRFToken(arguments.requestToken);
+	} 
+
 	// ==================== REQUEST CACHING METHODS ===========================
 
 	public boolean function hasValue(required string key) {
@@ -447,6 +455,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
 	
+
 	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = ''){
 		if(!structKeyExists(variables, "entityQueueData")) {
 			variables.entityQueueData = {};

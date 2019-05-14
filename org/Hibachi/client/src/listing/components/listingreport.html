@@ -11,7 +11,7 @@
             		    <label>Dimensions</label>
             			<select 
                       ng-model="swListingReport.selectedPeriodColumn" 
-                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier
+                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by !periodColumn.ormtype ? 'Related Data' : undefined
                                         for periodColumn in swListingReport.periodColumns
                                          | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
                             "
@@ -19,7 +19,7 @@
                         >
                     
                   </select>
-            			<a href="##" ng-click="swListingReport.popObjectPath()" class="btn-text">Reset</a>
+            			<a href="##" ng-click="swListingReport.popObjectPath()" class="btn-text">Back</a>
             		</div>
             	</div>
             	
@@ -30,12 +30,15 @@
                             <p class="input-group s-datepicker">
                                 <label>Start Date</label>
                                 <input class="form-control" 
-                              		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                              		datepicker-popup="MMM dd, yyyy" 
                               		close-text="Close" 
                               		is-open="swListingReport.openedCalendarStart" 
                               		type="text"
                               		ng-model="swListingReport.startDate"
                               		ng-change="swListingReport.updatePeriod()"
+                              	    year="swListingReport.startDate.year"
+                              	    month="swListingReport.startDate.month"
+                              	    day="swListingReport.startDate.day"
                               		/>
                                 <span class="input-group-btn" >
                                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -46,18 +49,21 @@
                             <p class="input-group s-datepicker">
                                 <label>End Date</label>
                                 <input class="form-control" 
-                              		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                              		datepicker-popup="MMM dd, yyyy" 
                               		close-text="Close" 
                               		is-open="swListingReport.openedCalendarEnd" 
                               		type="text"
                               		ng-model="swListingReport.endDate"
                               		ng-change="swListingReport.updatePeriod()"
+                              		year="swListingReport.endDate.year"
+                              		month="swListingReport.endDate.month"
+                              		day="swListingReport.endDate.day"
                               		/>
                                 <span class="input-group-btn" >
                                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </span>
                             </p>
-                            <a href="#" id="hibachi-report-enable-compare" class="pull-right">+ Compare Dates</a>
+                            <a href="##" id="hibachi-report-enable-compare" class="btn-text pull-right">+ Compare Dates</a>
                         </div>
                         
                         <input type="hidden" name="reportCompareFlag" value="0">
@@ -67,12 +73,16 @@
                                 <p class="input-group s-datepicker">
                                     <label>Start Date</label>
                                     <input class="form-control" 
-                                  		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                                  		datepicker-popup="MMM dd, yyyy" 
                                   		close-text="Close" 
                                   		is-open="swListingReport.openedCalendarStartCompare" 
                                   		type="text"
                                   		ng-change="swListingReport.updatePeriod()"
-                                  		ng-model="swListingReport.startDateCompare"/>
+                                  		ng-model="swListingReport.startDateCompare"
+                                  		year="swListingReport.startDateCompare.year"
+                              	        month="swListingReport.startDateCompare.month"
+                              	        day="swListingReport.startDateCompare.day"
+                                  		/>
                                     <span class="input-group-btn" >
                                         <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarStartCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
@@ -82,12 +92,16 @@
                                 <p class="input-group s-datepicker">
                                     <label>End Date</label>
                                     <input class="form-control" 
-                                  		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                                  		datepicker-popup="MMM dd, yyyy" 
                                   		close-text="Close" 
                                   		is-open="swListingReport.openedCalendarEndCompare" 
                                   		type="text"
                                  		ng-change="swListingReport.updatePeriod()"
-                                  		ng-model="swListingReport.endDateCompare"/>
+                                  		ng-model="swListingReport.endDateCompare"
+                                  	    year="swListingReport.endDateCompare.year"
+                              	        month="swListingReport.endDateCompare.month"
+                              	        day="swListingReport.endDateCompare.day"	
+                                  	/>
                                     <span class="input-group-btn" >
                                         <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEndCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
@@ -113,22 +127,24 @@
             		</select> --->
             		
             		<!-- TODO: Backend - Wireup new period interval UI -->
+            		<label>View By</label>
             		<div class="btn-group btn-group-sm" role="group" aria-label="...">
-                      <button type="button" class="btn btn-default">Hour</button>
-                      <button type="button" class="btn btn-default">Day</button>
-                      <button type="button" class="btn btn-default">Week</button>
-                      <button type="button" class="btn btn-default">Month</button>
-                      <button type="button" class="btn btn-default">Year</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('hour')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='hour'}" class="btn btn-default">Hour</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('day')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='day'}" class="btn btn-default">Day</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('week')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='week'}" class="btn btn-default">Week</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('month')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='month'}" class="btn btn-default">Month</button>
+                      <button type="button" ng-click="swListingReport.selectPeriodInterval('year')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='year'}" class="btn btn-default">Year</button>
                     </div>
                 </div><!-- end of .col -->
                 
-            	<div class="col save-btn">
+            	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         >
-                            Save <i class="fa fa-floppy-o"></i>
+                            Save <i class="fas fa-save"></i>
                         </button>
+                        
                         <ul class="dropdown-menu pull-right" ng-show="swListingReport.collectionNameSaveIsOpen">
                             <li style="padding:8px;">
                                 <div class="s-form-input s-input-group s-edit" style="width:100px;">
@@ -155,6 +171,19 @@
         	</div><!-- end of .flex-align-right -->
     	</div><!-- end of .col -->
     </div><!-- end of .flex -->
+    
+    <div id="get-started-report">
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="text">
+            <h2>Create Your Orders Report</h2>
+            <ol>
+                <li>Select your <em>Report Dimensions</em>.</li>
+                <li>Use the <em>Display Options</em> to customize the date in your report and graph.</li>
+            </ol>
+        </div>
+    </div>
 
 	
 	<div id="chartContainer">

@@ -56,15 +56,12 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.cyclecountbatch#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.cyclecountbatch#" edit="#rc.edit#">
-			<cfif rc.cyclecountbatch.getPhysicalID() eq "">
-				<hb:HibachiProcessCaller entity="#rc.cyclecountbatch#" action="admin:entity.preprocesscyclecountbatch" processContext="physicalcount" type="list" modal="true" />
-			</cfif>
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.cyclecountbatch#">
 			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchtabs/cyclecountbatchitems" open="true" text="#$.slatwall.rbKey('entity.CycleCountBatchItem_plural')#" showOnCreateFlag=true />
-
+			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchtabs/futurecounts" open="false" text="Future Counts" />
+            <hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchtabs/pastcounts" open="false" text="Past Counts" />
 			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.cyclecountbatch#" />
 		</hb:HibachiEntityDetailGroup>

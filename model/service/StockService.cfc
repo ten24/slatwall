@@ -82,6 +82,25 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return stock;
 	}
+	
+	public any function findStockBySkuIDAndLocationID(required any skuID, required any locationID){
+		
+		var stock = getStockDAO().findStockBySkuIDAndLocationID(skuID=arguments.skuID, locationID=arguments.locationID);
+ 		if(isNull(stock)) {
+ 			if(getSlatwallScope().hasValue("stock_#arguments.skuID#_#arguments.locationID#")) {
+				// Set the stock in the requestCache so that duplicates for this stock don't get created.
+				stock = getSlatwallScope().getValue("stock_#arguments.skuID#_#arguments.locationID#");
+ 			} else {
+				stock = this.newStock();
+				stock.setSku(getService("skuService").getSkuBySkuID(arguments.skuID));
+				stock.setLocation(getService("locationService").getLocationByLocationID(arguments.locationID));
+				getHibachiDAO().save(stock);
+ 				// Set the stock in the requestCache so that duplicates for this stock don't get created.
+				getSlatwallScope().setValue("stock_#arguments.skuID#_#arguments.locationID#", stock);
+			}
+		}
+ 		return stock;
+	}
 
 	public any function getStockBySkuIDAndLocationID(required any skuID, required any locationID){
 		arguments.sku = getService('skuService').getSku(arguments.skuID);

@@ -110,6 +110,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return true;
 	}
 	
+	public any function getAccountCreatedSite(){
+		if(!structKeyExists(variables,'accountCreatedSite') && !isNull(getHibachiScope().getCurrentRequestSite())){
+			variables.accountCreatedSite = getHibachiScope().getCurrentRequestSite();
+		}
+		if(structKeyExists(variables,'accountCreatedSite')){
+			return variables.accountCreatedSite;
+		}
+	}
+	
 	public any function getAccountCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
 		collectionList.addDisplayProperty('siteID|value');

@@ -1760,73 +1760,74 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function updateReport( page ) {
-	
-		var data = {
-			slatAction: 'admin:report.default',
-			reportID: jQuery('input[name="reportID"]').val(),
-			reportName: jQuery('#hibachi-report').data('reportname'),
-			reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
-			reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
-			reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
-			reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
-			reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
-			reportDateTime: jQuery('select[name="reportDateTime"]').val(),
-			reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
-			dimensions: jQuery('input[name="dimensions"]').val(),
-			metrics: jQuery('input[name="metrics"]').val(),
-			reportType: jQuery('select[name="reporttype"]').val(), 
-			orderByType: jQuery('select[name="orderbytype"]').val()
-		};
-	
-		if(jQuery('input[name="showReport"]').is(':checked')){
-			data.showReport = true; 
-		} else { 
-			data.showReport = false; 
-		}
+		if(jQuery("#hibachi-report").length){
+			var data = {
+				slatAction: 'admin:report.default',
+				reportID: jQuery('input[name="reportID"]').val(),
+				reportName: jQuery('#hibachi-report').data('reportname'),
+				reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
+				reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
+				reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
+				reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
+				reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
+				reportDateTime: jQuery('select[name="reportDateTime"]').val(),
+				reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
+				dimensions: jQuery('input[name="dimensions"]').val(),
+				metrics: jQuery('input[name="metrics"]').val(),
+				reportType: jQuery('select[name="reporttype"]').val(), 
+				orderByType: jQuery('select[name="orderbytype"]').val()
+			};
 		
-		if(jQuery('select[name="limitresults"]').val() != undefined){ 
-			data.limitResults = jQuery('select[name="limitresults"]').val();
-		}
-	
-		if(page != undefined) {
-			data.currentPage = page;
-		}
-	
-		jQuery.ajax({
-			url: hibachiConfig.baseURL + '/',
-			method: 'post',
-			data: data,
-			dataType: 'json',
-			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
-			error: function( r ) {
-				// Error
-				removeLoadingDiv( 'hibachi-report' );
-			},
-			success: function( r ) {
-				if(r.report.hideChart !== undefined){ 
-					jQuery("#hibachi-report-chart").remove();
-					jQuery("#hibachi-report-chart-wrapper").hide();
-				} else { 
-					if(r.report.chartData.series !== undefined){
-						var html = "<div id='hibachi-report-chart'></div>";
-						jQuery("#hibachi-report-chart-wrapper").html(html);
-						var chart = new Highcharts.Chart(r.report.chartData);	
-					}
-					jQuery("#hibachi-report-chart-wrapper").show();
-				}
-				
-				if(r.report.hideReport !== undefined){
-					jQuery("#reportDataTable").remove();
-				} else { 
-					jQuery('#hibachi-report-table').html(r.report.dataTable);
-					jQuery("#hibachi-report-table").show();
-				}
-					
-				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
-				initUIElements('#hibachi-report');
-				removeLoadingDiv( 'hibachi-report' );
+			if(jQuery('input[name="showReport"]').is(':checked')){
+				data.showReport = true; 
+			} else { 
+				data.showReport = false; 
 			}
-		});
+			
+			if(jQuery('select[name="limitresults"]').val() != undefined){ 
+				data.limitResults = jQuery('select[name="limitresults"]').val();
+			}
+		
+			if(page != undefined) {
+				data.currentPage = page;
+			}
+		
+			jQuery.ajax({
+				url: hibachiConfig.baseURL + '/',
+				method: 'post',
+				data: data,
+				dataType: 'json',
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+				error: function( r ) {
+					// Error
+					removeLoadingDiv( 'hibachi-report' );
+				},
+				success: function( r ) {
+					if(r.report.hideChart !== undefined){ 
+						jQuery("#hibachi-report-chart").remove();
+						jQuery("#hibachi-report-chart-wrapper").hide();
+					} else { 
+						if(r.report.chartData.series !== undefined){
+							var html = "<div id='hibachi-report-chart'></div>";
+							jQuery("#hibachi-report-chart-wrapper").html(html);
+							var chart = new Highcharts.Chart(r.report.chartData);	
+						}
+						jQuery("#hibachi-report-chart-wrapper").show();
+					}
+					
+					if(r.report.hideReport !== undefined){
+						jQuery("#reportDataTable").remove();
+					} else { 
+						jQuery('#hibachi-report-table').html(r.report.dataTable);
+						jQuery("#hibachi-report-table").show();
+					}
+						
+					jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
+					initUIElements('#hibachi-report');
+					removeLoadingDiv( 'hibachi-report' );
+				}
+			});
+		}
 	
 	}
 	
@@ -1859,11 +1860,50 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		var view = tab.VIEW || tab.view;
 		
 		if($('#'+tabID).html().trim().length === 0){
-			
-			$('#'+tabID).load(url=window.location.href,data={viewPath:view.split(/\/(.+)/)[1]});
+			//add loading spinner prior to loading
+			$('#'+tabID).html(''+
+				'<i  class="fa fa-refresh fa-spin"></i>'+
+			'');
+			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
+
+				//angular should work
+				AngularHelper.Compile($('#'+tabID),htmlToCompile);
+				//jquery should work
+				initUIElements($('#'+tabID));
+			});
 		}
 		
+		
 	}
+	/**
+	 * AngularHelper : Contains methods that help using angular without being in the scope of an angular controller or directive
+	 */
+	var AngularHelper = (function () {
+	    var AngularHelper = function () { };
+
+	    /**
+	     * ApplicationName : Default application name for the helper
+	     */
+
+	    /**
+	         * Compile : Compile html with the rootScope of an application
+	         *  and replace the content of a target element with the compiled html
+	         * @$targetDom : The dom in which the compiled html should be placed
+	         * @htmlToCompile : The html to compile using angular
+	         */
+	    AngularHelper.Compile = function ($targetDom, htmlToCompile) {
+	        var $injector = angular.element(document).injector();
+
+	        $injector.invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
+	                        //Get the scope of the target, use the rootScope if it does not exists
+	            var $scope = $targetDom.html(htmlToCompile).scope();
+	            $compile($targetDom)($scope || $rootScope);
+	            $rootScope.$digest();
+	        }]);
+	   }
+
+	    return AngularHelper;
+	})();
 	
 	// =========================  END: HELPER METHODS =================================
 	

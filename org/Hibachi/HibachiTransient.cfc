@@ -387,10 +387,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		// Do any file upload properties
 		for( var p=1; p <= arrayLen(properties); p++ ) {
-
+			
 			// Setup the current property
 			currentProperty = properties[p];
-			
 			
 			// Check to see if we should upload this property
 			// Prepend the provided formUploadDottedPath if this file is being uploaded as a subpopulated property to determine absolute path reference for form scope retrieval
@@ -448,7 +447,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 						// Update the property with the serverFile name
 						_setProperty(currentProperty.name, uploadData.serverFile);
-
+						
 						// Attempt to invoke setXXXUploadStatus() method naming convention if exists to store reference to the file upload status data
 						// If file upload property name already has xxxUpload suffix, only add 'Status' so we can reference 'setXXXUploadStatus' instead of 'setXXXUploadUploadStatus'
 						var uploadStatusMethodName = 'set#currentProperty.name#';
@@ -728,7 +727,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			for(var i=1; i<=arrayLen(validations[ arguments.propertyName ]); i++) {
 				var constraintDetails = validations[ arguments.propertyName ][i];
 				if(!structKeyExists(constraintDetails, "conditions")) {
-					if(constraintDetails.constraintType == "required") {
+					if(constraintDetails.constraintType == "required" && constraintDetails.constraintValue) {
 						validationClass = listAppend(validationClass, "required", " ");
 					} else if (constraintDetails.constraintType == "dataType") {
 						if(constraintDetails.constraintValue == "numeric") {

@@ -46,24 +46,17 @@
 Notes:
 
 --->
-<cfcomponent output="false" extends="Slatwall.org.Hibachi.Hibachi">
+<cfcomponent output="false">
 	<cfscript>
-
-	// Allow For Application Config
-	try{include "../../config/configApplication.cfm";}catch(any e){}
-	// Allow For Instance Config
-	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
-
-	this.sessionManagement = true;
-
-	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/sample/", "");
-
-	this.ormEnabled = true;
-	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
-	this.ormSettings.dbcreate = "update";
-	this.ormSettings.flushAtRequestEnd = false;
-	this.ormsettings.eventhandling = true;
-	this.ormSettings.automanageSession = false;
+	
+	public function init(required any Hibachi){
+		variables.hibachi = arguments.hibachi;
+		return this;
+	}
+	
+	public function getHibachi(){
+		return variables.hibachi;
+	}
 
 	function onRequestStart() {
 		runRequestActions(argumentCollection=arguments);
@@ -73,16 +66,16 @@ Notes:
 		if(structKeyExists(form, "slatAction")) {
 			request.context['doNotRender'] = true;
 			for(var action in listToArray(form.slatAction)) {
-				arguments.actionResult = arguments.slatwallScope.doAction( action, request.context);
-				if(arguments.slatwallScope.hasFailureAction(action)) {
+				arguments.actionResult = getHibachi().getHibachiScope().doAction( action, request.context);
+				if(getHibachi().getHibachiScope().hasFailureAction(action)) {
 					break;
 				}
 			}
 		} else if (structKeyExists(url, "slatAction")) {
 			request.context['doNotRender'] = true;
 			for(var action in listToArray(url.slatAction)) {
-				arguments.actionResult = arguments.slatwallScope.doAction( action, request.context);
-				if(arguments.slatwallScope.hasFailureAction(action)) {
+				arguments.actionResult = getHibachi().getHibachiScope().doAction( action, request.context);
+				if(getHibachi().getHibachiScope().hasFailureAction(action)) {
 					break;
 				}
 			}
@@ -102,13 +95,13 @@ Notes:
 
 	function generateRenderedContent() {
 		
-		var site = arguments.slatwallScope.getSite();
+		var site = getHibachi().getHibachiScope().getSite();
 		var appTemplatePath = site.getApp().getAppRootPath() & '/templates';
  		var siteTemplatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates';
 		var contentPath = '';
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
-			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');
+			getHibachi().getHibachiScope().getService('HibachiCacheService').resetCachedKeyByPrefix('content');
 			var cacheList = 
 			   "globalURLKeyAttribute,
 			    globalURLKeyBrand,
@@ -125,7 +118,7 @@ Notes:
 			;
 			var cacheArray = listToArray(cacheList);
 			for(var cacheItem in cacheArray){
-				arguments.slatwallScope.getService('HibachiCacheService').resetCachedKey(cacheItem);
+				getHibachi().getHibachiScope().getService('HibachiCacheService').resetCachedKey(cacheItem);
 			}
 			site.setResetSettingCache(false);
 		}
@@ -136,7 +129,7 @@ Notes:
 					var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
 					var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=listFirst(arguments.contentURLTitlePath,'/'),2=true});
 					var attributeOption = entityService.invokeMethod('getAttributeOptionByURLTitle',{1=listLast(arguments.contentURLTitlePath,'/'),2=true});
-					arguments.slatwallScope.setAttributeOption(attributeOption);
+					getHibachi().getHibachiScope().setAttributeOption(attributeOption);
 					
 				}else{
 					var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
@@ -144,19 +137,19 @@ Notes:
 				}
 				
 				if(isNull(entity) || entity.getNewFlag()){
-					var content = render404(arguments.slatwallScope,site);
+					var content = render404(getHibachi().getHibachiScope(),site);
 				}
-				arguments.slatwallScope.invokeMethod('set#entityName#',{1=entity});
-				arguments.slatwallScope.setRouteEntity(  entityName, entity );
+				getHibachi().getHibachiScope().invokeMethod('set#entityName#',{1=entity});
+				getHibachi().getHibachiScope().setRouteEntity(  entityName, entity );
 			}
-			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
-			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );
+			var entityDisplayTemplateSetting = getHibachi().getHibachiScope().invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
+			var entityTemplateContent = getHibachi().getHibachiScope().getService("contentService").getContent( entityDisplayTemplateSetting );
 			if(!isnull(entityTemplateContent)){
-				arguments.slatwallScope.setContent( entityTemplateContent );
+				getHibachi().getHibachiScope().setContent( entityTemplateContent );
 				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
 				 
 			}else{
-				var content = render404(arguments.slatwallScope,site);
+				var content = render404(getHibachi().getHibachiScope(),site);
 				var contentTemplateFile = content.Setting('contentTemplateFile');
 				//throw('no content for entity');
 			}
@@ -164,18 +157,18 @@ Notes:
 			if(!isNull(arguments.contenturlTitlePath) && len(arguments.contenturlTitlePath)){
 
 				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
-				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),arguments.contenturlTitlePath);
+				var content = getHibachi().getHibachiScope().getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),arguments.contenturlTitlePath);
 			}else{
-				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
+				var content = getHibachi().getHibachiScope().getService('contentService').getDefaultContentBySite(site);
 			}
 
 			if(isNull(content) || isNull(content.getActiveFlag()) || !content.getActiveFlag()){
-				var content = render404(arguments.slatwallScope,site);
+				var content = render404(getHibachi().getHibachiScope(),site);
 				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
 			var contentTemplateFile = content.Setting('contentTemplateFile');
-			arguments.slatwallScope.setContent(content);
+			getHibachi().getHibachiScope().setContent(content);
 		}
 
 
@@ -184,22 +177,22 @@ Notes:
 		} else if (FileExists(ExpandPath(appTemplatePath) & '/' &  contentTemplateFile)){
 			var contentPath = appTemplatePath & '/' &  contentTemplateFile;
 		} else { 
-			render404(arguments.slatwallScope,site);
+			render404(getHibachi().getHibachiScope(),site);
 			//throw("Requested Template: " & contentTemplateFile & " Doesn't Exist in the Site Or The App");
 		}	
 		
 		arguments.contentPath = contentPath;
 
-		arguments.renderActionInTemplate = arguments.slatwallScope.getContent().setting('contentRenderHibachiActionInTemplate');	
+		arguments.renderActionInTemplate = getHibachi().getHibachiScope().getContent().setting('contentRenderHibachiActionInTemplate');	
 		
 		var templateData = buildRenderedContent(argumentCollection=arguments);
 		if(arguments.renderActionInTemplate && structKeyExists(arguments, "actionResult")){
  			var hibachiView = {}; 
  			hibachiView['contentBody'] = arguments.actionResult;
- 			templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,hibachiView);
+ 			templateBody = getHibachi().getHibachiScope().getService('hibachiUtilityService').replaceStringTemplate(templateData,hibachiView);
  		} 
-		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,arguments.slatwallScope.getContent());
-		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);
+		templateBody = getHibachi().getHibachiScope().getService('hibachiUtilityService').replaceStringTemplate(templateData,getHibachi().getHibachiScope().getContent());
+		templateBody = getHibachi().getHibachiScope().getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);
 		
 		writeOutput(templateBody);
 		abort;
@@ -208,7 +201,7 @@ Notes:
 	</cfscript>
 	
 	<cffunction name="buildRenderedContent">
-		<cfset request.context.fw = arguments.slatwallScope.getApplicationValue("application")/>
+		<cfset request.context.fw = getHibachi().getHibachiScope().getApplicationValue("application")/>
 		<cfset var $ = getApplicationScope(argumentCollection=arguments)/>
 		
 		<cfsavecontent variable="local.templateData" >
@@ -293,8 +286,8 @@ Notes:
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
 		response.setstatus(404);
-		arguments.slatwallScope.getService("hibachiEventService").announceEvent(eventName="404");
-		var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),'404');
+		getHibachi().getHibachiScope().getService("hibachiEventService").announceEvent(eventName="404");
+		var content = getHibachi().getHibachiScope().getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),'404');
 		if(!isNull(content)){
 			return content;
 		}
@@ -303,7 +296,7 @@ Notes:
 
 	public any function getApplicationScope(){
 		var applicationScope = this;
-		applicationScope.slatwall = arguments.slatwallScope;
+		applicationScope.slatwall = getHibachi().getHibachiScope();
 		return applicationScope;
 	}
 
@@ -321,12 +314,16 @@ Notes:
 					return entity.getValueByPropertyIdentifier(arguments.missingMethodArguments[3]);
 				}
 			}
+			
 		}
+	}
+	
+	public any function getHibachiScope(){
+		return getHibachi().getHibachiScope();
 	}
 
 	public string function getContentBodyByUrlTitlePath(required string urlTitlePath){
 		var contentBody = "";
-		
 		var contentCollectionList = getHibachiScope().getService('contentService').getContentCollectionList();
 		contentCollectionList.setDisplayProperties('contentBody');
 		contentCollectionList.addFilter('urlTitlePath',arguments.urlTitlePath);

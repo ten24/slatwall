@@ -44,6 +44,7 @@ Notes:
 component output="false" accessors="true" persistent="false" extends="Slatwall.org.Hibachi.HibachiEntity" {
 
 	property name="assignedAttributeSetSmartList" type="any" persistent="false";
+	property name="assignedAttributes" type="array" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
 	property name="settingValueFormatted" type="any" persistent="false";
@@ -174,7 +175,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public array function getAttributeValuesForEntity() {
 		if(!structKeyExists(variables, "attributeValuesForEntity")) {
 			variables.attributeValuesForEntity = [];
-			if(hasProperty("attributeValues")) {
+			if(hasProperty("attributeValues") && !getNewFlag() && arrayLen(getAssignedAttributes())) {
 				var primaryIDPropertyIdentifier = "#replace(getEntityName(), '#getDao('hibachiDao').getApplicationValue('applicationKey')#', '')#.#getPrimaryIDPropertyName()#";
 				primaryIDPropertyIdentifier = lcase(left(primaryIDPropertyIdentifier, 1)) & right(primaryIDPropertyIdentifier, len(primaryIDPropertyIdentifier)-1);
 				variables.attributeValuesForEntity = getService("attributeService").getAttributeValuesForEntity(primaryIDPropertyIdentifier=primaryIDPropertyIdentifier, primaryIDValue=getPrimaryIDValue());
@@ -380,6 +381,23 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		return variables.assignedAttributeSetSmartList;
 	}
+	
+	public array function getAssignedAttributes() {
+		 //cacheing structure of attribute code and type info
+		 var cacheKey = "attributes_getAssignedAttribtues"&getClassName();
+		 if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var assignedAttributesArray = [];
+		 	
+		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(getClassName());
+		 	// Converts query to struct object
+		 	for (var attributeStruct in attributesDataQuery) {
+		 		arrayAppend(assignedAttributesArray, attributeStruct);
+		 	}
+		 	getService('HibachiCacheService').setCachedValue(cacheKey,assignedAttributesArray);
+		 }
+		 
+		 return getService('HibachiCacheService').getCachedValue(cacheKey);
+	}
 
 	public struct function getAttributeValuesByAttributeIDStruct() {
 		if(!structKeyExists(variables, "attributeValuesByAttributeIDStruct")) {
@@ -437,6 +455,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+	}
+	
+	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
+		var propertyCollection = super.getPropertyCountCollectionList(argumentCollection=arguments);
+
+		// Skip record level permissions for these entities, otherwise infinite loop is possible
+		if (getClassName() == 'Account' && listFindNoCase('PermissionGroup,Permission', getPropertiesStruct()[arguments.propertyName].cfc)) {
+			propertyCollection.setPermissionAppliedFlag(true);
+		}
+
+		return propertyCollection;
 	}
 
 	public array function getPrintTemplates() {

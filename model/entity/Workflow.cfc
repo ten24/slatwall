@@ -41,9 +41,9 @@ component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow
 	
 	// Persistent Properties
 	property name="workflowID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="workflowName" ormtype="string";
 	property name="workflowObject" ormtype="string" hb_formfieldType="select";
+	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
 
 	// Calculated Properties
 
@@ -71,6 +71,11 @@ component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow
 	// Deprecated Properties
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
+			arguments.includesList = 'workflowID,workflowName,workflowObject,activeFlag';
+			return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
 	
 	public array function getWorkflowObjectOptions(){
 		if(!structKeyExists(variables,'workflowObjectOptions')){
