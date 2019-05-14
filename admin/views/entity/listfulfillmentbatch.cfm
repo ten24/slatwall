@@ -54,41 +54,7 @@ Notes:
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.fulfillmentBatchSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
-<span ng-init="multislot = true"></span>
-<sw-listing-display 
-	data-base-entity-name="FulfillmentBatch"
-	data-edit="true"
-	data-has-search="true"
-	record-edit-action="admin:entity.editfulfillmentbatch"
-	data-record-detail-action="admin:entity.detailfulfillmentbatch"
-	data-is-angular-route="false"
-	data-angular-links="false"
-	data-has-action-bar="false"
-	data-using-personal-collection="true"
-	data-persisted-collection-config="true"
-	data-name="fulfillmentBatchCollectionTable"
-	data-multi-slot="multislot"
-		>
-	
-		
-		
-		<sw-collection-configs>
-			<sw-collection-config data-entity-name="FulfillmentBatch" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
-				<sw-collection-columns>
-					<sw-collection-column data-property-identifier="fulfillmentBatchID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
-					<sw-collection-column data-property-identifier="fulfillmentBatchNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-					<sw-collection-column data-property-identifier="fulfillmentBatchName" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-		            <sw-collection-column data-property-identifier="description" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-		            <sw-collection-column data-property-identifier="assignedAccount.calculatedFullName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
-		        </sw-collection-columns>
-				<sw-collection-filters>
-					<sw-collection-filter data-property-identifier="fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode" data-comparison-operator="IN" data-comparison-value="ofstUnfulfilled,ofstPartiallyFulfilled"></sw-collection-filter>
-				</sw-collection-filters>
-			</sw-collection-config>
-		</sw-collection-configs>
-				
-	</sw-listing-display>
-		
+
 	<cfset fulfillmentBatchCollectionList = getHibachiScope().getService('fulfillmentService').getFulfillmentBatchCollectionList()>
 	<cfset serchableDisplayProperties = "fulfillmentBatchNumber,fulfillmentBatchName,description,assignedAccount.calculatedFullName"/>
 	<cfset fulfillmentBatchCollectionList.setDisplayProperties( serchableDisplayProperties, {
@@ -103,8 +69,12 @@ Notes:
 		isDeletable=false
 	})/>
 	
-	<cfset fulfillmentBatchCollectionList.addFilter('fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode','ofstUnfulfilled,ofstPartiallyFulfilled','IN')/>
-
+	<cfset fulfillmentBatchCollectionList.addFilter( 
+	propertyIdentifier ='fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode',
+	value = 'ofstUnfulfilled,ofstPartiallyFulfilled',
+	comparisonOperator = 'IN',
+	hidden = false
+	)/>
 
     <hb:HibachiListingDisplay 
     		collectionList="#fulfillmentBatchCollectionList#"
