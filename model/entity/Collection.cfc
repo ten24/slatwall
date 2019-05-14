@@ -760,6 +760,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		arguments.column['isExportable'] = false;
 		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
 			arguments.column['isDeletable'] = arguments.columnConfig['isDeletable'];
+			
+			// if its ...ID and non-deletable prepend it for better UX			 //XXX using java String::EqualsIgnoreCase() 
+			if(!arguments.column['isDeletable'] && right(arguments.column["propertyIdentifier"],2).EqualsIgnoreCase("ID")){
+				arguments.prepend = true;
+			}
 		}
 		if(structKeyExists(arguments.columnConfig, 'isVisible')){
 			arguments.column['isVisible'] = arguments.columnConfig['isVisible'];
