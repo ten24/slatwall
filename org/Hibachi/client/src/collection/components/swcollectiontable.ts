@@ -85,7 +85,7 @@ class SWCollectionTable{
 
                 scope.getCellValue = function(pageRecord,column){
                     var value = '';
-                    if(angular.isDefined(column.aggregate)){
+                    if(column.aggregate && column.aggregate.aggregateFunction && column.aggregate.aggregateFunction.length){
                         value =  pageRecord[column.aggregate.aggregateAlias];
                     }else if(column.propertyIdentifier.replace(scope.collectionConfig.baseEntityAlias,'').charAt(0) == '.'){
                         value = pageRecord[column.propertyIdentifier.replace(scope.collectionConfig.baseEntityAlias+'.','')];

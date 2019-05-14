@@ -21,8 +21,8 @@
 	<cfparam name="attributes.forceSSLFlag" type="boolean" default="false" />
 	
 	<!--- Make sure we don't have a stale token (this will happen when validation fails) --->
-	<cfif !CSRFVerifyToken(attributes.csrf, "hibachiCSRFToken")>
-		<cfset attributes.csrf = CSRFGenerateToken("hibachiCSRFToken", false) />
+	<cfif not attributes.hibachiScope.verifyCSRFToken(attributes.csrf)>
+		<cfset attributes.csrf = attributes.hibachiScope.generateCSRFToken() />
 	</cfif> 
 	
 	<cfset formAction ="">
@@ -79,7 +79,7 @@
 					<div class="modal-footer">
 						<cfif attributes.edit>
 							<a href="##" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> #attributes.hibachiScope.rbKey('define.cancel')#</a>
-							<hb:HibachiActionCaller type="button" action="##" class="btn btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
+							<hb:HibachiActionCaller type="button" submit="true" action="##" class="btn btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
 						</cfif>
 					</div>
 				</div>

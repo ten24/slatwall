@@ -83,7 +83,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				try {
 					variables.profiler = createObject(profilerComponentPath);
 					break;
-				} catch (any e) {instantiationError = e}
+				} catch (any e) {instantiationError = e;}
 			}
 			
 			if (!structKeyExists(variables, 'profiler')) {
@@ -350,6 +350,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public any function getAccount() {
 		return getSession().getAccount();
 	}
+
+	public string function generateCSRFToken(boolean forceNew=false,string tokenName='hibachiCSRFToken' ){  
+		return getService("hibachiSessionService").generateCSRFToken(arguments.forceNew,arguments.tokenName);
+	}
+
+	public boolean function verifyCSRFToken(required string requestToken){
+		return getService("hibachiSessionService").verifyCSRFToken(arguments.requestToken);
+	} 
 
 	// ==================== REQUEST CACHING METHODS ===========================
 

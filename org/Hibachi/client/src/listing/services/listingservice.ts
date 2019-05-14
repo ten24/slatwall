@@ -20,7 +20,9 @@ class ListingService{
                 private rbkeyService,
                 private selectionService,
                 private utilityService,
-                private $hibachi){
+                private $hibachi,
+                private localStorageService
+    ){
         //Setup a store so that controllers can listing for state changes and fire action requests.
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
@@ -312,8 +314,34 @@ class ListingService{
 
     public clearAllSelections = (listingID) => {
         if (!listingID) return -1;
-        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
-            this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        if(this.getListing(listingID)){
+            for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+                this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+            }
+            this.getListing(listingID).collectionConfig.getEntity().then(data=>{
+                this.updatePageRecords(listingID,data);
+            });
+        }
+    }
+    
+     public updatePageRecords = (listingID,data) =>{
+        this.getListing(listingID).collectionData = data;
+        this.setupDefaultCollectionInfo(listingID);
+        if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
+            this.setupColumns(listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
+        }else{
+            this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
+        }
+        this.notifyListingPageRecordsUpdate(listingID);
+        this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords ||
+                                                                this.getListing(listingID).collectionData.records;
+
+        this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
+        this.getListing(listingID).searching = false;
+
+        this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
+        if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
+            this.getListing(listingID).columnCount++; 
         }
     }
 
@@ -506,8 +534,10 @@ class ListingService{
             }
 
         }
-
-        for(var i=0; i < this.getListing(listingID).columns.length; i++){
+        
+        let length = this.getListing(listingID).columns.length;
+        
+        for(var i=0; i < length; i++){
 
             var column = this.getListing(listingID).columns[i];
 
@@ -936,7 +966,11 @@ class ListingService{
     //for single column order by
     public toggleOrderBy = (listingID:string, column) => {
         if(this.getListing(listingID).hasSingleCollectionConfig()){
-            this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+            let orderByPropertyIdentifier = column.propertyIdentifier;
+            if(column.aggregate && column.aggregate.aggregateFunction){
+                orderByPropertyIdentifier = column.aggregate.aggregateFunction + '('+column.propertyIdentifier+')';
+            }
+            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
         }
 
     };
@@ -1063,6 +1097,21 @@ class ListingService{
         }
     };
     //End Expandable Functions
+    
+    //Begin Personal Collections Functions
+    
+    public hasPersonalCollectionSelected=(baseEntityName:string):boolean=>{
+        return this.localStorageService.hasItem('selectedPersonalCollection') 
+            && this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
+    }
+     public getPersonalCollectionByBaseEntityName=(baseEntityName:string):any=>{
+        var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
+        personalCollection.setDisplayProperties('collectionConfig');
+        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
+        return personalCollection;
+    }
+        
+    //End Personal Collections Functions
 
 }
 export{ListingService};

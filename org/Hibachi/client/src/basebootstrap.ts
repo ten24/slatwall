@@ -57,7 +57,7 @@ export class BaseBootStrapper{
                         invalidCache.push('attributeCacheKey');
                     }
     
-                    // Inspecting app config/model metadata in local storage (retreived from /custom/config/config.json)
+                    // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
                     try{
                         if(!isPrivate){
                             this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
@@ -69,13 +69,16 @@ export class BaseBootStrapper{
                         }
 			
                         // appConfig instantiation key is valid (but attribute model may need to be refreshed)
-                        if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
+                        if(
+                            hibachiConfig.instantiationKey
+                            && this.appConfig.instantiationKey
+                            && hibachiConfig.instantiationKey === this.appConfig.instantiationKey
+                        ){
 
 
                             // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
 			    
                             coremodule.constant('appConfig', this.appConfig);
-
                             // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
                             if (invalidCache.length) {
                                 let deferred = $q.defer();
@@ -232,7 +235,7 @@ export class BaseBootStrapper{
             urlString+='/';
         }
         
-        return this.$http.get(urlString+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
+        return this.$http.get(urlString+'/custom/system/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
             
         	var appConfig = resp.data.data;
@@ -259,7 +262,7 @@ export class BaseBootStrapper{
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL+'/custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
+        var urlString = this.appConfig.baseURL+'/custom/system/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
 
         this.$http({
             url:urlString,
@@ -279,17 +282,19 @@ export class BaseBootStrapper{
     };
 
     getResourceBundles= () => {
-        var localeListArray = this.appConfig.rbLocale.split('_');
-        var rbPromise;
+        var rbLocale = this.appConfig.rbLocale;
+        if(rbLocale == 'en_us'){
+            rbLocale = 'en'
+        }
+        var localeListArray = rbLocale.split('_');
         var rbPromises = [];
-        rbPromise = this.getResourceBundle(this.appConfig.rbLocale);
+        var rbPromise = this.getResourceBundle(rbLocale);
         rbPromises.push(rbPromise);
         if(localeListArray.length === 2) {
             rbPromise = this.getResourceBundle(localeListArray[0]);
             rbPromises.push(rbPromise);
         }
         if(localeListArray[0] !== 'en') {
-            //this.getResourceBundle('en_us');
             this.getResourceBundle('en');
         }
         return this.$q.all(rbPromises).then((data) => {

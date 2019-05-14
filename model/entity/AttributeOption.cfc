@@ -87,6 +87,7 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 
 	// ============ START: Non-Persistent Property Methods =================
 
+	
 	public string function getAttributeOptionLabel() {
 		if(structkeyExists(variables,"attributeOptionLabel")) {
 			return variables["attributeOptionLabel"];

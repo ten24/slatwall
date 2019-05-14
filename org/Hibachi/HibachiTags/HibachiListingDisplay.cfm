@@ -13,6 +13,7 @@
 
 	<!--- Collection Params. If collectionList is specified the items below configure it --->
 	<cfparam name="attributes.collectionList" type="any" default=""/>
+	<cfparam name="attributes.collectionConfigJson" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
@@ -94,7 +95,12 @@
 			<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
 			<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
 
-			<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
+			<cfif len(attributes.collectionConfigJson)>
+				<cfset JSON = attributes.collectionConfigJson />
+			<cfelse> 	
+				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
+			</cfif> 
+			
 			<!---escape apostraphe boi--->
 			<cfset JSON = rereplace(JSON,"'","\'",'all')/>
 			<!---convert double quotes to single--->

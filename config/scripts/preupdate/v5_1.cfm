@@ -11,6 +11,8 @@
 	<cfloop query="#attributecolumns#">
 		<cfif Column_Name eq 'customPropertyFlag'>
 			<cfset local.found = true />
+		</cfif>
+		<cfif local.found>
 			<cfbreak>
 		</cfif>
 	</cfloop>

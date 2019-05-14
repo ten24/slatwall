@@ -22,6 +22,7 @@ class SWEditSkuPriceModalLauncherController{
     public saveSuccess:boolean=true; 
     public imagePath:string; 
     public selectCurrencyCodeEventName:string; 
+    public priceGroupId:string;
     
     //@ngInject
     constructor(
@@ -65,8 +66,8 @@ class SWEditSkuPriceModalLauncherController{
                 this.sku = this.$hibachi.populateEntity('Sku',skuData);
                 this.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
                 this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
-                this.skuPrice.$$setSku(this.sku);
                 this.skuPrice.$$setPriceGroup(this.priceGroup);
+                this.skuPrice.$$setSku(this.sku);
                 this.currencyCodeOptions = ["USD"]; //hard-coded for now
             } else {
                 return;
@@ -110,6 +111,10 @@ class SWEditSkuPriceModalLauncherController{
         if(angular.isDefined(this.maxQuantity) && !isNaN(parseInt(this.minQuantity))){
             this.skuPrice.data.maxQuantity = parseInt(this.maxQuantity); 
         }
+        if(angular.isDefined(this.priceGroupId)){
+            this.skuPrice.data.priceGroup.data.priceGroupId = parseInt(this.priceGroupId); 
+        }
+        
         if(angular.isUndefined(this.currencyCodeOptions) && angular.isDefined(this.eligibleCurrencyCodeList)){
             this.currencyCodeOptions = this.eligibleCurrencyCodeList.split(",");
         }
@@ -206,6 +211,7 @@ class SWEditSkuPriceModalLauncher implements ng.IDirective{
         pageRecord:"=?",
         minQuantity:"@?",
         maxQuantity:"@?",
+        priceGroupId:"@?",
         currencyCode:"@?",
         eligibleCurrencyCodeList:"@?",
         defaultCurrencyOnly:"=?",

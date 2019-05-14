@@ -47,10 +47,10 @@ Notes:
 
 --->
 
+
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>
 	<head>
@@ -82,10 +82,7 @@ Notes:
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
 
-		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js"></hb:HibachiScript>
-		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js"></hb:HibachiScript>
-		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui.min.js"></hb:HibachiScript>
-		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
 		#request.slatwallScope.renderJSObject()#
 		<script type="text/javascript">
@@ -102,6 +99,8 @@ Notes:
 		<script src='https://www.google.com/recaptcha/api.js'></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
 	</head>
 
 	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
@@ -182,6 +181,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcontainerpreset" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcyclecountgroup" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcyclecountbatch" type="list">
 									<li class="divider"></li>
@@ -244,6 +244,8 @@ Notes:
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:report.deferredRevenueReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.earnedRevenueReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
@@ -268,7 +270,10 @@ Notes:
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
 								<li ng-controller="globalSearch">
+									
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
+										<cfif $.slatwall.setting('globalDisableSearchSettings') eq 0>
+										
 										<!--- Start of Search --->
 										<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 											<div class="form-group">
@@ -297,6 +302,9 @@ Notes:
 											</div>
 										</form>
 										<!--- End of Search --->
+										
+										</cfif>
+										
 									</cfif>
 								</li>
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
@@ -416,7 +424,7 @@ Notes:
 		</cfif>
 
 		<!-- code split vendor bundle before the other bundles because its common among them. -->
- 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
+ 		
  		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>

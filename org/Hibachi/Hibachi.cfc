@@ -16,6 +16,7 @@ component extends="framework.one" {
 	try{include "../../config/configApplication.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
+	
 	// Allow For DevOps Config
 	try{include "../../../configApplication.cfm";}catch(any e){} 
 	try{include "../../../../configApplication.cfm";}catch(any e){} 
@@ -23,7 +24,7 @@ component extends="framework.one" {
 	// =============== configFramework
 
 	// Defaults
-
+ 
 	// FW1 Setup
 	variables.framework=structNew();
 	variables.framework.applicationKey = 'Hibachi';
@@ -105,6 +106,8 @@ component extends="framework.one" {
 	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
+	variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup = true;
+	variables.framework.hibachi.skipCreateJsonOnServerStartup = false;	
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
 	variables.framework.hibachi.availableEnvironments = ['local','development','production'];
@@ -113,6 +116,7 @@ component extends="framework.one" {
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
+	
 	// Allow For DevOps Config
 	try{include "../../../configFramework.cfm";}catch(any e){} 
 	try{include "../../../../configFramework.cfm";}catch(any e){} 
@@ -133,23 +137,35 @@ component extends="framework.one" {
 		return 'production';
 	}
 	
-	private struct function getFw1App() {
-    	return application[variables.framework.applicationKey];
-    }
+	
+	public string function getDatasource(){
+		return this.datasource.name;
+	}
+	
 
 	// =============== configMappings
 
 	// Defaults
 	this.mappings[ "/#variables.framework.applicationKey#" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/org/Hibachi/", "");
-	this.mappings[ '/framework' ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & '/framework';
+	this.mappings[ '/framework' ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & 'framework';
 
 	// Allow For Application Config
 	try{include "../../config/configMappings.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configMappings.cfm";}catch(any e){}
+	
+	
 	// Allow For DevOps Config
 	try{include "../../../configMapping.cfm";}catch(any e){} 
 	try{include "../../../../configMapping.cfm";}catch(any e){} 
+	
+		// ==================== START: SYSTEM GENERATED MIGRATION ======================
+	if(
+		!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/systemGeneratedMigration.txt.cfm") 
+	
+	){
+		migrateGeneratedFilesToSystem();
+	}
 
 
 	// =============== configCustomTags
@@ -184,29 +200,37 @@ component extends="framework.one" {
 	try{include "../../config/configORM.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configORM.cfm";}catch(any e){}
+	
+	
 	// Allow For DevOps Config
 	try{include "../../../configORM.cfm";}catch(any e){} 
-	try{include "../../../../configORM.cfm";}catch(any e){} 
+	try{include "../../../../configORM.cfm";}catch(any e){}
+	
+
+
+	// ==================== END: SYSTEM GENERATED MIGRATION ======================
 
 	// ==================== START: PRE UPDATE SCRIPTS ======================
 	if(
 		!variables.framework.hibachi.skipDbData
 		&&(
-			!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/lastFullUpdate.txt.cfm") 
-			|| !fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm") 
+			!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/lastFullUpdate.txt.cfm") 
+			|| !fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm") 
 			|| (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)
 		)
 	){
+	
+		
 
 		this.ormSettings.secondaryCacheEnabled = false;
 
 		variables.preupdate = {};
 
-		if(!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm")) {
-			fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", "");
+		if(!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm")) {
+			fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm", "");
 		}
 
-		variables.preupdate.preUpdatesRun = fileRead("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm");
+		variables.preupdate.preUpdatesRun = fileRead("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm");
 
 
 
@@ -221,7 +245,7 @@ component extends="framework.one" {
 			}
 		}
 
-		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
+		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
 	}
 	// ==================== END: PRE UPDATE SCRIPTS ======================
 	// =======  END: ENVIRONMENT CONFIGURATION  =======
@@ -239,6 +263,17 @@ component extends="framework.one" {
 
     public void function setupSubsystem( module ) {
 
+    }
+    
+    public void function migrateGeneratedFilesToSystem(){
+    	var systemDirectoryPath = "#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/system";;
+		
+		var customConfigPath = "#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config";
+		var customConfigDirectory = directoryList(customConfigPath,false,'path','*.txt.cfm','asc');
+		for(var generatedFilePath in customConfigDirectory){
+			fileCopy(generatedFilePath,systemDirectoryPath);
+		}
+		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#" & '/custom/system/systemGeneratedMigration.txt.cfm', now());
     }
     
     public void function createHibachiScope(){
@@ -286,25 +321,37 @@ component extends="framework.one" {
 
 	public void function setupGlobalRequest(boolean noredirect=false) {
 		createHibachiScope();
+		
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
+        
+        if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
+			server[variables.framework.applicationKey] = {};
+		}
+
+		if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
+			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
+		}
+
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
 
-			if(!variables.framework.hibachi.isApplicationStart && variables.framework.hibachi.useServerInstanceCacheControl){
-			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-				verifyApplicationSetup(reloadByServerInstance=true);
-			}else{
-				//RELOAD JUST THE SETTINGS
-				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
-					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-					serverInstance.setSettingsExpired(false);
-						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
-				}
-			}
-		}
+		if(!variables.framework.hibachi.isApplicationStart && 
+			variables.framework.hibachi.useServerInstanceCacheControl &&
+			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
+		){
 
+			verifyApplicationSetup(reloadByServerInstance=true);
+
+		}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
+
+			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
+			serverInstance.setSettingsExpired(false);
+			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+		}
+		
 		// Verify that the session is setup
 		getHibachiScope().getService("hibachiSessionService").setProperSession();
 		
@@ -379,6 +426,14 @@ component extends="framework.one" {
 		setupGlobalRequest();
 		
 		var httpRequestData = getHTTPRequestData();
+		
+		//Echo origin for OPTIONS preflight
+		if( variables.framework.preflightOptions &&
+        	request._fw1.cgiRequestMethod == "OPTIONS" &&
+			structKeyExists(httpRequestData.headers,'Origin')
+			){
+			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
+		}
 
 		//Set an account before checking auth in case the user is trying to login via the REST API
 		/* Handle JSON requests */
@@ -434,7 +489,16 @@ component extends="framework.one" {
 			}
 		}
 
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);
+		var authenticationArguments = {
+			action=request.context[ getAction() ] ,
+			account=getHibachiScope().getAccount(),
+			restInfo=restInfo
+		};
+		if(structKeyExists(request,'context') && structKeyExists(request.context,'processContext')){
+			authenticationArguments.processContext = lCase(request.context.processContext);
+		}
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(argumentCollection = authenticationArguments);
+		
 		// Get the hibachiConfig out of the application scope in case any changes were made to it
 		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
@@ -586,6 +650,17 @@ component extends="framework.one" {
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 
+					try{
+						var q = new query();
+						q.setSQL('SHOW TABLES;');
+						q.setSQL('SELECT 1');
+						q.setDatasource(variables.framework.hibachi.readOnlyDataSource);
+						q.execute();
+					}catch(any e){
+						structDelete(variables.framework.hibachi,'readOnlyDataSource');
+						variables.framework.hibachi.readOnlyDataSource=this.datasource.name;
+					}
+
 					// Setup the app init data
 					var applicationInitData = {};
 					applicationInitData["initialized"] = 				false;
@@ -613,6 +688,7 @@ component extends="framework.one" {
 					for(var key in applicationInitData) {
 						if(isSimpleValue(applicationInitData[key])) {
 							writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Init '#key#' as: #applicationInitData[key]#");
+							writeLog(file="#variables.framework.applicationKey#", text="General Log - Server Instance Key: #server[variables.framework.applicationKey].serverInstanceKey#" );
 						}
 					}
 
@@ -634,149 +710,113 @@ component extends="framework.one" {
 					// ================ END: Required Application Setup ==================
 
 					//========================= IOC SETUP ====================================
-
-					var coreBF = new framework.aop("/#variables.framework.applicationKey#/model", {
-						transients=["entity", "process", "transient", "report"],
-						transientPattern="Bean$",
+					
+					// NOTE: ioc config omitDirectoryAliases does affect reload performance, when it is false it takes 2x longer to execute beanFactory.load()
+					
+					// Discover Hibachi beans
+					// Need to have omitDirectoryAliases=true, the beanFactory's info will be used to compile list of class names and comparisons
+					var hibachiBF = new framework.hibachiaop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
+						recurse=false,
+						exclude=[
+							"Hibachi.cfc","HibachiObject.cfc","HibachiTransient.cfc","HibachiProcess.cfc","HibachiEntity.cfc"
+							,"HibachiEventHandler.cfc","HibachiController.cfc","HibachiControllerEntity.cfc","HibachiControllerREST.cfc"
+						],
+						singletonPattern="(Service|DAO)$",
 						omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
 					});
-
-					// If the default singleton beans were not found in the model, add a reference to the core one in hibachi
-					if(!coreBF.containsBean("hibachiDAO")) {
-						coreBF.declareBean("hibachiDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiDAO", true);
+					
+					// Setup the core bean factory
+					var coreBF = new framework.hibachiaop("/#variables.framework.applicationKey#/model", {
+						transients=["entity", "process", "transient", "report"],
+						transientPattern="Bean$",
+						omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
+					});
+					
+					// Manually declare any Hibachi beans that are missing from the coreBF factory as a fallback
+					// NOTE: We cannot rely on coreBF.setParent(hibachiBF) to inject to proper dependency because of ambiguity with overridden class names in various locations Slatwall.org.Hibachi, Slatwall.model, Slatwall.custom.model, Slatwall.integrationServices.{integrationPackage}.model
+					var hibachiBeanInfo = hibachiBF.getBeanInfo().beanInfo;
+					var hibachiFallbackBeanNameList = '';
+					for (var beanName in hibachiBeanInfo) {
+						if (beanName != "beanFactory") {
+							
+							// NOTE: Canonicalize beanName using CFC, without ioc.config.omitDirectorAliases=true, we'll get false negatives testing conditions and end up creating beans that shouldn't be created
+							if (structKeyExists(hibachiBeanInfo[beanName], "cfc")) {
+								
+								// Canonicalized using cfc class name instead of beanName because beanName might be unique but just represent an alias (eg. "{className}Hibachi") for an identical cfc. Prevents cfc from being declared twice with different beanName alias
+								var canonicalizedBeanName = listLast(hibachiBeanInfo[beanName].cfc, '.');
+								
+								// Check if beanName needs to be explicitly declared
+								if (!coreBF.containsBean(canonicalizedBeanName)) {
+									
+									// Adding bean to core bean factory using canonicalized class name
+									coreBF.declareBean(canonicalizedBeanName, hibachiBeanInfo[beanName].cfc, hibachiBeanInfo[beanName].isSingleton);
+									hibachiFallbackBeanNameList = listAppend(hibachiFallbackBeanNameList, canonicalizedBeanName);
+								}
+							} else if (structKeyExists(hibachiBeanInfo[beanName], "value")) {
+								// Adding bean by instantiated value
+								coreBF.addBean(beanName, hibachiBeanInfo[beanName].value);
+							}
+						}
 					}
-					if(!coreBF.containsBean("hibachiCacheDAO")) {
-						coreBF.declareBean("hibachiCacheDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiCacheDAO", true);
-					}
-					if(!coreBF.containsBean("hibachiDataDAO")) {
-						coreBF.declareBean("hibachiDataDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiDataDAO", true);
-					}
-					if(!coreBF.containsBean("hibachiService")) {
-						coreBF.declareBean("hibachiService", "#variables.framework.applicationKey#.org.Hibachi.HibachiService", true);
-					}
-					if(!coreBF.containsBean("hibachiAuthenticationService")) {
-						coreBF.declareBean("hibachiAuthenticationService", "#variables.framework.applicationKey#.org.Hibachi.HibachiAuthenticationService", true);
-					}
-					if(!coreBF.containsBean("hibachiCacheService")) {
-						coreBF.declareBean("hibachiCacheService", "#variables.framework.applicationKey#.org.Hibachi.HibachiCacheService", true);
-					}
-					if(!coreBF.containsBean("hibachiDataService")) {
-						coreBF.declareBean("hibachiDataService", "#variables.framework.applicationKey#.org.Hibachi.HibachiDataService", true);
-					}
-					if(!coreBF.containsBean("hibachiDocsService")) {
-						coreBF.declareBean("hibachiDocsService", "#variables.framework.applicationKey#.org.Hibachi.HibachiDocsService", true);
-					}
-					if(!coreBF.containsBean("hibachiEventService")) {
-						coreBF.declareBean("hibachiEventService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEventService", true);
-					}
-					if(!coreBF.containsBean("hibachiRBService")) {
-						coreBF.declareBean("hibachiRBService", "#variables.framework.applicationKey#.org.Hibachi.HibachiRBService", true);
-					}
-					if(!coreBF.containsBean("hibachiReportService")) {
-						coreBF.declareBean("hibachiReportService", "#variables.framework.applicationKey#.org.Hibachi.HibachiReportService", true);
-					}
-					if(!coreBF.containsBean("hibachiSessionService")) {
-						coreBF.declareBean("hibachiSessionService", "#variables.framework.applicationKey#.org.Hibachi.HibachiSessionService", true);
-					}
-					if(!coreBF.containsBean("hibachiTagService")) {
-						coreBF.declareBean("hibachiTagService", "#variables.framework.applicationKey#.org.Hibachi.HibachiTagService", true);
-					}
-					if(!coreBF.containsBean("hibachiUtilityService")) {
-						coreBF.declareBean("hibachiUtilityService", "#variables.framework.applicationKey#.org.Hibachi.HibachiUtilityService", true);
-					}
-					if(!coreBF.containsBean("hibachiValidationService")) {
-						coreBF.declareBean("hibachiValidationService", "#variables.framework.applicationKey#.org.Hibachi.HibachiValidationService", true);
-					}
-					if(!coreBF.containsBean("hibachiCollectionService")) {
-                        coreBF.declareBean("hibachiCollectionService", "#variables.framework.applicationKey#.org.Hibachi.HibachiCollectionService", true);
-                    }
-                    if(!coreBF.containsBean("hibachiYamlService")) {
-                        coreBF.declareBean("hibachiYamlService", "#variables.framework.applicationKey#.org.Hibachi.HibachiYamlService", true);
-                    }
-                    if(!coreBF.containsBean("hibachiJWTService")) {
-                        coreBF.declareBean("hibachiJWTService", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWTService", true);
-                    }
-                    if(!coreBF.containsBean("hibachiJsonService")){
-						coreBF.declareBean("hibachiJsonService", "#variables.framework.applicationKey#.org.Hibachi.HibachiJsonService",true);
-					}
-					if(!coreBF.containsBean("hibachiEntityQueueDAO")) {
-						coreBF.declareBean("hibachiEntityQueueDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityQueueDAO", true);
-					}
-					if(!coreBF.containsBean("hibachiEntityQueueService")) {
-						coreBF.declareBean("hibachiEntityQueueService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityQueueService", true);
-					}
-					// If the default transient beans were not found in the model, add a reference to the core one in hibachi
-					if(!coreBF.containsBean("hibachiScope")) {
-						coreBF.declareBean("hibachiScope", "#variables.framework.applicationKey#.org.Hibachi.HibachiScope", false);
-					}
-					if(!coreBF.containsBean("hibachiSmartList")) {
-						coreBF.declareBean("hibachiSmartList", "#variables.framework.applicationKey#.org.Hibachi.HibachiSmartList", false);
-					}
-					if(!coreBF.containsBean("hibachiErrors")) {
-						coreBF.declareBean("hibachiErrors", "#variables.framework.applicationKey#.org.Hibachi.HibachiErrors", false);
-					}
-					if(!coreBF.containsBean("hibachiMessages")) {
-						coreBF.declareBean("hibachiMessages", "#variables.framework.applicationKey#.org.Hibachi.HibachiMessages", false);
-					}
-					if(!coreBF.containsBean("hibachiJWT")){
-						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
-					}
-					if(!coreBF.containsBean("hibachiEntityParser")){
-						coreBF.declareBean("hibachiEntityParser", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityParser",false);
-					}
-					if(!coreBF.containsBean("hibachiRecaptcha")){
-						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.HibachiRecaptcha",false);
-					}
-
+					
+					// writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory declared 'Hibachi' fallback beans for: #replace(listSort(hibachiFallbackBeanNameList, 'textnocase'), ',', ', ', 'all')#");
+					
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
-						var customBF = new framework.aop("/#variables.framework.applicationKey#/custom/model", {
+						var customBF = new framework.hibachiaop("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"],
 							omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
 						});
-						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
-						var aggregateBF = new framework.aop("");
-
-						// Process factories, last takes precendence
-						var beanFactories = [coreBF, customBF];
-
-						// Build the aggregate bean factory by manually declaring the beans
-						for (var bf in beanFactories) {
-							var beanInfo = bf.getBeanInfo().beanInfo;
-							for (var beanName in beanInfo) {
-								// Manually declare all beans from current bean factory except for the automatically generated beanFactory self reference
-								if (beanName != "beanFactory") {
-									if (structKeyExists(beanInfo[beanName], "cfc")) {
-										// Adding bean by class name
-										aggregateBF.declareBean(beanName, beanInfo[beanName].cfc, beanInfo[beanName].isSingleton);
-									} else if (structKeyExists(beanInfo[beanName], "value")) {
-										// Adding bean by instantiated value
-										aggregateBF.addBean(beanName, beanInfo[beanName].value);
-									}
+						
+						// All beans in customBF overwrite or added to bean declarations in coreBF
+						var customBeanInfo = customBF.getBeanInfo().beanInfo;
+						var customBeanNameList = '';
+						for (var beanName in customBeanInfo) {
+							if (beanName != "beanFactory") {
+								
+								// NOTE: Canonicalize beanName using CFC, without ioc.config.omitDirectorAliases=true, we'll get false negatives testing conditions and end up creating beans that shouldn't be created
+								if (structKeyExists(customBeanInfo[beanName], "cfc")) {
+									
+									// Canonicalized using cfc class name instead of beanName because beanName might be unique but just represent an alias (eg. "{className}Hibachi") for an identical cfc. Prevents cfc from being declared twice with different beanName alias
+									var canonicalizedBeanName = listLast(customBeanInfo[beanName].cfc, '.');
+										
+									// Adding bean to core bean factory using canonicalized class name
+									coreBF.declareBean(canonicalizedBeanName, customBeanInfo[beanName].cfc, customBeanInfo[beanName].isSingleton);
+									customBeanNameList = listAppend(customBeanNameList, canonicalizedBeanName);
+								} else if (structKeyExists(hibachiBeanInfo[beanName], "value")) {
+									// Adding bean by instantiated value
+									coreBF.addBean(beanName, customBeanInfo[beanName].value);
 								}
 							}
 						}
-						setBeanFactory(aggregateBF);
-					} else {
-						setBeanFactory(coreBF);
+						
+						// writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory declared 'Custom' beans: #replace(listSort(customBeanNameList, 'textnocase'), ',', ', ', 'all')#");
+						
 					}
-
-
+					
+					setBeanFactory(coreBF);
+					
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 
 					//========================= END: IOC SETUP ===============================
-
+					
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
+					// Manually forces all beans to reload and attempt injections. Modifying this should be done carefully and somewhat fragile. 
+					// All bean factory flattening and aggregation has occured from Hibachi, Core, Custom., Integrations. This avoids potential missing bean errors after custom and integrationService setup
+					// Performance worsens if setting the ioc.cfc config omitDirectoryAliases = false. Negatively impacts execution time of the load() method by 2x longer
+					// NOTE: For more details about the quirk, view notes about the load() method in the org/hibachi/framework/hibachiaop.cfc
+					coreBF.load();
+					onBeanFactoryLoadComplete();
+					
+					
 					//==================== START: EVENT HANDLER SETUP ========================
 					
-					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
-
 
 					//===================== END: EVENT HANDLER SETUP =========================
 
@@ -789,7 +829,7 @@ component extends="framework.one" {
 						)
 					);
 					if(
-						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm')
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/system') & '/lastFullUpdate.txt.cfm')
 						|| (
 							structKeyExists(url, variables.framework.hibachi.fullUpdateKey)
 							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
@@ -812,11 +852,21 @@ component extends="framework.one" {
 						getHibachiScope().clearApplicationValueByPrefix('class');
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
+						
+						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
+					
+						if(!variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup){	
+							getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
+						}
 
 						onUpdateRequest();
 
+						if(structKeyExists(server,'Lucee')){
+							SystemCacheClear('component');
+						}
+
 						// Write File
-						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/config/lastFullUpdate.txt.cfm', now());
+						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/system/lastFullUpdate.txt.cfm', now());
 						updated = true;
 						// Announce the applicationFullUpdate event
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
@@ -824,11 +874,15 @@ component extends="framework.one" {
 					// ========================== END: FULL UPDATE ==============================
 
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
-					onFirstRequestPostUpdate();
+					onFirstRequestPostUpdate();	
+					//verify that any property changes to audit and auditarchive mirror each other
+					getBeanFactory().getBean('HibachiAuditService').verifyIntegrity();
 
 					//==================== START: JSON BUILD SETUP ========================
 
-					getBeanFactory().getBean('HibachiJsonService').createJson();
+					if(!variables.framework.hibachi.skipCreateJsonOnServerStartup){
+						getBeanFactory().getBean('HibachiJsonService').createJson();
+					}
 
 					//===================== END: JSON BUILD SETUP =========================
 
@@ -837,9 +891,9 @@ component extends="framework.one" {
 					//only run the update if it wasn't initiated by serverside cache being expired
 					if(!variables.framework.hibachi.isApplicationStart){
 					if(!arguments.reloadByServerInstance){
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
+						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache();
 					}else{
-						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true);
 						serverInstance.setServerInstanceExpired(false);
 							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 							getHibachiScope().flushORMSession();
@@ -884,14 +938,20 @@ component extends="framework.one" {
 	}
 
 	public void function populateCORSHeader(origin){
+		var matched = false;
 		for(var domain in this.CORSWhiteList){
 			if(domain == '*'){
 				request.context.headers['Access-Control-Allow-Origin'] = domain;
-				return;
+				matched = true;
+				break;
 			}else if(REfind(domain, arguments.origin)){
 				request.context.headers['Access-Control-Allow-Origin'] = arguments.origin;
-				return;
+				matched = true;
+				break;
 			}
+		}
+		if(matched){
+			request.context.headers['Access-Control-Allow-Credentials'] = true;
 		}
 	}
 
@@ -961,6 +1021,7 @@ component extends="framework.one" {
 			populateAPIHeaders();
 			if(isStruct(arguments.rc.ajaxResponse)){
 				if(structKeyExists(arguments.rc, "messages")) {
+					arrayAppend(arguments.rc.messages,getHibachiScope().getMessages(),true);
 					arguments.rc.ajaxResponse["messages"] = arguments.rc.messages;
 				}
   				arguments.rc.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
@@ -1053,19 +1114,17 @@ component extends="framework.one" {
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed
-	public void function redirectExact(required string redirectLocation, boolean addToken=false) {
+	public void function redirectExact(required string redirectLocation, boolean addToken=false, string preserve='none') {
 		endHibachiLifecycle();
-
-		if(!redirectLocation.startsWith('http')) {
-			location(arguments.redirectLocation, arguments.addToken);
-		} else {
+		
+		if (redirectLocation.startsWith('http')) {
 			//Check to see if redirect link has a domain that is in the approved settings attribute
 			var redirectDomainApprovedFlag = false;
 			if (listLen( getHibachiScope().setting('globalAllowedOutsideRedirectSites') )){
 				allowedDomainArray = listToArray( getHibachiScope().setting('globalAllowedOutsideRedirectSites') );
 
 				for (var allowedDomain in allowedDomainArray){
-					if ( LEFT(arguments.redirectLocation, len(allowedDomain)) == allowedDomain){
+					if ( LEFT(arguments.redirectLocation, len(trim(allowedDomain))) == trim(allowedDomain)){
 						redirectDomainApprovedFlag = true;
 						break;
 					}
@@ -1073,12 +1132,23 @@ component extends="framework.one" {
 			}
 
 			// Check to make sure that the redirect stays on the Slatwall site, redirect back to the Slatwall landing page.
-			if ( getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true ){
-				location(arguments.redirectLocation, arguments.addToken);
-			}else{
-				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken);
+			if ( !(getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true )){
+				arguments.redirectLocation = getPageContext().getRequest().GetRequestUrl().toString();
 			}
 		}
+		
+		
+		var preserveKey = '';
+		if ( arguments.preserve != 'none' ) {
+			preserveKey = saveFlashContext( preserve );
+			if ( find( '?', arguments.redirectLocation ) ) {
+				preserveKey = '&#variables.framework.preserveKeyURLKey#=#preserveKey#';
+			} else {
+				preserveKey = '?#variables.framework.preserveKeyURLKey#=#preserveKey#';
+			}
+		}
+		
+		location(arguments.redirectLocation & preserveKey, arguments.addToken);
 	}
 
 	// This method will execute an actions controller, render the view for that action and return it without going through an entire lifecycle
@@ -1220,7 +1290,7 @@ component extends="framework.one" {
 		super.onError(arguments.exception,arguments.event);
 	}
 
-	// THESE METHODS ARE INTENTIONALLY LEFT BLANK
+	// THESE METHODS ARE INTENTIONALLY LEFT BLANK AS EXTENSION POINTS
 	public void function onEveryRequest() {}
 
 	public void function onInternalRequest() {}
@@ -1230,5 +1300,16 @@ component extends="framework.one" {
 	public void function onUpdateRequest() {}
 
 	public void function onFirstRequestPostUpdate() {}
+	
+	public void function onBeanFactoryLoadComplete() {}
+
+	public string function onMissingView(struct rc) {
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setStatus(404);
+		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="404");
+		return internalView("../../../admin/views/error/404.cfm");
+	}
 
 }

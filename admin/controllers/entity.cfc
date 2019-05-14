@@ -78,8 +78,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccount');
 	this.secureMethods=listAppend(this.secureMethods, 'listsku');
+	this.secureMethods=listAppend(this.secureMethods, 'listterm');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxsetup');
+	this.secureMethods=listAppend(this.secureMethods, 'listpaymentmethod');
+	this.secureMethods=listAppend(this.secureMethods, 'listminmaxstocktransfer');
+	this.secureMethods=listAppend(this.secureMethods, 'listtaxcategory');
 	this.secureMethods=listAppend(this.secureMethods, 'listproduct');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderdelivery');
+	this.secureMethods=listAppend(this.secureMethods, 'liststockreceiver');
 	this.secureMethods=listAppend(this.secureMethods, 'listproductreview');
+	this.secureMethods=listAppend(this.secureMethods, 'listcartandquote');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderitem');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderpayment');
 	this.secureMethods=listAppend(this.secureMethods, 'listorderfulfillment');
@@ -92,6 +100,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
 	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
 	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
+	this.secureMethods=listAppend(this.secureMethods,'createreport');
+	this.secureMethods=listAppend(this.secureMethods,'editreport');
+	this.secureMethods=listAppend(this.secureMethods,'deletereport');
+	
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -116,7 +129,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.addressZoneLocation = getAddressService().getAddress( rc.addressID, true );
 		rc.addressZone = getAddressService().getAddressZone( rc.addressZoneID );
 
-		rc.addressZone.removeAddressZoneLocation( rc.addressZoneLocation );
+		if (!isNull(rc.addressZone) && !isNull(rc.addressZoneLocation)) {
+			rc.addressZone.removeAddressZoneLocation( rc.addressZoneLocation );
+		}
 
 		getFW().redirect(action="admin:entity.detailaddresszone", queryString="addressZoneID=#rc.addressZoneID#&messageKeys=admin.setting.deleteaddresszonelocation_success");
 	}
@@ -160,6 +175,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			file.showErrorsAndMessages();
 			renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 		}
+	}
+	
+	//Collection
+	public void function processCollection(required struct rc){
+		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		//redirect to report listing only if the collection is a report
+		if(rc.collection.isReport()){
+			rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
+		}
+		genericProcessMethod(entityName="Collection",rc=arguments.rc);
 	}
 
 	// Email
@@ -235,13 +260,102 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
 		}
 		
+		
+	}
+	
+private void function populateWithAddressVerification(required struct rc){
+		if(
+			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
+			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
+		){
+
+			rc.addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.orderFulfillment.getShippingAddress().getAddressID());
+
+			if(structKeyExists(rc,'addressVerificationStruct') && structKeyExists(rc.addressVerificationStruct,"suggestedAddress")){
+				rc.suggestedAddressName = getService("AddressService").getAddressName(rc.addressVerificationStruct.suggestedAddress);
+				rc.addressVerificationStruct.message = rc.$.slatwall.rbKey('admin.entity.cannotVerifyAddress');
+			}
+
+		}
+	}
+
+	//Order Fulfillment
+
+	public void function detailOrderFulfillment(required struct rc) {
+		genericDetailMethod(entityName="OrderFulfillment", rc=arguments.rc);
+		this.populateWithAddressVerification(arguments.rc);
+	}
+
+	public void function editOrderFulfillment(required struct rc) {
+		genericEditMethod(entityName="OrderFulfillment", rc=arguments.rc);
+		this.populateWithAddressVerification(arguments.rc);
+	}
+
+	public void function updateAddressWithSuggestedAddress(required struct rc){
+		var addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.addressID);
+		var address = getService("AddressService").getAddress(rc.addressID);
+		var orderFulfillment = getService("FulfillmentService").getOrderFulfillment(rc.orderFulfillmentID);
+
+		address.populate(addressVerificationStruct.suggestedAddress);
+		address.setVerifiedByIntegrationFlag(true);
+
+		orderFulfillment.setverifiedShippingAddressFlag(true);
+
+		getService("AddressService").saveAddress(address);
+		getService("FulfillmentService").saveOrderFulfillment(orderFulfillment);
+
+		getFW().redirect( action="admin:entity.detailorderfulfillment", preserve="rc",queryString="orderFulfillmentID=#rc.orderFulfillmentID#" );
+
+	}
+	
+	public void function before(required struct rc){
+		var sites = getService('siteService').getSiteSmartList();
+		sites.addFilter('activeFlag', 1);
+		arguments.rc.sitesArray = sites.getRecords();
+		super.before(rc);
+	}
+	
+	public void function after(required struct rc){
 		if(structKeyExists(rc,'viewPath')){
 			request.layout = false;
 			getFW().setView("admin:entity.ajax");
-			
+
 			rc.templatePath = "./#rc.viewPath#.cfm";
-			
+
 		}
+	}
+	
+	//Account
+	public void function detailAccount(required struct rc){
+		genericDetailMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+	}
+
+	//Account
+	public void function editAccount(required struct rc){
+		genericEditMethod(entityName="Account", rc=arguments.rc);
+		/*Set up the order / carts smart lists */
+		rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList();
+		rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList();
+
+		rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList();
+		rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList();
+
+		if(!isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 ){
+			rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' );
+		}
+
+
 	}
 
 	public void function listOrder(required struct rc) {
@@ -250,7 +364,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.orderSmartList.addInFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
 		arguments.rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		
-		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
 		arguments.rc.orderCollectionList.addOrderBy('orderOpenDateTime|DESC');
 	}
 
@@ -493,6 +607,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getService("ShippingService").associateManualRateAndIntegrations(rc.shippingMethodRateID,rc.manualRateIntegrationIDs,rc.shippingIntegrationMethods);
 		}
 		super.genericSaveMethod('ShippingMethodRate',rc);
+	}
+	
+		// Image
+	public void function saveImage(required struct rc){
+		var image = getService("ImageService").getImageByImageID(rc.imageID,true);
+		if(!image.isNew()){
+			image.runCalculatedProperties();
+		}
+		super.genericSaveMethod('Image',rc);
 	}
 
 	// Task

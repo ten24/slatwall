@@ -25,7 +25,7 @@ component accessors="true" output="false" persistent="false" {
 		var clientIP = cgi.remote_addr;
 		var clientHeaders = GetHttpRequestData().headers;
 		if(structKeyExists(clientHeaders,"X-Forwarded-For")){
-			clientIP = clientHeaders["X-Forwarded-For"];
+			clientIP = listRemoveDuplicates( ReplaceNoCase( clientHeaders["X-Forwarded-For"] , ' ', '', 'all') );
 		}
 		return clientIP;
 	}
@@ -39,45 +39,53 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		return application[ getApplicationValue('applicationKey') ].factory;
+		
+		// Attempts to prevent concurrent requests on same server from interfering with each other while reloading beanFactory
+		if (!structKeyExists(variables, 'beanFactory')) {
+			lock scope="Application" timeout="2400" type="readonly" {
+				if (isNull(application[ getApplicationValue('applicationKey') ].factory)) {
+					throw("The beanFactory is expected to exist at this stage. Readonly application lock is applied. It is possible another concurrent request reloaded server and is interfering. Further investigation into this issue is required.");
+				}
+				
+				variables.beanFactory = application[ getApplicationValue('applicationKey') ].factory;
+			}
+		}
+		return variables.beanFactory;
+	}
+	
+	public any function getCustom(){
+		return this;
 	}
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBean(required string beanName, struct constructorArgs = { }) {
-		return getBeanFactory().getBean( arguments.beanName, arguments.constructorArgs);
+		return getBeanFactory().getBean( argumentCollection=arguments);
 	}
 	
 	// @hint has a bean out of whatever the fw1 bean factory is
 	public any function hasBean(required string beanName) {
 		return getBeanFactory().containsBean( arguments.beanName );
 	}
-	// @hint sets bean factory
+	// @hint sets bean factory, this probably should not ever be invoked outside of  initialization. Application.cfc should take care of this.
 	public void function setBeanFactory(required any beanFactory) {
-		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+		lock name="application_#getHibachiInstanceApplicationScopeKey()#_beanFactory" timeout="10" {
+			application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+		}
 	}
 
 	// @hint whether or not we have a bean
 	public boolean function hasService(required string serviceName){
-		if(!hasApplicationValue("service_#arguments.serviceName#")){
-			return hasBean(arguments.serviceName);
-		}
-		return true;
+		return hasBean(arguments.serviceName);
 	} 
 	
 	// @hint returns an application scope cached version of the service
 	public any function getService(required string serviceName) {
-		if( !hasApplicationValue("service_#arguments.serviceName#") ) {
-			setApplicationValue("service_#arguments.serviceName#", getBean(arguments.serviceName) );
-		}
-		return getApplicationValue("service_#arguments.serviceName#");
+		return getBean(arguments.serviceName) ;
 	}
 	
 	// @hint returns an application scope cached version of the service
 	public any function getDAO(required string daoName) {
-		if( !hasApplicationValue("dao_#arguments.daoName#") ) {
-			setApplicationValue("dao_#arguments.daoName#", getBean(arguments.daoName) );
-		}
-		return getApplicationValue("dao_#arguments.daoName#");
+		return getBean(arguments.daoName);
 	}
 	
 	// @hint returns a new transient bean
@@ -217,7 +225,7 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	public void function logHibachi(required string message, boolean generalLog=false){
-		getService("hibachiUtilityService").logMessage(message=arguments.message, generalLog=arguments.generalLog);		
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
 	public void function logHibachiException(required any exception){

@@ -193,5 +193,89 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		criminalsMessage = 'There are #numOfMissingRbkey# settingNames miss the RBKeys , <br>'&chr(10)&chr(13) & criminalsMessage;
 		assertTrue(numOfMissingRbkey == 0, criminalsMessage);
 	}
+	
+	/**
+	* @test
+	*/
+	public void function permissionsHaveRBkeys() {
+		var actionPermissionDetails = request.SlatwallScope.getService('HibachiAuthenticationService').getActionPermissionDetails();
+		
+		var missingRBKeys = [];
+		
+		for(var subsystemKey in actionPermissionDetails){
+			var subsystemData = actionPermissionDetails[subsystemKey];
+			if(subsystemData.hasSecureMethods){
+				for(var controllerKey in subsystemData.sections){
+					var controllerData = subsystemData.sections[controllerKey];
+					if(len(controllerData.secureMethods)){
+						var secureMethodsArray = listToArray(controllerData.secureMethods);
+						for(var secureMethod in secureMethodsArray){
+							var rbKeyString = "#subsystemKey#.#controllerKey#.#secureMethod#_permission";
+							var rbKeyResult = request.SlatwallScope.rbkey(rbkeyString);
+							if( len(rbKeyResult) >= len('_missing') && right(rbKeyResult,len('_missing')) == '_missing'){
+								arrayAppend(missingRBKeys,rbKeyResult);
+							}
+						}
+					}
+				}
+				
+			}
+			
+		}
+		for(var missingRBKey in missingRBKeys){
+			addToDebug(missingRBKey);
+		}
+		
+		assertFalse(arraylen(missingRBKeys),ArrayToList(variables.debugArray, chr(13) & chr(10)));
+		
+	}
+	
+	/**
+	 * @test
+	 */
+	public void function processObjectsHaveRBKeys() {
+		var missingRBKeys = [];
+
+		var processObjectNames = request.slatwallScope.getService('HibachiService').getProcessComponentDirectoryListing();
+		for (var processObjectName in processObjectNames) {
+			processObjectName = left(processObjectName, len(processObjectName)-4);
+			if(processObjectName != 'HibachiProcess'){
+				var processObject = request.slatwallScope.getTransient(processObjectName);
+				var properties = processObject.getPropertiesStruct();
+				for (var property in properties) {
+					var keyValue = request.slatwallScope.rbKey("processObject.#processObjectName#.#property#");
+					if (right(keyValue,8) == '_missing') {
+						addToDebug("#keyValue#");
+						ArrayAppend(missingRBKeys, keyValue);
+					}
+				}
+			}
+		}
+		assert(ArrayLen(missingRBKeys) == 0,ArrayToList(variables.debugArray, chr(13) & chr(10)));
+	}
+	
+	/**
+	 * @test
+	 */
+	 public void function processActionsHaveRBKeys() {
+	 	var missingRBKeys = [];
+	 	var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+	 	
+	 	for (var slatwallEntityName in allEntities) {
+	 		var entityName = replace(slatwallEntityName, "Slatwall","","all");
+	 		var entityMetaData = request.slatwallScope.getService('HibachiService').getEntityMetaData(entityName);
+	 		if (StructKeyExists(entityMetaData, "hb_processcontexts")) {
+	 			var processContexts = entityMetaData.hb_processcontexts;
+		 		for (var processContext in processContexts) {
+		 			var keyValue = request.slatwallScope.rbKey("process#entityName#_#processContext#");
+		 			if (right(keyValue, 8) == '_missing') {
+		 				ArrayAppend(missingRBKeys, keyValue);
+		 				addToDebug(keyValue);
+		 			}
+		 		}
+	 		}
+	 	}
+	 	assertEquals(ArrayLen(missingRBKeys), 0);
+	 }
 
 }

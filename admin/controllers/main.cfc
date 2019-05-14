@@ -96,18 +96,31 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function default(required struct rc) {
+		
 		rc.orderSmartList = getOrderService().getOrderSmartList();
 		rc.orderSmartList.addInFilter("orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled");
 		rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		rc.orderSmartList.setPageRecordsShow(10);
+		
+		rc.orderCollectionList = getOrderService().getOrderCollectionList();
+		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
+		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
+		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
+		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
 
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
 		rc.productReviewSmartList.addFilter("activeFlag", 0);
 		rc.productReviewSmartList.setPageRecordsShow(10);
+		
+		rc.productReviewCollectionList = getProductService().getProductReviewCollectionList();
+		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true});
+		rc.productReviewCollectionList.addDisplayProperty('productReviewID',javacast('null',''),{hidden=true});
+		rc.productReviewCollectionList.addFilter('activeFlag',0);
 
 		if(getUpdateService().getMetaFolderExistsWithoutDismissalFlag()) {
 			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
 		}
+		
 	}
 	//TODO: deprecate ,  getImageDirectory()
 	public void function saveImage(required struct rc){
@@ -210,7 +223,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function login(required struct rc) {
 	
-		if(getHibachiScope().getLoggedInFlag()){
+		if(getHibachiScope().getLoggedInFlag() && !structKeyExists(arguments.rc, 'sRedirectURL')){
 			getFW().redirect(action='admin:main.default', queryString="s=1");
 		}
 		getFW().setView("admin:main.login");

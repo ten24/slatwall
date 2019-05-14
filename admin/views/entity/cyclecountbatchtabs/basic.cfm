@@ -7,7 +7,8 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.cyclecountbatch#" property="cycleCountBatchDate" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.cyclecountbatch#" property="cycleCountBatchName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.cyclecountbatch#" property="location" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.cyclecountbatch#" property="cycleCountBatchStatusType" title="Status" edit="false">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

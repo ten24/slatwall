@@ -146,6 +146,16 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		if(structKeyExists(arguments, "missingMethodName")) {
 		
+			if ( structKeyExists(arguments.missingMethodArguments, 'rc') ) {
+				var entityName = arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName;
+				if (!hasBean(entityName)) {
+					if(!structKeyExists(arguments.missingMethodArguments.rc,'viewPath')){
+						getFW().onMissingView();
+					}
+					return;
+				}
+			}
+		
 			if( left(arguments.missingMethodName, 10) == "reportlist" ) {
 				//use a configured version of listing
 				genericListMethod(entityName=arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName, rc=arguments.missingMethodArguments.rc);
@@ -445,7 +455,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 			// Populate the processObject
 			rc.processObject.populate( arguments.rc );
-			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.data[arguments.entityName])) {
+			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.rc[arguments.entityName])) {
 				entity.populate( arguments.rc[arguments.entityName] );
 				rc.processObject.addPopulatedSubProperty( arguments.entityName, entity );
 			}

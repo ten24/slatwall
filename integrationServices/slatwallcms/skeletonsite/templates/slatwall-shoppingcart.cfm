@@ -64,10 +64,13 @@ Notes:
 	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
 																				
 --->
-
 <cfoutput>
-<div class="container" ng-cloak ng-if="slatwall.cart.orderItems.length">
-        <h1 class="my-4">Shopping Cart</h1>
+<div class="container">
+    <!--- Page Title --->
+    <h1 class="my-4">#$.Slatwall.content('title')#</h1>
+    <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
+    <!--- Show cart if order items exist --->
+    <div ng-if="slatwall.cart.orderItems.length" ng-cloak>
         <div class="card mb-5">
             <div class="card-header bg-dark text-light">
                 <div class="row">
@@ -76,8 +79,7 @@ Notes:
                     </div>
                     <div class="col-sm-3">
                         <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
-                        <!----- loader can be used inside button if it's made into ajax call ------->
-                        <!--<i class="fa fa-refresh fa-spin fa-fw"></i>-->
+                        <input type="button" class="btn-block btn btn-info float-right" ng-click="slatwall.doAction('clearOrder', {})" value="Clear Cart">
                     </div>
                 </div>
             </div>
@@ -87,38 +89,39 @@ Notes:
             <div class="card-footer">
                 <div class="row">
                     <div class="col-sm-9 pull-left">
-
+    
                     </div>
                     <div class="col-sm-3">
                         <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
-                        <!----- loader can be used inside button if it's made into ajax call ------->
-                        <!--<i class="fa fa-refresh fa-spin fa-fw"></i>-->
+                        <input type="button" class="btn-block btn btn-info float-right" ng-click="slatwall.doAction('clearOrder', {})" value="Clear Cart">
                     </div>
                 </div>
             </div>
         </div>
-
+    
         <div class="row">
             <div class="col-md-5">
+                <!--- Optional Promotion code --->
                 <cfinclude template="inc/promoBox.cfm" />
             </div>
             <div class="col-md-5 offset-md-2">
+                <!--- Order Summary --->
                 <cfinclude template="inc/orderSummary.cfm" />
             </div>
         </div>
-
+    
         <div class="text-center m-4">
             <a href="/checkout/" class="btn btn-lg btn-success">Continue to Checkout</a>
-            <!----- loader can be used inside button if it's made into ajax call ------->
-            <!--<i class="fa fa-refresh fa-spin fa-fw"></i>-->
         </div>
     </div>
-    <div ng-if="!slatwall.getRequestByAction('getCart').loading && !slatwall.cart.orderItems.length">
-        <div class="alert alert-danger">There are no items in your cart.</div>
+
+    <!--- No items in cart --->
+    <div ng-if="!slatwall.getRequestByAction('getCart').loading && !slatwall.cart.orderItems.length" class="alert alert-danger mt-5">There are no items in your cart.</div>
+
+    <!--- Cart loader --->
+    <div ng-if="slatwall.getRequestByAction('getCart').loading" class="text-center mt-5">
+        <i class="center fa fa-5x fa-refresh fa-spin fa-fw"></i>
     </div>
-    <!----- div for custom loader ----->
-    <div ng-if="slatwall.getRequestByAction('getCart').loading">
-        <i class="center fa fa-refresh fa-spin fa-fw"></i>
-    </div>
+</div>
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />

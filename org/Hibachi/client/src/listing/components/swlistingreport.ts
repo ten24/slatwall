@@ -14,12 +14,15 @@ class SWListingReportController {
     public selectedPeriodInterval:any;
     public startDate:any;
     public endDate:any;
+    public tempEndDate:any;
     public startDateCompare:any;
     public endDateCompare:any;
+    public tempEndDateCompare:any;
     public compareReportCollectionConfig:any;
     public compareReportingData:any;
     public reportingData:any;
     public chart:Chart;
+    public compareChart:Chart;
     public persistedReportCollections:any;
     public selectedReport:any;
     public collectionNameSaveIsOpen:boolean;
@@ -29,33 +32,42 @@ class SWListingReportController {
     public selectedPeriodPropertyIdentifierArray:string[]=[];
     public selectedPeriodPropertyIdentifier;
     public collectionId:string;
+    public createdByAccountID:string;
+    public swListingDisplay:any;
+    public isPublic:boolean;
+    public accountOwnerID:string;
     
     
     //@ngInject
     constructor(
+        public $filter,
+        public $scope,
         public $timeout,
         public $rootScope,
         public $hibachi,
         public metadataService,
         public listingService,
         public observerService,
-        public collectionConfigService
+        public collectionConfigService,
     ) {
-        
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
         if(this.collectionId){
             var selectedReport = {
                 collectionID:this.collectionId,
                 collectionConfig:angular.fromJson(this.collectionConfig.collectionConfigString)
             };
-            this.selectReport(selectedReport);
+            
+            this.getPeriodColumns().then(()=>{
+                
+                this.selectReport(selectedReport);
+            });
+        }else{
+            this.getPeriodColumns();
+            this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         }
-        this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
-        this.filterPropertiesList = {};
-        
-        this.getPeriodColumns();
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
+        this.observerService.attach(this.updateReportFromListing,'displayOptionsAction',this.tableId);
     }
     
     public $onInit=()=>{
@@ -68,20 +80,26 @@ class SWListingReportController {
         }
     }
     
+    
+    
     public saveReportCollection = (collectionName?)=>{
         if(collectionName || this.collectionId){
-            this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
-            this.selectedPeriodColumn.isPeriod = true;
-            this.collectionConfig.columns.push(this.selectedPeriodColumn);
+            
+            
             var serializedJSONData={
                 'collectionConfig':this.collectionConfig.collectionConfigString,
-                
                 'collectionObject':this.collectionConfig.baseEntityName,
-                'accountOwner':{
-                    'accountID':this.$rootScope.slatwall.account.accountID
-                },
                 'reportFlag':1
             }
+            
+            if(!this.isPublic){
+                serializedJSONData['accountOwner']={
+                    'accountID':this.$rootScope.slatwall.account.accountID
+                };
+            }else{
+                serializedJSONData['publicFlag']=1;
+            }
+            
             if(collectionName){
                 serializedJSONData['collectionName'] = collectionName;
             }
@@ -93,9 +111,10 @@ class SWListingReportController {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
                 },
-                'save'
+                'save'  
             ).then((data)=>{
                 if(this.collectionId){
+                    
                     window.location.reload();    
                 }else{
                     var url = window.location.href;    
@@ -104,7 +123,8 @@ class SWListingReportController {
                     }else{
                        url += '?collectionID='+data.data.collectionID;
                     }
-                    window.location.href = url;
+                    
+                   window.location.href = url;
                 }
             });
             return;
@@ -116,64 +136,6 @@ class SWListingReportController {
     private random_rgba = ()=>{
         let o = Math.round, r = Math.random, s = 255;
         return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
-    }
-    
-    public updateComparePeriod = ()=>{
-        this.compareReportCollectionConfig = this.collectionConfig.clone();
-        for(var i in this.compareReportCollectionConfig.columns){
-            var column = this.compareReportCollectionConfig.columns[i];
-            if(column.aggregate){
-                column.isMetric = true;
-            }else{
-                column.isVisible = false;
-            }
-        }
-        this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
-        this.compareReportCollectionConfig.setReportFlag(1);
-        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
-        this.compareReportCollectionConfig.setAllRecords(true);
-        this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
-        
-        //TODO:should add as a filterGroup
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',true,true,false,'dates');
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',true,true,false,'dates');
-        
-        this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
-           /*this.compareReportingData = reportingData;
-           this.compareReportingData.records.forEach(element=>{
-               if(!this.chart.data.labels.includes(element[this.selectedPeriodColumn.name])){
-                  this.chart.data.labels.push(element[this.selectedPeriodColumn.name]);
-               }
-           });
-			this.reportCollectionConfig.columns.forEach(column=>{
-			    if(column.isMetric){
-			        let color = this.random_rgba();
-			        let title = `${column.title} (${this.startDateCompare.toDateString()} - ${new Date(this.endDateCompare).toDateString()})`;
-			        let metrics = [];
-			        this.compareReportingData.records.forEach(element=>{
-			             metrics.push(
-    			                {
-    			                    y:element[column.aggregate.aggregateAlias],
-    			                    x:element[this.selectedPeriodColumn.name]
-    			                }
-    			      )
-			        });
-			        this.chart.data.datasets.push(
-			            {
-                        label:title,
-                        data:metrics,
-                        backgroundColor:color,
-                        borderColor:color,
-                        borderWidth: 2,
-                        fill:false
-                        }
-			        );
-			    }
-			});
-			this.chart.update();*/
-			var ctx = $("#myChartCompare");
-			this.renderReport(reportingData,ctx)
-        });
     }
     
     //decides if report comes from persisted collection or transient
@@ -188,7 +150,7 @@ class SWListingReportController {
         this.selectedCollectionID = selectedReport.collectionID;
         this.collectionName=selectedReport.collectionName;
         
-        this.selectedPeriodInterval = {value:collectionData.periodInterval};
+        
         for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
             var filterGroup = collectionData.filterGroups[0].filterGroup[i];
             
@@ -205,29 +167,29 @@ class SWListingReportController {
                 
             }
         }
-        
+        this.selectedPeriodInterval = {value:collectionData.periodInterval};
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+        
+        
         //navigate propertyIdentifier to populate drop down
-        var pidArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
-        for(var i=1; i <= pidArray.length-1;i++){
-            var propertyName = pidArray[i];
+        this.selectedPeriodPropertyIdentifierArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
+        var lastObject = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionConfig.baseEntityName,this.selectedPeriodColumn.propertyIdentifier);
+        this.getPeriodColumns(lastObject).then(()=>{
+            var propertyName =  this.selectedPeriodPropertyIdentifierArray[ this.selectedPeriodPropertyIdentifierArray.length-1];
             for(var j in this.periodColumns){
                 var periodColumn = this.periodColumns[j];
                 if(periodColumn.name===propertyName){
                     if(periodColumn.cfc){
-                        this.selectPeriodColumn(periodColumn);
+                        this.selectPeriodColumn(periodColumn,false);
                         break;
                     }else{
-                        this.selectPeriodColumn(periodColumn);
+                        this.selectPeriodColumn(periodColumn,false);
                         break;
                     }
-                    
-                    
                 }
-                
+                    
             }
-            
-        }
+        });
         
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
@@ -244,8 +206,6 @@ class SWListingReportController {
         }
     };
     
-    
-    
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
         if(
@@ -254,11 +214,41 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
+            if(this.swListingDisplay && this.swListingDisplay.collectionData){
+                if(this.swListingDisplay.collectionData.createdByAccountID){
+                    this.createdByAccountID = this.swListingDisplay.collectionData.createdByAccountID;                
+                }
+                if(this.swListingDisplay.collectionData.accountOwner_accountID){
+                    this.accountOwnerID = this.swListingDisplay.collectionData.accountOwner_accountID;
+                    this.isPublic = false;
+                }else if(this.collectionId){
+                    this.isPublic = true;
+                }
+            }
+            
+            this.startDate = new Date(this.startDate);
+            this.startDate.setHours(0,0,0,0)
+            
+            this.endDate = new Date(this.endDate);
+            this.endDate.setHours(23,59,59,999);
+            //if date is in the wrong format then update those dates
+            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
+            }
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
+            //if the interval is an hour than we should only be able to show data for one day
+            if(this.selectedPeriodInterval.value=='hour'){
+                this.tempEndDate = this.endDate;
+                this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+            }else if(this.tempEndDate){
+                this.endDate = this.tempEndDate;
+                delete this.tempEndDate;
+            }
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
-                if(column.aggregate){
+                if(column.aggregate && column.aggregate.aggregateFunction && column.aggregate.aggregateFunction.length){
                     column.isMetric = true;
                     this.hasMetric = true;
                 }else{
@@ -266,23 +256,17 @@ class SWListingReportController {
                     //column.isVisible = false;
                 }
             }
+            
             if(this.hasMetric){
                 this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
                 this.reportCollectionConfig.setReportFlag(1);
-                this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
+                this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
                 this.reportCollectionConfig.setAllRecords(true);
                 this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
                 
                 this.reportCollectionConfig.removeFilterGroupByFilterGroupAlias('dates');
                 this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
                 this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-                    
-                this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
-                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-                    
-                this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
-                this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
                 
                 this.reportCollectionConfig.getEntity().then((reportingData)=>{
                     var ctx = $("#myChart");
@@ -293,26 +277,106 @@ class SWListingReportController {
                         this.updateComparePeriod();
                     }
                 });
+                    
+                this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                delete this.collectionConfig.periodInterval;
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+                    
+                this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+                this.selectedPeriodColumn.isPeriod = true;
+                
+                //decide whether to add or replace the periodcolumn
+                var hasPeriodColumn = this.collectionConfig.hasPeriodColumnFromColumns(this.collectionConfig.columns);
+                if(!hasPeriodColumn){
+                    this.collectionConfig.columns.push(this.selectedPeriodColumn);
+                }else{
+                    this.collectionConfig.removePeriodColumnFromColumns(this.collectionConfig.columns);
+                    this.collectionConfig.columns.push(this.selectedPeriodColumn);
+                }
+                    
+                this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
+                this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
+                
+                
             }
             
         }
+    }
+    
+    public updateComparePeriod = ()=>{
+        
+        this.startDateCompare = new Date(this.startDateCompare);
+        this.startDateCompare.setHours(0,0,0,0)
+        
+        this.endDateCompare = new Date(this.endDateCompare);
+        this.endDateCompare.setHours(23,59,59,999);
+        
+        //if date is in the wrong format then update those dates
+        if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
+            this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+            this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
+        }
+        
+        if(this.selectedPeriodInterval.value=='hour'){
+            this.tempEndDateCompare= this.endDateCompare
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+        }else if (this.tempEndDateCompare){
+            this.endDateCompare = this.tempEndDateCompare;
+            delete this.tempEndDateCompare;
+        }
+        
+        this.compareReportCollectionConfig = this.collectionConfig.clone();
+        for(var i in this.compareReportCollectionConfig.columns){
+            var column = this.compareReportCollectionConfig.columns[i];
+            if(column.aggregate){
+                column.isMetric = true;
+            }else{
+                column.isVisible = false;
+            }
+        }
+        this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+        this.compareReportCollectionConfig.setReportFlag(1);
+        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false,isExportable:true});
+        this.compareReportCollectionConfig.setAllRecords(true);
+        this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
+        
+        //TODO:should add as a filterGroup
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',true,true,false,'dates');
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',true,true,false,'dates');
+        this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
+			var ctx = $("#myChartCompare");
+			this.renderReport(reportingData,ctx)
+        });
     }
 
     public renderReport=(reportingData,ctx)=>{
         this.reportingData = reportingData;
 		var dates = [];
 		var datasets = [];
+		
+		if(ctx.is($("#myChartCompare"))){
+		    var chart = this.compareChart; 
+		    this.compareReportingData=reportingData;
+		}else{
+		    var chart = this.chart;
+		}
+		
+		
+		
 		this.reportingData.records.forEach(element=>{
 		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
 		    pidAliasArray.shift();
 		    var pidAlias = pidAliasArray.join('_');
-		    dates.push(element[pidAlias]);
+		    var value = this.$filter('swdatereporting')(element[pidAlias],this.selectedPeriodInterval.value);
+		    
+		    dates.push(value);
 		});
 		
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
 		        let color = this.random_rgba();
-		        let title = `${column.title}`;
+		        let title = column.displayTitle || column.title;
 		        let metrics = [];
 		        this.reportingData.records.forEach(element=>{
 		            metrics.push(
@@ -335,11 +399,10 @@ class SWListingReportController {
 		    }
 		});
 		//used to clear old rendered charts before adding new ones
-		if(this.chart!=null){
-            this.chart.destroy();
+		if(chart!=null){
+            chart.destroy();
         }
-		
-        this.chart = new Chart(ctx, {
+        chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: dates,
@@ -361,7 +424,7 @@ class SWListingReportController {
                     xAxes: [{
                       display: true,
                       scaleLabel: {
-                        labelString:this.selectedPeriodInterval.value,
+                        labelString:this.selectedPeriodColumn.displayPropertyIdentifier + ' by ' + this.selectedPeriodInterval.value,
                         display: true,
                       },
                     }]
@@ -373,42 +436,56 @@ class SWListingReportController {
                 hover: {
                     intersect: true,
                     mode:'nearest',
+                    onHover: function(e) {
+                         var point = this.getElementAtEvent(e);
+                         if (point.length) e.target.style.cursor = 'pointer';
+                         else e.target.style.cursor = 'default';
+                    }
                 },
                 elements:{
                     line:{
                         tension:0
                     }
-                }
+                },
+                legend: {
+                    onHover: function(e) {
+                       e.target.style.cursor = 'pointer';
+                    }
+                 }
             }
         });
-        
-        this.chart.draw();
+        chart.draw();
+        this.observerService.notifyById('swListingReport_DrawChart',this.tableId,chart);
     }
     
     public popObjectPath=()=>{
         if(this.objectPath.length > 1){
             this.objectPath.pop();
             this.selectedPeriodPropertyIdentifierArray.pop();
-            this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false);
+            this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false).then(()=>{
+                
+            });
         }
     }
+    
+    
     
     public getPeriodColumns=(baseEntityAlias=this.collectionConfig.baseEntityAlias,adding=true)=>{
         if(adding){
             
             this.objectPath.push(baseEntityAlias);
         }
-        
-        
         //get meta data we need for existing columns
 
-        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias);
-        promise.then((value)=> {
-            
+        var promise = this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=>{
+        
             this.metadataService.setPropertiesList(value, baseEntityAlias);
+            if(!this.filterPropertiesList){
+                this.filterPropertiesList={};
+            }
+            
             this.filterPropertiesList[baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
             this.metadataService.formatPropertiesList(this.filterPropertiesList[baseEntityAlias], baseEntityAlias);
-            
             //figure out all the possible periods
             var columns = {};
             columns[baseEntityAlias] = angular.copy(this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias));
@@ -419,16 +496,30 @@ class SWListingReportController {
                     this.periodColumns.push(column);
                 }
             }
+            
         });
+        return promise;
+    }
+    
+    public selectPeriodInterval=(interval)=>{
+        this.selectedPeriodInterval={value:interval};
+        this.updatePeriod();
         
     }
     
-    public selectPeriodColumn=(column)=>{
+    public selectPeriodColumn=(column,update=true)=>{
+        
         if(column && column.cfc){
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
             this.getPeriodColumns(column.cfc);
         }else if(column && column.name){
-            this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
+            if(
+                this.selectedPeriodPropertyIdentifierArray.length
+                && this.selectedPeriodPropertyIdentifierArray[this.selectedPeriodPropertyIdentifierArray.length-1] == column.name){
+                this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.');
+            }else{
+                this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
+            }
             //update the option so it remains selected
             for(var i in this.periodColumns){
                 if(column.name === this.periodColumns[i].name){
@@ -439,9 +530,15 @@ class SWListingReportController {
             
             column.propertyIdentifier = this.selectedPeriodPropertyIdentifier;
             column.isPeriod = true;
+            column.isVisible = true;
+            column.isExportable = true;
+            column.title = column.displayPropertyIdentifier;
+            
             
             this.selectedPeriodColumn = column;
-            this.updatePeriod();
+            if(update){
+                this.updatePeriod();
+            }
         }
     }
 
@@ -460,11 +557,11 @@ class SWListingReport  implements ng.IDirective{
     };
     public controller = SWListingReportController;
     public controllerAs = 'swListingReport';
-
+    public require={swListingDisplay:"?^swListingDisplay"};
     //@ngInject
     constructor(
         public scopeService,
-        public collectionPartialsPath,
+        public collectionPartialsPath, 
         public hibachiPathBuilder
     ){
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingreport.html";

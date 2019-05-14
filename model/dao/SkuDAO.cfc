@@ -115,6 +115,14 @@ Notes:
 	</cffunction>
 	
 	<cfscript>
+		
+	public array function getImageFileDataBySkuIDList(required string skuIDList){
+		var hql = "SELECT NEW MAP(imageFile as imageFile,skuID as skuID) FROM #getApplicationKey()#Sku WHERE skuID IN (:skuIDList)";
+		
+		var params = {skuIDList=arguments.skuIDList};
+		
+		return ORMExecuteQuery(hql,params);
+    }
 
 	public any function getSkuBySkuCode( required string skuCode){
 		return ormExecuteQuery( "SELECT ss FROM SlatwallSku ss LEFT JOIN ss.alternateSkuCodes ascs WHERE ss.skuCode = :skuCode OR ascs.alternateSkuCode = :skuCode", {skuCode=arguments.skuCode}, true ); 
@@ -193,7 +201,7 @@ Notes:
 		};
 		
 		
-		var hql = 'SELECT COALESCE(AVG(stock.averageCost),0)
+		var hql = 'SELECT COALESCE( sum(stock.averageCost * stock.calculatedQOH) / nullIf(sum(stock.calculatedQOH),0), 0)
 			FROM SlatwallStock stock 
 			LEFT JOIN stock.sku sku
 			LEFT JOIN stock.location location
@@ -374,6 +382,7 @@ Notes:
 
 	<cffunction name="getSortedProductSkusID">
 		<cfargument name="productID" type="string" required="true" />
+		<cfargument name="joinType" type="string" default="INNER" />
 		
 		<cfset var sorted = "" />
 		<cfset var nextOptionGroupSortOrder = getHibachiCacheService().getOrCacheFunctionValue("skuDAO_getNextOptionGroupSortOrder", this, "getNextOptionGroupSortOrder") />
@@ -384,11 +393,11 @@ Notes:
 				SwSku.skuID
 			FROM
 				SwSku
-			  INNER JOIN
+			  #arguments.joinType# JOIN
 				SwSkuOption on SwSku.skuID = SwSkuOption.skuID
-			  INNER JOIN
+			  #arguments.joinType# JOIN
 				SwOption on SwSkuOption.optionID = SwOption.optionID
-			  INNER JOIN
+			  #arguments.joinType# JOIN
 				SwOptionGroup on SwOption.optionGroupID = SwOptionGroup.optionGroupID
 			WHERE
 				SwSku.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />

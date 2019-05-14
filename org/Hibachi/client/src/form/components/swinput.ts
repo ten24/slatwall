@@ -222,7 +222,7 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) != undefined && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) == "currency"){
+		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) != undefined && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) == "currency" && !this.edit){
 			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
 				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
@@ -435,7 +435,7 @@ class SWInput{
 	public controller=SWInputController;
 	public controllerAs = "swInput";
 
-	//ngInject
+	//@ngInject
 	constructor(
 		public $compile,
 		public $timeout,

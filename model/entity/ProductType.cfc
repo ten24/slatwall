@@ -95,6 +95,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="parentProductTypeOptions" type="array" persistent="false";
 
 
+	
 	public array function getInheritedAttributeSetAssignments(){
 		// Todo get by all the parent productTypeIDs
 		var attributeSetAssignments = getService("AttributeService").getAttributeSetAssignmentSmartList().getRecords();

@@ -158,6 +158,8 @@ Notes:
 				  	SwBrand on SwProduct.brandID = SwBrand.brandID
 				  LEFT JOIN
 				  	SwAddress on SwOrderFulfillment.shippingAddressID = SwAddress.addressID
+				  LEFT JOIN 
+					SwOrder ro ON SwOrder.orderID = ro.referencedOrderID
 				WHERE
 					SwOrder.orderOpenDateTime is not null
 				  AND

@@ -89,6 +89,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="FulfillmentBatchItem" inverse="true";
+	property name="stockHolds" singularname="stockHold" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="StockHold" inverse="true";
 	
 	// Related Object Properties (many-to-many)
 
@@ -254,32 +255,71 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
  		return false;
  	}
  	
-    public boolean function hasQuantityWithinMaxOrderQuantity() {
-        if(getOrderItemType().getSystemCode() == 'oitSale') {
-        	var quantity = 0;
+    public boolean function hasQuantityWithinMaxOrderQuantity(boolean forceMaxOrderSettingFlag=false){
+		if(getOrderItemType().getSystemCode() == 'oitSale') {
+			var quantity = 0;
 			if(!isNull(getOrder())){
-				for (var orderItem in getOrder().getOrderItems()){
-					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-						quantity += orderItem.getQuantity();
-					}
-				}
+				quantity = getOrder().getTotalQuantityBySkuID( getSku().getSkuID() );
 			} else {
 				quantity = getQuantity();
 			}
+			
+			//if forceMaxOrderSettingFlag is true and the quantity is > than the maxOrderQuantitySettting
+			//then we'll want to return true so that we validate against that instead
+			if (arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity')) {
+				return true;
+			}
+			
             return quantity <= getMaximumOrderQuantity();
         }
+        
         return true;
     }
+    
+	public boolean function getQuantityHasChangedAndHasOrderDelivery(){
+ 		if ( getQuantityHasChanged() && hasOrderDeliveryItem() )   {
+ 			return true;
+ 		}
+ 		return false;
+ 	}
+ 	
+	public boolean function hasQuantityAboveOrderDelivery(){
+		
+		if ( getQuantity() < getQuantityDelivered() ){
+			return false;
+		}
+		
+		return true;
+	}
+
+
+    public boolean function hasQuantityWithinQATS(){
+		if( getSku().getActiveFlag() && getSku().getProduct().getActiveFlag() && getSku().setting('skuTrackInventoryFlag') == 0   ){
+			return true;
+		}
+		return hasQuantityWithinMaxOrderQuantity(forceMaxOrderSettingFlag=true);
+	}
+
+    public boolean function hasQuantityWithinSkuOrderMaximumQuantity() {
+    	
+		if(getOrderItemType().getSystemCode() == 'oitSale') {
+			var quantity = 0;
+			if(!isNull(getOrder())){
+				quantity = getOrder().getTotalQuantityBySkuID( getSku().getSkuID() );
+			} else {
+				quantity = getQuantity();
+			}
+			
+			return quantity <= getSku().setting('skuOrderMaximumQuantity');
+		}
+		return true;
+	}
 
     public boolean function hasQuantityWithinMinOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
         	if(!isNull(getOrder())){
-				for (var orderItem in getOrder().getOrderItems()){
-					if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-						quantity += orderItem.getQuantity();
-					}
-				}
+				quantity = getOrder().getTotalQuantityBySkuID( getSku().getSkuID() );
 			} else {
 				quantity = getQuantity();
 			}
@@ -702,6 +742,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public void function removeGiftCard(required any giftCard){
 		arguments.giftCard.removeOriginalOrderItem( this );
+	}
+	
+	public void function addStockHold(required any stockHold){
+		arguments.stockHold.setOrderItem(this);
+	}
+	
+	
+	public void function removeStockHold(required any stockHold){
+		arguments.stockHold.removeOrderItem( this );
 	}
 
 	// Order Fulfillment (many-to-one)

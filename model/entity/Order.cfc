@@ -61,6 +61,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quotePriceExpiration" ormtype="timestamp";
 	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
+	property name="paymentProcessingInProgressFlag" ormtype="boolean" default="false";
 	property name="orderCanceledDateTime" ormtype="timestamp";
 	property name="orderNotes" ormtype="text";
 	
@@ -173,6 +174,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
+	property name="hibachiService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
 	
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
@@ -193,15 +195,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		setOrderDao(getDAO('OrderDAO'));
 		super.init();
 	}
-//	
-//	public void function setOrderService(required any orderService){
-//		variables.orderService = arguments.orderService;
-//	}
 	
-//	public void function setOrderDAO(required any orderDAO) {
-//		//TODO: check if necessary using setORderDAO()
-//		variables.orderDAO = arguments.orderDAO
-//	}
+	public void function setOrderService(required any orderService){
+		variables.orderService = arguments.orderService;
+	}
+	
+	public void function setOrderDAO(required any orderDAO) {
+		//TODO: check if necessary using setORderDAO()
+		variables.orderDAO = arguments.orderDAO;
+	}
 
 
 	//======= End of Mocking Injection ========
@@ -359,7 +361,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public boolean function hasGiftCardOrderPaymentAmount(){
 		
 		var amount = getOrderDAO().getGiftCardOrderPaymentAmount(this.getOrderID());
-
+					   
 		if(amount gt 0){
 			return true;
 		}
@@ -472,12 +474,29 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 
 	}
+	
+	public numeric function getTotalQuantityBySkuID(required string skuID){
+		var quantity = 0;
+		
+		for ( var orderItem in getOrderItems() ){
+			if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == arguments.skuID) {
+				quantity += orderItem.getQuantity();
+			}
+		}
+		
+		return quantity;
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		var optionsSmartList = getService("skuService").getSkuSmartList();
 		optionsSmartList.addFilter('activeFlag', 1);
 		optionsSmartList.addFilter('product.activeFlag', 1);
+		var showUnpublishedSkusFlag = setting('orderShowUnpublishedSkusFlag');
+		if(!isNull(showUnpublishedSkusFlag) && !showUnpublishedSkusFlag){
+			optionsSmartList.addFilter('publishedFlag', 1);
+		}
 		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
 		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
 		return optionsSmartList;
@@ -597,7 +616,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
 			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
-				if(getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')){
+				if(
+					(!isNull(getOrderFulfillments()[i].getShippingMethodRate()) &&
+					getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')) ||
+					getService('SettingService').getSettingValue('shippingMethodRateHandlingFeeFlag')
+				){
 					fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getHandlingFee());
 				}
 				continue;
@@ -964,12 +987,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			variables.allAppliedPromotions = []; 
 			// get all the promotion codes applied and attached it to applied Promotion Struct
 			var appliedPromotionCodesCollectionList = this.getPromotionCodesCollectionList();
-			appliedPromotionCodesCollectionList.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName,promotion.promotionID');
+			appliedPromotionCodesCollectionList.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName');
+			
+			var appliedPromotionCodesOrderItemCollectionList = appliedPromotionCodesCollectionList.duplicateCollection();
+			
+			var appliedPromotionCodesOrderFulfillmentCollectionList = appliedPromotionCodesCollectionList.duplicateCollection();
+			
 			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=",'OR');
-			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
-			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
+			
+			appliedPromotionCodesOrderItemCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
+			
+			appliedPromotionCodesOrderFulfillmentCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
 			
 			var appliedPromotionCodes = appliedPromotionCodesCollectionList.getRecords();
+			
+			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderItemCollectionList.getRecords(),true);
+			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderFulfillmentCollectionList.getRecords(),true);
 			
 			var promotionCodeCollectionlist = getService('promotionService').getPromotionCodeCollectionList();
 			promotionCodeCollectionlist.addFilter('orders.orderID',getOrderID());

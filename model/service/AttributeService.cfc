@@ -50,10 +50,9 @@ Notes:
 component  extends="HibachiService" accessors="true" {
 
 	property name="attributeDAO";
-
+	property name="hibachiCacheDAO";
+	
 	// ===================== START: Logical Methods ===========================
-
-
 
 	private struct function getAttributeSetMetaData(required attributeSet){
 		var attributeSetMetaDataCacheKey = "attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#";
@@ -175,6 +174,23 @@ component  extends="HibachiService" accessors="true" {
 
 		return attributeValueCopy;
 	}
+	
+	public string function getOptionLabelsByOptionValues(required string optionValueList){
+		var attributeOptionCollectionList = this.getAttributeOptionCollectionList();
+		attributeOptionCollectionList.addFilter('attributeOptionValue', arguments.optionValueList, 'in');
+		attributeOptionCollectionList.setDisplayProperties('attributeOptionLabel');
+		attributeOptionCollectionList.addOrderBy('sortOrder');
+		
+		var optionLabels = '';
+		
+		for (var attributeOption in attributeOptionCollectionList.getRecords() ){
+			optionLabels = ListAppend(optionLabels, attributeOption.attributeOptionLabel, ',' );
+		}
+	
+		
+		return optionLabels;
+		
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -242,6 +258,11 @@ component  extends="HibachiService" accessors="true" {
 
 			//attributeModelCache
 			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
+		}
+		
+		//if we are turning this into a custom property, we want to reload all servers to make sure things work properly
+		if(attribute.getCustomPropertyFlag()){
+			getHibachiCacheDAO().setAllServerInstancesExpired();
 		}
 
 		return arguments.attribute;

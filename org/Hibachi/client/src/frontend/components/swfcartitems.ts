@@ -8,15 +8,16 @@ class SWFCartItemsController{
     public orderItem:any;
     public loadingImages:any;
     
-    constructor(private $rootScope){
+    constructor(private $rootScope, private observerService){
         this.loadingImages = true;
         this.$rootScope = $rootScope;
         this.$rootScope.slatwall.doAction('getResizedImageByProfileName',{profileName:'small',skuIds:this.orderItem.sku.skuID})
         .then((result:any)=>{
-            this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
-            this.loadingImages = false;
+            if(result){
+                this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
+                this.loadingImages = false;
+            }    
         });
-
     }
     
     public getProductDescriptionAndTruncate = (length=4000)=>{
@@ -49,6 +50,9 @@ class SWFCartItemsController{
         this.$rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
             this.removeOrderItemIsLoading = false;
         });
+    }
+    public clearCartItems = ()=>{
+        this.$rootScope.slatwall.doAction('clearOrder',{});
     }
 }
  

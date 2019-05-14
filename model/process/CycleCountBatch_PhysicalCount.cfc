@@ -54,30 +54,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="physicalCount";
 
 	// New Properties
-
+	property name="day" type="string";
 	// Data Properties
 	property name="physicalName" ormtype="string";
 	property name="countPostDateTime" ormtype="timestamp";
+	property name="cycleCountItems" type="array";
+	
 
 	public function getPhysicalName() {
 		if(!structKeyExists(variables, "physicalName")) {
 			variables.physicalName = 'Cycle Count Batch';
-			if(len(getCycleCountBatch().getCycleCountBatchDate())) {
-				variables.physicalName &= ' - ' & getService("HibachiUtilityService").formatValue_date(getCycleCountBatch().getCycleCountBatchDate());
+			if(len(getCycleCountBatch().getCycleCountBatchName())) {
+				variables.physicalName &= ' - ' & getCycleCountBatch().getCycleCountBatchName();
 			}
 		}
 		return variables.physicalName;
 	}
 	public function getCountPostDateTime() {
 		if(!structKeyExists(variables, "countPostDateTime")) {
-			if(len(getCycleCountBatch().getCycleCountBatchDate())) {
-				variables.countPostDateTime = getCycleCountBatch().getCycleCountBatchDate();
-			} else {
-				variables.countPostDateTime = '';
-			}
+			variables.countPostDateTime = now();
 		}
 		return variables.countPostDateTime;
 	}
 
+	public function getCycleCountItems() {
+		if(!structKeyExists(variables, 'cycleCountItems')){
+			variables.cycleCountItems = getCycleCountBatch().getItemsToCountByDay(getDay());
+		}
+		return variables.cycleCountItems;
+	}
 
 }

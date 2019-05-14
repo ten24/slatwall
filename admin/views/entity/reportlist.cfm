@@ -52,22 +52,33 @@ Notes:
 <cfparam name="rc['#rc.entityActionDetails.itemEntityName#SmartList']" type="any" />
 
 <cfif structKeyExists(rc,'collectionID')>
-    <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = $.slatwall.getService('HibachiCollectionService').getCollection(rc.collectionID)/>
+    <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = getHibachiScope().getService('HibachiCollectionService').getCollection(rc.collectionID)/>
     <cfset rc.pageTitle &= ' - #rc['#rc.entityActionDetails.itemEntityName#CollectionList'].getCollectionName()#'/>
+    <cfset rc.collection = getHibachiScope().getService('hibachiCollectionService').getCollection(rc.collectionID)/>
 <cfelse>
-    <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = $.slatwall.getService('HibachiCollectionService').getCollectionReportList('#rc.entityActionDetails.itemEntityName#')/>
+    <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = getHibachiScope().getService('HibachiCollectionService').getCollectionReportList('#rc.entityActionDetails.itemEntityName#')/>
     <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setReportFlag(1)/>
     <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setDistinct(1)/>
+    <cfset rc.collection = getHibachiScope().getService('hibachiCollectionService').newCollection()/>
 </cfif>    
-<hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#">
-		
-	<!--- Create ---> 
-	<hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBarButtonGroup>
-</hb:HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.collection#" edit="true">
+    <hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#" collectionEntity="#rc.collection#" 
+        deleteAction="entity.deleteCollection" deleteQueryString="sRedirectAction=entity.reportlist#lcase(rc.collection.getCollectionObject())#"
+    >
+    	<!--- Create ---> 
+    	    <cfif structKeyExists(rc,'collection')>
+    	        <cfif !rc.collection.isNew()>
+        		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="clearCache"  type="list" />
+        		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="clone" type="list" />
+        		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="rename" type="list" modal="true" />
+        		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="configure" type="list" modal="true" />
+        	    </cfif>
+    	    </cfif>
+    </hb:HibachiEntityActionBar>
+</hb:HibachiEntityDetailForm>
 <hb:HibachiListingDisplay 
 	collectionList="#rc['#rc.entityActionDetails.itemEntityName#CollectionList']#"
-	usingPersonalCollection="true"
+	usingPersonalCollection="false"
 	reportAction="admin:entity.reportlist#lcase(rc['#rc.entityActionDetails.itemEntityName#CollectionList'].getCollectionObject())#"
 	showReport="true"
 >

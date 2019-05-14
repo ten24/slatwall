@@ -9,21 +9,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="persistableErrors" type="array" persistent="false";
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
+	property name="dataCacheProperties" type="array" persistent="false";
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if(
-			!setting("globalDisableRecordLevelPermissions") 
+		if( !setting("globalDisableRecordLevelPermissions")
 			&& !this.getNewFlag() 
-			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
+			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
 			try{
 				var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
-				var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+				var entityService = this.getEntityService();
 				var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
 				entityCollectionList.setDisplayProperties(primaryIDName);
 				entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
@@ -50,6 +50,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
+		setDataCacheProperties([]);
 		
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")){
 			var properties = getService('HibachiService').getToManyPropertiesByEntityName(getClassName());
@@ -75,6 +76,22 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return super.init();
 	}
+
+	public any function getEntityService(){ 
+		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
+	} 
+
+	public struct function getStructRepresentation(){
+		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+	}
+
+	public string function getJsonRepresentation(){
+		return serializeJson(this.getStructRepresentation()); 
+	} 
+
+	public string function getEncodedJsonRepresentation(){ 
+		return encodeForHTML(this.getJsonRepresentation()); 
+	} 
 
 	public string function getTableName(){
 		return getService('hibachiService').getTableNameByEntityName(getClassName());
@@ -145,8 +162,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
     }
 
     public string function getParentPropertyName(){
-    	getService('hibachiService').getParentPropertyByEntityName(getClassName());
+    	return getService('hibachiService').getParentPropertyByEntityName(getClassName());
     }
+
 
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
@@ -382,6 +400,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 
 		return variables.auditSmartList;
+	}
+	
+	public any function getAuditCollectionList(){
+		if(!structKeyExists(variables,'auditCollectionList')){
+			variables.auditCollectionList = getService('hibachiAuditService').getAuditCollectionListForEntity(entity=this);
+		}	variables.auditCollectionList.setOrderBy('auditDateTime|DESC');
+		return variables.auditCollectionList;
 	}
 
 	// @hint public method that returns the value from the primary ID of this entity
@@ -656,6 +681,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#CollectionList";
 
 		if(!structKeyExists(variables, cacheKey) || ((structKeyExists(arguments, 'isNew') && !isNull(arguments.isNew) && arguments.isNew))) {
+			var propertyMetaData = getPropertyMetaData(arguments.propertyName); 
 
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
 			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
@@ -664,14 +690,23 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
 
 			// If its a one-to-many, then add filter
-			if(getPropertyMetaData( arguments.propertyName ).fieldtype == "one-to-many") {
+			if(propertyMetaData.fieldtype == "one-to-many") {
 				// Loop over the properties in the example entity to
 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
-					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fieldType == 'many-to-one' && exampleEntity.getProperties()[i].fkcolumn == propertyMetaData.fkcolumn ) {
 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						break; 
 					}
-				}
-			}
+ 				}	
+ 			} else if(propertyMetaData.fieldtype == "many-to-many"){
+ 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
+ 					if( structKeyExists(exampleEntity.getProperties()[i], "inversejoincolumn") && exampleEntity.getProperties()[i].inversejoincolumn == propertyMetaData.fkcolumn ) {
+ 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+ 						break; 
+ 					}
+ 				}
+ 			}
+
 
 			variables[ cacheKey ] = collectionList;
 		}
@@ -1078,6 +1113,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	}
 	
+	public void function postInsert(){
+		clearDataCache();
+	}
+	
+	public void function postUpdate(){
+		clearDataCache();
+	}
+	
+	public void function clearDataCache(){
+		var dataCacheProperties = getDataCacheProperties();
+		var dataCachePropertiesCount = arrayLen(dataCacheProperties);
+		for(var i=dataCachePropertiesCount; i!=0;i--){
+			var dataCacheProperty = dataCacheProperties[i];
+			structDelete(variables,dataCacheProperty);
+			arrayDeleteAt(dataCacheProperties,i);
+		}
+	}
+	
+	public void function setDataCache(required string cacheKey,any value){
+		
+		variables[arguments.cacheKey]= arguments.value;
+		addDataCacheProperty((arguments.cacheKey));
+	}
+	
+	public void function addDataCacheProperty(required string cacheKey){
+		arrayAppend(getDataCacheProperties(),arguments.cacheKey);
+	}
 		
 	public void function runCalculatedProperties(){
 		getService("hibachiService").updateCalculatedPropertiesByEntityName(this);

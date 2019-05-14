@@ -71,6 +71,34 @@ component  extends="HibachiService" accessors="true" {
 	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
 		var slatwallTemplatesChildren = [
 			{
+				title='Attribute Template Page',
+				urlTitle="attribute-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAttribute"),
+				settingName='attribute',
+				contentTemplateFile='slatwall-attribute-page.cfm'
+			},
+			{
+				title='Address Template Page',
+				urlTitle="address-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAddress"),
+				settingName='address',
+				contentTemplateFile='slatwall-address-page.cfm'
+			},
+			{
+				title='Account Template Page',
+				urlTitle="account-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAccount"),
+				settingName='account',
+				contentTemplateFile='slatwall-account-page.cfm'
+			},
+			{
+				title='Category Template Page',
+				urlTitle="category-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttCategory"),
+				settingName='category',
+				contentTemplateFile='slatwall-category.cfm'
+			},
+			{
 				title='Barrier Template Page',
 				urlTitle="barrier-template-page",
 				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
@@ -107,7 +135,7 @@ component  extends="HibachiService" accessors="true" {
 				activeFlag=true,
 				title=slatwallTemplatesChild.title,
 				urlTitle=slatwallTemplatesChild.urlTitle,
-				contentTemplateType=slatwallTemplatesChild.contentTemplateType,
+				contentTemplateTypeID=slatwallTemplatesChild.contentTemplateType.getTypeID(),
 				siteID=arguments.site.getSiteID(),
 				parentContentID=arguments.slatwallTemplatesContent.getContentID(),
 				allowPurchaseFlag=false,

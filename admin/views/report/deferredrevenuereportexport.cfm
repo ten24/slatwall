@@ -11,7 +11,6 @@
 <cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
 <cfset to = currentMonth + diff/>
 <cfset currentYear = Year(rc.minDate)/>
-
 <cfset colNamesList = 'Headers'/>
 <cfset data = [5]/>
 <!---explicitly written for control of the ordering--->
@@ -20,7 +19,10 @@
 	'expiringSubscriptions',
     'deferredRevenue',
 	'deferredTax',
-	'deferredTotal'
+	'deferredTotal',
+	'deferredRevenueLeftToBeRecognized',
+	'deferredTaxLeftToBeRecognized',
+	'deferredTotalLeftToBeRecognized'
 ]/>
 <cfloop from=1 to="#arraylen(headerRowItems)#" index="i">
     <cfset data[i] = {}/>
@@ -30,7 +32,7 @@
 <!---properly order columns list--->
 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
     <cfset possibleMonth = possibleMonths[i%12+1]/>
-    <cfif i%12 eq 1 and i neq 1>
+    <cfif i%12 eq 0 and i neq 1>
         <cfset currentYear++/>
     </cfif>
     <cfset colName = "#possibleMonth##currentYear#"/>

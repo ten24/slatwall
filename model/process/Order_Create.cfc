@@ -68,7 +68,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderOriginID" hb_rbKey="entity.orderOrigin" hb_formFieldType="select";
 	property name="defaultStockLocationID" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="select";
 	property name="orderCreatedSite" cfc="Site" fieldtype="many-to-one";
-	
+	property name="organizationFlag" hb_rbKey="entity.account.organizationFlag" hb_formFieldType="yesno" default=0;
+
 	// Cached Properties
 	property name="fulfillmentMethodIDOptions";
 	
@@ -80,7 +81,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public array function getCurrencyCodeOptions() {
-		return getService("currencyService").getCurrencyOptions();
+		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
+		if (ArrayLen(currencyCodeOptions) GT 1) {
+			arrayPrepend(currencyCodeOptions, {value="", name="Select Currency"});
+		}
+		return currencyCodeOptions;
 	}
 	
 	public array function getOrderTypeIDOptions() {
@@ -107,6 +112,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.createAuthenticationFlag = 0;
 		}
 		return variables.createAuthenticationFlag;
+	}
+	
+	public any function getOrderCreatedSite(){
+		if(!structKeyExists(variables,'orderCreatedSite') && !isNull(getHibachiScope().getCurrentRequestSite())){
+			variables.orderCreatedSite = getHibachiScope().getCurrentRequestSite();
+		}
+		if(structKeyExists(variables,'orderCreatedSite')){
+			return variables.orderCreatedSite;
+		}
 	}
 	
 	public array function getFulfillmentMethodIDOptions() {

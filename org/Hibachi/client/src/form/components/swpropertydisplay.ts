@@ -268,6 +268,7 @@ class SWPropertyDisplayController {
     }
 
     public save = () =>{
+        this.observerService.notify('updateBindings');
         //do this eagerly to hide save will reverse if theres an error
         this.edited = false;
         this.saved = true;

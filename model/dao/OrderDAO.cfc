@@ -58,6 +58,15 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="turnOnPaymentProcessingFlag" access="public" returntype="void" output="false">
+		<cfargument name="orderID" type="string" required="true" />
+		
+		<cfset var rs = "" />
+ 		<cfquery name="rs">
+			UPDATE sworder set paymentProcessingInProgressFlag=true where orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="getDeliveredQuantitySum" access="public" returntype="any">
 			<cfargument name="orderItemID" type="string" required="true" />
 
@@ -103,13 +112,10 @@ Notes:
 		
 	<cfscript>
 		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
-			return ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = ? AND o.orderStatusType.systemCode=? ORDER BY modifiedDateTime DESC", 
-				[arguments.accountID,'ostNotPlaced'], true, {maxResults=1}
+			return ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = :accountID AND o.orderStatusType.systemCode = :orderStatusType AND o.orderType.systemCode = :orderType ORDER BY modifiedDateTime DESC", 
+			{accountID:arguments.accountID,orderStatusType:'ostNotPlaced',orderType:'otSalesOrder'}, true, {maxResults=1}
 			);
-		}
-		
-		
-		
+		}		
 	
 		public struct function getQuantityPriceSkuAlreadyReturned(required any orderID, required any skuID) {
 			var params = [arguments.orderID, arguments.skuID];

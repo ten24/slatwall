@@ -106,7 +106,7 @@ class SWEditFilterItem{
                                                 {
                                                     rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
                                                     entityAlias:scope.collectionConfig.baseEntityAlias,
-                                                    cfc:scope.collectionConfig.baseEntityAlias,
+                                                    cfc:scope.collectionConfig.baseEntityName,
                                                     propertyIdentifier:scope.collectionConfig.baseEntityAlias
                                                 }
                                             ];
@@ -231,7 +231,6 @@ class SWEditFilterItem{
                         scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                     }
                     if(scope.filterItem.$$isNew === true){
-                        observerService.notify('filterItemAction', {action: 'remove',filterItemIndex:scope.filterItemIndex});
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
                         observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
@@ -313,7 +312,11 @@ class SWEditFilterItem{
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
                                 }
 
-                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                if(selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated){
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated;
+                                } else {
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                }
 
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){

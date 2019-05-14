@@ -158,38 +158,90 @@ class SWCriteriaNumber{
 
 				scope.selectedConditionChanged = function(selectedFilterProperty){
     				//scope.selectedFilterProperty.criteriaValue = '';
+
+    				// selectedFilterProperty.showCriteriaStart is the default input, if the criteria is not of range type
+    			
     				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-    					selectedFilterProperty.showCriteriaValue = false;
-    				}else{
+    					selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
+    				} else {
     					if(selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in'){
-    						selectedFilterProperty.showCriteriaValue = false;
+    						selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
     						scope.comparisonOperatorInAndNotInFlag = true;
     					}else{
-    						selectedFilterProperty.showCriteriaValue = true;
+    						scope.clearField();
+    						scope.comparisonOperatorInAndNotInFlag = false; 
+    						selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
     					}
     				}
+    				
+    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range'){
+    					//enabling the end-range input 
+    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+    					scope.selectedFilterProperty.criteriaRangeStart = "";
+    					scope.selectedFilterProperty.criteriaRangeEnd = "";
+
+    				}else { 
+    					//disabling the end-range input 
+    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = false;	
+    				}
+    				
+    				scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+    				
     			};
 
-    			scope.$watch('filterItem.value',function(criteriaValue){
-    				//remove percents for like values
-		    		if(angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)){
-		    			scope.filterItem.value = scope.filterItem.value.replace('%','');
-		    		}
-		    	});
+    			scope.criteriaRangeChanged = function(selectedFilterProperty) {
+    				scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+    			}
+		    	
+		    	scope.calculateCriteriaFilterPropertyValue = function(selectedFilterProperty) {
+		    		
+		    	    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+		    	    	
+						selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+
+		    		} else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
+						
+						if( !isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
+
+							selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart + "-" + selectedFilterProperty.criteriaRangeEnd;
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
+
+						} else if(!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart))) {
+							
+							selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = ">";
+							
+						} else if(!isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
+							
+							selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeEnd;
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = "<";
+							
+						} else {
+							
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
+							selectedFilterProperty.criteriaValue = "";
+						}
+
+		    		} else {
+						selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+					}
+					
+					scope.filterItem.value = selectedFilterProperty.criteriaValue;
+		    	}
+
 
 			    scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 					if(angular.isDefined(selectedFilterProperty)){
-
+						
 		    			angular.forEach(scope.conditionOptions, function(conditionOption){
-
 							if(conditionOption.display == scope.filterItem.conditionDisplay ){
 								scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-								scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-
+								
+								scope.calculateCriteriaFilterPropertyValue(scope.selectedFilterProperty);
+								
 								if(angular.isDefined(scope.selectedConditionChanged)){
 									scope.selectedConditionChanged(scope.selectedFilterProperty);
 								}
-
 							}
 						});
 					}

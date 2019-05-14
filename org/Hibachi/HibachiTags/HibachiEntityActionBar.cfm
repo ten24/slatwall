@@ -6,6 +6,7 @@
 	<!--- Core settings --->
 	<cfparam name="attributes.type" type="string" default="" />
 	<cfparam name="attributes.object" type="any" default="" />
+	<cfparam name="attributes.collectionEntity" type="any" default="" />
 	<cfparam name="attributes.pageTitle" type="string" default="" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
 
@@ -79,6 +80,39 @@
 								<cfparam name="request.context.keywords" default="" />
 								<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 								
+								<cfif len( trim( thistag.generatedcontent ) ) gt 1>
+									<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+									<ul class="dropdown-menu pull-right">
+										<hb:HibachiDividerHider>
+											#thistag.generatedcontent#
+										</hb:HibachiDividerHider>
+									</ul>
+								</cfif>
+								<!--- Listing: Button Groups --->
+								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+											#buttonGroup.generatedContent#
+										</cfif>
+									</cfloop>
+								</cfif>
+								<!--- Detail: CRUD Buttons --->
+								
+								<div class="btn-group btn-group-sm">
+									<!--- Setup delete Details --->
+									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=attributes.collectionEntity, context="delete", setErrors=false) />
+									<cfset local.deleteDisabled = local.deleteErrors.hasErrors() />
+									<cfset local.deleteDisabledText = local.deleteErrors.getAllErrorsHTML() />
+
+									<cfif !attributes.collectionEntity.isNew()>
+										<!--- Delete --->
+										<cfif attributes.showdelete>
+											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.collectionEntity.getPrimaryIDPropertyName()#=#attributes.collectionEntity.getPrimaryIDValue()#", "&") />
+											<hb:HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-default s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+										</cfif>
+
+									</cfif>
+								</div>
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
 							

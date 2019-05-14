@@ -22,8 +22,25 @@
 			<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
 			<!---lucee cache must be explicit--->
 			<cfif structKeyExists(server,'lucee')>
-				<cfcache action="flush" expireURL="#expireUrl#" cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#">
-				<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#" cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#">
+
+				<!--- Flush on clear cache key --->
+				<cfset flushAttributeStruct = {
+						action="flush",
+						expireURL="#expireUrl#",
+						cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#"
+				}/>
+				
+				<cfcache attributeCollection="#flushAttributeStruct#">
+				
+				<cfset attributeStruct = {
+						name="cacheContent", 
+						action="get", 
+						id="#attributes.cacheKey#", 
+						timespan="#attributes.timespan#",
+						cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#"
+				}/>
+				<cfcache attributeCollection="#attributeStruct#">
+
 			<cfelse>
 				<cfcache action="flush" expireURL="#expireUrl#">
 				<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
@@ -53,7 +70,16 @@
 		&& attributes.timespan neq 0>
 		<cfif structKeyExists(server,'lucee')>
 			<!---lucee cache must be explicit--->
-			<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#" cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#">
+
+			<cfset attributeStruct = {
+					value="#hibachiTagContent#",
+					action="put",
+					id="#attributes.cacheKey#",
+					timespan="#attributes.timespan#",
+					cachename="#attributes.hibachiScope.setting('globalHibachiCacheName')#"
+			}/>
+			<cfcache attributeCollection="#attributeStruct#">
+
 		<cfelse>
 			<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
 		</cfif>

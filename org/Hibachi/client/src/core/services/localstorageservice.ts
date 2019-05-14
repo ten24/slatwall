@@ -10,6 +10,15 @@ class LocalStorageService{
     ){
         this.$window = $window;
     }
+    
+    removeItem = (key:string)=>{
+        try{
+            this.$window.localStorage.removeItem(key);
+        }
+        catch(e){
+            console.error(e);
+        }
+    }
 
     hasItem = (key:string)=>{
         //try catch to handle safari in private mode which does not allow localstorage

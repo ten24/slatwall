@@ -83,7 +83,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
  		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
 			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
 				return false; 
-			} else if(this.getMinQuantity() >= this.getMaxQuantity()){
+			} else if(this.getMinQuantity() > this.getMaxQuantity()){
 				return false;
 			} 
 		}

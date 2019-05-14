@@ -1,6 +1,7 @@
 component output="false" accessors="true" extends="HibachiObject" {
 	
 	property name="fw" type="any";
+	property name="framework" type="any";
 	
 	this.publicMethods = "";
 	this.anyAdminMethods = "";
