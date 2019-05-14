@@ -647,11 +647,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
-
 		var collectionConfig = this.getCollectionConfigStruct();
 		collectionConfig["columns"] = [];
 		this.setCollectionConfigStruct(collectionConfig);
 
+
+		var displayProperties = listToArray(arguments.displayPropertiesList);
+		for(var displayProperty in displayProperties){
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
+		}
+
+	}
+	
+	//XXX only to be called after setDisplayProperties, to be used as an utility function
+	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
@@ -681,6 +690,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		collectionConfig["isDistinct"] = arguments.isDistinct;
 		this.setCollectionConfigStruct(collectionConfig);
 	}
+	
+
 
 	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}, boolean prepend=false){
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -1740,6 +1751,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								structKeyExists(join,'aggregateFilter')
 								&& join.aggregateFilter
 							)||(
+								structKeyExists(join,'aggregateColumn')
+								&& join.aggregateColumn
+							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
 							)||(
@@ -2493,6 +2507,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setExcludeOrderBy(false);
 
 	}
+	
+	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
+		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
+			variables.scrollableRecords = getService('ORMService').getScrollableRecordsByCollectionList(collectionList=this,ormSession=arguments.ormSession);
+		}
+
+		return variables.scrollableRecords;
+	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(isReport()){
@@ -2548,6 +2570,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							HQLParams = getHQLParams();
 
 							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+							
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
 								var record = {};
@@ -3078,6 +3101,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var countHQLSelections = "";
 		var countHQLSuffix = "";
 		
+		if(
+			hasAggregateFilter() 
+			||
+			hasExclusiveToManyFilter(getRunningGetRecordsCount())
+			||
+			(
+				hasGroupBys()
+				&& !getprimaryIDFound()
+			)
+		){
+			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
+			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
+ 		}else{
+ 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
+ 			var countHQLSuffix = getHQL(true,false,false,false,true);
+		}
+		
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
@@ -3112,22 +3152,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		
-		if(
-			hasAggregateFilter() 
-			||
-			hasExclusiveToManyFilter(getRunningGetRecordsCount())
-			||
-			(
-				hasGroupBys()
-				&& !getprimaryIDFound()
-			)
-		){
-			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
-			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
- 		}else{
- 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
- 			var countHQLSuffix = getHQL(true,false,false,false,true);
-		}
+		
 
 
 		HQL = countHQLSelections & ') ' & countHQLSuffix;
@@ -3403,6 +3428,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return;	
 		}
 		
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+		
 		var found = false;
 		for(var item in variables.totalAvgAggregates){
 			if(item.propertyIdentifier == column.propertyIdentifier){
@@ -3421,6 +3448,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(getDisableAveragesAndSumsFlag()){
 			return;	
 		}
+		
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
 		
 		var found = false;
 		for(var item in variables.totalSumAggregates){
