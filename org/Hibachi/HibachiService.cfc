@@ -779,6 +779,7 @@
 			export(data=exportQry);
 		}
 		
+
 		private any function onMissingUpdateCalculatedProperties( required string missingMethodName, required struct missingMethodArguments ){
 			var entity = missingMethodArguments[1];
 			entity.updateCalculatedProperties();

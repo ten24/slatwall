@@ -44,7 +44,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 			
 			try{
-				entityService.invokeMethod("process#arguments.entityQueue.getBaseObject()#_#arguments.entityQueue.getProcessMethod()#", processData);
+				entityService.invokeMethod("#arguments.entityQueue.getProcessMethod()#", processData);
 				deleteEntityQueueItems(arguments.entityQueue.getEntityQueueID());
 			}catch(any e){
 				if(!isNull(entityQueue.getLogHistoryFlag()) && entityQueue.getLogHistoryFlag()){
@@ -106,8 +106,9 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 				
 				try{
-					entityService.invokeMethod("process#entityQueue['baseObject']#_#entityQueue['processMethod']#", processData);
+					entityService.invokeMethod("#entityQueue['processMethod']#", processData);
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+					ormflush();
 				}catch(any e){
 					entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
 				}
@@ -124,6 +125,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	
+
 	public any function insertEntityQueueItem(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = '', string entityQueueID = createHibachiUUID()){
 		getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
 	}

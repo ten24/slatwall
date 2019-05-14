@@ -455,6 +455,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
 	
+
 	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = ''){
 		if(!structKeyExists(variables, "entityQueueData")) {
 			variables.entityQueueData = {};
