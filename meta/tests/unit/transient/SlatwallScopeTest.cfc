@@ -308,7 +308,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getEntityQueueTest() {
-		assertTrue(arrayLen(request.slatwallScope.getEntityQueueData()) == 0);
+		assertTrue(structCount(request.slatwallScope.getEntityQueueData()) == 0);
 	}
 	
 	/**
