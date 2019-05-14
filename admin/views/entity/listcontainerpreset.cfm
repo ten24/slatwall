@@ -67,7 +67,7 @@ Notes:
 	})/>
 
 
-	<cfset rc.containerPresetCollectionList.addDisplayProperty(
+	<cfset containerPresetCollectionList.addDisplayProperty(
 	displayProperty='containerPresetID',
 	columnConfig={
 		isVisible=false,
@@ -75,12 +75,12 @@ Notes:
 		isDeletable=false
 	})/>
 
-<hb:HibachiListingDisplay 
-		collectionList="#containerPresetCollectionList#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(containerPresetCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(containerPresetCollectionList.getCollectionObject())#"
-	>
+	<hb:HibachiListingDisplay 
+			collectionList="#containerPresetCollectionList#"
+			usingPersonalCollection="true"
+			recordEditAction="admin:entity.edit#lcase(containerPresetCollectionList.getCollectionObject())#"
+			recordDetailAction="admin:entity.detail#lcase(containerPresetCollectionList.getCollectionObject())#"
+		>
 		
 	</hb:HibachiListingDisplay>
 
