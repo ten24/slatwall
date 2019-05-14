@@ -62,10 +62,10 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-<!--- <hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
 							   recordEditAction="admin:entity.editaccount"
 							   recordDetailAction="admin:entity.detailaccount">
-							   
+
 		<hb:HibachiListingColumn propertyIdentifier="firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="lastName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
@@ -73,7 +73,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
 		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
-		
+
 	</hb:HibachiListingDisplay> --->
 
 	<sw-listing-display data-using-personal-collection="true"
