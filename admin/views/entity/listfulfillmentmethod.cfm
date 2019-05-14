@@ -50,32 +50,14 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.fulfillmentMethodSmartList" type="any" />
+    <cfparam name="rc.fulfillmentMethodSmartList" type="any" />
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.fulfillmentMethodSmartList#" showCreate="false">
-
-	<!--- Create --->
-	<hb:HibachiEntityActionBarButtonGroup>
-		<hb:HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
-	</hb:HibachiEntityActionBarButtonGroup>
-</hb:HibachiEntityActionBar>
-
-    <sw-listing-display data-using-personal-collection="true"
-        data-collection="'FulfillmentMethod'"
-        data-edit="false"
-        data-has-search="true"
-        record-edit-action="admin:entity.editfulfillmentmethod"
-        record-detail-action="admin:entity.detailfulfillmentmethod"
-        data-is-angular-route="false"
-        data-angular-links="false"
-        data-has-action-bar="false"
-    >
-        <sw-listing-column data-property-identifier="fulfillmentMethodID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="fulfillmentMethodName" tdclass="primary" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="fulfillmentMethodType" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="autoFulfillFlag" ></sw-listing-column>
-    </sw-listing-display>
+    <!---TODO to be cleaned --->
+    <hb:HibachiEntityActionBar type="listing" object="#rc.fulfillmentMethodSmartList#" showCreate="false">
+    	<hb:HibachiEntityActionBarButtonGroup>
+    		<hb:HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
+    	</hb:HibachiEntityActionBarButtonGroup>
+    </hb:HibachiEntityActionBar>
 
     <cfset fulfillmentMethodCollectionList = getHibachiScope().getService('fulfillmentService').getFulfillmentMethodCollectionList()>
 	<cfset serchableDisplayProperties = "fulfillmentMethodName,fulfillmentMethodType,activeFlag,autoFulfillFlag"/>
