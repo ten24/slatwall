@@ -719,8 +719,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		if(structKeyExists(arguments.data, "enableAveragesAndSums")){ 
 			collectionOptions['enableAveragesAndSums'] = arguments.data['enableAveragesAndSums']
-		}else{
-			collectionOptions['enableAveragesAndSums'] = true;
 		}
 		
 		return collectionOptions;
@@ -886,8 +884,13 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setReportFlag(1);
 			}
 			
-			if(structKeyExists(collectionOptions,'enableAveragesAndSums') && collectionOptions.enableAveragesAndSums){ 
-				//XXX we should receive "enableAveragesAndSums = truthy" from forntend "to get the averages and sums"; By defalut the flag is "disableAveragesAndSumsFlag = true" i.e. no averages and sums
+			if(!structKeyExists(collectionOptions,'enableAveragesAndSums')){
+				//XXX we're setting enableAveragesAndSums=true for API response, if there's no override from frontnd;  
+				//By defalut the flag is "Collection.disableAveragesAndSumsFlag = true" i.e. no averages and sums
+				collectionOptions['enableAveragesAndSums'] = true;
+			}
+			
+			if(collectionOptions.enableAveragesAndSums){ 
 				collectionEntity.setDisableAveragesAndSumsFlag(false);
 			}
 
