@@ -84,7 +84,7 @@ Notes:
 		}
 	)/>
 
-	<cfset rc.accountCollectionList.addDisplayProperty(
+	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='accountID',
 	columnConfig={
 		isVisible=false,
