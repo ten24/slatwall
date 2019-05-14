@@ -3415,7 +3415,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	
 	public boolean function getDisableAveragesAndSumsFlag(){
-		return false;
 		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
 			variables.disableAveragesAndSumsFlag = true;
 		}
