@@ -279,6 +279,7 @@ class HibachiService{
 			params.processContext = options.processContext || '';
 			params.isReport = options.isReport || false;
 			params.periodInterval = options.periodInterval || "";
+			params.enableAveragesAndSums = options.enableAveragesAndSums || false;
 			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
 		}
 
