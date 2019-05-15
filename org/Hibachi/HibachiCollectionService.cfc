@@ -718,7 +718,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		if(structKeyExists(arguments.data, "enableAveragesAndSums")){ 
-			collectionOptions['enableAveragesAndSums'] = arguments.data['enableAveragesAndSums']
+			collectionOptions['enableAveragesAndSums'] = arguments.data['enableAveragesAndSums'];
 		}
 		
 		return collectionOptions;
