@@ -868,7 +868,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setProcessContext(collectionOptions.processContext);
 			}
 			if(structKeyExists(collectionOptions,'isDistinct')){
-				collectionEntity.getCollectionConfigStruct().isDistinct = collectionOptions.isDistinct;
+				collectionEntity.getCollectionConfigStruct()['isDistinct'] = collectionOptions.isDistinct;
 			}
 			if(structKeyExists(collectionOptions,'dirtyRead')){
 				collectionEntity.setDirtyReadFlag(collectionOptions.dirtyRead);
@@ -884,15 +884,13 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setReportFlag(1);
 			}
 			
-			if(!structKeyExists(collectionOptions,'enableAveragesAndSums')){
-				//XXX we're setting enableAveragesAndSums=true for API response, if there's no override from frontnd;  
-				//By defalut the flag is "Collection.disableAveragesAndSumsFlag = true" i.e. no averages and sums
-				collectionOptions['enableAveragesAndSums'] = true;
-			}
+			if(structKeyExists(collectionOptions,'enableAveragesAndSums')){
+				//XXX we're override enableAveragesAndSums  from frontnd;   By defalut the flag is "Collection.disableAveragesAndSumsFlag = true" i.e. no averages and sums
+				
+				collectionEntity.getCollectionConfigStruct()['enableAveragesAndSums'] = collectionOptions.enableAveragesAndSums;
 			
-			if(collectionOptions.enableAveragesAndSums){ 
-				collectionEntity.setDisableAveragesAndSumsFlag(false);
-			}
+				collectionEntity.setDisableAveragesAndSumsFlag(!collectionOptions.enableAveragesAndSums);
+			}  
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 

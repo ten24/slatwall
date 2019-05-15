@@ -120,7 +120,7 @@ class CollectionConfig {
         private allRecords:boolean = false,
         private dirtyRead:boolean = false,
         private isDistinct:boolean = false,
-        private enableAveragesAndSums = false,
+        private enableAveragesAndSums:boolean = false,
 
     ){
         this.$hibachi = $hibachi;
