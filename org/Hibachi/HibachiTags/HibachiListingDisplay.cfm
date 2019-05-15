@@ -99,7 +99,7 @@
 			<cfif len(attributes.collectionConfigJson)>
 				<cfset JSON = attributes.collectionConfigJson />
 			<cfelse> 	
-				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums >
+				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums />
 				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
 			</cfif> 
 			
