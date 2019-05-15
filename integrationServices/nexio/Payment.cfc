@@ -198,15 +198,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 							// 'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
 						}
 					};
-					// writeDump("***Save card: requestData");
+					//writeDump("***Save card: requestData");
 					// writeDump(requestData);
 					
-					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
+					// Save Card, this is the important token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 					
-					// writeDump("***Save card: responseData");
-					// writeDump(responseData);
+					writeDump("***Save card: responseData");
+					writeDump(responseData);
 					// abort;
+					
+					// writeDump("***Save card: responseBean");
+					// writeDump(responseBean)
 					
 					if (!responseBean.hasErrors()) {
 						// Extract data and set as part of the responseBean
