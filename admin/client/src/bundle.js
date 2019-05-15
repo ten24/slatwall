@@ -73796,7 +73796,11 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
+<<<<<<< HEAD
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
+=======
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -73807,7 +73811,10 @@ var CollectionConfig = /** @class */ (function () {
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
+<<<<<<< HEAD
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+=======
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
         var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
@@ -73830,7 +73837,10 @@ var CollectionConfig = /** @class */ (function () {
         this.allRecords = allRecords;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
+<<<<<<< HEAD
         this.enableAveragesAndSums = enableAveragesAndSums;
+=======
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
         this.filterGroupAliasMap = {};
         this.reportFlag = false;
         this.periodInterval = "";
@@ -73904,7 +73914,10 @@ var CollectionConfig = /** @class */ (function () {
             _this.isDistinct = jsonCollection.isDistinct;
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
+<<<<<<< HEAD
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
+=======
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -73945,8 +73958,12 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 orderBy: _this.orderBy,
+<<<<<<< HEAD
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums
+=======
+                periodInterval: _this.periodInterval
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
             };
         };
         this.getEntityName = function () {
@@ -73976,8 +73993,12 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
+<<<<<<< HEAD
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums
+=======
+                periodInterval: _this.periodInterval
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
             };
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
@@ -74478,11 +74499,14 @@ var CollectionConfig = /** @class */ (function () {
             _this.isDistinct = flag;
             return _this;
         };
+<<<<<<< HEAD
         this.setEnableAveragesAndSums = function (flag) {
             if (flag === void 0) { flag = false; }
             _this.enableAveragesAndSums = flag;
             return _this;
         };
+=======
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
         this.setDirtyRead = function (flag) {
             if (flag === void 0) { flag = false; }
             _this.dirtyRead = flag;
@@ -80401,7 +80425,10 @@ var HibachiService = /** @class */ (function () {
                 params.processContext = options.processContext || '';
                 params.isReport = options.isReport || false;
                 params.periodInterval = options.periodInterval || "";
+<<<<<<< HEAD
                 params.enableAveragesAndSums = options.enableAveragesAndSums || false;
+=======
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
                 var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
             }
             if (angular.isDefined(options.id)) {
@@ -89410,6 +89437,12 @@ var SWListingReport = /** @class */ (function () {
                 $event.stopPropagation();
                 scope.swListingReport.openedCalendarEndCompare = true;
             };
+<<<<<<< HEAD
+=======
+            scope.swListingReport.removeInfoWIndow = function (event) {
+                $("#get-started-report").remove();
+            };
+>>>>>>> f8fdb951926b10010ab6dd56cc3a2e32402d51fe
         };
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingreport.html";
     }
