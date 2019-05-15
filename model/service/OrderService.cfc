@@ -1151,7 +1151,64 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return this.newOrder();
 	}
 	
-	//begin order template functionality	
+	//begin order template functionality
+
+	//order transient helper methods
+	public any function newTransientOrderFromOrderTemplate(required any orderTemplate){
+		var transientOrder = new Slatwall.model.entity.Order();
+		transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+
+		ORMGetSession().evict(transientOrder);
+		
+		return transientOrder;
+	}
+
+	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate){
+		var transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+		transientOrderFulfillment.setOrder(this.newTransientOrderFromOrderTemplate(arguments.orderTemplate)); 
+		transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
+		transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());  	
+		transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
+		
+		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
+		ORMGetSession().evict(arguments.orderTemplate.getShippingAddress());
+
+		var orderTemplateItemCollectionList = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
+		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+	
+		var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
+		
+		var fulfillmentTotal = 0;
+		var orderFulfillmentItems = []; 
+	
+		for(var orderTemplateItem in orderTemplateItemRecords){ 
+			var transientOrderItem = new Slatwall.model.entity.OrderItem();
+
+			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+			
+			transientOrderItem.setSku(sku);
+			
+			transientOrderItem.setQuantity(orderTemplateItem['quantity']);
+
+			transientOrderFulfillment.addOrderFulfillmentItem(transientOrderItem);  
+			ORMGetSession().evict(sku);
+			ORMGetSession().evict(transientOrderItem);
+		}
+
+		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment); 
+
+		for(var shippingMethodOption in transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
+			ORMGetSession().evict(shippingMethodOption);
+		}
+		
+		ORMGetSession().evict(transientOrderFulfillment);
+
+		return transientOrderFulfillment; 
+	}
+
+	//order template process methods	
 	public any function processOrderTemplate_activate(required any orderTemplate, any processObject, required struct data={}) {
 		
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstDraft'){
