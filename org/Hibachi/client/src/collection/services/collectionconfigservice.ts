@@ -119,7 +119,8 @@ class CollectionConfig {
         private keywords:string = '',
         private allRecords:boolean = false,
         private dirtyRead:boolean = false,
-        private isDistinct:boolean = false
+        private isDistinct:boolean = false,
+        private enableAveragesAndSums:boolean = false,
 
     ){
         this.$hibachi = $hibachi;
@@ -214,7 +215,8 @@ class CollectionConfig {
         this.isDistinct = jsonCollection.isDistinct;
         this.reportFlag = jsonCollection.reportFlag;
         this.useElasticSearch = jsonCollection.useElasticSearch;
-
+        this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
+        
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
@@ -257,7 +259,8 @@ class CollectionConfig {
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
             orderBy:this.orderBy,
-            periodInterval:this.periodInterval
+            periodInterval:this.periodInterval,
+            enableAveragesAndSums: this.enableAveragesAndSums
         };
     };
 
@@ -281,7 +284,7 @@ class CollectionConfig {
             columnsConfig: angular.toJson(columns),
             filterGroupsConfig: angular.toJson(filters),
             joinsConfig: angular.toJson(this.joins),
-            orderByConfig:angular.toJson(this.orderBy),
+            orderByConfig: angular.toJson(this.orderBy),
             groupBysConfig: angular.toJson(this.groupBys),
             currentPage: this.currentPage,
             pageShow: this.pageShow,
@@ -291,8 +294,9 @@ class CollectionConfig {
             allRecords: this.allRecords,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
-            isReport:this.isReport(),
-            periodInterval:this.periodInterval
+            isReport: this.isReport(),
+            periodInterval: this.periodInterval,
+            enableAveragesAndSums: this.enableAveragesAndSums
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
@@ -938,6 +942,11 @@ class CollectionConfig {
 
     public setDistinct = (flag:boolean=true)=>{
         this.isDistinct =  flag;
+        return this;
+    };
+
+    public setEnableAveragesAndSums = (flag:boolean = false)=>{
+        this.enableAveragesAndSums =  flag;
         return this;
     };
 

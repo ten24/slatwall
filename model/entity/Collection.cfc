@@ -48,7 +48,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="dirtyReadFlag" ormtype="boolean";
 	property name="useElasticSearch" ormtype="boolean" default="0";
 	property name="reportFlag" ormtype="boolean" default="0";
-	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="0";
+	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="1";
 	property name="softDeleteFlag" ormtype="boolean" default="0";
 	property name="publicFlag" ormtype="boolean" default="0";
 
@@ -3419,13 +3419,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public boolean function getDisableAveragesAndSumsFlag(){
 		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
-			variables.disableAveragesAndSumsFlag = false;
+			variables.disableAveragesAndSumsFlag = true;
 		}
 		return variables.disableAveragesAndSumsFlag;
 	}
 	
 	public void function addTotalAvgAggregate(required struct column){
+		
+		if(getDisableAveragesAndSumsFlag()){
+			return;	
+		}
+		
 		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
+		
 		var found = false;
 		for(var item in variables.totalAvgAggregates){
 			if(item.propertyIdentifier == column.propertyIdentifier){
@@ -3440,7 +3446,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public void function addTotalSumAggregate(required struct column){
+		
+		if(getDisableAveragesAndSumsFlag()){
+			return;	
+		}
+		
 		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
+		
 		var found = false;
 		for(var item in variables.totalSumAggregates){
 			if(item.propertyIdentifier == column.propertyIdentifier){
