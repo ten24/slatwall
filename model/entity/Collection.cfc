@@ -1752,6 +1752,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								structKeyExists(join,'aggregateFilter')
 								&& join.aggregateFilter
 							)||(
+								structKeyExists(join,'aggregateColumnCount')
+								&& join.aggregateColumnCount
+							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
 							)||(
@@ -3427,7 +3430,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return;	
 		}
 		
-		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
 		
 		var found = false;
 		for(var item in variables.totalAvgAggregates){
@@ -3448,7 +3451,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return;	
 		}
 		
-		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
 		
 		var found = false;
 		for(var item in variables.totalSumAggregates){
