@@ -7,9 +7,12 @@
 		<column name="startDateTime" update="false"/>
 		<column name="workflowID" update="false" />
 		<column name="scheduleID" update="false"/>
+		<column name="scheduleCollectionID" update="false"/>
 		<column name="runningFlag" update="false" datatype="bit"/>
 		<column name="timeout" update="false"/>
+		<column name="collectionFetchSize" update="false"/>
 		<column name="triggerEventTitle" update="false"/>
+		<column name="collectionPassthrough" update="false" datatype="bit"/>
 	</Columns>
 	<Records>
 		<Record workflowTriggerID="4028289a5507d1dc01557e0718c30809" triggerType="Event" triggerEvent="afterFormResponseSaveSuccess" startDateTime="2016-01-01 12:00:00" workflowID="4028289a5507d1dc01557e0718b30808" />
@@ -17,5 +20,6 @@
 		<Record workflowTriggerID="3130ad06932948d38bf37e7a5c27a435" triggerType="Event" triggerEvent="afterOrderDeliveryProcess_createSuccess" startDateTime="2016-01-01 12:00:00" workflowID="46d8e458b7dd4aa9876ce62b33e9e43f" />
 		<Record workflowTriggerID="a8bcb9a9e2e52981cea92c599170e052" triggerType="Schedule" startDateTime="2016-01-01 12:00:00" workflowID="a6c7740cb58189c914c2b2528aec7c1d" scheduleID="a7379771019d044026ae978809e1fd3d"  timeout="90" />
 		<Record workflowTriggerID="550dcb2c1fda4161ae932fda5372f722" triggerType="Event" triggerEventTitle="Account - After Update Primary Email Address Success | afterAccountProcess_updatePrimaryEmailAddressSuccess" triggerEvent="afterAccountProcess_updatePrimaryEmailAddressSuccess" startDateTime="2016-01-01 12:00:00" workflowID="f8f3d033dd8444df85a92a8715b913a7" />
+		<Record workflowTriggerID="2ef0215ec344ba7a6c5d7e9529b64417" scheduleCollectionID="2f092787b95bd157f24d3481416c027f" triggerType="Schedule" startDateTime="2016-01-01 12:00:00" workflowID="2e901546ceffe109875bac47f880e7b9" scheduleID="2eebe3acaffd091c06711775fbe1d29a" collectionFetchSize="20" timeout="90" collectionPassthrough="1"/>
 	</Records>
 </Table>

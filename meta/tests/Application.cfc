@@ -68,6 +68,10 @@ component extends="testbox.Application"{
 	this.ormsettings.eventhandling = true;
 	this.ormSettings.automanageSession = false;
 	setting requestTimeOut="0";
+<<<<<<< HEAD
+=======
+    
+>>>>>>> slatwallcore/develop
 	
 
 }
