@@ -225,9 +225,9 @@ component extends="HibachiService" accessors="true" output="false" {
 					thread action="run" name="#currentThreadName#" currentObjectName="#currentObjectName#" currentObjectID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#"{
 						//load Objects by id
 	
-						var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
+						var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', attributes.workflowTriggerID);
 						var processData = {
-							entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
+							entity = getHibachiScope().getEntity(attributes.currentObjectName, attributes.currentObjectID),
 							workflowTrigger = workflowTrigger
 						};
 	
@@ -239,12 +239,11 @@ component extends="HibachiService" accessors="true" output="false" {
 							//application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
 						}
 						threadJoin(currentThreadName);
-		
+						
 						//if there was any errors inside of the thread, propagate to catch
 						if(structKeyExists(evaluate(currentThreadName), 'error')){
 							writedump(evaluate(currentThreadName).error);
 							throw(evaluate(currentThreadName).error.message);
-							break;
 						}
 					}
 						
@@ -643,6 +642,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.comparisonOperator;
 	}	
+	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
 		
 		getHibachiDAO().flushORMSession();
