@@ -70,25 +70,25 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<cfset produCtCollectionList = getHibachiScope().getService('productService').getProduCtCollectionList()>
+	<cfset productCollectionList = getHibachiScope().getService('productService').getProductCollectionList()>
 	<cfset serchableDisplayProperties = "productType.productTypeName,brand.brandName,productName,productCode,defaultSku.price,activeFlag,publishedFlag,calculatedQATS"/>
-	<cfset produCtCollectionList.setDisplayProperties(serchableDisplayProperties, {
+	<cfset productCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
 	})/>
 	
-	<cfset produCtCollectionList.addDisplayProperty(displayProperty='produCtID', columnConfig={
+	<cfset productCollectionList.addDisplayProperty(displayProperty='productID', columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
 	})/>
 	
 	<hb:HibachiListingDisplay 
-		collectionList="#produCtCollectionList#"
+		collectionList="#productCollectionList#"
 		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(produCtCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(produCtCollectionList.getCollectionObject())#"
+		recordEditAction="admin:entity.edit#lcase(productCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(productCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
 

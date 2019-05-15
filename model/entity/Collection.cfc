@@ -1752,6 +1752,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								structKeyExists(join,'aggregateFilter')
 								&& join.aggregateFilter
 							)||(
+								structKeyExists(join,'aggregateColumnCount')
+								&& join.aggregateColumnCount
+							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
 							)||(
@@ -3422,7 +3425,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function addTotalAvgAggregate(required struct column){
-		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
 		var found = false;
 		for(var item in variables.totalAvgAggregates){
 			if(item.propertyIdentifier == column.propertyIdentifier){
@@ -3437,7 +3440,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public void function addTotalSumAggregate(required struct column){
-		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
 		var found = false;
 		for(var item in variables.totalSumAggregates){
 			if(item.propertyIdentifier == column.propertyIdentifier){
