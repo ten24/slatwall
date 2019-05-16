@@ -63760,7 +63760,7 @@ var OrderTemplateService = /** @class */ (function () {
                 entityID: _this.orderTemplateID,
                 entityName: 'OrderTemplate',
                 context: 'addOrderTemplateItem',
-                propertyIdentifiersList: '',
+                propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
                 skuID: state.skuID,
                 quantity: state.quantity
             };
@@ -63775,7 +63775,7 @@ var OrderTemplateService = /** @class */ (function () {
                 entityID: state.orderTemplateItemID,
                 entityName: 'OrderTemplateItem',
                 context: 'save',
-                propertyIdentifiersList: '',
+                propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
                 quantity: state.quantity
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
@@ -63789,7 +63789,7 @@ var OrderTemplateService = /** @class */ (function () {
                 entityID: _this.orderTemplateID,
                 entityName: 'OrderTemplate',
                 context: 'removePromotionCode',
-                propertyIdentifiersList: '',
+                propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
                 promotionCodeID: state.promotionCodeID
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
@@ -63803,7 +63803,7 @@ var OrderTemplateService = /** @class */ (function () {
                 entityID: state.orderTemplateItemID,
                 entityName: 'OrderTemplateItem',
                 context: 'delete',
-                propertyIdentifiersList: '',
+                propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);

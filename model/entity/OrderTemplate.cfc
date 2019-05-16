@@ -127,7 +127,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
 				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
-				variables.subtotal += sku.getPriceByCurrencyCode(this.getCurrencyCode(), orderTemplateItem['quantity']); 	
+				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode(), orderTemplateItem['quantity']); 	
 			} 
 		}
 		return variables.subtotal; 
