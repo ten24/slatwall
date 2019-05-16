@@ -81,13 +81,11 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		// writedump(var=arguments.body, top=2, abort=true );
 		
 		// Append appropriate API Resource
-		// if (arguments.requestBean.getTransactionType() == 'generateToken') {
-		// 	apiUrl &= '/rest/v3/user';
-		// } else if (arguments.requestBean.getTransactionType() == 'authorize') {
+		if (arguments.requestBean.getTransactionType() == 'authorize') {
 			apiUrl &= '/rest/v3/transfers';
-		// }
+		}
 		
-		//writeDump(var=apiUrl, top=2, abort=true);
+		// writeDump(var=apiUrl, top=2, abort=true);
 		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
@@ -104,7 +102,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		
 		// Make HTTP request to endpoint
 		var httpResponse = httpRequest.send().getPrefix();
-		//writeDump(var=httpRequest.send().getPrefix(), top=4, abort=true);
+		writeDump(var=httpRequest.send().getPrefix(), top=4, abort=true);
 		
 		var responseData = {};
 		
@@ -146,7 +144,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 				}
 			}
 
-			// Server response successful
+		// Server response successful
 		} else {
 		//	arguments.responseBean.setStatusCode(httpResponse.status_code);
 
@@ -160,27 +158,27 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		return responseData;
 	}
 	
-	public any function testIntegration() {
-		var requestBean = new Slatwall.model.transient.payment.ExternalTransactionRequestBean();
+	// public any function testIntegration() {
+	// 	var requestBean = new Slatwall.model.transient.payment.ExternalTransactionRequestBean();
 		
-		var testAccount = getHibachiScope().getAccount();
+	// 	var testAccount = getHibachiScope().getAccount();
 		
-		requestBean.setTransactionType('authorize');
-		requestBean.setOrderID('1');
-		requestBean.setCreditCardNumber('4111111111111111');
-		requestBean.setSecurityCode('123');
-		requestBean.setExpirationMonth('01');
-		requestBean.setExpirationYear(year(now())+1);
-		requestBean.setTransactionAmount('1');
-		requestBean.setAccountFirstName(testAccount.getFirstName());
-		requestBean.setAccountLastName(testAccount.getLastName());
+	// 	requestBean.setTransactionType('authorize');
+	// 	requestBean.setOrderID('1');
+	// 	requestBean.setCreditCardNumber('4111111111111111');
+	// 	requestBean.setSecurityCode('123');
+	// 	requestBean.setExpirationMonth('01');
+	// 	requestBean.setExpirationYear(year(now())+1);
+	// 	requestBean.setTransactionAmount('1');
+	// 	requestBean.setAccountFirstName(testAccount.getFirstName());
+	// 	requestBean.setAccountLastName(testAccount.getLastName());
 		
-		var response = processTransfer(requestBean); 
-		structDelete(response.getData(),"requestData");
-		return response;
-	}
+	// 	var response = processTransfer(requestBean); 
+	// 	structDelete(response.getData(),"requestData");
+	// 	return response;
+	// }
 	
-	public any function processTransfer(required any requestBean) {
+	public any function processExternal(required any requestBean) {
 		var responseBean = getTransient('ExternalTransactionRequestBean');
 
 		//writeDump(var=responseBean.getFirstName(), top=2, abort=true );
@@ -189,9 +187,16 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		if (arguments.requestBean.getTransactionType() == "authorize") {
 			
 			var body = {
-				'clientTransferId' = setting(settingName='clientTransferIdTest', requestBean=arguments.requestBean),
-				'sourceToken' = setting(settingName='sourceTokenTest', requestBean=arguments.requestBean),
-				'destinationToken' = setting(settingName='destinationTokenTest', requestBean=arguments.requestBean)
+				// 'clientTransferId' = setting(settingName='clientTransferIdTest', requestBean=arguments.requestBean),
+				// 'sourceToken' = setting(settingName='sourceTokenTest', requestBean=arguments.requestBean),
+				// 'destinationToken' = setting(settingName='destinationTokenTest', requestBean=arguments.requestBean)
+				"clientTransferId": "6712348070812",
+				"destinationAmount": "125",
+				"destinationCurrency": "USD",
+				"notes": "Partial-Balance Transfer",
+				"memo": "TransferClientId56387",
+				"sourceToken": "usr-a4eabbe5-643d-42c3-a54d-3b13e64535b4",
+				"destinationToken": "prg-6d126b28-1761-47a5-a192-03b5084fc468"
 			};
 			
 			// body.setClientTransferId(isNull(arguments.requestBean.getAccountID()) ? "":arguments.requestBean.getAccountID());
@@ -206,37 +211,37 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			throw("HyperWallet Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		};
 		
-		// writeDump(var=responseBean, top=2, abort=true );
+		writeDump(var=responseBean, top=2, abort=true );
 		return responseBean;
 	}
 	
-	public any function processAccount(required any requestBean) {
-		var responseBean = getTransient('ExternalTransactionRequestBean');
+	// public any function processAccount(required any requestBean) {
+	// 	var responseBean = getTransient('ExternalTransactionRequestBean');
 		
-		//if (arguments.requestBean.getTransactionType() == "generateToken") {
-			var body = {
-				'addressLine1': '575 Market Street',
-				'city': 'San Francisco',
-				'clientUserId': 'CSK7b8Ffch',
-				'country': 'US',
-				'dateOfBirth': '1991-01-01',
-				'email': 'test@mailinator.com',
-				'firstName': 'Some',
-				'lastName': 'Guy',
-				'postalCode': '94105',
-				'profileType' = 'BUSINESS',
-				'programToken' = setting(settingName='programTokenTest', requestBean=arguments.requestBean),
-				'stateProvince': 'CA'
-			};
-			body =  serializeJSON(body);
+	// 	//if (arguments.requestBean.getTransactionType() == "generateToken") {
+	// 		var body = {
+	// 			'addressLine1': '575 Market Street',
+	// 			'city': 'San Francisco',
+	// 			'clientUserId': 'CSK7b8Ffch',
+	// 			'country': 'US',
+	// 			'dateOfBirth': '1991-01-01',
+	// 			'email': 'test@mailinator.com',
+	// 			'firstName': 'Some',
+	// 			'lastName': 'Guy',
+	// 			'postalCode': '94105',
+	// 			'profileType' = 'BUSINESS',
+	// 			'programToken' = setting(settingName='programTokenTest', requestBean=arguments.requestBean),
+	// 			'stateProvince': 'CA'
+	// 		};
+	// 		body =  serializeJSON(body);
 			
-			responseBean =  sendHttpAPIRequest(arguments.requestBean, responseBean, body);
+	// 		responseBean =  sendHttpAPIRequest(arguments.requestBean, responseBean, body);
 			
-		//} else {
-			//throw("HyperWallet Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
-		//};
+	// 	//} else {
+	// 		//throw("HyperWallet Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+	// 	//};
 		
-		// writeDump(var=responseBean, top=2, abort=true );
-		return responseBean;
-	}
+	// 	// writeDump(var=responseBean, top=2, abort=true );
+	// 	return responseBean;
+	// }
 }
