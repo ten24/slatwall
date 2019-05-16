@@ -191,7 +191,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 
-		//try{
+		try{
 
 			if(arguments.workflowTrigger.getCollectionPassthrough()){
 				//Don't Instantiate every object, just passthroughn the collection records returned
@@ -287,7 +287,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				workflowTriggerHistory.setResponse( "" );
 			}
 
-		/*} catch(any e){
+		} catch(any e){
 			
 			if(!isNull(workflowTriggerHistory)) {
 				// Update the workflowTriggerHistory
@@ -295,7 +295,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				workflowTriggerHistory.setResponse(e.Message);
 				workflowTrigger.setWorkflowTriggerException(e);
 			}
-		}*/
+		}
 
 		//Change WorkflowTrigger runningFlag to FALSE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
