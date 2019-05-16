@@ -1153,22 +1153,40 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	//begin order template functionality
 
+	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
+
+		local.ormSession = ormGetSessionFactory().openSession();
+	    local.tx = local.ormSession.beginTransaction();
+
+		try{
+			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge() 
+		} catch (any e) {
+			rethrow; 
+			var fulfillmentCharge = 0; 
+		} finally { 
+			local.tx.commit();
+			local.ormSession.close();
+		} 
+
+		return fulfillmentCharge; 
+	}
+
 	//order transient helper methods
 	public any function newTransientOrderFromOrderTemplate(required any orderTemplate){
 		var transientOrder = new Slatwall.model.entity.Order();
-		transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-
 		ORMGetSession().evict(transientOrder);
-		
+		transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		return transientOrder;
 	}
 
 	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate){
 		var transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+		
+		ORMGetSession().evict(transientOrderFulfillment);
+		
 		transientOrderFulfillment.setOrder(this.newTransientOrderFromOrderTemplate(arguments.orderTemplate)); 
 		transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
-		transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());  	
 		transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
 		
 		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
@@ -1185,25 +1203,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		for(var orderTemplateItem in orderTemplateItemRecords){ 
 			var transientOrderItem = new Slatwall.model.entity.OrderItem();
-
 			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
 			
-			transientOrderItem.setSku(sku);
+			ORMGetSession().evict(sku);
+			ORMGetSession().evict(transientOrderItem);
 			
+			transientOrderItem.setSku(sku);
+			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 			transientOrderItem.setQuantity(orderTemplateItem['quantity']);
 
 			transientOrderFulfillment.addOrderFulfillmentItem(transientOrderItem);  
-			ORMGetSession().evict(sku);
-			ORMGetSession().evict(transientOrderItem);
 		}
 
-		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment); 
+		transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod(), false);  	
+		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment, false);
 
 		for(var shippingMethodOption in transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
 			ORMGetSession().evict(shippingMethodOption);
-		}
-		
-		ORMGetSession().evict(transientOrderFulfillment);
+		}	
 
 		return transientOrderFulfillment; 
 	}

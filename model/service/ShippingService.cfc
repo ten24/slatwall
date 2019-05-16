@@ -469,8 +469,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return qualifiedRateOptions;
 	}
 
-	public void function updateOrderFulfillmentShippingMethodOptions( required any orderFulfillment ) {
-		
+	public void function updateOrderFulfillmentShippingMethodOptions( required any orderFulfillment, boolean persistShippingMethodOption=true ) {
+	
 		//only run if the method is shipping
 		if(arguments.orderfulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq 'shipping'){
 			// Container to hold all shipping integrations that are in all the usable rates
@@ -509,6 +509,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var shippingMethod in shippingMethods){
 				arrayAppend(fulfillmentMethodOptionsCacheKeyArray, shippingMethod.getModifiedDateTime());
 			}
+			
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,orderfulfillmentaddress);
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getOrder().getSubtotalAfterItemDiscounts());
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getTotalShippingQuantity());
@@ -621,9 +622,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							newOption.setShippingMethodRate( rateToUse.shippingMethodRate );
 		
 							arguments.orderFulfillment.addFulfillmentShippingMethodOption( newOption );
-		
-							var shippingMethodOption = this.saveShippingMethodOption(newOption);
-							
+	
+
+							if(arguments.persistShippingMethodOption){	
+								var shippingMethodOption = this.saveShippingMethodOption(newOption);
+							}
+
 							if(structKeyExists(rateToUse, "responseBean") && rateToUse.responseBean.hasShippingMethodOptionSplitShipments()){
 								this.setShippingMethodOptionOnShippingMethodOptionSplitShipments(shippingMethodOption, rateToUse.responseBean.getShippingMethodOptionSplitShipments()); 
 							}

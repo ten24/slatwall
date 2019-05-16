@@ -111,7 +111,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
-			variables.fulfillmentTotal = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(this).getFulfillmentCharge(); 
+			variables.fulfillmentTotal = getService('OrderService').getFulfillmentTotalForOrderTemplate(this); 
 		}
 		return variables.fulfillmentTotal;
 	}
