@@ -107,22 +107,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	if(DirectoryExists(rbpath)){
     		directorylisting = directorylist(rbpath,false,"name","*.properties");
     	}
-    	
+
     	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/resourceBundles";
-    	
-    	var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
     	
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
         }
-    	if(DirectoryExists(customrbpath)){
-    		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
-    		for(var item in customDirectoryListing){
-    			if(!ArrayFind(directoryListing,item)){
-    				arrayAppend(directoryListing,item);
-    			}
-    		}
-    	}
+        
+        var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
+        
+        if(!directoryExists(systemrbpath)){
+        	directoryCreate(systemrbpath);
+        }
+        
+		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
+		for(var item in customDirectoryListing){
+			if(!ArrayFind(directoryListing,item)){
+				arrayAppend(directoryListing,item);
+			}
+		}
     	
     	for(var rb in directoryListing){
     		var locale = listFirst(rb,'.');
@@ -132,7 +135,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        //cache RB for 1 day or until a reload
 	        //lcase all the resourceBundle keys so we can have consistent casing for the js
 	        for(var key in resourceBundle){
-		    key = REReplace(trim(key), '[^\x00-\x7F]', '', "ALL");
+		        key = REReplace(trim(key), '[^\x00-\x7F]', '', "ALL");
 	            if(!len(key)){
 	                continue;
 	            }
