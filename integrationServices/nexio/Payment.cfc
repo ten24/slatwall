@@ -212,7 +212,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					
 					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
-					
+					// writeDump(var=responseData);
 					// Extract data and set as part of the responseBean
 					if (!responseBean.hasErrors()) {
 						arguments.responseBean.setProviderToken(responseData.token.token);
@@ -225,19 +225,43 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				throw('Attempting to generate token. The payment method used already had a valid token');
 
 				// Uneccessary to make API request because same token generated during accountPaymentMethod create is valid for subsequent authorization requests
-				arguments.responseBean.setProviderToken(requestBean.getProviderToken());
+				arguments.responseBean.setProviderToken(responseData.token.token);
 				arguments.responseBean.setProviderTransactionID(requestBean.getOriginalProviderTransactionID());
 			}
+				// writeDump(var=arguments.responseBean.setProviderToken(responseData.token.token));
 		}
 		
 		private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
 			// Request Data
 			// arguments.requestBean.getProviderToken();
 			
-			// Response Data
-			// arguments.responseBean.setProviderTransactionID();
-			// arguments.responseBean.setAuthorizationCode();
-			// arguments.responseBean.setAmountAuthorized();
+			// var requestData = {
+			// 	"data":{
+			// 		"isAuthOnly":true,
+			// 		// "tokenex":{
+			// 		// 	"token":"6ee140a0-05d1-4958-8325-b38a690dbb9d
+			// 		// }
+			//     	},
+			//     "card":{
+			//     	"expirationMonth": arguments.requestBean.getExpirationMonth(),
+			//     	"expirationYear": arguments.requestBean.getExpirationYear(),
+			//     	"cardHolderName": arguments.requestBean.getNameOnCreditCard(),
+			//     	"lastFour": arguments.requestBean.getCreditCardLastFour()
+			//     },
+			//     "data": {
+			//       "currency": arguments.requestBean.getTransactionCurrencyCode(),
+			//       'amount' = arguments.requestBean.getTransactionAmount()
+			//     },
+			//     "processingOptions":{
+			// 	    "checkFraud": true,
+			// 	    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
+			// 	    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
+			// 	    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+			//     }
+			// };
+			// writeDump(var=arguments.requestBean);
+			
+			// responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
 		}
 		
 		private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
@@ -245,13 +269,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Request Data
 			arguments.requestBean.getProviderToken();
 			
+			writeDump(var=arguments.requestBean);
+			abort;
+			
 			var requestData = {
 				"data":{
-					// "isAuthOnly":true,
+					'token' = responseData.token,
 					// "tokenex":{
-					// 	"token":"6ee140a0-05d1-4958-8325-b38a690dbb9d",
-					// 	"firstSix": "123",
-					// 	"lastFour": "1234"
+					// 	"token":"6ee140a0-05d1-4958-8325-b38a690dbb9d
 			    	},
 			    "card":{
 			    	"expirationMonth": arguments.requestBean.getExpirationMonth(),
@@ -262,42 +287,25 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "data": {
 			      "currency": arguments.requestBean.getTransactionCurrencyCode(),
 			      "amount": 1,
-			      "customer": {
-			    	  "orderNumber": arguments.requestBean.getOrderID(),
-			          "customerRef": arguments.requestBean.getAccountID(),
-			          "firstName": arguments.requestBean.getAccountFirstName(),
-			          "lastName": arguments.requestBean.getAccountLastName(),
-			          "email": arguments.requestBean.getAccountPrimaryEmailAddress(),
-			          "phone": arguments.requestBean.getAccountPrimaryPhoneNumber(),
-			          "billToAddressOne": arguments.requestBean.getBillingStreetAddress(),
-			          "billToAddressTwo": arguments.requestBean.getBillingStreet2Address(),
-			          "billToCity": arguments.requestBean.getBillingCity(),
-			          "billToState": arguments.requestBean.getBillingStateCode(),
-			          "billToPostal": arguments.requestBean.getBillingPostalCode(),
-			          "billToCountry": arguments.requestBean.getBillingCountryCode()
-			      }
 			    },
 			    "processingOptions":{
-				    // "webhookUrl": "",
-				    // "webhookFailUrl": "",
 				    "checkFraud": true,
 				    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
 				    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
-				    // "verboseResponse": true,
-				    'merchantID': setting(settingName='merchantID', requestBean=arguments.requestBean)
+				    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			};
 			
-			writeDump(var=arguments.requestBean);
+			writeDump(var=requestData);
 			
-			// responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
+			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
 
 			// Response Data
-			// arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
-			// arguments.responseBean.setAuthorizationCode();
-			// arguments.responseBean.setAmountAuthorized();
-			// arguments.responseBean.setAmountReceived();
-			// writeDump(var=responseData);
+			arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
+			// arguments.responseBean.setAuthorizationCode(arguments.requestBean.getAuthorizationCode());
+			// arguments.responseBean.setAmountAuthorized(arguments.requestBean.getAmountAuthorized());
+			// arguments.responseBean.setAmountReceived(arguments.requestBean.getAmountReceived());
+			writeDump(var=responseBean);
 			abort;
 		}
 		
