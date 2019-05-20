@@ -584,10 +584,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				if(len(trim(accountAddress['address_stateCode']))){
 					addressName &= accountAddress['address_stateCode'] & ', ';
 				}	
-				
-				if(len(trim(accountAddress['address_stateCode']))){
-					addressName &= accountAddress['address_stateCode'] & ', ';
-				}
 
 				var accountAddressOption = {
 					"name":  addressName & accountAddress['address_countryCode'],

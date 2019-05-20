@@ -1078,17 +1078,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public boolean function getOrderQualifiesForCanPlaceOrderReward( required any order ){
 		var canPlaceOrder = true;
-		// var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now());
-		// if(arraylen(promotionRewards)){
-		// 	canPlaceOrder = false;
-		// 	for(var promoReward in promotionRewards){
-		// 		var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order);
-		// 		if(qualificationDetails.qualificationsMeet){
-		// 			canPlaceOrder = true;
-		// 			break;
-		// 		}
-		// 	}
-		// }
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now());
+		if(arraylen(promotionRewards)){
+			canPlaceOrder = false;
+			for(var promoReward in promotionRewards){
+				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order);
+				if(qualificationDetails.qualificationsMeet){
+					canPlaceOrder = true;
+					break;
+				}
+			}
+		}
 		return canPlaceOrder;
 	}
 

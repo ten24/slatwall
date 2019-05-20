@@ -413,9 +413,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// Check to see if there is a process object
 		var processObjectExists = rc[ arguments.entityName ].hasProcessObject( arguments.rc.processContext );
-		writeDump(arguments.entityName);
-		writeDump(arguments.rc.processContext);
-		writeDump(processObjectExists);
+
 		if(processObjectExists) {
 			// Setup the processObject in the RC so that we can use it for our form
 			rc.processObject = arguments.rc[ arguments.entityName ].getProcessObject( arguments.rc.processContext );
@@ -429,9 +427,13 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// Set rc.edit to true because all property displays should be taking inputs
 		rc.edit = true;
-		writeDump(var=rc,top=4);abort;
+
 		// Set the page title to the correct rbKey
-		rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#", rc.processObject );
+		if(structKeyExists(arguments.rc, 'processObject')){
+			arguments.rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#", arguments.rc.processObject );
+		} else {
+			arguments.rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#");
+		}
 
 		// Set the view correctly to use the context specific preProcess view
 		getFW().setView("#lcase(arguments.rc.entityActionDetails.subsystemName)#:#lcase(arguments.rc.entityActionDetails.sectionName)#.#lcase(arguments.rc.entityActionDetails.itemName)#_#lcase(arguments.rc.processContext)#");
