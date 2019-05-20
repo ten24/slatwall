@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionQualifier.getPromotionPeriod()#" />
 <cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.qualifierType" type="string" default="#rc.promotionQualifier.getQualifierType()#" />
-<cfparam name="rc.edit" type="boolean" default="true">
+<cfparam name="rc.edit" type="boolean">
 
 <!--- prevent editing promotion qualifier if its promotion period has expired --->
 <cfif rc.edit and rc.promotionperiod.isExpired()>
