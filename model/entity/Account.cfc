@@ -156,7 +156,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 			//CUSTOM PROPERTIES BEGIN
-
+	
  property name="HyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
@@ -164,7 +164,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
  property name="isFlagged" ormtype="boolean";
- property name="dob" ormtype="string";//CUSTOM PROPERTIES END
+ property name="dob" ormtype="string";	//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -584,10 +584,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				if(len(trim(accountAddress['address_stateCode']))){
 					addressName &= accountAddress['address_stateCode'] & ', ';
 				}	
-				
-				if(len(trim(accountAddress['address_stateCode']))){
-					addressName &= accountAddress['address_stateCode'] & ', ';
-				}
 
 				var accountAddressOption = {
 					"name":  addressName & accountAddress['address_countryCode'],

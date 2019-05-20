@@ -5,6 +5,8 @@ class SWOrderTemplateFrequencyCardController{
 	public orderTemplate;
     public frequencyTerm;
     public frequencyTermOptions;
+    
+    public includeModal=true;
 
 	constructor(public $hibachi,
 				public observerService,
@@ -12,6 +14,10 @@ class SWOrderTemplateFrequencyCardController{
 				public rbkeyService
 	){
 		this.observerService.attach(this.refreshFrequencyTerm,'OrderTemplateUpdateFrequencySuccess')
+	
+		if(this.orderTemplate['orderTemplateStatusType_systemCode'] === 'otstCancelled'){
+			this.includeModal = false;
+		}
 	}
 
 	public refreshFrequencyTerm = (data) =>{

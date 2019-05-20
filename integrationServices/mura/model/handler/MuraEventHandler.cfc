@@ -59,7 +59,7 @@
 			autoLoginLogoutFromSlatwall( $=$ );
 			
 			// Setup the correct local in the request object for the current site
-			$.slatwall.setRBLocale( $.siteConfig('javaLocale') );
+			//$.slatwall.setRBLocale( $.siteConfig('javaLocale') );
 			
 			// Setup the correct site in the request object
 			$.slatwall.setSite( $.slatwall.getService("siteService").getSiteByCMSSiteID( $.event('siteID') ) );

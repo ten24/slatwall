@@ -50,8 +50,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="orderTemplate";
+	property name="promotionCode"; 
 
 	// Data Properties
 	property name="promotionCodeID" hb_rbKey="entity.promotionCode.promotionCodeID";
-    
+
+
+	public any function getPromotionCode(){
+		if(structKeyExists(variables, 'promotionCode')){
+			return variables.promotionCode;
+		} else if(structKeyExists(variables, 'promotionCodeID')){
+			return getService('PromotionService').getPromotionCode(variables.promotionCodeID); 
+		} 
+	}
 }

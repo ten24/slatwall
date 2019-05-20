@@ -2,12 +2,16 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderTemplateUpcomingOrdersCardController{
 
+	public orderTemplate:any;
+
 	public frequencyTerm:any;
 
     public scheduledOrderDates:string;
     public startDate:Date; 
     public startDateFormatted:string;
     public title:string; 
+    
+    public includeModal=true;
 
 	constructor(public $timeout,
 				public $hibachi,
@@ -30,6 +34,10 @@ class SWOrderTemplateUpcomingOrdersCardController{
         	this.setStartDate(Date.parse(firstDate));
         	
         }
+        
+        if(this.orderTemplate['orderTemplateStatusType_systemCode'] === 'otstCancelled'){
+			this.includeModal = false;
+		}
 	}
 	
 	public setStartDate(date){
@@ -68,6 +76,7 @@ class SWOrderTemplateUpcomingOrdersCard implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
+		orderTemplate:'<?',
         scheduledOrderDates:'@',
         frequencyTerm:'<?',
         title:"@?"

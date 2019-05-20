@@ -29,7 +29,8 @@
 			</ul>
 		</div>
 		
-		<sw-account-payment-method-modal data-modal-button-text="{{swCustomerAccountPaymentMethodCard.modalButtonText}}">
+		<sw-account-payment-method-modal	ng-if="swCustomerAccountPaymentMethodCard.includeModal"
+											data-modal-button-text="{{swCustomerAccountPaymentMethodCard.modalButtonText}}">
 		</sw-account-payment-method-modal>
 	</content>
 </div>
