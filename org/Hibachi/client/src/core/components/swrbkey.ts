@@ -1,21 +1,21 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-class SWRbKey{
-	public static Factory(){
+import * as angular from "angular";
+
+class SWRbKey {
+	public static Factory() {
 		var directive = (
 			$hibachi,
 			observerService,
 			utilityService,
 			$rootScope,
 			$log,
-            rbkeyService
-		)=> new SWRbKey(
+			rbkeyService
+		) => new SWRbKey(
 			$hibachi,
 			observerService,
 			utilityService,
 			$rootScope,
 			$log,
-            rbkeyService
+			rbkeyService
 		);
 		directive.$inject = [
 			'$hibachi',
@@ -23,7 +23,7 @@ class SWRbKey{
 			'utilityService',
 			'$rootScope',
 			'$log',
-            'rbkeyService'
+			'rbkeyService'
 		];
 		return directive;
 	}
@@ -33,18 +33,18 @@ class SWRbKey{
 		utilityService,
 		$rootScope,
 		$log,
-        rbkeyService
-	){
+		rbkeyService
+	) {
 		return {
 			restrict: 'A',
-			scope:{
-				swRbkey:"="
+			scope: {
+				swRbkey: "="
 			},
-			link: function(scope, element, attrs){
+			link: function (scope, element, attrs) {
 				var rbKeyValue = scope.swRbkey;
 
-				var bindRBKey = ()=>{
-					if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
+				var bindRBKey = () => {
+					if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
 						element.text(rbkeyService.getRBKey(rbKeyValue));
 					}
 				}
@@ -56,6 +56,6 @@ class SWRbKey{
 		};
 	}
 }
-export{
+export {
 	SWRbKey
 }

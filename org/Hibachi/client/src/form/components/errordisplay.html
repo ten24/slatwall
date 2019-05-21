@@ -1,6 +1,5 @@
-
 <span   ng-repeat='(key, value) in swErrorDisplay.form[swErrorDisplay.name].$error'
-		ng-show="swErrorDisplay.form[swErrorDisplay.name].$touched &&  !swErrorDisplay.form.$submitted"
+		ng-show="swErrorDisplay.form[swErrorDisplay.name].$touched || swErrorDisplay.form.$submitted"
 >
 	<span ng-show="key === 'swvalidationrequired'" class="error help-block" sw-Rbkey="'validation.define.required'"></span><br ng-show="key === 'swvalidationrequired'">
 	<span ng-show="key === 'swvalidationemail'" class="error help-block" sw-Rbkey="'validation.define.emailrequired'"></span><br ng-show="key === 'swvalidationemail'">
@@ -11,14 +10,17 @@
 	<span ng-show="key === 'swvalidationgte'" class="error help-block" sw-Rbkey="'validation.define.gte'"></span><br ng-show="key === 'swvalidationgte'">
 	<span ng-show="key === 'swvalidationlte'" class="error help-block" sw-Rbkey="'validation.define.lte'"></span><br ng-show="key === 'swvalidationlte'">
 	<span ng-show="key === 'swvalidationeq'" class="error help-block" sw-Rbkey="'validation.define.neq'"></span><br ng-show="key === 'swvalidationeq'">
-	<span ng-show="key === 'swvalidationminvalue'" class="error help-block">The value entered is incorrect</span><br ng-show="key === 'swvalidationminvalue'">
-	<span ng-show="key === 'swvalidatiomaxvalue'" class="error help-block">The value entered is incorrect</span><br ng-show="key === 'swvalidatiomaxvalue'">
-	<span ng-show="key === 'swvalidationminlength'" class="error help-block">The value entered is incorrect</span><br ng-show="key === 'swvalidationminlength'">
-	<span ng-show="key === 'swvalidationmaxlength'" class="error help-block">The value entered is incorrect</span><br ng-show="key === 'swvalidationmaxlength'">
-
+	<span ng-show="key === 'swvalidationminvalue'" class="error help-block">The value entered is incorrect.</span><br ng-show="key === 'swvalidationminvalue'">
+	<span ng-show="key === 'swvalidatiomaxvalue'" class="error help-block">The value entered is incorrect.</span><br ng-show="key === 'swvalidatiomaxvalue'">
+	<span ng-show="key === 'swvalidationminlength'" class="error help-block">The value entered is not long enough.</span><br ng-show="key === 'swvalidationminlength'">
+	<span ng-show="key === 'swvalidationmaxlength'" class="error help-block">The value entered is incorrect.</span><br ng-show="key === 'swvalidationmaxlength'">
+	<span ng-show="key === 'swvalidationeqproperty'" class="error help-block">The values entered do not match.</span><br ng-show="key === 'swvalidationeqproperty'">
 </span>
 
-<!-- handle errors on the property -->
+<!-- handle errors on the property
 
-<div ng-if="!swErrorDisplay.errorClass" class="error" error-for="{{swErrorDisplay.name}}"></div>
-<div ng-if="swErrorDisplay.errorClass"  class="{{swErrorDisplay.errorClass}}" error-for="{{swErrorDisplay.name}}"></div>
+The span below serves as an anchor. SwForm looks for it and inserts a div with the error message as its child.
+
+-->
+
+<span error-for="{{swErrorDisplay.name}}"></span>

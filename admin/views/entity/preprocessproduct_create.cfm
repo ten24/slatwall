@@ -78,7 +78,7 @@ Notes:
 
 					<!--- MERCHANDISE --->
 					<cfif rc.processObject.getBaseProductType() eq "merchandise">
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
+						<swa:SlatwallBrandTypeahead brandPropertyName="product.brand.brandID" edit="true" brandLabelText="#$.slatwall.rbkey('entity.brand_plural')#"></swa:SlatwallBrandTypeahead>
 					</cfif>
 
 					<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
@@ -232,8 +232,11 @@ Notes:
 
 			<cfelseif rc.baseProductType eq "subscription">
 
-			<hb:HibachiPropertyList divClass="col-md-6">
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
+			<hb:HibachiPropertyList divClass="col-md-12">
+					<div class="col-md-6">
+						<h1 class="actionbar-title">Renewal Settings</h1>
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
+					</div> 
 			</hb:HibachiPropertyList>
 
 			<hb:HibachiPropertyList divClass="col-md-12">
@@ -278,5 +281,4 @@ Notes:
 		</hb:HibachiEntityProcessForm>
 	</span>
 </cfoutput>
-
 

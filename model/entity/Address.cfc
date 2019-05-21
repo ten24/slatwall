@@ -75,7 +75,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
- 
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
@@ -179,6 +179,20 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 			rbKey('define.salutationMs'),
 			rbKey('define.salutationMiss')
 		];
+	}
+	
+	public any function getStateCodeFromAddressZoneOptions(){
+		var collectionList = getService('AddressService').getAddressZoneCollectionList();
+		collectionList.setDisplayProperties('stateCode|value,stateName|name');
+		if(!isNull(getCountryCode())) {
+			collectionList.addFilter("addressZoneCode", getCountryCode());	
+		} else {
+			collectionList.addFilter("addressZoneCode", 'US');
+		}
+		var options = [{'value' ='', 'name'='-- Select a State'}];
+		arrayAppend(options, collectionList.getRecords(), true );
+
+		return options;
 	}
 	
 	public array function getStateCodeOptions() {

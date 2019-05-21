@@ -52,6 +52,7 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	property name="attributeOptionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeOptionValue" ormtype="string";
 	property name="attributeOptionLabel" ormtype="string";
+	property name="urlTitle" ormtype="string";
 	property name="sortOrder" ormtype="integer" sortContext="attribute";
 
 	// Calculated Properties
@@ -86,6 +87,7 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 
 	// ============ START: Non-Persistent Property Methods =================
 
+	
 	public string function getAttributeOptionLabel() {
 		if(structkeyExists(variables,"attributeOptionLabel")) {
 			return variables["attributeOptionLabel"];

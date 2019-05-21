@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * Returns true if the uservalue is empty and false otherwise
  */

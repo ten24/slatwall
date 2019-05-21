@@ -43,6 +43,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	property name="actionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="updateData" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	property name="processMethod" ormtype="string";
+	property name="webhookURL" ormtype="string";
 	
 	// Calculated Properties
 
@@ -77,7 +78,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 			Print || Email || Update || Process || Import || Export || Delete
 		*/
 		var actionTypeOptions = [];
-		var valuesList = 'print,email,delete,process';
+		var valuesList = 'print,email,delete,process,webhook';
 		var valuesArray = ListToArray(valuesList);
 		
 		for(var value in valuesArray){
@@ -147,6 +148,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 				break;
 			case 'print':
 			case 'email':
+			case 'webhook':
 				var crudType = 'read';
 				break;
 		}

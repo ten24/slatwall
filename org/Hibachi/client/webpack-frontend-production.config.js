@@ -1,16 +1,60 @@
-//webpack --config webpack-production.config.js -p
+//START NEW PROD
+var devConfig = require('./webpack-frontend-develop.config');
+	devConfig.entry.app = ['./frontend/bootstrap'];
+    devConfig.output.filename = 'slatwall.js';
+    
+var CompressionPlugin = require("compression-webpack-plugin");
+var ngAnnotatePlugin = require("ng-annotate-webpack-plugin");
+var webpack = require('webpack');
+var path = require('path');
+var customPath = __dirname;
+var PATHS = {
+    app: path.join(customPath, '/src'),
+    lib: path.join(customPath, '/lib')
+};
 
-var WebpackStrip = require('strip-loader'),
-    devConfig = require('./webpack-frontend-develop.config'),
-    ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
-
-
-devConfig
-    .addLoader({exlude: /node_modules/, loader: WebpackStrip.loader('console.log')})
-    .addLoader({ exlude: /node_modules/,  loader: WebpackStrip.loader('$log.debug') })
-    .addPlugin(new ngAnnotatePlugin({ add: true }))
-;
+delete devConfig.entry.vendor; //remove the vendor info from this version.
+devConfig.output.path = PATHS.app;
+devConfig.context = PATHS.app;
 devConfig.watch = false;
-
-module.exports = devConfig; 
+devConfig.devtool= 'source-map';
+devConfig.module.rules=[
+    {
+        test: /\.ts?$/,
+        loader: 'ng-annotate-loader?ngAnnotate=ng-annotate-patched!ts-loader'
+    }
+];
+//don't need the vendor bundle generated here because we include the vendor bundle already.
+devConfig.plugins =  [
+    new webpack.DefinePlugin({
+          'process.env': {
+            'NODE_ENV': JSON.stringify('production')
+          }
+    }),
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /us/),
+    new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+	    mangle: false,
+	    minimize: true,
+	    compress: {
+	         // remove warnings
+	            warnings: false,
+	
+	         // Drop console statements
+	            drop_console: true
+	       },
+	    output: {
+        	comments: false
+    	}
+	})
+];   
+module.exports = devConfig;
 

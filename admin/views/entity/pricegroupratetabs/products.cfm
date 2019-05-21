@@ -52,4 +52,37 @@ Notes:
 <cfparam name="rc.priceGroupRate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<hb:HibachiPropertyDisplay object="#rc.pricegrouprate#" property="products" edit="#rc.edit#" displaytype="plain" />
+<cfset collectionAllProducts = $.slatwall.getService('ProductService').getProductCollectionList()  >
+<cfset collectionAllProducts.setDisplayProperties("productName",{
+    isVisible=true
+}) >
+<cfset collectionAllProducts.addDisplayProperty(displayProperty='productID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+})/>
+
+<cfset collectionIncludedProducts = $.slatwall.getService('ProductService').getProductCollectionList() >
+<cfset collectionIncludedProducts.setDisplayProperties("productName",{
+    isVisible=true,
+    isSearchable=true,
+    isDeletable=false
+}) >
+<cfset collectionIncludedProducts.addFilter("priceGroupRates.priceGroupRateID","#rc.priceGroupRate.getpriceGroupRateID()#") >
+<cfset collectionIncludedProducts.addDisplayProperty(displayProperty='productID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+})/>
+
+<cfoutput>
+    <cfif rc.edit>
+    	<div class="col-md-12">
+    		<hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllProducts#" value="#collectionIncludedProducts.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Products" fieldName="products" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    <cfelse>
+        <div class="col-md-12">
+            <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionIncludedProducts#" value="#collectionIncludedProducts.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Products" fieldName="products" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    </cfif>
+</cfoutput>

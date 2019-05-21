@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * <------------------------------------------------------------------------------------------------------------------------------------>
  *   This directive can be used to prompt the user with a confirmation dialog.
@@ -23,7 +21,8 @@
  * 							callback="sure()">
  *   </a>
  *
- *   Note: Because the template is dynamic, the following keywords can not be used anywhere in the text for this modal.
+ *   Note: Because the template is dynamic, the following keywords can not be used anywhere in the text for this modal as we interpolate 
+ *   those.
  *
  *   [yes] [no] [confirm] [message] [callback]
  *
@@ -43,7 +42,9 @@ class SWConfirm{
         return directive;
     }
     //@ngInject
-    constructor( $log,  $modal){
+    constructor($log, $modal){
+        
+
         var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText){
 
         /* Keys */

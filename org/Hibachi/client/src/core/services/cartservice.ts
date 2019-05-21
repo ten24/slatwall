@@ -1,6 +1,4 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-import {Cart} from "../model/entity/cart.ts";
+import {Cart} from "../model/entity/cart";
 import {BaseEntityService} from "./baseentityservice";
 class CartService extends BaseEntityService{
     //@ngInject
@@ -11,9 +9,7 @@ class CartService extends BaseEntityService{
         public utilityService
     ){
         super($injector,$hibachi,utilityService,'Order','Cart');
-
     }
-
 }
 export {
     CartService

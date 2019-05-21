@@ -54,6 +54,12 @@ Notes:
 <cfparam name="rc.account" type="any" default="#rc.accountAddress.getAccount()#">
 <cfparam name="rc.edit" type="boolean">
 
+<cfif rc.edit>
+	<cfset rc.pageTitle = 'Edit Account Address' />
+<cfelse>
+	<cfset rc.pageTitle = 'Detail Account Address' />
+</cfif>
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.accountAddress#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.accountAddress#" edit="#rc.edit#"

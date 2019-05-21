@@ -97,7 +97,7 @@ Notes:
 						<hb:hibachipropertylist divclass="col-md-6">
 							<!--- New Payment Method --->
 							<hb:hibachidisplaytoggle selector="select[name='accountPaymentMethodID']" 
-							                         loadvisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
+							                         loadvisable="#len(rc.processObject.getAccountPaymentMethodID()) < 1#">
 							
 								<!--- New Payment Type --->
 								<hb:hibachipropertydisplay object="#rc.processObject.getNewAccountPayment()#" 
@@ -130,7 +130,7 @@ Notes:
 								
 								<cfset loadPaymentMethodType = arrayLen(rc.processObject.getNewAccountPayment().getPaymentMethodOptions()) 
 								                               && structKeyExists(rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1], 
-								                                                  'paymentmethodtype') && rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1]['paymentmethodtype']/>
+								                                                  'paymentmethodtype') && !isNull(rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1]['paymentmethodtype'])/>
 								<cfif !isNull(rc.processObject.getNewAccountPayment().getPaymentMethod())>
 									<cfset loadPaymentMethodType = rc.processObject.getNewAccountPayment().getPaymentMethod().getPaymentMethodType()/>
 								<cfelse>

@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * SwValidationEQ: Validates true if the user value == the constraint value.
  * @usage <input type='text' swvalidationgte='5' /> will validate false if the user enters

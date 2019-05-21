@@ -56,7 +56,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	property name="minimumQuantity" ormtype="integer" hb_formFieldType="number" default="1";
 	property name="maximumQuantity" ormtype="integer" hb_formFieldType="number" default="1";
 	property name="amountType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
-	property name="amount" hb_formFieldType="number" ormtype="big_decimal" default="0";
+	property name="amount" hb_formFieldType="number" ormtype="big_decimal" default="0" hb_formatType="currency";
 	property name="skuCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 
 	// Calculated Properties

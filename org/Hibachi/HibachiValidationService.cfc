@@ -209,15 +209,21 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public any function validate(required any object, string context="", boolean setErrors=true) {
+		
+		
 		// Setup an error bean
 		if(setErrors) {
 			var errorBean = arguments.object.getHibachiErrors();
 		} else {
 			var errorBean = getTransient("hibachiErrors");
 		}
-
+		
 		// If the context was 'false' then we don't do any validation
-		if(!isBoolean(arguments.context) || arguments.context) {
+		if(
+			(!isBoolean(arguments.context) || arguments.context)
+			//don't validate delete context if the object is new. Just skip this logic
+			&& !(arguments.context == 'delete' && arguments.object.isNew())
+		) {
 
 			// Get the valdiations for this context
 			var contextValidations = getValidationsByContext(object=arguments.object, context=arguments.context);
@@ -288,6 +294,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			errorMessage = getHibachiUtilityService().replaceStringTemplate(errorMessage, replaceTemplateStruct);
+			errorMessage = getHibachiUtilityService().replaceStringTemplate(errorMessage, arguments.object,false,true);
+			
 			arguments.errorBean.addError(arguments.propertyIdentifier, errorMessage);
 		}
 	}
@@ -299,7 +307,22 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(arguments.constraintValue == false) {
 			return true;
 		}
-		if(!isNull(propertyValue) && (isObject(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue)) || (isStruct(propertyValue) && structCount(propertyValue)) || (isSimpleValue(propertyValue) && len(trim(propertyValue))))) {
+		if(
+			!isNull(propertyValue) 
+			&& (
+				isObject(propertyValue) 
+				|| (
+					isArray(propertyValue) 
+					&& arrayLen(propertyValue)
+				) || (
+					isStruct(propertyValue) 
+					&& structCount(propertyValue)
+				) || (
+					isSimpleValue(propertyValue) 
+					&& len(trim(propertyValue))
+				)
+			)
+		) {
 			return true;
 		}
 		return false;
@@ -310,10 +333,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue) && arguments.constraintValue) {
-			return true;
+		if(arguments.constraintValue == true){
+			return isNull(propertyValue);			
+		}else{
+			return !isNull(propertyValue);			
 		}
-		return false;
 	}
 
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {
@@ -704,7 +728,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
 		}
-		if((isNull(propertyValue) && isNull(comparePropertyValue)) || (!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue == comparePropertyValue)) {
+		if((isNull(propertyValue) && isNull(comparePropertyValue)) || (!isNull(propertyValue) && !isNull(comparePropertyValue) && ( (isnumeric(propertyValue) && propertyValue == comparePropertyValue) || Compare(propertyValue, comparePropertyValue) == 0 )  )) {
 			return true;
 		}
 		return false;
@@ -752,7 +776,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue)) {
+		if(isNull(propertyValue) || !len(propertyValue)) {
 			return true;
 		}
 		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
@@ -763,7 +787,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
+		if(isNull(propertyValue) || !len(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
 			return true;
 		}
 		return false;

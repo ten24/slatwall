@@ -53,6 +53,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="baseProductType";
+	property name="brandID";
 	property name="bundleContentAccessFlag" hb_formFieldType="yesno";
 	property name="contents";
 	property name="options";
@@ -72,6 +73,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="giftCardExpirationTermID" hb_rbkey="entity.sku.giftCardExpirationTerm" hb_formFieldType="select";
 	property name="giftCardExpirationTermIDOptions";
 
+	property name="brand" cfc="Brand" fieldtype="many-to-one";
+	
+	public any function getBrand(){
+		if(!structKeyExists(variables,'brand')){
+			if(!isNull(getBrandID())){
+				variables.brand = getService('productService').getBrand(getBrandID());	
+			}else{
+				return;
+			}
+		}
+		return variables.brand;
+	}
+	
+	
 	public any function setupDefaults() {
 		variables.generateSkusFlag = true;
 	}

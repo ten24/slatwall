@@ -52,7 +52,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 
-		variables.entityService = request.slatwallScope.getService("hibachiCollectionService");
+		variables.entityService = variables.mockService.getHibachiCollectionServiceMock();
 		variables.entity = variables.entityService.newCollection();
 		variables.entity.setCollectionObject('Account');
 	}
@@ -60,12 +60,138 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public boolean function returnFalse(){
 		return false;
 	}
+	
+	/**
+	* @test
+	*/
+	public void function convertAliasToPropertyIdentifier_collectionConfigFormat(){
+		var alias = "_product_defaultSku.skuID";
+		var myCollection = variables.entityService.newCollection();
+		myCollection.setCollectionObject('product');
+		var propertyIdentifier = myCollection.convertAliasToPropertyIdentifier(alias);
+		assertEquals('defaultSku.skuID',propertyIdentifier);
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function convertAliasToPropertyIdentifier_OutputFormat(){
+		var alias = "sku_createdDateTime";
+		var myCollection=variables.entityService.newCollection();
+		myCollection.setCollectionObject('OrderItem');
+		var propertyIdentifier = myCollection.convertAliasToPropertyIdentifier(alias);
+		assertEquals('sku.createdDateTime',propertyIdentifier);
+	}
+	
+	/**
+	* @test
+	*/
+	public void function convertRelatedFilterTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var accountCollectionList = request.slatwallScope.getService('HibachiService').getAccountCollectionList();
+		
+		accountCollectionList.addFilter('orders.orderID','test','IN');
+		accountCollectionList.addFilter('accountID','test','IN');
+		
+		//property Identifier that orderitem is trying to get
+		var propertyIdentifier = 'order.account.accountName';
+		
+		var filter = accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		var filterData = orderItemCollectionList.convertRelatedFilter(propertyIdentifier,filter);
+		assertEquals(filterData.propertyIdentifier,'_orderitem_order_account_orders.orderID');
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getManyToOnePropertiesToJoinTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		makePublic(collectionEntity,'getManyToOnePropertiesToJoin');
+		
+		
+		var manyToONeProperties = collectionEntity.getManyToOnePropertiesToJoin();
+		
+		var orderOriginFound = false;
+		for(var item in manyToONeProperties){
+			if(item.cfc == 'OrderOrigin'){
+				orderOriginFound = true;
+			}
+		}
+		assert(orderOriginFound);
+	}
+	/**
+	* @test
+	*/
+	public void function getManyToOnePropertiesToJoinTest_bymetadata(){
+		var collectionEntity = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		makePublic(collectionEntity,'getManyToOnePropertiesToJoin');
+		
+		var hibachiService = createObject('Slatwall.model.service.HibachiService');
+		hibachiService.getPropertiesByEntityName=function(){
+			return [
+				{
+					cfc="Account",
+					fieldtype="many-to-one",
+					fkcolumn="assignedAccountID",
+					name="assignedAccount",
+					hb_permissionRecordRestrictionJoin="true"
+				}
+			];
+			
+		};
+		
+		collectionEntity.setHibachiService(hibachiService);
+		
+		var manyToONeProperties = collectionEntity.getManyToOnePropertiesToJoin();
+		
+		
+		assertEquals(manyToOneProperties[1].name,hibachiService.getPropertiesByEntityName()[1].name);
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function convertRelatedFilterGroupTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.orderID';
+		var filterGroup = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		
+		var convertedFilterGroup = orderItemCollectionList.convertRelatedFilterGroup(propertyIdentifier,filterGroup);
+		assert(arrayLen(convertedFilterGroup));
+		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'_orderitem_order.orderID');
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function applyRelatedFilterGroupsTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.referencedOrder.orderID';
+		var filterGroups = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		orderItemCollectionList.applyRelatedFilterGroups(propertyIdentifier,filterGroups);
+		orderItemCollectionList.getRecords();
+	}
+	
 
 	/**
 	* @test
 	*/
 	public void function sessionBasedFiltersTest(){
-		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		var collectionEntity = variables.entityService.getAccountCollectionList();
 		collectionEntity.setDisplayProperties('firstName');
 		collectionEntity.addFilter('firstName', '${account.firstName}');
 
@@ -153,7 +279,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"orderBy":[
 						{
-							"propertyIdentifier":"Account.firstName",
+							"propertyIdentifier":"firstName",
 							"direction":"DESC"
 						}
 					],
@@ -196,7 +322,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-
 		var pageRecords = collectionEntity.getPageRecords();
 
 		assert(isArray(pageRecords));
@@ -228,6 +353,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
+	}
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageNumericTest_queryString(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?p:show=2thisisnotanumber&p:current=3neitheristhis';
+
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
 	/**
 	* @test
@@ -277,6 +415,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryString = '?r:price=20^100';
 
 		collectionEntity.applyData(queryString);
+		
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
 		assertEquals(filter.comparisonOperator,'BETWEEN');
@@ -366,7 +505,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productActiveData = {
 			productID = '',
 			productName = 'ProductUnitTest',
-			productDescription = uniqueNumberForDescription
+			productDescription = uniqueNumberForDescription,
+			activeFlag=true
 		};
 		//By default Active flag is true.
 		var product = createPersistedTestEntity('product', productActiveData);
@@ -378,13 +518,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			activeFlag = 'false'
 		};
 		var product = createPersistedTestEntity('product', productNotActiveData);
-
+		
 		var myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productName','ProductUnitTest');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
 		var pageRecords = myProductCollection.getPageRecords();
-
+		
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
 
 		var myProductActiveCollection = variables.entityService.getProductCollectionList();
@@ -393,7 +533,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductActiveCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myProductActiveCollection.addFilter('activeFlag','YES');
 		var pageRecords = myProductActiveCollection.getPageRecords();
-
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
@@ -436,7 +575,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup");
 		var pageRecords = myProductCollection.getPageRecords();
-
+		debug(myProductCollection.getHQL());
+		debug(myProductCollection.getCollectionConfigStruct());
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
 
 		myProductCollection = variables.entityService.getProductCollectionList();
@@ -454,7 +594,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
 		var pageRecords = myProductCollection.getPageRecords();
-
+		
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
 
 	}
@@ -473,18 +613,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					skuID = '',
 					skuCode= createUUID(),
-					activeFlag = 'false'
+					activeFlag = false
 				},
 				{
 					skuID = '',
 					skuCode= createUUID(),
-					activeFlag = 'false'
+					activeFlag = false
 				}
 			]
 		};
 		var productWithoutActiveSkus = createPersistedTestEntity('product', productWithoutActiveSkusData);
 
-
+		//skus will default as active
 		var productWithActiveSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
@@ -492,41 +632,42 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			skus = [
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'aa'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ab'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ac'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ad'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID(),
+					skuCode= 'ae'&createUUID(),
 					activeFlag = 'false'
 				}
 			]
 		};
 		//By default Active flag is true.
 		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
-
-
-
+		
 		var myProductCollection = variables.entityService.getProductCollectionList();
-		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.setDisplayProperties('productName,productDescription,activeFlag');
 		myProductCollection.addFilter('productName','ProductUnitTest');
-		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myProductCollection.addFilter('productDescription',trim(uniqueNumberForDescription));
 		myProductCollection.addFilter('skus.activeFlag','YES');
+	
+		assertEquals(myProductCollection.getRecordsCount(),1);
+		
 		var pageRecords = myProductCollection.getPageRecords();
 
-		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 	}
 
 	/**
@@ -623,7 +764,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = '',
 			productName = 'ProductUnitTest',
 			productDescription = uniqueNumberForDescription,
-			activeFlag='false',
+			activeFlag=false,
 			skus = [
 				{
 					skuID = '',
@@ -640,6 +781,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//Active product with 4 active skuls
 		var productWithActiveSkusData = {
 			productID = '',
+			activeFlag=true,
 			productName = 'ProductUnitTest',
 			productDescription = uniqueNumberForDescription,
 			skus = [
@@ -668,7 +810,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 
 		var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
-
+		
 		//Get Active Skulls from Active Products
 
 		var mySkuCollection = variables.entityService.getSkuCollectionList();
@@ -677,7 +819,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		mySkuCollection.addFilter('product.activeFlag','YES');
 		mySkuCollection.addFilter('product.productDescription',uniqueNumberForDescription);
 		var pageRecords = mySkuCollection.getPageRecords();
-
 		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
 	}
@@ -756,7 +897,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-
 	public void function getPrimaryIDsTest(){
 
 		var uniqueNumberForDescription = createUUID();
@@ -803,6 +943,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getPrimaryIDs();
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+	}
+	
+	/**
+	* @test
+	*/
+
+	public void function getPrimaryIDsTest_workflowCollection(){
+		//default data collection
+		var myCollection = variables.entityService.getCollection('2c92808362e398b10162e4c489b5000x');
+
+		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
+
+		var pageRecords = myCollection.getPrimaryIDs(2);
+		
+		if(arraylen(pageRecords)){
+			assert(!structKeyExists(pageRecords[1],'failedCollection'));
+		}
+
 	}
 
 
@@ -1558,67 +1716,69 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function addFilterSUMAggregateTest(){
 
-	var uniqueNumberForDescription = createUUID();
-
-
-	var productWithSkusData1 = {
-		productID = '',
-		productName = 'ProductUnitTest1',
-		productDescription = uniqueNumberForDescription,
-		skus = [
-		{
-			skuID = '',
-			price = '10',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '20',
-			skuCode= createUUID()
-		}
-			]
-	};
-	createPersistedTestEntity('product', productWithSkusData1);
-
-
-	var productWithSkusData2 = {
-		productID = '',
-		productName = 'ProductUnitTest2',
-		productDescription = uniqueNumberForDescription,
-		skus = [
-		{
-			skuID = '',
-			price = '10',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '20',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '30',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '40',
-			skuCode= createUUID()
-		}
-			]
-	};
-
-	createPersistedTestEntity('product', productWithSkusData2);
-
-	var myProductCollection = variables.entityService.getProductCollectionList();
-	myProductCollection.setDisplayProperties('productName');
-	myProductCollection.addFilter('skus.price','30', '=', 'AND', 'SUM');
-	myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
-	var pageRecords = myProductCollection.getPageRecords();
-
-	assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
-}
+		var uniqueNumberForDescription = createUUID();
+	
+	
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			}
+				]
+		};
+		var product1 = createPersistedTestEntity('product', productWithSkusData1);
+	
+	
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '30',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '40',
+				skuCode= createUUID()
+			}
+				]
+		};
+	
+		var product2 = createPersistedTestEntity('product', productWithSkusData2);
+	
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','30', '=', 'AND', 'SUM');
+		myProductCollection.addFilter('productID','#product1.getProductID()#,#product2.getProductID()#','IN');
+		
+		var recordCount = myProductCollection.getRecordsCount();
+		assert(recordCount > 0);
+		var pageRecords = myProductCollection.getPageRecords();
+		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
+	}
 
 	/**
 	* @test
@@ -1932,7 +2092,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(column);
-		debug(aggregateHQL);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
 	}
@@ -2202,6 +2361,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
             collectionid = '',
             collectionCode = 'AccountOrders',
             baseEntityName = 'SlatwallAccount',
+            collectionObject = 'Account',
             collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -2354,11 +2514,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		createPersistedTestEntity('product', productData2);
 
 		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setReportFlag(1);
 		myCollection.setDisplayProperties('productName');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productName');
 		myCollection.setOrderBy('productName|asc');
-
+		
 		var recordsCount = myCollection.getRecordsCount();
 
 		assertTrue(recordsCount == 1,  "Wrong amount of products returned! Expecting 1 record but returned #recordsCount#");
@@ -2390,7 +2551,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myCollection.addGroupBy('productID,productName');
 		myCollection.setOrderBy('productName|asc');
-
 		var recordsCount = myCollection.getRecordsCount();
 
 		assertTrue(recordsCount == 2,  "Wrong amount of products returned! Expecting 2 record but returned #recordsCount#");
@@ -2592,7 +2752,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"_account_orders"
+							"propertyIdentifier":"_account_orders",
+							"aggregate":{
+								"aggregateFunction":"COUNT",
+								"aggregateAlias":"ordersCount"
+							}
 						},
 						{
 							"propertyIdentifier":"_account.firstName"
@@ -3108,6 +3272,280 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTest(){
+
+        var uniqueSkuName = createUUID();
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, startDateTime));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533303982000-1533563182000",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+
+        assert(arraylen(collectionEntity.getRecords()) == 3);
+    }
+
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTimeTest(){
+
+
+
+        var uniqueSkuName = createUUID();
+
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, dateAdd('h', i, startDateTime)));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533254400000-1533513600000",
+				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+        assert(arrayLen(collectionEntity.getRecords()) == 2);
+    }
 
 	/**
 	* @test
@@ -4458,18 +4896,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-		var data = {};
-
-		data['p:show'] = -2;
-		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
-	}
-
-	/**
-	* @test
-	*/
 	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
@@ -4480,6 +4906,55 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
+
+	
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assertfalse(filter.value == 'Mindfire');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assertfalse(filter.propertyIdentifier == '_account.lastName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+
+		data['p:show'] = -2;
+		collectionEntity.applyData(data);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
+	}
+
 
 	/**
 	* @test
@@ -4509,20 +4984,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
 
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assert(filter.comparisonOperator == '=');
-		assertfalse(filter.value == 'Mindfire');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
+	
 
 	/**
 	* @test
@@ -4539,20 +5001,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
 	}
 
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assertfalse(filter.propertyIdentifier == '_account.lastName');
-		assert(filter.comparisonOperator == '=');
-		assert(filter.value == 'Ryan');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
+	
 
 	/**
 	* @test
@@ -4605,6 +5054,226 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(foundAccountCollection == true);
 
 	};
+
+	/**
+	* @test
+	*/
+	public void function singleKeywordSearchTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'ProductABC',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'ProductBCD',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'ProductCDE',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'ProductDEF',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productID');
+		myCollection.addDisplayProperty('productName', 'Product Name', {'isSearchable' = true});
+		myCollection.addDisplayProperty('productDescription', 'Product Description', {'isSearchable' = true});
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setKeywords('ProductABC');
+
+		var pageRecords = myCollection.getRecords();
+		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function singleKeywordSearchAndSingleColumnTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'ProductABC',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'ProductBCD',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'ProductCDE',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'ProductDEF',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productID');
+		myCollection.addDisplayProperty('productDescription', 'Product Description', {'isSearchable' = true});
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setKeywords('#uniqueNumberForDescription#');
+
+
+
+		var pageRecords = myCollection.getRecords();
+		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function KeywordsSearchTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'ProductABC',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'ProductBCD',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'ProductCDE',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'ProductDEF',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productID');
+		myCollection.addDisplayProperty('productName', 'Product Name', {'isSearchable' = true});
+		myCollection.addDisplayProperty('productDescription', 'Product Description', {'isSearchable' = true});
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setKeywords('ProductABC #uniqueNumberForDescription#');
+
+		var pageRecords = myCollection.getRecords();
+		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function propertyIdentifierBadCasingCollectionTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithoutActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				skuCode= createUUID(),
+				activeFlag = false
+			},
+			{
+				skuID = '',
+				skuCode= createUUID(),
+				activeFlag = false
+			}
+				]
+		};
+		var productWithoutActiveSkus = createPersistedTestEntity('product', productWithoutActiveSkusData);
+
+		//skus will default as active
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				skuCode= 'aa'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ab'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ac'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ad'&createUUID()
+			},
+			{
+				skuID = '',
+				skuCode= 'ae'&createUUID(),
+				activeFlag = 'false'
+			}
+				]
+		};
+		//By default Active flag is true.
+		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
+
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productname,productdescription,AcTiVeFlAg');
+		myProductCollection.addFilter('productname','ProductUnitTest');
+		myProductCollection.addFilter('productdescription',trim(uniqueNumberForDescription));
+		myProductCollection.addFilter('skus.activeflag','YES');
+
+		assertEquals(myProductCollection.getRecordsCount(),1);
+
+		var pageRecords = myProductCollection.getPageRecords();
+
+
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
+
+	}
 
 	/*public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user

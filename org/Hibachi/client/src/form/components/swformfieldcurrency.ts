@@ -1,11 +1,9 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 class SWFormFieldCurrencyController {
-    public propertyDisplay:any;
-	constructor () {
+    public propertyDisplay: any;
+    constructor() {
         if (this.propertyDisplay.isDirty == undefined) this.propertyDisplay.isDirty = false;
-		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	}
+        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+    }
 }
 
 class SWFormFieldCurrency implements ng.IDirective {
@@ -19,22 +17,22 @@ class SWFormFieldCurrency implements ng.IDirective {
     public controller = SWFormFieldCurrencyController;
     public controllerAs = "swFormFieldCurrency";
 
-    public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) => {}
+    public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IController | ng.IFormController) => { }
 
-    public static Factory(){
+    public static Factory() {
         var directive = (
-            coreFormPartialsPath,hibachiPathBuilder
-        )=> new SWFormFieldCurrency(
-            coreFormPartialsPath,hibachiPathBuilder
+            coreFormPartialsPath, hibachiPathBuilder
+        ) => new SWFormFieldCurrency(
+            coreFormPartialsPath, hibachiPathBuilder
         );
-        directive.$inject = ['coreFormPartialsPath','hibachiPathBuilder'];
+        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
         return directive;
     }
-    constructor(coreFormPartialsPath,hibachiPathBuilder) {
+    constructor(coreFormPartialsPath, hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "number.html";
     }
 }
-export{
+export {
     SWFormFieldCurrency,
     SWFormFieldCurrencyController
 }

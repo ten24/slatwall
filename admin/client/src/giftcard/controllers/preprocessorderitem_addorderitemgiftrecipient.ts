@@ -1,6 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-import {GiftRecipient} from "../models/giftrecipient";
+import { GiftRecipient } from "../models/giftrecipient";
+import * as angular from "angular";
 
 interface IOrderItemGiftRecipientScope extends ng.IScope {
         orderItemGiftRecipients: GiftRecipient[];
@@ -10,18 +9,18 @@ interface IOrderItemGiftRecipientScope extends ng.IScope {
         $log: any;
 }
 
-class OrderItemGiftRecipientControl{
+class OrderItemGiftRecipientControl {
 
 
-        public static $inject=["$scope", "$hibachi"];
-        public adding:boolean;
+        public static $inject = ["$scope", "$hibachi"];
+        public adding: boolean;
         public orderItemGiftRecipients;
-        public quantity:number;
-        public searchText:string;
-        public currentGiftRecipient:GiftRecipient;
+        public quantity: number;
+        public searchText: string;
+        public currentGiftRecipient: GiftRecipient;
         public quantityForm;
         //@ngInject
-        constructor(private $scope: IOrderItemGiftRecipientScope,  private $hibachi){
+        constructor(private $scope: IOrderItemGiftRecipientScope, private $hibachi) {
                 this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                 $scope.collection = {};
                 this.adding = false;
@@ -31,38 +30,38 @@ class OrderItemGiftRecipientControl{
 
         }
 
-        getUnassignedCountArray = ():number[] =>{
+        getUnassignedCountArray = (): number[] => {
                 var unassignedCountArray = new Array();
 
-                for(var i = 1; i <= this.getUnassignedCount(); i++ ){
+                for (var i = 1; i <= this.getUnassignedCount(); i++) {
                         unassignedCountArray.push(i);
                 }
 
                 return unassignedCountArray;
         }
 
-        getAssignedCount = ():number =>{
+        getAssignedCount = (): number => {
 
-        var assignedCount = 0;
+                var assignedCount = 0;
 
-        angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
-                assignedCount += orderItemGiftRecipient.quantity;
-        });
+                angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
+                        assignedCount += orderItemGiftRecipient.quantity;
+                });
 
-        return assignedCount;
+                return assignedCount;
 
         }
 
-        getUnassignedCount = ():number =>{
+        getUnassignedCount = (): number => {
                 var unassignedCount = this.quantity;
 
-                angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
+                angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
                         unassignedCount -= orderItemGiftRecipient.quantity;
                 });
 
                 return unassignedCount;
         }
 }
-export{
-	OrderItemGiftRecipientControl
+export {
+        OrderItemGiftRecipientControl
 }

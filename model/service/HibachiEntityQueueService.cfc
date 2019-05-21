@@ -81,7 +81,7 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 		}
 		var processData = {'1'=entity};
 
-		if(entity.hasProcessObject(processContext)){
+		if(!isNull(processContext) && entity.hasProcessObject(processContext)){
 			processData['2'] = entity.getProcessObject(processContext);
 		}
 

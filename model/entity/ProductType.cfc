@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Product Type" entityname="SlatwallProductType" table="SwProductType" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_parentPropertyName="parentProductType" {
+component displayname="Product Type" entityname="SlatwallProductType" table="SwProductType" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_parentPropertyName="parentProductType"  hb_childPropertyName="childProductTypes"{
 
 	// Persistent Properties
 	property name="productTypeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -95,6 +95,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="parentProductTypeOptions" type="array" persistent="false";
 
 
+	
 	public array function getInheritedAttributeSetAssignments(){
 		// Todo get by all the parent productTypeIDs
 		var attributeSetAssignments = getService("AttributeService").getAttributeSetAssignmentSmartList().getRecords();
@@ -114,8 +115,14 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 
 	//get merchandise type
 	public any function getBaseProductType() {
+		var baseID = listFirst(getProductTypeIDPath());
+	
+		var cacheKey = 'productType_getBaseProductType#baseID#';
 		if(isNull(getSystemCode()) || getSystemCode() == ""){
-			return getService("ProductService").getProductType(listFirst(getProductTypeIDPath())).getSystemCode();
+			if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+				getService('HibachiCacheService').setCachedValue(cacheKey,getService("ProductService").getProductType(baseID).getSystemCode());
+			}
+			return getService('HibachiCacheService').getCachedValue(cacheKey);;
 		}
 		return getSystemCode();
 	}
@@ -145,6 +152,18 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			}
 		}
 		return variables.parentProductTypeOptions;
+	}
+	
+	public numeric function getQOH(){
+		return getDao('inventoryDao').getQOHbyProductTypeID(this.getProductTypeID());
+	}
+	
+	public numeric function getAverageCost(){
+		return getDao('productTypeDao').getAverageCost(this.getProductTypeID());
+	}
+	
+	public numeric function getAverageLandedCost(){
+		return getDao('productTypeDao').getAverageLandedCost(this.getProductTypeID());
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

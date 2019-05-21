@@ -1,18 +1,17 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+import * as angular from "angular";
 
-class PercentageFilter{
+class PercentageFilter {
 
-    public static Factory(){
-        return (input, decimals, suffix)=> {
-            decimals = angular.isNumber(decimals)? decimals :  3;
+    public static Factory() {
+        return (input, decimals, suffix) => {
+            decimals = angular.isNumber(decimals) ? decimals : 3;
             suffix = suffix || '%';
             if (isNaN(input)) {
                 return '';
             }
-            return Math.round(input * Math.pow(10, decimals + 2))/Math.pow(10, decimals) + suffix;
+            return Math.round(input * Math.pow(10, decimals + 2)) / Math.pow(10, decimals) + suffix;
         };
     }
 
 }
-export {PercentageFilter};
+export { PercentageFilter };

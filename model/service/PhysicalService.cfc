@@ -71,13 +71,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 	
 	// Physical 
-	public any function processPhysical_commit(required any physical) {
+	public any function processPhysical_commit(required any physical, any processObject) {
 		
 		// Setup a locations adjustment to only create 1 new stock adjustment per location
 		var locationAdjustments = {};
 		
 		// get the discrepancy records
 		var physicalCountDescrepancies = arguments.physical.getDiscrepancyQuery();
+		
+		if(!isNull(arguments.processObject.getExpenseLedgerAccountID())){
+			arguments.physical.setExpenseLedgerAccount(arguments.processObject.getExpenseLedgerAccount());
+		}
 		
 		// Loop over discrepancy records
 		for(var rowCount=1; rowCount <= physicalCountDescrepancies.recordCount; rowCount++) {
@@ -144,6 +148,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getCountFile()) ) {
 			
+			getService('hibachiTagService').cfsetting(requesttimeout="600");
+			
 			// Get the temp directory
 			var tempDir = getHibachiTempDirectory();
 			
@@ -151,7 +157,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var documentData = fileUpload( tempDir,'countFile','','makeUnique' );
 			
 			//check uploaded file if its a valid text file
-			if( documentData.serverFileExt != "txt" ){
+			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv" ){
 				
 				// Make sure that nothing is persisted
 				getHibachiScope().setORMHasErrors( true );
@@ -264,10 +270,79 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.physical;
 	}
 
+	// CycleCountBatch
+	public any function processCycleCountBatch_physicalCount(required any cycleCountBatch, required any processObject, struct data={}) {
+
+		var newPhysical = this.newPhysical();
+		newPhysical.addLocation(arguments.cycleCountBatch.getLocation());
+		newPhysical.setCycleCountBatch(arguments.cycleCountBatch);
+		newPhysical.setPhysicalName(arguments.processObject.getPhysicalName());
+		
+		var newPhysicalCount = this.newPhysicalCount();
+		newPhysicalCount.setLocation(arguments.cycleCountBatch.getLocation());
+		newPhysicalCount.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
+		newPhysicalCount.setPhysical(newPhysical);
+		this.savePhysical(newPhysical);
+		
+		for(var cycleCountItem in arguments.data.cycleCountItems) {
+			if(!isNull(cycleCountItem.quantity) && cycleCountItem.quantity != '' && isNumeric(cycleCountItem.quantity)) {
+				var cycleCountBatchItem = this.newCycleCountBatchItem();
+				cycleCountBatchItem.setStock(getStockService().getStockBySkuIDAndLocationID(cycleCountItem.skuID,newPhysicalCount.getLocation().getLocationID()));
+				cycleCountBatchItem.setCycleCountBatch(arguments.cycleCountBatch);
+				cycleCountBatchItem.setCycleCountGroup(this.getCycleCountGroup(cycleCountItem.cycleCountGroupID));
+				cycleCountBatchItem.setQuantity(cycleCountItem.quantity);
+				cycleCountBatchItem = this.saveCycleCountBatchItem(cycleCountBatchItem);
+				if(cycleCountBatchItem.hasErrors()){
+					newPhysicalCount.addErrors(cycleCountBatchItem.getErrors());
+				}
+				
+				// create Physical Count Item
+				var newPhysicalCountItem = this.newPhysicalCountItem();
+				newPhysicalCountItem.setPhysicalCount(newPhysicalCount);
+				newPhysicalCountItem.setQuantity(cycleCountBatchItem.getQuantity());
+				newPhysicalCountItem.setStock(cycleCountBatchItem.getStock());
+				newPhysicalCountItem.setSkuCode(cycleCountBatchItem.getStock().getSku().getSkuCode());
+				newPhysicalCountItem.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
+				newPhysicalCountItem.setCycleCountBatchItem(cycleCountBatchItem);
+				newPhysicalCountItem = this.savePhysicalCountItem(newPhysicalCountItem);
+				if(newPhysicalCountItem.hasErrors()){
+					newPhysicalCount.addErrors(newPhysicalCountItem.getErrors());
+				}
+				
+				if(!newPhysicalCount.hasErrors()){
+					newPhysical.addSku(cycleCountBatchItem.getStock().getSku());
+				}else{
+					newPhysical.addErrors(newPhysicalCount.getErrors());
+				}
+			}
+		}
+		
+		//Need to validate the physical in case there were no cycleCountBatchItem with a quantity
+		if(!newPhysical.hasErrors()){
+			newPhysical.validate(context="save");
+		}
+		
+		if(newPhysical.hasErrors()) {
+			arguments.cycleCountBatch.addErrors(newPhysical.getErrors());
+		} else {
+			arguments.cycleCountBatch.addPhysical(newPhysical);
+
+			// Process Physical
+			// this.processPhysical(newPhysical, {}, 'commit');
+		}
+		getHibachiScope().flushORMSession();
+		arguments.data['sRedirectQS']='physicalID=#newPhysical.getPhysicalID()#';
+		return arguments.cycleCountBatch;
+	}
 
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
+	
+	public any function exportPhysical(){
+
+		return getService('hibachiService').export(getPhysicalDiscrepancyQuery(argumentCollection=arguments),'skuCode,locationName,productName,QOH,discrepancy');
+	}
 	
 	// ======================  END: Status Methods ============================
 	
@@ -288,6 +363,20 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.entity;
 	}
 	
+	public any function processCycleCountBatch_create(required any cycleCountBatch, required any processObject, struct data={}) {
+		arguments.cycleCountBatch.setCycleCountBatchStatusType( getService('TypeService').getTypeBySystemCode('ccbstOpen'));
+		arguments.cycleCountBatch.setCycleCountBatchName(arguments.processObject.getCycleCountBatchName());
+		arguments.cycleCountBatch.setLocation(arguments.processObject.getLocation());
+
+		var cycleCountGroupIDs = arguments.processObject.getCycleCountGroups();
+		for (var cycleCountGroupID in cycleCountGroupIDs){
+			var cycleCountGroup = getService("physicalService").getCycleCountGroup(cycleCountGroupID);
+			arguments.cycleCountBatch.addCycleCountGroup(cycleCountGroup);
+		}
+		
+		return save(arguments.cycleCountBatch, arguments.data);
+	}
+
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================

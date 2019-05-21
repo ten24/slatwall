@@ -51,21 +51,23 @@ Notes:
 
 
 <cfparam name="rc.stock" type="any">
-
-
+<cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="false">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="false">
+	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#" sRedirectAction="admin:entity.detailstock">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="#rc.edit#">
 		</hb:HibachiEntityActionBar>
-		
-	
 		
 		<hb:HibachiEntityDetailGroup object="#rc.stock#">
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventory" />
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventoryhistory" />
+		
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.stock.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.stock#" attributeSet="#attributeSet#" />
+			</cfloop>
+		
 		</hb:HibachiEntityDetailGroup>
-
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

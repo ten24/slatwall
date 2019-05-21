@@ -55,7 +55,7 @@ Notes:
 	<hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getStockReceiversSmartList()#"
 							   recorddetailaction="admin:entity.detailStockReceiver"
 							   recorddetailmodal="false" 
-							   recorddetailquerystring="redirectAction=admin:warehouse.detailStockAdjustment&stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#">
+							   recorddetailquerystring="redirectAction=admin:entity.detailStockAdjustment&stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#">
 			
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyidentifier="boxCount" />

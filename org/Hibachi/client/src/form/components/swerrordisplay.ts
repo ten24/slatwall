@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 /**
 * Form Controller handles the logic for this directive.
@@ -20,6 +18,16 @@ class SWErrorDisplayController {
        this.$injector = $injector;
    }
    public $onInit(){
+       
+       /**
+        if a css error class was passed to propertyDisplay, attach to form
+        which will apply it to the dynamically generateddiv that contains
+        the error message 
+       **/
+       if(this.swfPropertyDisplay && this.swfPropertyDisplay.errorClass){
+            this.swForm.errorClass = this.swfPropertyDisplay.errorClass;
+       }
+       
        var bindToControllerProps = this.$injector.get('swErrorDisplayDirective')[0].bindToController;
 		for(var i in bindToControllerProps){
 

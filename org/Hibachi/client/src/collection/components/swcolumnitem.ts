@@ -1,23 +1,23 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-class SWColumnItem{
-	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
+import * as angular from "angular";
+
+class SWColumnItem {
+	public static Factory() {
+		var directive: ng.IDirectiveFactory = (
 			$log,
 			hibachiPathBuilder,
 			collectionPartialsPath,
-            observerService
+			observerService
 		) => new SWColumnItem(
 			$log,
 			hibachiPathBuilder,
 			collectionPartialsPath,
-            observerService
+			observerService
 		);
 		directive.$inject = [
 			'$log',
 			'hibachiPathBuilder',
 			'collectionPartialsPath',
-            'observerService'
+			'observerService'
 		];
 		return directive;
 	}
@@ -26,141 +26,184 @@ class SWColumnItem{
 		$log,
 		hibachiPathBuilder,
 		collectionPartialsPath,
-        observerService
-	){
+		observerService
+	) {
 
 		return {
 			restrict: 'A',
-			require:{
-                swDisplayOptions:"?^swDisplayOptions",
-				swListingControls:"?^swListingControls"
-            },
-			scope:{
-				column:"=",
-				columns:"=",
-				columnIndex:"=",
-				saveCollection:"&?",
-				propertiesList:"<",
-				orderBy:"="
+			require: {
+				swDisplayOptions: "?^swDisplayOptions",
+				swListingControls: "?^swListingControls",
+				swListingDisplay: "?^swListingDisplay"
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
-			link: function(scope, element,attrs,controller,observerService){
-                if(!scope.saveCollection && controller.swListingControls){
+			scope: {
+				column: "=",
+				columns: "=",
+				columnIndex: "=",
+				saveCollection: "&?",
+				propertiesList: "<",
+				orderBy: "="
+			},
 
-                    scope.saveCollection = ()=>{
-						controller.swListingControls.collectionConfig.columns=scope.columns;
-						controller.swDisplayOptions.columns=scope.columns;
-                        controller.swListingControls.saveCollection();
-                    }
-                }
+      templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
+			link: function(scope, element, attrs, controller){	
+				scope.getReportLabelColor = (chart) => {
+					if(scope.column.aggregate && chart.config.data.datasets) {
+						for(let i=0; i<chart.config.data.datasets.length; i++) {
+							var dataset = chart.config.data.datasets[i];
+							if (dataset.label == scope.column.title) {
+								let color = '#FF0000';
+								console.log(dataset);
+								color = dataset.backgroundColor;
+								scope.column.style = {
+									display: 'inline-block',
+									width: '40px',
+									height: '10px',
+									'background-color': color,
+									margin: '0 20px',
+									'border-radius': '6px',
+									'margin-top': '15px',
+									'margin-left': '40px'
+								};
+								break;
+							}
+						}
+					}
+				}
+        
+				controller.swListingDisplay.observerService.attach(scope.getReportLabelColor, 'swListingReport_DrawChart', controller.swListingDisplay.tableID);
 
-                scope.editingDisplayTitle=false;
+				if (!scope.saveCollection && controller.swListingControls) {
 
-                scope.editDisplayTitle = function(){
-                    if(angular.isUndefined(scope.column.displayTitle) || !scope.column.displayTitle.length){
-                        scope.column.displayTitle = scope.column.title;
-                    }
-                    scope.previousDisplayTitle=scope.column.displayTitle;
-                    scope.editingDisplayTitle = true;
-                };
-                scope.saveDisplayTitle = function(){
-                    scope.saveCollection();
-                    scope.editingDisplayTitle = false;
-                };
-                scope.cancelDisplayTitle = function(){
-                    scope.column.displayTitle = scope.previousDisplayTitle;
-                    scope.editingDisplayTitle = false;
-                };
+					scope.saveCollection = () => {
+						controller.swListingControls.collectionConfig.columns = scope.columns;
+						controller.swDisplayOptions.columns = scope.columns;
+						controller.swListingControls.saveCollection();
+					}
+				}
 
-				if(angular.isUndefined(scope.column.sorting)){
+        scope.editDisplayTitle = function(){
+            if(angular.isUndefined(scope.column.displayTitle) || !scope.column.displayTitle.length){
+                scope.column.displayTitle = scope.column.title;
+            }
+            scope.previousDisplayTitle=scope.column.displayTitle;
+            scope.editingDisplayTitle = true;
+        };
+        scope.saveDisplayTitle = function(){
+            scope.saveCollection();
+            scope.editingDisplayTitle = false;
+            controller.swListingDisplay.observerService.notifyById('displayOptionsAction', controller.swListingDisplay.tableID, {action: 'saveDisplayTitle',collectionConfig:controller.swListingControls.collectionConfig});
+        };
+        scope.cancelDisplayTitle = function(){
+            scope.column.displayTitle = scope.previousDisplayTitle;
+            scope.editingDisplayTitle = false;
+        };
+
+				scope.editDisplayTitle = function () {
+					if (angular.isUndefined(scope.column.displayTitle) || !scope.column.displayTitle.length) {
+						scope.column.displayTitle = scope.column.title;
+					}
+					scope.previousDisplayTitle = scope.column.displayTitle;
+					scope.editingDisplayTitle = true;
+				};
+				scope.saveDisplayTitle = function () {
+					scope.saveCollection();
+					scope.editingDisplayTitle = false;
+				};
+				scope.cancelDisplayTitle = function () {
+					scope.column.displayTitle = scope.previousDisplayTitle;
+					scope.editingDisplayTitle = false;
+				};
+
+				if (angular.isUndefined(scope.column.sorting)) {
 					scope.column.sorting = {
-						active:false,
-						sortOrder:'asc',
-						priority:0
+						active: false,
+						sortOrder: 'asc',
+						priority: 0
 					};
 				}
 
-				scope.toggleVisible = function(column){
-					if(angular.isUndefined(column.isVisible)){
+				scope.toggleVisible = function (column) {
+					if (angular.isUndefined(column.isVisible)) {
 						column.isVisible = false;
 					}
 					column.isVisible = !column.isVisible;
 					scope.saveCollection();
 				};
 
-				scope.toggleSearchable = function(column){
-					if(angular.isUndefined(column.isSearchable)){
+				scope.toggleSearchable = function (column) {
+					if (angular.isUndefined(column.isSearchable)) {
 						column.isSearchable = false;
 					}
 					column.isSearchable = !column.isSearchable;
 					scope.saveCollection();
 				};
 
-				scope.toggleExportable = function(column){
+				scope.toggleExportable = function (column) {
 					$log.debug('toggle exporable');
-					if(angular.isUndefined(column.isExportable)){
+					if (angular.isUndefined(column.isExportable)) {
 						column.isExportable = false;
 					}
 					column.isExportable = !column.isExportable;
 					scope.saveCollection();
 				};
 
-				var compareByPriority = function(a,b){
-					if(a.sorting && b.sorting && angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)){
-						if(a.sorting.priority < b.sorting.priority){
+				var compareByPriority = function (a, b) {
+					if (a.sorting && b.sorting && angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)) {
+						if (a.sorting.priority < b.sorting.priority) {
 							return -1;
 						}
-						if(a.sorting.priority > b.sorting.priority){
+						if (a.sorting.priority > b.sorting.priority) {
 							return 1;
 						}
 					}
 					return 0;
 				};
 
-				var updateOrderBy = function(){
-					if(angular.isDefined(scope.columns)){
+				var updateOrderBy = function () {
+					if (angular.isDefined(scope.columns)) {
 						var columnsCopy = angular.copy(scope.columns);
 						columnsCopy.sort(compareByPriority);
 						scope.orderBy = [];
 
-						angular.forEach(columnsCopy,function(column){
-							if(angular.isDefined(column.sorting) && column.sorting.active === true){
+						angular.forEach(columnsCopy, function (column) {
+							if (angular.isDefined(column.sorting) && column.sorting.active === true) {
 								var orderBy = {
-									propertyIdentifier:column.propertyIdentifier,
-									direction:column.sorting.sortOrder
+									propertyIdentifier: column.propertyIdentifier,
+									direction: column.sorting.sortOrder
 								};
-                                if(column.aggregate && column.aggregate.aggregateFunction){
-                                    var aggregateFunction = column.aggregate.aggregateFunction.toUpperCase();
-                                    if(aggregateFunction == 'AVERAGE'){
-                                        aggregateFunction = 'AVG';
-                                    }
-                                    orderBy.propertyIdentifier = aggregateFunction + '('+column.propertyIdentifier+')';
-                                }
+								if (column.aggregate && column.aggregate.aggregateFunction) {
+									var aggregateFunction = column.aggregate.aggregateFunction.toUpperCase();
+									if (aggregateFunction == 'AVERAGE') {
+										aggregateFunction = 'AVG';
+									}
+									orderBy.propertyIdentifier = aggregateFunction + '(' + column.propertyIdentifier + ')';
+								}
 								scope.orderBy.push(orderBy);
 							}
 						});
 					}
 				};
 
-				scope.toggleSortable = function(column){
+				scope.toggleSortable = function (column) {
 					$log.debug('toggle sortable');
-					if(angular.isUndefined(column.sorting)){
+					if (angular.isUndefined(column.sorting)) {
 						column.sorting = {
-								active:true,
-								sortOrder:'asc',
-								priority:0
+							active: true,
+							sortOrder: 'asc',
+							priority: 0
 						};
 					}
 
-					if(column.sorting.active === true){
-						if(column.sorting.sortOrder === 'asc'){
+					if (column.sorting.active === true) {
+						if (column.sorting.sortOrder === 'asc') {
 							column.sorting.sortOrder = 'desc';
-						}else{
+						} else {
 							removeSorting(column);
 							column.sorting.active = false;
 
 						}
-					}else{
+					} else {
 						column.sorting.active = true;
 						column.sorting.sortOrder = 'asc';
 						column.sorting.priority = getActivelySorting().length;
@@ -170,37 +213,37 @@ class SWColumnItem{
 
 				};
 
-				var removeSorting = (column,saving?)=>{
-					if(column.sorting.active === true){
-						for(var i in scope.columns){
-							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
+				var removeSorting = (column, saving?) => {
+					if (column.sorting.active === true) {
+						for (var i in scope.columns) {
+							if (scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority) {
 								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
 							}
 						}
 						column.sorting.priority = 0;
 					}
 
-					if(!saving){
+					if (!saving) {
 						updateOrderBy();
 						scope.saveCollection();
 					}
 
 				};
 
-				scope.prioritize = function(column){
-					if(column.sorting.priority === 1){
+				scope.prioritize = function (column) {
+					if (column.sorting.priority === 1) {
 
 						var activelySorting = getActivelySorting();
-						for(var i in scope.columns){
-							if(scope.columns[i].sorting.active === true){
+						for (var i in scope.columns) {
+							if (scope.columns[i].sorting.active === true) {
 								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
 							}
 						}
 						column.sorting.priority = activelySorting.length;
 
-					}else{
-						for(var i in scope.columns){
-							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority === column.sorting.priority - 1){
+					} else {
+						for (var i in scope.columns) {
+							if (scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority === column.sorting.priority - 1) {
 								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority + 1;
 							}
 						}
@@ -212,29 +255,29 @@ class SWColumnItem{
 					scope.saveCollection();
 				};
 
-				var getActivelySorting = function(){
+				var getActivelySorting = function () {
 					var activelySorting = [];
-					for(var i in scope.columns){
-						if(scope.columns[i].sorting.active === true){
+					for (var i in scope.columns) {
+						if (scope.columns[i].sorting.active === true) {
 							activelySorting.push(scope.columns[i]);
 						}
 					}
 					return activelySorting;
 				};
 
-				scope.removeColumn = function(columnIndex){
-                    if(scope.columns[columnIndex].isDeletable){
-						removeSorting(scope.columns[columnIndex],true);
-                        controller.swDisplayOptions.removeColumn(columnIndex);
-                        updateOrderBy();
-                        scope.saveCollection();
-                    }
+				scope.removeColumn = function (columnIndex) {
+					if (scope.columns[columnIndex].isDeletable) {
+						removeSorting(scope.columns[columnIndex], true);
+						controller.swDisplayOptions.removeColumn(columnIndex);
+						updateOrderBy();
+						scope.saveCollection();
+					}
 				};
 			}
 		};
 	}
 
 }
-export{
+export {
 	SWColumnItem
 }

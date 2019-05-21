@@ -1,22 +1,22 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+import * as angular from "angular";
+
 class SWFormFieldRevertHelperController {
 
-    public parentDirectiveControllerAs:string;
-    public parentDirectiveBindProperty:string;
-    public valueToRevertTo:any;
+    public parentDirectiveControllerAs: string;
+    public parentDirectiveBindProperty: string;
+    public valueToRevertTo: any;
 
     // @ngInject
     constructor(private $hibachi
-        ){
+    ) {
     }
 }
 
-interface SWScope extends ng.IScope{
-    swFormFieldRevertHelper:any
+interface SWScope extends ng.IScope {
+    swFormFieldRevertHelper?: any
 }
 
-class SWFormFieldRevertHelper implements ng.IDirective{
+class SWFormFieldRevertHelper implements ng.IDirective {
 
     public templateUrl;
     public restrict = "EA";
@@ -24,34 +24,34 @@ class SWFormFieldRevertHelper implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-        parentDirectiveControllerAs:"@",
-        parentDirectiveBindProperty:"=",
-        valueToRevertToProperty:"="
+        parentDirectiveControllerAs: "@",
+        parentDirectiveBindProperty: "=",
+        valueToRevertToProperty: "="
     };
-    public controller=SWFormFieldRevertHelper;
-    public controllerAs="swFormFieldRevertHelper";
+    public controller = SWFormFieldRevertHelper;
+    public controllerAs = "swFormFieldRevertHelper";
 
     // @ngInject
-    constructor(){
+    constructor() {
 
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope:SWScope, element: ng.IAugmentedJQuery, attrs:any, modelCtrl: ng.INgModelController) =>{
+    public link: ng.IDirectiveLinkFn = ($scope: SWScope, element: ng.IAugmentedJQuery, attrs: any, modelCtrl: ng.IController | ng.INgModelController) => {
 
-         var parentScope = $scope.$parent;
-         var parentDirectiveScope = parentScope[$scope.swFormFieldRevertHelper.parentDirectiveControllerAs];
+        var parentScope = $scope.$parent;
+        var parentDirectiveScope = parentScope[$scope.swFormFieldRevertHelper.parentDirectiveControllerAs];
 
-         modelCtrl.$parsers.unshift((inputValue) =>{
+        modelCtrl.$parsers.unshift((inputValue) => {
             var modelValue = modelCtrl.$modelValue;
 
             //figure out if the model value has changed
             //was it a revert?
-            if(modelValue !== inputValue
+            if (modelValue !== inputValue
                 && angular.isDefined(parentDirectiveScope)
                 && angular.isDefined(parentDirectiveScope.singleEditedObject.data[parentDirectiveScope.property])
                 && angular.isDefined(parentDirectiveScope.revertSet)
                 && !parentDirectiveScope.revertSet
-            ){
+            ) {
                 parentDirectiveScope.valueToRevertTo = modelValue;
                 parentDirectiveScope.singleEditedObject.data[parentDirectiveScope.property] = inputValue;
                 parentDirectiveScope.edited = true;
@@ -68,13 +68,13 @@ class SWFormFieldRevertHelper implements ng.IDirective{
 
     }
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = ()=> new SWFormFieldRevertHelper();
+    public static Factory() {
+        var directive: ng.IDirectiveFactory = () => new SWFormFieldRevertHelper();
         directive.$inject = [];
         return directive;
     }
 }
-export{
+export {
     SWFormFieldRevertHelper,
     SWFormFieldRevertHelperController
 }

@@ -1,13 +1,13 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-class SWDisplayItemAggregate{
-    public static Factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (
+import * as angular from "angular";
+
+class SWDisplayItemAggregate {
+    public static Factory(): ng.IDirectiveFactory {
+        var directive: ng.IDirectiveFactory = (
             $hibachi,
             collectionPartialsPath,
             metadataService,
             hibachiPathBuilder
-        )=> new SWDisplayItemAggregate(
+        ) => new SWDisplayItemAggregate(
             $hibachi,
             collectionPartialsPath,
             metadataService,
@@ -28,54 +28,65 @@ class SWDisplayItemAggregate{
         collectionPartialsPath,
         metadataService,
         hibachiPathBuilder
-    ){
-        return{
-            require:'^swDisplayOptions',
+    ) {
+        return {
+            require: '^swDisplayOptions',
             restrict: 'A',
-            scope:{
-                selectedProperty:"=",
-                propertiesList:"=",
-                breadCrumbs:"=",
-                selectedPropertyChanged:"&"
+            scope: {
+                selectedProperty: "=",
+                propertiesList: "=",
+                breadCrumbs: "=",
+                selectedPropertyChanged: "&"
 
             },
-            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitemaggregate.html",
-            link: function(scope, element,attrs,displayOptionsController){
+            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayitemaggregate.html",
+            link: function (scope, element, attrs, displayOptionsController) {
                 scope.showDisplayItem = false;
-                scope.aggegate ={};
-                scope.aggegate.selectedAggregate = '';
+                scope.aggregate = {};
+                scope.aggregate.selectedAggregate = '';
 
                 scope.aggregateOptions = [
-                    {id:'average', value:'Average'},
-                    {id:'count', value:'Count'},
-                    {id:'sum', value:'Sum'}
+                    { id: 'average', value: 'Average' },
+                    { id: 'count', value: 'Count' },
+                    { id: 'sum', value: 'Sum' },
+                    { id: 'min', value: 'Min' },
+                    { id: 'max', value: 'Max' }
                 ];
 
                 scope.selectAggregate = function (aggregate) {
-                    if(aggregate == 'count'){
+                    if (aggregate == 'count' || scope.selectedProperty.ormtype) {
                         scope.selectedProperty.aggregate = aggregate;
-                        scope.selectedPropertyChanged({selectedProperty:scope.selectedProperty});
-                    }else{
-                        scope.aggegate.currentObject = scope.selectedProperty.cfc;
+                        scope.selectedPropertyChanged({ selectedProperty: scope.selectedProperty });
+                    } else {
+                        scope.aggregate.currentObject = scope.selectedProperty.cfc;
                     }
                 };
+                
 
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
-                    selectedDisplayOption.aggregate = scope.aggegate.selectedAggregate;
-                    selectedDisplayOption.aggregateObject = scope.aggegate.currentObject;
+                    var breadCrumb = {
+                        entityAlias:scope.selectedProperty.name,
+                        cfc:scope.selectedProperty.cfc,
+                        propertyIdentifier:scope.selectedProperty.propertyIdentifier
+                    };
+                    scope.breadCrumbs.push(breadCrumb);
+					
+                    selectedDisplayOption.aggregate = scope.aggregate.selectedAggregate;
+                    selectedDisplayOption.aggregateObject = scope.aggregate.currentObject;
                     scope.selectedPropertyChanged({selectedProperty:selectedDisplayOption});
+                    displayOptionsController.selectedPropertyChanged(selectedDisplayOption);
                 };
 
 
-                scope.$watch('selectedProperty', function(selectedProperty) {
-                    if(angular.isDefined(selectedProperty)){
-                        if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])){
+                scope.$watch('selectedProperty', function (selectedProperty) {
+                    if (angular.isDefined(selectedProperty) && !selectedProperty.ormtype) {
+                        if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
                             var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
-                            filterPropertiesPromise.then(function(value){
-                                metadataService.setPropertiesList(value,selectedProperty.propertyIdentifier);
+                            filterPropertiesPromise.then(function (value) {
+                                metadataService.setPropertiesList(value, selectedProperty.propertyIdentifier);
                                 scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
-                                metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier],selectedProperty.propertyIdentifier);
-                            }, function(reason){
+                                metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier], selectedProperty.propertyIdentifier);
+                            }, function (reason) {
 
                             });
                         }
@@ -86,7 +97,7 @@ class SWDisplayItemAggregate{
         }
     }
 }
-export{
+export {
     SWDisplayItemAggregate
 }
 

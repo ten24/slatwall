@@ -71,7 +71,7 @@
 								    <span ng-if="transaction.orderPayment_order_orderOpenDateTime.trim().length"  ng-bind="transaction.orderPayment_order_orderOpenDateTime"></span>
 								    <span ng-if="!transaction.orderPayment_order_orderOpenDateTime.trim().length" ng-bind="transaction.createdDateTime"></span> 
 								</td>
-								<td><span ng-if="angular.isDefined(transaction.orderPayment_order_orderNumber)">Order: 
+								<td><span ng-if="transaction.orderPayment_order_orderNumber !== undefined">Order: 
 									    <a href="{{transaction.detailOrderLink}}">
 										    <span ng-bind="transaction.orderPayment_order_orderNumber"></span>
 									    </a>

@@ -64,7 +64,13 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.stockAdjustment#" allowComments="true">
 			<hb:HibachiEntityDetailItem view="admin:entity/stockadjustmenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem property="stockadjustmentitems" />
-			<hb:HibachiEntityDetailItem property="stockreceivers" />
+			
+			<cfif listFindNoCase("satLocationTransfer,satManualIn", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
+    			<hb:HibachiEntityDetailItem property="stockreceivers" />
+    		</cfif>
+			<cfif listFindNoCase("satLocationTransfer,satManualOut", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
+    			<hb:HibachiEntityDetailItem property="stockadjustmentdeliveries" />
+    		</cfif>
 
 			<swa:SlatwallAdminTabComments object="#rc.stockAdjustment#" />
 		</hb:HibachiEntityDetailGroup>

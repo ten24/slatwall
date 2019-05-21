@@ -2,7 +2,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	
 	public void function onEvent( required any eventName, struct data={}, any entity ) {
         //if the site is not null and the site matches our current site
-        var siteCode = listGetAt(getMetaData(this).fullname,5,'.');
+        var siteCode = getSiteCode();
         if(!isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getCurrentRequestSite()) && !isNull(getHibachiScope().getCurrentRequestSite().getSiteCode()) && getHibachiScope().getCurrentRequestSite().getSiteCode() == siteCode){
             //get siteRecaptchaProtectedEvents
             if(structKeyExists(arguments,'entity')){
@@ -24,10 +24,14 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             }
         }
     }
+    
+    private string function getSiteCode(){
+    	return listGetAt(getMetaData(this).fullname,5,'.');
+    }
         
     public void function callEvent( required any eventName, required struct eventData={} ) {
         //if the site is not null and the site matches our current site
-        var siteCode = listGetAt(getMetaData(this).fullname,5,'.');
+        var siteCode = getSiteCode();
         if(!isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getCurrentRequestSite()) && !isNull(getHibachiScope().getCurrentRequestSite().getSiteCode()) && getHibachiScope().getCurrentRequestSite().getSiteCode() == siteCode){
             super.callEvent(eventName=arguments.eventName,eventData=arguments.eventData);
         }

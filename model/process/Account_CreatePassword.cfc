@@ -58,7 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public boolean function getPrimaryEmailAddressNotInUseFlag() {
 		if(!isNull(account.getEmailAddress())) {
-			return getService("accountService").getPrimaryEmailAddressNotInUseFlag( account.getEmailAddress());
+			return getService("accountService").getPrimaryEmailAddressNotInUseFlag( account.getEmailAddress(), account.getAccountID() );
 		}
 		return true;
 	}

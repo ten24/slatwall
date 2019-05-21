@@ -57,19 +57,21 @@
 	<cfparam name="attributes.showOnCreateFlag" type="boolean" default="false" />
 	
 	<cfset attributes.tabid = "attSet" & attributes.attributeSet.getAttributeSetCode() />
-	<cfset attributes.text = attributes.attributeSet.getAttributeSetName() />
+	<cfset attributes.text = !isNull(attributes.attributeSet.getAttributeSetName()) ? attributes.attributeSet.getAttributeSetName() : "" />
 	<cfset attributes.view = "" />
 	<cfset attributes.property = "" />
 	<cfset attributes.count = 0 />
 	
 	<cfsavecontent variable="attributes.tabcontent">
-		<div class="tab-pane" id="attSet#attributes.attributeSet.getAttributeSetCode()#">
-			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList>
-					<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
-				</hb:HibachiPropertyList>
-			</hb:HibachiPropertyRow>
-		</div>
+		<cfoutput>
+			<div class="tab-pane" id="attSet#attributes.attributeSet.getAttributeSetCode()#">
+				<hb:HibachiPropertyRow>
+					<hb:HibachiPropertyList>
+						<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
+					</hb:HibachiPropertyList>
+				</hb:HibachiPropertyRow>
+			</div>
+		</cfoutput>
 	</cfsavecontent>
 	
 	<cfassociate basetag="cf_HibachiEntityDetailGroup" datacollection="tabs">

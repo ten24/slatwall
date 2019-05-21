@@ -1,8 +1,7 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 
 import {HibachiValidationService} from "../services/hibachivalidationservice";
 import {HibachiService} from "../services/hibachiservice";
+import * as angular from "angular";
 class HibachiServiceDecorator{
     //@ngInject
     constructor(
@@ -40,7 +39,7 @@ class HibachiServiceDecorator{
                             var attribute = attributeSet.attributes[attributeCode];
                             attribute.attributeSet = attributeSet;
                             attribute.isAttribute = true;
-                            entity[attributeCode] = attribute;
+                            $.extend(entity[attributeCode],attribute);
                         }
                     }
                 }

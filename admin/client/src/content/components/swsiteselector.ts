@@ -1,21 +1,20 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+import * as angular from "angular";
 
 class SWSiteSelectorController {
 
-    public sites:any[];
-    public sitesCollectionConfig:any;
-    public filterPropertyIdentifier:string;
-    public simpleFilterPropertyIdentifier:string;
-    public collectionConfigToFilter:any;
-    public selectedSite:string;
-    public defaultSiteID:string;
-    public defaultEstablished:boolean;
-    public inListingDisplay:boolean;
-    public withTypeahead:boolean;
-    public typeaheadDataKey:string;
-    public listingID:string;
-    public disabled:boolean;
+    public sites: any[];
+    public sitesCollectionConfig: any;
+    public filterPropertyIdentifier: string;
+    public simpleFilterPropertyIdentifier: string;
+    public collectionConfigToFilter: any;
+    public selectedSite: string;
+    public defaultSiteID: string;
+    public defaultEstablished: boolean;
+    public inListingDisplay: boolean;
+    public withTypeahead: boolean;
+    public typeaheadDataKey: string;
+    public listingID: string;
+    public disabled: boolean;
 
     //@ngInject
     constructor(
@@ -24,42 +23,42 @@ class SWSiteSelectorController {
         private localStorageService,
         private typeaheadService,
         private utilityService
-    ){
-        if(angular.isUndefined(this.disabled)){
+    ) {
+        if (angular.isUndefined(this.disabled)) {
             this.disabled = false;
         }
-        if(angular.isUndefined(this.simpleFilterPropertyIdentifier)){
+        if (angular.isUndefined(this.simpleFilterPropertyIdentifier)) {
             this.simpleFilterPropertyIdentifier = "siteID";
         }
         this.sitesCollectionConfig = collectionConfigService.newCollectionConfig("Site");
         this.sitesCollectionConfig.addDisplayProperty("siteID, siteName, siteCode");
         this.sitesCollectionConfig.setAllRecords(true);
         this.sitesCollectionConfig.getEntity().then(
-            (data)=>{
+            (data) => {
                 this.sites = data.records;
-                if(this.sites[0]){
+                if (this.sites[0]) {
                     this.selectedSite = this.sites[0].siteID;
                 }
             },
-            (reason)=>{
-                throw("SWProductListingPages had trouble fetching sites because of " + reason);
+            (reason) => {
+                throw ("SWProductListingPages had trouble fetching sites because of " + reason);
             }
-        ).finally(()=>{
+        ).finally(() => {
             this.selectSite();
         });
     }
 
-    public selectSite = () =>{
+    public selectSite = () => {
         this.collectionConfigToFilter.removeFilterByDisplayPropertyIdentifier(this.simpleFilterPropertyIdentifier);
         console.log("selectSite", this.selectedSite)
-        switch(this.selectedSite){
+        switch (this.selectedSite) {
             case "all":
                 //do nothing
                 console.log("donothing")
                 break;
             case "default":
                 this.updateDefaultSiteID();
-                if(this.defaultEstablished){
+                if (this.defaultEstablished) {
                     console.log("adding filter", this.defaultSiteID)
                     this.collectionConfigToFilter.addFilter(this.filterPropertyIdentifier, this.defaultSiteID, "=");
                 }
@@ -72,17 +71,17 @@ class SWSiteSelectorController {
                 this.collectionConfigToFilter.addFilter(this.filterPropertyIdentifier, this.selectedSite, "=");
                 break;
         }
-        if(this.withTypeahead && this.typeaheadDataKey != null){
+        if (this.withTypeahead && this.typeaheadDataKey != null) {
             this.typeaheadService.getData(this.typeaheadDataKey);
         }
-        if(this.inListingDisplay && this.listingID != null){
+        if (this.inListingDisplay && this.listingID != null) {
             this.listingService.getCollection(this.listingID);
         }
     }
 
-    private updateDefaultSiteID = () =>{
+    private updateDefaultSiteID = () => {
         console.log("updating default established")
-        if(this.localStorageService.hasItem("defaultSiteID")){
+        if (this.localStorageService.hasItem("defaultSiteID")) {
             this.defaultEstablished = true;
 
             this.defaultSiteID = this.localStorageService.getItem("defaultSiteID");
@@ -94,74 +93,74 @@ class SWSiteSelectorController {
 
 }
 
-class SWSiteSelector implements ng.IDirective{
+class SWSiteSelector implements ng.IDirective {
 
     public templateUrl;
     public restrict = "EA";
     public scope = {};
 
     public bindToController = {
-        inListingDisplay:"=?",
-        filterPropertyIdentifier:"@?",
-        collectionConfigToFilter:"=?",
-        withTypeahead:"=?",
-        typeaheadDataKey:"@?",
-        disabled:"=?"
+        inListingDisplay: "=?",
+        filterPropertyIdentifier: "@?",
+        collectionConfigToFilter: "=?",
+        withTypeahead: "=?",
+        typeaheadDataKey: "@?",
+        disabled: "=?"
     };
 
-    public controller=SWSiteSelectorController;
-    public controllerAs="swSiteSelector";
+    public controller = SWSiteSelectorController;
+    public controllerAs = "swSiteSelector";
 
-	public static Factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (
+    public static Factory(): ng.IDirectiveFactory {
+        var directive: ng.IDirectiveFactory = (
             $http,
             $hibachi,
             listingService,
             scopeService,
-		    contentPartialsPath,
-			slatwallPathBuilder
+            contentPartialsPath,
+            slatwallPathBuilder
         ) => new SWSiteSelector(
             $http,
             $hibachi,
             listingService,
             scopeService,
-			contentPartialsPath,
-			slatwallPathBuilder
+            contentPartialsPath,
+            slatwallPathBuilder
         );
         directive.$inject = [
             '$http',
             '$hibachi',
             'listingService',
             'scopeService',
-			'contentPartialsPath',
-			'slatwallPathBuilder'
+            'contentPartialsPath',
+            'slatwallPathBuilder'
         ];
         return directive;
     }
 
     //@ngInject
-	constructor(
-		private $http,
+    constructor(
+        private $http,
         private $hibachi,
         private listingService,
         private scopeService,
-	    private contentPartialsPath,
-		private slatwallPathBuilder
-	){
-		this.templateUrl = slatwallPathBuilder.buildPartialsPath(contentPartialsPath) + "/siteselector.html";
+        private contentPartialsPath,
+        private slatwallPathBuilder
+    ) {
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(contentPartialsPath) + "/siteselector.html";
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-        if($scope.swSiteSelector.withTypeahead == null){
+    public link: ng.IDirectiveLinkFn = ($scope: any, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => {
+        if ($scope.swSiteSelector.withTypeahead == null) {
             $scope.swSiteSelector.withTypeahead = false;
         }
-        if($scope.swSiteSelector.inListingDisplay == null){
+        if ($scope.swSiteSelector.inListingDisplay == null) {
             $scope.swSiteSelector.inListingDisplay = !$scope.swSiteSelector.withTypeahead;
         }
-        if($scope.swSiteSelector.inListingDisplay == true && this.scopeService.hasParentScope($scope, "swListingDisplay")){
+        if ($scope.swSiteSelector.inListingDisplay == true && this.scopeService.hasParentScope($scope, "swListingDisplay")) {
             var listingDisplayScope = this.scopeService.getRootParentScope($scope, "swListingDisplay")["swListingDisplay"];
             $scope.swSiteSelector.listingID = listingDisplayScope.tableID;
-            if(listingDisplayScope.collectionConfig != null){
+            if (listingDisplayScope.collectionConfig != null) {
                 $scope.swSiteSelector.collectionConfigToFilter = listingDisplayScope.collectionConfig;
             }
             this.listingService.attachToListingInitiated($scope.swSiteSelector.listingID, $scope.swSiteSelector.selectSite);
@@ -173,6 +172,6 @@ class SWSiteSelector implements ng.IDirective{
 }
 
 export {
-	SWSiteSelectorController,
-	SWSiteSelector
+    SWSiteSelectorController,
+    SWSiteSelector
 };

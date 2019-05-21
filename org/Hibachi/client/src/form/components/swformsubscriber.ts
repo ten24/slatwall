@@ -1,5 +1,3 @@
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * This validate directive will look at the current element, figure out the context (save, edit, delete) and
  * validate based on that context as defined in the validation properties object.
@@ -99,7 +97,7 @@ class SWFormSubscriber{
 	}
 	public controller=SWFormSubscriberController;
 	public controllerAs = "SWFormSubscriber";
-	//ngInject
+	//@ngInject
 	constructor(
 
 	){

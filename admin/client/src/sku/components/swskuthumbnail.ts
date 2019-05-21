@@ -1,59 +1,76 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-class SWSkuThumbnailController{
-   
-    public skuData:any; 
-    public image:any; 
-    public imagePath:string;
-    public imageOnly:boolean; 
-   
+import * as angular from "angular";
+
+class SWSkuThumbnailController {
+
+    public skuData: any;
+    public image: any;
+    public imagePath: string;
+    public imageOnly: boolean;
+
     //@ngInject
     constructor(
-    ){
-        if(!angular.isDefined(this.skuData)){
-            throw("You must provide a sku to the SWSkuThumbnailController");
+        private fileService,
+        private $hibachi,
+        private $http,
+        private appConfig
+    ) {
+        if (!angular.isDefined(this.skuData)) {
+            throw ("You must provide a sku to the SWSkuThumbnailController");
         }
-        if(angular.isDefined(this.skuData.imagePath)){
-            this.image = this.skuData.imagePath;
-        }
-    }   
+
+        fileService.imageExists(this.skuData.imagePath).then(
+            () => {
+                //Do nothing
+            },
+            () => {
+                this.skuData.imagePath = this.appConfig.baseURL + 'assets/images/image-placeholder.jpg';
+            }
+        ).finally(
+            () => {
+                if (angular.isDefined(this.skuData.imagePath)) {
+                    this.image = this.appConfig.baseURL + this.skuData.imagePath;
+                }
+            }
+        )
+    }
 }
 
-class SWSkuThumbnail implements ng.IDirective{
+class SWSkuThumbnail implements ng.IDirective {
     public templateUrl;
     public restrict = 'EA';
-    public scope = {}; 
+    public scope = {};
     public bindToController = {
-        skuData:"=",
-        imageOnly:"=?",
-        imagePath:"@?"
+        skuData: "=",
+        imageOnly: "=?",
+        imagePath: "@?"
     };
     public controller = SWSkuThumbnailController;
-    public controllerAs="swSkuThumbnail";
-   
-   
-    public static Factory(){
+    public controllerAs = "swSkuThumbnail";
+
+
+    public static Factory() {
         var directive = (
             skuPartialsPath,
-			slatwallPathBuilder
-        )=> new SWSkuThumbnail(
+            slatwallPathBuilder
+        ) => new SWSkuThumbnail(
             skuPartialsPath,
-			slatwallPathBuilder
+            slatwallPathBuilder
         );
         directive.$inject = [
             'skuPartialsPath',
-			'slatwallPathBuilder'
+            'slatwallPathBuilder'
         ];
         return directive;
     }
     constructor(
-		skuPartialsPath,
-	    slatwallPathBuilder
-    ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skuthumbnail.html";
+        skuPartialsPath,
+        slatwallPathBuilder
+    ) {
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skuthumbnail.html";
     }
+
 }
-export{
+export {
     SWSkuThumbnail,
     SWSkuThumbnailController
 }

@@ -70,7 +70,7 @@ Notes:
 
 		<!--- Setup fieldClass --->
 		<cfset fdAttributes.fieldClass = "" />
-		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) && attribute.getRequiredFlag()>
+		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) AND attribute.getRequiredFlag()>
 			<cfset fdAttributes.fieldClass = listAppend(fdAttributes.fieldClass, "required", " ") />
 		</cfif>
 
@@ -81,9 +81,15 @@ Notes:
 			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeCode(), true) />
 			<cfif isObject(thisAttributeValueObject)>
 				<cfif attributes.edit>
-					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
-				<cfelse>
+					<cfif thisAttributeValueObject.getClassName() eq 'AttributeValue'>
+						<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
+					<cfelse>
+						<cfset fdAttributes.value = thisAttributeValueObject.getPrimaryIDValue() />
+					</cfif>
+				<cfelseif structKeyExists(thisAttributeValueObject, 'getAttributeValueFormatted')>
 					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValueFormatted() />
+				<cfelse>
+					<cfset fdAttributes.value = thisAttributeValueObject.getSimpleRepresentation() />
 				</cfif>
 				<cfif !len(fdAttributes.value) AND !isNull(attribute.getDefaultValue())>
 					<cfset fdAttributes.value = attribute.getDefaultValue()  />
@@ -94,33 +100,54 @@ Notes:
 		<cfelseif !isNull(attribute.getDefaultValue())>
 			<cfset fdAttributes.value = attribute.getDefaultValue() />
 		</cfif>
+		<cfif attribute.getAttributeInputType() EQ "date">
+			<cfset fdAttributes.value = DateFormat(fdAttributes.value,"mmm dd, yyyy")>
+		</cfif>
+		<cfif attribute.getAttributeInputType() EQ "dateTime">
+			<cfset fdAttributes.value = DateTimeFormat(fdAttributes.value,"mmm dd, yyyy hh:nn tt")>
+		</cfif>
 		<!---Setup Value Options --->
 		<cfif attributes.edit>
 			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
 		</cfif>
 
 		<cfif listFindNoCase('relatedObjectSelect,relatedObjectMultiselect', attribute.getAttributeInputType())>
-
 			<cfset fdAttributes.valueOptionsCollectionList = attribute.getRelatedObjectCollectionConfig()/>
 
 			<cfif attribute.getAttributeInputType() eq 'relatedObjectMultiselect'>
 				<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />
 			</cfif>
 		</cfif>
+		
+		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'typeSelect' and len(fdAttributes.value)>
+			<cfset typeObject="#attributes.hibachiScope.getService('TypeService').getType(fdAttributes.value)#" />
+			<cfif !isNull(typeObject)>
+				<cfset fdAttributes.valueLink = "?slatAction=entity.detailtype&typeID=#fdAttributes.value#" />
+				<cfset fdAttributes.value= typeObject.getTypeName() />
+				
+			</cfif>
+		</cfif>
 
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
-			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+			<cfif attributes.entity.hasProperty(attribute.getAttributeCode()) AND structKeyExists(attributes.entity, 'get#attribute.getAttributeCode()#UploadDirectory')>
+				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attributes.entity.invokeMethod('get#attribute.getAttributeCode()#UploadDirectory'))##fdAttributes.value#" />
+			<cfelse>
+				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+			</cfif>
+			<cfif structKeyExists(fdAttributes, 'valueLink') AND left(fdAttributes.valueLink, 5) EQ 's3://'>
+ 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getSignedS3URL(fdAttributes.valueLink)#" />
+			</cfif>
+
+
 			
-		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
-			
+		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject) AND thisAttributeValueObject.getClassName() EQ 'AttributeValue'>
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#&#attributes.attributeSet.getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attributes.attributeSet.getAttributeSetObjectPrimaryIDPropertyName())#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
-		<cfelseif attribute.getAttributeInputType() eq 'file' AND !isObject(thisAttributeValueObject) >
+		<cfelseif isObject(attributes.entity) AND attribute.getAttributeInputType() eq 'file' AND (isNull(thisattributeValueObject) OR not isObject(thisAttributeValueObject)) >
 			<cfset removeLink = "?slatAction=admin:entity.deleteCustomPropertyFile&#attributes.entity.getPrimaryIDPropertyName()#=#attributes.entity.getPrimaryIDValue()#&entityName=#attribute.getAttributeSet().getAttributeSetObject()#&attributeCode=#attribute.getAttributeCode()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
-
 			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 
 	</cfloop>

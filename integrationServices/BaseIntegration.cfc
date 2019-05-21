@@ -63,10 +63,32 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	public struct function getSettings() {
 		return {};
 	}
+
+	// @hint Determines whether integration should allow site specific setting overrides
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return false;
+	}
+
+	// @hint comma-delimitd list of settings to display that allow site specific overrides (without 'integration{packageName}' prefix)
+	public string function getAllowedSiteSettingNames() {
+		return "";
+	}
+
+	public string function getAllowedSiteSettingNamesPrefixed() {
+		variables.settingNamesPrefixed = "";
+		for (var settingName in listToArray(getAllowedSiteSettingNames())) {
+			variables.settingNamesPrefixed = listAppend(variables.settingNamesPrefixed, "integration#getPackageName()##settingName#");
+		}
+		return variables.settingNamesPrefixed;
+	}
 	
 	public array function getEventHandlers() {
 		return [];
 	} 
+	
+	public array function getDetailActions(){
+		return [];
+	}
 	
 	public array function getMenuItems() {
 		return [];
@@ -90,8 +112,9 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		if(!structKeyExists(variables,cacheKey)){
 			if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
 				variables[cacheKey] = getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+			}else{
+				variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 			}
-			variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 		}
 		
 		return variables[cacheKey];

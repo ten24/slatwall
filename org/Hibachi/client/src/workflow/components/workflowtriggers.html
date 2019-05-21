@@ -221,8 +221,31 @@
 									<div class="form-group form-group-sm">
 										<!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label> -->
 										<div class="col-sm-12 s-no-paddings">
-
-                                            <h4>{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection</h4>
+										    
+                                            <sw-listing-display
+                                                ng-if="!workflowTriggers.selectedTrigger.data.scheduleCollectionConfig"
+                                                data-using-personal-collection="false"
+                                                data-collection="workflow.data.workflowObject"
+                                                data-edit="false"
+                                        	    data-has-search="true"
+                                        	    data-is-angular-route="false"
+                                        	    data-angular-links="false"
+                                        	    data-has-action-bar="false"
+                                            >
+                                            </sw-listing-display>
+                                            <sw-listing-display
+                                                ng-if="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
+                                                data-using-personal-collection="false"
+                                                data-collection-config="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
+                                                data-edit="false"
+                                        	    data-has-search="true"
+                                        	    data-is-angular-route="false"
+                                        	    data-angular-links="false"
+                                        	    data-has-action-bar="false"
+                                            >
+                                            </sw-listing-display>
+                                            <!--- no longer supporting persisted collections via ui--->
+                                           <!-- <h4>{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection</h4>
                                             <div class="form-group form-group-sm">
                                                 <div sw-typeahead-search
                                                      data-collection-config="collectionCollectionConfig"
@@ -236,7 +259,7 @@
                                                      data-validate-required="true">
                                                     <span sw-typeahead-search-line-item data-property-identifier="collectionName"></span>
                                                 </div>
-                                            </div>
+                                            </div>-->
 
 											<!--- search --->
 											<!--<div class="s-search-filter">-->
@@ -252,6 +275,13 @@
 											<!-- // search -->
 
 										</div>
+										<sw-property-display
+                                                data-object="workflowTriggers.selectedTrigger"
+                                                data-property-identifier="scheduleCollectionConfig"
+                                                data-editing="true"
+                                                data-is-dirty="true"
+                                                style="display:none"
+                                            ></sw-property-display>
 										<div class="clearfix"></div>
                                         <sw-property-display
                                                 data-object="workflowTriggers.selectedTrigger"
@@ -272,7 +302,7 @@
 										<div class="col-sm-12 s-no-paddings">
 
 											<!-- search -->
-											<div class="s-search-filter">
+											<div>
 												<!--<sw-property-display-->
 													<!--data-object="workflowTriggers.selectedTrigger"-->
 													<!--data-property-identifier="schedule"-->
@@ -283,8 +313,9 @@
 												<!--</sw-property-display>-->
 
                                                 <h4>Schedule Frequency {{selectedSchedule}}</h4>
-                                                <div class="form-group form-group-sm">
+                                                <div class="form-group form-group-sm" style="position: relative;">
                                                     <div sw-typeahead-search
+                                                         data-search-on-load="false"
                                                          data-collection-config="scheduleCollectionConfig"
                                                          data-property-to-show="'scheduleName'"
                                                          data-placeholder-text="Search Schedule..."
@@ -441,7 +472,7 @@
 							<div class="s-button-select-group" data-ng-if="workflowTriggers.selectedTrigger.data.triggerType">
 								<button
 										type="button"
-										class="btn btn-sm s-btn-ten24 s-width-100"
+										class="btn btn-sm s-btn-ten24 btn-primary"
                                         data-ng-click="saveWorkflowTrigger('finish')">
 									Save Trigger
 								</button>
