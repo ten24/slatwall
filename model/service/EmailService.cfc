@@ -63,7 +63,7 @@ Notes:
 		<cfset var whiteListedDomains = getHibachiScope().setting('globalWhiteListedEmailDomains') />
 		<cfset var emailTestDomain = getHibachiScope().setting('globalTestingEmailDomain') />
 		<cfloop list="#arguments.emailAddresses#" index="local.emailAddress">
-			<cfif listFindNoCase(listLast(local.emailAddress, '@'), whiteListedDomains)>
+			<cfif listFindNoCase(whiteListedDomains, listLast(local.emailAddress, '@'))>
 				<cfset finalEmailAddresses = listAppend(finalEmailAddresses, local.emailAddress) />
 			<cfelseif len(emailTestDomain)>
 				<cfset local.emailAddress = listFirst(local.emailAddress, '@') & '@' & emailTestDomain />
