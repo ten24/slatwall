@@ -201,9 +201,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 							'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
 							'securityCode' = arguments.requestBean.getSecurityCode()
 						},
-						// "tokenex\": {
-					 //     "token\": \"6ee140a0-05d1-4958-8325-b38a690dbb9d\"
-					 //   },
 						'processingOptions' = {
 							'verifyAvs' = setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
 							'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
@@ -267,17 +264,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
 			
 			// Request Data
-			arguments.requestBean.getProviderToken();
-			
-			writeDump(var=arguments.requestBean);
-			abort;
-			
 			var requestData = {
-				"data":{
-					'token' = responseData.token,
-					// "tokenex":{
-					// 	"token":"6ee140a0-05d1-4958-8325-b38a690dbb9d
-			    	},
+				"isAuthOnly": false,
+				"tokenex":{
+					'token' = arguments.requestBean.getProviderToken()
+			    },
 			    "card":{
 			    	"expirationMonth": arguments.requestBean.getExpirationMonth(),
 			    	"expirationYear": arguments.requestBean.getExpirationYear(),
@@ -286,7 +277,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    },
 			    "data": {
 			      "currency": arguments.requestBean.getTransactionCurrencyCode(),
-			      "amount": 1,
+			      "amount": arguments.requestBean.getTransactionAmount()
 			    },
 			    "processingOptions":{
 				    "checkFraud": true,
@@ -294,19 +285,26 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
 				    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
-			};
-			
-			writeDump(var=requestData);
-			
+			};	
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-
+			writeDump("***responseData");
+			writeDump(var=responseData);
+			
 			// Response Data
-			arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
-			// arguments.responseBean.setAuthorizationCode(arguments.requestBean.getAuthorizationCode());
-			// arguments.responseBean.setAmountAuthorized(arguments.requestBean.getAmountAuthorized());
+			arguments.responseBean.setProviderTransactionID(responseData.id);
+			arguments.responseBean.setAuthorizationCode(responseData.authCode);
+			arguments.responseBean.setAmountAuthorized(responseData.amount);
 			// arguments.responseBean.setAmountReceived(arguments.requestBean.getAmountReceived());
-			writeDump(var=responseBean);
-			abort;
+			arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+			arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+			arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+			arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+			arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+			arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
+
+			writeDump("***arguments.responseBean");
+			writeDump(var=arguments.responseBean);
+			// abort;
 		}
 		
 		private void function sendRequestToChargePreAuthorization(required any requestBean, required any responseBean) {
@@ -411,7 +409,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			
 			// Make HTTP request to endpoint
 			var httpResponse = httpRequest.send().getPrefix();
-		
+			
+			// writeDump(var=httpResponse, abort=true);
+			
 			var responseData = {};
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {

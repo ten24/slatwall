@@ -38,13 +38,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			selectedMerchant = '100161',
             currencyCode = 'USD',
 			testMode = true,
-			amount = 30.00,
+			amount = 15.00,
 			expMonth = '03',
 			expYear = '20',
 			cvn = '111', // 222 to invoke Failure
 			cardNumber = cards[1],
-			transactionType = transactionTypes[1],
-			providerToken = '', // token_ex
+			transactionType = transactionTypes[2],
+			providerToken = '41aa6a1d-e91e-4ea2-b5f2-42a94ca1b0d3', // token_ex
 			originalAuthorizationProviderTransactionID = '', // authorizationID
 			originalChargeProviderTransactionID = '' // chargeID
 		};
