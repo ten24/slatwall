@@ -3038,7 +3038,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
 			if(len(filter.value)){
-				predicate = "(" & ListQualify(filter.value,"'",variables.inlistDelimiter) & ")";
+				var paramList = '';
+				var values = listToArray(filter.value,variables.inlistDelimiter);
+				for(var value in values){
+					var paramID = getParamID();
+					addHQLParam(paramID,value);
+					paramList = listAppend(paramList, ':#paramID#');
+				}
+				predicate = '(#paramList#)';
 			}else{
 				predicate = "('')";
 			}
