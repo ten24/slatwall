@@ -1223,7 +1223,10 @@ component extends="HibachiService" accessors="true" {
 		if(!arguments.productReview.hasErrors()){
 			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
 		}
-		
+		if(isNull(arguments.productReview.getProductReviewsStatus()))
+		{
+			arguments.productReview.setProductReviewsStatus(getService('typeService').getTypeByTypeID('f0558da55e9f48f7bbd0eb4c95d6b378'));
+		}
 		return arguments.productReview;
 		
 	}
@@ -1290,6 +1293,7 @@ component extends="HibachiService" accessors="true" {
 	public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
 		return this.getImageService().getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
 	}
+	
 
 	//  ====================  END: Wrapper Methods ========================
 
