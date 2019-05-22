@@ -428,6 +428,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				
 			} // End Subsytem Loop
 			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
+			getService('HibachiJsonService').createPermissionJson('action',allPermissions);
 		}
 		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
 	}
