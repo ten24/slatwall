@@ -74,7 +74,7 @@ Notes:
 	})/>
 
 
-	<cfset rc.brandCollectionList.addDisplayProperty(
+	<cfset brandCollectionList.addDisplayProperty(
 	displayProperty='brandID',
 	columnConfig={
 		isVisible=false,

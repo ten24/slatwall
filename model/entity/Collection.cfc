@@ -763,6 +763,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		arguments.column['isExportable'] = false;
 		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
 			arguments.column['isDeletable'] = arguments.columnConfig['isDeletable'];
+			
+			// if its ...ID and non-deletable prepend it for better UX			 //XXX using java String::EqualsIgnoreCase() 
+			if(!arguments.column['isDeletable'] && right(arguments.column["propertyIdentifier"],2).EqualsIgnoreCase("ID")){
+				arguments.prepend = true;
+			}
 		}
 		if(structKeyExists(arguments.columnConfig, 'isVisible')){
 			arguments.column['isVisible'] = arguments.columnConfig['isVisible'];
@@ -3033,7 +3038,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
 			if(len(filter.value)){
-				predicate = "(" & ListQualify(filter.value,"'",variables.inlistDelimiter) & ")";
+				var paramList = '';
+				var values = listToArray(filter.value,variables.inlistDelimiter);
+				for(var value in values){
+					var paramID = getParamID();
+					addHQLParam(paramID,value);
+					paramList = listAppend(paramList, ':#paramID#');
+				}
+				predicate = '(#paramList#)';
 			}else{
 				predicate = "('')";
 			}
