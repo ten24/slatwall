@@ -405,6 +405,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Update the cached value to be used in the future
 			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
+			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
 			
 		}
 		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
