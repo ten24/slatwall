@@ -99,6 +99,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     public void function createJson(){
     	createConfigJson();
     	createRBJson();
+    	createPermissionJson();
+    }
+    
+    public void function createPermissionJson(){
+        var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/permissions";
+        if(!directoryExists(systemrbpath)){
+        	directoryCreate(systemrbpath);
+        }
+        
+        //getpermissions
+        var permissionGroups = getService('AccountService').getPermissionGroupSmartlist().getRecords();
+        
+        
+        //createJsonPerPermission
+        for(var permissionGroup in permissionGroups){
+    		var permissionGroupDetails = permissionGroup.getPermissionsByDetails(true);
+    		writedump(var=permissionGroupDetails);abort;
+	        var data = {};
+	        //cache RB for 1 day or until a reload
+	        //lcase all the resourceBundle keys so we can have consistent casing for the js
+	        for(var key in resourceBundle){
+		    key = REReplace(trim(key), '[^\x00-\x7F]', '', "ALL");
+	            if(!len(key)){
+	                continue;
+	            }
+	            data[lcase(key)] = resourceBundle[key];
+	        }
+	        var json = serializeJson(data);
+			var filePath = systemrbpath & '/#locale#.json';
+	        fileWrite(filePath,json,'utf-8');
+    	}
+        
     }
     
     public void function createRBJson(){
