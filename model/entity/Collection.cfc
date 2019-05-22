@@ -2217,7 +2217,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private void function applyPermissionRecordRestrictions(){
 
 		var excludedEntities = 'Session,PermissionGroup,Permission';
-
+		//TODO: figure out why this prevents record level perms from working
+		return;
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
