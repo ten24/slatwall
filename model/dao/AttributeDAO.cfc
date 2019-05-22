@@ -72,6 +72,46 @@ Notes:
 		<cfreturn rs />
 	</cffunction>
 	
+	<cffunction name="getAssignedAttributeCodesQueryByProductID" returntype="query" access="public">
+		<cfargument name="productID" required="true" type="string" />
+
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			SELECT
+				SwAttribute.attributeCode
+			FROM
+				SwAttribute
+			  LEFT JOIN
+			  	SwAttributeSet ON SwAttribute.attributeSetID = SwAttributeSet.attributeSetID
+ 			  LEFT JOIN
+			  	swAttributeSetBrand ON SwAttribute.attributeSetID = swAttributeSetBrand.attributeSetID 
+			  LEFT JOIN
+			  	swAttributeSetProduct ON SwAttribute.attributeSetID = swAttributeSetProduct.attributeSetID 
+			  LEFT JOIN
+			  	swAttributeSetProductType ON SwAttribute.attributeSetID = swAttributeSetProductType.attributeSetID
+			  LEFT JOIN
+			  	swAttributeSetSku ON SwAttribute.attributeSetID = swAttributeSetSku.attributeSetID
+			  LEFT JOIN
+			  	swProductType ON swAttributeSetProductType.productTypeID = swProductType.productTypeID
+			  LEFT JOIN
+			  	swProduct ON swProduct.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#"/>
+			WHERE
+				SwAttributeSet.attributeSetObject = "Product"
+				AND
+				SwAttributeSet.activeFlag = 1
+				AND
+				swAttribute.activeFlag = 1
+				AND (
+						swAttributeSetProduct.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#"/>
+					OR	
+						FIND_IN_SET(swProduct.productTypeID,swProductType.productTypeIDPath)
+					OR
+						swProduct.brandID = swAttributeSetBrand.brandID
+				)
+		</cfquery>
+		<cfreturn rs />
+	</cffunction>
+	
 	<cffunction name="removeAttributeOptionFromAllAttributeValues">
 		<cfargument name="attributeOptionID" type="string" required="true" >
 		

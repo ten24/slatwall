@@ -139,6 +139,17 @@ component  extends="HibachiService" accessors="true" {
 
 		return attributeCodeList;
 	}
+	
+	public string function getAssignedAttributeCodesListByProductID( required string productID ) {
+		var attributeCodeList = "";
+		var rs = getAttributeDAO().getAssignedAttributeCodesQueryByProductID( arguments.productID );
+
+		for(var i=1; i<=rs.recordCount; i++) {
+			attributeCodeList = listAppend(attributeCodeList, rs[ "attributeCode" ][i]);
+		}
+
+		return attributeCodeList;
+	}
 
 	public any function getAttributeNameByAttributeCode(string attributeCode) {
 		var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#';
