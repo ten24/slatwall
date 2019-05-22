@@ -148,7 +148,7 @@ class SWDisplayOptions{
                     return title;
                 };
                 
-                scope.hasOneToMany=function(propertyIdentifier){
+                scope.hasToMany=function(propertyIdentifier){
                     return $hibachi.hasToManyByEntityNameAndPropertyIdentifier(scope.baseEntityName,scope.baseEntityAlias,propertyIdentifier);
                 }
 
