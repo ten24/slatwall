@@ -73,6 +73,16 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
 		payload['issuer'] = CGI['server_name'];
 		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
+		
+		if(getHibachiScope().getAccount().getSuperUserFlag()){
+			payload['role']='superUser';	
+		}else if(getHibachiScope().getAccount().hasPermissionGroup()){
+			payload['role']="admin";
+		}else{
+			payload['role']='public';
+			writedump(payload);abort;
+		}
+		
 		payload['encoding'] = "UTF-8";
 		var token = jwt.encode(payload);
 		
