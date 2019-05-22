@@ -256,6 +256,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
+			globalCollectionKeywordWildcardConfig={fieldType='select', defaultValue="both", valueOptions=[{name="wildcard on both sides %example%",value="both"}, {name="wildcard on left sides %example",value="left"}, {name="wildcard on right sides example%",value="right"}]},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
@@ -268,6 +269,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
+			globalShippingIntegrationForAddressVerification = {fieldtype="select"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalS3Bucket = {fieldtype="text"},
@@ -275,7 +277,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -566,6 +571,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
+			case "globalShippingIntegrationForAddressVerification":
+				return getShippingIntegrationOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
@@ -653,6 +660,17 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 		return sl;
+	}
+
+
+	public array function getShippingIntegrationOptions() {
+		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
+		integrationCollectionList.addFilter('activeFlag', '1');
+		integrationCollectionList.addFilter('installedFlag', '1');
+		integrationCollectionList.addFilter('integrationTypeList', 'shipping',"in");
+		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
+		var options = integrationCollectionList.getRecords();
+		return options;
 	}
 
 	public array function getCustomIntegrationOptions() {
@@ -1255,7 +1273,7 @@ component extends="HibachiService" output="false" accessors="true" {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+			getHibachiCacheService().updateServerInstanceSettingsCache();
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it

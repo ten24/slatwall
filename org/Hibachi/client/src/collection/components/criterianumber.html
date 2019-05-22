@@ -14,13 +14,24 @@
       </div>
       <div class="clearfix"></div>
     </div>
-    <div class="form-group form-group-sm" ng-show="selectedFilterProperty.showCriteriaValue">
-      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Value:</label>
+    <div class="form-group form-group-sm" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
+      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Value:</label>
       <div class="col-sm-12 s-no-paddings">
-        <input 	ng-model="filterItem.value"  
-        		style="" type="number" class="form-control" 
-        		/>
+        <input 	ng-model="selectedFilterProperty.criteriaRangeStart"  
+                ng-change="criteriaRangeChanged(selectedFilterProperty)"
+        				style="" type="number" class="form-control" 
+        />
       </div>
+      
+      <label class="col-sm-12 control-label s-no-paddings" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" for="formGroupInputSmall">End Value:</label>
+      <div class="col-sm-12 s-no-paddings" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
+        <input 	ng-model="selectedFilterProperty.criteriaRangeEnd"  
+                ng-change="criteriaRangeChanged(selectedFilterProperty)"
+                ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd"
+        				style="" type="number" class="form-control" 
+        />
+      </div>
+      
 	  <div class="clearfix"></div>
 	</div>
 	<div class="s-select-list-wrapper" ng-show="comparisonOperatorInAndNotInFlag"><!--- Add select component Wrapper --->
