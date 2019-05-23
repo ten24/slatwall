@@ -65,10 +65,14 @@ var hibachi =
 /******/
 /******/ 	// Load entry module and return exports
 <<<<<<< HEAD
+<<<<<<< HEAD
 /******/ 	return __webpack_require__(__webpack_require__.s = 916);
 =======
 /******/ 	return __webpack_require__(__webpack_require__.s = 880);
 >>>>>>> 820b72cea3... saving work
+=======
+/******/ 	return __webpack_require__(__webpack_require__.s = 881);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -5165,10 +5169,14 @@ exports.Observable = Observable;
 })));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(915)(module)))
 =======
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(879)(module)))
 >>>>>>> 820b72cea3... saving work
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(880)(module)))
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 
 /***/ }),
 /* 2 */
@@ -5644,6 +5652,7 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 <<<<<<< HEAD
+<<<<<<< HEAD
 var hibachiinterceptor_1 = __webpack_require__(817);
 //constant
 var hibachipathbuilder_1 = __webpack_require__(818);
@@ -5732,35 +5741,39 @@ var alert_module_1 = __webpack_require__(300);
 var dialog_module_1 = __webpack_require__(304);
 =======
 var hibachiinterceptor_1 = __webpack_require__(781);
+=======
+var hibachiinterceptor_1 = __webpack_require__(782);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 //constant
-var hibachipathbuilder_1 = __webpack_require__(782);
+var hibachipathbuilder_1 = __webpack_require__(783);
 //services
 var cacheservice_1 = __webpack_require__(774);
-var publicservice_1 = __webpack_require__(793);
+var publicservice_1 = __webpack_require__(794);
 var accountservice_1 = __webpack_require__(773);
 var accountaddressservice_1 = __webpack_require__(772);
 var cartservice_1 = __webpack_require__(775);
 var draggableservice_1 = __webpack_require__(776);
-var utilityservice_1 = __webpack_require__(800);
-var selectionservice_1 = __webpack_require__(797);
-var observerservice_1 = __webpack_require__(790);
-var orderservice_1 = __webpack_require__(792);
-var orderpaymentservice_1 = __webpack_require__(791);
+var utilityservice_1 = __webpack_require__(801);
+var selectionservice_1 = __webpack_require__(798);
+var observerservice_1 = __webpack_require__(791);
+var orderservice_1 = __webpack_require__(793);
+var orderpaymentservice_1 = __webpack_require__(792);
 var formservice_1 = __webpack_require__(780);
 var filterservice_1 = __webpack_require__(779);
 var expandableservice_1 = __webpack_require__(778);
-var metadataservice_1 = __webpack_require__(789);
-var rbkeyservice_1 = __webpack_require__(794);
-var typeaheadservice_1 = __webpack_require__(799);
-var hibachiservice_1 = __webpack_require__(784);
-var historyservice_1 = __webpack_require__(787);
-var localstorageservice_1 = __webpack_require__(788);
-var hibachiservicedecorator_1 = __webpack_require__(785);
-var hibachiscope_1 = __webpack_require__(783);
-var requestservice_1 = __webpack_require__(795);
-var scopeservice_1 = __webpack_require__(796);
-var skuservice_1 = __webpack_require__(798);
-var hibachivalidationservice_1 = __webpack_require__(786);
+var hibachiauthenticationservice_1 = __webpack_require__(781);
+var metadataservice_1 = __webpack_require__(790);
+var rbkeyservice_1 = __webpack_require__(795);
+var typeaheadservice_1 = __webpack_require__(800);
+var hibachiservice_1 = __webpack_require__(785);
+var historyservice_1 = __webpack_require__(788);
+var localstorageservice_1 = __webpack_require__(789);
+var hibachiservicedecorator_1 = __webpack_require__(786);
+var hibachiscope_1 = __webpack_require__(784);
+var requestservice_1 = __webpack_require__(796);
+var scopeservice_1 = __webpack_require__(797);
+var skuservice_1 = __webpack_require__(799);
+var hibachivalidationservice_1 = __webpack_require__(787);
 var entityservice_1 = __webpack_require__(777);
 //controllers
 var globalsearch_1 = __webpack_require__(752);
@@ -5933,6 +5946,7 @@ var coremodule = angular.module('hibachi.core', [
     .service('typeaheadService', typeaheadservice_1.TypeaheadService)
     .provider('$hibachi', hibachiservice_1.$Hibachi)
     .decorator('$hibachi', hibachiservicedecorator_1.HibachiServiceDecorator)
+    .service('hibachiAuthenticationService', hibachiauthenticationservice_1.HibachiAuthenticationService)
     .service('hibachiInterceptor', hibachiinterceptor_1.HibachiInterceptor.Factory())
     .service('hibachiScope', hibachiscope_1.HibachiScope)
     .service('scopeService', scopeservice_1.ScopeService)
@@ -35392,6 +35406,7 @@ exports.Request = Request;
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
 <<<<<<< HEAD
+<<<<<<< HEAD
 var dialogservice_1 = __webpack_require__(838);
 //controllers
 var pagedialog_1 = __webpack_require__(837);
@@ -35400,6 +35415,11 @@ var dialogservice_1 = __webpack_require__(802);
 //controllers
 var pagedialog_1 = __webpack_require__(801);
 >>>>>>> 820b72cea3... saving work
+=======
+var dialogservice_1 = __webpack_require__(803);
+//controllers
+var pagedialog_1 = __webpack_require__(802);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -35435,6 +35455,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
 <<<<<<< HEAD
+<<<<<<< HEAD
 var otherwisecontroller_1 = __webpack_require__(842);
 var routercontroller_1 = __webpack_require__(843);
 //directives
@@ -35449,6 +35470,14 @@ var swdetailtabs_1 = __webpack_require__(804);
 var swdetail_1 = __webpack_require__(803);
 var swlist_1 = __webpack_require__(805);
 >>>>>>> 820b72cea3... saving work
+=======
+var otherwisecontroller_1 = __webpack_require__(807);
+var routercontroller_1 = __webpack_require__(808);
+//directives
+var swdetailtabs_1 = __webpack_require__(805);
+var swdetail_1 = __webpack_require__(804);
+var swlist_1 = __webpack_require__(806);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var core_module_1 = __webpack_require__(6);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -35838,6 +35867,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //services
 <<<<<<< HEAD
+<<<<<<< HEAD
 var workflowconditionservice_1 = __webpack_require__(914);
 var scheduleservice_1 = __webpack_require__(913);
 //directives
@@ -35870,6 +35900,23 @@ var swworkflowtriggers_1 = __webpack_require__(876);
 var swworkflowtriggerhistory_1 = __webpack_require__(875);
 var swschedulepreview_1 = __webpack_require__(866);
 >>>>>>> 820b72cea3... saving work
+=======
+var workflowconditionservice_1 = __webpack_require__(879);
+var scheduleservice_1 = __webpack_require__(878);
+//directives
+var swadmincreatesuperuser_1 = __webpack_require__(866);
+var swworkflowbasic_1 = __webpack_require__(868);
+var swworkflowcondition_1 = __webpack_require__(869);
+var swworkflowconditiongroupitem_1 = __webpack_require__(870);
+var swworkflowconditiongroups_1 = __webpack_require__(871);
+var swworkflowtask_1 = __webpack_require__(872);
+var swworkflowtaskactions_1 = __webpack_require__(873);
+var swworkflowtasks_1 = __webpack_require__(874);
+var swworkflowtrigger_1 = __webpack_require__(875);
+var swworkflowtriggers_1 = __webpack_require__(877);
+var swworkflowtriggerhistory_1 = __webpack_require__(876);
+var swschedulepreview_1 = __webpack_require__(867);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -75183,6 +75230,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 var hibachi_module_1 = __webpack_require__(862);
 var workflow_module_1 = __webpack_require__(307);
 var entity_module_1 = __webpack_require__(305);
@@ -75206,6 +75254,9 @@ var term_module_1 = __webpack_require__(701);
 var slatwallpathbuilder_1 = __webpack_require__(695);
 =======
 var hibachi_module_1 = __webpack_require__(826);
+=======
+var hibachi_module_1 = __webpack_require__(827);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var workflow_module_1 = __webpack_require__(300);
 var entity_module_1 = __webpack_require__(298);
 var content_module_1 = __webpack_require__(608);
@@ -88321,6 +88372,25 @@ exports.FormService = FormService;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var HibachiAuthenticationService = /** @class */ (function () {
+    //@ngInject
+    //@ngInject
+    function HibachiAuthenticationService($window) {
+        this.$window = $window;
+        this.$window = $window;
+    }
+    return HibachiAuthenticationService;
+}());
+exports.HibachiAuthenticationService = HibachiAuthenticationService;
+
+
+/***/ }),
+/* 782 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiInterceptor = /** @class */ (function () {
@@ -88358,6 +88428,8 @@ var HibachiInterceptor = /** @class */ (function () {
                     _this.$rootScope.slatwall.account = {};
                 }
                 _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+                _this.$rootScope.slatwall.role = jwtData.role;
+                //this.authenticationService.getRoleBasedData();
             }
         };
         this.request = function (config) {
@@ -88474,6 +88546,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.baseUrl = appConfig.baseURL;
+        //this.authenticationService = authenticationService
     }
     HibachiInterceptor.Factory = function () {
         var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService); };
@@ -88490,7 +88563,7 @@ var HibachiInterceptor = /** @class */ (function () {
             'dialogService',
             'utilityService',
             'hibachiPathBuilder',
-            'observerService'
+            'observerService',
         ];
         return eventHandler;
     };
@@ -88501,10 +88574,14 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 818 */
 =======
 /* 782 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 783 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88542,10 +88619,14 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 819 */
 =======
 /* 783 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 784 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88579,10 +88660,14 @@ exports.HibachiScope = HibachiScope;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 820 */
 =======
 /* 784 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 785 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89068,10 +89153,14 @@ exports.$Hibachi = $Hibachi;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 821 */
 =======
 /* 785 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 786 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89857,10 +89946,14 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 822 */
 =======
 /* 786 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 787 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90150,10 +90243,14 @@ exports.HibachiValidationService = HibachiValidationService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 823 */
 =======
 /* 787 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 788 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90190,10 +90287,14 @@ exports.HistoryService = HistoryService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 824 */
 =======
 /* 788 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 789 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90252,10 +90353,14 @@ exports.LocalStorageService = LocalStorageService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 825 */
 =======
 /* 789 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 790 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90407,10 +90512,14 @@ exports.MetaDataService = MetaDataService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 826 */
 =======
 /* 790 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 791 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90580,10 +90689,14 @@ exports.ObserverService = ObserverService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 827 */
 =======
 /* 791 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 792 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90622,10 +90735,14 @@ exports.OrderPaymentService = OrderPaymentService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 828 */
 =======
 /* 792 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 793 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90667,10 +90784,14 @@ exports.OrderService = OrderService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 829 */
 =======
 /* 793 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 794 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92101,10 +92222,14 @@ exports.PublicService = PublicService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 830 */
 =======
 /* 794 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 795 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92217,10 +92342,14 @@ exports.RbKeyService = RbKeyService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 831 */
 =======
 /* 795 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 796 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92265,10 +92394,14 @@ exports.RequestService = RequestService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 832 */
 =======
 /* 796 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 797 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92306,10 +92439,14 @@ exports.ScopeService = ScopeService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 833 */
 =======
 /* 797 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 798 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92436,10 +92573,14 @@ exports.SelectionService = SelectionService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 834 */
 =======
 /* 798 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 799 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92478,10 +92619,14 @@ exports.SkuService = SkuService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 835 */
 =======
 /* 799 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 800 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92722,10 +92867,14 @@ exports.TypeaheadService = TypeaheadService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 836 */
 =======
 /* 800 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 801 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93184,10 +93333,14 @@ exports.UtilityService = UtilityService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 837 */
 =======
 /* 801 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 802 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93214,10 +93367,14 @@ exports.PageDialogController = PageDialogController;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 838 */
 =======
 /* 802 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 803 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93262,10 +93419,14 @@ exports.DialogService = DialogService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 839 */
 =======
 /* 803 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 804 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93341,10 +93502,14 @@ exports.SWDetail = SWDetail;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 840 */
 =======
 /* 804 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 805 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93376,10 +93541,14 @@ exports.SWDetailTabs = SWDetailTabs;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 841 */
 =======
 /* 805 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 806 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93427,10 +93596,14 @@ exports.SWList = SWList;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 842 */
 =======
 /* 806 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 807 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93450,10 +93623,14 @@ exports.OtherWiseController = OtherWiseController;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 843 */
 =======
 /* 807 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 808 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93486,10 +93663,14 @@ exports.RouterController = RouterController;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 844 */
 =======
 /* 808 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 809 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93659,10 +93840,14 @@ exports.SWAddressForm = SWAddressForm;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 845 */
 =======
 /* 809 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 810 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93747,10 +93932,14 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 846 */
 =======
 /* 810 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 811 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93791,10 +93980,14 @@ exports.SWFFileInput = SWFFileInput;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 847 */
 =======
 /* 811 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 812 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93996,10 +94189,14 @@ exports.SWFForm = SWFForm;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 848 */
 =======
 /* 812 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 813 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94102,10 +94299,14 @@ exports.SWFFormField = SWFFormField;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 849 */
 =======
 /* 813 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 814 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94429,10 +94630,14 @@ exports.SWForm = SWForm;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 850 */
 =======
 /* 814 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 815 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94713,10 +94918,14 @@ exports.SWFormField = SWFormField;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 851 */
 =======
 /* 815 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 816 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94765,10 +94974,14 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 852 */
 =======
 /* 816 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 817 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94812,10 +95025,14 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 853 */
 =======
 /* 817 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 818 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94936,10 +95153,14 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 854 */
 =======
 /* 818 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 819 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95008,10 +95229,14 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 855 */
 =======
 /* 819 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 820 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95102,10 +95327,14 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 856 */
 =======
 /* 820 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 821 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95171,10 +95400,14 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 857 */
 =======
 /* 821 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 822 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95540,10 +95773,14 @@ exports.SWInput = SWInput;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 858 */
 =======
 /* 822 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 823 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95692,8 +95929,12 @@ exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 823 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 824 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95704,6 +95945,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(6);
 //services
+<<<<<<< HEAD
 <<<<<<< HEAD
 var fileservice_1 = __webpack_require__(860);
 //directives
@@ -95727,26 +95969,35 @@ var swfpropertydisplay_1 = __webpack_require__(856);
 var swformsubscriber_1 = __webpack_require__(855);
 =======
 var fileservice_1 = __webpack_require__(824);
+=======
+var fileservice_1 = __webpack_require__(825);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 //directives
 //  components
 //form
-var swinput_1 = __webpack_require__(821);
-var swfformfield_1 = __webpack_require__(812);
-var swform_1 = __webpack_require__(813);
-var swfform_1 = __webpack_require__(811);
-var swffileinput_1 = __webpack_require__(810);
-var swformfield_1 = __webpack_require__(814);
-var swformfieldfile_1 = __webpack_require__(815);
-var swformfieldjson_1 = __webpack_require__(816);
-var swformfieldsearchselect_1 = __webpack_require__(817);
-var swformregistrar_1 = __webpack_require__(818);
-var swerrordisplay_1 = __webpack_require__(809);
-var swaddressform_1 = __webpack_require__(808);
+var swinput_1 = __webpack_require__(822);
+var swfformfield_1 = __webpack_require__(813);
+var swform_1 = __webpack_require__(814);
+var swfform_1 = __webpack_require__(812);
+var swffileinput_1 = __webpack_require__(811);
+var swformfield_1 = __webpack_require__(815);
+var swformfieldfile_1 = __webpack_require__(816);
+var swformfieldjson_1 = __webpack_require__(817);
+var swformfieldsearchselect_1 = __webpack_require__(818);
+var swformregistrar_1 = __webpack_require__(819);
+var swerrordisplay_1 = __webpack_require__(810);
+var swaddressform_1 = __webpack_require__(809);
 var swpropertydisplay_1 = __webpack_require__(299);
+<<<<<<< HEAD
 var swfpropertydisplay_1 = __webpack_require__(820);
 var swformsubscriber_1 = __webpack_require__(819);
 var swverifyaddressdialog_1 = __webpack_require__(822);
 >>>>>>> 820b72cea3... saving work
+=======
+var swfpropertydisplay_1 = __webpack_require__(821);
+var swformsubscriber_1 = __webpack_require__(820);
+var swverifyaddressdialog_1 = __webpack_require__(823);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -95778,10 +96029,14 @@ exports.formmodule = formmodule;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 860 */
 =======
 /* 824 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 825 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95829,10 +96084,14 @@ exports.FileService = FileService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 861 */
 =======
 /* 825 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 826 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95943,10 +96202,14 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 862 */
 =======
 /* 826 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 827 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95972,16 +96235,20 @@ var swsaveandfinish_1 = __webpack_require__(861);
 var alert_module_1 = __webpack_require__(293);
 var card_module_1 = __webpack_require__(676);
 var collection_module_1 = __webpack_require__(294);
-var listing_module_1 = __webpack_require__(842);
+var listing_module_1 = __webpack_require__(843);
 var dialog_module_1 = __webpack_require__(297);
 var entity_module_1 = __webpack_require__(298);
-var pagination_module_1 = __webpack_require__(845);
-var form_module_1 = __webpack_require__(823);
-var validation_module_1 = __webpack_require__(864);
+var pagination_module_1 = __webpack_require__(846);
+var form_module_1 = __webpack_require__(824);
+var validation_module_1 = __webpack_require__(865);
 var workflow_module_1 = __webpack_require__(300);
 //directives
+<<<<<<< HEAD
 var swsaveandfinish_1 = __webpack_require__(825);
 >>>>>>> 820b72cea3... saving work
+=======
+var swsaveandfinish_1 = __webpack_require__(826);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -96024,10 +96291,14 @@ exports.hibachimodule = hibachimodule;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 863 */
 =======
 /* 827 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 828 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96077,10 +96348,14 @@ exports.SWListingAggregate = SWListingAggregate;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 864 */
 =======
 /* 828 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 829 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96140,10 +96415,14 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 865 */
 =======
 /* 829 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 830 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96304,10 +96583,14 @@ exports.SWListingColumn = SWListingColumn;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 866 */
 =======
 /* 830 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 831 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96489,10 +96772,14 @@ exports.SWListingControls = SWListingControls;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 867 */
 =======
 /* 831 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 832 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96556,10 +96843,14 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 868 */
 =======
 /* 832 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 833 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97334,10 +97625,14 @@ exports.SWListingDisplay = SWListingDisplay;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 869 */
 =======
 /* 833 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 834 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97508,10 +97803,14 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 870 */
 =======
 /* 834 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 835 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97589,10 +97888,14 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 871 */
 =======
 /* 835 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 836 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97652,10 +97955,14 @@ exports.SWListingFilter = SWListingFilter;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 872 */
 =======
 /* 836 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 837 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97695,10 +98002,14 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 873 */
 =======
 /* 837 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 838 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97756,10 +98067,14 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 874 */
 =======
 /* 838 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 839 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97808,10 +98123,14 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 875 */
 =======
 /* 839 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 840 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98321,10 +98640,14 @@ exports.SWListingReport = SWListingReport;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 876 */
 =======
 /* 840 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 841 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98389,10 +98712,14 @@ exports.SWListingRowSave = SWListingRowSave;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 877 */
 =======
 /* 841 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 842 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98624,10 +98951,14 @@ exports.SWListingSearch = SWListingSearch;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 878 */
 =======
 /* 842 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 843 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98659,8 +98990,9 @@ var swlistingglobalsearch_1 = __webpack_require__(873);
 =======
 var collection_module_1 = __webpack_require__(294);
 //services
-var listingservice_1 = __webpack_require__(843);
+var listingservice_1 = __webpack_require__(844);
 //directives
+<<<<<<< HEAD
 var swlistingdisplay_1 = __webpack_require__(832);
 var swlistingreport_1 = __webpack_require__(839);
 var swlistingdisplaycell_1 = __webpack_require__(833);
@@ -98677,6 +99009,23 @@ var swlistingrowsave_1 = __webpack_require__(840);
 var swlistingsearch_1 = __webpack_require__(841);
 var swlistingglobalsearch_1 = __webpack_require__(837);
 >>>>>>> 820b72cea3... saving work
+=======
+var swlistingdisplay_1 = __webpack_require__(833);
+var swlistingreport_1 = __webpack_require__(840);
+var swlistingdisplaycell_1 = __webpack_require__(834);
+var swlistingcontrols_1 = __webpack_require__(831);
+var swlistingaggregate_1 = __webpack_require__(828);
+var swlistingcolorfilter_1 = __webpack_require__(829);
+var swlistingcolumn_1 = __webpack_require__(830);
+var swlistingdisablerule_1 = __webpack_require__(832);
+var swlistingexpandablerule_1 = __webpack_require__(835);
+var swlistingfilter_1 = __webpack_require__(836);
+var swlistingfiltergroup_1 = __webpack_require__(837);
+var swlistingorderby_1 = __webpack_require__(839);
+var swlistingrowsave_1 = __webpack_require__(841);
+var swlistingsearch_1 = __webpack_require__(842);
+var swlistingglobalsearch_1 = __webpack_require__(838);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -98705,10 +99054,14 @@ exports.listingmodule = listingmodule;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 879 */
 =======
 /* 843 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 844 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99694,10 +100047,14 @@ exports.ListingService = ListingService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 880 */
 =======
 /* 844 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 845 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99744,10 +100101,14 @@ exports.SWPaginationBar = SWPaginationBar;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 881 */
 =======
 /* 845 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 846 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99757,12 +100118,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
 <<<<<<< HEAD
+<<<<<<< HEAD
 var paginationservice_1 = __webpack_require__(882);
 var swpaginationbar_1 = __webpack_require__(880);
 =======
 var paginationservice_1 = __webpack_require__(846);
 var swpaginationbar_1 = __webpack_require__(844);
 >>>>>>> 820b72cea3... saving work
+=======
+var paginationservice_1 = __webpack_require__(847);
+var swpaginationbar_1 = __webpack_require__(845);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var core_module_1 = __webpack_require__(6);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -99780,10 +100146,14 @@ exports.paginationmodule = paginationmodule;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 882 */
 =======
 /* 846 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 847 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99998,10 +100368,14 @@ exports.PaginationService = PaginationService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 883 */
 =======
 /* 847 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 848 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100391,10 +100765,14 @@ exports.SWValidate = SWValidate;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 884 */
 =======
 /* 848 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 849 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100427,10 +100805,14 @@ exports.SWValidationDataType = SWValidationDataType;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 885 */
 =======
 /* 849 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 850 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100464,10 +100846,14 @@ exports.SWValidationEq = SWValidationEq;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 886 */
 =======
 /* 850 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 851 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100532,10 +100918,14 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 887 */
 =======
 /* 851 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 852 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100566,10 +100956,14 @@ exports.SWValidationGte = SWValidationGte;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 888 */
 =======
 /* 852 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 853 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100600,10 +100994,14 @@ exports.SWValidationLte = SWValidationLte;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 889 */
 =======
 /* 853 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 854 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100638,10 +101036,14 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 890 */
 =======
 /* 854 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 855 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100675,10 +101077,14 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 891 */
 =======
 /* 855 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 856 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100713,10 +101119,14 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 892 */
 =======
 /* 856 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 857 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100750,10 +101160,14 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 893 */
 =======
 /* 857 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 858 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100784,10 +101198,14 @@ exports.SWValidationNeq = SWValidationNeq;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 894 */
 =======
 /* 858 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 859 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100818,10 +101236,14 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 895 */
 =======
 /* 859 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 860 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100853,10 +101275,14 @@ exports.SWValidationRegex = SWValidationRegex;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 896 */
 =======
 /* 860 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 861 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100894,10 +101320,14 @@ exports.SWValidationRequired = SWValidationRequired;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 897 */
 =======
 /* 861 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 862 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100931,10 +101361,14 @@ exports.SWValidationUnique = SWValidationUnique;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 898 */
 =======
 /* 862 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 863 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100972,10 +101406,14 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 899 */
 =======
 /* 863 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 864 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101133,10 +101571,14 @@ exports.ValidationService = ValidationService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 900 */
 =======
 /* 864 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 865 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101145,6 +101587,7 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
+<<<<<<< HEAD
 <<<<<<< HEAD
 var swvalidate_1 = __webpack_require__(883);
 var swvalidationminlength_1 = __webpack_require__(891);
@@ -101184,6 +101627,26 @@ var swvalidationuniqueornull_1 = __webpack_require__(862);
 //services
 var validationservice_1 = __webpack_require__(863);
 >>>>>>> 820b72cea3... saving work
+=======
+var swvalidate_1 = __webpack_require__(848);
+var swvalidationminlength_1 = __webpack_require__(856);
+var swvalidationdatatype_1 = __webpack_require__(849);
+var swvalidationeq_1 = __webpack_require__(850);
+var swvalidationeqproperty_1 = __webpack_require__(851);
+var swvalidationgte_1 = __webpack_require__(852);
+var swvalidationlte_1 = __webpack_require__(853);
+var swvalidationmaxlength_1 = __webpack_require__(854);
+var swvalidationmaxvalue_1 = __webpack_require__(855);
+var swvalidationminvalue_1 = __webpack_require__(857);
+var swvalidationneq_1 = __webpack_require__(858);
+var swvalidationnumeric_1 = __webpack_require__(859);
+var swvalidationregex_1 = __webpack_require__(860);
+var swvalidationrequired_1 = __webpack_require__(861);
+var swvalidationunique_1 = __webpack_require__(862);
+var swvalidationuniqueornull_1 = __webpack_require__(863);
+//services
+var validationservice_1 = __webpack_require__(864);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var core_module_1 = __webpack_require__(6);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -101212,10 +101675,14 @@ exports.validationmodule = validationmodule;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 901 */
 =======
 /* 865 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 866 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101250,10 +101717,14 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 902 */
 =======
 /* 866 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 867 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101292,10 +101763,14 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 903 */
 =======
 /* 867 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 868 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101330,10 +101805,14 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 904 */
 =======
 /* 868 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 869 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101455,10 +101934,14 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 905 */
 =======
 /* 869 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 870 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101490,10 +101973,14 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 906 */
 =======
 /* 870 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 871 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101544,10 +102031,14 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 907 */
 =======
 /* 871 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 872 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101595,10 +102086,14 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 908 */
 =======
 /* 872 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 873 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101871,10 +102366,14 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 909 */
 =======
 /* 873 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 874 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102075,10 +102574,14 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 910 */
 =======
 /* 874 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 875 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102181,10 +102684,14 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 911 */
 =======
 /* 875 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 876 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102234,10 +102741,14 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 912 */
 =======
 /* 876 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 877 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102535,10 +103046,14 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 913 */
 =======
 /* 877 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 878 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102651,10 +103166,14 @@ exports.ScheduleService = ScheduleService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 914 */
 =======
 /* 878 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 879 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102713,10 +103232,14 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 915 */
 =======
 /* 879 */
 >>>>>>> 820b72cea3... saving work
+=======
+/* 880 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -102745,12 +103268,16 @@ module.exports = function(module) {
 
 /***/ }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 916 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(308);
 =======
 /* 880 */
+=======
+/* 881 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(301);

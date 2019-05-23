@@ -6,7 +6,11 @@ webpackJsonphibachi([0],[
 "use strict";
 
 var root_1 = __webpack_require__(10);
+<<<<<<< HEAD
 var toSubscriber_1 = __webpack_require__(606);
+=======
+var toSubscriber_1 = __webpack_require__(602);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var observable_1 = __webpack_require__(37);
 var pipe_1 = __webpack_require__(60);
 /**
@@ -1458,6 +1462,7 @@ exports.Observable = Observable;
     function createDate (y, m, d, h, M, s, ms) {
         // can't just apply() to create a date:
         // https://stackoverflow.com/q/181348
+<<<<<<< HEAD
         var date;
         // the date constructor remaps years 0-99 to 1900-1999
         if (y < 100 && y >= 0) {
@@ -1470,10 +1475,19 @@ exports.Observable = Observable;
             date = new Date(y, m, d, h, M, s, ms);
         }
 
+=======
+        var date = new Date(y, m, d, h, M, s, ms);
+
+        // the date constructor remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
+            date.setFullYear(y);
+        }
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         return date;
     }
 
     function createUTCDate (y) {
+<<<<<<< HEAD
         var date;
         // the Date.UTC function remaps years 0-99 to 1900-1999
         if (y < 100 && y >= 0) {
@@ -1488,6 +1502,14 @@ exports.Observable = Observable;
             date = new Date(Date.UTC.apply(null, arguments));
         }
 
+=======
+        var date = new Date(Date.UTC.apply(null, arguments));
+
+        // the Date.UTC function remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
+            date.setUTCFullYear(y);
+        }
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         return date;
     }
 
@@ -1589,7 +1611,11 @@ exports.Observable = Observable;
 
     var defaultLocaleWeek = {
         dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
         doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+        doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     };
 
     function localeFirstDayOfWeek () {
@@ -1698,6 +1724,7 @@ exports.Observable = Observable;
     }
 
     // LOCALES
+<<<<<<< HEAD
     function shiftWeekdays (ws, n) {
         return ws.slice(n, 7).concat(ws.slice(0, n));
     }
@@ -1708,18 +1735,37 @@ exports.Observable = Observable;
             this._weekdays[(m && m !== true && this._weekdays.isFormat.test(format)) ? 'format' : 'standalone'];
         return (m === true) ? shiftWeekdays(weekdays, this._week.dow)
             : (m) ? weekdays[m.day()] : weekdays;
+=======
+
+    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
+    function localeWeekdays (m, format) {
+        if (!m) {
+            return isArray(this._weekdays) ? this._weekdays :
+                this._weekdays['standalone'];
+        }
+        return isArray(this._weekdays) ? this._weekdays[m.day()] :
+            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
 
     var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
     function localeWeekdaysShort (m) {
+<<<<<<< HEAD
         return (m === true) ? shiftWeekdays(this._weekdaysShort, this._week.dow)
             : (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+=======
+        return (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
 
     var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
     function localeWeekdaysMin (m) {
+<<<<<<< HEAD
         return (m === true) ? shiftWeekdays(this._weekdaysMin, this._week.dow)
             : (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+=======
+        return (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
 
     function handleStrictParse$1(weekdayName, format, strict) {
@@ -2166,7 +2212,11 @@ exports.Observable = Observable;
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
+<<<<<<< HEAD
                 __webpack_require__(307)("./" + name);
+=======
+                __webpack_require__(303)("./" + name);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -2468,13 +2518,21 @@ exports.Observable = Observable;
                     weekdayOverflow = true;
                 }
             } else if (w.e != null) {
+<<<<<<< HEAD
                 // local weekday -- counting starts from beginning of week
+=======
+                // local weekday -- counting starts from begining of week
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 weekday = w.e + dow;
                 if (w.e < 0 || w.e > 6) {
                     weekdayOverflow = true;
                 }
             } else {
+<<<<<<< HEAD
                 // default to beginning of week
+=======
+                // default to begining of week
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 weekday = dow;
             }
         }
@@ -3068,7 +3126,11 @@ exports.Observable = Observable;
             years = normalizedInput.year || 0,
             quarters = normalizedInput.quarter || 0,
             months = normalizedInput.month || 0,
+<<<<<<< HEAD
             weeks = normalizedInput.week || normalizedInput.isoWeek || 0,
+=======
+            weeks = normalizedInput.week || 0,
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             days = normalizedInput.day || 0,
             hours = normalizedInput.hour || 0,
             minutes = normalizedInput.minute || 0,
@@ -3372,7 +3434,11 @@ exports.Observable = Observable;
                 ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
             };
         } else if (!!(match = isoRegex.exec(input))) {
+<<<<<<< HEAD
             sign = (match[1] === '-') ? -1 : 1;
+=======
+            sign = (match[1] === '-') ? -1 : (match[1] === '+') ? 1 : 1;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             duration = {
                 y : parseIso(match[2], sign),
                 M : parseIso(match[3], sign),
@@ -3414,7 +3480,11 @@ exports.Observable = Observable;
     }
 
     function positiveMomentsDifference(base, other) {
+<<<<<<< HEAD
         var res = {};
+=======
+        var res = {milliseconds: 0, months: 0};
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 
         res.months = other.month() - base.month() +
             (other.year() - base.year()) * 12;
@@ -3523,7 +3593,11 @@ exports.Observable = Observable;
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
+<<<<<<< HEAD
         units = normalizeUnits(units) || 'millisecond';
+=======
+        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         if (units === 'millisecond') {
             return this.valueOf() > localInput.valueOf();
         } else {
@@ -3536,7 +3610,11 @@ exports.Observable = Observable;
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
+<<<<<<< HEAD
         units = normalizeUnits(units) || 'millisecond';
+=======
+        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         if (units === 'millisecond') {
             return this.valueOf() < localInput.valueOf();
         } else {
@@ -3545,6 +3623,7 @@ exports.Observable = Observable;
     }
 
     function isBetween (from, to, units, inclusivity) {
+<<<<<<< HEAD
         var localFrom = isMoment(from) ? from : createLocal(from),
             localTo = isMoment(to) ? to : createLocal(to);
         if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) {
@@ -3553,6 +3632,11 @@ exports.Observable = Observable;
         inclusivity = inclusivity || '()';
         return (inclusivity[0] === '(' ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) &&
             (inclusivity[1] === ')' ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
+=======
+        inclusivity = inclusivity || '()';
+        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
+            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
 
     function isSame (input, units) {
@@ -3561,7 +3645,11 @@ exports.Observable = Observable;
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
+<<<<<<< HEAD
         units = normalizeUnits(units) || 'millisecond';
+=======
+        units = normalizeUnits(units || 'millisecond');
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         if (units === 'millisecond') {
             return this.valueOf() === localInput.valueOf();
         } else {
@@ -3571,11 +3659,19 @@ exports.Observable = Observable;
     }
 
     function isSameOrAfter (input, units) {
+<<<<<<< HEAD
         return this.isSame(input, units) || this.isAfter(input, units);
     }
 
     function isSameOrBefore (input, units) {
         return this.isSame(input, units) || this.isBefore(input, units);
+=======
+        return this.isSame(input, units) || this.isAfter(input,units);
+    }
+
+    function isSameOrBefore (input, units) {
+        return this.isSame(input, units) || this.isBefore(input,units);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
 
     function diff (input, units, asFloat) {
@@ -3752,6 +3848,7 @@ exports.Observable = Observable;
         return this._locale;
     }
 
+<<<<<<< HEAD
     var MS_PER_SECOND = 1000;
     var MS_PER_MINUTE = 60 * MS_PER_SECOND;
     var MS_PER_HOUR = 60 * MS_PER_MINUTE;
@@ -3827,10 +3924,54 @@ exports.Observable = Observable;
 
         this._d.setTime(time);
         hooks.updateOffset(this, true);
+=======
+    function startOf (units) {
+        units = normalizeUnits(units);
+        // the following switch intentionally omits break keywords
+        // to utilize falling through the cases.
+        switch (units) {
+            case 'year':
+                this.month(0);
+                /* falls through */
+            case 'quarter':
+            case 'month':
+                this.date(1);
+                /* falls through */
+            case 'week':
+            case 'isoWeek':
+            case 'day':
+            case 'date':
+                this.hours(0);
+                /* falls through */
+            case 'hour':
+                this.minutes(0);
+                /* falls through */
+            case 'minute':
+                this.seconds(0);
+                /* falls through */
+            case 'second':
+                this.milliseconds(0);
+        }
+
+        // weeks are a special case
+        if (units === 'week') {
+            this.weekday(0);
+        }
+        if (units === 'isoWeek') {
+            this.isoWeekday(1);
+        }
+
+        // quarters are also special
+        if (units === 'quarter') {
+            this.month(Math.floor(this.month() / 3) * 3);
+        }
+
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         return this;
     }
 
     function endOf (units) {
+<<<<<<< HEAD
         var time;
         units = normalizeUnits(units);
         if (units === undefined || units === 'millisecond' || !this.isValid()) {
@@ -3876,6 +4017,19 @@ exports.Observable = Observable;
         this._d.setTime(time);
         hooks.updateOffset(this, true);
         return this;
+=======
+        units = normalizeUnits(units);
+        if (units === undefined || units === 'millisecond') {
+            return this;
+        }
+
+        // 'date' is an alias for 'day', so it should be considered as such.
+        if (units === 'date') {
+            units = 'day';
+        }
+
+        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
 
     function valueOf () {
@@ -4581,6 +4735,7 @@ exports.Observable = Observable;
 
         units = normalizeUnits(units);
 
+<<<<<<< HEAD
         if (units === 'month' || units === 'quarter' || units === 'year') {
             days = this._days + milliseconds / 864e5;
             months = this._months + daysToMonths(days);
@@ -4589,6 +4744,12 @@ exports.Observable = Observable;
                 case 'quarter': return months / 3;
                 case 'year':    return months / 12;
             }
+=======
+        if (units === 'month' || units === 'year') {
+            days   = this._days   + milliseconds / 864e5;
+            months = this._months + daysToMonths(days);
+            return units === 'month' ? months : months / 12;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         } else {
             // handle milliseconds separately because of floating point math errors (issue #1867)
             days = this._days + Math.round(monthsToDays(this._months));
@@ -4631,7 +4792,10 @@ exports.Observable = Observable;
     var asDays         = makeAs('d');
     var asWeeks        = makeAs('w');
     var asMonths       = makeAs('M');
+<<<<<<< HEAD
     var asQuarters     = makeAs('Q');
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     var asYears        = makeAs('y');
 
     function clone$1 () {
@@ -4823,7 +4987,10 @@ exports.Observable = Observable;
     proto$2.asDays         = asDays;
     proto$2.asWeeks        = asWeeks;
     proto$2.asMonths       = asMonths;
+<<<<<<< HEAD
     proto$2.asQuarters     = asQuarters;
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     proto$2.asYears        = asYears;
     proto$2.valueOf        = valueOf$1;
     proto$2._bubble        = bubble;
@@ -4868,7 +5035,11 @@ exports.Observable = Observable;
     // Side effect imports
 
 
+<<<<<<< HEAD
     hooks.version = '2.24.0';
+=======
+    hooks.version = '2.22.2';
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 
     setHookCallback(createLocal);
 
@@ -4909,7 +5080,11 @@ exports.Observable = Observable;
         TIME: 'HH:mm',                                  // <input type="time" />
         TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
         TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
+<<<<<<< HEAD
         WEEK: 'GGGG-[W]WW',                             // <input type="week" />
+=======
+        WEEK: 'YYYY-[W]WW',                             // <input type="week" />
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         MONTH: 'YYYY-MM'                                // <input type="month" />
     };
 
@@ -4917,7 +5092,11 @@ exports.Observable = Observable;
 
 })));
 
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(824)(module)))
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(819)(module)))
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 
 /***/ }),
 /* 2 */
@@ -4932,7 +5111,11 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var isFunction_1 = __webpack_require__(42);
 var Subscription_1 = __webpack_require__(6);
+<<<<<<< HEAD
 var Observer_1 = __webpack_require__(195);
+=======
+var Observer_1 = __webpack_require__(191);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var rxSubscriber_1 = __webpack_require__(38);
 /**
  * Implements the {@link Observer} interface and extends the
@@ -5239,12 +5422,21 @@ exports.OuterSubscriber = OuterSubscriber;
 "use strict";
 
 var root_1 = __webpack_require__(10);
+<<<<<<< HEAD
 var isArrayLike_1 = __webpack_require__(292);
 var isPromise_1 = __webpack_require__(294);
 var isObject_1 = __webpack_require__(293);
 var Observable_1 = __webpack_require__(0);
 var iterator_1 = __webpack_require__(26);
 var InnerSubscriber_1 = __webpack_require__(313);
+=======
+var isArrayLike_1 = __webpack_require__(288);
+var isPromise_1 = __webpack_require__(290);
+var isObject_1 = __webpack_require__(289);
+var Observable_1 = __webpack_require__(0);
+var iterator_1 = __webpack_require__(26);
+var InnerSubscriber_1 = __webpack_require__(309);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var observable_1 = __webpack_require__(37);
 function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
     var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
@@ -5377,11 +5569,19 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 "use strict";
 
 var isArray_1 = __webpack_require__(12);
+<<<<<<< HEAD
 var isObject_1 = __webpack_require__(293);
 var isFunction_1 = __webpack_require__(42);
 var tryCatch_1 = __webpack_require__(9);
 var errorObject_1 = __webpack_require__(8);
 var UnsubscriptionError_1 = __webpack_require__(289);
+=======
+var isObject_1 = __webpack_require__(289);
+var isFunction_1 = __webpack_require__(42);
+var tryCatch_1 = __webpack_require__(9);
+var errorObject_1 = __webpack_require__(8);
+var UnsubscriptionError_1 = __webpack_require__(285);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Represents a disposable resource, such as the execution of an Observable. A
  * Subscription has one important method, `unsubscribe`, that takes no argument
@@ -5584,7 +5784,11 @@ var Observable_1 = __webpack_require__(0);
 var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(6);
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
+<<<<<<< HEAD
 var SubjectSubscription_1 = __webpack_require__(196);
+=======
+var SubjectSubscription_1 = __webpack_require__(192);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var rxSubscriber_1 = __webpack_require__(38);
 /**
  * @class SubjectSubscriber<T>
@@ -5847,9 +6051,15 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var baseobject_1 = __webpack_require__(297);
 var Entities = __webpack_require__(706);
 var Processes = __webpack_require__(712);
+=======
+var baseobject_1 = __webpack_require__(293);
+var Entities = __webpack_require__(699);
+var Processes = __webpack_require__(705);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -6140,7 +6350,11 @@ exports.EmptyObservable = EmptyObservable;
 
 "use strict";
 
+<<<<<<< HEAD
 var ConnectableObservable_1 = __webpack_require__(197);
+=======
+var ConnectableObservable_1 = __webpack_require__(193);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the results of invoking a specified selector on items
@@ -6208,6 +6422,7 @@ exports.MulticastOperator = MulticastOperator;
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var hibachiinterceptor_1 = __webpack_require__(724);
 //constant
 var hibachipathbuilder_1 = __webpack_require__(725);
@@ -6294,6 +6509,92 @@ var swsortable_1 = __webpack_require__(685);
 var sworderbycontrols_1 = __webpack_require__(680);
 var alert_module_1 = __webpack_require__(61);
 var dialog_module_1 = __webpack_require__(300);
+=======
+var hibachiinterceptor_1 = __webpack_require__(718);
+//constant
+var hibachipathbuilder_1 = __webpack_require__(719);
+//services
+var cacheservice_1 = __webpack_require__(710);
+var publicservice_1 = __webpack_require__(730);
+var accountservice_1 = __webpack_require__(709);
+var accountaddressservice_1 = __webpack_require__(708);
+var cartservice_1 = __webpack_require__(711);
+var draggableservice_1 = __webpack_require__(712);
+var utilityservice_1 = __webpack_require__(737);
+var selectionservice_1 = __webpack_require__(734);
+var observerservice_1 = __webpack_require__(727);
+var orderservice_1 = __webpack_require__(729);
+var orderpaymentservice_1 = __webpack_require__(728);
+var formservice_1 = __webpack_require__(716);
+var filterservice_1 = __webpack_require__(715);
+var expandableservice_1 = __webpack_require__(714);
+var hibachiauthenticationservice_1 = __webpack_require__(717);
+var metadataservice_1 = __webpack_require__(726);
+var rbkeyservice_1 = __webpack_require__(731);
+var typeaheadservice_1 = __webpack_require__(736);
+var hibachiservice_1 = __webpack_require__(721);
+var historyservice_1 = __webpack_require__(724);
+var localstorageservice_1 = __webpack_require__(725);
+var hibachiservicedecorator_1 = __webpack_require__(722);
+var hibachiscope_1 = __webpack_require__(720);
+var requestservice_1 = __webpack_require__(732);
+var scopeservice_1 = __webpack_require__(733);
+var skuservice_1 = __webpack_require__(735);
+var hibachivalidationservice_1 = __webpack_require__(723);
+var entityservice_1 = __webpack_require__(713);
+//controllers
+var globalsearch_1 = __webpack_require__(688);
+//filters
+var percentage_1 = __webpack_require__(692);
+var entityrbkey_1 = __webpack_require__(691);
+var swtrim_1 = __webpack_require__(693);
+var swunique_1 = __webpack_require__(694);
+var datefilter_1 = __webpack_require__(689);
+var datereporting_1 = __webpack_require__(690);
+//directives
+//  components
+var swactioncaller_1 = __webpack_require__(649);
+var swtypeaheadsearch_1 = __webpack_require__(686);
+var swtypeaheadinputfield_1 = __webpack_require__(683);
+var swtypeaheadmultiselect_1 = __webpack_require__(684);
+var swtypeaheadsearchlineitem_1 = __webpack_require__(687);
+var swtypeaheadremoveselection_1 = __webpack_require__(685);
+var swcollectionconfig_1 = __webpack_require__(653);
+var swcollectionfilter_1 = __webpack_require__(654);
+var swcollectionorderby_1 = __webpack_require__(655);
+var swcollectioncolumn_1 = __webpack_require__(652);
+var swactioncallerdropdown_1 = __webpack_require__(650);
+var swcolumnsorter_1 = __webpack_require__(656);
+var swconfirm_1 = __webpack_require__(657);
+var swdraggable_1 = __webpack_require__(659);
+var swdraggablecontainer_1 = __webpack_require__(660);
+var swentityactionbar_1 = __webpack_require__(661);
+var swentityactionbarbuttongroup_1 = __webpack_require__(662);
+var swexpandablerecord_1 = __webpack_require__(663);
+var swexpiringsessionnotifier_1 = __webpack_require__(664);
+var swgravatar_1 = __webpack_require__(666);
+var swlogin_1 = __webpack_require__(669);
+var swmodallauncher_1 = __webpack_require__(670);
+var swmodalwindow_1 = __webpack_require__(671);
+var swnumbersonly_1 = __webpack_require__(672);
+var swloading_1 = __webpack_require__(668);
+var swscrolltrigger_1 = __webpack_require__(677);
+var swtabgroup_1 = __webpack_require__(681);
+var swtabcontent_1 = __webpack_require__(680);
+var swtooltip_1 = __webpack_require__(682);
+var swrbkey_1 = __webpack_require__(676);
+var swoptions_1 = __webpack_require__(673);
+var swselection_1 = __webpack_require__(678);
+var swclickoutside_1 = __webpack_require__(651);
+var swdirective_1 = __webpack_require__(658);
+var swexportaction_1 = __webpack_require__(665);
+var swhref_1 = __webpack_require__(667);
+var swprocesscaller_1 = __webpack_require__(675);
+var swsortable_1 = __webpack_require__(679);
+var sworderbycontrols_1 = __webpack_require__(674);
+var alert_module_1 = __webpack_require__(61);
+var dialog_module_1 = __webpack_require__(296);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var coremodule = angular.module('hibachi.core', [
     //Angular Modules
     'ngAnimate',
@@ -6412,6 +6713,10 @@ var coremodule = angular.module('hibachi.core', [
     .service('typeaheadService', typeaheadservice_1.TypeaheadService)
     .provider('$hibachi', hibachiservice_1.$Hibachi)
     .decorator('$hibachi', hibachiservicedecorator_1.HibachiServiceDecorator)
+<<<<<<< HEAD
+=======
+    .service('hibachiAuthenticationService', hibachiauthenticationservice_1.HibachiAuthenticationService)
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     .service('hibachiInterceptor', hibachiinterceptor_1.HibachiInterceptor.Factory())
     .service('hibachiScope', hibachiscope_1.HibachiScope)
     .service('scopeService', scopeservice_1.ScopeService)
@@ -6427,9 +6732,14 @@ var coremodule = angular.module('hibachi.core', [
     .service('entityService', entityservice_1.EntityService)
     //controllers
     .controller('globalSearch', globalsearch_1.GlobalSearchController)
+<<<<<<< HEAD
     //filters
     .filter('dateFilter', ['$filter', datefilter_1.DateFilter.Factory])
     .filter('swcurrency', ['$sce', '$log', '$hibachi', '$filter', swcurrency_1.SWCurrency.Factory])
+=======
+    //filters 
+    .filter('dateFilter', ['$filter', datefilter_1.DateFilter.Factory])
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     .filter('swdatereporting', ['$filter', datereporting_1.DateReporting.Factory])
     .filter('percentage', [percentage_1.PercentageFilter.Factory])
     .filter('trim', [swtrim_1.SWTrim.Factory])
@@ -6450,8 +6760,11 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swActionCallerDropdown', swactioncallerdropdown_1.SWActionCallerDropdown.Factory())
     .directive('swColumnSorter', swcolumnsorter_1.SWColumnSorter.Factory())
     .directive('swConfirm', swconfirm_1.SWConfirm.Factory())
+<<<<<<< HEAD
     .directive('swCurrencyFormatter', swcurrencyformatter_1.SWCurrencyFormatter.Factory())
     .directive('swDatePicker', swdatepicker_1.SWDatePicker.Factory())
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     .directive('swEntityActionBar', swentityactionbar_1.SWEntityActionBar.Factory())
     .directive('swEntityActionBarButtonGroup', swentityactionbarbuttongroup_1.SWEntityActionBarButtonGroup.Factory())
     .directive('swExpandableRecord', swexpandablerecord_1.SWExpandableRecord.Factory())
@@ -6654,8 +6967,13 @@ exports.Notification = Notification;
 "use strict";
 
 var isScheduler_1 = __webpack_require__(11);
+<<<<<<< HEAD
 var of_1 = __webpack_require__(202);
 var from_1 = __webpack_require__(201);
+=======
+var of_1 = __webpack_require__(198);
+var from_1 = __webpack_require__(197);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var concatAll_1 = __webpack_require__(47);
 /* tslint:enable:max-line-length */
 /**
@@ -7125,7 +7443,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var root_1 = __webpack_require__(10);
+<<<<<<< HEAD
 var Action_1 = __webpack_require__(587);
+=======
+var Action_1 = __webpack_require__(583);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -7272,7 +7594,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+<<<<<<< HEAD
 var Scheduler_1 = __webpack_require__(315);
+=======
+var Scheduler_1 = __webpack_require__(311);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var AsyncScheduler = (function (_super) {
     __extends(AsyncScheduler, _super);
     function AsyncScheduler() {
@@ -7485,11 +7811,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subject_1 = __webpack_require__(7);
+<<<<<<< HEAD
 var queue_1 = __webpack_require__(285);
 var Subscription_1 = __webpack_require__(6);
 var observeOn_1 = __webpack_require__(34);
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
 var SubjectSubscription_1 = __webpack_require__(196);
+=======
+var queue_1 = __webpack_require__(281);
+var Subscription_1 = __webpack_require__(6);
+var observeOn_1 = __webpack_require__(34);
+var ObjectUnsubscribedError_1 = __webpack_require__(40);
+var SubjectSubscription_1 = __webpack_require__(192);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * @class ReplaySubject<T>
  */
@@ -7841,7 +8175,11 @@ exports.CombineLatestSubscriber = CombineLatestSubscriber;
 "use strict";
 
 var mergeMap_1 = __webpack_require__(22);
+<<<<<<< HEAD
 var identity_1 = __webpack_require__(291);
+=======
+var identity_1 = __webpack_require__(287);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Converts a higher-order Observable into a first-order Observable which
  * concurrently delivers all values that are emitted on the inner Observables.
@@ -9420,7 +9758,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+<<<<<<< HEAD
 var FromObservable_1 = __webpack_require__(198);
+=======
+var FromObservable_1 = __webpack_require__(194);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var isArray_1 = __webpack_require__(12);
 var OuterSubscriber_1 = __webpack_require__(3);
 var subscribeToResult_1 = __webpack_require__(4);
@@ -10116,9 +10458,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
+<<<<<<< HEAD
 var alertcontroller_1 = __webpack_require__(612);
 //services
 var alertservice_1 = __webpack_require__(614);
+=======
+var alertcontroller_1 = __webpack_require__(608);
+//services
+var alertservice_1 = __webpack_require__(610);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -10149,7 +10497,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var baseobject_1 = __webpack_require__(297);
+=======
+var baseobject_1 = __webpack_require__(293);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var BaseTransient = /** @class */ (function (_super) {
     __extends(BaseTransient, _super);
     function BaseTransient($injector) {
@@ -10402,9 +10754,15 @@ module.exports = charenc;
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(){
+<<<<<<< HEAD
   var crypt = __webpack_require__(305),
       utf8 = __webpack_require__(65).utf8,
       isBuffer = __webpack_require__(306),
+=======
+  var crypt = __webpack_require__(301),
+      utf8 = __webpack_require__(65).utf8,
+      isBuffer = __webpack_require__(302),
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
       bin = __webpack_require__(65).bin,
 
   // The core
@@ -10694,7 +11052,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 4  // The week that contains Jan 4th is the first week of the year.
+=======
+            doy : 4  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -10757,7 +11119,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -10883,7 +11249,11 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
+<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -10946,7 +11316,11 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
+<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -11054,7 +11428,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -11256,7 +11634,11 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
+<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -11365,7 +11747,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -11501,7 +11887,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -11595,7 +11985,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -11780,7 +12174,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -11903,7 +12301,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -12170,7 +12572,11 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -12286,12 +12692,15 @@ module.exports = charenc;
 
     var months = 'leden_únor_březen_duben_květen_červen_červenec_srpen_září_říjen_listopad_prosinec'.split('_'),
         monthsShort = 'led_úno_bře_dub_kvě_čvn_čvc_srp_zář_říj_lis_pro'.split('_');
+<<<<<<< HEAD
 
     var monthsParse = [/^led/i, /^úno/i, /^bře/i, /^dub/i, /^kvě/i, /^(čvn|červen$|června)/i, /^(čvc|červenec|července)/i, /^srp/i, /^zář/i, /^říj/i, /^lis/i, /^pro/i];
     // NOTE: 'červen' is substring of 'červenec'; therefore 'červenec' must precede 'červen' in the regex to be fully matched.
     // Otherwise parser matches '1. červenec' as '1. červen' + 'ec'.
     var monthsRegex = /^(leden|únor|březen|duben|květen|červenec|července|červen|června|srpen|září|říjen|listopad|prosinec|led|úno|bře|dub|kvě|čvn|čvc|srp|zář|říj|lis|pro)/i;
 
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     function plural(n) {
         return (n > 1) && (n < 5) && (~~(n / 10) !== 1);
     }
@@ -12358,6 +12767,7 @@ module.exports = charenc;
     var cs = moment.defineLocale('cs', {
         months : months,
         monthsShort : monthsShort,
+<<<<<<< HEAD
         monthsRegex : monthsRegex,
         monthsShortRegex : monthsRegex,
         // NOTE: 'červen' is substring of 'červenec'; therefore 'červenec' must precede 'červen' in the regex to be fully matched.
@@ -12367,6 +12777,30 @@ module.exports = charenc;
         monthsParse : monthsParse,
         longMonthsParse : monthsParse,
         shortMonthsParse : monthsParse,
+=======
+        monthsParse : (function (months, monthsShort) {
+            var i, _monthsParse = [];
+            for (i = 0; i < 12; i++) {
+                // use custom parser to solve problem with July (červenec)
+                _monthsParse[i] = new RegExp('^' + months[i] + '$|^' + monthsShort[i] + '$', 'i');
+            }
+            return _monthsParse;
+        }(months, monthsShort)),
+        shortMonthsParse : (function (monthsShort) {
+            var i, _shortMonthsParse = [];
+            for (i = 0; i < 12; i++) {
+                _shortMonthsParse[i] = new RegExp('^' + monthsShort[i] + '$', 'i');
+            }
+            return _shortMonthsParse;
+        }(monthsShort)),
+        longMonthsParse : (function (months) {
+            var i, _longMonthsParse = [];
+            for (i = 0; i < 12; i++) {
+                _longMonthsParse[i] = new RegExp('^' + months[i] + '$', 'i');
+            }
+            return _longMonthsParse;
+        }(months)),
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         weekdays : 'neděle_pondělí_úterý_středa_čtvrtek_pátek_sobota'.split('_'),
         weekdaysShort : 'ne_po_út_st_čt_pá_so'.split('_'),
         weekdaysMin : 'ne_po_út_st_čt_pá_so'.split('_'),
@@ -12505,7 +12939,11 @@ module.exports = charenc;
         ordinal : '%d-мӗш',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -12996,7 +13434,11 @@ module.exports = charenc;
         },
         week : {
             dow : 7,  // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -13122,6 +13564,7 @@ module.exports = charenc;
 }(this, (function (moment) { 'use strict';
 
 
+<<<<<<< HEAD
     var enSG = moment.defineLocale('en-SG', {
         months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
         monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
@@ -13193,6 +13636,8 @@ module.exports = charenc;
 }(this, (function (moment) { 'use strict';
 
 
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     var enAu = moment.defineLocale('en-au', {
         months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
         monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
@@ -13252,7 +13697,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 95 */
+=======
+/* 94 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13319,7 +13768,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 96 */
+=======
+/* 95 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13390,7 +13843,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 97 */
+=======
+/* 96 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13411,7 +13868,11 @@ module.exports = charenc;
         longDateFormat : {
             LT : 'HH:mm',
             LTS : 'HH:mm:ss',
+<<<<<<< HEAD
             L : 'DD/MM/YYYY',
+=======
+            L : 'DD-MM-YYYY',
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY HH:mm',
             LLLL : 'dddd D MMMM YYYY HH:mm'
@@ -13461,7 +13922,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 98 */
+=======
+/* 97 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13527,7 +13992,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 99 */
+=======
+/* 98 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13598,7 +14067,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 100 */
+=======
+/* 99 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13663,7 +14136,11 @@ module.exports = charenc;
         ordinal : '%da',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -13673,7 +14150,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 101 */
+=======
+/* 100 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13769,7 +14250,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 102 */
+=======
+/* 101 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13784,9 +14269,12 @@ module.exports = charenc;
     var monthsShortDot = 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
         monthsShort = 'ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic'.split('_');
 
+<<<<<<< HEAD
     var monthsParse = [/^ene/i, /^feb/i, /^mar/i, /^abr/i, /^may/i, /^jun/i, /^jul/i, /^ago/i, /^sep/i, /^oct/i, /^nov/i, /^dic/i];
     var monthsRegex = /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;
 
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     var esUs = moment.defineLocale('es-us', {
         months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
         monthsShort : function (m, format) {
@@ -13798,6 +14286,7 @@ module.exports = charenc;
                 return monthsShortDot[m.month()];
             }
         },
+<<<<<<< HEAD
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
         monthsStrictRegex: /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,
@@ -13805,6 +14294,9 @@ module.exports = charenc;
         monthsParse: monthsParse,
         longMonthsParse: monthsParse,
         shortMonthsParse: monthsParse,
+=======
+        monthsParseExact : true,
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
         weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
         weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_'),
@@ -13813,9 +14305,15 @@ module.exports = charenc;
             LT : 'h:mm A',
             LTS : 'h:mm:ss A',
             L : 'MM/DD/YYYY',
+<<<<<<< HEAD
             LL : 'D [de] MMMM [de] YYYY',
             LLL : 'D [de] MMMM [de] YYYY h:mm A',
             LLLL : 'dddd, D [de] MMMM [de] YYYY h:mm A'
+=======
+            LL : 'MMMM [de] D [de] YYYY',
+            LLL : 'MMMM [de] D [de] YYYY h:mm A',
+            LLLL : 'dddd, MMMM [de] D [de] YYYY h:mm A'
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         },
         calendar : {
             sameDay : function () {
@@ -13855,7 +14353,11 @@ module.exports = charenc;
         ordinal : '%dº',
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -13865,7 +14367,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 103 */
+=======
+/* 102 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13961,7 +14467,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 104 */
+=======
+/* 103 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14045,7 +14555,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 105 */
+=======
+/* 104 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14105,7 +14619,11 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -14115,7 +14633,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 106 */
+=======
+/* 105 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14215,7 +14737,11 @@ module.exports = charenc;
         ordinal : '%dم',
         week : {
             dow : 6, // Saturday is the first day of the week.
+<<<<<<< HEAD
             doy : 12 // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12 // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -14225,7 +14751,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 107 */
+=======
+/* 106 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14338,7 +14868,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 108 */
+=======
+/* 107 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14377,13 +14911,21 @@ module.exports = charenc;
             past : '%s síðani',
             s : 'fá sekund',
             ss : '%d sekundir',
+<<<<<<< HEAD
             m : 'ein minuttur',
+=======
+            m : 'ein minutt',
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             mm : '%d minuttir',
             h : 'ein tími',
             hh : '%d tímar',
             d : 'ein dagur',
             dd : '%d dagar',
+<<<<<<< HEAD
             M : 'ein mánaður',
+=======
+            M : 'ein mánaði',
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             MM : '%d mánaðir',
             y : 'eitt ár',
             yy : '%d ár'
@@ -14402,7 +14944,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 109 */
+=======
+/* 108 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14480,7 +15026,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 110 */
+=======
+/* 109 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14562,7 +15112,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 111 */
+=======
+/* 110 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14649,7 +15203,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 112 */
+=======
+/* 111 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14728,6 +15286,7 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14810,6 +15369,9 @@ module.exports = charenc;
 
 /***/ }),
 /* 114 */
+=======
+/* 112 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14889,7 +15451,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 115 */
+=======
+/* 113 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14970,7 +15536,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 116 */
+=======
+/* 114 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14988,8 +15558,13 @@ module.exports = charenc;
             'ss': [number + ' secondanim', number + ' second'],
             'm': ['eka mintan', 'ek minute'],
             'mm': [number + ' mintanim', number + ' mintam'],
+<<<<<<< HEAD
             'h': ['eka voran', 'ek vor'],
             'hh': [number + ' voranim', number + ' voram'],
+=======
+            'h': ['eka horan', 'ek hor'],
+            'hh': [number + ' horanim', number + ' horam'],
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             'd': ['eka disan', 'ek dis'],
             'dd': [number + ' disanim', number + ' dis'],
             'M': ['eka mhoinean', 'ek mhoino'],
@@ -15097,7 +15672,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 117 */
+=======
+/* 115 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15215,7 +15794,11 @@ module.exports = charenc;
         },
         week: {
             dow: 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy: 6 // The week that contains Jan 6th is the first week of the year.
+=======
+            doy: 6 // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -15225,7 +15808,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 118 */
+=======
+/* 116 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15326,7 +15913,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 119 */
+=======
+/* 117 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15444,7 +16035,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -15454,7 +16049,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 120 */
+=======
+/* 118 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15602,7 +16201,11 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -15612,7 +16215,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 121 */
+=======
+/* 119 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15726,7 +16333,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 122 */
+=======
+/* 120 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15815,7 +16426,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -15825,7 +16440,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 123 */
+=======
+/* 121 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15901,7 +16520,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -15911,7 +16534,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 124 */
+=======
+/* 122 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16047,6 +16674,7 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16121,6 +16749,9 @@ module.exports = charenc;
 
 /***/ }),
 /* 126 */
+=======
+/* 123 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16193,7 +16824,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 127 */
+=======
+/* 124 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16206,7 +16841,11 @@ module.exports = charenc;
 
 
     var ja = moment.defineLocale('ja', {
+<<<<<<< HEAD
         months : '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
+=======
+        months : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         monthsShort : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
         weekdays : '日曜日_月曜日_火曜日_水曜日_木曜日_金曜日_土曜日'.split('_'),
         weekdaysShort : '日_月_火_水_木_金_土'.split('_'),
@@ -16289,7 +16928,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 128 */
+=======
+/* 125 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16365,7 +17008,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -16375,7 +17022,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 129 */
+=======
+/* 126 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16468,7 +17119,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 130 */
+=======
+/* 127 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16549,7 +17204,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -16559,7 +17218,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 131 */
+=======
+/* 128 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16673,7 +17336,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 132 */
+=======
+/* 129 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16793,7 +17460,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -16803,7 +17474,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 133 */
+=======
+/* 130 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16888,6 +17563,7 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17012,6 +17688,9 @@ module.exports = charenc;
 
 /***/ }),
 /* 135 */
+=======
+/* 131 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17064,8 +17743,13 @@ module.exports = charenc;
             sameDay : '[Бүгүн саат] LT',
             nextDay : '[Эртең саат] LT',
             nextWeek : 'dddd [саат] LT',
+<<<<<<< HEAD
             lastDay : '[Кечээ саат] LT',
             lastWeek : '[Өткөн аптанын] dddd [күнү] [саат] LT',
+=======
+            lastDay : '[Кече саат] LT',
+            lastWeek : '[Өткен аптанын] dddd [күнү] [саат] LT',
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             sameElse : 'L'
         },
         relativeTime : {
@@ -17092,7 +17776,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -17102,7 +17790,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 136 */
+=======
+/* 132 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17242,7 +17934,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 137 */
+=======
+/* 133 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17316,7 +18012,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 138 */
+=======
+/* 134 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17438,7 +18138,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 139 */
+=======
+/* 135 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17539,7 +18243,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 140 */
+=======
+/* 136 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17645,7 +18353,11 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -17655,7 +18367,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 141 */
+=======
+/* 137 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17723,7 +18439,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 142 */
+=======
+/* 138 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17807,7 +18527,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -17817,7 +18541,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 143 */
+=======
+/* 139 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17902,7 +18630,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 144 */
+=======
+/* 140 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18010,7 +18742,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 145 */
+=======
+/* 141 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18164,7 +18900,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -18174,7 +18914,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 146 */
+=======
+/* 142 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18250,7 +18994,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -18260,7 +19008,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 147 */
+=======
+/* 143 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18336,7 +19088,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -18346,7 +19102,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 148 */
+=======
+/* 144 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18410,7 +19170,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 149 */
+=======
+/* 145 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18497,7 +19261,11 @@ module.exports = charenc;
         },
         week: {
             dow: 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy: 4 // The week that contains Jan 4th is the first week of the year.
+=======
+            doy: 4 // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -18507,7 +19275,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 150 */
+=======
+/* 146 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18573,7 +19345,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 151 */
+=======
+/* 147 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18690,7 +19466,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -18700,7 +19480,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 152 */
+=======
+/* 148 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18716,7 +19500,11 @@ module.exports = charenc;
         monthsShortWithoutDots = 'jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec'.split('_');
 
     var monthsParse = [/^jan/i, /^feb/i, /^maart|mrt.?$/i, /^apr/i, /^mei$/i, /^jun[i.]?$/i, /^jul[i.]?$/i, /^aug/i, /^sep/i, /^okt/i, /^nov/i, /^dec/i];
+<<<<<<< HEAD
     var monthsRegex = /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
+=======
+    var monthsRegex = /^(januari|februari|maart|april|mei|april|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 
     var nlBe = moment.defineLocale('nl-be', {
         months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
@@ -18732,7 +19520,11 @@ module.exports = charenc;
 
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
+<<<<<<< HEAD
         monthsStrictRegex: /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,
+=======
+        monthsStrictRegex: /^(januari|februari|maart|mei|ju[nl]i|april|augustus|september|oktober|november|december)/i,
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         monthsShortStrictRegex: /^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,
 
         monthsParse : monthsParse,
@@ -18791,7 +19583,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 153 */
+=======
+/* 149 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18807,7 +19603,11 @@ module.exports = charenc;
         monthsShortWithoutDots = 'jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec'.split('_');
 
     var monthsParse = [/^jan/i, /^feb/i, /^maart|mrt.?$/i, /^apr/i, /^mei$/i, /^jun[i.]?$/i, /^jul[i.]?$/i, /^aug/i, /^sep/i, /^okt/i, /^nov/i, /^dec/i];
+<<<<<<< HEAD
     var monthsRegex = /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
+=======
+    var monthsRegex = /^(januari|februari|maart|april|mei|april|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 
     var nl = moment.defineLocale('nl', {
         months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
@@ -18823,7 +19623,11 @@ module.exports = charenc;
 
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
+<<<<<<< HEAD
         monthsStrictRegex: /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,
+=======
+        monthsStrictRegex: /^(januari|februari|maart|mei|ju[nl]i|april|augustus|september|oktober|november|december)/i,
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         monthsShortStrictRegex: /^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,
 
         monthsParse : monthsParse,
@@ -18882,7 +19686,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 154 */
+=======
+/* 150 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18946,7 +19754,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 155 */
+=======
+/* 151 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18984,7 +19796,11 @@ module.exports = charenc;
     };
 
     var paIn = moment.defineLocale('pa-in', {
+<<<<<<< HEAD
         // There are months name as per Nanakshahi Calendar but they are not used as rigidly in modern Punjabi.
+=======
+        // There are months name as per Nanakshahi Calender but they are not used as rigidly in modern Punjabi.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         months : 'ਜਨਵਰੀ_ਫ਼ਰਵਰੀ_ਮਾਰਚ_ਅਪ੍ਰੈਲ_ਮਈ_ਜੂਨ_ਜੁਲਾਈ_ਅਗਸਤ_ਸਤੰਬਰ_ਅਕਤੂਬਰ_ਨਵੰਬਰ_ਦਸੰਬਰ'.split('_'),
         monthsShort : 'ਜਨਵਰੀ_ਫ਼ਰਵਰੀ_ਮਾਰਚ_ਅਪ੍ਰੈਲ_ਮਈ_ਜੂਨ_ਜੁਲਾਈ_ਅਗਸਤ_ਸਤੰਬਰ_ਅਕਤੂਬਰ_ਨਵੰਬਰ_ਦਸੰਬਰ'.split('_'),
         weekdays : 'ਐਤਵਾਰ_ਸੋਮਵਾਰ_ਮੰਗਲਵਾਰ_ਬੁਧਵਾਰ_ਵੀਰਵਾਰ_ਸ਼ੁੱਕਰਵਾਰ_ਸ਼ਨੀਚਰਵਾਰ'.split('_'),
@@ -19064,7 +19880,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -19074,7 +19894,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 156 */
+=======
+/* 152 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19204,7 +20028,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 157 */
+=======
+/* 153 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19217,8 +20045,13 @@ module.exports = charenc;
 
 
     var ptBr = moment.defineLocale('pt-br', {
+<<<<<<< HEAD
         months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
         monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
+=======
+        months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
+        monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
         weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
         weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
@@ -19269,7 +20102,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 158 */
+=======
+/* 154 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19282,8 +20119,13 @@ module.exports = charenc;
 
 
     var pt = moment.defineLocale('pt', {
+<<<<<<< HEAD
         months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
         monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
+=======
+        months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
+        monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
         weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
         weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
@@ -19338,7 +20180,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 159 */
+=======
+/* 155 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19407,7 +20253,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -19417,7 +20267,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 160 */
+=======
+/* 156 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19603,7 +20457,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 161 */
+=======
+/* 157 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19705,7 +20563,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 162 */
+=======
+/* 158 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19769,7 +20631,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 163 */
+=======
+/* 159 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19844,7 +20710,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 164 */
+=======
+/* 160 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20004,7 +20874,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 165 */
+=======
+/* 161 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20029,7 +20903,11 @@ module.exports = charenc;
                 } else if (number < 5) {
                     result += withoutSuffix || isFuture ? 'sekunde' : 'sekundah';
                 } else {
+<<<<<<< HEAD
                     result += 'sekund';
+=======
+                    result += withoutSuffix || isFuture ? 'sekund' : 'sekund';
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 }
                 return result;
             case 'm':
@@ -20171,7 +21049,11 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -20181,7 +21063,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 166 */
+=======
+/* 162 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20253,7 +21139,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 167 */
+=======
+/* 163 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20358,7 +21248,11 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -20368,7 +21262,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 168 */
+=======
+/* 164 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20473,7 +21371,11 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -20483,7 +21385,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 169 */
+=======
+/* 165 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20575,7 +21481,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 170 */
+=======
+/* 166 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20648,7 +21558,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 171 */
+=======
+/* 167 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20701,7 +21615,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -20711,7 +21629,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 172 */
+=======
+/* 168 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20834,7 +21756,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -20844,7 +21770,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 173 */
+=======
+/* 169 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20857,8 +21787,13 @@ module.exports = charenc;
 
 
     var te = moment.defineLocale('te', {
+<<<<<<< HEAD
         months : 'జనవరి_ఫిబ్రవరి_మార్చి_ఏప్రిల్_మే_జూన్_జులై_ఆగస్టు_సెప్టెంబర్_అక్టోబర్_నవంబర్_డిసెంబర్'.split('_'),
         monthsShort : 'జన._ఫిబ్ర._మార్చి_ఏప్రి._మే_జూన్_జులై_ఆగ._సెప్._అక్టో._నవ._డిసె.'.split('_'),
+=======
+        months : 'జనవరి_ఫిబ్రవరి_మార్చి_ఏప్రిల్_మే_జూన్_జూలై_ఆగస్టు_సెప్టెంబర్_అక్టోబర్_నవంబర్_డిసెంబర్'.split('_'),
+        monthsShort : 'జన._ఫిబ్ర._మార్చి_ఏప్రి._మే_జూన్_జూలై_ఆగ._సెప్._అక్టో._నవ._డిసె.'.split('_'),
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         monthsParseExact : true,
         weekdays : 'ఆదివారం_సోమవారం_మంగళవారం_బుధవారం_గురువారం_శుక్రవారం_శనివారం'.split('_'),
         weekdaysShort : 'ఆది_సోమ_మంగళ_బుధ_గురు_శుక్ర_శని'.split('_'),
@@ -20927,7 +21862,11 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
+<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
+=======
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -20937,7 +21876,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 174 */
+=======
+/* 170 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21008,7 +21951,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 175 */
+=======
+/* 171 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21128,7 +22075,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 176 */
+=======
+/* 172 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21199,7 +22150,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 177 */
+=======
+/* 173 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21265,7 +22220,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 178 */
+=======
+/* 174 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21391,7 +22350,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 179 */
+=======
+/* 175 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -21479,7 +22442,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -21489,7 +22456,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 180 */
+=======
+/* 176 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21584,7 +22555,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 181 */
+=======
+/* 177 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21636,7 +22611,11 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
+<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -21646,7 +22625,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 182 */
+=======
+/* 178 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21698,7 +22681,11 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
+<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+            doy : 12  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -21708,7 +22695,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 183 */
+=======
+/* 179 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -21831,7 +22822,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 184 */
+=======
+/* 180 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21873,9 +22868,12 @@ module.exports = charenc;
             'genitive': 'неділі_понеділка_вівторка_середи_четверга_п’ятниці_суботи'.split('_')
         };
 
+<<<<<<< HEAD
         if (m === true) {
             return weekdays['nominative'].slice(1, 7).concat(weekdays['nominative'].slice(0, 1));
         }
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         if (!m) {
             return weekdays['nominative'];
         }
@@ -21979,7 +22977,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -21989,7 +22991,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 185 */
+=======
+/* 181 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22091,7 +23097,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 186 */
+=======
+/* 182 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22143,7 +23153,11 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
+<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
+=======
+            doy : 7  // The week that contains Jan 1st is the first week of the year.
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
     });
 
@@ -22153,7 +23167,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 187 */
+=======
+/* 183 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22215,7 +23233,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 188 */
+=======
+/* 184 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22298,7 +23320,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 189 */
+=======
+/* 185 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22370,7 +23396,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 190 */
+=======
+/* 186 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22434,7 +23464,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 191 */
+=======
+/* 187 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22548,7 +23582,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 192 */
+=======
+/* 188 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22655,7 +23693,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 193 */
+=======
+/* 189 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22762,7 +23804,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 194 */
+=======
+/* 190 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22817,7 +23863,11 @@ exports.BehaviorSubject = BehaviorSubject;
 //# sourceMappingURL=BehaviorSubject.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 195 */
+=======
+/* 191 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22831,7 +23881,11 @@ exports.empty = {
 //# sourceMappingURL=Observer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 196 */
+=======
+/* 192 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22877,7 +23931,11 @@ exports.SubjectSubscription = SubjectSubscription;
 //# sourceMappingURL=SubjectSubscription.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 197 */
+=======
+/* 193 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23054,7 +24112,11 @@ var RefCountSubscriber = (function (_super) {
 //# sourceMappingURL=ConnectableObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 198 */
+=======
+/* 194 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23065,12 +24127,21 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var isArray_1 = __webpack_require__(12);
+<<<<<<< HEAD
 var isArrayLike_1 = __webpack_require__(292);
 var isPromise_1 = __webpack_require__(294);
 var PromiseObservable_1 = __webpack_require__(199);
 var IteratorObservable_1 = __webpack_require__(456);
 var ArrayObservable_1 = __webpack_require__(14);
 var ArrayLikeObservable_1 = __webpack_require__(445);
+=======
+var isArrayLike_1 = __webpack_require__(288);
+var isPromise_1 = __webpack_require__(290);
+var PromiseObservable_1 = __webpack_require__(195);
+var IteratorObservable_1 = __webpack_require__(452);
+var ArrayObservable_1 = __webpack_require__(14);
+var ArrayLikeObservable_1 = __webpack_require__(441);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var iterator_1 = __webpack_require__(26);
 var Observable_1 = __webpack_require__(0);
 var observeOn_1 = __webpack_require__(34);
@@ -23182,7 +24253,11 @@ exports.FromObservable = FromObservable;
 //# sourceMappingURL=FromObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 199 */
+=======
+/* 195 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23309,7 +24384,11 @@ function dispatchError(arg) {
 //# sourceMappingURL=PromiseObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 200 */
+=======
+/* 196 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23741,17 +24820,29 @@ exports.AjaxTimeoutError = AjaxTimeoutError;
 //# sourceMappingURL=AjaxObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 201 */
+=======
+/* 197 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var FromObservable_1 = __webpack_require__(198);
+=======
+var FromObservable_1 = __webpack_require__(194);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.from = FromObservable_1.FromObservable.create;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 202 */
+=======
+/* 198 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23761,23 +24852,39 @@ exports.of = ArrayObservable_1.ArrayObservable.of;
 //# sourceMappingURL=of.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 203 */
+=======
+/* 199 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var TimerObservable_1 = __webpack_require__(461);
+=======
+var TimerObservable_1 = __webpack_require__(457);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.timer = TimerObservable_1.TimerObservable.create;
 //# sourceMappingURL=timer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 204 */
+=======
+/* 200 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
+<<<<<<< HEAD
 var timeInterval_1 = __webpack_require__(272);
+=======
+var timeInterval_1 = __webpack_require__(268);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.TimeInterval = timeInterval_1.TimeInterval;
 /**
  * @param scheduler
@@ -23793,14 +24900,22 @@ exports.timeInterval = timeInterval;
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 205 */
+=======
+/* 201 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var audit_1 = __webpack_require__(46);
+<<<<<<< HEAD
 var timer_1 = __webpack_require__(203);
+=======
+var timer_1 = __webpack_require__(199);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
  * value from the source Observable, then repeats this process.
@@ -23851,7 +24966,11 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 206 */
+=======
+/* 202 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23935,7 +25054,11 @@ var BufferSubscriber = (function (_super) {
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 207 */
+=======
+/* 203 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24083,7 +25206,11 @@ var BufferSkipCountSubscriber = (function (_super) {
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 208 */
+=======
+/* 204 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24290,7 +25417,11 @@ function dispatchBufferClose(arg) {
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 209 */
+=======
+/* 205 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24450,7 +25581,11 @@ var BufferToggleSubscriber = (function (_super) {
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 210 */
+=======
+/* 206 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24580,7 +25715,11 @@ var BufferWhenSubscriber = (function (_super) {
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 211 */
+=======
+/* 207 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24702,7 +25841,11 @@ var CatchSubscriber = (function (_super) {
 //# sourceMappingURL=catchError.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 212 */
+=======
+/* 208 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24715,7 +25858,11 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 213 */
+=======
+/* 209 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24784,7 +25931,11 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 214 */
+=======
+/* 210 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24854,7 +26005,11 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 215 */
+=======
+/* 211 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24971,7 +26126,11 @@ var CountSubscriber = (function (_super) {
 //# sourceMappingURL=count.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 216 */
+=======
+/* 212 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25104,7 +26263,11 @@ var DebounceSubscriber = (function (_super) {
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 217 */
+=======
+/* 213 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25226,7 +26389,11 @@ function dispatchNext(subscriber) {
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 218 */
+=======
+/* 214 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25368,7 +26535,11 @@ var DelayMessage = (function () {
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 219 */
+=======
+/* 215 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25568,7 +26739,11 @@ var SubscriptionDelaySubscriber = (function (_super) {
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 220 */
+=======
+/* 216 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25651,7 +26826,11 @@ var DeMaterializeSubscriber = (function (_super) {
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 221 */
+=======
+/* 217 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25663,7 +26842,11 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var OuterSubscriber_1 = __webpack_require__(3);
 var subscribeToResult_1 = __webpack_require__(4);
+<<<<<<< HEAD
 var Set_1 = __webpack_require__(603);
+=======
+var Set_1 = __webpack_require__(599);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -25777,7 +26960,11 @@ exports.DistinctSubscriber = DistinctSubscriber;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 222 */
+=======
+/* 218 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25848,7 +27035,11 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 223 */
+=======
+/* 219 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25954,7 +27145,11 @@ var ElementAtSubscriber = (function (_super) {
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 224 */
+=======
+/* 220 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26034,7 +27229,11 @@ var EverySubscriber = (function (_super) {
 //# sourceMappingURL=every.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 225 */
+=======
+/* 221 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26129,7 +27328,11 @@ var SwitchFirstSubscriber = (function (_super) {
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 226 */
+=======
+/* 222 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26273,7 +27476,11 @@ var SwitchFirstMapSubscriber = (function (_super) {
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 227 */
+=======
+/* 223 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26430,7 +27637,11 @@ exports.ExpandSubscriber = ExpandSubscriber;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 228 */
+=======
+/* 224 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26479,7 +27690,11 @@ var FinallySubscriber = (function (_super) {
 //# sourceMappingURL=finalize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 229 */
+=======
+/* 225 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26526,7 +27741,11 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 230 */
+=======
+/* 226 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26684,7 +27903,11 @@ var FirstSubscriber = (function (_super) {
 //# sourceMappingURL=first.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 231 */
+=======
+/* 227 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26698,8 +27921,13 @@ var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(6);
 var Observable_1 = __webpack_require__(0);
 var Subject_1 = __webpack_require__(7);
+<<<<<<< HEAD
 var Map_1 = __webpack_require__(601);
 var FastMap_1 = __webpack_require__(599);
+=======
+var Map_1 = __webpack_require__(597);
+var FastMap_1 = __webpack_require__(595);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Groups the items emitted by an Observable according to a specified criterion,
@@ -26966,7 +28194,11 @@ var InnerRefCountSubscription = (function (_super) {
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 232 */
+=======
+/* 228 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27020,7 +28252,11 @@ var IgnoreElementsSubscriber = (function (_super) {
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 233 */
+=======
+/* 229 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27069,7 +28305,11 @@ var IsEmptySubscriber = (function (_super) {
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 234 */
+=======
+/* 230 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27194,7 +28434,11 @@ var LastSubscriber = (function (_super) {
 //# sourceMappingURL=last.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 235 */
+=======
+/* 231 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27263,7 +28507,11 @@ var MapToSubscriber = (function (_super) {
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 236 */
+=======
+/* 232 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27361,7 +28609,11 @@ var MaterializeSubscriber = (function (_super) {
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 237 */
+=======
+/* 233 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27408,7 +28660,11 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 238 */
+=======
+/* 234 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27474,7 +28730,11 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 239 */
+=======
+/* 235 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27635,7 +28895,11 @@ exports.MergeMapToSubscriber = MergeMapToSubscriber;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 240 */
+=======
+/* 236 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27770,7 +29034,11 @@ exports.MergeScanSubscriber = MergeScanSubscriber;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 241 */
+=======
+/* 237 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27817,7 +29085,11 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 242 */
+=======
+/* 238 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27900,12 +29172,20 @@ var PairwiseSubscriber = (function (_super) {
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 243 */
+=======
+/* 239 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var not_1 = __webpack_require__(605);
+=======
+var not_1 = __webpack_require__(601);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var filter_1 = __webpack_require__(51);
 /**
  * Splits the source Observable into two, one with values that satisfy a
@@ -27958,7 +29238,11 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 244 */
+=======
+/* 240 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28021,7 +29305,11 @@ function plucker(props, length) {
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 245 */
+=======
+/* 241 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28051,12 +29339,20 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 246 */
+=======
+/* 242 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var BehaviorSubject_1 = __webpack_require__(194);
+=======
+var BehaviorSubject_1 = __webpack_require__(190);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var multicast_1 = __webpack_require__(16);
 /**
  * @param value
@@ -28071,7 +29367,11 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 247 */
+=======
+/* 243 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28085,7 +29385,11 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 248 */
+=======
+/* 244 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28105,7 +29409,11 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 249 */
+=======
+/* 245 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28139,7 +29447,11 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 250 */
+=======
+/* 246 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28217,7 +29529,11 @@ var RepeatSubscriber = (function (_super) {
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 251 */
+=======
+/* 247 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28331,7 +29647,11 @@ var RepeatWhenSubscriber = (function (_super) {
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 252 */
+=======
+/* 248 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28402,7 +29722,11 @@ var RetrySubscriber = (function (_super) {
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 253 */
+=======
+/* 249 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28509,7 +29833,11 @@ var RetryWhenSubscriber = (function (_super) {
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 254 */
+=======
+/* 250 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28603,7 +29931,11 @@ var SampleSubscriber = (function (_super) {
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 255 */
+=======
+/* 251 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28700,7 +30032,11 @@ function dispatchNotification(state) {
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 256 */
+=======
+/* 252 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28870,7 +30206,11 @@ var SequenceEqualCompareToSubscriber = (function (_super) {
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 257 */
+=======
+/* 253 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28901,7 +30241,11 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 258 */
+=======
+/* 254 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28952,7 +30296,11 @@ function shareReplayOperator(bufferSize, windowTime, scheduler) {
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 259 */
+=======
+/* 255 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29051,7 +30399,11 @@ var SingleSubscriber = (function (_super) {
 //# sourceMappingURL=single.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 260 */
+=======
+/* 256 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29108,7 +30460,11 @@ var SkipSubscriber = (function (_super) {
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 261 */
+=======
+/* 257 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29207,7 +30563,11 @@ var SkipLastSubscriber = (function (_super) {
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 262 */
+=======
+/* 258 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29284,7 +30644,11 @@ var SkipUntilSubscriber = (function (_super) {
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 263 */
+=======
+/* 259 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29356,7 +30720,11 @@ var SkipWhileSubscriber = (function (_super) {
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 264 */
+=======
+/* 260 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29410,13 +30778,21 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 265 */
+=======
+/* 261 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var switchMap_1 = __webpack_require__(56);
+<<<<<<< HEAD
 var identity_1 = __webpack_require__(291);
+=======
+var identity_1 = __webpack_require__(287);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 function switchAll() {
     return switchMap_1.switchMap(identity_1.identity);
 }
@@ -29424,7 +30800,11 @@ exports.switchAll = switchAll;
 //# sourceMappingURL=switchAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 266 */
+=======
+/* 262 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29555,7 +30935,11 @@ var SwitchMapToSubscriber = (function (_super) {
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 267 */
+=======
+/* 263 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29652,7 +31036,11 @@ var TakeSubscriber = (function (_super) {
 //# sourceMappingURL=take.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 268 */
+=======
+/* 264 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29733,7 +31121,11 @@ var TakeUntilSubscriber = (function (_super) {
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 269 */
+=======
+/* 265 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29831,7 +31223,11 @@ var TakeWhileSubscriber = (function (_super) {
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 270 */
+=======
+/* 266 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29950,7 +31346,11 @@ var DoSubscriber = (function (_super) {
 //# sourceMappingURL=tap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 271 */
+=======
+/* 267 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30072,7 +31472,11 @@ function dispatchNext(arg) {
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 272 */
+=======
+/* 268 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30131,7 +31535,11 @@ var TimeIntervalSubscriber = (function (_super) {
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 273 */
+=======
+/* 269 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30144,7 +31552,11 @@ var __extends = (this && this.__extends) || function (d, b) {
 var async_1 = __webpack_require__(5);
 var isDate_1 = __webpack_require__(41);
 var Subscriber_1 = __webpack_require__(2);
+<<<<<<< HEAD
 var TimeoutError_1 = __webpack_require__(288);
+=======
+var TimeoutError_1 = __webpack_require__(284);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  *
  * Errors if Observable does not emit a value in given time span.
@@ -30278,7 +31690,11 @@ var TimeoutSubscriber = (function (_super) {
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 274 */
+=======
+/* 270 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30412,7 +31828,11 @@ var TimeoutWithSubscriber = (function (_super) {
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 275 */
+=======
+/* 271 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30432,7 +31852,11 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 276 */
+=======
+/* 272 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30550,7 +31974,11 @@ var WindowSubscriber = (function (_super) {
 //# sourceMappingURL=window.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 277 */
+=======
+/* 273 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30689,7 +32117,11 @@ var WindowCountSubscriber = (function (_super) {
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 278 */
+=======
+/* 274 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30858,7 +32290,11 @@ function dispatchWindowClose(state) {
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 279 */
+=======
+/* 275 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31044,7 +32480,11 @@ var WindowToggleSubscriber = (function (_super) {
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 280 */
+=======
+/* 276 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31179,7 +32619,11 @@ var WindowSubscriber = (function (_super) {
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 281 */
+=======
+/* 277 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31317,7 +32761,11 @@ var WithLatestFromSubscriber = (function (_super) {
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 282 */
+=======
+/* 278 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31330,7 +32778,11 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 283 */
+=======
+/* 279 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31449,13 +32901,22 @@ exports.VirtualAction = VirtualAction;
 //# sourceMappingURL=VirtualTimeScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 284 */
+=======
+/* 280 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var AsapAction_1 = __webpack_require__(590);
 var AsapScheduler_1 = __webpack_require__(591);
+=======
+var AsapAction_1 = __webpack_require__(586);
+var AsapScheduler_1 = __webpack_require__(587);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  *
  * Asap Scheduler
@@ -31494,13 +32955,22 @@ exports.asap = new AsapScheduler_1.AsapScheduler(AsapAction_1.AsapAction);
 //# sourceMappingURL=asap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 285 */
+=======
+/* 281 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var QueueAction_1 = __webpack_require__(592);
 var QueueScheduler_1 = __webpack_require__(593);
+=======
+var QueueAction_1 = __webpack_require__(588);
+var QueueScheduler_1 = __webpack_require__(589);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  *
  * Queue Scheduler
@@ -31566,7 +33036,11 @@ exports.queue = new QueueScheduler_1.QueueScheduler(QueueAction_1.QueueAction);
 //# sourceMappingURL=queue.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 286 */
+=======
+/* 282 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31583,12 +33057,20 @@ exports.SubscriptionLog = SubscriptionLog;
 //# sourceMappingURL=SubscriptionLog.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 287 */
+=======
+/* 283 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var SubscriptionLog_1 = __webpack_require__(286);
+=======
+var SubscriptionLog_1 = __webpack_require__(282);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var SubscriptionLoggable = (function () {
     function SubscriptionLoggable() {
         this.subscriptions = [];
@@ -31608,7 +33090,11 @@ exports.SubscriptionLoggable = SubscriptionLoggable;
 //# sourceMappingURL=SubscriptionLoggable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 288 */
+=======
+/* 284 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31639,7 +33125,11 @@ exports.TimeoutError = TimeoutError;
 //# sourceMappingURL=TimeoutError.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 289 */
+=======
+/* 285 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31670,7 +33160,11 @@ exports.UnsubscriptionError = UnsubscriptionError;
 //# sourceMappingURL=UnsubscriptionError.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 290 */
+=======
+/* 286 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31689,7 +33183,11 @@ exports.applyMixins = applyMixins;
 //# sourceMappingURL=applyMixins.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 291 */
+=======
+/* 287 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31701,7 +33199,11 @@ exports.identity = identity;
 //# sourceMappingURL=identity.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 292 */
+=======
+/* 288 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31710,7 +33212,11 @@ exports.isArrayLike = (function (x) { return x && typeof x.length === 'number'; 
 //# sourceMappingURL=isArrayLike.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 293 */
+=======
+/* 289 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31722,7 +33228,11 @@ exports.isObject = isObject;
 //# sourceMappingURL=isObject.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 294 */
+=======
+/* 290 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31734,7 +33244,11 @@ exports.isPromise = isPromise;
 //# sourceMappingURL=isPromise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 295 */
+=======
+/* 291 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -31790,7 +33304,11 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
+<<<<<<< HEAD
 __webpack_require__(611);
+=======
+__webpack_require__(607);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -31804,7 +33322,11 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64)))
 
 /***/ }),
+<<<<<<< HEAD
 /* 296 */
+=======
+/* 292 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31815,6 +33337,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(17);
 //services
+<<<<<<< HEAD
 var collectionconfigservice_1 = __webpack_require__(651);
 var collectionservice_1 = __webpack_require__(652);
 //controllers
@@ -31847,6 +33370,40 @@ var swfiltergroupitem_1 = __webpack_require__(642);
 var swrestrictionconfig_1 = __webpack_require__(645);
 //filters
 var aggregatefilter_1 = __webpack_require__(650);
+=======
+var collectionconfigservice_1 = __webpack_require__(647);
+var collectionservice_1 = __webpack_require__(648);
+//controllers
+var collections_1 = __webpack_require__(642);
+var createcollection_1 = __webpack_require__(644);
+var confirmationcontroller_1 = __webpack_require__(643);
+var entity_createcollection_1 = __webpack_require__(645);
+//directives
+var swcollection_1 = __webpack_require__(621);
+var swaddfilterbuttons_1 = __webpack_require__(620);
+var swdisplayoptions_1 = __webpack_require__(636);
+var swdisplayitem_1 = __webpack_require__(634);
+var swdisplayitemaggregate_1 = __webpack_require__(635);
+var swcollectiontable_1 = __webpack_require__(622);
+var swcolumnitem_1 = __webpack_require__(623);
+var swconditioncriteria_1 = __webpack_require__(624);
+var swcriteria_1 = __webpack_require__(625);
+var swcriteriaboolean_1 = __webpack_require__(626);
+var swcriteriadate_1 = __webpack_require__(627);
+var swcriteriamanytomany_1 = __webpack_require__(628);
+var swcriteriamanytoone_1 = __webpack_require__(629);
+var swcriterianumber_1 = __webpack_require__(630);
+var swcriteriaonetomany_1 = __webpack_require__(631);
+var swcriteriarelatedobject_1 = __webpack_require__(632);
+var swcriteriastring_1 = __webpack_require__(633);
+var sweditfilteritem_1 = __webpack_require__(637);
+var swfiltergroups_1 = __webpack_require__(639);
+var swfilteritem_1 = __webpack_require__(640);
+var swfiltergroupitem_1 = __webpack_require__(638);
+var swrestrictionconfig_1 = __webpack_require__(641);
+//filters
+var aggregatefilter_1 = __webpack_require__(646);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -31890,7 +33447,11 @@ exports.collectionmodule = collectionmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 297 */
+=======
+/* 293 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31925,7 +33486,11 @@ exports.BaseObject = BaseObject;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 298 */
+=======
+/* 294 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32072,13 +33637,21 @@ exports.Request = Request;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 299 */
+=======
+/* 295 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var rxjs_1 = __webpack_require__(314);
+=======
+var rxjs_1 = __webpack_require__(310);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var IStore = /** @class */ (function () {
     //@ngInject
     function IStore(initialState, reducer, middleware) {
@@ -32103,7 +33676,11 @@ exports.IStore = IStore;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 300 */
+=======
+/* 296 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32112,9 +33689,15 @@ exports.IStore = IStore;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
+<<<<<<< HEAD
 var dialogservice_1 = __webpack_require__(745);
 //controllers
 var pagedialog_1 = __webpack_require__(744);
+=======
+var dialogservice_1 = __webpack_require__(739);
+//controllers
+var pagedialog_1 = __webpack_require__(738);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -32128,7 +33711,11 @@ exports.dialogmodule = dialogmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 301 */
+=======
+/* 297 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32442,8 +34029,13 @@ exports.SWPropertyDisplay = SWPropertyDisplay;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 302 */,
 /* 303 */
+=======
+/* 298 */,
+/* 299 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32464,9 +34056,15 @@ var __extends = (this && this.__extends) || (function () {
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
+<<<<<<< HEAD
 var basebootstrap_1 = __webpack_require__(615);
 var hibachi_module_1 = __webpack_require__(769);
 var logger_module_1 = __webpack_require__(787);
+=======
+var basebootstrap_1 = __webpack_require__(611);
+var hibachi_module_1 = __webpack_require__(764);
+var logger_module_1 = __webpack_require__(782);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -32482,7 +34080,11 @@ module.exports = new bootstrapper();
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 304 */
+=======
+/* 300 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -47168,7 +48770,11 @@ return src;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 305 */
+=======
+/* 301 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports) {
 
 (function() {
@@ -47270,7 +48876,11 @@ return src;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 306 */
+=======
+/* 302 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports) {
 
 /*!
@@ -47297,7 +48907,11 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 307 */
+=======
+/* 303 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -47353,6 +48967,7 @@ var map = {
 	"./dv.js": 91,
 	"./el": 92,
 	"./el.js": 92,
+<<<<<<< HEAD
 	"./en-SG": 93,
 	"./en-SG.js": 93,
 	"./en-au": 94,
@@ -47555,6 +49170,202 @@ var map = {
 	"./zh-hk.js": 192,
 	"./zh-tw": 193,
 	"./zh-tw.js": 193
+=======
+	"./en-au": 93,
+	"./en-au.js": 93,
+	"./en-ca": 94,
+	"./en-ca.js": 94,
+	"./en-gb": 95,
+	"./en-gb.js": 95,
+	"./en-ie": 96,
+	"./en-ie.js": 96,
+	"./en-il": 97,
+	"./en-il.js": 97,
+	"./en-nz": 98,
+	"./en-nz.js": 98,
+	"./eo": 99,
+	"./eo.js": 99,
+	"./es": 102,
+	"./es-do": 100,
+	"./es-do.js": 100,
+	"./es-us": 101,
+	"./es-us.js": 101,
+	"./es.js": 102,
+	"./et": 103,
+	"./et.js": 103,
+	"./eu": 104,
+	"./eu.js": 104,
+	"./fa": 105,
+	"./fa.js": 105,
+	"./fi": 106,
+	"./fi.js": 106,
+	"./fo": 107,
+	"./fo.js": 107,
+	"./fr": 110,
+	"./fr-ca": 108,
+	"./fr-ca.js": 108,
+	"./fr-ch": 109,
+	"./fr-ch.js": 109,
+	"./fr.js": 110,
+	"./fy": 111,
+	"./fy.js": 111,
+	"./gd": 112,
+	"./gd.js": 112,
+	"./gl": 113,
+	"./gl.js": 113,
+	"./gom-latn": 114,
+	"./gom-latn.js": 114,
+	"./gu": 115,
+	"./gu.js": 115,
+	"./he": 116,
+	"./he.js": 116,
+	"./hi": 117,
+	"./hi.js": 117,
+	"./hr": 118,
+	"./hr.js": 118,
+	"./hu": 119,
+	"./hu.js": 119,
+	"./hy-am": 120,
+	"./hy-am.js": 120,
+	"./id": 121,
+	"./id.js": 121,
+	"./is": 122,
+	"./is.js": 122,
+	"./it": 123,
+	"./it.js": 123,
+	"./ja": 124,
+	"./ja.js": 124,
+	"./jv": 125,
+	"./jv.js": 125,
+	"./ka": 126,
+	"./ka.js": 126,
+	"./kk": 127,
+	"./kk.js": 127,
+	"./km": 128,
+	"./km.js": 128,
+	"./kn": 129,
+	"./kn.js": 129,
+	"./ko": 130,
+	"./ko.js": 130,
+	"./ky": 131,
+	"./ky.js": 131,
+	"./lb": 132,
+	"./lb.js": 132,
+	"./lo": 133,
+	"./lo.js": 133,
+	"./lt": 134,
+	"./lt.js": 134,
+	"./lv": 135,
+	"./lv.js": 135,
+	"./me": 136,
+	"./me.js": 136,
+	"./mi": 137,
+	"./mi.js": 137,
+	"./mk": 138,
+	"./mk.js": 138,
+	"./ml": 139,
+	"./ml.js": 139,
+	"./mn": 140,
+	"./mn.js": 140,
+	"./mr": 141,
+	"./mr.js": 141,
+	"./ms": 143,
+	"./ms-my": 142,
+	"./ms-my.js": 142,
+	"./ms.js": 143,
+	"./mt": 144,
+	"./mt.js": 144,
+	"./my": 145,
+	"./my.js": 145,
+	"./nb": 146,
+	"./nb.js": 146,
+	"./ne": 147,
+	"./ne.js": 147,
+	"./nl": 149,
+	"./nl-be": 148,
+	"./nl-be.js": 148,
+	"./nl.js": 149,
+	"./nn": 150,
+	"./nn.js": 150,
+	"./pa-in": 151,
+	"./pa-in.js": 151,
+	"./pl": 152,
+	"./pl.js": 152,
+	"./pt": 154,
+	"./pt-br": 153,
+	"./pt-br.js": 153,
+	"./pt.js": 154,
+	"./ro": 155,
+	"./ro.js": 155,
+	"./ru": 156,
+	"./ru.js": 156,
+	"./sd": 157,
+	"./sd.js": 157,
+	"./se": 158,
+	"./se.js": 158,
+	"./si": 159,
+	"./si.js": 159,
+	"./sk": 160,
+	"./sk.js": 160,
+	"./sl": 161,
+	"./sl.js": 161,
+	"./sq": 162,
+	"./sq.js": 162,
+	"./sr": 164,
+	"./sr-cyrl": 163,
+	"./sr-cyrl.js": 163,
+	"./sr.js": 164,
+	"./ss": 165,
+	"./ss.js": 165,
+	"./sv": 166,
+	"./sv.js": 166,
+	"./sw": 167,
+	"./sw.js": 167,
+	"./ta": 168,
+	"./ta.js": 168,
+	"./te": 169,
+	"./te.js": 169,
+	"./tet": 170,
+	"./tet.js": 170,
+	"./tg": 171,
+	"./tg.js": 171,
+	"./th": 172,
+	"./th.js": 172,
+	"./tl-ph": 173,
+	"./tl-ph.js": 173,
+	"./tlh": 174,
+	"./tlh.js": 174,
+	"./tr": 175,
+	"./tr.js": 175,
+	"./tzl": 176,
+	"./tzl.js": 176,
+	"./tzm": 178,
+	"./tzm-latn": 177,
+	"./tzm-latn.js": 177,
+	"./tzm.js": 178,
+	"./ug-cn": 179,
+	"./ug-cn.js": 179,
+	"./uk": 180,
+	"./uk.js": 180,
+	"./ur": 181,
+	"./ur.js": 181,
+	"./uz": 183,
+	"./uz-latn": 182,
+	"./uz-latn.js": 182,
+	"./uz.js": 183,
+	"./vi": 184,
+	"./vi.js": 184,
+	"./x-pseudo": 185,
+	"./x-pseudo.js": 185,
+	"./yo": 186,
+	"./yo.js": 186,
+	"./zh-cn": 187,
+	"./zh-cn.js": 187,
+	"./zh-hk": 188,
+	"./zh-hk.js": 188,
+	"./zh-tw": 189,
+	"./zh-tw.js": 189
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -47570,10 +49381,17 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
+<<<<<<< HEAD
 webpackContext.id = 307;
 
 /***/ }),
 /* 308 */
+=======
+webpackContext.id = 303;
+
+/***/ }),
+/* 304 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -47763,11 +49581,19 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 309 */,
 /* 310 */,
 /* 311 */,
 /* 312 */,
 /* 313 */
+=======
+/* 305 */,
+/* 306 */,
+/* 307 */,
+/* 308 */,
+/* 309 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47809,7 +49635,11 @@ exports.InnerSubscriber = InnerSubscriber;
 //# sourceMappingURL=InnerSubscriber.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 314 */
+=======
+/* 310 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47826,21 +49656,38 @@ var Observable_1 = __webpack_require__(0);
 exports.Observable = Observable_1.Observable;
 // statics
 /* tslint:disable:no-use-before-declare */
+<<<<<<< HEAD
 __webpack_require__(316);
 __webpack_require__(317);
 __webpack_require__(318);
 __webpack_require__(319);
 __webpack_require__(320);
+=======
+__webpack_require__(312);
+__webpack_require__(313);
+__webpack_require__(314);
+__webpack_require__(315);
+__webpack_require__(316);
+__webpack_require__(319);
+__webpack_require__(320);
+__webpack_require__(321);
+__webpack_require__(322);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 __webpack_require__(323);
 __webpack_require__(324);
 __webpack_require__(325);
 __webpack_require__(326);
 __webpack_require__(327);
 __webpack_require__(328);
+<<<<<<< HEAD
+=======
+__webpack_require__(333);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 __webpack_require__(329);
 __webpack_require__(330);
 __webpack_require__(331);
 __webpack_require__(332);
+<<<<<<< HEAD
 __webpack_require__(337);
 __webpack_require__(333);
 __webpack_require__(334);
@@ -47855,6 +49702,21 @@ __webpack_require__(342);
 __webpack_require__(321);
 __webpack_require__(322);
 //operators
+=======
+__webpack_require__(334);
+__webpack_require__(337);
+__webpack_require__(335);
+__webpack_require__(336);
+__webpack_require__(338);
+//dom
+__webpack_require__(317);
+__webpack_require__(318);
+//operators
+__webpack_require__(341);
+__webpack_require__(342);
+__webpack_require__(343);
+__webpack_require__(344);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 __webpack_require__(345);
 __webpack_require__(346);
 __webpack_require__(347);
@@ -47864,10 +49726,15 @@ __webpack_require__(350);
 __webpack_require__(351);
 __webpack_require__(352);
 __webpack_require__(353);
+<<<<<<< HEAD
+=======
+__webpack_require__(359);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 __webpack_require__(354);
 __webpack_require__(355);
 __webpack_require__(356);
 __webpack_require__(357);
+<<<<<<< HEAD
 __webpack_require__(363);
 __webpack_require__(358);
 __webpack_require__(359);
@@ -47882,10 +49749,26 @@ __webpack_require__(370);
 __webpack_require__(371);
 __webpack_require__(372);
 __webpack_require__(368);
+=======
+__webpack_require__(358);
+__webpack_require__(360);
+__webpack_require__(361);
+__webpack_require__(362);
+__webpack_require__(363);
+__webpack_require__(366);
+__webpack_require__(367);
+__webpack_require__(368);
+__webpack_require__(364);
+__webpack_require__(369);
+__webpack_require__(370);
+__webpack_require__(371);
+__webpack_require__(372);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 __webpack_require__(373);
 __webpack_require__(374);
 __webpack_require__(375);
 __webpack_require__(376);
+<<<<<<< HEAD
 __webpack_require__(377);
 __webpack_require__(378);
 __webpack_require__(379);
@@ -47895,6 +49778,17 @@ __webpack_require__(344);
 __webpack_require__(381);
 __webpack_require__(382);
 __webpack_require__(369);
+=======
+__webpack_require__(339);
+__webpack_require__(340);
+__webpack_require__(377);
+__webpack_require__(378);
+__webpack_require__(365);
+__webpack_require__(379);
+__webpack_require__(380);
+__webpack_require__(381);
+__webpack_require__(382);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 __webpack_require__(383);
 __webpack_require__(384);
 __webpack_require__(385);
@@ -47909,12 +49803,21 @@ __webpack_require__(393);
 __webpack_require__(394);
 __webpack_require__(395);
 __webpack_require__(396);
+<<<<<<< HEAD
 __webpack_require__(397);
 __webpack_require__(398);
 __webpack_require__(399);
 __webpack_require__(400);
 __webpack_require__(402);
 __webpack_require__(401);
+=======
+__webpack_require__(398);
+__webpack_require__(397);
+__webpack_require__(399);
+__webpack_require__(400);
+__webpack_require__(401);
+__webpack_require__(402);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 __webpack_require__(403);
 __webpack_require__(404);
 __webpack_require__(405);
@@ -47953,10 +49856,13 @@ __webpack_require__(437);
 __webpack_require__(438);
 __webpack_require__(439);
 __webpack_require__(440);
+<<<<<<< HEAD
 __webpack_require__(441);
 __webpack_require__(442);
 __webpack_require__(443);
 __webpack_require__(444);
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:disable:no-unused-variable */
 var Subscription_1 = __webpack_require__(6);
 exports.Subscription = Subscription_1.Subscription;
@@ -47966,9 +49872,15 @@ var AsyncSubject_1 = __webpack_require__(29);
 exports.AsyncSubject = AsyncSubject_1.AsyncSubject;
 var ReplaySubject_1 = __webpack_require__(30);
 exports.ReplaySubject = ReplaySubject_1.ReplaySubject;
+<<<<<<< HEAD
 var BehaviorSubject_1 = __webpack_require__(194);
 exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
 var ConnectableObservable_1 = __webpack_require__(197);
+=======
+var BehaviorSubject_1 = __webpack_require__(190);
+exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
+var ConnectableObservable_1 = __webpack_require__(193);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.ConnectableObservable = ConnectableObservable_1.ConnectableObservable;
 var Notification_1 = __webpack_require__(19);
 exports.Notification = Notification_1.Notification;
@@ -47978,6 +49890,7 @@ var ArgumentOutOfRangeError_1 = __webpack_require__(27);
 exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError_1.ArgumentOutOfRangeError;
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
 exports.ObjectUnsubscribedError = ObjectUnsubscribedError_1.ObjectUnsubscribedError;
+<<<<<<< HEAD
 var TimeoutError_1 = __webpack_require__(288);
 exports.TimeoutError = TimeoutError_1.TimeoutError;
 var UnsubscriptionError_1 = __webpack_require__(289);
@@ -47991,11 +49904,27 @@ exports.TestScheduler = TestScheduler_1.TestScheduler;
 var VirtualTimeScheduler_1 = __webpack_require__(283);
 exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
 var AjaxObservable_1 = __webpack_require__(200);
+=======
+var TimeoutError_1 = __webpack_require__(284);
+exports.TimeoutError = TimeoutError_1.TimeoutError;
+var UnsubscriptionError_1 = __webpack_require__(285);
+exports.UnsubscriptionError = UnsubscriptionError_1.UnsubscriptionError;
+var timeInterval_1 = __webpack_require__(200);
+exports.TimeInterval = timeInterval_1.TimeInterval;
+var timestamp_1 = __webpack_require__(58);
+exports.Timestamp = timestamp_1.Timestamp;
+var TestScheduler_1 = __webpack_require__(593);
+exports.TestScheduler = TestScheduler_1.TestScheduler;
+var VirtualTimeScheduler_1 = __webpack_require__(279);
+exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
+var AjaxObservable_1 = __webpack_require__(196);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.AjaxResponse = AjaxObservable_1.AjaxResponse;
 exports.AjaxError = AjaxObservable_1.AjaxError;
 exports.AjaxTimeoutError = AjaxObservable_1.AjaxTimeoutError;
 var pipe_1 = __webpack_require__(60);
 exports.pipe = pipe_1.pipe;
+<<<<<<< HEAD
 var asap_1 = __webpack_require__(284);
 var async_1 = __webpack_require__(5);
 var queue_1 = __webpack_require__(285);
@@ -48004,6 +49933,16 @@ var rxSubscriber_1 = __webpack_require__(38);
 var iterator_1 = __webpack_require__(26);
 var observable_1 = __webpack_require__(37);
 var _operators = __webpack_require__(585);
+=======
+var asap_1 = __webpack_require__(280);
+var async_1 = __webpack_require__(5);
+var queue_1 = __webpack_require__(281);
+var animationFrame_1 = __webpack_require__(590);
+var rxSubscriber_1 = __webpack_require__(38);
+var iterator_1 = __webpack_require__(26);
+var observable_1 = __webpack_require__(37);
+var _operators = __webpack_require__(581);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.operators = _operators;
 /* tslint:enable:no-unused-variable */
 /**
@@ -48048,7 +49987,11 @@ exports.Symbol = Symbol;
 //# sourceMappingURL=Rx.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 315 */
+=======
+/* 311 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48103,40 +50046,68 @@ exports.Scheduler = Scheduler;
 //# sourceMappingURL=Scheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 316 */
+=======
+/* 312 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bindCallback_1 = __webpack_require__(463);
+=======
+var bindCallback_1 = __webpack_require__(459);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.bindCallback = bindCallback_1.bindCallback;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 317 */
+=======
+/* 313 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bindNodeCallback_1 = __webpack_require__(464);
+=======
+var bindNodeCallback_1 = __webpack_require__(460);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.bindNodeCallback = bindNodeCallback_1.bindNodeCallback;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 318 */
+=======
+/* 314 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var combineLatest_1 = __webpack_require__(465);
+=======
+var combineLatest_1 = __webpack_require__(461);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 319 */
+=======
+/* 315 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48147,139 +50118,239 @@ Observable_1.Observable.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 320 */
+=======
+/* 316 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var defer_1 = __webpack_require__(466);
+=======
+var defer_1 = __webpack_require__(462);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.defer = defer_1.defer;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 321 */
+=======
+/* 317 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var ajax_1 = __webpack_require__(468);
+=======
+var ajax_1 = __webpack_require__(464);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.ajax = ajax_1.ajax;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 322 */
+=======
+/* 318 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var webSocket_1 = __webpack_require__(469);
+=======
+var webSocket_1 = __webpack_require__(465);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.webSocket = webSocket_1.webSocket;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 323 */
+=======
+/* 319 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var empty_1 = __webpack_require__(470);
+=======
+var empty_1 = __webpack_require__(466);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.empty = empty_1.empty;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 324 */
+=======
+/* 320 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var forkJoin_1 = __webpack_require__(471);
+=======
+var forkJoin_1 = __webpack_require__(467);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
 //# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 325 */
+=======
+/* 321 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var from_1 = __webpack_require__(201);
+=======
+var from_1 = __webpack_require__(197);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.from = from_1.from;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 326 */
+=======
+/* 322 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var fromEvent_1 = __webpack_require__(472);
+=======
+var fromEvent_1 = __webpack_require__(468);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
 //# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 327 */
+=======
+/* 323 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var fromEventPattern_1 = __webpack_require__(473);
+=======
+var fromEventPattern_1 = __webpack_require__(469);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
 //# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 328 */
+=======
+/* 324 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var fromPromise_1 = __webpack_require__(474);
+=======
+var fromPromise_1 = __webpack_require__(470);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
 //# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 329 */
+=======
+/* 325 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var generate_1 = __webpack_require__(475);
+=======
+var generate_1 = __webpack_require__(471);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.generate = generate_1.generate;
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 330 */
+=======
+/* 326 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var if_1 = __webpack_require__(476);
+=======
+var if_1 = __webpack_require__(472);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.if = if_1._if;
 //# sourceMappingURL=if.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 331 */
+=======
+/* 327 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var interval_1 = __webpack_require__(477);
+=======
+var interval_1 = __webpack_require__(473);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.interval = interval_1.interval;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 332 */
+=======
+/* 328 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48290,51 +50361,87 @@ Observable_1.Observable.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 333 */
+=======
+/* 329 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var never_1 = __webpack_require__(478);
+=======
+var never_1 = __webpack_require__(474);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.never = never_1.never;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 334 */
+=======
+/* 330 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var of_1 = __webpack_require__(202);
+=======
+var of_1 = __webpack_require__(198);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.of = of_1.of;
 //# sourceMappingURL=of.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 335 */
+=======
+/* 331 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(479);
+=======
+var onErrorResumeNext_1 = __webpack_require__(475);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 336 */
+=======
+/* 332 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var pairs_1 = __webpack_require__(480);
+=======
+var pairs_1 = __webpack_require__(476);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.pairs = pairs_1.pairs;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 337 */
+=======
+/* 333 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48345,1092 +50452,1880 @@ Observable_1.Observable.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 338 */
+=======
+/* 334 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var range_1 = __webpack_require__(481);
+=======
+var range_1 = __webpack_require__(477);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.range = range_1.range;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 339 */
+=======
+/* 335 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var throw_1 = __webpack_require__(482);
+=======
+var throw_1 = __webpack_require__(478);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.throw = throw_1._throw;
 //# sourceMappingURL=throw.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 340 */
+=======
+/* 336 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timer_1 = __webpack_require__(203);
+=======
+var timer_1 = __webpack_require__(199);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.timer = timer_1.timer;
 //# sourceMappingURL=timer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 341 */
+=======
+/* 337 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var using_1 = __webpack_require__(483);
+=======
+var using_1 = __webpack_require__(479);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.using = using_1.using;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 342 */
+=======
+/* 338 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var zip_1 = __webpack_require__(484);
+=======
+var zip_1 = __webpack_require__(480);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.zip = zip_1.zip;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 343 */
+=======
+/* 339 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var audit_1 = __webpack_require__(485);
+=======
+var audit_1 = __webpack_require__(481);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.audit = audit_1.audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 344 */
+=======
+/* 340 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var auditTime_1 = __webpack_require__(486);
+=======
+var auditTime_1 = __webpack_require__(482);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 345 */
+=======
+/* 341 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var buffer_1 = __webpack_require__(487);
+=======
+var buffer_1 = __webpack_require__(483);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.buffer = buffer_1.buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 346 */
+=======
+/* 342 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferCount_1 = __webpack_require__(488);
+=======
+var bufferCount_1 = __webpack_require__(484);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 347 */
+=======
+/* 343 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferTime_1 = __webpack_require__(489);
+=======
+var bufferTime_1 = __webpack_require__(485);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 348 */
+=======
+/* 344 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferToggle_1 = __webpack_require__(490);
+=======
+var bufferToggle_1 = __webpack_require__(486);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 349 */
+=======
+/* 345 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferWhen_1 = __webpack_require__(491);
+=======
+var bufferWhen_1 = __webpack_require__(487);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 350 */
+=======
+/* 346 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var catch_1 = __webpack_require__(492);
+=======
+var catch_1 = __webpack_require__(488);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.catch = catch_1._catch;
 Observable_1.Observable.prototype._catch = catch_1._catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 351 */
+=======
+/* 347 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var combineAll_1 = __webpack_require__(493);
+=======
+var combineAll_1 = __webpack_require__(489);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 352 */
+=======
+/* 348 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var combineLatest_1 = __webpack_require__(494);
+=======
+var combineLatest_1 = __webpack_require__(490);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 353 */
+=======
+/* 349 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concat_1 = __webpack_require__(495);
+=======
+var concat_1 = __webpack_require__(491);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 354 */
+=======
+/* 350 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concatAll_1 = __webpack_require__(496);
+=======
+var concatAll_1 = __webpack_require__(492);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 355 */
+=======
+/* 351 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concatMap_1 = __webpack_require__(497);
+=======
+var concatMap_1 = __webpack_require__(493);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 356 */
+=======
+/* 352 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(498);
+=======
+var concatMapTo_1 = __webpack_require__(494);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 357 */
+=======
+/* 353 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var count_1 = __webpack_require__(499);
+=======
+var count_1 = __webpack_require__(495);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.count = count_1.count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 358 */
+=======
+/* 354 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var debounce_1 = __webpack_require__(500);
+=======
+var debounce_1 = __webpack_require__(496);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.debounce = debounce_1.debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 359 */
+=======
+/* 355 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var debounceTime_1 = __webpack_require__(501);
+=======
+var debounceTime_1 = __webpack_require__(497);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 360 */
+=======
+/* 356 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var defaultIfEmpty_1 = __webpack_require__(502);
+=======
+var defaultIfEmpty_1 = __webpack_require__(498);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 361 */
+=======
+/* 357 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var delay_1 = __webpack_require__(503);
+=======
+var delay_1 = __webpack_require__(499);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.delay = delay_1.delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 362 */
+=======
+/* 358 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var delayWhen_1 = __webpack_require__(504);
+=======
+var delayWhen_1 = __webpack_require__(500);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 363 */
+=======
+/* 359 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var dematerialize_1 = __webpack_require__(505);
+=======
+var dematerialize_1 = __webpack_require__(501);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 364 */
+=======
+/* 360 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var distinct_1 = __webpack_require__(506);
+=======
+var distinct_1 = __webpack_require__(502);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.distinct = distinct_1.distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 365 */
+=======
+/* 361 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var distinctUntilChanged_1 = __webpack_require__(507);
+=======
+var distinctUntilChanged_1 = __webpack_require__(503);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 366 */
+=======
+/* 362 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var distinctUntilKeyChanged_1 = __webpack_require__(508);
+=======
+var distinctUntilKeyChanged_1 = __webpack_require__(504);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 367 */
+=======
+/* 363 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var do_1 = __webpack_require__(509);
+=======
+var do_1 = __webpack_require__(505);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.do = do_1._do;
 Observable_1.Observable.prototype._do = do_1._do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 368 */
+=======
+/* 364 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var elementAt_1 = __webpack_require__(510);
+=======
+var elementAt_1 = __webpack_require__(506);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 369 */
+=======
+/* 365 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var every_1 = __webpack_require__(511);
+=======
+var every_1 = __webpack_require__(507);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.every = every_1.every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 370 */
+=======
+/* 366 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var exhaust_1 = __webpack_require__(512);
+=======
+var exhaust_1 = __webpack_require__(508);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 371 */
+=======
+/* 367 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var exhaustMap_1 = __webpack_require__(513);
+=======
+var exhaustMap_1 = __webpack_require__(509);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 372 */
+=======
+/* 368 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var expand_1 = __webpack_require__(514);
+=======
+var expand_1 = __webpack_require__(510);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.expand = expand_1.expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 373 */
+=======
+/* 369 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var filter_1 = __webpack_require__(515);
+=======
+var filter_1 = __webpack_require__(511);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.filter = filter_1.filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 374 */
+=======
+/* 370 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var finally_1 = __webpack_require__(516);
+=======
+var finally_1 = __webpack_require__(512);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.finally = finally_1._finally;
 Observable_1.Observable.prototype._finally = finally_1._finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 375 */
+=======
+/* 371 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var find_1 = __webpack_require__(517);
+=======
+var find_1 = __webpack_require__(513);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.find = find_1.find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 376 */
+=======
+/* 372 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var findIndex_1 = __webpack_require__(518);
+=======
+var findIndex_1 = __webpack_require__(514);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 377 */
+=======
+/* 373 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var first_1 = __webpack_require__(519);
+=======
+var first_1 = __webpack_require__(515);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.first = first_1.first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 378 */
+=======
+/* 374 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var groupBy_1 = __webpack_require__(520);
+=======
+var groupBy_1 = __webpack_require__(516);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 379 */
+=======
+/* 375 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var ignoreElements_1 = __webpack_require__(521);
+=======
+var ignoreElements_1 = __webpack_require__(517);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 380 */
+=======
+/* 376 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var isEmpty_1 = __webpack_require__(522);
+=======
+var isEmpty_1 = __webpack_require__(518);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 381 */
+=======
+/* 377 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var last_1 = __webpack_require__(523);
+=======
+var last_1 = __webpack_require__(519);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.last = last_1.last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 382 */
+=======
+/* 378 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var let_1 = __webpack_require__(524);
+=======
+var let_1 = __webpack_require__(520);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.let = let_1.letProto;
 Observable_1.Observable.prototype.letBind = let_1.letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 383 */
+=======
+/* 379 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var map_1 = __webpack_require__(525);
+=======
+var map_1 = __webpack_require__(521);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.map = map_1.map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 384 */
+=======
+/* 380 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mapTo_1 = __webpack_require__(526);
+=======
+var mapTo_1 = __webpack_require__(522);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 385 */
+=======
+/* 381 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var materialize_1 = __webpack_require__(527);
+=======
+var materialize_1 = __webpack_require__(523);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.materialize = materialize_1.materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 386 */
+=======
+/* 382 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var max_1 = __webpack_require__(528);
+=======
+var max_1 = __webpack_require__(524);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.max = max_1.max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 387 */
+=======
+/* 383 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var merge_1 = __webpack_require__(529);
+=======
+var merge_1 = __webpack_require__(525);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 388 */
+=======
+/* 384 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeAll_1 = __webpack_require__(530);
+=======
+var mergeAll_1 = __webpack_require__(526);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 389 */
+=======
+/* 385 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeMap_1 = __webpack_require__(531);
+=======
+var mergeMap_1 = __webpack_require__(527);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
 Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 390 */
+=======
+/* 386 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(532);
+=======
+var mergeMapTo_1 = __webpack_require__(528);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.flatMapTo = mergeMapTo_1.mergeMapTo;
 Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 391 */
+=======
+/* 387 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeScan_1 = __webpack_require__(533);
+=======
+var mergeScan_1 = __webpack_require__(529);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 392 */
+=======
+/* 388 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var min_1 = __webpack_require__(534);
+=======
+var min_1 = __webpack_require__(530);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.min = min_1.min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 393 */
+=======
+/* 389 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var multicast_1 = __webpack_require__(535);
+=======
+var multicast_1 = __webpack_require__(531);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.multicast = multicast_1.multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 394 */
+=======
+/* 390 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var observeOn_1 = __webpack_require__(536);
+=======
+var observeOn_1 = __webpack_require__(532);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 395 */
+=======
+/* 391 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(537);
+=======
+var onErrorResumeNext_1 = __webpack_require__(533);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 396 */
+=======
+/* 392 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(538);
+=======
+var pairwise_1 = __webpack_require__(534);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 397 */
+=======
+/* 393 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var partition_1 = __webpack_require__(539);
+=======
+var partition_1 = __webpack_require__(535);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.partition = partition_1.partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 398 */
+=======
+/* 394 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var pluck_1 = __webpack_require__(540);
+=======
+var pluck_1 = __webpack_require__(536);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.pluck = pluck_1.pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 399 */
+=======
+/* 395 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publish_1 = __webpack_require__(541);
+=======
+var publish_1 = __webpack_require__(537);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.publish = publish_1.publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 400 */
+=======
+/* 396 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publishBehavior_1 = __webpack_require__(542);
+=======
+var publishBehavior_1 = __webpack_require__(538);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 401 */
+=======
+/* 397 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publishLast_1 = __webpack_require__(543);
+=======
+var publishLast_1 = __webpack_require__(539);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 402 */
+=======
+/* 398 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publishReplay_1 = __webpack_require__(544);
+=======
+var publishReplay_1 = __webpack_require__(540);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 403 */
+=======
+/* 399 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var race_1 = __webpack_require__(545);
+=======
+var race_1 = __webpack_require__(541);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 404 */
+=======
+/* 400 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var reduce_1 = __webpack_require__(546);
+=======
+var reduce_1 = __webpack_require__(542);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.reduce = reduce_1.reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 405 */
+=======
+/* 401 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var repeat_1 = __webpack_require__(547);
+=======
+var repeat_1 = __webpack_require__(543);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.repeat = repeat_1.repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 406 */
+=======
+/* 402 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var repeatWhen_1 = __webpack_require__(548);
+=======
+var repeatWhen_1 = __webpack_require__(544);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 407 */
+=======
+/* 403 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var retry_1 = __webpack_require__(549);
+=======
+var retry_1 = __webpack_require__(545);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.retry = retry_1.retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 408 */
+=======
+/* 404 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var retryWhen_1 = __webpack_require__(550);
+=======
+var retryWhen_1 = __webpack_require__(546);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 409 */
+=======
+/* 405 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var sample_1 = __webpack_require__(551);
+=======
+var sample_1 = __webpack_require__(547);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.sample = sample_1.sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 410 */
+=======
+/* 406 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var sampleTime_1 = __webpack_require__(552);
+=======
+var sampleTime_1 = __webpack_require__(548);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 411 */
+=======
+/* 407 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var scan_1 = __webpack_require__(553);
+=======
+var scan_1 = __webpack_require__(549);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.scan = scan_1.scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 412 */
+=======
+/* 408 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var sequenceEqual_1 = __webpack_require__(554);
+=======
+var sequenceEqual_1 = __webpack_require__(550);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 413 */
+=======
+/* 409 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var share_1 = __webpack_require__(555);
+=======
+var share_1 = __webpack_require__(551);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.share = share_1.share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 414 */
+=======
+/* 410 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var shareReplay_1 = __webpack_require__(556);
+=======
+var shareReplay_1 = __webpack_require__(552);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 415 */
+=======
+/* 411 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var single_1 = __webpack_require__(557);
+=======
+var single_1 = __webpack_require__(553);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.single = single_1.single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 416 */
+=======
+/* 412 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skip_1 = __webpack_require__(558);
+=======
+var skip_1 = __webpack_require__(554);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.skip = skip_1.skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 417 */
+=======
+/* 413 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skipLast_1 = __webpack_require__(559);
+=======
+var skipLast_1 = __webpack_require__(555);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 418 */
+=======
+/* 414 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skipUntil_1 = __webpack_require__(560);
+=======
+var skipUntil_1 = __webpack_require__(556);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 419 */
+=======
+/* 415 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skipWhile_1 = __webpack_require__(561);
+=======
+var skipWhile_1 = __webpack_require__(557);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 420 */
+=======
+/* 416 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var startWith_1 = __webpack_require__(562);
+=======
+var startWith_1 = __webpack_require__(558);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.startWith = startWith_1.startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 421 */
+=======
+/* 417 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var subscribeOn_1 = __webpack_require__(563);
+=======
+var subscribeOn_1 = __webpack_require__(559);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 422 */
+=======
+/* 418 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var switch_1 = __webpack_require__(564);
+=======
+var switch_1 = __webpack_require__(560);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.switch = switch_1._switch;
 Observable_1.Observable.prototype._switch = switch_1._switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 423 */
+=======
+/* 419 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var switchMap_1 = __webpack_require__(565);
+=======
+var switchMap_1 = __webpack_require__(561);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 424 */
+=======
+/* 420 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var switchMapTo_1 = __webpack_require__(566);
+=======
+var switchMapTo_1 = __webpack_require__(562);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 425 */
+=======
+/* 421 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var take_1 = __webpack_require__(567);
+=======
+var take_1 = __webpack_require__(563);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.take = take_1.take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 426 */
+=======
+/* 422 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var takeLast_1 = __webpack_require__(568);
+=======
+var takeLast_1 = __webpack_require__(564);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 427 */
+=======
+/* 423 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var takeUntil_1 = __webpack_require__(569);
+=======
+var takeUntil_1 = __webpack_require__(565);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 428 */
+=======
+/* 424 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var takeWhile_1 = __webpack_require__(570);
+=======
+var takeWhile_1 = __webpack_require__(566);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 429 */
+=======
+/* 425 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var throttle_1 = __webpack_require__(571);
+=======
+var throttle_1 = __webpack_require__(567);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.throttle = throttle_1.throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 430 */
+=======
+/* 426 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var throttleTime_1 = __webpack_require__(572);
+=======
+var throttleTime_1 = __webpack_require__(568);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.throttleTime = throttleTime_1.throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 431 */
+=======
+/* 427 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timeInterval_1 = __webpack_require__(204);
+=======
+var timeInterval_1 = __webpack_require__(200);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.timeInterval = timeInterval_1.timeInterval;
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 432 */
+=======
+/* 428 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timeout_1 = __webpack_require__(573);
+=======
+var timeout_1 = __webpack_require__(569);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.timeout = timeout_1.timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 433 */
+=======
+/* 429 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timeoutWith_1 = __webpack_require__(574);
+=======
+var timeoutWith_1 = __webpack_require__(570);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 434 */
+=======
+/* 430 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timestamp_1 = __webpack_require__(575);
+=======
+var timestamp_1 = __webpack_require__(571);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 435 */
+=======
+/* 431 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var toArray_1 = __webpack_require__(576);
+=======
+var toArray_1 = __webpack_require__(572);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 436 */
+=======
+/* 432 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports) {
 
 // HACK: does nothing, because `toPromise` now lives on the `Observable` itself.
@@ -49438,95 +52333,163 @@ Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 //# sourceMappingURL=toPromise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 437 */
+=======
+/* 433 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var window_1 = __webpack_require__(577);
+=======
+var window_1 = __webpack_require__(573);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.window = window_1.window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 438 */
+=======
+/* 434 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowCount_1 = __webpack_require__(578);
+=======
+var windowCount_1 = __webpack_require__(574);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 439 */
+=======
+/* 435 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowTime_1 = __webpack_require__(579);
+=======
+var windowTime_1 = __webpack_require__(575);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 440 */
+=======
+/* 436 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowToggle_1 = __webpack_require__(580);
+=======
+var windowToggle_1 = __webpack_require__(576);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 441 */
+=======
+/* 437 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowWhen_1 = __webpack_require__(581);
+=======
+var windowWhen_1 = __webpack_require__(577);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 442 */
+=======
+/* 438 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var withLatestFrom_1 = __webpack_require__(582);
+=======
+var withLatestFrom_1 = __webpack_require__(578);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 443 */
+=======
+/* 439 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var zip_1 = __webpack_require__(583);
+=======
+var zip_1 = __webpack_require__(579);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.zip = zip_1.zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 444 */
+=======
+/* 440 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var zipAll_1 = __webpack_require__(584);
+=======
+var zipAll_1 = __webpack_require__(580);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 Observable_1.Observable.prototype.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 445 */
+=======
+/* 441 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49602,7 +52565,11 @@ exports.ArrayLikeObservable = ArrayLikeObservable;
 //# sourceMappingURL=ArrayLikeObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 446 */
+=======
+/* 442 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49872,7 +52839,11 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundCallbackObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 447 */
+=======
+/* 443 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50141,7 +53112,11 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundNodeCallbackObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 448 */
+=======
+/* 444 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50246,7 +53221,11 @@ var DeferSubscriber = (function (_super) {
 //# sourceMappingURL=DeferObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 449 */
+=======
+/* 445 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50335,7 +53314,11 @@ exports.ErrorObservable = ErrorObservable;
 //# sourceMappingURL=ErrorObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 450 */
+=======
+/* 446 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50543,7 +53526,11 @@ var ForkJoinSubscriber = (function (_super) {
 //# sourceMappingURL=ForkJoinObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 451 */
+=======
+/* 447 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50765,7 +53752,11 @@ exports.FromEventObservable = FromEventObservable;
 //# sourceMappingURL=FromEventObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 452 */
+=======
+/* 448 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50884,7 +53875,11 @@ exports.FromEventPatternObservable = FromEventPatternObservable;
 //# sourceMappingURL=FromEventPatternObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 453 */
+=======
+/* 449 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51025,7 +54020,11 @@ exports.GenerateObservable = GenerateObservable;
 //# sourceMappingURL=GenerateObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 454 */
+=======
+/* 450 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51092,7 +54091,11 @@ var IfSubscriber = (function (_super) {
 //# sourceMappingURL=IfObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 455 */
+=======
+/* 451 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51186,7 +54189,11 @@ exports.IntervalObservable = IntervalObservable;
 //# sourceMappingURL=IntervalObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 456 */
+=======
+/* 452 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51355,7 +54362,11 @@ function sign(value) {
 //# sourceMappingURL=IteratorObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 457 */
+=======
+/* 453 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51420,7 +54431,11 @@ exports.NeverObservable = NeverObservable;
 //# sourceMappingURL=NeverObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 458 */
+=======
+/* 454 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51511,7 +54526,11 @@ exports.PairsObservable = PairsObservable;
 //# sourceMappingURL=PairsObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 459 */
+=======
+/* 455 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51613,7 +54632,11 @@ exports.RangeObservable = RangeObservable;
 //# sourceMappingURL=RangeObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 460 */
+=======
+/* 456 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51624,7 +54647,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var asap_1 = __webpack_require__(284);
+=======
+var asap_1 = __webpack_require__(280);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var isNumeric_1 = __webpack_require__(28);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -51670,7 +54697,11 @@ exports.SubscribeOnObservable = SubscribeOnObservable;
 //# sourceMappingURL=SubscribeOnObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 461 */
+=======
+/* 457 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51783,7 +54814,11 @@ exports.TimerObservable = TimerObservable;
 //# sourceMappingURL=TimerObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 462 */
+=======
+/* 458 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51850,27 +54885,47 @@ var UsingSubscriber = (function (_super) {
 //# sourceMappingURL=UsingObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 463 */
+=======
+/* 459 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var BoundCallbackObservable_1 = __webpack_require__(446);
+=======
+var BoundCallbackObservable_1 = __webpack_require__(442);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.bindCallback = BoundCallbackObservable_1.BoundCallbackObservable.create;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 464 */
+=======
+/* 460 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var BoundNodeCallbackObservable_1 = __webpack_require__(447);
+=======
+var BoundNodeCallbackObservable_1 = __webpack_require__(443);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.bindNodeCallback = BoundNodeCallbackObservable_1.BoundNodeCallbackObservable.create;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 465 */
+=======
+/* 461 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52012,17 +55067,29 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 466 */
+=======
+/* 462 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var DeferObservable_1 = __webpack_require__(448);
+=======
+var DeferObservable_1 = __webpack_require__(444);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.defer = DeferObservable_1.DeferObservable.create;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 467 */
+=======
+/* 463 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52040,7 +55107,11 @@ var root_1 = __webpack_require__(10);
 var ReplaySubject_1 = __webpack_require__(30);
 var tryCatch_1 = __webpack_require__(9);
 var errorObject_1 = __webpack_require__(8);
+<<<<<<< HEAD
 var assign_1 = __webpack_require__(604);
+=======
+var assign_1 = __webpack_require__(600);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -52278,27 +55349,47 @@ exports.WebSocketSubject = WebSocketSubject;
 //# sourceMappingURL=WebSocketSubject.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 468 */
+=======
+/* 464 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var AjaxObservable_1 = __webpack_require__(200);
+=======
+var AjaxObservable_1 = __webpack_require__(196);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.ajax = AjaxObservable_1.AjaxObservable.create;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 469 */
+=======
+/* 465 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var WebSocketSubject_1 = __webpack_require__(467);
+=======
+var WebSocketSubject_1 = __webpack_require__(463);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.webSocket = WebSocketSubject_1.WebSocketSubject.create;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 470 */
+=======
+/* 466 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52308,87 +55399,155 @@ exports.empty = EmptyObservable_1.EmptyObservable.create;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 471 */
+=======
+/* 467 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var ForkJoinObservable_1 = __webpack_require__(450);
+=======
+var ForkJoinObservable_1 = __webpack_require__(446);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
 //# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 472 */
+=======
+/* 468 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var FromEventObservable_1 = __webpack_require__(451);
+=======
+var FromEventObservable_1 = __webpack_require__(447);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
 //# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 473 */
+=======
+/* 469 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var FromEventPatternObservable_1 = __webpack_require__(452);
+=======
+var FromEventPatternObservable_1 = __webpack_require__(448);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.fromEventPattern = FromEventPatternObservable_1.FromEventPatternObservable.create;
 //# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 474 */
+=======
+/* 470 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var PromiseObservable_1 = __webpack_require__(199);
+=======
+var PromiseObservable_1 = __webpack_require__(195);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.fromPromise = PromiseObservable_1.PromiseObservable.create;
 //# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 475 */
+=======
+/* 471 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var GenerateObservable_1 = __webpack_require__(453);
+=======
+var GenerateObservable_1 = __webpack_require__(449);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.generate = GenerateObservable_1.GenerateObservable.create;
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 476 */
+=======
+/* 472 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var IfObservable_1 = __webpack_require__(454);
+=======
+var IfObservable_1 = __webpack_require__(450);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports._if = IfObservable_1.IfObservable.create;
 //# sourceMappingURL=if.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 477 */
+=======
+/* 473 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var IntervalObservable_1 = __webpack_require__(455);
+=======
+var IntervalObservable_1 = __webpack_require__(451);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.interval = IntervalObservable_1.IntervalObservable.create;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 478 */
+=======
+/* 474 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var NeverObservable_1 = __webpack_require__(457);
+=======
+var NeverObservable_1 = __webpack_require__(453);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.never = NeverObservable_1.NeverObservable.create;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 479 */
+=======
+/* 475 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52398,47 +55557,83 @@ exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNextStatic;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 480 */
+=======
+/* 476 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var PairsObservable_1 = __webpack_require__(458);
+=======
+var PairsObservable_1 = __webpack_require__(454);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.pairs = PairsObservable_1.PairsObservable.create;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 481 */
+=======
+/* 477 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var RangeObservable_1 = __webpack_require__(459);
+=======
+var RangeObservable_1 = __webpack_require__(455);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.range = RangeObservable_1.RangeObservable.create;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 482 */
+=======
+/* 478 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var ErrorObservable_1 = __webpack_require__(449);
+=======
+var ErrorObservable_1 = __webpack_require__(445);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports._throw = ErrorObservable_1.ErrorObservable.create;
 //# sourceMappingURL=throw.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 483 */
+=======
+/* 479 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var UsingObservable_1 = __webpack_require__(462);
+=======
+var UsingObservable_1 = __webpack_require__(458);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.using = UsingObservable_1.UsingObservable.create;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 484 */
+=======
+/* 480 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52448,7 +55643,11 @@ exports.zip = zip_1.zipStatic;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 485 */
+=======
+/* 481 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52501,13 +55700,21 @@ exports.audit = audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 486 */
+=======
+/* 482 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
+<<<<<<< HEAD
 var auditTime_1 = __webpack_require__(205);
+=======
+var auditTime_1 = __webpack_require__(201);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
  * value from the source Observable, then repeats this process.
@@ -52558,12 +55765,20 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 487 */
+=======
+/* 483 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var buffer_1 = __webpack_require__(206);
+=======
+var buffer_1 = __webpack_require__(202);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Buffers the source Observable values until `closingNotifier` emits.
  *
@@ -52603,12 +55818,20 @@ exports.buffer = buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 488 */
+=======
+/* 484 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var bufferCount_1 = __webpack_require__(207);
+=======
+var bufferCount_1 = __webpack_require__(203);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Buffers the source Observable values until the size hits the maximum
  * `bufferSize` given.
@@ -52658,14 +55881,22 @@ exports.bufferCount = bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 489 */
+=======
+/* 485 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var isScheduler_1 = __webpack_require__(11);
+<<<<<<< HEAD
 var bufferTime_1 = __webpack_require__(208);
+=======
+var bufferTime_1 = __webpack_require__(204);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Buffers the source Observable values for a specific time period.
@@ -52731,12 +55962,20 @@ exports.bufferTime = bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 490 */
+=======
+/* 486 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var bufferToggle_1 = __webpack_require__(209);
+=======
+var bufferToggle_1 = __webpack_require__(205);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Buffers the source Observable values starting from an emission from
  * `openings` and ending when the output of `closingSelector` emits.
@@ -52782,12 +56021,20 @@ exports.bufferToggle = bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 491 */
+=======
+/* 487 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var bufferWhen_1 = __webpack_require__(210);
+=======
+var bufferWhen_1 = __webpack_require__(206);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Buffers the source Observable values, using a factory function of closing
  * Observables to determine when to close, emit, and reset the buffer.
@@ -52828,12 +56075,20 @@ exports.bufferWhen = bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 492 */
+=======
+/* 488 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var catchError_1 = __webpack_require__(211);
+=======
+var catchError_1 = __webpack_require__(207);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Catches errors on the observable to be handled by returning a new observable or throwing an error.
  *
@@ -52900,12 +56155,20 @@ exports._catch = _catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 493 */
+=======
+/* 489 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var combineAll_1 = __webpack_require__(212);
+=======
+var combineAll_1 = __webpack_require__(208);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Converts a higher-order Observable into a first-order Observable by waiting
  * for the outer Observable to complete, then applying {@link combineLatest}.
@@ -52953,7 +56216,11 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 494 */
+=======
+/* 490 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53014,12 +56281,20 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 495 */
+=======
+/* 491 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var concat_1 = __webpack_require__(213);
+=======
+var concat_1 = __webpack_require__(209);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var concat_2 = __webpack_require__(20);
 exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
@@ -53083,7 +56358,11 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 496 */
+=======
+/* 492 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53145,7 +56424,11 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 497 */
+=======
+/* 493 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53218,12 +56501,20 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 498 */
+=======
+/* 494 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(214);
+=======
+var concatMapTo_1 = __webpack_require__(210);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -53288,12 +56579,20 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 499 */
+=======
+/* 495 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var count_1 = __webpack_require__(215);
+=======
+var count_1 = __webpack_require__(211);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Counts the number of emissions on the source and emits that number when the
  * source completes.
@@ -53349,12 +56648,20 @@ exports.count = count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 500 */
+=======
+/* 496 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var debounce_1 = __webpack_require__(216);
+=======
+var debounce_1 = __webpack_require__(212);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits a value from the source Observable only after a particular time span
  * determined by another Observable has passed without another source emission.
@@ -53404,13 +56711,21 @@ exports.debounce = debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 501 */
+=======
+/* 497 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
+<<<<<<< HEAD
 var debounceTime_1 = __webpack_require__(217);
+=======
+var debounceTime_1 = __webpack_require__(213);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits a value from the source Observable only after a particular time span
  * has passed without another source emission.
@@ -53465,7 +56780,11 @@ exports.debounceTime = debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 502 */
+=======
+/* 498 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53510,13 +56829,21 @@ exports.defaultIfEmpty = defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 503 */
+=======
+/* 499 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
+<<<<<<< HEAD
 var delay_1 = __webpack_require__(218);
+=======
+var delay_1 = __webpack_require__(214);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Delays the emission of items from the source Observable by a given timeout or
  * until a given Date.
@@ -53564,12 +56891,20 @@ exports.delay = delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 504 */
+=======
+/* 500 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var delayWhen_1 = __webpack_require__(219);
+=======
+var delayWhen_1 = __webpack_require__(215);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Delays the emission of items from the source Observable by a given time span
  * determined by the emissions of another Observable.
@@ -53622,12 +56957,20 @@ exports.delayWhen = delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 505 */
+=======
+/* 501 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var dematerialize_1 = __webpack_require__(220);
+=======
+var dematerialize_1 = __webpack_require__(216);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Converts an Observable of {@link Notification} objects into the emissions
  * that they represent.
@@ -53675,12 +57018,20 @@ exports.dematerialize = dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 506 */
+=======
+/* 502 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var distinct_1 = __webpack_require__(221);
+=======
+var distinct_1 = __webpack_require__(217);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -53733,7 +57084,11 @@ exports.distinct = distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 507 */
+=======
+/* 503 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53786,12 +57141,20 @@ exports.distinctUntilChanged = distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 508 */
+=======
+/* 504 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var distinctUntilKeyChanged_1 = __webpack_require__(222);
+=======
+var distinctUntilKeyChanged_1 = __webpack_require__(218);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item,
@@ -53857,12 +57220,20 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 509 */
+=======
+/* 505 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var tap_1 = __webpack_require__(270);
+=======
+var tap_1 = __webpack_require__(266);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Perform a side effect for every emission on the source Observable, but return
@@ -53914,12 +57285,20 @@ exports._do = _do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 510 */
+=======
+/* 506 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var elementAt_1 = __webpack_require__(223);
+=======
+var elementAt_1 = __webpack_require__(219);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits the single value at the specified `index` in a sequence of emissions
  * from the source Observable.
@@ -53969,12 +57348,20 @@ exports.elementAt = elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 511 */
+=======
+/* 507 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var every_1 = __webpack_require__(224);
+=======
+var every_1 = __webpack_require__(220);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that emits whether or not every item of the source satisfies the condition specified.
  *
@@ -53996,12 +57383,20 @@ exports.every = every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 512 */
+=======
+/* 508 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var exhaust_1 = __webpack_require__(225);
+=======
+var exhaust_1 = __webpack_require__(221);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Converts a higher-order Observable into a first-order Observable by dropping
  * inner Observables while the previous inner Observable has not yet completed.
@@ -54044,12 +57439,20 @@ exports.exhaust = exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 513 */
+=======
+/* 509 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var exhaustMap_1 = __webpack_require__(226);
+=======
+var exhaustMap_1 = __webpack_require__(222);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -54103,12 +57506,20 @@ exports.exhaustMap = exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 514 */
+=======
+/* 510 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var expand_1 = __webpack_require__(227);
+=======
+var expand_1 = __webpack_require__(223);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Recursively projects each source value to an Observable which is merged in
@@ -54165,7 +57576,11 @@ exports.expand = expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 515 */
+=======
+/* 511 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54218,12 +57633,20 @@ exports.filter = filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 516 */
+=======
+/* 512 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var finalize_1 = __webpack_require__(228);
+=======
+var finalize_1 = __webpack_require__(224);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that mirrors the source Observable, but will call a specified function when
  * the source terminates on complete or error.
@@ -54239,7 +57662,11 @@ exports._finally = _finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 517 */
+=======
+/* 513 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54286,12 +57713,20 @@ exports.find = find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 518 */
+=======
+/* 514 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var findIndex_1 = __webpack_require__(229);
+=======
+var findIndex_1 = __webpack_require__(225);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits only the index of the first value emitted by the source Observable that
  * meets some condition.
@@ -54333,12 +57768,20 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 519 */
+=======
+/* 515 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var first_1 = __webpack_require__(230);
+=======
+var first_1 = __webpack_require__(226);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits only the first value (or the first value that meets some condition)
  * emitted by the source Observable.
@@ -54395,12 +57838,20 @@ exports.first = first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 520 */
+=======
+/* 516 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var groupBy_1 = __webpack_require__(231);
+=======
+var groupBy_1 = __webpack_require__(227);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.GroupedObservable = groupBy_1.GroupedObservable;
 /* tslint:enable:max-line-length */
 /**
@@ -54477,12 +57928,20 @@ exports.groupBy = groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 521 */
+=======
+/* 517 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var ignoreElements_1 = __webpack_require__(232);
+=======
+var ignoreElements_1 = __webpack_require__(228);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Ignores all items emitted by the source Observable and only passes calls of `complete` or `error`.
  *
@@ -54501,12 +57960,20 @@ exports.ignoreElements = ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 522 */
+=======
+/* 518 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var isEmpty_1 = __webpack_require__(233);
+=======
+var isEmpty_1 = __webpack_require__(229);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * If the source Observable is empty it returns an Observable that emits true, otherwise it emits false.
  *
@@ -54523,12 +57990,20 @@ exports.isEmpty = isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 523 */
+=======
+/* 519 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var last_1 = __webpack_require__(234);
+=======
+var last_1 = __webpack_require__(230);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits only the last item emitted by the source Observable.
@@ -54554,7 +58029,11 @@ exports.last = last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 524 */
+=======
+/* 520 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54572,7 +58051,11 @@ exports.letProto = letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 525 */
+=======
+/* 521 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54618,12 +58101,20 @@ exports.map = map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 526 */
+=======
+/* 522 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var mapTo_1 = __webpack_require__(235);
+=======
+var mapTo_1 = __webpack_require__(231);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits the given constant value on the output Observable every time the source
  * Observable emits a value.
@@ -54657,12 +58148,20 @@ exports.mapTo = mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 527 */
+=======
+/* 523 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var materialize_1 = __webpack_require__(236);
+=======
+var materialize_1 = __webpack_require__(232);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Represents all of the notifications from the source Observable as `next`
  * emissions marked with their original types within {@link Notification}
@@ -54714,12 +58213,20 @@ exports.materialize = materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 528 */
+=======
+/* 524 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var max_1 = __webpack_require__(237);
+=======
+var max_1 = __webpack_require__(233);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * The Max operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the largest value.
@@ -54758,12 +58265,20 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 529 */
+=======
+/* 525 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var merge_1 = __webpack_require__(238);
+=======
+var merge_1 = __webpack_require__(234);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var merge_2 = __webpack_require__(31);
 exports.mergeStatic = merge_2.merge;
 /* tslint:enable:max-line-length */
@@ -54824,7 +58339,11 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 530 */
+=======
+/* 526 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54882,7 +58401,11 @@ exports.mergeAll = mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 531 */
+=======
+/* 527 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54955,12 +58478,20 @@ exports.mergeMap = mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 532 */
+=======
+/* 528 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(239);
+=======
+var mergeMapTo_1 = __webpack_require__(235);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -55013,12 +58544,20 @@ exports.mergeMapTo = mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 533 */
+=======
+/* 529 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var mergeScan_1 = __webpack_require__(240);
+=======
+var mergeScan_1 = __webpack_require__(236);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Applies an accumulator function over the source Observable where the
  * accumulator function itself returns an Observable, then each intermediate
@@ -55058,12 +58597,20 @@ exports.mergeScan = mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 534 */
+=======
+/* 530 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var min_1 = __webpack_require__(241);
+=======
+var min_1 = __webpack_require__(237);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * The Min operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the smallest value.
@@ -55102,7 +58649,11 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 535 */
+=======
+/* 531 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55210,7 +58761,11 @@ exports.multicast = multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 536 */
+=======
+/* 532 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55270,7 +58825,11 @@ exports.observeOn = observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 537 */
+=======
+/* 533 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55349,12 +58908,20 @@ exports.onErrorResumeNext = onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 538 */
+=======
+/* 534 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(242);
+=======
+var pairwise_1 = __webpack_require__(238);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Groups pairs of consecutive emissions together and emits them as an array of
  * two values.
@@ -55397,12 +58964,20 @@ exports.pairwise = pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 539 */
+=======
+/* 535 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var partition_1 = __webpack_require__(243);
+=======
+var partition_1 = __webpack_require__(239);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Splits the source Observable into two, one with values that satisfy a
  * predicate, and another with values that don't satisfy the predicate.
@@ -55451,12 +59026,20 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 540 */
+=======
+/* 536 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var pluck_1 = __webpack_require__(244);
+=======
+var pluck_1 = __webpack_require__(240);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Maps each source value (an object) to its specified nested property.
  *
@@ -55494,12 +59077,20 @@ exports.pluck = pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 541 */
+=======
+/* 537 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publish_1 = __webpack_require__(245);
+=======
+var publish_1 = __webpack_require__(241);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Returns a ConnectableObservable, which is a variety of Observable that waits until its connect method is called
@@ -55521,12 +59112,20 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 542 */
+=======
+/* 538 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publishBehavior_1 = __webpack_require__(246);
+=======
+var publishBehavior_1 = __webpack_require__(242);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * @param value
  * @return {ConnectableObservable<T>}
@@ -55540,12 +59139,20 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 543 */
+=======
+/* 539 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publishLast_1 = __webpack_require__(247);
+=======
+var publishLast_1 = __webpack_require__(243);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * @return {ConnectableObservable<T>}
  * @method publishLast
@@ -55559,12 +59166,20 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 544 */
+=======
+/* 540 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publishReplay_1 = __webpack_require__(248);
+=======
+var publishReplay_1 = __webpack_require__(244);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * @param bufferSize
@@ -55582,12 +59197,20 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 545 */
+=======
+/* 541 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var race_1 = __webpack_require__(249);
+=======
+var race_1 = __webpack_require__(245);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 // NOTE: to support backwards compatability with 5.4.* and lower
 var race_2 = __webpack_require__(45);
 exports.raceStatic = race_2.race;
@@ -55611,7 +59234,11 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 546 */
+=======
+/* 542 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55677,12 +59304,20 @@ exports.reduce = reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 547 */
+=======
+/* 543 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var repeat_1 = __webpack_require__(250);
+=======
+var repeat_1 = __webpack_require__(246);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that repeats the stream of items emitted by the source Observable at most count times.
  *
@@ -55703,12 +59338,20 @@ exports.repeat = repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 548 */
+=======
+/* 544 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var repeatWhen_1 = __webpack_require__(251);
+=======
+var repeatWhen_1 = __webpack_require__(247);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that mirrors the source Observable with the exception of a `complete`. If the source
  * Observable calls `complete`, this method will emit to the Observable returned from `notifier`. If that Observable
@@ -55730,12 +59373,20 @@ exports.repeatWhen = repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 549 */
+=======
+/* 545 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var retry_1 = __webpack_require__(252);
+=======
+var retry_1 = __webpack_require__(248);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will resubscribe to the source Observable for a maximum of `count` resubscriptions (given
@@ -55760,12 +59411,20 @@ exports.retry = retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 550 */
+=======
+/* 546 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var retryWhen_1 = __webpack_require__(253);
+=======
+var retryWhen_1 = __webpack_require__(249);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will emit the Throwable that caused the error to the Observable returned from `notifier`.
@@ -55787,12 +59446,20 @@ exports.retryWhen = retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 551 */
+=======
+/* 547 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var sample_1 = __webpack_require__(254);
+=======
+var sample_1 = __webpack_require__(250);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits the most recently emitted value from the source Observable whenever
  * another Observable, the `notifier`, emits.
@@ -55834,13 +59501,21 @@ exports.sample = sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 552 */
+=======
+/* 548 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
+<<<<<<< HEAD
 var sampleTime_1 = __webpack_require__(255);
+=======
+var sampleTime_1 = __webpack_require__(251);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits the most recently emitted value from the source Observable within
  * periodic time intervals.
@@ -55885,7 +59560,11 @@ exports.sampleTime = sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 553 */
+=======
+/* 549 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55939,12 +59618,20 @@ exports.scan = scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 554 */
+=======
+/* 550 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var sequenceEqual_1 = __webpack_require__(256);
+=======
+var sequenceEqual_1 = __webpack_require__(252);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Compares all values of two observables in sequence using an optional comparor function
  * and returns an observable of a single boolean value representing whether or not the two sequences
@@ -56004,12 +59691,20 @@ exports.sequenceEqual = sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 555 */
+=======
+/* 551 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var share_1 = __webpack_require__(257);
+=======
+var share_1 = __webpack_require__(253);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns a new Observable that multicasts (shares) the original Observable. As long as there is at least one
  * Subscriber this Observable will be subscribed and emitting data. When all subscribers have unsubscribed it will
@@ -56034,12 +59729,20 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 556 */
+=======
+/* 552 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var shareReplay_1 = __webpack_require__(258);
+=======
+var shareReplay_1 = __webpack_require__(254);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * @method shareReplay
  * @owner Observable
@@ -56052,12 +59755,20 @@ exports.shareReplay = shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 557 */
+=======
+/* 553 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var single_1 = __webpack_require__(259);
+=======
+var single_1 = __webpack_require__(255);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that emits the single item emitted by the source Observable that matches a specified
  * predicate, if that Observable emits one such item. If the source Observable emits more than one such item or no
@@ -56081,12 +59792,20 @@ exports.single = single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 558 */
+=======
+/* 554 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skip_1 = __webpack_require__(260);
+=======
+var skip_1 = __webpack_require__(256);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that skips the first `count` items emitted by the source Observable.
  *
@@ -56105,12 +59824,20 @@ exports.skip = skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 559 */
+=======
+/* 555 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skipLast_1 = __webpack_require__(261);
+=======
+var skipLast_1 = __webpack_require__(257);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Skip the last `count` values emitted by the source Observable.
  *
@@ -56150,12 +59877,20 @@ exports.skipLast = skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 560 */
+=======
+/* 556 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skipUntil_1 = __webpack_require__(262);
+=======
+var skipUntil_1 = __webpack_require__(258);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that skips items emitted by the source Observable until a second Observable emits an item.
  *
@@ -56175,12 +59910,20 @@ exports.skipUntil = skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 561 */
+=======
+/* 557 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skipWhile_1 = __webpack_require__(263);
+=======
+var skipWhile_1 = __webpack_require__(259);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Returns an Observable that skips all items emitted by the source Observable as long as a specified condition holds
  * true, but emits all further source items as soon as the condition becomes false.
@@ -56200,12 +59943,20 @@ exports.skipWhile = skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 562 */
+=======
+/* 558 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var startWith_1 = __webpack_require__(264);
+=======
+var startWith_1 = __webpack_require__(260);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the items you specify as arguments before it begins to emit
@@ -56232,12 +59983,20 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 563 */
+=======
+/* 559 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var subscribeOn_1 = __webpack_require__(586);
+=======
+var subscribeOn_1 = __webpack_require__(582);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -56257,12 +60016,20 @@ exports.subscribeOn = subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 564 */
+=======
+/* 560 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var switchAll_1 = __webpack_require__(265);
+=======
+var switchAll_1 = __webpack_require__(261);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Converts a higher-order Observable into a first-order Observable by
  * subscribing to only the most recently emitted of those inner Observables.
@@ -56312,7 +60079,11 @@ exports._switch = _switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 565 */
+=======
+/* 561 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56373,12 +60144,20 @@ exports.switchMap = switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 566 */
+=======
+/* 562 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var switchMapTo_1 = __webpack_require__(266);
+=======
+var switchMapTo_1 = __webpack_require__(262);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is flattened multiple
@@ -56429,12 +60208,20 @@ exports.switchMapTo = switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 567 */
+=======
+/* 563 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var take_1 = __webpack_require__(267);
+=======
+var take_1 = __webpack_require__(263);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits only the first `count` values emitted by the source Observable.
  *
@@ -56475,7 +60262,11 @@ exports.take = take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 568 */
+=======
+/* 564 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56524,12 +60315,20 @@ exports.takeLast = takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 569 */
+=======
+/* 565 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var takeUntil_1 = __webpack_require__(268);
+=======
+var takeUntil_1 = __webpack_require__(264);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits the values emitted by the source Observable until a `notifier`
  * Observable emits a value.
@@ -56570,12 +60369,20 @@ exports.takeUntil = takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 570 */
+=======
+/* 566 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var takeWhile_1 = __webpack_require__(269);
+=======
+var takeWhile_1 = __webpack_require__(265);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits values emitted by the source Observable so long as each value satisfies
  * the given `predicate`, and then completes as soon as this `predicate` is not
@@ -56619,7 +60426,11 @@ exports.takeWhile = takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 571 */
+=======
+/* 567 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56673,14 +60484,22 @@ exports.throttle = throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 572 */
+=======
+/* 568 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var throttle_1 = __webpack_require__(35);
+<<<<<<< HEAD
 var throttleTime_1 = __webpack_require__(271);
+=======
+var throttleTime_1 = __webpack_require__(267);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Emits a value from the source Observable, then ignores subsequent source
  * values for `duration` milliseconds, then repeats this process.
@@ -56729,13 +60548,21 @@ exports.throttleTime = throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 573 */
+=======
+/* 569 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
+<<<<<<< HEAD
 var timeout_1 = __webpack_require__(273);
+=======
+var timeout_1 = __webpack_require__(269);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  *
  * Errors if Observable does not emit a value in given time span.
@@ -56809,13 +60636,21 @@ exports.timeout = timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 574 */
+=======
+/* 570 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
+<<<<<<< HEAD
 var timeoutWith_1 = __webpack_require__(274);
+=======
+var timeoutWith_1 = __webpack_require__(270);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  *
@@ -56872,7 +60707,11 @@ exports.timeoutWith = timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 575 */
+=======
+/* 571 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56893,12 +60732,20 @@ exports.timestamp = timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 576 */
+=======
+/* 572 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var toArray_1 = __webpack_require__(275);
+=======
+var toArray_1 = __webpack_require__(271);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Collects all source emissions and emits them as an array when the source completes.
  *
@@ -56929,12 +60776,20 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 577 */
+=======
+/* 573 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var window_1 = __webpack_require__(276);
+=======
+var window_1 = __webpack_require__(272);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Branch out the source Observable values as a nested Observable whenever
  * `windowBoundaries` emits.
@@ -56978,12 +60833,20 @@ exports.window = window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 578 */
+=======
+/* 574 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var windowCount_1 = __webpack_require__(277);
+=======
+var windowCount_1 = __webpack_require__(273);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Branch out the source Observable values as a nested Observable with each
  * nested Observable emitting at most `windowSize` values.
@@ -57040,7 +60903,11 @@ exports.windowCount = windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 579 */
+=======
+/* 575 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57048,7 +60915,11 @@ exports.windowCount = windowCount;
 var async_1 = __webpack_require__(5);
 var isNumeric_1 = __webpack_require__(28);
 var isScheduler_1 = __webpack_require__(11);
+<<<<<<< HEAD
 var windowTime_1 = __webpack_require__(278);
+=======
+var windowTime_1 = __webpack_require__(274);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 function windowTime(windowTimeSpan) {
     var scheduler = async_1.async;
     var windowCreationInterval = null;
@@ -57074,12 +60945,20 @@ exports.windowTime = windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 580 */
+=======
+/* 576 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var windowToggle_1 = __webpack_require__(279);
+=======
+var windowToggle_1 = __webpack_require__(275);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Branch out the source Observable values as a nested Observable starting from
  * an emission from `openings` and ending when the output of `closingSelector`
@@ -57128,12 +61007,20 @@ exports.windowToggle = windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 581 */
+=======
+/* 577 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var windowWhen_1 = __webpack_require__(280);
+=======
+var windowWhen_1 = __webpack_require__(276);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Branch out the source Observable values as a nested Observable using a
  * factory function of closing Observables to determine when to start a new
@@ -57179,12 +61066,20 @@ exports.windowWhen = windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 582 */
+=======
+/* 578 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var withLatestFrom_1 = __webpack_require__(281);
+=======
+var withLatestFrom_1 = __webpack_require__(277);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* tslint:enable:max-line-length */
 /**
  * Combines the source Observable with other Observables to create an Observable
@@ -57235,7 +61130,11 @@ exports.withLatestFrom = withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 583 */
+=======
+/* 579 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57259,12 +61158,20 @@ exports.zipProto = zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 584 */
+=======
+/* 580 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var zipAll_1 = __webpack_require__(282);
+=======
+var zipAll_1 = __webpack_require__(278);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * @param project
  * @return {Observable<R>|WebSocketSubject<T>|Observable<T>}
@@ -57278,13 +61185,18 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 585 */
+=======
+/* 581 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var audit_1 = __webpack_require__(46);
 exports.audit = audit_1.audit;
+<<<<<<< HEAD
 var auditTime_1 = __webpack_require__(205);
 exports.auditTime = auditTime_1.auditTime;
 var buffer_1 = __webpack_require__(206);
@@ -57304,11 +61216,33 @@ exports.combineAll = combineAll_1.combineAll;
 var combineLatest_1 = __webpack_require__(32);
 exports.combineLatest = combineLatest_1.combineLatest;
 var concat_1 = __webpack_require__(213);
+=======
+var auditTime_1 = __webpack_require__(201);
+exports.auditTime = auditTime_1.auditTime;
+var buffer_1 = __webpack_require__(202);
+exports.buffer = buffer_1.buffer;
+var bufferCount_1 = __webpack_require__(203);
+exports.bufferCount = bufferCount_1.bufferCount;
+var bufferTime_1 = __webpack_require__(204);
+exports.bufferTime = bufferTime_1.bufferTime;
+var bufferToggle_1 = __webpack_require__(205);
+exports.bufferToggle = bufferToggle_1.bufferToggle;
+var bufferWhen_1 = __webpack_require__(206);
+exports.bufferWhen = bufferWhen_1.bufferWhen;
+var catchError_1 = __webpack_require__(207);
+exports.catchError = catchError_1.catchError;
+var combineAll_1 = __webpack_require__(208);
+exports.combineAll = combineAll_1.combineAll;
+var combineLatest_1 = __webpack_require__(32);
+exports.combineLatest = combineLatest_1.combineLatest;
+var concat_1 = __webpack_require__(209);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.concat = concat_1.concat;
 var concatAll_1 = __webpack_require__(47);
 exports.concatAll = concatAll_1.concatAll;
 var concatMap_1 = __webpack_require__(48);
 exports.concatMap = concatMap_1.concatMap;
+<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(214);
 exports.concatMapTo = concatMapTo_1.concatMapTo;
 var count_1 = __webpack_require__(215);
@@ -57368,6 +61302,67 @@ exports.materialize = materialize_1.materialize;
 var max_1 = __webpack_require__(237);
 exports.max = max_1.max;
 var merge_1 = __webpack_require__(238);
+=======
+var concatMapTo_1 = __webpack_require__(210);
+exports.concatMapTo = concatMapTo_1.concatMapTo;
+var count_1 = __webpack_require__(211);
+exports.count = count_1.count;
+var debounce_1 = __webpack_require__(212);
+exports.debounce = debounce_1.debounce;
+var debounceTime_1 = __webpack_require__(213);
+exports.debounceTime = debounceTime_1.debounceTime;
+var defaultIfEmpty_1 = __webpack_require__(49);
+exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
+var delay_1 = __webpack_require__(214);
+exports.delay = delay_1.delay;
+var delayWhen_1 = __webpack_require__(215);
+exports.delayWhen = delayWhen_1.delayWhen;
+var dematerialize_1 = __webpack_require__(216);
+exports.dematerialize = dematerialize_1.dematerialize;
+var distinct_1 = __webpack_require__(217);
+exports.distinct = distinct_1.distinct;
+var distinctUntilChanged_1 = __webpack_require__(50);
+exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
+var distinctUntilKeyChanged_1 = __webpack_require__(218);
+exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
+var elementAt_1 = __webpack_require__(219);
+exports.elementAt = elementAt_1.elementAt;
+var every_1 = __webpack_require__(220);
+exports.every = every_1.every;
+var exhaust_1 = __webpack_require__(221);
+exports.exhaust = exhaust_1.exhaust;
+var exhaustMap_1 = __webpack_require__(222);
+exports.exhaustMap = exhaustMap_1.exhaustMap;
+var expand_1 = __webpack_require__(223);
+exports.expand = expand_1.expand;
+var filter_1 = __webpack_require__(51);
+exports.filter = filter_1.filter;
+var finalize_1 = __webpack_require__(224);
+exports.finalize = finalize_1.finalize;
+var find_1 = __webpack_require__(52);
+exports.find = find_1.find;
+var findIndex_1 = __webpack_require__(225);
+exports.findIndex = findIndex_1.findIndex;
+var first_1 = __webpack_require__(226);
+exports.first = first_1.first;
+var groupBy_1 = __webpack_require__(227);
+exports.groupBy = groupBy_1.groupBy;
+var ignoreElements_1 = __webpack_require__(228);
+exports.ignoreElements = ignoreElements_1.ignoreElements;
+var isEmpty_1 = __webpack_require__(229);
+exports.isEmpty = isEmpty_1.isEmpty;
+var last_1 = __webpack_require__(230);
+exports.last = last_1.last;
+var map_1 = __webpack_require__(21);
+exports.map = map_1.map;
+var mapTo_1 = __webpack_require__(231);
+exports.mapTo = mapTo_1.mapTo;
+var materialize_1 = __webpack_require__(232);
+exports.materialize = materialize_1.materialize;
+var max_1 = __webpack_require__(233);
+exports.max = max_1.max;
+var merge_1 = __webpack_require__(234);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.merge = merge_1.merge;
 var mergeAll_1 = __webpack_require__(33);
 exports.mergeAll = mergeAll_1.mergeAll;
@@ -57375,11 +61370,19 @@ var mergeMap_1 = __webpack_require__(22);
 exports.mergeMap = mergeMap_1.mergeMap;
 var mergeMap_2 = __webpack_require__(22);
 exports.flatMap = mergeMap_2.mergeMap;
+<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(239);
 exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
 var mergeScan_1 = __webpack_require__(240);
 exports.mergeScan = mergeScan_1.mergeScan;
 var min_1 = __webpack_require__(241);
+=======
+var mergeMapTo_1 = __webpack_require__(235);
+exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
+var mergeScan_1 = __webpack_require__(236);
+exports.mergeScan = mergeScan_1.mergeScan;
+var min_1 = __webpack_require__(237);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.min = min_1.min;
 var multicast_1 = __webpack_require__(16);
 exports.multicast = multicast_1.multicast;
@@ -57387,6 +61390,7 @@ var observeOn_1 = __webpack_require__(34);
 exports.observeOn = observeOn_1.observeOn;
 var onErrorResumeNext_1 = __webpack_require__(53);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
+<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(242);
 exports.pairwise = pairwise_1.pairwise;
 var partition_1 = __webpack_require__(243);
@@ -57438,6 +61442,59 @@ exports.skipUntil = skipUntil_1.skipUntil;
 var skipWhile_1 = __webpack_require__(263);
 exports.skipWhile = skipWhile_1.skipWhile;
 var startWith_1 = __webpack_require__(264);
+=======
+var pairwise_1 = __webpack_require__(238);
+exports.pairwise = pairwise_1.pairwise;
+var partition_1 = __webpack_require__(239);
+exports.partition = partition_1.partition;
+var pluck_1 = __webpack_require__(240);
+exports.pluck = pluck_1.pluck;
+var publish_1 = __webpack_require__(241);
+exports.publish = publish_1.publish;
+var publishBehavior_1 = __webpack_require__(242);
+exports.publishBehavior = publishBehavior_1.publishBehavior;
+var publishLast_1 = __webpack_require__(243);
+exports.publishLast = publishLast_1.publishLast;
+var publishReplay_1 = __webpack_require__(244);
+exports.publishReplay = publishReplay_1.publishReplay;
+var race_1 = __webpack_require__(245);
+exports.race = race_1.race;
+var reduce_1 = __webpack_require__(23);
+exports.reduce = reduce_1.reduce;
+var repeat_1 = __webpack_require__(246);
+exports.repeat = repeat_1.repeat;
+var repeatWhen_1 = __webpack_require__(247);
+exports.repeatWhen = repeatWhen_1.repeatWhen;
+var retry_1 = __webpack_require__(248);
+exports.retry = retry_1.retry;
+var retryWhen_1 = __webpack_require__(249);
+exports.retryWhen = retryWhen_1.retryWhen;
+var refCount_1 = __webpack_require__(54);
+exports.refCount = refCount_1.refCount;
+var sample_1 = __webpack_require__(250);
+exports.sample = sample_1.sample;
+var sampleTime_1 = __webpack_require__(251);
+exports.sampleTime = sampleTime_1.sampleTime;
+var scan_1 = __webpack_require__(55);
+exports.scan = scan_1.scan;
+var sequenceEqual_1 = __webpack_require__(252);
+exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
+var share_1 = __webpack_require__(253);
+exports.share = share_1.share;
+var shareReplay_1 = __webpack_require__(254);
+exports.shareReplay = shareReplay_1.shareReplay;
+var single_1 = __webpack_require__(255);
+exports.single = single_1.single;
+var skip_1 = __webpack_require__(256);
+exports.skip = skip_1.skip;
+var skipLast_1 = __webpack_require__(257);
+exports.skipLast = skipLast_1.skipLast;
+var skipUntil_1 = __webpack_require__(258);
+exports.skipUntil = skipUntil_1.skipUntil;
+var skipWhile_1 = __webpack_require__(259);
+exports.skipWhile = skipWhile_1.skipWhile;
+var startWith_1 = __webpack_require__(260);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.startWith = startWith_1.startWith;
 /**
  * TODO(https://github.com/ReactiveX/rxjs/issues/2900): Add back subscribeOn once it can be
@@ -57446,6 +61503,7 @@ exports.startWith = startWith_1.startWith;
  * Immediate, root, and other supporting code.
  */
 // export { subscribeOn } from './operators/subscribeOn';
+<<<<<<< HEAD
 var switchAll_1 = __webpack_require__(265);
 exports.switchAll = switchAll_1.switchAll;
 var switchMap_1 = __webpack_require__(56);
@@ -57491,16 +61549,71 @@ exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
 var zip_1 = __webpack_require__(36);
 exports.zip = zip_1.zip;
 var zipAll_1 = __webpack_require__(282);
+=======
+var switchAll_1 = __webpack_require__(261);
+exports.switchAll = switchAll_1.switchAll;
+var switchMap_1 = __webpack_require__(56);
+exports.switchMap = switchMap_1.switchMap;
+var switchMapTo_1 = __webpack_require__(262);
+exports.switchMapTo = switchMapTo_1.switchMapTo;
+var take_1 = __webpack_require__(263);
+exports.take = take_1.take;
+var takeLast_1 = __webpack_require__(57);
+exports.takeLast = takeLast_1.takeLast;
+var takeUntil_1 = __webpack_require__(264);
+exports.takeUntil = takeUntil_1.takeUntil;
+var takeWhile_1 = __webpack_require__(265);
+exports.takeWhile = takeWhile_1.takeWhile;
+var tap_1 = __webpack_require__(266);
+exports.tap = tap_1.tap;
+var throttle_1 = __webpack_require__(35);
+exports.throttle = throttle_1.throttle;
+var throttleTime_1 = __webpack_require__(267);
+exports.throttleTime = throttleTime_1.throttleTime;
+var timeInterval_1 = __webpack_require__(268);
+exports.timeInterval = timeInterval_1.timeInterval;
+var timeout_1 = __webpack_require__(269);
+exports.timeout = timeout_1.timeout;
+var timeoutWith_1 = __webpack_require__(270);
+exports.timeoutWith = timeoutWith_1.timeoutWith;
+var timestamp_1 = __webpack_require__(58);
+exports.timestamp = timestamp_1.timestamp;
+var toArray_1 = __webpack_require__(271);
+exports.toArray = toArray_1.toArray;
+var window_1 = __webpack_require__(272);
+exports.window = window_1.window;
+var windowCount_1 = __webpack_require__(273);
+exports.windowCount = windowCount_1.windowCount;
+var windowTime_1 = __webpack_require__(274);
+exports.windowTime = windowTime_1.windowTime;
+var windowToggle_1 = __webpack_require__(275);
+exports.windowToggle = windowToggle_1.windowToggle;
+var windowWhen_1 = __webpack_require__(276);
+exports.windowWhen = windowWhen_1.windowWhen;
+var withLatestFrom_1 = __webpack_require__(277);
+exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
+var zip_1 = __webpack_require__(36);
+exports.zip = zip_1.zip;
+var zipAll_1 = __webpack_require__(278);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=operators.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 586 */
+=======
+/* 582 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var SubscribeOnObservable_1 = __webpack_require__(460);
+=======
+var SubscribeOnObservable_1 = __webpack_require__(456);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -57532,7 +61645,11 @@ var SubscribeOnOperator = (function () {
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 587 */
+=======
+/* 583 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57582,7 +61699,11 @@ exports.Action = Action;
 //# sourceMappingURL=Action.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 588 */
+=======
+/* 584 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57593,7 +61714,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AsyncAction_1 = __webpack_require__(24);
+<<<<<<< HEAD
 var AnimationFrame_1 = __webpack_require__(598);
+=======
+var AnimationFrame_1 = __webpack_require__(594);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -57643,7 +61768,11 @@ exports.AnimationFrameAction = AnimationFrameAction;
 //# sourceMappingURL=AnimationFrameAction.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 589 */
+=======
+/* 585 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57686,7 +61815,11 @@ exports.AnimationFrameScheduler = AnimationFrameScheduler;
 //# sourceMappingURL=AnimationFrameScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 590 */
+=======
+/* 586 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57696,7 +61829,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+<<<<<<< HEAD
 var Immediate_1 = __webpack_require__(600);
+=======
+var Immediate_1 = __webpack_require__(596);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var AsyncAction_1 = __webpack_require__(24);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -57747,7 +61884,11 @@ exports.AsapAction = AsapAction;
 //# sourceMappingURL=AsapAction.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 591 */
+=======
+/* 587 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57790,7 +61931,11 @@ exports.AsapScheduler = AsapScheduler;
 //# sourceMappingURL=AsapScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 592 */
+=======
+/* 588 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57845,7 +61990,11 @@ exports.QueueAction = QueueAction;
 //# sourceMappingURL=QueueAction.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 593 */
+=======
+/* 589 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57867,13 +62016,22 @@ exports.QueueScheduler = QueueScheduler;
 //# sourceMappingURL=QueueScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 594 */
+=======
+/* 590 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var AnimationFrameAction_1 = __webpack_require__(588);
 var AnimationFrameScheduler_1 = __webpack_require__(589);
+=======
+var AnimationFrameAction_1 = __webpack_require__(584);
+var AnimationFrameScheduler_1 = __webpack_require__(585);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  *
  * Animation Frame Scheduler
@@ -57908,7 +62066,11 @@ exports.animationFrame = new AnimationFrameScheduler_1.AnimationFrameScheduler(A
 //# sourceMappingURL=animationFrame.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 595 */
+=======
+/* 591 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57920,8 +62082,13 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Subscription_1 = __webpack_require__(6);
+<<<<<<< HEAD
 var SubscriptionLoggable_1 = __webpack_require__(287);
 var applyMixins_1 = __webpack_require__(290);
+=======
+var SubscriptionLoggable_1 = __webpack_require__(283);
+var applyMixins_1 = __webpack_require__(286);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -57960,7 +62127,11 @@ applyMixins_1.applyMixins(ColdObservable, [SubscriptionLoggable_1.SubscriptionLo
 //# sourceMappingURL=ColdObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 596 */
+=======
+/* 592 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57972,8 +62143,13 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Subject_1 = __webpack_require__(7);
 var Subscription_1 = __webpack_require__(6);
+<<<<<<< HEAD
 var SubscriptionLoggable_1 = __webpack_require__(287);
 var applyMixins_1 = __webpack_require__(290);
+=======
+var SubscriptionLoggable_1 = __webpack_require__(283);
+var applyMixins_1 = __webpack_require__(286);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -58014,7 +62190,11 @@ applyMixins_1.applyMixins(HotObservable, [SubscriptionLoggable_1.SubscriptionLog
 //# sourceMappingURL=HotObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 597 */
+=======
+/* 593 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58026,10 +62206,17 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Notification_1 = __webpack_require__(19);
+<<<<<<< HEAD
 var ColdObservable_1 = __webpack_require__(595);
 var HotObservable_1 = __webpack_require__(596);
 var SubscriptionLog_1 = __webpack_require__(286);
 var VirtualTimeScheduler_1 = __webpack_require__(283);
+=======
+var ColdObservable_1 = __webpack_require__(591);
+var HotObservable_1 = __webpack_require__(592);
+var SubscriptionLog_1 = __webpack_require__(282);
+var VirtualTimeScheduler_1 = __webpack_require__(279);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var defaultMaxFrame = 750;
 var TestScheduler = (function (_super) {
     __extends(TestScheduler, _super);
@@ -58243,7 +62430,11 @@ exports.TestScheduler = TestScheduler;
 //# sourceMappingURL=TestScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 598 */
+=======
+/* 594 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58283,7 +62474,11 @@ exports.AnimationFrame = new RequestAnimationFrameDefinition(root_1.root);
 //# sourceMappingURL=AnimationFrame.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 599 */
+=======
+/* 595 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58320,7 +62515,11 @@ exports.FastMap = FastMap;
 //# sourceMappingURL=FastMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 600 */
+=======
+/* 596 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58533,21 +62732,36 @@ var ImmediateDefinition = (function () {
 exports.ImmediateDefinition = ImmediateDefinition;
 exports.Immediate = new ImmediateDefinition(root_1.root);
 //# sourceMappingURL=Immediate.js.map
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(295).clearImmediate, __webpack_require__(295).setImmediate))
 
 /***/ }),
 /* 601 */
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(291).clearImmediate, __webpack_require__(291).setImmediate))
+
+/***/ }),
+/* 597 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var root_1 = __webpack_require__(10);
+<<<<<<< HEAD
 var MapPolyfill_1 = __webpack_require__(602);
+=======
+var MapPolyfill_1 = __webpack_require__(598);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.Map = root_1.root.Map || (function () { return MapPolyfill_1.MapPolyfill; })();
 //# sourceMappingURL=Map.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 602 */
+=======
+/* 598 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58600,7 +62814,11 @@ exports.MapPolyfill = MapPolyfill;
 //# sourceMappingURL=MapPolyfill.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 603 */
+=======
+/* 599 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58639,7 +62857,11 @@ exports.Set = root_1.root.Set || minimalSetImpl();
 //# sourceMappingURL=Set.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 604 */
+=======
+/* 600 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58671,7 +62893,11 @@ exports.assign = getAssign(root_1.root);
 //# sourceMappingURL=assign.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 605 */
+=======
+/* 601 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58688,14 +62914,22 @@ exports.not = not;
 //# sourceMappingURL=not.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 606 */
+=======
+/* 602 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Subscriber_1 = __webpack_require__(2);
 var rxSubscriber_1 = __webpack_require__(38);
+<<<<<<< HEAD
 var Observer_1 = __webpack_require__(195);
+=======
+var Observer_1 = __webpack_require__(191);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 function toSubscriber(nextOrObserver, error, complete) {
     if (nextOrObserver) {
         if (nextOrObserver instanceof Subscriber_1.Subscriber) {
@@ -58714,11 +62948,19 @@ exports.toSubscriber = toSubscriber;
 //# sourceMappingURL=toSubscriber.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 607 */,
 /* 608 */,
 /* 609 */,
 /* 610 */,
 /* 611 */
+=======
+/* 603 */,
+/* 604 */,
+/* 605 */,
+/* 606 */,
+/* 607 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -58908,10 +63150,17 @@ exports.toSubscriber = toSubscriber;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64), __webpack_require__(308)))
 
 /***/ }),
 /* 612 */
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64), __webpack_require__(304)))
+
+/***/ }),
+/* 608 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58931,7 +63180,11 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 613 */
+=======
+/* 609 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58955,7 +63208,11 @@ exports.Alert = Alert;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 614 */
+=======
+/* 610 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58964,7 +63221,11 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
+<<<<<<< HEAD
 var alert_1 = __webpack_require__(613);
+=======
+var alert_1 = __webpack_require__(609);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -59034,7 +63295,11 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 615 */
+=======
+/* 611 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59307,7 +63572,11 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 616 */
+=======
+/* 612 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59319,6 +63588,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(17);
 //services
 //components
+<<<<<<< HEAD
 var swcardlayout_1 = __webpack_require__(620);
 var swcardview_1 = __webpack_require__(623);
 var swcardheader_1 = __webpack_require__(618);
@@ -59326,6 +63596,15 @@ var swcardbody_1 = __webpack_require__(617);
 var swcardicon_1 = __webpack_require__(619);
 var swcardprogressbar_1 = __webpack_require__(622);
 var swcardlistitem_1 = __webpack_require__(621);
+=======
+var swcardlayout_1 = __webpack_require__(616);
+var swcardview_1 = __webpack_require__(619);
+var swcardheader_1 = __webpack_require__(614);
+var swcardbody_1 = __webpack_require__(613);
+var swcardicon_1 = __webpack_require__(615);
+var swcardprogressbar_1 = __webpack_require__(618);
+var swcardlistitem_1 = __webpack_require__(617);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -59344,7 +63623,11 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 617 */
+=======
+/* 613 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59391,7 +63674,11 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 618 */
+=======
+/* 614 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59440,7 +63727,11 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 619 */
+=======
+/* 615 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59491,7 +63782,11 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 620 */
+=======
+/* 616 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59542,7 +63837,11 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 621 */
+=======
+/* 617 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59596,7 +63895,11 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 622 */
+=======
+/* 618 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59649,7 +63952,11 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 623 */
+=======
+/* 619 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59701,7 +64008,11 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 624 */
+=======
+/* 620 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59746,7 +64057,11 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 625 */
+=======
+/* 621 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59789,7 +64104,11 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 626 */
+=======
+/* 622 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59883,7 +64202,11 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 627 */
+=======
+/* 623 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60119,7 +64442,11 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 628 */
+=======
+/* 624 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61017,7 +65344,11 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 629 */
+=======
+/* 625 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61056,7 +65387,11 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 630 */
+=======
+/* 626 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61152,7 +65487,11 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 631 */
+=======
+/* 627 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61625,7 +65964,11 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 632 */
+=======
+/* 628 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61766,7 +66109,11 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 633 */
+=======
+/* 629 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61928,7 +66275,11 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 634 */
+=======
+/* 630 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62069,6 +66420,7 @@ var SWCriteriaNumber = /** @class */ (function () {
                 };
                 scope.selectedConditionChanged = function (selectedFilterProperty) {
                     //scope.selectedFilterProperty.criteriaValue = '';
+<<<<<<< HEAD
                     if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
                         selectedFilterProperty.showCriteriaValue = false;
                     }
@@ -62088,12 +66440,75 @@ var SWCriteriaNumber = /** @class */ (function () {
                         scope.filterItem.value = scope.filterItem.value.replace('%', '');
                     }
                 });
+=======
+                    // selectedFilterProperty.showCriteriaStart is the default input, if the criteria is not of range type
+                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
+                    }
+                    else {
+                        if (selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in') {
+                            selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
+                            scope.comparisonOperatorInAndNotInFlag = true;
+                        }
+                        else {
+                            scope.clearField();
+                            scope.comparisonOperatorInAndNotInFlag = false;
+                            selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+                        }
+                    }
+                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
+                        //enabling the end-range input 
+                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+                        scope.selectedFilterProperty.criteriaRangeStart = "";
+                        scope.selectedFilterProperty.criteriaRangeEnd = "";
+                    }
+                    else {
+                        //disabling the end-range input 
+                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = false;
+                    }
+                    scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+                };
+                scope.criteriaRangeChanged = function (selectedFilterProperty) {
+                    scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+                };
+                scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
+                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+                    }
+                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
+                        if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
+                            selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart + "-" + selectedFilterProperty.criteriaRangeEnd;
+                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
+                        }
+                        else if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart))) {
+                            selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = ">";
+                        }
+                        else if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
+                            selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeEnd;
+                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = "<";
+                        }
+                        else {
+                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
+                            selectedFilterProperty.criteriaValue = "";
+                        }
+                    }
+                    else {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+                    }
+                    scope.filterItem.value = selectedFilterProperty.criteriaValue;
+                };
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
                     if (angular.isDefined(selectedFilterProperty)) {
                         angular.forEach(scope.conditionOptions, function (conditionOption) {
                             if (conditionOption.display == scope.filterItem.conditionDisplay) {
                                 scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+<<<<<<< HEAD
                                 scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+=======
+                                scope.calculateCriteriaFilterPropertyValue(scope.selectedFilterProperty);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                                 if (angular.isDefined(scope.selectedConditionChanged)) {
                                     scope.selectedConditionChanged(scope.selectedFilterProperty);
                                 }
@@ -62118,7 +66533,11 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 635 */
+=======
+/* 631 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62266,7 +66685,11 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 636 */
+=======
+/* 632 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62363,7 +66786,11 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 637 */
+=======
+/* 633 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62541,7 +66968,11 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 638 */
+=======
+/* 634 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62605,7 +67036,11 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 639 */
+=======
+/* 635 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62691,7 +67126,11 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 640 */
+=======
+/* 636 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62972,7 +67411,11 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 641 */
+=======
+/* 637 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63208,7 +67651,16 @@ var SWEditFilterItem = /** @class */ (function () {
                                     filterItem.attributeID = selectedFilterProperty.attributeID;
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
                                 }
+<<<<<<< HEAD
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+=======
+                                if (selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated) {
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated;
+                                }
+                                else {
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                }
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value.toString();
@@ -63353,7 +67805,11 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 642 */
+=======
+/* 638 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63426,7 +67882,11 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 643 */
+=======
+/* 639 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63526,7 +67986,11 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 644 */
+=======
+/* 640 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63594,7 +68058,11 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 645 */
+=======
+/* 641 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63655,7 +68123,11 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 646 */
+=======
+/* 642 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63711,7 +68183,11 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 647 */
+=======
+/* 643 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63750,7 +68226,11 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 648 */
+=======
+/* 644 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63958,7 +68438,11 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 649 */
+=======
+/* 645 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63997,7 +68481,11 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 650 */
+=======
+/* 646 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64028,7 +68516,11 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 651 */
+=======
+/* 647 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64104,7 +68596,11 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
+<<<<<<< HEAD
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct) {
+=======
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -64112,7 +68608,10 @@ var CollectionConfig = /** @class */ (function () {
         if (currentPage === void 0) { currentPage = 1; }
         if (pageShow === void 0) { pageShow = 10; }
         if (keywords === void 0) { keywords = ''; }
+<<<<<<< HEAD
         if (customEndpoint === void 0) { customEndpoint = ''; }
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
@@ -64135,7 +68634,10 @@ var CollectionConfig = /** @class */ (function () {
         this.currentPage = currentPage;
         this.pageShow = pageShow;
         this.keywords = keywords;
+<<<<<<< HEAD
         this.customEndpoint = customEndpoint;
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.allRecords = allRecords;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
@@ -64282,8 +68784,12 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
+<<<<<<< HEAD
                 periodInterval: _this.periodInterval,
                 customEndpoint: _this.customEndpoint
+=======
+                periodInterval: _this.periodInterval
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             };
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
@@ -64774,9 +69280,12 @@ var CollectionConfig = /** @class */ (function () {
         this.getPageShow = function () {
             return _this.pageShow;
         };
+<<<<<<< HEAD
         this.getCustomEndpoint = function () {
             return _this.customEndpoint;
         };
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.setAllRecords = function (allFlag) {
             if (allFlag === void 0) { allFlag = false; }
             _this.allRecords = allFlag;
@@ -64796,10 +69305,13 @@ var CollectionConfig = /** @class */ (function () {
             _this.keywords = keyword;
             return _this;
         };
+<<<<<<< HEAD
         this.setCustomEndpoint = function (endPoint) {
             _this.customEndpoint = endPoint;
             return _this;
         };
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.setId = function (id) {
             _this.id = id;
             return _this;
@@ -64922,7 +69434,11 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 652 */
+=======
+/* 648 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65144,7 +69660,11 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 653 */
+=======
+/* 649 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65166,21 +69686,32 @@ var SWActionCallerController = /** @class */ (function () {
         this.observerService = observerService;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
+<<<<<<< HEAD
         this.hibachiPathBuilder = hibachiPathBuilder;
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.$onInit = function () {
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
             }
+<<<<<<< HEAD
             if (_this.event != null && _this.event.length) {
                 _this.type = 'event'; //no action url needed
             }
             else if (!_this.isAngularRoute) {
+=======
+            if (!_this.isAngularRoute) {
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 _this.actionUrl = _this.$hibachi.buildUrl(_this.action, _this.queryString);
             }
             else {
                 _this.actionUrl = '#!/entity/' + _this.action + '/' + _this.queryString.split('=')[1];
             }
+<<<<<<< HEAD
+=======
+            //            this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             _this.type = _this.type || 'link';
             if (angular.isDefined(_this.titleRbKey)) {
                 _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);
@@ -65198,15 +69729,42 @@ var SWActionCallerController = /** @class */ (function () {
                     unbindWatcher();
                 });
             }
+<<<<<<< HEAD
+=======
+            //            this.actionItem = this.getActionItem();
+            //            this.actionItemEntityName = this.getActionItemEntityName();
+            //            this.text = this.getText();
+            //            if(this.getDisabled()){
+            //                this.getDisabledText();
+            //            }else if(this.getConfirm()){
+            //                this.getConfirmText();
+            //            }
+            //
+            //            if(this.modalFullWidth && !this.getDisabled()){
+            //                this.class = this.class + " modalload-fullwidth";
+            //            }
+            //
+            //            if(this.modal && !this.getDisabled() && !this.modalFullWidth){
+            //                this.class = this.class + " modalload";
+            //            }
+            /*need authentication lookup by api to disable
+            <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
+                <cfset attributes.class &= " disabled" />
+            </cfif>
+            */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             if (_this.eventListeners) {
                 for (var key in _this.eventListeners) {
                     _this.observerService.attach(_this.eventListeners[key], key);
                 }
             }
         };
+<<<<<<< HEAD
         this.emit = function () {
             _this.observerService.notify(_this.event, _this.payload);
         };
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.submit = function () {
             _this.$timeout(function () {
                 if (!_this.form) {
@@ -65355,6 +69913,18 @@ var SWActionCallerController = /** @class */ (function () {
             }
             return "";
         };
+<<<<<<< HEAD
+=======
+        this.$scope = $scope;
+        this.$element = $element;
+        this.$timeout = $timeout;
+        this.$templateRequest = $templateRequest;
+        this.$compile = $compile;
+        this.rbkeyService = rbkeyService;
+        this.$hibachi = $hibachi;
+        this.utilityService = utilityService;
+        this.hibachiPathBuilder = hibachiPathBuilder;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
             var template = angular.element(html);
             _this.$element.parent().append(template);
@@ -65374,9 +69944,13 @@ var SWActionCaller = /** @class */ (function () {
         this.restrict = 'EA';
         this.scope = {};
         this.bindToController = {
+<<<<<<< HEAD
             action: "@?",
             event: "@?",
             payload: "=",
+=======
+            action: "@",
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             text: "@",
             type: "@",
             queryString: "@",
@@ -65420,7 +69994,11 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 654 */
+=======
+/* 650 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65471,7 +70049,11 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 655 */
+=======
+/* 651 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65522,7 +70104,11 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 656 */
+=======
+/* 652 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65614,7 +70200,11 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 657 */
+=======
+/* 653 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65782,7 +70372,11 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 658 */
+=======
+/* 654 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65845,7 +70439,11 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 659 */
+=======
+/* 655 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65896,7 +70494,11 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 660 */
+=======
+/* 656 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65943,7 +70545,11 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 661 */
+=======
+/* 657 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66097,6 +70703,7 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 662 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -66230,6 +70837,9 @@ exports.SWDatePicker = SWDatePicker;
 
 /***/ }),
 /* 664 */
+=======
+/* 658 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66288,7 +70898,11 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 665 */
+=======
+/* 659 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66371,7 +70985,11 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 666 */
+=======
+/* 660 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66506,7 +71124,11 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 667 */
+=======
+/* 661 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66579,7 +71201,11 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 668 */
+=======
+/* 662 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66618,7 +71244,11 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 669 */
+=======
+/* 663 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66826,7 +71456,11 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 670 */
+=======
+/* 664 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66896,7 +71530,11 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 671 */
+=======
+/* 665 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66930,7 +71568,11 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 672 */
+=======
+/* 666 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66974,7 +71616,11 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 673 */
+=======
+/* 667 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67008,7 +71654,11 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 674 */
+=======
+/* 668 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67044,7 +71694,11 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 675 */
+=======
+/* 669 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67120,7 +71774,11 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 676 */
+=======
+/* 670 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67130,17 +71788,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWModalLauncherController = /** @class */ (function () {
     // @ngInject
+<<<<<<< HEAD
     function SWModalLauncherController(observerService) {
         var _this = this;
         this.observerService = observerService;
+=======
+    function SWModalLauncherController() {
+        var _this = this;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.hasSaveAction = false;
         this.hasCancelAction = false;
         this.hasDeleteAction = false;
         this.launchModal = function () {
+<<<<<<< HEAD
             //this.showModal is only for use with custom template
             _this.showModal = true;
             //trigger bootstrap event to show modal
             $("#" + _this.modalName).modal(_this.modalOptions);
+=======
+            //activate the necessary modal
+            _this.showModal = true;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         };
         this.saveCallback = function () {
             //the passed save action must return a promise
@@ -67171,6 +71839,7 @@ var SWModalLauncherController = /** @class */ (function () {
                 _this.cancelAction()();
             }
         };
+<<<<<<< HEAD
         this.hasSaveAction = typeof this.saveAction === 'function';
         this.hasDeleteAction = typeof this.deleteAction === 'function';
         if (angular.isUndefined(this.hasCancelAction)) {
@@ -67182,6 +71851,8 @@ var SWModalLauncherController = /** @class */ (function () {
         if (angular.isUndefined(this.showExit)) {
             this.showExit = true;
         }
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         if (angular.isUndefined(this.showModal)) {
             this.showModal = false;
         }
@@ -67191,12 +71862,15 @@ var SWModalLauncherController = /** @class */ (function () {
         if (angular.isUndefined(this.cancelActionText)) {
             this.cancelActionText = "Cancel";
         }
+<<<<<<< HEAD
         if (angular.isUndefined(this.modalOptions)) {
             this.modalOptions = {};
         }
         if (angular.isDefined(this.launchEventName)) {
             this.observerService.attach(this.launchModal, this.launchEventName);
         }
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
     return SWModalLauncherController;
 }());
@@ -67214,6 +71888,7 @@ var SWModalLauncher = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
+<<<<<<< HEAD
             modalOptions: "<?",
             showModal: "=?",
             showExit: "=?",
@@ -67221,12 +71896,21 @@ var SWModalLauncher = /** @class */ (function () {
             modalName: "@",
             title: "@",
             saveDisabled: "=?",
+=======
+            showModal: "=?",
+            modalName: "@",
+            title: "@",
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             saveAction: "&?",
             deleteAction: "&?",
             cancelAction: "&?",
             saveActionText: "@?",
+<<<<<<< HEAD
             cancelActionText: "@?",
             hasCancelAction: "=?"
+=======
+            cancelActionText: "@?"
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         };
         this.controller = SWModalLauncherController;
         this.controllerAs = "swModalLauncher";
@@ -67261,7 +71945,11 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 677 */
+=======
+/* 671 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67272,6 +71960,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SWModalWindowController = /** @class */ (function () {
     // @ngInject
     function SWModalWindowController() {
+<<<<<<< HEAD
         var _this = this;
         this.$onInit = function () {
             _this.modalName = _this.swModalLauncher.modalName;
@@ -67287,6 +71976,12 @@ var SWModalWindowController = /** @class */ (function () {
                 throw ("You did not pass a modal title to SWModalWindowController");
             }
         };
+=======
+        if (angular.isUndefined(this.modalName)) {
+            console.warn("You did not pass a modal title to SWModalWindowController");
+            this.modalName = "";
+        }
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
     return SWModalWindowController;
 }());
@@ -67300,15 +71995,21 @@ var SWModalWindow = /** @class */ (function () {
             modalBody: "?swModalBody"
         };
         this.restrict = "EA";
+<<<<<<< HEAD
         this.require = {
             swModalLauncher: "^^swModalLauncher"
         };
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.scope = {};
         this.bindToController = {
             modalName: "@",
             title: "@",
+<<<<<<< HEAD
             showExit: "=?",
             saveDisabled: "=?",
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             hasSaveAction: "=?",
             saveAction: "&?",
             hasDeleteAction: "=?",
@@ -67342,7 +72043,11 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 678 */
+=======
+/* 672 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67401,7 +72106,11 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 679 */
+=======
+/* 673 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67472,7 +72181,11 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 680 */
+=======
+/* 674 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67624,7 +72337,11 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 681 */
+=======
+/* 675 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67712,7 +72429,11 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 682 */
+=======
+/* 676 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67756,7 +72477,11 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 683 */
+=======
+/* 677 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67848,7 +72573,11 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 684 */
+=======
+/* 678 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67945,7 +72674,11 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 685 */
+=======
+/* 679 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68002,7 +72735,11 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 686 */
+=======
+/* 680 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68090,7 +72827,11 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 687 */
+=======
+/* 681 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68201,7 +72942,11 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 688 */
+=======
+/* 682 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68283,7 +73028,11 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 689 */
+=======
+/* 683 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68400,7 +73149,11 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 690 */
+=======
+/* 684 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68543,7 +73296,11 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 691 */
+=======
+/* 685 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68619,7 +73376,11 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 692 */
+=======
+/* 686 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69002,7 +73763,11 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 693 */
+=======
+/* 687 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69024,7 +73789,10 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
         this.scope = true;
         this.bindToController = {
             propertyIdentifier: "@",
+<<<<<<< HEAD
             bindHtml: "=?",
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             isSearchable: "@?",
         };
         this.controller = SWTypeaheadSearchLineItemController;
@@ -69034,12 +73802,16 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
                 pre: function (scope, element, attrs) {
                     var innerHTML = element[0].innerHTML;
                     element[0].innerHTML = '';
+<<<<<<< HEAD
                     if (!scope.swTypeaheadSearchLineItem.bindHtml) {
                         var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
                     }
                     else {
                         var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind-html="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
                     }
+=======
+                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                     element.append(span);
                 },
                 post: function (scope, element, attrs) { }
@@ -69059,7 +73831,11 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 694 */
+=======
+/* 688 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69209,7 +73985,11 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 695 */
+=======
+/* 689 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69235,7 +74015,11 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 696 */
+=======
+/* 690 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69276,7 +74060,11 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 697 */
+=======
+/* 691 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69303,7 +74091,11 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 698 */
+=======
+/* 692 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69330,6 +74122,7 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -69395,6 +74188,9 @@ exports.SWCurrency = SWCurrency;
 
 /***/ }),
 /* 700 */
+=======
+/* 693 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69436,7 +74232,11 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 701 */
+=======
+/* 694 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69486,7 +74286,11 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 702 */
+=======
+/* 695 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69527,7 +74331,11 @@ exports.Account = Account;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 703 */
+=======
+/* 696 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69570,7 +74378,11 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 704 */
+=======
+/* 697 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69603,7 +74415,11 @@ exports.Address = Address;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 705 */
+=======
+/* 698 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69664,7 +74480,11 @@ exports.Cart = Cart;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 706 */
+=======
+/* 699 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69672,6 +74492,7 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var account_1 = __webpack_require__(702);
 exports.Account = account_1.Account;
 var address_1 = __webpack_require__(704);
@@ -69685,11 +74506,30 @@ exports.OrderPayment = orderpayment_1.OrderPayment;
 var sku_1 = __webpack_require__(709);
 exports.Sku = sku_1.Sku;
 var accountaddress_1 = __webpack_require__(703);
+=======
+var account_1 = __webpack_require__(695);
+exports.Account = account_1.Account;
+var address_1 = __webpack_require__(697);
+exports.Address = address_1.Address;
+var cart_1 = __webpack_require__(698);
+exports.Cart = cart_1.Cart;
+var orderitem_1 = __webpack_require__(700);
+exports.OrderItem = orderitem_1.OrderItem;
+var orderpayment_1 = __webpack_require__(701);
+exports.OrderPayment = orderpayment_1.OrderPayment;
+var sku_1 = __webpack_require__(702);
+exports.Sku = sku_1.Sku;
+var accountaddress_1 = __webpack_require__(696);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 707 */
+=======
+/* 700 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69722,7 +74562,11 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 708 */
+=======
+/* 701 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69739,7 +74583,11 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 709 */
+=======
+/* 702 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69779,7 +74627,11 @@ exports.Sku = Sku;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 710 */
+=======
+/* 703 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69812,7 +74664,11 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 711 */
+=======
+/* 704 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69833,7 +74689,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var baseprocess_1 = __webpack_require__(710);
+=======
+var baseprocess_1 = __webpack_require__(703);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -69847,7 +74707,11 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 712 */
+=======
+/* 705 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69855,12 +74719,20 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var order_addorderpayment_1 = __webpack_require__(711);
+=======
+var order_addorderpayment_1 = __webpack_require__(704);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 713 */
+=======
+/* 706 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69881,7 +74753,11 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var request_1 = __webpack_require__(298);
+=======
+var request_1 = __webpack_require__(294);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var AdminRequest = /** @class */ (function (_super) {
     __extends(AdminRequest, _super);
     function AdminRequest(url, data, method, headers, $injector, observerService) {
@@ -69893,7 +74769,11 @@ var AdminRequest = /** @class */ (function (_super) {
         _this.promise.then(function (result) {
             //identify that it is an object save
             if (url.indexOf('api:main.post') != -1 && data.entityName) {
+<<<<<<< HEAD
                 var eventNameBase = data.entityName + data.context.charAt(0).toUpperCase() + data.context.slice(1);
+=======
+                var eventNameBase = data.entityName + data.context.charAt(0).toUpperCase() + data.context.slice(0);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 if (result.errors) {
                     _this.observerService.notify(eventNameBase + 'Failure', result.data);
                 }
@@ -69912,7 +74792,11 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 714 */
+=======
+/* 707 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69933,7 +74817,11 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var request_1 = __webpack_require__(298);
+=======
+var request_1 = __webpack_require__(294);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var PublicRequest = /** @class */ (function (_super) {
     __extends(PublicRequest, _super);
     function PublicRequest(url, data, method, headers, $injector, observerService) {
@@ -69972,7 +74860,11 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 715 */
+=======
+/* 708 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70008,7 +74900,11 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 716 */
+=======
+/* 709 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70044,7 +74940,11 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 717 */
+=======
+/* 710 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70130,7 +75030,11 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 718 */
+=======
+/* 711 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70167,7 +75071,11 @@ exports.CartService = CartService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 719 */
+=======
+/* 712 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70197,7 +75105,11 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 720 */
+=======
+/* 713 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70235,7 +75147,11 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 721 */
+=======
+/* 714 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70281,7 +75197,11 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 722 */
+=======
+/* 715 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70343,7 +75263,11 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 723 */
+=======
+/* 716 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70436,7 +75360,30 @@ exports.FormService = FormService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 724 */
+=======
+/* 717 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var HibachiAuthenticationService = /** @class */ (function () {
+    //@ngInject
+    //@ngInject
+    function HibachiAuthenticationService($window) {
+        this.$window = $window;
+        this.$window = $window;
+    }
+    return HibachiAuthenticationService;
+}());
+exports.HibachiAuthenticationService = HibachiAuthenticationService;
+
+
+/***/ }),
+/* 718 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70479,6 +75426,11 @@ var HibachiInterceptor = /** @class */ (function () {
                     _this.$rootScope.slatwall.account = {};
                 }
                 _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+<<<<<<< HEAD
+=======
+                _this.$rootScope.slatwall.role = jwtData.role;
+                //this.authenticationService.getRoleBasedData();
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             }
         };
         this.request = function (config) {
@@ -70595,6 +75547,10 @@ var HibachiInterceptor = /** @class */ (function () {
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.baseUrl = appConfig.baseURL;
+<<<<<<< HEAD
+=======
+        //this.authenticationService = authenticationService
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     }
     HibachiInterceptor.Factory = function () {
         var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService); };
@@ -70611,7 +75567,11 @@ var HibachiInterceptor = /** @class */ (function () {
             'dialogService',
             'utilityService',
             'hibachiPathBuilder',
+<<<<<<< HEAD
             'observerService'
+=======
+            'observerService',
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         ];
         return eventHandler;
     };
@@ -70621,7 +75581,11 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 725 */
+=======
+/* 719 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70658,7 +75622,11 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 726 */
+=======
+/* 720 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70691,7 +75659,11 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 727 */
+=======
+/* 721 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70930,12 +75902,16 @@ var HibachiService = /** @class */ (function () {
                 params.processContext = options.processContext || '';
                 params.isReport = options.isReport || false;
                 params.periodInterval = options.periodInterval || "";
+<<<<<<< HEAD
                 if (angular.isDefined(options.customEndpoint) && options.customEndpoint.length) {
                     var urlString = _this.getUrlWithActionPrefix() + options.customEndpoint;
                 }
                 else {
                     var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
                 }
+=======
+                var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             }
             if (angular.isDefined(options.id)) {
                 urlString += '&entityId=' + options.id;
@@ -71172,7 +76148,11 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 728 */
+=======
+/* 722 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71957,7 +76937,11 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 729 */
+=======
+/* 723 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72246,7 +77230,11 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 730 */
+=======
+/* 724 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72282,7 +77270,11 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 731 */
+=======
+/* 725 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72340,7 +77332,11 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 732 */
+=======
+/* 726 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72491,7 +77487,11 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 733 */
+=======
+/* 727 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72660,7 +77660,11 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 734 */
+=======
+/* 728 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72698,7 +77702,11 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 735 */
+=======
+/* 729 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72739,7 +77747,11 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 736 */
+=======
+/* 730 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73261,6 +78273,10 @@ var PublicService = /** @class */ (function () {
         };
         /** Selects shippingAddress*/
         this.selectShippingAccountAddress = function (accountAddressID, orderFulfillmentID) {
+<<<<<<< HEAD
+=======
+            _this.observerService.notify("shippingAddressSelected", { "accountAddressID": accountAddressID });
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             var fulfillmentIndex = _this.cart.orderFulfillments.findIndex(function (fulfillment) { return fulfillment.orderFulfillmentID == orderFulfillmentID; });
             var oldAccountAddressID;
             if (_this.cart.orderFulfillments[fulfillmentIndex] && _this.cart.orderFulfillments[fulfillmentIndex].accountAddress) {
@@ -74165,7 +79181,11 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 737 */
+=======
+/* 731 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74221,11 +79241,19 @@ var RbKeyService = /** @class */ (function () {
                     return keyValue;
                 }
                 if (_this.resourceBundles[locale]) {
+<<<<<<< HEAD
                 var bundle = _this.resourceBundles[locale];
                 if (angular.isDefined(bundle[key])) {
                     //$log.debug('rbkeyfound:'+bundle[key]);
                     return bundle[key];
                 }
+=======
+                    var bundle = _this.resourceBundles[locale];
+                    if (angular.isDefined(bundle[key])) {
+                        //$log.debug('rbkeyfound:'+bundle[key]);
+                        return bundle[key];
+                    }
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 }
                 var checkedKeysListArray = checkedKeys.split(',');
                 checkedKeysListArray.push(key + '_' + locale + '_missing');
@@ -74277,7 +79305,11 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 738 */
+=======
+/* 732 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74285,8 +79317,13 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var adminrequest_1 = __webpack_require__(713);
 var publicrequest_1 = __webpack_require__(714);
+=======
+var adminrequest_1 = __webpack_require__(706);
+var publicrequest_1 = __webpack_require__(707);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -74316,7 +79353,11 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 739 */
+=======
+/* 733 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74353,7 +79394,11 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 740 */
+=======
+/* 734 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74479,7 +79524,11 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 741 */
+=======
+/* 735 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74517,7 +79566,11 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 742 */
+=======
+/* 736 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74537,7 +79590,11 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var TypeaheadStore = __webpack_require__(299);
+=======
+var TypeaheadStore = __webpack_require__(295);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var TypeaheadService = /** @class */ (function () {
     //@ngInject
     function TypeaheadService($timeout, observerService) {
@@ -74757,7 +79814,11 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 743 */
+=======
+/* 737 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75215,7 +80276,11 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 744 */
+=======
+/* 738 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75241,7 +80306,11 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 745 */
+=======
+/* 739 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75285,7 +80354,11 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 746 */
+=======
+/* 740 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75360,7 +80433,11 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 747 */
+=======
+/* 741 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75391,7 +80468,11 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 748 */
+=======
+/* 742 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75438,7 +80519,11 @@ exports.SWList = SWList;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 749 */
+=======
+/* 743 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75457,7 +80542,11 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 750 */
+=======
+/* 744 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75489,7 +80578,11 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 751 */
+=======
+/* 745 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75506,12 +80599,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
+<<<<<<< HEAD
 var otherwisecontroller_1 = __webpack_require__(749);
 var routercontroller_1 = __webpack_require__(750);
 //directives
 var swdetailtabs_1 = __webpack_require__(747);
 var swdetail_1 = __webpack_require__(746);
 var swlist_1 = __webpack_require__(748);
+=======
+var otherwisecontroller_1 = __webpack_require__(743);
+var routercontroller_1 = __webpack_require__(744);
+//directives
+var swdetailtabs_1 = __webpack_require__(741);
+var swdetail_1 = __webpack_require__(740);
+var swlist_1 = __webpack_require__(742);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var core_module_1 = __webpack_require__(17);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -75569,7 +80671,11 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 752 */
+=======
+/* 746 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75738,7 +80844,11 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 753 */
+=======
+/* 747 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75822,7 +80932,11 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 754 */
+=======
+/* 748 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75862,7 +80976,11 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 755 */
+=======
+/* 749 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75875,7 +80993,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 */
 var SWFFormController = /** @class */ (function () {
     // @ngInject
+<<<<<<< HEAD
     function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService) {
+=======
+    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService, observerService) {
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
@@ -75884,6 +81006,10 @@ var SWFFormController = /** @class */ (function () {
         this.$element = $element;
         this.validationService = validationService;
         this.hibachiValidationService = hibachiValidationService;
+<<<<<<< HEAD
+=======
+        this.observerService = observerService;
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
@@ -76055,7 +81181,11 @@ exports.SWFForm = SWFForm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 756 */
+=======
+/* 750 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76157,7 +81287,11 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 757 */
+=======
+/* 751 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76480,7 +81614,11 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 758 */
+=======
+/* 752 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76760,7 +81898,11 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 759 */
+=======
+/* 753 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76808,7 +81950,11 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 760 */
+=======
+/* 754 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76851,7 +81997,11 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 761 */
+=======
+/* 755 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76971,7 +82121,11 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 762 */
+=======
+/* 756 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77039,7 +82193,11 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 763 */
+=======
+/* 757 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77129,7 +82287,11 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 764 */
+=======
+/* 758 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77150,7 +82312,11 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var swpropertydisplay_1 = __webpack_require__(301);
+=======
+var swpropertydisplay_1 = __webpack_require__(297);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var SWFPropertyDisplayController = /** @class */ (function (_super) {
     __extends(SWFPropertyDisplayController, _super);
     //@ngInject
@@ -77190,7 +82356,11 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 765 */
+=======
+/* 759 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77555,7 +82725,106 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 766 */
+=======
+/* 760 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var SWVerifyAddressDialogController = /** @class */ (function () {
+    //@ngInject
+    function SWVerifyAddressDialogController($timeout, $rootScope, $http, $hibachi, collectionConfigService, observerService) {
+        var _this = this;
+        this.$timeout = $timeout;
+        this.$rootScope = $rootScope;
+        this.$http = $http;
+        this.$hibachi = $hibachi;
+        this.collectionConfigService = collectionConfigService;
+        this.observerService = observerService;
+        //init 
+        this.init = function (data) {
+            _this.accountAddressID = data['accountAddressID'] || data['accountAddress.accountAddressID'];
+            if (!_this.accountAddressID) {
+                return;
+            }
+            _this.verifyAddress({ accountAddressID: _this.accountAddressID }).then(function (response) {
+                if (response.verifyAddress.suggestedAddress) {
+                    _this.suggestedAddress = response.verifyAddress.suggestedAddress;
+                }
+                else {
+                    _this.suggestedAddress = null;
+                }
+                if (!response.verifyAddress.success) {
+                    _this.showModal();
+                }
+            });
+        };
+        this.showModal = function () {
+            $('#VerifyAddressDialog').modal('show');
+        };
+        this.selectSuggestedAddress = function () {
+            return _this.$rootScope.slatwall.doAction('addEditAccountAddress', _this.suggestedAddress);
+        };
+        //mocking call to integration. Important to inject the data's account address iD into the response object for tracking
+        this.verifyAddress = function (data) {
+            return _this.$rootScope.slatwall.doAction("verifyAddress", { accountAddressID: data.accountAddressID }).then(function (response) {
+                if (response.verifyAddress.suggestedAddress) {
+                    response.verifyAddress.suggestedAddress['accountAddressID'] = data.accountAddressID;
+                }
+                return response;
+            });
+        };
+        this.cancel = function () {
+            _this.$rootScope.slatwall.deleteAccountAddress(_this.accountAddressID);
+            _this.suggestedAddress = null;
+            _this.accountAddressID = null;
+        };
+        this.observerService.attach(this.init, "shippingAddressSelected");
+        this.copy = "We Could Not Verify This Address. Please Select:";
+    }
+    return SWVerifyAddressDialogController;
+}());
+var SWVerifyAddressDialog = /** @class */ (function () {
+    //@ngInject
+    function SWVerifyAddressDialog($compile, hibachiPathBuilder) {
+        this.restrict = 'E';
+        this.scope = {};
+        this.transclude = false;
+        this.bindToController = {};
+        this.controller = SWVerifyAddressDialogController;
+        this.controllerAs = "SWVerifyAddressDialog";
+        this.templatePath = "";
+        this.templateUrl = "";
+        this.link = function (scope, element, attrs) {
+        };
+        if (!hibachiConfig) {
+            hibachiConfig = {};
+        }
+        if (!hibachiConfig.customPartialsPath) {
+            hibachiConfig.customPartialsPath = '/Slatwall/custom/client/src/form/';
+        }
+        this.templatePath = hibachiConfig.customPartialsPath;
+        this.templateUrl = hibachiConfig.customPartialsPath + 'swverifyaddressdialog.html';
+        this.$compile = $compile;
+    }
+    SWVerifyAddressDialog.Factory = function () {
+        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWVerifyAddressDialog(corePartialsPath, hibachiPathBuilder); };
+        directive.$inject = ['$compile', 'hibachiPathBuilder'];
+        return directive;
+    };
+    return SWVerifyAddressDialog;
+}());
+exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
+
+
+/***/ }),
+/* 761 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77566,6 +82835,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(17);
 //services
+<<<<<<< HEAD
 var fileservice_1 = __webpack_require__(767);
 //directives
 //  components
@@ -77585,6 +82855,28 @@ var swaddressform_1 = __webpack_require__(752);
 var swpropertydisplay_1 = __webpack_require__(301);
 var swfpropertydisplay_1 = __webpack_require__(764);
 var swformsubscriber_1 = __webpack_require__(763);
+=======
+var fileservice_1 = __webpack_require__(762);
+//directives
+//  components
+//form
+var swinput_1 = __webpack_require__(759);
+var swfformfield_1 = __webpack_require__(750);
+var swform_1 = __webpack_require__(751);
+var swfform_1 = __webpack_require__(749);
+var swffileinput_1 = __webpack_require__(748);
+var swformfield_1 = __webpack_require__(752);
+var swformfieldfile_1 = __webpack_require__(753);
+var swformfieldjson_1 = __webpack_require__(754);
+var swformfieldsearchselect_1 = __webpack_require__(755);
+var swformregistrar_1 = __webpack_require__(756);
+var swerrordisplay_1 = __webpack_require__(747);
+var swaddressform_1 = __webpack_require__(746);
+var swpropertydisplay_1 = __webpack_require__(297);
+var swfpropertydisplay_1 = __webpack_require__(758);
+var swformsubscriber_1 = __webpack_require__(757);
+var swverifyaddressdialog_1 = __webpack_require__(760);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -77604,12 +82896,20 @@ var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', co
     .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory(swpropertydisplay_1.SWPropertyDisplay, "propertydisplay.html"))
     .directive('swErrorDisplay', swerrordisplay_1.SWErrorDisplay.Factory())
     .directive('swAddressForm', swaddressform_1.SWAddressForm.Factory())
+<<<<<<< HEAD
+=======
+    .directive('swVerifyAddressDialog', swverifyaddressdialog_1.SWVerifyAddressDialog.Factory())
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
     .directive('swFormSubscriber', swformsubscriber_1.SWFormSubscriber.Factory());
 exports.formmodule = formmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 767 */
+=======
+/* 762 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77656,7 +82956,11 @@ exports.FileService = FileService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 768 */
+=======
+/* 763 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77766,7 +83070,11 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 769 */
+=======
+/* 764 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77776,6 +83084,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
 var alert_module_1 = __webpack_require__(61);
+<<<<<<< HEAD
 var card_module_1 = __webpack_require__(616);
 var collection_module_1 = __webpack_require__(296);
 var listing_module_1 = __webpack_require__(785);
@@ -77787,6 +83096,19 @@ var validation_module_1 = __webpack_require__(808);
 var workflow_module_1 = __webpack_require__(823);
 //directives
 var swsaveandfinish_1 = __webpack_require__(768);
+=======
+var card_module_1 = __webpack_require__(612);
+var collection_module_1 = __webpack_require__(292);
+var listing_module_1 = __webpack_require__(780);
+var dialog_module_1 = __webpack_require__(296);
+var entity_module_1 = __webpack_require__(745);
+var pagination_module_1 = __webpack_require__(784);
+var form_module_1 = __webpack_require__(761);
+var validation_module_1 = __webpack_require__(803);
+var workflow_module_1 = __webpack_require__(818);
+//directives
+var swsaveandfinish_1 = __webpack_require__(763);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -77828,7 +83150,11 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 770 */
+=======
+/* 765 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77877,7 +83203,11 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 771 */
+=======
+/* 766 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77936,7 +83266,11 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 772 */
+=======
+/* 767 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78096,7 +83430,11 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 773 */
+=======
+/* 768 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78277,7 +83615,11 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 774 */
+=======
+/* 769 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78340,7 +83682,11 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 775 */
+=======
+/* 770 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78388,10 +83734,13 @@ var SWListingDisplayController = /** @class */ (function () {
         this.orderByStates = {};
         this.orderByIndices = {};
         this.pageRecordsWithManualSortOrder = {};
+<<<<<<< HEAD
         this.hasRecordAddAction = false;
         this.hasRecordDetailAction = false;
         this.hasRecordEditAction = false;
         this.hasRecordDeleteAction = false;
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.searching = false;
         this.selectable = false;
         this.showSearchFilters = false;
@@ -78434,9 +83783,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 if (_this.columns && _this.columns.length) {
                     _this.collectionConfig.columns = _this.columns;
                 }
+<<<<<<< HEAD
                 else if (_this.listingColumns && _this.listingColumns.length) {
                     _this.columns = _this.listingColumns;
                 }
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
@@ -78519,6 +83871,7 @@ var SWListingDisplayController = /** @class */ (function () {
             else {
                 _this.administrativeCount = 0;
             }
+<<<<<<< HEAD
             //Administractive Action Setup
             _this.hasRecordDetailAction = (_this.recordDetailAction && _this.recordDetailAction.length !== 0) ||
                 (_this.recordDetailEvent && _this.recordDetailEvent.length !== 0);
@@ -78541,6 +83894,21 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.adminattributes = _this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
+=======
+            if (_this.recordDetailAction && _this.recordDetailAction.length) {
+                _this.administrativeCount++;
+                _this.adminattributes = _this.getAdminAttributesByType('detail');
+            }
+            if (_this.recordEditAction && _this.recordEditAction.length) {
+                _this.administrativeCount++;
+                _this.adminattributes = _this.getAdminAttributesByType('edit');
+            }
+            if (_this.recordDeleteAction && _this.recordDeleteAction.length) {
+                _this.administrativeCount++;
+                _this.adminattributes = _this.getAdminAttributesByType('delete');
+            }
+            if (_this.recordAddAction && _this.recordAddAction.length) {
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 _this.administrativeCount++;
                 _this.adminattributes = _this.getAdminAttributesByType('add');
             }
@@ -78608,9 +83976,12 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
             if (_this.collectionConfig) {
                 _this.collectionConfig.setEventID(_this.tableID);
+<<<<<<< HEAD
                 if (_this.customEndpoint && _this.customEndpoint.length) {
                     _this.collectionConfig.setCustomEndpoint(_this.customEndpoint);
                 }
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             }
             if (angular.isDefined(_this.sortableFieldName)) {
                 _this.sortableFieldName = "sorting" + _this.tableID;
@@ -78935,28 +84306,43 @@ var SWListingDisplay = /** @class */ (function () {
             baseEntity: "<?",
             baseEntityName: "@?",
             baseEntityId: "@?",
+<<<<<<< HEAD
             customEndpoint: "@?",
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
             recordEditEvent: "@?",
+=======
+            /*Admin Actions*/
+            actions: "<?",
+            administrativeCount: "@?",
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
             recordEditQueryString: "@?",
             recordEditModal: "<?",
             recordEditDisabled: "<?",
+<<<<<<< HEAD
             recordDetailEvent: "@?",
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
             recordDetailActionIdProperty: "@?",
             recordDetailActionIdKey: "@?",
             recordDetailQueryString: "@?",
             recordDetailModal: "<?",
+<<<<<<< HEAD
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
+=======
+            recordDeleteAction: "@?",
+            recordDeleteActionProperty: "@?",
+            recordDeleteQueryString: "@?",
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             recordAddAction: "@?",
             recordAddActionProperty: "@?",
             recordAddQueryString: "@?",
@@ -78978,7 +84364,10 @@ var SWListingDisplay = /** @class */ (function () {
             }
             ]
             */
+<<<<<<< HEAD
             listingColumns: '<?',
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             /*Hierachy Expandable*/
             parentPropertyName: "@?",
             //booleans
@@ -79056,7 +84445,11 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 776 */
+=======
+/* 771 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79078,6 +84471,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
             return _this.column.aggregate && _this.column.aggregate.aggregateFunction && _this.column.aggregate.aggregateFunction.length;
         };
         this.getDirectiveTemplate = function () {
+<<<<<<< HEAD
             var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
             if (_this.column.isEditable) {
                 if (!_this.column.type) {
@@ -79096,13 +84490,26 @@ var SWListingDisplayCellController = /** @class */ (function () {
             else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
                     templateUrl = basePartialPath + 'listingdisplaycelldate.html';
+=======
+            var templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycell.html';
+            if (_this.expandable || (_this.swListingDisplay.expandable && _this.column.tdclass && _this.column.tdclass === 'primary')) {
+                templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplayselectablecellexpandable.html';
+            }
+            if (!_this.swListingDisplay.expandable || !_this.column.tdclass || _this.column.tdclass !== 'primary') {
+                if (_this.column.ormtype === 'timestamp') {
+                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycelldate.html';
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 }
                 else if (_this.column.type === 'currency') {
                     if (_this.hasAggregate() && _this.pageRecord) {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
+<<<<<<< HEAD
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
+=======
+                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellcurrency.html';
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 }
                 else if ([
                     "double",
@@ -79116,11 +84523,16 @@ var SWListingDisplayCellController = /** @class */ (function () {
                 }
                 else if (_this.hasAggregate()) {
                     _this.value = _this.pageRecord[_this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias)];
+<<<<<<< HEAD
                     templateUrl = basePartialPath + 'listingdisplaycellaggregate.html';
+=======
+                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellaggregate.html';
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 }
             }
             return templateUrl;
         };
+<<<<<<< HEAD
         //prevent listing display edit cell from submitting the form if enter key is pressed
         this.handleKeyPress = function (keyEvent) {
             if (keyEvent.keyCode === 13) {
@@ -79133,6 +84545,13 @@ var SWListingDisplayCellController = /** @class */ (function () {
         }
         if (!this.value && this.pageRecord && this.pageRecordKey) {
             this.value = this.pageRecord[this.pageRecordKey];
+=======
+        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.listingPartialPath = listingPartialPath;
+        this.$scope = $scope;
+        if (!this.value && this.pageRecord && this.column) {
+            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord);
         this.hasActionCaller = false;
@@ -79141,7 +84560,13 @@ var SWListingDisplayCellController = /** @class */ (function () {
             this.actionCaller = {
                 action: this.column.action
             };
+<<<<<<< HEAD
             this.actionCaller.queryString = this.utilityService.replaceStringWithProperties(this.column.queryString, this.pageRecord);
+=======
+            if (this.column.queryString) {
+                this.actionCaller.queryString = this.utilityService.replaceStringWithProperties(this.column.queryString, this.pageRecord);
+            }
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         }
         if (this.cellView) {
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
@@ -79194,7 +84619,11 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 777 */
+=======
+/* 772 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79271,7 +84700,11 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 778 */
+=======
+/* 773 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79330,7 +84763,11 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 779 */
+=======
+/* 774 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79369,7 +84806,11 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 780 */
+=======
+/* 775 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79426,7 +84867,11 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 781 */
+=======
+/* 776 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79474,7 +84919,11 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 782 */
+=======
+/* 777 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79482,7 +84931,11 @@ exports.SWListingOrderBy = SWListingOrderBy;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var chart_js_1 = __webpack_require__(304);
+=======
+var chart_js_1 = __webpack_require__(300);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
     function SWListingReportController($filter, $scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
@@ -79979,7 +85432,11 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 783 */
+=======
+/* 778 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80043,7 +85500,11 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 784 */
+=======
+/* 779 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80270,7 +85731,11 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 785 */
+=======
+/* 780 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80279,6 +85744,7 @@ exports.SWListingSearch = SWListingSearch;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
+<<<<<<< HEAD
 var collection_module_1 = __webpack_require__(296);
 //services
 var listingservice_1 = __webpack_require__(786);
@@ -80298,6 +85764,27 @@ var swlistingorderby_1 = __webpack_require__(781);
 var swlistingrowsave_1 = __webpack_require__(783);
 var swlistingsearch_1 = __webpack_require__(784);
 var swlistingglobalsearch_1 = __webpack_require__(780);
+=======
+var collection_module_1 = __webpack_require__(292);
+//services
+var listingservice_1 = __webpack_require__(781);
+//directives
+var swlistingdisplay_1 = __webpack_require__(770);
+var swlistingreport_1 = __webpack_require__(777);
+var swlistingdisplaycell_1 = __webpack_require__(771);
+var swlistingcontrols_1 = __webpack_require__(768);
+var swlistingaggregate_1 = __webpack_require__(765);
+var swlistingcolorfilter_1 = __webpack_require__(766);
+var swlistingcolumn_1 = __webpack_require__(767);
+var swlistingdisablerule_1 = __webpack_require__(769);
+var swlistingexpandablerule_1 = __webpack_require__(772);
+var swlistingfilter_1 = __webpack_require__(773);
+var swlistingfiltergroup_1 = __webpack_require__(774);
+var swlistingorderby_1 = __webpack_require__(776);
+var swlistingrowsave_1 = __webpack_require__(778);
+var swlistingsearch_1 = __webpack_require__(779);
+var swlistingglobalsearch_1 = __webpack_require__(775);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -80325,7 +85812,11 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 786 */
+=======
+/* 781 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80344,7 +85835,11 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var Store = __webpack_require__(299);
+=======
+var Store = __webpack_require__(295);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var ListingService = /** @class */ (function () {
     //@ngInject
     function ListingService($timeout, $q, collectionConfigService, filterService, historyService, observerService, rbkeyService, selectionService, utilityService, $hibachi, localStorageService) {
@@ -80361,7 +85856,10 @@ var ListingService = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.localStorageService = localStorageService;
         this.listingDisplays = {};
+<<<<<<< HEAD
         this.pageRecordKeys = {};
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         this.state = {};
         /**
          * The reducer is responsible for modifying the state of the state object into a new state for listeners.
@@ -80536,9 +86034,12 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.getPageRecordKey = function (propertyIdentifier) {
+<<<<<<< HEAD
             if (_this.pageRecordKeys[propertyIdentifier] != null) {
                 return _this.pageRecordKeys[propertyIdentifier];
             }
+=======
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             if (propertyIdentifier) {
                 var propertyIdentifierWithoutAlias = '';
                 if (propertyIdentifier.indexOf('_') === 0) {
@@ -80554,8 +86055,12 @@ var ListingService = /** @class */ (function () {
                 else {
                     propertyIdentifierWithoutAlias = propertyIdentifier;
                 }
+<<<<<<< HEAD
                 _this.pageRecordKeys[propertyIdentifier] = _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
                 return _this.pageRecordKeys[propertyIdentifier];
+=======
+                return _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
             }
             return '';
         };
@@ -81293,7 +86798,11 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 787 */
+=======
+/* 782 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81309,7 +86818,11 @@ exports.loggermodule = loggermodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 788 */
+=======
+/* 783 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81355,7 +86868,11 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 789 */
+=======
+/* 784 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81364,8 +86881,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
+<<<<<<< HEAD
 var paginationservice_1 = __webpack_require__(790);
 var swpaginationbar_1 = __webpack_require__(788);
+=======
+var paginationservice_1 = __webpack_require__(785);
+var swpaginationbar_1 = __webpack_require__(783);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var core_module_1 = __webpack_require__(17);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -81382,7 +86904,11 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 790 */
+=======
+/* 785 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81483,7 +87009,11 @@ var Pagination = /** @class */ (function () {
             return (_this.getPageEnd() === _this.getRecordsCount());
         };
         this.showPreviousJump = function () {
+<<<<<<< HEAD
             return (angular.isDefined(_this.getCurrentPage()) && _this.getCurrentPage() > 3);
+=======
+            return (angular.isDefined(_this.getCurrentPage()) && _this.getCurrentPage() > 4 && _this.getTotalPages() > 6);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
         };
         this.showNextJump = function () {
             return !!(_this.getCurrentPage() < _this.getTotalPages() - 3 && _this.getTotalPages() > 6);
@@ -81500,12 +87030,21 @@ var Pagination = /** @class */ (function () {
                     return true;
                 }
             }
+<<<<<<< HEAD
             if (_this.getCurrentPage() <= 3) {
                 if (pageNumber < 6) {
                     return true;
                 }
             }
             else {
+=======
+            if (_this.getCurrentPage() <= 4) {
+                if (pageNumber < 6 && pageNumber - _this.getCurrentPage() <= 2) { // 
+                    return true;
+                }
+            }
+            if (_this.getCurrentPage() >= 5) {
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
                 var bottomRange = _this.getCurrentPage() - 2;
                 var topRange = _this.getCurrentPage() + 2;
                 if (pageNumber > bottomRange && pageNumber < topRange) {
@@ -81579,7 +87118,11 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 791 */
+=======
+/* 786 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81968,7 +87511,11 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 792 */
+=======
+/* 787 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82000,7 +87547,11 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 793 */
+=======
+/* 788 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82033,7 +87584,11 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 794 */
+=======
+/* 789 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82097,7 +87652,11 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 795 */
+=======
+/* 790 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82127,7 +87686,11 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 796 */
+=======
+/* 791 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82157,7 +87720,11 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 797 */
+=======
+/* 792 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82191,7 +87758,11 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 798 */
+=======
+/* 793 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82224,7 +87795,11 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 799 */
+=======
+/* 794 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82258,7 +87833,11 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 800 */
+=======
+/* 795 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82291,7 +87870,11 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 801 */
+=======
+/* 796 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82321,7 +87904,11 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 802 */
+=======
+/* 797 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82351,7 +87938,11 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 803 */
+=======
+/* 798 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82382,7 +87973,11 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 804 */
+=======
+/* 799 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82419,7 +88014,11 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 805 */
+=======
+/* 800 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82452,7 +88051,11 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 806 */
+=======
+/* 801 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82489,7 +88092,11 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 807 */
+=======
+/* 802 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82646,7 +88253,11 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 808 */
+=======
+/* 803 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82655,6 +88266,7 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
+<<<<<<< HEAD
 var swvalidate_1 = __webpack_require__(791);
 var swvalidationminlength_1 = __webpack_require__(799);
 var swvalidationdatatype_1 = __webpack_require__(792);
@@ -82673,6 +88285,26 @@ var swvalidationunique_1 = __webpack_require__(805);
 var swvalidationuniqueornull_1 = __webpack_require__(806);
 //services
 var validationservice_1 = __webpack_require__(807);
+=======
+var swvalidate_1 = __webpack_require__(786);
+var swvalidationminlength_1 = __webpack_require__(794);
+var swvalidationdatatype_1 = __webpack_require__(787);
+var swvalidationeq_1 = __webpack_require__(788);
+var swvalidationeqproperty_1 = __webpack_require__(789);
+var swvalidationgte_1 = __webpack_require__(790);
+var swvalidationlte_1 = __webpack_require__(791);
+var swvalidationmaxlength_1 = __webpack_require__(792);
+var swvalidationmaxvalue_1 = __webpack_require__(793);
+var swvalidationminvalue_1 = __webpack_require__(795);
+var swvalidationneq_1 = __webpack_require__(796);
+var swvalidationnumeric_1 = __webpack_require__(797);
+var swvalidationregex_1 = __webpack_require__(798);
+var swvalidationrequired_1 = __webpack_require__(799);
+var swvalidationunique_1 = __webpack_require__(800);
+var swvalidationuniqueornull_1 = __webpack_require__(801);
+//services
+var validationservice_1 = __webpack_require__(802);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 var core_module_1 = __webpack_require__(17);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -82700,7 +88332,11 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 809 */
+=======
+/* 804 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82734,7 +88370,11 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 810 */
+=======
+/* 805 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82772,7 +88412,11 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 811 */
+=======
+/* 806 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82806,7 +88450,11 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 812 */
+=======
+/* 807 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82927,7 +88575,11 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 813 */
+=======
+/* 808 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82958,7 +88610,11 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 814 */
+=======
+/* 809 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83008,7 +88664,11 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 815 */
+=======
+/* 810 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83055,7 +88715,11 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 816 */
+=======
+/* 811 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83327,7 +88991,11 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 817 */
+=======
+/* 812 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83527,7 +89195,11 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 818 */
+=======
+/* 813 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83629,7 +89301,11 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 819 */
+=======
+/* 814 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83674,7 +89350,11 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 820 */
+=======
+/* 815 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83963,7 +89643,11 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 821 */
+=======
+/* 816 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84075,7 +89759,11 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 822 */
+=======
+/* 817 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84133,7 +89821,11 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 823 */
+=======
+/* 818 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84142,6 +89834,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
+<<<<<<< HEAD
 var workflowconditionservice_1 = __webpack_require__(822);
 var scheduleservice_1 = __webpack_require__(821);
 //directives
@@ -84157,6 +89850,23 @@ var swworkflowtrigger_1 = __webpack_require__(818);
 var swworkflowtriggers_1 = __webpack_require__(820);
 var swworkflowtriggerhistory_1 = __webpack_require__(819);
 var swschedulepreview_1 = __webpack_require__(810);
+=======
+var workflowconditionservice_1 = __webpack_require__(817);
+var scheduleservice_1 = __webpack_require__(816);
+//directives
+var swadmincreatesuperuser_1 = __webpack_require__(804);
+var swworkflowbasic_1 = __webpack_require__(806);
+var swworkflowcondition_1 = __webpack_require__(807);
+var swworkflowconditiongroupitem_1 = __webpack_require__(808);
+var swworkflowconditiongroups_1 = __webpack_require__(809);
+var swworkflowtask_1 = __webpack_require__(810);
+var swworkflowtaskactions_1 = __webpack_require__(811);
+var swworkflowtasks_1 = __webpack_require__(812);
+var swworkflowtrigger_1 = __webpack_require__(813);
+var swworkflowtriggers_1 = __webpack_require__(815);
+var swworkflowtriggerhistory_1 = __webpack_require__(814);
+var swschedulepreview_1 = __webpack_require__(805);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -84182,7 +89892,11 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 824 */
+=======
+/* 819 */
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -84210,6 +89924,14 @@ module.exports = function(module) {
 
 
 /***/ }),
+<<<<<<< HEAD
+=======
+/* 820 */,
+/* 821 */,
+/* 822 */,
+/* 823 */,
+/* 824 */,
+>>>>>>> bc63c9d114... saving spot setting up client side authentication
 /* 825 */,
 /* 826 */,
 /* 827 */,
@@ -84220,6 +89942,7 @@ module.exports = function(module) {
 /* 832 */,
 /* 833 */,
 /* 834 */,
+<<<<<<< HEAD
 /* 835 */,
 /* 836 */,
 /* 837 */,
@@ -84233,3 +89956,13 @@ module.exports = __webpack_require__(303);
 
 /***/ })
 ],[840]);
+=======
+/* 835 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(299);
+
+
+/***/ })
+],[835]);
+>>>>>>> bc63c9d114... saving spot setting up client side authentication

@@ -49,7 +49,8 @@ class HibachiInterceptor implements IInterceptor{
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
-            observerService
+            observerService,
+            //authenticationService
 		)=> new HibachiInterceptor(
 			$location,
 			$q,
@@ -63,7 +64,8 @@ class HibachiInterceptor implements IInterceptor{
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
-            observerService
+            observerService,
+            //authenticationService
 		);
 		eventHandler.$inject = [
 			'$location',
@@ -78,7 +80,8 @@ class HibachiInterceptor implements IInterceptor{
 			'dialogService',
 			'utilityService',
             'hibachiPathBuilder',
-            'observerService'
+            'observerService',
+           // 'authenticationService'
 		];
 		return eventHandler;
 	}
@@ -101,7 +104,8 @@ class HibachiInterceptor implements IInterceptor{
 		public dialogService,
         public utilityService,
         public hibachiPathBuilder,
-        public observerService
+        public observerService,
+        //public authenticationService
 	) {
 
         this.$location = $location;
@@ -117,6 +121,7 @@ class HibachiInterceptor implements IInterceptor{
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.baseUrl = appConfig.baseURL;
+        //this.authenticationService = authenticationService
     }
     
     public getJWTDataFromToken = (str):void =>{
@@ -135,6 +140,8 @@ class HibachiInterceptor implements IInterceptor{
 		    	this.$rootScope.slatwall.account = {};
 		    }
 		    this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+		    this.$rootScope.slatwall.role=jwtData.role;
+		    //this.authenticationService.getRoleBasedData();
     	}
 	}
     
@@ -225,7 +232,7 @@ class HibachiInterceptor implements IInterceptor{
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
-                    return $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
+                    return $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:IHibachiInterceptorPromise<any>)=>{
                         if(loginResponse.status === 200){
                             this.localStorageService.setItem('token',loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};
