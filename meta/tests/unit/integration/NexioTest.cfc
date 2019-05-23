@@ -43,10 +43,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			expYear = '20',
 			cvn = '111', // 222 to invoke Failure
 			cardNumber = cards[1],
-			transactionType = transactionTypes[2],
+			transactionType = transactionTypes[6],
 			providerToken = '41aa6a1d-e91e-4ea2-b5f2-42a94ca1b0d3', // token_ex
-			originalAuthorizationProviderTransactionID = '', // authorizationID
-			originalChargeProviderTransactionID = '' // chargeID
+			originalAuthorizationProviderTransactionID = 'eyJuYW1lIjoidXNhZXBheSIsIm1lcmNoYW50SWQiOiIxMDAxNjEiLCJyZWZOdW1iZXIiOiIzMTAzNDIzOTQwIiwicmFuZG9tIjowLCJjdXJyZW5jeSI6InVzZCJ9', // authorizationID
+			originalChargeProviderTransactionID = 'eyJuYW1lIjoidXNhZXBheSIsIm1lcmNoYW50SWQiOiIxMDAxNjEiLCJyZWZOdW1iZXIiOiIzMTAzNDIzOTQwIiwicmFuZG9tIjowLCJjdXJyZW5jeSI6InVzZCJ9' // chargeID
 		};
 
 		// Setup objects
