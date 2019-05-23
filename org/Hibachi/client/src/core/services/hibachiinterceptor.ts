@@ -50,7 +50,7 @@ class HibachiInterceptor implements IInterceptor{
 			utilityService,
             hibachiPathBuilder,
             observerService,
-            //authenticationService
+            hibachiAuthenticationService
 		)=> new HibachiInterceptor(
 			$location,
 			$q,
@@ -65,7 +65,7 @@ class HibachiInterceptor implements IInterceptor{
 			utilityService,
             hibachiPathBuilder,
             observerService,
-            //authenticationService
+            hibachiAuthenticationService
 		);
 		eventHandler.$inject = [
 			'$location',
@@ -81,7 +81,7 @@ class HibachiInterceptor implements IInterceptor{
 			'utilityService',
             'hibachiPathBuilder',
             'observerService',
-           // 'authenticationService'
+            'hibachiAuthenticationService'
 		];
 		return eventHandler;
 	}
@@ -90,6 +90,8 @@ class HibachiInterceptor implements IInterceptor{
     public authHeader = 'Authorization';
     public authPrefix = 'Bearer ';
     public baseUrl:string;
+    public loginResponse=null;
+    public authPromise=null;
 	//@ngInject
     constructor(
         public $location:ng.ILocationService,
@@ -105,7 +107,7 @@ class HibachiInterceptor implements IInterceptor{
         public utilityService,
         public hibachiPathBuilder,
         public observerService,
-        //public authenticationService
+        public hibachiAuthenticationService
 	) {
 
         this.$location = $location;
@@ -121,7 +123,7 @@ class HibachiInterceptor implements IInterceptor{
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.baseUrl = appConfig.baseURL;
-        //this.authenticationService = authenticationService
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     
     public getJWTDataFromToken = (str):void =>{
@@ -141,7 +143,8 @@ class HibachiInterceptor implements IInterceptor{
 		    }
 		    this.$rootScope.slatwall.account.accountID = jwtData.accountid;
 		    this.$rootScope.slatwall.role=jwtData.role;
-		    //this.authenticationService.getRoleBasedData();
+		    console.log('test');
+		    this.hibachiAuthenticationService.getRoleBasedData();
     	}
 	}
     
@@ -228,24 +231,47 @@ class HibachiInterceptor implements IInterceptor{
 			if(rejection.data && rejection.data.messages){
 				//var deferred = $q.defer();
 				var $http = this.$injector.get<ng.IHttpService>('$http');
+				var originalRequest = null;
 				if(rejection.data.messages[0].message === 'timeout'){
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
-                    return $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:IHibachiInterceptorPromise<any>)=>{
-                        if(loginResponse.status === 200){
-                            this.localStorageService.setItem('token',loginResponse.data.token);
+                    if(!this.authPromise){
+                    	return this.authPromise = $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:IHibachiInterceptorPromise<any>)=>{
+	                        this.loginResponse=loginResponse;
+	                        if(loginResponse.status === 200){
+	                            this.localStorageService.setItem('token',loginResponse.data.token);
+	                            rejection.config.headers = rejection.config.headers || {};
+	                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+	                            this.getJWTDataFromToken(loginResponse.data.token);
+	                            return $http(rejection.config).then(function(response) {
+	                               return response;
+	                            });
+	                            
+	                        }
+						},function(rejection){
+	                        return rejection;
+	                    });
+                    }else{
+                    	
+                    	return this.authPromise.then(  ()=>{
+                        
+                        if(this.loginResponse.status === 200){
+                        	
+                            this.localStorageService.setItem('token',this.loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};
-                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-                            this.getJWTDataFromToken(loginResponse.data.token);
+                            rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
+                            this.getJWTDataFromToken(this.loginResponse.data.token);
                             
                             return $http(rejection.config).then(function(response) {
                                return response;
                             });
                         }
-					},function(rejection){
-                        return rejection;
-                    });
+						},function(rejection){
+	                        return rejection;
+	                    });
+                    }
+                    
 				}
 			}
         }

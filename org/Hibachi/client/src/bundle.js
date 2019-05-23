@@ -69793,11 +69793,13 @@ exports.FormService = FormService;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
-    //@ngInject
     //@ngInject
     function HibachiAuthenticationService($window) {
         this.$window = $window;
+        console.log('init auth');
         this.$window = $window;
     }
     return HibachiAuthenticationService;
@@ -72019,6 +72021,7 @@ var ObserverService = /** @class */ (function (_super) {
                 _this.historyService.recordHistory(event, parameters, true);
             });
         };
+        console.log('init obeserver');
         _this.observers = {};
         return _this;
     }
