@@ -1,13 +1,16 @@
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class HibachiAuthenticationService{
-
-    //@ngInject
     //@ngInject
     constructor(
-       public $window:ng.IWindowService
+       public $rootScope:any,
+       public $q,
+       public appConfig,
+       public $injector
     ){
-        this.$window = $window;
+        
     }
-    /*
+    
     public getUserRole=()=>{
         return this.$rootScope.slatwall.role;
     }
@@ -29,17 +32,21 @@ class HibachiAuthenticationService{
     }
     
     public getPublicRoleData = ()=>{
-        var publicRoleDataPromises = [this.getEntityData(),this.getActionData()];
+        var entityPromise = this.getEntityData();
+        var actionPromise = this.getActionData()
+        var publicRoleDataPromises = [entityPromise,actionPromise];
         return this.$q.all(publicRoleDataPromises).then((data) => {
-            console.log('test',data);
+            this.$rootScope.slatwall.authInfo = data;
+            
         },(error) =>{
-           throw('could not get public role data');
+          throw('could not get public role data');
         });
     }
     
     public getEntityData=()=>{
+        var $http = this.$injector.get('$http');
         var deferred = this.$q.defer();
-        this.$http.get(this.appConfig.baseURL+'/custom/system/permissions/entity.json')
+        $http.get(this.appConfig.baseURL+'/custom/system/permissions/entity.json')
         .success((response:any,status,headersGetter) => {
             deferred.resolve(response);
         }).error((response:any,status) => {
@@ -50,7 +57,8 @@ class HibachiAuthenticationService{
     
     public getActionData=()=>{
         var deferred = this.$q.defer();
-        this.$http.get(this.appConfig.baseURL+'/custom/system/permissions/action.json')
+        var $http = this.$injector.get('$http');
+        $http.get(this.appConfig.baseURL+'/custom/system/permissions/action.json')
         .success((response:any,status,headersGetter) => {
             deferred.resolve(response);
         }).error((response:any,status) => {
@@ -61,7 +69,7 @@ class HibachiAuthenticationService{
     
     public getPermissionGroupData = ()=>{
         
-    }*/
+    }
 
 }
 export {

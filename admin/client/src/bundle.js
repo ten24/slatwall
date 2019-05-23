@@ -88372,12 +88372,69 @@ exports.FormService = FormService;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    //@ngInject
-    function HibachiAuthenticationService($window) {
-        this.$window = $window;
-        this.$window = $window;
+    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector) {
+        var _this = this;
+        this.$rootScope = $rootScope;
+        this.$q = $q;
+        this.appConfig = appConfig;
+        this.$injector = $injector;
+        this.getUserRole = function () {
+            return _this.$rootScope.slatwall.role;
+        };
+        this.getRoleBasedData = function () {
+            switch (_this.getUserRole()) {
+                case 'superUser':
+                    //no data is required for this role and we can assume they have access to everything
+                    break;
+                case 'admin':
+                    _this.getPublicRoleData();
+                    _this.getPermissionGroupData();
+                    break;
+                case 'public':
+                    //only public data is required for this role and we can assume they have access to everything
+                    _this.getPublicRoleData();
+                    break;
+            }
+        };
+        this.getPublicRoleData = function () {
+            var entityPromise = _this.getEntityData();
+            var actionPromise = _this.getActionData();
+            var publicRoleDataPromises = [entityPromise, actionPromise];
+            return _this.$q.all(publicRoleDataPromises).then(function (data) {
+                _this.$rootScope.slatwall.authInfo = data;
+            }, function (error) {
+                throw ('could not get public role data');
+            });
+        };
+        this.getEntityData = function () {
+            var $http = _this.$injector.get('$http');
+            var deferred = _this.$q.defer();
+            $http.get(_this.appConfig.baseURL + '/custom/system/permissions/entity.json')
+                .success(function (response, status, headersGetter) {
+                deferred.resolve(response);
+            }).error(function (response, status) {
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        };
+        this.getActionData = function () {
+            var deferred = _this.$q.defer();
+            var $http = _this.$injector.get('$http');
+            $http.get(_this.appConfig.baseURL + '/custom/system/permissions/action.json')
+                .success(function (response, status, headersGetter) {
+                deferred.resolve(response);
+            }).error(function (response, status) {
+                deferred.reject(response);
+            });
+            ;
+            return deferred.promise;
+        };
+        this.getPermissionGroupData = function () {
+        };
     }
     return HibachiAuthenticationService;
 }());
@@ -88395,7 +88452,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiInterceptor = /** @class */ (function () {
     //@ngInject
-    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) {
+    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
         var _this = this;
         this.$location = $location;
         this.$q = $q;
@@ -88410,9 +88467,12 @@ var HibachiInterceptor = /** @class */ (function () {
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.observerService = observerService;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.urlParam = null;
         this.authHeader = 'Authorization';
         this.authPrefix = 'Bearer ';
+        this.loginResponse = null;
+        this.authPromise = null;
         this.getJWTDataFromToken = function (str) {
             // Going backwards: from bytestream, to percent-encoding, to original string.
             str = str.split('.')[1];
@@ -88429,7 +88489,8 @@ var HibachiInterceptor = /** @class */ (function () {
                 }
                 _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
                 _this.$rootScope.slatwall.role = jwtData.role;
-                //this.authenticationService.getRoleBasedData();
+                console.log('test');
+                _this.hibachiAuthenticationService.getRoleBasedData();
             }
         };
         this.request = function (config) {
@@ -88510,24 +88571,43 @@ var HibachiInterceptor = /** @class */ (function () {
                 if (rejection.data && rejection.data.messages) {
                     //var deferred = $q.defer();
                     var $http = _this.$injector.get('$http');
+                    var originalRequest = null;
                     if (rejection.data.messages[0].message === 'timeout') {
                         //open dialog
                         _this.dialogService.addPageDialog(_this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
                     }
                     else if (rejection.data.messages[0].message === 'invalid_token') {
-                        return $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
-                            if (loginResponse.status === 200) {
-                                _this.localStorageService.setItem('token', loginResponse.data.token);
-                                rejection.config.headers = rejection.config.headers || {};
-                                rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-                                _this.getJWTDataFromToken(loginResponse.data.token);
-                                return $http(rejection.config).then(function (response) {
-                                    return response;
-                                });
-                            }
-                        }, function (rejection) {
-                            return rejection;
-                        });
+                        if (!_this.authPromise) {
+                            return _this.authPromise = $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
+                                _this.loginResponse = loginResponse;
+                                if (loginResponse.status === 200) {
+                                    _this.localStorageService.setItem('token', loginResponse.data.token);
+                                    rejection.config.headers = rejection.config.headers || {};
+                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+                                    _this.getJWTDataFromToken(loginResponse.data.token);
+                                    return $http(rejection.config).then(function (response) {
+                                        return response;
+                                    });
+                                }
+                            }, function (rejection) {
+                                return rejection;
+                            });
+                        }
+                        else {
+                            return _this.authPromise.then(function () {
+                                if (_this.loginResponse.status === 200) {
+                                    _this.localStorageService.setItem('token', _this.loginResponse.data.token);
+                                    rejection.config.headers = rejection.config.headers || {};
+                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.loginResponse.data.token;
+                                    _this.getJWTDataFromToken(_this.loginResponse.data.token);
+                                    return $http(rejection.config).then(function (response) {
+                                        return response;
+                                    });
+                                }
+                            }, function (rejection) {
+                                return rejection;
+                            });
+                        }
                     }
                 }
             }
@@ -88546,10 +88626,10 @@ var HibachiInterceptor = /** @class */ (function () {
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.baseUrl = appConfig.baseURL;
-        //this.authenticationService = authenticationService
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     HibachiInterceptor.Factory = function () {
-        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService); };
+        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
         eventHandler.$inject = [
             '$location',
             '$q',
@@ -88564,6 +88644,7 @@ var HibachiInterceptor = /** @class */ (function () {
             'utilityService',
             'hibachiPathBuilder',
             'observerService',
+            'hibachiAuthenticationService'
         ];
         return eventHandler;
     };
@@ -90679,6 +90760,7 @@ var ObserverService = /** @class */ (function (_super) {
                 _this.historyService.recordHistory(event, parameters, true);
             });
         };
+        console.log('init obeserver');
         _this.observers = {};
         return _this;
     }
