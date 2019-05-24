@@ -74383,9 +74383,10 @@ var CollectionConfig = /** @class */ (function () {
         this.clearOrderBy = function () {
             _this.orderBy = [];
         };
-        this.addOrderBy = function (orderByString, formatPropertyIdentifier) {
+        this.addOrderBy = function (orderByString, formatPropertyIdentifier, singleColumn) {
             if (formatPropertyIdentifier === void 0) { formatPropertyIdentifier = true; }
-            if (!_this.orderBy) {
+            if (singleColumn === void 0) { singleColumn = false; }
+            if (!_this.orderBy || singleColumn) {
                 _this.orderBy = [];
             }
             var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
@@ -74399,10 +74400,15 @@ var CollectionConfig = /** @class */ (function () {
             };
             _this.orderBy.push(orderBy);
         };
-        this.toggleOrderBy = function (formattedPropertyIdentifier, singleColumn) {
+        this.toggleOrderBy = function (propertyIdentifier, singleColumn, formatPropertyIdentifier) {
             if (singleColumn === void 0) { singleColumn = false; }
+            if (formatPropertyIdentifier === void 0) { formatPropertyIdentifier = false; }
             if (!_this.orderBy) {
                 _this.orderBy = [];
+            }
+            var formattedPropertyIdentifier = propertyIdentifier;
+            if (formatPropertyIdentifier) {
+                formattedPropertyIdentifier = _this.formatPropertyIdentifier(propertyIdentifier);
             }
             var found = false;
             for (var i = _this.orderBy.length - 1; i >= 0; i--) {
@@ -77050,7 +77056,7 @@ var SWOrderByControlsController = /** @class */ (function () {
                     _this.disabled = false;
                     if (propertyIdentifier != null) {
                         if (angular.isDefined(_this.collectionConfig)) {
-                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true); //single column mode true
+                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true, true); //single column mode true, format propIdentifier true
                         }
                         if (_this.inListingDisplay) {
                             _this.listingService.setSingleColumnOrderBy(_this.listingId, propertyIdentifier, "ASC");
@@ -77063,7 +77069,7 @@ var SWOrderByControlsController = /** @class */ (function () {
                     _this.disabled = false;
                     if (propertyIdentifier != null) {
                         if (angular.isDefined(_this.collectionConfig)) {
-                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true); //single column mode true
+                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true, true); //single column mode true, format propIdentifier true
                         }
                         if (_this.inListingDisplay) {
                             _this.listingService.setSingleColumnOrderBy(_this.listingId, propertyIdentifier, "DESC");
@@ -90613,8 +90619,9 @@ var ListingService = /** @class */ (function () {
             }
             if (_this.getListing(listingID).collectionConfig != null) {
                 var found = false;
+                var _formattedPropertyIdentifier_1 = _this.getListing(listingID).collectionConfig.formatPropertyIdentifier(propertyIdentifier);
                 angular.forEach(_this.getListing(listingID).collectionConfig.orderBy, function (orderBy, index) {
-                    if (propertyIdentifier == orderBy.propertyIdentifier) {
+                    if (_formattedPropertyIdentifier_1 == orderBy.propertyIdentifier) {
                         orderBy.direction = direction;
                         found = true;
                     }
@@ -90623,7 +90630,7 @@ var ListingService = /** @class */ (function () {
                     }
                 });
                 if (!found) {
-                    _this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction);
+                    _this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction, true, true);
                 }
                 if (notify) {
                     _this.observerService.notify(_this.getListingOrderByChangedEventString(listingID));
@@ -90645,7 +90652,7 @@ var ListingService = /** @class */ (function () {
                 if (column.aggregate && column.aggregate.aggregateFunction) {
                     orderByPropertyIdentifier = column.aggregate.aggregateFunction + '(' + column.propertyIdentifier + ')';
                 }
-                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
+                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
             }
         };
         //End Order By Functions
@@ -93641,3 +93648,4 @@ module.exports = __webpack_require__(305);
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map
