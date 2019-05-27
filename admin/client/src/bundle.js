@@ -70954,6 +70954,42 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "More Than N Day(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Days'
+                                }
+                            },
+                            {
+                                display: "More Than N Week(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'w',
+                                    measureTypeDisplay: 'Weeks'
+                                }
+                            },
+                            {
+                                display: "More Than N Month(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'm',
+                                    measureTypeDisplay: 'Months'
+                                }
+                            },
+                            {
+                                display: "More Than N Year(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'y',
+                                    measureTypeDisplay: 'Years'
+                                }
+                            },
+                            {
                                 display: "Exact N Day(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
@@ -71238,12 +71274,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 && angular.isDefined(scope.filterItem.value)
                                 && scope.filterItem.value.length) {
                                 var dateRangeArray = scope.filterItem.value.split("-");
-                                var rangeStart = new Date(parseInt(dateRangeArray[0])).toUTCString();
-                                rangeStart = rangeStart.split(' ').slice(0, 5).join(' ');
-                                var rangeEnd = new Date(parseInt(dateRangeArray[1])).toUTCString();
-                                rangeEnd = rangeEnd.split(' ').slice(0, 5).join(' ');
-                                scope.selectedFilterProperty.criteriaRangeStart = rangeStart;
-                                scope.selectedFilterProperty.criteriaRangeEnd = rangeEnd;
+                                scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
+                                scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
                             }
                             if (angular.isDefined(scope.selectedConditionChanged)) {
                                 scope.selectedConditionChanged(scope.selectedFilterProperty);
@@ -71253,8 +71285,8 @@ var SWCriteriaDate = /** @class */ (function () {
                 }
                 else {
                     scope.selectedFilterProperty.criteriaValue = '';
-                    scope.selectedFilterProperty.criteriaRangeStart = '';
-                    scope.selectedFilterProperty.criteriaRangeEnd = '';
+                    scope.selectedFilterProperty.criteriaRangeStart = new Date().setHours(0, 0, 0, 0);
+                    scope.selectedFilterProperty.criteriaRangeEnd = new Date().setHours(11, 59, 59, 999);
                 }
             }
         };
@@ -72961,8 +72993,7 @@ var SWEditFilterItem = /** @class */ (function () {
                                         }
                                     }
                                     else {
-                                        var dateValueString = utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeStart) + '-' + utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeEnd);
-                                        filterItem.value = dateValueString;
+                                        filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                         var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
                                         filterItem.displayValue = formattedDateValueString;
                                         if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
@@ -84713,12 +84744,6 @@ var UtilityService = /** @class */ (function (_super) {
         _this.minutesOfDay = function (m) {
             return m.getMinutes() + m.getHours() * 60;
         };
-        _this.removeTimeOffset = function (timestampStr) {
-            var date = new Date(timestampStr);
-            var correctDate = new Date();
-            correctDate.setUTCFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-            return correctDate.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
-        };
         return _this;
     }
     return UtilityService;
@@ -93641,3 +93666,4 @@ module.exports = __webpack_require__(305);
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map
