@@ -73004,6 +73004,13 @@ var SWEditFilterItem = /** @class */ (function () {
                         for (var siblingIndex in filterItem.$$siblingItems) {
                             filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                         }
+                        if (angular.isDefined(selectedFilterProperty.aggregate)) {
+                            var aggregateFunction = selectedFilterProperty.aggregate.toUpperCase();
+                            if (aggregateFunction == 'AVERAGE') {
+                                aggregateFunction = 'AVG';
+                            }
+                            filterItem.aggregate = aggregateFunction;
+                        }
                         filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
                         //if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
                         if (filterItem.$$prepareForFilterGroup === true) {
@@ -93641,3 +93648,4 @@ module.exports = __webpack_require__(305);
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map
