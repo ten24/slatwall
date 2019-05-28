@@ -79461,14 +79461,14 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.getUserRole = function () {
             return _this.$rootScope.slatwall.role;
         };
-        this.getRoleBasedData = function () {
-            switch (_this.getUserRole()) {
+        this.getRoleBasedData = function (jwtData) {
+            switch (jwtData.role) {
                 case 'superUser':
                     //no data is required for this role and we can assume they have access to everything
                     break;
                 case 'admin':
                     _this.getPublicRoleData();
-                    _this.getPermissionGroupData();
+                    _this.getPermissionGroupsData(jwtData.permissionGroups);
                     break;
                 case 'public':
                     //only public data is required for this role and we can assume they have access to everything
@@ -79480,11 +79480,17 @@ var HibachiAuthenticationService = /** @class */ (function () {
             var entityPromise = _this.getEntityData();
             var actionPromise = _this.getActionData();
             var publicRoleDataPromises = [entityPromise, actionPromise];
-            return _this.$q.all(publicRoleDataPromises).then(function (data) {
-                _this.$rootScope.slatwall.authInfo = data;
+            var qPromise = _this.$q.all(publicRoleDataPromises).then(function (data) {
+                console.log(data);
+                if (!_this.$rootScope.slatwall.authInfo) {
+                    _this.$rootScope.slatwall.authInfo = {};
+                }
+                _this.$rootScope.slatwall.authInfo.entity = data[0];
+                _this.$rootScope.slatwall.authInfo.action = data[1];
             }, function (error) {
                 throw ('could not get public role data');
             });
+            return qPromise;
         };
         this.getEntityData = function () {
             var $http = _this.$injector.get('$http');
@@ -79506,10 +79512,44 @@ var HibachiAuthenticationService = /** @class */ (function () {
             }).error(function (response, status) {
                 deferred.reject(response);
             });
-            ;
             return deferred.promise;
         };
-        this.getPermissionGroupData = function () {
+        this.getPermissionGroupsData = function (permissionGroupIDs) {
+            console.log(permissionGroupIDs);
+            var permissionGroupIDArray = permissionGroupIDs.split(',');
+            var permissionGroupPromises = [];
+            for (var i in permissionGroupIDArray) {
+                var permissionGroupID = permissionGroupIDArray[i];
+                var permissionGroupPromise = _this.getPermissionGroupData(permissionGroupID);
+                permissionGroupPromises.push(permissionGroupPromise);
+            }
+            var qPromise = _this.$q.all(permissionGroupPromises).then(function (data) {
+                console.log(data);
+                if (!_this.$rootScope.slatwall.authInfo) {
+                    _this.$rootScope.slatwall.authInfo = {};
+                }
+                for (var i in permissionGroupIDArray) {
+                    var permissionGroupID = permissionGroupIDArray[i];
+                    if (!_this.$rootScope.slatwall.authInfo['permissionGroups']) {
+                        _this.$rootScope.slatwall.authInfo['permissionGroups'] = {};
+                    }
+                    _this.$rootScope.slatwall.authInfo['permissionGroups'][permissionGroupID] = data[i];
+                }
+            }, function (error) {
+                throw ('could not get public role data');
+            });
+            return qPromise;
+        };
+        this.getPermissionGroupData = function (permissionGroupID) {
+            var deferred = _this.$q.defer();
+            var $http = _this.$injector.get('$http');
+            $http.get(_this.appConfig.baseURL + '/custom/system/permissions/' + permissionGroupID + '.json')
+                .success(function (response, status, headersGetter) {
+                deferred.resolve(response);
+            }).error(function (response, status) {
+                deferred.reject(response);
+            });
+            return deferred.promise;
         };
     }
     return HibachiAuthenticationService;
@@ -79564,9 +79604,14 @@ var HibachiInterceptor = /** @class */ (function () {
                     _this.$rootScope.slatwall.account = {};
                 }
                 _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
-                _this.$rootScope.slatwall.role = jwtData.role;
-                console.log('test');
-                _this.hibachiAuthenticationService.getRoleBasedData();
+                //important to check to prevent recursion between $http and hibachinterceptor
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.hibachiAuthenticationService.getRoleBasedData(jwtData);
+                    if (jwtData.permissionGroups) {
+                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
+                    }
+                }
             }
         };
         this.request = function (config) {
