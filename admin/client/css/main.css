@@ -8644,7 +8644,6 @@ table.s-detail-content-table tbody tr.s-done {
   position: absolute;
   display: inline-block;
 }
-
-.col .btn-group-sm .btn-default:focus{
+#reporting-top .btn-group button:focus{
   outline:none !important;
-}
+} 
