@@ -446,8 +446,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Setup subsytem structure
 			var subsystemPermissions = {
-				hasSecureMethods = false,
-				sections = {}
+				'hasSecureMethods' = false,
+				'sections' = {}
 			};
 			
 			// Grab a list of all the files in the controllers directory
@@ -461,40 +461,40 @@ component output="false" accessors="true" extends="HibachiService" {
 				var obj = createObject('component', '#getApplicationValue('applicationKey')#.#replace(ssDirectory, '/','.','all')#controllers.#section#');
 				
 				// Setup section structure
-				subsystemPermissions.sections[ section ] = {
-					anyAdminMethods = "",
-					anyLoginMethods = "",
-					publicMethods = "",
-					secureMethods = "",
-					restController = false,
-					entityController = false
+				subsystemPermissions['sections'][ section ] = {
+					'anyAdminMethods' = "",
+					'anyLoginMethods' = "",
+					'publicMethods' = "",
+					'secureMethods' = "",
+					'restController' = false,
+					'entityController' = false
 				};
 				
 				// Check defined permissions
 				if(structKeyExists(obj, 'anyAdminMethods')){
-					subsystemPermissions.sections[ section ].anyAdminMethods = obj.anyAdminMethods;
+					subsystemPermissions['sections'][ section ]['anyAdminMethods'] = obj.anyAdminMethods;
 				}
 				if(structKeyExists(obj, 'anyLoginMethods')){
-					subsystemPermissions.sections[ section ].anyLoginMethods = obj.anyLoginMethods;
+					subsystemPermissions['sections'][ section ]['anyLoginMethods'] = obj.anyLoginMethods;
 				}
 				if(structKeyExists(obj, 'publicMethods')){
-					subsystemPermissions.sections[ section ].publicMethods = obj.publicMethods;
+					subsystemPermissions['sections'][ section ]['publicMethods'] = obj.publicMethods;
 				}
 				if(structKeyExists(obj, 'secureMethods')){
-					subsystemPermissions.sections[ section ].secureMethods = obj.secureMethods;
+					subsystemPermissions['sections'][ section ]['secureMethods'] = obj.secureMethods;
 				}
 				
 				// Check for Controller types
 				if(structKeyExists(obj, 'entityController') && isBoolean(obj.entityController) && obj.entityController) {
-					subsystemPermissions.sections[ section ].entityController = true;
+					subsystemPermissions['sections'][ section ]['entityController'] = true;
 				}
 				if(structKeyExists(obj, 'restController') && isBoolean(obj.restController) && obj.restController) {
-					subsystemPermissions.sections[ section ].restController = true;
+					subsystemPermissions['sections'][ section ]['restController'] = true;
 				}
 				
 				// Setup the 'hasSecureMethods' value
-				if(len(subsystemPermissions.sections[ section ].secureMethods & subsystemPermissions.sections[ section ].anyAdminMethods & subsystemPermissions.sections[ section ].anyLoginMethods)) {
-					subsystemPermissions.hasSecureMethods = true;
+				if(len(subsystemPermissions['sections'][ section ].secureMethods & subsystemPermissions.sections[ section ].anyAdminMethods & subsystemPermissions.sections[ section ].anyLoginMethods)) {
+					subsystemPermissions['hasSecureMethods'] = true;
 				}
 				
 			} // END Section Loop
