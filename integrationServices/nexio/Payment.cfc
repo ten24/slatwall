@@ -78,10 +78,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		
 		// The main entry point to process credit card (Slatwall convention)
 		public any function processCreditCard(required any requestBean) {
-			// writeDump(var=arguments.requestBean.getTransactionType());
-			// writeDump("testing");
-			// abort;
-			
+			// writeDump(var=setting(settingName='passwordTest', requestBean=arguments.requestBean));	
 			verifyServerCompatibility();
 
 			var responseBean = getTransient('CreditCardTransactionResponseBean');
@@ -161,21 +158,21 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		
 		private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
-
 			// We are expecting there is no provider token yet, however if accountPaymentMethod is used and attempt to generate another token prevent and short circuit
 			if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-				
+		
 				var publicKey = getPublicKey(arguments.requestBean);
-
+				
+				// writeDump(var=arguments.requestBean, abort=true);
+				
 				var requestData = {
 					'data' = {
 						'paymentMethod' = arguments.requestBean.getOrderPayment().getOrderPaymentType(),
 						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
-						'amount' = arguments.requestBean.getTransactionAmount(),
+						// 'amount' = arguments.requestBean.getTransactionAmount(),
 						"uiOptions": {
 				            "hideCvc": false
-				        },
-						
+				        }
 					},
 					'processingOptions' = {
 						'checkFraud' = true,
@@ -186,11 +183,19 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					'card' = {
 						'cardHolderName' = arguments.requestBean.getNameOnCreditCard()
 					}
+					// 'customer': {
+			  //          'firstName': arguments.requestBean.getNameOnCreditCard(),
+			  //          'lastName': arguments.requestBean.getNameOnCreditCard()
+			  //      }
 				};
+				
+				// writeDump(var=requestData, abort=true);
 				
 				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
-
+				
+				// writeDump(var=responseData);
+				
 				if (!responseBean.hasErrors()) {
 					requestData = {
 						'token' = responseData.token,
@@ -209,7 +214,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					
 					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
-					// writeDump(var=responseData);
+
 					// Extract data and set as part of the responseBean
 					if (!responseBean.hasErrors()) {
 						arguments.responseBean.setProviderToken(responseData.token.token);
@@ -225,7 +230,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.setProviderToken(responseData.token.token);
 				arguments.responseBean.setProviderTransactionID(requestBean.getOriginalProviderTransactionID());
 			}
-				// writeDump(var=arguments.responseBean.setProviderToken(responseData.token.token));
 		}
 		
 		private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
@@ -256,7 +260,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// 	    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			//     }
 			// };
-			// writeDump(var=arguments.requestBean);
 			
 			// responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
 		}
@@ -287,15 +290,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    }
 			};	
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-			writeDump("***responseData");
-			writeDump(var=responseData);
 			
 			// Response Data
 			arguments.responseBean.setProviderTransactionID(responseData.id);
 			arguments.responseBean.setAuthorizationCode(responseData.authCode);
 			
 			// *** QUESTION: is responseData.amount the amount authorized & amount received, or just the amount authorized?
-			arguments.responseBean.setAmountAuthorized(responseData.amount);
+			// REMOVE: arguments.responseBean.setAmountAuthorized(responseData.amount);
 			arguments.responseBean.setAmountReceived(responseData.amount);
 			
 			arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
@@ -305,9 +306,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
 			arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
 
-			writeDump("***arguments.responseBean");
-			writeDump(var=arguments.responseBean);
-			// abort;
 		}
 		
 		private void function sendRequestToChargePreAuthorization(required any requestBean, required any responseBean) {
@@ -329,14 +327,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			
 			if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
 				
-				writeDump("***arguments.requestBean");
-				writeDump(var=arguments.requestBean);
-				
 				// Request Data
+				// writeDump(var=arguments.requestBean);
 				// arguments.requestBean.getOriginalChargeProviderTransactionID();
 				var requestData = {
 					'data': {
-						'amount': arguments.requestBean.getTransactionAmount(),
+						// 'amount': arguments.requestBean.getTransactionAmount(),
+						'amount': '2.00',
 						// *** QUESTION: What would partialAmount be in the requestBean?
 						'partialAmount': arguments.requestBean.getTransactionAmount()
 			    	},
@@ -344,16 +341,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				}
 				
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
-				writeDump("***responseData");
-				writeDump(var=responseData);
 				
 				// Response Data
 				// arguments.responseBean.setProviderTransactionID(responseData.id);
 				// arguments.responseBean.setAmountCredited(responseData.amount);
-			
-				writeDump("***arguments.responseBean");
-				writeDump(var=arguments.responseBean);
-				
+
 				// arguments.responseBean.addMessage(messageName="nexio.merchantId", message="#responseData.merchantId#");
 				// arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
 				// arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
@@ -370,10 +362,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		private void function sendRequestToVoid(required any requestBean, required any responseBean) {
 			if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
 				
-				writeDump("***arguments.requestBean");
-				writeDump(var=arguments.requestBean);
-				// abort;
-				
 				// Request Data
 				// arguments.requestBean.getOriginalChargeProviderTransactionID();
 				
@@ -385,12 +373,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				}
 				
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
-				writeDump("***responseData");
-				writeDump(var=responseData);
 				
 				// Response Data
-				writeDump("***arguments.responseBean");
-				writeDump(var=arguments.responseBean);
 				
 				// arguments.responseBean.setProviderTransactionID(responseData.id);
 				// arguments.responseBean.setAmountReceived(responseData.amount);
@@ -409,7 +393,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		
 		private struct function sendHttpAPIRequest(required any requestBean, required any responseBean, required string transactionName, required struct data) {
-			
+		
 			var apiUrl = setting(settingName='apiUrlTest', requestBean=arguments.requestBean);
 			var merchantID = setting(settingName='merchantIDTest', requestBean=arguments.requestBean);
 			var password = setting(settingName='passwordTest', requestBean=arguments.requestBean);
@@ -449,6 +433,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			
+			
+			// writeDump(var=[local,httpRequest], abort=true);
+			
 			// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
 			// if (!directoryExists(logPath)){
 			// 	directoryCreate(logPath);
@@ -465,7 +452,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
 			// };
 
-			// fileWrite('#logPath#/15May#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			// fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 			
 			// Make HTTP request to endpoint
 			var httpResponse = httpRequest.send().getPrefix();
@@ -522,8 +509,26 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 			}
 
-			//writeDump(responseData);
 			return responseData;
+		}
+		
+		public any function testIntegration() {
+			var requestBean = new Slatwall.model.transient.payment.CreditCardTransactionRequestBean();
+			var testAccount = getHibachiScope().getAccount();
+			
+			requestBean.setTransactionType('generateToken');
+			requestBean.setOrderID('1');
+			requestBean.setCreditCardNumber('4111111111111111');
+			requestBean.setSecurityCode('123');
+			requestBean.setExpirationMonth('01');
+			requestBean.setExpirationYear(year(now())+1);
+			requestBean.setTransactionAmount('1');
+			requestBean.setAccountFirstName(testAccount.getFirstName());
+			requestBean.setAccountLastName(testAccount.getLastName());
+			
+			var response = processCreditCard(requestBean); 
+			structDelete(response.getData(),"requestData");
+			return response;;
 		}
 		
 	}
