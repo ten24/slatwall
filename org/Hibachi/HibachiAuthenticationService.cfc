@@ -360,15 +360,15 @@ component output="false" accessors="true" extends="HibachiService" {
 						
 						// Setup basic placeholder info
 						entityPermissions[ entityName ] = {};
-						entityPermissions[ entityName ].properties = {};
-						entityPermissions[ entityName ].mtmproperties = {};
-						entityPermissions[ entityName ].mtoproperties = {};
-						entityPermissions[ entityName ].otmproperties = {};
+						entityPermissions[ entityName ]['properties'] = {};
+						entityPermissions[ entityName ]['mtmproperties'] = {};
+						entityPermissions[ entityName ]['mtoproperties'] = {};
+						entityPermissions[ entityName ]['otmproperties'] = {};
 						
 						// If for some reason this entities permissions are managed by a parent entity then define it as such
 						if(entityMetaData.hb_permission neq "this") {
-							entityPermissions[ entityName ].inheritPermissionEntityName = getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
-							entityPermissions[ entityName ].inheritPermissionPropertyName = listLast(entityMetaData.hb_permission, ".");	
+							entityPermissions[ entityName ]['inheritPermissionEntityName'] = getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
+							entityPermissions[ entityName ]['inheritPermissionPropertyName'] = listLast(entityMetaData.hb_permission, ".");	
 						}
 						
 						// Loop over each of the properties
@@ -380,25 +380,25 @@ component output="false" accessors="true" extends="HibachiService" {
 								
 								// Add to ManyToMany Properties
 								if(structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-one") {
-									entityPermissions[ entityName ].mtoproperties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
+									entityPermissions[ entityName ]['mtoproperties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
 								
 								// Add to OneToMany Properties
 								} else if (structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "one-to-many") {
-									entityPermissions[ entityName ].otmproperties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
+									entityPermissions[ entityName ]['otmproperties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
 									
 								// Add to ManyToMany Properties
 								} else if (structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-many") {
-									entityPermissions[ entityName ].mtmproperties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
+									entityPermissions[ entityName ]['mtmproperties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
 								
 								// Add to regular field Properties
 								} else {
-									entityPermissions[ entityName ].properties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];	
+									entityPermissions[ entityName ]['properties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];	
 								}
 							}
 						}
 						
 						// Sort the structure in order by propertyName
-						structSort(entityPermissions[ entityName ].properties, "text", "ASC", "name");
+						structSort(entityPermissions[ entityName ]['properties'], "text", "ASC", "name");
 					}
 				}
 			}
