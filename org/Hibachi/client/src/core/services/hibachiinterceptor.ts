@@ -231,11 +231,11 @@ class HibachiInterceptor implements IInterceptor{
 			if(rejection.data && rejection.data.messages){
 				//var deferred = $q.defer();
 				var $http = this.$injector.get<ng.IHttpService>('$http');
-				var originalRequest = null;
 				if(rejection.data.messages[0].message === 'timeout'){
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
+                    //logic to resolve all 499s in a single login call
                     if(!this.authPromise){
                     	return this.authPromise = $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:IHibachiInterceptorPromise<any>)=>{
 	                        this.loginResponse=loginResponse;
@@ -254,7 +254,7 @@ class HibachiInterceptor implements IInterceptor{
 	                    });
                     }else{
                     	
-                    	return this.authPromise.then(  ()=>{
+                    	return this.authPromise.then(()=>{
                         
                         if(this.loginResponse.status === 200){
                         	
