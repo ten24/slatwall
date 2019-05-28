@@ -142,9 +142,15 @@ class HibachiInterceptor implements IInterceptor{
 		    	this.$rootScope.slatwall.account = {};
 		    }
 		    this.$rootScope.slatwall.account.accountID = jwtData.accountid;
-		    this.$rootScope.slatwall.role=jwtData.role;
-		    console.log('test');
-		    this.hibachiAuthenticationService.getRoleBasedData();
+		    //important to check to prevent recursion between $http and hibachinterceptor
+		    if(!this.$rootScope.slatwall.role){
+	    		this.$rootScope.slatwall.role=jwtData.role;
+	    		this.hibachiAuthenticationService.getRoleBasedData(jwtData);
+	    		if(jwtData.permissionGroups){
+	    			this.$rootScope.slatwall.permissionGroups=jwtData.permissionGroups;
+	    		}
+	    		
+		    }
     	}
 	}
     
