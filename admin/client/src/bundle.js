@@ -88571,12 +88571,12 @@ var HibachiInterceptor = /** @class */ (function () {
                 if (rejection.data && rejection.data.messages) {
                     //var deferred = $q.defer();
                     var $http = _this.$injector.get('$http');
-                    var originalRequest = null;
                     if (rejection.data.messages[0].message === 'timeout') {
                         //open dialog
                         _this.dialogService.addPageDialog(_this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
                     }
                     else if (rejection.data.messages[0].message === 'invalid_token') {
+                        //logic to resolve all 499s in a single login call
                         if (!_this.authPromise) {
                             return _this.authPromise = $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
                                 _this.loginResponse = loginResponse;
