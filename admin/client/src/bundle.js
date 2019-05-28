@@ -88405,7 +88405,6 @@ var HibachiAuthenticationService = /** @class */ (function () {
             var actionPromise = _this.getActionData();
             var publicRoleDataPromises = [entityPromise, actionPromise];
             var qPromise = _this.$q.all(publicRoleDataPromises).then(function (data) {
-                console.log(data);
                 if (!_this.$rootScope.slatwall.authInfo) {
                     _this.$rootScope.slatwall.authInfo = {};
                 }
@@ -88439,7 +88438,6 @@ var HibachiAuthenticationService = /** @class */ (function () {
             return deferred.promise;
         };
         this.getPermissionGroupsData = function (permissionGroupIDs) {
-            console.log(permissionGroupIDs);
             var permissionGroupIDArray = permissionGroupIDs.split(',');
             var permissionGroupPromises = [];
             for (var i in permissionGroupIDArray) {
@@ -88448,7 +88446,6 @@ var HibachiAuthenticationService = /** @class */ (function () {
                 permissionGroupPromises.push(permissionGroupPromise);
             }
             var qPromise = _this.$q.all(permissionGroupPromises).then(function (data) {
-                console.log(data);
                 if (!_this.$rootScope.slatwall.authInfo) {
                     _this.$rootScope.slatwall.authInfo = {};
                 }

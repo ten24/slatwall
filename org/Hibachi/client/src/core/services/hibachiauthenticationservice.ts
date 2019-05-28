@@ -37,7 +37,6 @@ class HibachiAuthenticationService{
         var actionPromise = this.getActionData();
         var publicRoleDataPromises = [entityPromise,actionPromise];
         var qPromise = this.$q.all(publicRoleDataPromises).then((data) => {
-            console.log(data);
             if(!this.$rootScope.slatwall.authInfo){
                 this.$rootScope.slatwall.authInfo = {};
             }
@@ -75,7 +74,6 @@ class HibachiAuthenticationService{
     }
     
     public getPermissionGroupsData = (permissionGroupIDs)=>{
-        console.log(permissionGroupIDs);
         var permissionGroupIDArray = permissionGroupIDs.split(',');
         var permissionGroupPromises = [];
         for(let i in permissionGroupIDArray){
@@ -85,7 +83,6 @@ class HibachiAuthenticationService{
         }
         
         var qPromise = this.$q.all(permissionGroupPromises).then((data) => {
-            console.log(data);
             if(!this.$rootScope.slatwall.authInfo){
                 this.$rootScope.slatwall.authInfo = {};
             }
