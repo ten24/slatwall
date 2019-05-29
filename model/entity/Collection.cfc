@@ -3362,7 +3362,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							//if propertyIdentifier is object vs primitive then restrict page count
 							
 							
-							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))){
+							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier)) && !structKeyExists(column,'aggregate')){
 								restrictPageRecords();
 							}
 							//check if we have an aggregate
