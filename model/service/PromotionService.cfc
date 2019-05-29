@@ -415,7 +415,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
-				// Loop over all Potential Discounts that require qualifications or use a Sku collection
+				// Loop over all Potential Discounts that require qualifications
 				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 				var orderRewards = false;
 	
@@ -1090,6 +1090,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		return canPlaceOrder;
+	}
+	
+	public array function getQualifiedPromotionRewardsForOrder( required any order ){
+		var qualifiedPromotionRewards = [];
+		var promotionEffectiveDateTime = now();
+		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
+			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
+		}
+		// Loop over all Potential Discounts that require qualifications
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
+		for(var promoReward in promotionRewards){
+			var promoPeriod = promoReward.getPromotionPeriod();
+			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
+			// if(qualificationDetails.qualificationsMeet){
+				arrayAppend(qualifiedPromotionRewards,promoReward);
+			// }
+		}
+		return qualifiedPromotionRewards;
 	}
 
 	// ===================== START: Logical Methods ===========================
