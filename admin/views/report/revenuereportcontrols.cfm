@@ -69,7 +69,7 @@
 				            
 				                	<!--- Filters --->
 				                	<sw-collection-filters>
-				                    	<sw-collection-filter data-property-identifier="productType.productTypeIDPath" data-comparison-operator="like" data-comparison-value="444df2f9c7deaa1582e021e894c0e299,%"></sw-collection-filter>
+				                    	<sw-collection-filter data-property-identifier="productType.productTypeIDPath" data-comparison-operator="like" data-comparison-value="444df2f9c7deaa1582e021e894c0e299%"></sw-collection-filter>
 				                    </sw-collection-filters>
 				                </sw-collection-config>
 				            

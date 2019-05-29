@@ -317,9 +317,6 @@ Notes:
 						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
 							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 						</cfif>
-						<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
-							AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
-						</cfif>
 						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 						and p.deferredRevenueFlag=1
 					),0) -
@@ -345,9 +342,6 @@ Notes:
 						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
 							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 						</cfif>
-						<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
-							AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
-						</cfif>
 						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 					),0)
 				,0) as deferredRevenueLeftToBeRecognized,
@@ -370,9 +364,6 @@ Notes:
 						</cfif>
 						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
 							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
-						</cfif>
-						<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
-							AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
 						</cfif>
 						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 						and p.deferredRevenueFlag=1
@@ -398,9 +389,6 @@ Notes:
 						</cfif>
 						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
 							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
-						</cfif>
-						<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
-							AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),DaysInMonth(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
 						</cfif>
 						and sodi.createdDateTime < <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 					),0)
