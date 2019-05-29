@@ -2376,7 +2376,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
 				}
 			}
-
+			
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(
@@ -2393,7 +2393,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}  else {
 				
-				if(!arrayLen(arguments.processObject.getContainers())){
+				if(!isNull(arguments.processObject.getContainers()) && !arrayLen(arguments.processObject.getContainers())){
 					// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
 					arguments.orderDelivery = addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 				}else{
@@ -2427,7 +2427,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
-			
 			// Clean up if not needed
 			if (!arrayLen(arguments.data.giftCardCodes)) {
 				structDelete(arguments.data, 'giftCardCodes');
