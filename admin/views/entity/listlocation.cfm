@@ -63,7 +63,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<cfset rc.locationCollectionList.addFilter('parentLocation','null','is')/>
+	<cfset rc.locationCollectionList.addFilter(propertyIdentifier='parentLocation', value='null', comparisonOperator='is', ingnoredWhenSearch="true")/>
 	<cfset rc.locationCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
 		isSearchable="true",
 		isVisible="true",
