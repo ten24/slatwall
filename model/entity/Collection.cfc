@@ -1549,7 +1549,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
 			
-			if( structKeyExists(filter, 'ingnoredWhenSearch')  && filter.ingnoredWhenSearch){ //XXX not considering this filter when ingnoredWhenSearch is set 
+			if( structKeyExists(filter, 'ingnoredWhenSearch') && !isNull(getKeywords()) && len(getKeywords())  && filter.ingnoredWhenSearch){ //XXX not considering this filter when ingnoredWhenSearch is set 
 				arrayDeleteAt(reverseFilterGroup,i);
 				continue;
 			}
