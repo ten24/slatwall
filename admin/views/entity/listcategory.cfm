@@ -65,7 +65,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />
 </hb:HibachiListingDisplay> --->
 
-    <cfset rc.categoryCollectionList.addFilter(propertyIdentifier='parentCategory', value='null', comparisonOperator='is', ingnoredWhenSearch="true")/>
+    <cfset rc.categoryCollectionList.addFilter(propertyIdentifier='parentCategory', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.categoryCollectionList.setDisplayProperties(displayPropertiesList='restrictAccessFlag,allowProductAssignmentFlag',columnConfig={
 		isSearchable="true",
 		isVisible="true",

@@ -72,7 +72,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
 	</hb:HibachiListingDisplay> --->
 
-	<cfset rc.typeCollectionList.addFilter(propertyIdentifier='parentType', value='null', comparisonOperator='is', ingnoredWhenSearch="true")/>
+	<cfset rc.typeCollectionList.addFilter(propertyIdentifier='parentType', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.typeCollectionList.setDisplayProperties(displayPropertiesList='typeCode,systemCode',columnConfig={
 		isSearchable="true",
 		isVisible="true",

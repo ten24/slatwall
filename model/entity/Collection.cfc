@@ -585,7 +585,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	    string filterGroupAlias="",
  		string filterGroupLogicalOperator="AND",
  		boolean hidden=true,
- 		boolean ingnoredWhenSearch=false
+ 		boolean ignoredWhenSearch=false
 	){
 		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
@@ -610,7 +610,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
 			"hidden"=arguments.hidden,
-			"ingnoredWhenSearch"= arguments.ingnoredWhenSearch
+			"ignoredWhenSearch"= arguments.ignoredWhenSearch
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
@@ -1549,7 +1549,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
 			
-			if( structKeyExists(filter, 'ingnoredWhenSearch') && !isNull(getKeywords()) && len(getKeywords())  && filter.ingnoredWhenSearch){ //XXX not considering this filter when ingnoredWhenSearch is set 
+			if( structKeyExists(filter, 'ignoredWhenSearch') && !isNull(getKeywords()) && len(getKeywords())  && filter.ignoredWhenSearch){ //XXX not considering this filter when ignoredWhenSearch is set 
 				arrayDeleteAt(reverseFilterGroup,i);
 				continue;
 			}
