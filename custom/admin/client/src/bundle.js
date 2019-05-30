@@ -63325,6 +63325,8 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
+                formDataToPost.newAccountAddress.address.stateCode = _this.newAccountAddress.address.stateCode.stateCode;
+                formDataToPost.newAccountAddress.address.countryCode = _this.newAccountAddress.address.countryCode.countryCode;
             }
             else {
                 formDataToPost.billingAccountAddress = _this.baseEntity.billingAccountAddress;
@@ -63417,6 +63419,7 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
         this.title = "Shipping";
         this.shippingAddressTitle = 'Shipping Address';
         this.shippingMethodTitle = 'Shipping Method';
+        this.includeModal = true;
         this.updateShippingInfo = function (data) {
             if (data['account.accountAddressOptions'] != null) {
                 _this.accountAddressOptions = data['account.accountAddressOptions'];
@@ -63434,6 +63437,9 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
         }
         else {
             this.modalButtonText = this.rbkeyService.rbKey('define.add') + ' ' + this.title;
+        }
+        if (this.baseEntityName === 'OrderTemplate' && this.baseEntity['orderTemplateStatusType_systemCode'] === 'otstCancelled') {
+            this.includeModal = false;
         }
     }
     return SWAccountShippingAddressCardController;
@@ -63546,6 +63552,8 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             };
             if (_this.showCreateShippingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
+                formDataToPost.newAccountAddress.address.stateCode = _this.newAccountAddress.address.stateCode.stateCode;
+                formDataToPost.newAccountAddress.address.countryCode = _this.newAccountAddress.address.countryCode.countryCode;
             }
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
@@ -63612,6 +63620,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
+        this.includeModal = true;
         this.updateBillingInfo = function (data) {
             if (data['account.accountAddressOptions'] != null) {
                 _this.accountAddressOptions = data['account.accountAddressOptions'];
@@ -63633,6 +63642,9 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         }
         else {
             this.modalButtonText = this.rbkeyService.rbKey('define.add') + ' ' + this.title;
+        }
+        if (this.baseEntityName === 'OrderTemplate' && this.baseEntity['orderTemplateStatusType_systemCode'] === 'otstCancelled') {
+            this.includeModal = false;
         }
     }
     return SWCustomerAccountPaymentMethodCardController;
@@ -63772,10 +63784,14 @@ var SWOrderTemplateFrequencyCardController = /** @class */ (function () {
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
+        this.includeModal = true;
         this.refreshFrequencyTerm = function (data) {
             _this.frequencyTerm = data.frequencyTerm;
         };
         this.observerService.attach(this.refreshFrequencyTerm, 'OrderTemplateUpdateFrequencySuccess');
+        if (this.orderTemplate['orderTemplateStatusType_systemCode'] === 'otstCancelled') {
+            this.includeModal = false;
+        }
     }
     return SWOrderTemplateFrequencyCardController;
 }());
@@ -64118,6 +64134,7 @@ var SWOrderTemplateUpcomingOrdersCardController = /** @class */ (function () {
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
+        this.includeModal = true;
         this.updateSchedule = function (data) {
             if (data == null)
                 return;
@@ -64145,6 +64162,9 @@ var SWOrderTemplateUpcomingOrdersCardController = /** @class */ (function () {
             var firstDate = this.scheduledOrderDates.split(',')[0];
             this.setStartDate(Date.parse(firstDate));
         }
+        if (this.orderTemplate['orderTemplateStatusType_systemCode'] === 'otstCancelled') {
+            this.includeModal = false;
+        }
     }
     SWOrderTemplateUpcomingOrdersCardController.prototype.setStartDate = function (date) {
         this.startDate = date;
@@ -64162,6 +64182,7 @@ var SWOrderTemplateUpcomingOrdersCard = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
+            orderTemplate: '<?',
             scheduledOrderDates: '@',
             frequencyTerm: '<?',
             title: "@?"
@@ -76938,6 +76959,7 @@ var SWActionCallerController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.$onInit = function () {
+            console.log('so modal???', _this.modal);
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
@@ -78317,7 +78339,18 @@ var SWEntityActionBarController = /** @class */ (function () {
                 _this.editQueryString = _this.baseQueryString + _this.editQueryString;
                 _this.deleteQueryString = _this.baseQueryString + _this.deleteQueryString;
                 _this.saveQueryString = _this.baseQueryString + _this.saveQueryString;
+                if (_this.processCallers != null) {
+                    for (var i = 0; i < _this.processCallers.length; i++) {
+                        if (_this.processCallers[i].queryString != null) {
+                            _this.processCallers[i].queryString = _this.baseQueryString + _this.processCallers[i].queryString;
+                        }
+                        else {
+                            _this.processCallers[i].queryString = _this.baseQueryString;
+                        }
+                    }
+                }
             }
+            _this.swProcessCallers = _this.processCallers;
             if (_this.editEvent != null) {
                 _this.editAction = '';
                 _this.observerService.attach(_this.toggleEditMode, _this.editEvent);
@@ -78362,6 +78395,7 @@ var SWEntityActionBar = /** @class */ (function () {
             edit: "=",
             entityActionDetails: "<?",
             baseQueryString: "@?",
+            messages: "<?",
             /*Action Callers (top buttons)*/
             showCancel: "=",
             showCreate: "=",

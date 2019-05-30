@@ -58,13 +58,16 @@
 	{
 		'action':'admin:entity.processOrderTemplate',
 		'processContext':'activate',
-		'type':'list'
 	},	
 	{
 		'action':'admin:entity.processOrderTemplate',
 		'processContext':'createAndPlaceOrder',
-		'type':'list'
-	}
+	},	
+	{
+		'action':'admin:entity.preProcessOrderTemplate',
+		'processContext':'cancel',
+		'modal' : true 
+	} 
 ] />
 
 
@@ -72,6 +75,7 @@
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
 
 		<sw-entity-action-bar data-base-query-string="orderTemplateID=#rc.orderTemplate.getOrderTemplateID()#"
+							  data-messages="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(request.context.messages))#"
 							  data-entity-action-details="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.entityActionDetails))#" 
 							  data-page-title="#rc.orderTemplate.getSimpleRepresentation()#" 
 							  data-cancel-event="cancelEditOrderTemplate"

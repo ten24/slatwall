@@ -79,10 +79,13 @@
 		<Record typeID="2c948084697d51bd01697d9a592d0009" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9a592d0009" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Draft" systemCode="otstDraft" />
 		<Record typeID="2c948084697d51bd01697d9be217000a" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9be217000a" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Active" systemCode="otstActive" />
 		<Record typeID="2c948084697d51bd01697d9d9492000b" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9d9492000b" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Inactive" systemCode="otstInactive" />
+		<Record typeID="2c9580846ab29168016ab2adbb560013" typeIDPath="2c948084697d51bd01697d5996d80007,2c9580846ab29168016ab2adbb560013" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Cancelled" systemCode="otstCancelled" />
 		
 		<Record typeID="2c9280846a023949016a028c33ff000b" typeIDPath="2c9280846a023949016a028c33ff000b" parentTypeID="NULL" typeName="Order Template Schedule Date Change Reason Type" systemCode="orderTemplateScheduleDateChangeReasonType" childRequiresSystemCodeFlag="1" />
-
 		<Record typeID="2c9280846a023949016a029455f0000c" typeIDPath="2c9280846a023949016a028c33ff000b,2c9280846a023949016a029455f0000c" parentTypeID="2c9280846a023949016a028c33ff000b" typeName="Other" typeDescription="Other" systemCode="otsdcrtOther" />
+
+		<Record typeID="2c9480846a9e35d1016a9e5463c10006" typeIDPath="2c9480846a9e35d1016a9e5463c10006" parentTypeID="NULL" typeName="Order Template Cancellation Reason Type" systemCode="orderTemplateCancellationReasonType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c9680846ab15673016ab172b08c000c" typeIDPath="2c9480846a9e35d1016a9e5463c10006,2c9680846ab15673016ab172b08c000c" parentTypeID="2c9480846a9e35d1016a9e5463c10006" typeName="Other" typeDescription="Other" systemCode="otcrtOther" />
 
 		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661" parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e9a6622ad1614ea75cd5b982ce" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2e9a6622ad1614ea75cd5b982ce" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Sale" systemCode="oitSale" sortOrder="1" />
@@ -187,6 +190,11 @@
 		<Record typeID="7e8942b36f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002" parentTypeID="NULL" typeName="Cycle Count Batch Status Type" systemCode="cycleCountBatchStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="b453ca526f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b453ca526f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Open" systemCode="ccbstOpen" sortOrder="1" />
 		<Record typeID="b9f3b9626f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b9f3b9626f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Closed" systemCode="ccbstClosed" sortOrder="2" />
+		
+		<Record typeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc" parentTypeID="NULL" typeName="Product Reviews Status Type" systemCode="productReviewsStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="f0558da55e9f48f7bbd0eb4c95d6b378" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,f0558da55e9f48f7bbd0eb4c95d6b378" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Unapproved" systemCode="prstUnapproved" sortOrder="1" />
+		<Record typeID="9c60366a4091434582f5085f90d81bad" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,9c60366a4091434582f5085f90d81bad" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Approved" systemCode="prstApproved" sortOrder="2" />
+		<Record typeID="8bab6083921f4df4bff254e3a06d35a7" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,8bab6083921f4df4bff254e3a06d35a7" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Disapprove" systemCode="prstDisapprove" sortOrder="3" />
 		
 	</Records>
 </Table>

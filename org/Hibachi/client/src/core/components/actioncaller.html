@@ -1,12 +1,25 @@
-<!--
-<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
--->
-<a  ng-if="swActionCaller.display && swActionCaller.type === 'link'"
+<!-- Link Not Modal -->
+<a  ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'link'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	target="_self" 
 	ng-href="{{swActionCaller.actionUrl}}"
 	data-disabled="{{swActionCaller.disabledtext}}"
+	data-confirm="{{swActionCaller.confirmtext}}"
+	href="##"
+	>
+	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
+</a>
+
+<!-- Link Modal -->
+<a  ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'link'"
+	ng-attr-title="{{swActionCaller.title}}" 
+	ng-attr-class="{{swActionCaller.class}} modalload" 
+	target="_self" 
+	ng-href="{{swActionCaller.actionUrl}}"
+	data-disabled="{{swActionCaller.disabledtext}}"
+	data-toggle="modal" 
+	data-target="#adminModal"
 	data-confirm="{{swActionCaller.confirmtext}}"
 	href="##"
 	>
@@ -32,11 +45,8 @@
 	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>
 
-<!--
-		<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
-		<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif>
-		-->
-<li ng-if="swActionCaller.display && swActionCaller.type === 'list'">
+<!-- List Not Modal -->
+<li ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'list'">
 	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}}" 
 		target="_self" 
@@ -45,6 +55,20 @@
 		<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 	</a>
 </li>
+
+<!-- List Modal -->
+<li ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'list'">
+	<a ng-attr-title="{{swActionCaller.title}}" 
+		ng-attr-class="{{swActionCaller.class}} modalload" 
+		target="_self"
+		data-toggle="modal" 
+		data-target="#adminModal"
+		ng-href="{{swActionCaller.actionUrl}}"
+		>
+		<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
+	</a>
+</li>
+
 
 <!--
 	<cfif len(swActionCaller.name)> name="#swActionCaller.name#" value="#swActionCaller.action#"</cfif>

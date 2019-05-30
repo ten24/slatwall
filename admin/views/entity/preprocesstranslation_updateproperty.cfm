@@ -67,9 +67,12 @@ Notes:
 		<hb:HibachiPropertyList>
 
             <cfset rc.localeOptions = getHibachiScope().getService('hibachiRBService').getAvailableLocaleOptions(localeFilterList=getHibachiScope().getService('settingService').getSettingValue('globalTranslateLocales')) />
+            <cfset defaultLocale = getHibachiScope().getService('settingService').getSettingValue('globalLocale') />
             <cfloop from="1" to="#arrayLen(rc.localeOptions)#" index="i">
-                <input type="hidden" name="translationData[#i#].locale" value="#rc.localeOptions[i].value#">
-                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="" edit="#rc.edit#" title="#rc.localeOptions[i].name#">
+                <cfif defaultLocale neq rc.localeOptions[i].value>
+                  <input type="hidden" name="translationData[#i#].locale" value="#rc.localeOptions[i].value#">
+                  <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="" edit="#rc.edit#" title="#rc.localeOptions[i].name#">
+                </cfif>
             </cfloop>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

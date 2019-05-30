@@ -36,6 +36,7 @@
 			
 			<div class="col-md-2">
 				<sw-order-template-upcoming-orders-card 
+						data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 					<cfif not isNull(rc.orderTemplate.getFrequencyTerm())>
 						data-frequency-term="#rc.orderTemplate.getFrequencyTerm().getEncodedJsonRepresentation()#"
 					</cfif>

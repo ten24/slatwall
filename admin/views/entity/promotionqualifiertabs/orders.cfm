@@ -49,36 +49,14 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.type" type="any">
-<cfparam name="rc.parentType.typeID" type="string" default="">
+<cfparam name="rc.promotionQualifier" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cfif !isNull(rc.type.getParentType())>
-	<cfset local.parentType = rc.type.getParentType() />
-	<cfset rc.parentType.typeID = rc.type.getParentType().getTypeID() />
-<cfelseif isNull(rc.type.getParentType()) && len(rc.parentType.typeID)>
-	<cfset local.parentType = $.slatwall.getEntity('Type', rc.parentType.typeID) />
-<cfelse>
-	<cfset local.parentType = javaCast('null', '') />	
-</cfif>
-
 <cfoutput>
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			
-			<cfif rc.edit>
-				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
-			</cfif>
-			
-			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeDescription" edit="#rc.edit#">
-
-			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
-				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#">
-			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
-				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
-			</cfif>
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
+	<div class="col-md-6">
+        <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getIncludedOrdersCollection()#" title="Included Orders" collectionConfigFieldName="includedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+	</div>
+	<div class="col-md-6">
+	    <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getExcludedOrdersCollection()#" title="Excluded Orders" collectionConfigFieldName="excludedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+	</div>
 </cfoutput>

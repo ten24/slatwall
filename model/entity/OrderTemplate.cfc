@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode" {
+component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel" {
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -76,6 +76,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 	property name="orderTemplateScheduleDateChangeReasons" singularname="orderTemplateScheduleDateChangeReason" cfc="OrderTemplateScheduleDateChangeReason" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
+
+	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
 	
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
 
@@ -91,10 +93,12 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
+	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
+		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 
@@ -103,10 +107,22 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 			var typeCollection = getService('TypeService').getTypeCollectionList(); 
 			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
 			typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
+			typeCollection.addOrderBy('sortOrder'); 
 			variables.orderTemplateScheduleDateChangeReasonTypeOptions = typeCollection.getRecords(); 
 		}
 		return variables.orderTemplateScheduleDateChangeReasonTypeOptions;  
 	}
+
+	public any function getOrderTemplateCancellationReasonTypeOptions(){
+		if(!structKeyExists(variables, 'orderTemplateCancellationReasonTypeOptions')){
+			var typeCollection = getService('TypeService').getTypeCollectionList(); 
+			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.addFilter('parentType.systemCode','orderTemplateCancellationReasonType');
+			typeCollection.addOrderBy('sortOrder'); 
+			variables.orderTemplateCancellationReasonTypeOptions = typeCollection.getRecords(); 
+		} 
+		return variables.orderTemplateCancellationReasonTypeOptions;
+	} 
 
 	public string function getLastOrderPlacedDateTime(){
 		var orderCollectionList = getService('OrderService').getOrderCollectionList();

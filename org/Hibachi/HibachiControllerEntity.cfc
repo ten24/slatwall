@@ -429,7 +429,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		rc.edit = true;
 
 		// Set the page title to the correct rbKey
-		rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#", rc.processObject );
+		if(structKeyExists(arguments.rc, 'processObject')){
+			arguments.rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#", arguments.rc.processObject );
+		} else {
+			arguments.rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#");
+		}
 
 		// Set the view correctly to use the context specific preProcess view
 		getFW().setView("#lcase(arguments.rc.entityActionDetails.subsystemName)#:#lcase(arguments.rc.entityActionDetails.sectionName)#.#lcase(arguments.rc.entityActionDetails.itemName)#_#lcase(arguments.rc.processContext)#");

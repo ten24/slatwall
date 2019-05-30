@@ -3,7 +3,7 @@
     
     <span ng-bind="swOrderTemplateUpcomingOrdersCard.startDateFormatted"></span>
 
-    <sw-modal-launcher ng-if="swOrderTemplateUpcomingOrdersCard.startDate != null && swOrderTemplateUpcomingOrdersCard.frequencyTerm != null"
+    <sw-modal-launcher ng-if="swOrderTemplateUpcomingOrdersCard.includeModal && swOrderTemplateUpcomingOrdersCard.startDate != null && swOrderTemplateUpcomingOrdersCard.frequencyTerm != null"
                        data-modal-name="viewUpcomingScheduledOrders" 
                        data-title="{{swOrderTemplateUpcomingOrdersCard.title}}"> 
     

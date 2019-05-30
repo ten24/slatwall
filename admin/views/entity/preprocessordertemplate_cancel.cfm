@@ -46,39 +46,24 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.type" type="any">
-<cfparam name="rc.parentType.typeID" type="string" default="">
-<cfparam name="rc.edit" type="boolean">
 
-<cfif !isNull(rc.type.getParentType())>
-	<cfset local.parentType = rc.type.getParentType() />
-	<cfset rc.parentType.typeID = rc.type.getParentType().getTypeID() />
-<cfelseif isNull(rc.type.getParentType()) && len(rc.parentType.typeID)>
-	<cfset local.parentType = $.slatwall.getEntity('Type', rc.parentType.typeID) />
-<cfelse>
-	<cfset local.parentType = javaCast('null', '') />	
-</cfif>
+<cfparam name="rc.orderTemplate" type="any" />
 
 <cfoutput>
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			
-			<cfif rc.edit>
-				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
-			</cfif>
-			
-			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeDescription" edit="#rc.edit#">
-
-			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
-				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#">
-			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
-				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
-			</cfif>
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
+	<hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailordertemplate">
+		
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateCancellationReasonType" fieldType="radioGroup" edit="#rc.edit#"/>
+				
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

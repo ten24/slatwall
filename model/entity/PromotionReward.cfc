@@ -197,7 +197,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
 				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
-				variables.includedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 			variables.includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
 			variables.includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
@@ -218,6 +217,15 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			}
 		}
 		return variables.excludedSkusCollection;
+	}
+	
+	public void function saveIncludedSkusCollection(){
+		var collectionConfig = serializeJSON(getIncludedSkusCollection().getCollectionConfigStruct());
+		setIncludedSkusCollectionConfig(collectionConfig);
+	}
+	public void function saveExcludedSkusCollection(){
+		var collectionConfig = serializeJSON(getExcludedSkusCollection().getCollectionConfigStruct());
+		setExcludedSkusCollectionConfig(collectionConfig);
 	}
 	
 	public any function getSkuCollection(){
@@ -306,6 +314,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	
 	public boolean function hasSkuBySkuID(required any skuID){
 		var skuCollection = getSkuCollection();
+		if(isNull(skuCollection)){
+			return false;
+		}
 		skuCollection.addFilter('skuID',arguments.skuID,'=');
 		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
 		skuCollection.removeFilter('skuID',arguments.skuID);
