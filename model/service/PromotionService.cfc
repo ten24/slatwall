@@ -1103,11 +1103,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
-			// if(qualificationDetails.qualificationsMeet){
+			if(qualificationDetails.qualificationsMeet){
 				arrayAppend(qualifiedPromotionRewards,promoReward);
-			// }
+			}
 		}
 		return qualifiedPromotionRewards;
+	}
+	
+	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+		var rewardSkus = [];
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			var skuCollection = promotionReward.getSkuCollection();
+			if(!isNull(skuCollection)){
+				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
+				var promoRewardStruct = {
+					promotionRewardID=promotionReward.getPromotionRewardID(),
+					amountType=promotionReward.getAmountType(),
+					amount=promotionReward.getAmount()
+				};
+				for(var sku in skus){
+					sku.promotionReward = promoRewardStruct;
+				}
+				arrayAppend(rewardSkus,skus,true);
+			}
+		}
+		return rewardSkus;
 	}
 
 	// ===================== START: Logical Methods ===========================

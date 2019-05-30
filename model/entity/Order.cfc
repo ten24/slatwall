@@ -1302,6 +1302,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			return getService('PromotionService').getQualifiedPromotionRewardsForOrder( this );
 		}
 	}
+	
+	public array function getQualifiedPromotionRewardSkus( numeric pageRecordsShow=25, boolean refresh=false ){
+		if( !structKeyExists(variables,'qualifiedRewardSkus') || arguments.refresh ){
+			
+			variables.qualifiedRewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder( order=this, pageRecordsShow=arguments.pageRecordsShow );
+		}
+		return variables.qualifiedRewardSkus;
+	}
 
 
 	// ============  END:  Non-Persistent Property Methods =================
