@@ -72,7 +72,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<cfset rc.productTypeCollectionList.addFilter('parentProductType','null','is')/>
+	<cfset rc.productTypeCollectionList.addFilter(propertyIdentifier='parentProductType', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.productTypeCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
 		isSearchable="true",
 		isVisible="true",

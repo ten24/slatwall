@@ -805,8 +805,8 @@ class CollectionConfig {
         this.orderBy = [];
     }
 
-    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true):void=>{
-        if(!this.orderBy){
+    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true, singleColumn:boolean = false ):void=>{
+        if(!this.orderBy || singleColumn){
             this.orderBy = [];
         }
 
@@ -824,11 +824,18 @@ class CollectionConfig {
         this.orderBy.push(orderBy);
     };
 
-    public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
+    public toggleOrderBy = (propertyIdentifier:string, singleColumn:boolean = false, formatPropertyIdentifier:boolean = false) => {
 
         if(!this.orderBy){
             this.orderBy = [];
         }
+        
+        let formattedPropertyIdentifier = propertyIdentifier;
+        if(formatPropertyIdentifier){
+            formattedPropertyIdentifier = this.formatPropertyIdentifier(propertyIdentifier);
+        }
+        
+        
         var found = false;
         for(var i = this.orderBy.length - 1; i >= 0; i--){
             if(this.orderBy[i].propertyIdentifier == formattedPropertyIdentifier){

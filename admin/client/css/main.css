@@ -3758,10 +3758,10 @@ table .s-table-header .table-section a.s-hint {
   position: absolute;
   right: 4px;
   top: 4px;
-  z-index: 2;
+  z-index: 222;
 }
-#customListingControls input.form-control.s-search { 
-  margin-top: 5px; 
+#customListingControls input.form-control.s-search {
+  margin-top: 5px;
 }
 .dropdown.s-search-results-wrapper .input-group-btn {
   vertical-align: top;
@@ -5954,12 +5954,11 @@ a.disabled > i.hibachi-ui-radio-checked {
   border: 1px solid #DDDDDD;
   color: #5E5E5E;
 }
-
 #reporting-top #subreport .flex .col.larger {
   margin-right: 20px;
   margin-top: 22px;
 }
-#reporting-top #subreport .content-right>.col {
+#reporting-top #subreport .content-right > .col {
   margin-left: 10px;
 }
 #reporting-top #subreport .btn-secondary {
@@ -5986,7 +5985,6 @@ a.disabled > i.hibachi-ui-radio-checked {
 #reporting-top #subreport .report-select {
   margin-top: 20px;
 }
-
 #get-started-report {
   background: #fff;
 }
@@ -7732,7 +7730,7 @@ table tr td .s-loading-icon {
 .s-detail-content-table tbody tr td {
   position: relative;
   font-weight: 500;
-  border: 1px solid #ddd!important;
+  border: 1px solid #ddd !important;
 }
 .s-detail-content-table tbody tr td .form-group {
   margin-bottom: 0px;

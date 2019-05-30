@@ -584,9 +584,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	    string aggregate="",
 	    string filterGroupAlias="",
  		string filterGroupLogicalOperator="AND",
- 		boolean hidden=true
+ 		boolean hidden=true,
+ 		boolean ignoredWhenSearch=false
 	){
-
+		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
 
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -608,7 +609,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
-			"hidden"=arguments.hidden
+			"hidden"=arguments.hidden,
+			"ignoredWhenSearch"= arguments.ignoredWhenSearch
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
@@ -1179,6 +1181,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var aggregateFilterHQL = '';
 		for(var filter in aggregateFilters){
+			var propertyIdentifierAlias = getPropertyIdentifierAlias(filter.propertyIdentifier,'aggregateFilter'); ///XXX workaround for joins
 			var logicalOperator = '';
 			if(structKeyExists(filter,"logicalOperator") && len(aggregateFilterHQL) > 0){
 				logicalOperator = filter.logicalOperator;
@@ -1545,6 +1548,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//decrement looping to remove invalid filters in order to identify the which one is first
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
+			
+			if( structKeyExists(filter, 'ignoredWhenSearch') && !isNull(getKeywords()) && len(getKeywords())  && filter.ignoredWhenSearch){ //XXX not considering this filter when ignoredWhenSearch is set 
+				arrayDeleteAt(reverseFilterGroup,i);
+				continue;
+			}
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -1595,6 +1603,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 			}
+			
 		}
 		return filterGroupHQL;
 	}
@@ -1621,6 +1630,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroups);
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filterGroup = reverseFilterGroup[i];
+			
 			var logicalOperator = '';
 			if(i != arraylen(reverseFilterGroup)){
 				if(structKeyExists(filterGroup,'logicalOperator') && len(filterGroup.logicalOperator)){
@@ -2532,11 +2542,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!this.getNewFlag()){
 				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
 				reportCacheKey &= getIgnorePeriodInterval();
-			}
-			
+				
 			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
 				return getService('HibachiCacheService').getCachedValue(reportCacheKey);
+				}
 			}
+			
+		
 			
 			arguments.formatRecords=false;
 		}
@@ -3359,7 +3371,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							//if propertyIdentifier is object vs primitive then restrict page count
 							
 							
-							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))){
+							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier)) && !structKeyExists(column,'aggregate')){
 								restrictPageRecords();
 							}
 							//check if we have an aggregate
