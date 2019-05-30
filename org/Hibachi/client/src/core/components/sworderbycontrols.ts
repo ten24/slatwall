@@ -60,7 +60,7 @@ class SWOrderByControlsController {
                 this.disabled = false;
                 if(propertyIdentifier != null){
                     if(angular.isDefined(this.collectionConfig)){
-                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
+                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true,true);//single column mode true, format propIdentifier true
                     }
                     if(this.inListingDisplay){
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "ASC");
@@ -73,7 +73,7 @@ class SWOrderByControlsController {
 
                 if(propertyIdentifier != null){
                     if(angular.isDefined(this.collectionConfig)){
-                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
+                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true, true);//single column mode true, format propIdentifier true
                     }
                     if(this.inListingDisplay){
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "DESC");
