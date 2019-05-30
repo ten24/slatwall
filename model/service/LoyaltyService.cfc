@@ -86,6 +86,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.loyaltyRedemption;	
 	}
 	
+	public array function getPointTypeOptions() {
+		return [
+			{name=rbKey('define.select'), value=""},
+			{name=rbKey('entity.loyaltyAccruement.pointType.fixed'), value="fixed"},
+			{name=rbKey('entity.loyaltyAccruement.pointType.pointsPerCurrencyUnit'), value="pointsPerCurrencyUnit"}
+		];
+	}
+	
+	public array function getAccruementEventOptions() {
+		return [
+			{name=rbKey('define.select'), value=""},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.itemFulfilled'), value="itemFulfilled"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.orderClosed'), value="orderClosed"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.fulfillmentMethodUsed'), value="fulfillmentMethodUsed"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.enrollment'), value="enrollment"}
+		];
+	}
+	
+	public array function getAccruementTypeOptions() {
+		return [
+			{name=rbKey('define.select'), value=""},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.points'), value="points"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.giftCard'), value="giftCard"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.promotion'), value="promotion"},
+		];
+	}
+	
+	public array function getRedemptionTypeOptions() {
+		return [
+			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.productPurchase'), value="productPurchase"},
+			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.cashCouponCreation'), value="cashCouponCreation"},
+			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.priceGroupAssignment'), value="priceGroupAssignment"}
+		];
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================

@@ -59,13 +59,14 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="startDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="endDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="expirationTerm.termName" />
+		<hb:HibachiListingColumn propertyIdentifier="accruementEvent" />
 		<hb:HibachiListingColumn propertyIdentifier="accruementType" />
 		<hb:HibachiListingColumn propertyIdentifier="pointType" />
 		<hb:HibachiListingColumn propertyIdentifier="pointQuantity" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiActionCaller action="admin:entity.createloyaltyaccruement" class="btn btn-default" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyAccruement" modal="true"  />
+	<hb:HibachiActionCaller action="admin:entity.createloyaltyaccruement" class="btn btn-default" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyAccruement" modal="false"  />
 
 </cfoutput>
 

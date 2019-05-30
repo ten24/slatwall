@@ -42,6 +42,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	property name="loyaltyAccruementID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="startDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
 	property name="endDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
+	property name="accruementEvent" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="accruementType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="pointType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="pointQuantity" ormType="integer";
@@ -54,7 +55,8 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	// Related Object Properties (one-to-many)
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";
-	
+	property name="accruementCurrencies" singularname="accrumentCurrency" cfc="AccruementCurrency" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";
+
 	// Related Object Properties (many-to-many - owner)
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwLoyaltyAccruBrand" fkcolumn="loyaltyAccruementID" inversejoincolumn="brandID";
 	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyAccruSku" fkcolumn="loyaltyAccruementID" inversejoincolumn="skuID";
@@ -83,21 +85,16 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
-	
 	public array function getAccruementTypeOptions() {
-		return [
-			{name=rbKey('entity.loyaltyAccruement.accruementType.itemFulfilled'), value="itemFulfilled"},
-			{name=rbKey('entity.loyaltyAccruement.accruementType.orderClosed'), value="orderClosed"},
-			{name=rbKey('entity.loyaltyAccruement.accruementType.fulfillmentMethodUsed'), value="fulfillmentMethodUsed"},
-			{name=rbKey('entity.loyaltyAccruement.accruementType.enrollment'), value="enrollment"}
-		];
+		return this.getService("LoyaltyService").getAccruementTypeOptions();
+	}
+	
+	public array function getAccruementEventOptions() {
+		return this.getService("LoyaltyService").getAccruementEventOptions();
 	}
 	
 	public array function getPointTypeOptions() {
-		return [
-			{name=rbKey('entity.loyaltyAccruement.pointType.fixed'), value="fixed"},
-			{name=rbKey('entity.loyaltyAccruement.pointType.pointPerDollar'), value="pointPerDollar"}
-		];
+		return this.getService("LoyaltyService").getPointTypeOptions();
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

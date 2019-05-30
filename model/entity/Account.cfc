@@ -156,15 +156,26 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 			//CUSTOM PROPERTIES BEGIN
-	
- property name="HyperWalletAcct" ormtype="string";
+
+ property name="hyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
+ property name="userName" ormtype="string";
+ property name="subscriptionType" ormtype="string" hb_formFieldType="select";
+ property name="renewalDate" ormtype="timestamp" hb_formatType="date";
+ property name="ssn" ormtype="string";
+ property name="sin" ormtype="string";
+ property name="spouseName" ormtype="string";
+ property name="driverLicense" ormtype="string";
+ property name="spouseDriverLicense" ormtype="string";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="governmentIDNumber" ormtype="string";
+ property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
  property name="isFlagged" ormtype="boolean";
- property name="dob" ormtype="string";	//CUSTOM PROPERTIES END
+ property name="dob" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
