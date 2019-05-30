@@ -7,7 +7,6 @@
 <cfoutput> 
     <cfset slatAction = 'report.deferredRevenueReport'/>
     
-    
     <cfset newOrderCollectionList = $.slatwall.getService('HibachiService').getOrderCollectionList()/>
     <cfset newOrderCollectionList.setDisplayProperties('orderOpenDateTime',{isPeriod=true})/>
     <cfset newOrderCollectionList.addDisplayAggregate('calculatedTotal','SUM','newOrdersTotal',false,{isMetric=true})/>
@@ -16,6 +15,17 @@
     <cfset newOrderCollectionList.addFilter('orderOpenDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
     <cfset newOrderCollectionList.addFilter('orderOpenDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
     
+    
+    <cfset cancelledOrdersCollectionList = $.slatwall.getService('HibachiService').getSubscriptionUsageCollectionList()/>
+    <cfset cancelledOrdersCollectionList.setDisplayProperties('modifiedDateTime',{isPeriod=true})/>
+    <cfset cancelledOrdersCollectionList.addDisplayAggregate('subscriptionOrderItems.subscriptionOrderDeliveryItems.earned','SUM','earnedTotal',false,{isMetric=true})/>
+    <cfset cancelledOrdersCollectionList.addDisplayAggregate('subscriptionOrderItems.subscriptionOrderDeliveryItems.taxAmount','SUM','taxTotal',false,{isMetric=true})/>
+    <cfset cancelledOrdersCollectionList.addDisplayAggregate('subscriptionOrderItems.orderItem.calculatedItemTotal','SUM','orderItemTotal',false,{isMetric=true})/>
+    <cfset cancelledOrdersCollectionList.setReportFlag(1)/>
+    <cfset cancelledOrdersCollectionList.setPeriodInterval('Month')/>
+    <cfset cancelledOrdersCollectionList.addFilter('modifiedDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
+    <cfset cancelledOrdersCollectionList.addFilter('modifiedDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
+    <cfset cancelledOrdersCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstCancelled')/>
     
     <!--gets deferred revenue-->
     
@@ -37,7 +47,16 @@
         <cfset index = DateDiff('m',rc.minDate,dataRecord['orderOpenDateTime'])+1/>
         <cfset newOrders[index] = dataRecord['newOrdersTotal']/>
     </cfloop>
-	
+    
+    <cfset cancelledOrders = []/>
+    <cfloop from="1" to="#to-currentMonth+1#" index="i">
+        <cfset cancelledOrders[i] = 0/>
+    </cfloop>
+    
+    <cfloop array="#cancelledOrdersCollectionList.getRecords()#" index="dataRecord">
+        <cfset index = DateDiff('m',rc.minDate,dataRecord['modifiedDateTime'])+1/>
+        <cfset cancelledOrders[index] = dataRecord['orderItemTotal'] - (dataRecord['earnedTotal']+dataRecord['taxTotal'])/>
+    </cfloop>
 	
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
@@ -65,15 +84,15 @@
             	<cfset currentYear = Year(rc.minDate)/>
                 <td>Opening Deferred Revenue Balance</td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-                    <cfset possibleMonth = possibleMonths[i%12+1]/>
+                    <cfset currentIndex=i%12+1/>
+                    <cfset possibleMonth = possibleMonths[currentIndex]/>
                     <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#</td>
+                    <td>#currentIndex##$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#</td>
                 </cfloop>
             </tr>
-            
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
@@ -93,21 +112,14 @@
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
                 <td>Cancellations</td>
-                <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+                <cfloop array="#cancelledOrders#" index="cancelledOrder">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <td>
-                        <cfif
-                            
-                            createDateTime(Year(now()),Month(now()),daysInMonth(now()),23,59,59) lte createDateTime(currentYear,i%12+1,daysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59)
-                        >
-                            #$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenue,'currency')#
-                        <cfelse>
-                            - 
-                        </cfif>
+                        #$.slatwall.getService('HibachiUtilityService').formatValue(cancelledOrder,'currency')#
                     </td>
                 </cfloop>
             </tr>
