@@ -415,7 +415,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
-				// Loop over all Potential Discounts that require qualifications or use a Sku collection
+				// Loop over all Potential Discounts that require qualifications
 				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 				var orderRewards = false;
 	
@@ -1090,6 +1090,46 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		return canPlaceOrder;
+	}
+	
+	public array function getQualifiedPromotionRewardsForOrder( required any order ){
+		var qualifiedPromotionRewards = [];
+		var promotionEffectiveDateTime = now();
+		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
+			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
+		}
+		// Loop over all Potential Discounts that require qualifications
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
+		for(var promoReward in promotionRewards){
+			var promoPeriod = promoReward.getPromotionPeriod();
+			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
+			if(qualificationDetails.qualificationsMeet){
+				arrayAppend(qualifiedPromotionRewards,promoReward);
+			}
+		}
+		return qualifiedPromotionRewards;
+	}
+	
+	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+		var rewardSkus = [];
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			var skuCollection = promotionReward.getSkuCollection();
+			if(!isNull(skuCollection)){
+				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
+				var promoRewardStruct = {
+					promotionRewardID=promotionReward.getPromotionRewardID(),
+					amountType=promotionReward.getAmountType(),
+					amount=promotionReward.getAmount()
+				};
+				for(var sku in skus){
+					sku.promotionReward = promoRewardStruct;
+				}
+				arrayAppend(rewardSkus,skus,true);
+			}
+		}
+		return rewardSkus;
 	}
 
 	// ===================== START: Logical Methods ===========================
