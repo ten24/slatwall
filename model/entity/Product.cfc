@@ -153,8 +153,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
 		//CUSTOM PROPERTIES BEGIN
-		
-		//CUSTOM PROPERTIES END
+
+ property name="flyType" ormtype="string" hb_formFieldType="select";
+ property name="exampleSelect" ormtype="string" hb_formFieldType="select";
+ property name="extensionColor" ormtype="string" hb_formFieldType="select";
+ property name="pantsStyle" ormtype="string" hb_formFieldType="select";
+ property name="chipset" ormtype="string";//CUSTOM PROPERTIES END
 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
