@@ -37,7 +37,7 @@ class SWSkuPriceModalController extends SkuPriceModalController{
                 this.skuPrice.personalVolume = this.pageRecord.personalVolume;
                 this.skuPrice.taxableAmount = this.pageRecord.taxableAmount;
                 this.skuPrice.commissionableVolume = this.pageRecord.commissionableVolume;
-                this.skuPrice.sponsorVolume = this.pageRecord.sponsorVolume;
+                this.skuPrice.retailCommission = this.pageRecord.retailCommission;
                 this.skuPrice.productPackVolume = this.pageRecord.productPackVolume;
                 this.skuPrice.retailValueVolume = this.pageRecord.retailValueVolume;
                 this.skuPrice.handlingFee = this.pageRecord.handlingFee;
