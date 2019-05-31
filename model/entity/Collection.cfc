@@ -3547,6 +3547,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 	
+	public boolean function hasOrderBy(required string propertyIdentifier){
+		if(!structKeyExists(getCollectionConfigStruct(),'orderBys')){
+			return false;
+		}
+		for(var orderBy in getCollectionConfigStruct()['orderBys']){
+			if(arguments.propertyIdentifier == orderBy.propertyIdentifier){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean function hasGroupBys(){
 		getGroupBys();
 		if (
@@ -3654,7 +3666,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						){
 							variables.groupBys ="";
 							return;
-						}else if(Find(column.propertyIdentifier,getOrderByHQL())){
+						}else if(hasOrderBy(column.propertyIdentifier)){
 							
 							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
 							
