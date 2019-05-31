@@ -74,7 +74,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			usernameLive = {fieldType="text"},
 			usernameTest = {fieldType="text"},
 			verifyAvsSetting = {fieldType="select", defaultValue="3",
-				valueOptions=[
+			valueOptions=[
 				{name="Do not perform AVS check", value="0"},
 				{name="Always save card regardless of result", value="1"},
 				{name="Do not save card if the address match fails", value="2"},
@@ -93,6 +93,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	}
 
 	public string function getAllowedSiteSettingNames() {
-		return "merchantIDTest,merchantIDLive";
+		return "merchantIDTest,merchantIDLive,testMode";
 	}
 }
