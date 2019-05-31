@@ -100,7 +100,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 			
 			// Setup Default Data from custom folder... Not called on soft reloads.
-			customdbPath = ExpandPath("/custom/dbdata");
+			var customdbPath = ExpandPath("/custom/dbdata");
 			if ( !directoryExists(customdbPath) )
 			{
 				writeLog(file="Slatwall", text="General Log - custom/dbdata is not found.");
