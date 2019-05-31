@@ -130,7 +130,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
  
- 	public boolean function getQuantityHasChanged(){
+	//CUSTOM PROPERTIES BEGIN
+	property name="personalVolume" ormtype="big_decimal";
+    property name="taxableAmount" ormtype="big_decimal";
+    property name="commissionableVolume" ormtype="big_decimal";
+    property name="sponsorVolume" ormtype="big_decimal";
+    property name="productPackVolume" ormtype="big_decimal";
+    property name="retailValueVolume" ormtype="big_decimal";	//CUSTOM PROPERTIES END
+	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
 	
