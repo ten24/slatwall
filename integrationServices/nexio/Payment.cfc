@@ -173,7 +173,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				        }
 					},
 					'processingOptions' = {
-						'checkFraud' = true,
+						'checkFraud' = setting(settingName='checkFraud', requestBean=arguments.requestBean),
 						'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
 						'verifyAvs' = setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
 						'verboseResponse' = true
@@ -256,7 +256,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				      "amount": arguments.requestBean.getTransactionAmount()
 				    },
 				    "processingOptions":{
-					    "checkFraud": true,
+					    "checkFraud": setting(settingName='checkFraud', requestBean=arguments.requestBean),
 					    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
 					    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
 					    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
@@ -301,7 +301,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				      "amount": arguments.requestBean.getTransactionAmount()
 				    },
 				    "processingOptions":{
-					    "checkFraud": true,
+					    "checkFraud": setting(settingName='checkFraud', requestBean=arguments.requestBean),
 					    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
 					    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
 					    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)

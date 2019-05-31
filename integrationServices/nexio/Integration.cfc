@@ -64,6 +64,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		var settings = {
 			apiUrlLive = {fieldType="text", defaultValue="https://api.nexiopay.com"},
 			apiUrlTest = {fieldType="text", defaultValue="https://api.nexiopaysandbox.com"},
+			checkFraud = {fieldType="yesno", defaultValue="1"},
 			merchantIDLive = {fieldType="text"},
 			merchantIDTest = {fieldType="text"},
 			passwordLive = {fieldType="password", encryptValue=true},
