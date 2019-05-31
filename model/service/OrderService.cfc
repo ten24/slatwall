@@ -103,6 +103,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				break;
 			}
 		}
+		
+		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
+		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
+			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
+		}
 
 		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
 			//If is allowed to place order without payment and there is no payment, skip payment order
@@ -132,6 +137,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderRequirementsList = listAppend(orderRequirementsList, "payment");
 			}
 		}
+		
 		return orderRequirementsList;
 	}
 	
@@ -2029,14 +2035,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addError('return',rbKey('entity.order.process.placeOrder.returnRequirementError'));
 							}
 							if(listFindNoCase(orderRequirementsList, "payment")) {
-
 								arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
-
 							}
-
-
+							if(listFindNoCase(orderRequirementsList, "canPlaceOrderReward")){
+								arguments.order.addError('canPlaceOrderReward',rbKey('entity.order.process.placeOrder.canPlaceOrderRewardRequirementError'));
+							}
 						} else {
-
+							
 							// Setup a value to log the amount received, credited or authorized.  If any of these exists then we need to place the order
 							var amountAuthorizeCreditReceive = 0;
 
@@ -2175,8 +2180,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}	// END OF LOCK
-
-
 
 		return arguments.order;
 	}

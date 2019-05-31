@@ -314,6 +314,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	
 	public boolean function hasSkuBySkuID(required any skuID){
 		var skuCollection = getSkuCollection();
+		if(isNull(skuCollection)){
+			return false;
+		}
 		skuCollection.addFilter('skuID',arguments.skuID,'=');
 		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
 		skuCollection.removeFilter('skuID',arguments.skuID);

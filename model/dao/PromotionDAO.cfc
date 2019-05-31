@@ -129,7 +129,7 @@ Notes:
 			activeFlag = 1
 		} />
 
-		<cfif arguments.qualificationRequired and len(noQualRequiredList)>
+		<cfif (arguments.qualificationRequired OR arguments.excludeRewardsWithQualifiers) AND len(noQualRequiredList)>
 			<cfset params.noQualRequiredList = listToArray(noQualRequiredList) />
 		</cfif>
 

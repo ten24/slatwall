@@ -117,6 +117,7 @@ class CollectionConfig {
         private currentPage:number = 1,
         private pageShow:number = 10,
         private keywords:string = '',
+        private customEndpoint:string = '',
         private allRecords:boolean = false,
         private dirtyRead:boolean = false,
         private isDistinct:boolean = false
@@ -292,7 +293,8 @@ class CollectionConfig {
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
             isReport:this.isReport(),
-            periodInterval:this.periodInterval
+            periodInterval:this.periodInterval,
+            customEndpoint:this.customEndpoint
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
@@ -930,6 +932,10 @@ class CollectionConfig {
     public getPageShow=():number=>{
         return this.pageShow;
     };
+    
+    public getCustomEndpoint=():string=>{
+        return this.customEndpoint;
+    };
 
     public setAllRecords= (allFlag:boolean=false):CollectionConfig =>{
         this.allRecords = allFlag;
@@ -948,6 +954,11 @@ class CollectionConfig {
 
     public setKeywords= (keyword) =>{
         this.keywords = keyword;
+        return this;
+    };
+    
+    public setCustomEndpoint= (endPoint:string) =>{
+        this.customEndpoint = endPoint;
         return this;
     };
 

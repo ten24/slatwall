@@ -1,11 +1,14 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var swPricingManagerHTML = require("html-loader!sku/components/pricingmanager");
+
 class SWPricingManagerController{
     
     public productId;
     public product; 
     public productCollectionConfig;
     public trackInventory; 
+    public skuPriceCollectionConfig;
     
     //temporary var
     public singleEditTest; 
@@ -13,7 +16,7 @@ class SWPricingManagerController{
     
     //@ngInject
     constructor(
-        private collectionConfigService
+        public collectionConfigService
     ){
         this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product"); 
         this.productCollectionConfig.addFilter("productID", this.productId, "=",'AND',true);
@@ -26,12 +29,22 @@ class SWPricingManagerController{
 
             }
         );
-    }    
-
+        
+        this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,priceGroup.priceGroupCode,currencyCode");
+        this.skuPriceCollectionConfig.addDisplayProperty("price", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("minQuantity", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", {isVisible:false,isSearchable:false});
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", {isVisible:false,isSearchable:false});
+        this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", {isVisible:false,isSearchable:false});
+        this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
+        this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
+    }
 }
 
 class SWPricingManager implements ng.IDirective{
-    public templateUrl;
+    public template;
     public restrict = 'EA';
     public priority = 1000;
     public scope = {}; 
@@ -62,11 +75,11 @@ class SWPricingManager implements ng.IDirective{
     
     // @ngInject
     constructor(
-        private $hibachi, 
-		private skuPartialsPath,
-	    private slatwallPathBuilder
+        public $hibachi, 
+		public skuPartialsPath,
+	    public slatwallPathBuilder
     ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"pricingmanager.html";
+        this.template = swPricingManagerHTML;
     }
     
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
