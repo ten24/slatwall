@@ -211,10 +211,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						arguments.responseBean.setProviderToken(responseData.token.token);
 						arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
 						arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
-						// arguments.responseBean.setSecurityCodeMatchFlag(responseData.cvcResults.matchCvv);
-						// arguments.responseBean.setAmountReceived();
-						// arguments.responseBean.setAmountCredited();
-						
+
 						arguments.responseBean.addMessage(messageName="nexio.merchantID", message="#responseData.merchantID#");
 						arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
 						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
@@ -223,7 +220,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					
 					// writeDump(var="*** responseData.token.token");
 					// writeDump(var=responseData.token.token);
-						
 					}
 				}
 			} else {
@@ -233,7 +229,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				// arguments.responseBean.setProviderToken(responseData.token.token);
 				arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
 				arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
-				// arguments.responseBean.setSecurityCodeMatchFlag(responseData.cvcResults.matchCvv);
 			}
 		}
 		
@@ -330,11 +325,25 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		private void function sendRequestToChargePreAuthorization(required any requestBean, required any responseBean) {
 			if (!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()) && len(arguments.requestBean.getOriginalAuthorizationProviderTransactionID())) {
 				// Request Data
-				// arguments.requestBean.getOriginalAuthorizationProviderTransactionID();
+				// var requestData = {
+				// 	'data': {
+				// 		'amount': arguments.requestBean.getTransactionAmount(),
+			 //   	},
+			 //   	'id': arguments.requestBean.getOriginalAuthorizationProviderTransactionID()
+				// }
+				
+				// writeDump(var="*** requestData");
+				// writeDump(var=requestData);
+				
+				// responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'chargePreAuthorization', requestData);
+				
+				// writeDump(var="*** responseData")
+				// writeDump(var=responseData, abort=true);
 				
 				// Response Data
-				// arguments.responseBean.setProviderTransactionID();
-				// arguments.responseBean.setAmountReceived();
+				// arguments.responseBean.setProviderTransactionID(responseData.id);
+				// arguments.responseBean.setAmountReceived(responseData.amount);
+			
 			} else {
 				throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be the authorization code to reference for the charge/capture.");
 			}
