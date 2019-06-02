@@ -60,6 +60,7 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="productReviewsStatus" cfc="Type" fieldtype="many-to-one" fkcolumn="productReviewsStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=productReviewsStatusType&orderBy=sortOrder";
 	
 	// Related Object Properties (one-to-many)
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
@@ -75,7 +76,8 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	
 	// Non-Persistent Properties
 	property name="ratingOptions" type="array" persistent="false";
-
+	property name="productReviewProductName" persistent="false" type="string";
+	
 	public any function init() {
 		setActiveFlag(0);
 
@@ -210,9 +212,16 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 
 		// This bit of logic sets a product review as whatever the current account is (We might want to move this to the service)
 		if( isNull(getAccount()) && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ) {
-			setAccount(getAccount().getAccount());
+			setAccount(getHibachiScope().getAccount());
 		}
 	}
+	
+	public string function getProductReviewProductName()
+	{
+		return getProduct().getProductName();
+
+	}
+
 
 	// ===================  END:  ORM Event Hooks  =========================
 
