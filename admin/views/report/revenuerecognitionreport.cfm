@@ -96,7 +96,13 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <td>Opening Deferred Revenue Balance</td>
+                <td>Opening Deferred Revenue Balance 
+                    <cfset tooltip = "Deferred revenue still to be earned at the beginning of the month.
+                    Formula: For each Order Item (Price Per Delivery + Tax Per Delivery)*Scheduled Deliveries Per Month. 
+                    Scheduled Deliveries are based on the Product Schedule where the delivery date is less than the expiration. 
+                    Price per Delivery is based on (Order item cost / subscription benefit items to deliver). "/>
+                    <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span>
+                </td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset currentIndex=i%12+1/>
                     <cfset possibleMonth = possibleMonths[currentIndex]/>
@@ -110,7 +116,8 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <td>New Orders</td>
+            	<cfset tooltip = "total revenue (net of taxes) for new orders processed this month, all of which is credited to deferred revenue. Total value of orders for the month"/>
+                <td >New Orders <span sw-tooltip class="j-tool-tip-item" data-text="test" data-position="right"><i class="fa fa-question-circle"></i></span></td>
                 <cfloop array="#newOrders#" index="newOrder">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
@@ -125,7 +132,8 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <td>Cancellations</td>
+            	<cfset tooltip = "how much revenue was removed from earnings due to pro-rate. Formula: (OrderItems Expected Revenue - EarnedRevenue)"/>
+                <td>Cancellations <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
                 <cfloop array="#cancelledOrders#" index="cancelledOrder">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
@@ -141,7 +149,8 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <td>Earned Revenue Balance</td>
+            	<cfset tooltip = "How much money was earned on the deferred revenue. Formula: (SUM of Subscription Order Delivery Items * (Price Per Delivery + Tax Per Delivery)). Price per Delivery is based on (Order item cost / subscription benefit items to deliver)."/>
+                <td>Earned Revenue Balance <span sw-tooltip class="j-tool-tip-item" data-text="test" data-position="right"><i class="fa fa-question-circle"></i></span></td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
@@ -164,7 +173,11 @@
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
-                <td>Closing Deferred Revenue Balance</td>
+            	<cfset tooltip = "Deferred revenue still to be earned at the end of the month.
+                    Formula: For each Order Item (Price Per Delivery + Tax Per Delivery)*Scheduled Deliveries Per Month. 
+                    Scheduled Deliveries are based on the Product Schedule where the delivery date is less than the expiration. 
+                    Price per Delivery is based on (Order item cost / subscription benefit items to deliver). "/>
+                <td>Closing Deferred Revenue Balance <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
                     <cfif i%12 eq 0 and i neq 0>
