@@ -90,6 +90,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		
  		var orderFulfillmentList ="";
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
+ 			
+ 			if( !orderFulfillment.isProcessable( context="placeOrder" ) || orderFulfillment.hasErrors() ){
+ 				continue;
+ 			}
+ 			
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
  				if(!isNull(orderFulfillment.getSelectedShippingMethodOption())){
@@ -104,7 +109,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
 		
-		if(isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey ){
+		if ( (isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey)
+			&& (len(orderFulfillmentList) || len(taxAddressList))
+		){
+
 			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
 	
 			//Remove existing taxes from OrderItems and OrderFulfillments
