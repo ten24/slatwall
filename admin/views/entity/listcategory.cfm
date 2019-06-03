@@ -67,20 +67,20 @@ Notes:
 
     <cfset rc.categoryCollectionList.addFilter(propertyIdentifier='parentCategory', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.categoryCollectionList.setDisplayProperties(displayPropertiesList='restrictAccessFlag,allowProductAssignmentFlag',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true"
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true
 	})/>
 	<cfset rc.categoryCollectionList.addDisplayProperty(displayProperty='categoryName',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true",
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true,
 		tdclass="primary"
 	},prepend=true)/>
 	<cfset rc.categoryCollectionList.addDisplayProperty(displayProperty='categoryID',columnConfig={
-		isSearchable="false",
-		isVisible="false",
-		isDeletable="false"
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
 	})/>
 	<cfset rc.categoryCollectionList.addDisplayAggregate('childCategories','COUNT','childCategoriesCount')/>
 	

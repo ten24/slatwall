@@ -647,21 +647,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 
-	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
-
-
-		var collectionConfig = this.getCollectionConfigStruct();
-		collectionConfig["columns"] = [];
-		this.setCollectionConfigStruct(collectionConfig);
-
-
-		var displayProperties = listToArray(arguments.displayPropertiesList);
-		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
-		}
-
-	}
-
 	public void function addGroupBy(required string groupByAlias){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var groupBys = listToArray(arguments.groupByAlias);
@@ -684,15 +669,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 	
+	
+	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
-	//XXX only to be called after setDisplayProperties, to be used as an utility function
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig["columns"] = [];
+		this.setCollectionConfigStruct(collectionConfig);
+
+		addDisplayProperties(arguments.displayPropertiesList, arguments.columnConfig);
+	}
+
+
 	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
 		}
-
 	}
 
 
@@ -764,6 +757,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		arguments.column['isSearchable'] = false;
 		arguments.column['isExportable'] = false;
 		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
+			
 			arguments.column['isDeletable'] = arguments.columnConfig['isDeletable'];
 			
 			// if its ...ID and non-deletable prepend it for better UX			 //XXX using java String::EqualsIgnoreCase() 
@@ -771,6 +765,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				arguments.prepend = true;
 			}
 		}
+		
 		if(structKeyExists(arguments.columnConfig, 'isVisible')){
 			arguments.column['isVisible'] = arguments.columnConfig['isVisible'];
 		}
@@ -805,7 +800,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	//add display Aggregate
-	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}){
+	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}, string title){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = getBaseEntityAlias();
 		var join = {};
@@ -856,6 +851,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			join['aggregateColumn']=true;
 			doJoin = true;
+		}
+		
+		if(structKeyExists(arguments, 'title')){
+				column['title'] = arguments.title;
+		}else{
+			column['title'] = getCollectionEntityObject().getTitleByPropertyIdentifier(arguments.propertyIdentifier);
+			column["title"] &= " #arguments.aggregateFunction#"; 
 		}
 
 		//Add columns
