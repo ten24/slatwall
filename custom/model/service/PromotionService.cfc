@@ -24,8 +24,10 @@ component extends="Slatwall.model.service.PromotionService" {
 			            quantity=orderItem.getQuantity(),
 			            customPriceField=customPriceField
 			        };
-			        newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',getDiscountAmount(args));
+
+	        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=getDiscountAmount(argumentCollection=args)});
 			    }
+
 				//making sure calculated props run
 				getHibachiScope().addModifiedEntity(orderItem);
 			}
