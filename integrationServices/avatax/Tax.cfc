@@ -55,11 +55,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		var docType = 'SalesOrder';
 		var usageType = '';
 		var exemptionNo ='';
-		var commitDocFlag = false;
-		
-		if (arguments.requestBean.getOrder().getOrderStatusType().getSystemCode() == 'ostClosed'){
-			commitDocFlag = true;
-		}
 		
 		//If account is tax exempt, just set the exemption number to yes so that Avatax can flag them as tax exempt
 		//This will get overriden with an actual exemptionNo if one exists
@@ -99,20 +94,27 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		
 		if ( arguments.requestBean.getOrder().getOrderType().getSystemCode() == 'otReturnOrder' ){
 			docType = 'ReturnInvoice';
-		} else if ( !isNull(arguments.requestBean.getOrder().getOrderNumber()) && len(arguments.requestBean.getOrder().getOrderNumber()) ){
+		} else if ( setting('taxDocumentCommitType') == 'commitOnClose' && !isNull(arguments.requestBean.getOrder().getOrderNumber()) && len(arguments.requestBean.getOrder().getOrderNumber()) ){
 			docType = 'SalesInvoice';
+		}
+		
+		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
+			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
+			docType = 'SalesInvoice';
+		} else{
+			var docCode = arguments.requestBean.getOrder().getShortReferenceID( true )
 		}
 		
 		// Setup the request data structure
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
 			companyCode = setting('companyCode'),
-			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
+			DocCode = docCode,
 			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = docType,
 			CustomerUsageType= usageType,
 			ExemptionNo= exemptionNo,
-			commit=commitDocFlag,
+			commit=arguments.requestBean.getCommitTaxDocFlag(),
 			Addresses = [
 				{
 					AddressCode = 1,
@@ -278,10 +280,16 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 	}
 	
 	public any function voidTaxDocument(required any requestBean){
+		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
+			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
+		} else{
+			var docCode = arguments.requestBean.getOrder().getShortReferenceID( true )
+		}
+		
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
 			companyCode = setting('companyCode'),
-			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
+			DocCode = docCode,
 			CancelCode = 'DocDeleted',
 			DocType = 'SalesInvoice'
 		};

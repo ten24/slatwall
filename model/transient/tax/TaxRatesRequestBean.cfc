@@ -69,6 +69,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Reference Objects
 	property name="account" type="any";
 	property name="order" type="any";
+	property name="orderDelivery" type="any";
+
+	property name="commitTaxDocFlag" type="boolean" default="false";
 	
 	public any function init() {
 		// Set defaults
@@ -105,8 +108,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public void function addTaxRateItemRequestBean(required any referenceObject, required any taxCategoryRate, any taxAddress) {
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
 
-		// Check reference object type. Value should either be 'orderFulfillment' or 'orderItem'
-		if (!listFindNoCase('OrderItem,OrderFulfillment', arguments.referenceObject.getClassName())) {
+		// Check reference object type. Value should either be 'orderFulfillment' or 'orderItem' or 'OrderDeliveryItem'
+		if (!listFindNoCase('OrderItem,OrderFulfillment,OrderDeliveryItem', arguments.referenceObject.getClassName())) {
 			throw("#getClassName()# does not support objects of type '#arguments.referenceObject.getClassName()#' as the tax rate item's reference object.");
 		}
 
@@ -126,6 +129,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			taxRateItemRequestBean.populateWithOrderItem(arguments.referenceObject);
 		} else if (arguments.referenceObject.getClassName() == 'OrderFulfillment') {
 			taxRateItemRequestBean.populateWithOrderFulfillment(arguments.referenceObject);
+		} else if (arguments.referenceObject.getClassName() == 'OrderDeliveryItem' ){
+			taxRateItemRequestBean.populateWithOrderDeliveryItem(arguments.referenceObject);
 		}
 
 		if(!isNull(taxAddress)) {

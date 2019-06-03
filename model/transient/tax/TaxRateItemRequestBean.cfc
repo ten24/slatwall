@@ -79,6 +79,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="referenceObjectType" type="string" default=""; // value should either be 'orderFulfillment' or 'orderItem'
 	property name="orderFulfillment" type="any" default="";
 	property name="orderItem" type="any" default="";
+	property name="orderDeliveryItem" type="any" default="";
 	property name="taxAddress" type="any" default="";
 	property name="taxCategoryRate" type="any" default="";
 	
@@ -128,6 +129,37 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 
 		if (!isNull(arguments.orderFulfillment.getFulfillmentCharge()) && !isNull(arguments.orderFulfillment.getDiscountAmount())) {
 			setExtendedPriceAfterDiscount(getService('HibachiUtilityService').precisionCalculate(arguments.orderFulfillment.getFulfillmentCharge() - arguments.orderFulfillment.getDiscountAmount()));
+		}
+	}
+	
+	public void function populateWithOrderDeliveryItem(required any orderDeliveryItem) {
+		// Set reference object and type
+
+		setOrderDeliveryItem(arguments.orderDeliveryItem);
+		setOrderItem(arguments.orderDeliveryItem.getOrderItem());
+
+		//Though we're passing in an orderDeliveryItem we still want to treat it as a normal order item for tax purposes
+		setReferenceObjectType('OrderItem');
+
+		// Populate with orderItem quantities, price, and orderItemID fields
+		setOrderItemID(arguments.orderDeliveryItem.getOrderItem().getOrderItemID());
+		setQuantity(arguments.orderDeliveryItem.getQuantity());
+		setCurrencyCode(arguments.orderDeliveryItem.getOrderItem().getCurrencyCode());
+
+		if(!isNull(arguments.orderDeliveryItem.getPrice())) {
+			setPrice(arguments.orderDeliveryItem.getPrice());
+		}
+
+		if(!isNull(arguments.orderDeliveryItem.getExtendedPrice())) {
+			setExtendedPrice(arguments.orderDeliveryItem.getExtendedPrice());
+		}
+
+		if(!isNull(arguments.orderDeliveryItem.getDiscountAmount())) {
+			setDiscountAmount(arguments.orderDeliveryItem.getDiscountAmount(forceCalculationFlag=true));
+		}
+
+		if(!isNull(arguments.orderDeliveryItem.getExtendedPriceAfterDiscount())) {
+			setExtendedPriceAfterDiscount(arguments.orderDeliveryItem.getExtendedPriceAfterDiscount(forceCalculationFlag=true));
 		}
 	}
 }
