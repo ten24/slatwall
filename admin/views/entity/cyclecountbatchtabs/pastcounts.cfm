@@ -11,7 +11,7 @@
 		isDeletable=true}) />
 <cfset local.physicalCountCollection.addDisplayProperty(displayProperty='physicalCountID',columnConfig={
 		isSearchable=true,
-		isVisable=false,
+		isVisible=false,
 		isDeletable=false}) />
 <cfset local.physicalCountCollection.addDisplayAggregate(propertyIdentifier='physicalCountItems.physicalCountItemID',aggregateFunction='COUNT',aggregateAlias='physicalCountItemCount',columnConfig={
 		isSearchable=true,
