@@ -27,6 +27,20 @@
     <cfset cancelledOrdersCollectionList.addFilter('modifiedDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
     <cfset cancelledOrdersCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstCancelled')/>
     
+    <cfif structKeyExists(rc,'productType') and len(rc.productType)>
+        <cfset newOrderCollectionList.addFilter('orderItems.sku.product.productType.productTypeID', rc.productType,'IN')/>
+        <cfset cancelledOrdersCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
+    </cfif>
+    
+    <cfif structKeyExists(rc,'productID') and len(rc.productID)>
+        <cfset newOrderCollectionList.addFilter('orderItems.sku.product.productID', rc.productID,'IN')/>
+        <cfset cancelledOrdersCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID', rc.productID,'IN')/>
+    </cfif>
+    
+    <cfif structKeyExists(rc,'subscriptionType') and len(rc.subscriptionType)>
+        <cfset cancelledOrdersCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemType.systemCode', rc.subscriptionType,'IN')/>
+    </cfif>
+    
     <!--gets deferred revenue-->
     
     <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate)/>   
