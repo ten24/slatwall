@@ -32419,6 +32419,10 @@ var OrderFulfillmentService = /** @class */ (function () {
                 }
             }
             _this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then(function (result) {
+                if (result.data.errors) {
+                    _this.state.loading = false;
+                    return result;
+                }
                 _this.state.loading = false;
                 if (result.orderDeliveryID != undefined && result.orderDeliveryID != '') {
                     return result;
@@ -32737,12 +32741,17 @@ var OrderFulfillmentService = /** @class */ (function () {
                 for (var i = 0; i < _this.state.orderFulfillmentItemsCollection.length; i++) {
                     skuIDs[i] = _this.state.orderFulfillmentItemsCollection[i]['sku_skuID'];
                 }
-                _this.$rootScope.slatwall.getResizedImageByProfileName('small', skuIDs.join(',')).then(function (result) {
-                    if (!angular.isDefined(_this.$rootScope.slatwall.imagePath)) {
-                        _this.$rootScope.slatwall.imagePath = {};
-                    }
-                    _this.state.imagePath = _this.$rootScope.slatwall.imagePath;
-                });
+                try {
+                    _this.$rootScope.slatwall.getResizedImageByProfileName('small', skuIDs.join(',')).then(function (result) {
+                        if (!angular.isDefined(_this.$rootScope.slatwall.imagePath)) {
+                            _this.$rootScope.slatwall.imagePath = {};
+                        }
+                        _this.state.imagePath = _this.$rootScope.slatwall.imagePath;
+                    });
+                }
+                catch (e) {
+                    console.warn("Error while trying to retrieve the image for an item", e);
+                }
                 _this.emitUpdateToClient();
             });
         };
@@ -73035,6 +73044,13 @@ var SWEditFilterItem = /** @class */ (function () {
                         for (var siblingIndex in filterItem.$$siblingItems) {
                             filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                         }
+                        if (angular.isDefined(selectedFilterProperty.aggregate)) {
+                            var aggregateFunction = selectedFilterProperty.aggregate.toUpperCase();
+                            if (aggregateFunction == 'AVERAGE') {
+                                aggregateFunction = 'AVG';
+                            }
+                            filterItem.aggregate = aggregateFunction;
+                        }
                         filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
                         //if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
                         if (filterItem.$$prepareForFilterGroup === true) {
@@ -74414,9 +74430,10 @@ var CollectionConfig = /** @class */ (function () {
         this.clearOrderBy = function () {
             _this.orderBy = [];
         };
-        this.addOrderBy = function (orderByString, formatPropertyIdentifier) {
+        this.addOrderBy = function (orderByString, formatPropertyIdentifier, singleColumn) {
             if (formatPropertyIdentifier === void 0) { formatPropertyIdentifier = true; }
-            if (!_this.orderBy) {
+            if (singleColumn === void 0) { singleColumn = false; }
+            if (!_this.orderBy || singleColumn) {
                 _this.orderBy = [];
             }
             var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
@@ -74430,10 +74447,15 @@ var CollectionConfig = /** @class */ (function () {
             };
             _this.orderBy.push(orderBy);
         };
-        this.toggleOrderBy = function (formattedPropertyIdentifier, singleColumn) {
+        this.toggleOrderBy = function (propertyIdentifier, singleColumn, formatPropertyIdentifier) {
             if (singleColumn === void 0) { singleColumn = false; }
+            if (formatPropertyIdentifier === void 0) { formatPropertyIdentifier = false; }
             if (!_this.orderBy) {
                 _this.orderBy = [];
+            }
+            var formattedPropertyIdentifier = propertyIdentifier;
+            if (formatPropertyIdentifier) {
+                formattedPropertyIdentifier = _this.formatPropertyIdentifier(propertyIdentifier);
             }
             var found = false;
             for (var i = _this.orderBy.length - 1; i >= 0; i--) {
@@ -77081,7 +77103,7 @@ var SWOrderByControlsController = /** @class */ (function () {
                     _this.disabled = false;
                     if (propertyIdentifier != null) {
                         if (angular.isDefined(_this.collectionConfig)) {
-                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true); //single column mode true
+                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true, true); //single column mode true, format propIdentifier true
                         }
                         if (_this.inListingDisplay) {
                             _this.listingService.setSingleColumnOrderBy(_this.listingId, propertyIdentifier, "ASC");
@@ -77094,7 +77116,7 @@ var SWOrderByControlsController = /** @class */ (function () {
                     _this.disabled = false;
                     if (propertyIdentifier != null) {
                         if (angular.isDefined(_this.collectionConfig)) {
-                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true); //single column mode true
+                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true, true); //single column mode true, format propIdentifier true
                         }
                         if (_this.inListingDisplay) {
                             _this.listingService.setSingleColumnOrderBy(_this.listingId, propertyIdentifier, "DESC");
@@ -77995,6 +78017,15 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.collectionConfigService = collectionConfigService;
         this.addSelection = function (item) {
+            if (!item) {
+                return;
+            }
+            if (_this.singleSelection) {
+                _this.typeaheadService.notifyTypeaheadClearSearchEvent(_this.typeaheadDataKey);
+            }
+            if (_this.singleSelection && _this.getSelections().length) {
+                _this.removeSelection(0);
+            }
             _this.typeaheadService.addSelection(_this.typeaheadDataKey, item);
             if (_this.inListingDisplay) {
                 _this.listingService.insertListingPageRecord(_this.listingId, item);
@@ -78020,6 +78051,9 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
         }
         if (angular.isUndefined(this.showSelections)) {
             this.showSelections = false;
+        }
+        if (angular.isUndefined(this.singleSelection)) {
+            this.singleSelection = false;
         }
         if (angular.isUndefined(this.multiselectMode)) {
             this.multiselectMode = true;
@@ -78055,6 +78089,7 @@ var SWTypeaheadMultiselect = /** @class */ (function () {
             selectedCollectionConfig: "=?",
             typeaheadDataKey: "@?",
             multiselectModeOn: "=?multiselectMode",
+            singleSelection: "=?",
             showSelections: "=?",
             dataTarget: "=?",
             dataTargetIndex: "=?",
@@ -78606,9 +78641,13 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
         this.compile = function (element, attrs, transclude) {
             return {
                 pre: function (scope, element, attrs) {
+                    var propertyIdentifier = scope.swTypeaheadSearchLineItem.propertyIdentifier;
+                    if (!propertyIdentifier && scope.$parent.swTypeaheadMultiselect) {
+                        propertyIdentifier = scope.$parent.swTypeaheadMultiselect.rightContentPropertyIdentifier;
+                    }
                     var innerHTML = element[0].innerHTML;
                     element[0].innerHTML = '';
-                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    var span = '<span ng-if="item.' + propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + propertyIdentifier + '"></span>';
                     element.append(span);
                 },
                 post: function (scope, element, attrs) { }
@@ -82904,7 +82943,7 @@ var PublicService = /** @class */ (function () {
                 if (!angular.isDefined(_this.imagePath)) {
                     _this.imagePath = {};
                 }
-                if (result.resizedImagePaths) {
+                if (result && result.resizedImagePaths) {
                     for (var skuID in result.resizedImagePaths) {
                         _this.imagePath[skuID] = result.resizedImagePaths[skuID];
                     }
@@ -84112,11 +84151,17 @@ var TypeaheadService = /** @class */ (function () {
         this.getTypeaheadSelectionUpdateEvent = function (key) {
             return "typeaheadSelectionUpdated" + key;
         };
+        this.getTypeaheadClearSearchEvent = function (key) {
+            return key + "clearSearch";
+        };
         this.attachTypeaheadSelectionUpdateEvent = function (key, callback) {
             _this.observerService.attach(callback, _this.getTypeaheadSelectionUpdateEvent(key));
         };
         this.notifyTypeaheadSelectionUpdateEvent = function (key, data) {
             _this.observerService.notify(_this.getTypeaheadSelectionUpdateEvent(key), data);
+        };
+        this.notifyTypeaheadClearSearchEvent = function (key, data) {
+            _this.observerService.notify(_this.getTypeaheadClearSearchEvent(key), data);
         };
         this.setTypeaheadState = function (key, state) {
             _this.typeaheadStates[key] = state;
@@ -90638,8 +90683,9 @@ var ListingService = /** @class */ (function () {
             }
             if (_this.getListing(listingID).collectionConfig != null) {
                 var found = false;
+                var _formattedPropertyIdentifier_1 = _this.getListing(listingID).collectionConfig.formatPropertyIdentifier(propertyIdentifier);
                 angular.forEach(_this.getListing(listingID).collectionConfig.orderBy, function (orderBy, index) {
-                    if (propertyIdentifier == orderBy.propertyIdentifier) {
+                    if (_formattedPropertyIdentifier_1 == orderBy.propertyIdentifier) {
                         orderBy.direction = direction;
                         found = true;
                     }
@@ -90648,7 +90694,7 @@ var ListingService = /** @class */ (function () {
                     }
                 });
                 if (!found) {
-                    _this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction);
+                    _this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction, true, true);
                 }
                 if (notify) {
                     _this.observerService.notify(_this.getListingOrderByChangedEventString(listingID));
@@ -90670,7 +90716,7 @@ var ListingService = /** @class */ (function () {
                 if (column.aggregate && column.aggregate.aggregateFunction) {
                     orderByPropertyIdentifier = column.aggregate.aggregateFunction + '(' + column.propertyIdentifier + ')';
                 }
-                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
+                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
             }
         };
         //End Order By Functions
@@ -93666,4 +93712,3 @@ module.exports = __webpack_require__(305);
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=bundle.js.map

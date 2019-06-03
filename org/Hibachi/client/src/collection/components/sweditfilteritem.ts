@@ -428,6 +428,14 @@ class SWEditFilterItem{
                         for(var siblingIndex in filterItem.$$siblingItems){
                             filterItem.$$siblingItems[siblingIndex].$$disabled = false;
                         }
+                        
+                        if(angular.isDefined(selectedFilterProperty.aggregate)){
+                            let aggregateFunction = selectedFilterProperty.aggregate.toUpperCase();
+                            if(aggregateFunction == 'AVERAGE'){
+                                aggregateFunction = 'AVG';
+                            }
+                            filterItem.aggregate = aggregateFunction;
+                        }
 
                         filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
 

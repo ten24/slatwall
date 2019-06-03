@@ -584,9 +584,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	    string aggregate="",
 	    string filterGroupAlias="",
  		string filterGroupLogicalOperator="AND",
- 		boolean hidden=true
+ 		boolean hidden=true,
+ 		boolean ignoredWhenSearch=false
 	){
-
+		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
 
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -608,7 +609,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
-			"hidden"=arguments.hidden
+			"hidden"=arguments.hidden,
+			"ignoredWhenSearch"= arguments.ignoredWhenSearch
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
@@ -645,21 +647,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 
-	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
-
-
-		var collectionConfig = this.getCollectionConfigStruct();
-		collectionConfig["columns"] = [];
-		this.setCollectionConfigStruct(collectionConfig);
-
-
-		var displayProperties = listToArray(arguments.displayPropertiesList);
-		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
-		}
-
-	}
-
 	public void function addGroupBy(required string groupByAlias){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var groupBys = listToArray(arguments.groupByAlias);
@@ -682,15 +669,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 	
+	
+	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
-	//XXX only to be called after setDisplayProperties, to be used as an utility function
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig["columns"] = [];
+		this.setCollectionConfigStruct(collectionConfig);
+
+		addDisplayProperties(arguments.displayPropertiesList, arguments.columnConfig);
+	}
+
+
 	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
 		}
-
 	}
 
 
@@ -762,6 +757,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		arguments.column['isSearchable'] = false;
 		arguments.column['isExportable'] = false;
 		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
+			
 			arguments.column['isDeletable'] = arguments.columnConfig['isDeletable'];
 			
 			// if its ...ID and non-deletable prepend it for better UX			 //XXX using java String::EqualsIgnoreCase() 
@@ -769,6 +765,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				arguments.prepend = true;
 			}
 		}
+		
 		if(structKeyExists(arguments.columnConfig, 'isVisible')){
 			arguments.column['isVisible'] = arguments.columnConfig['isVisible'];
 		}
@@ -803,7 +800,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	//add display Aggregate
-	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}){
+	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}, string title){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = getBaseEntityAlias();
 		var join = {};
@@ -854,6 +851,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			join['aggregateColumn']=true;
 			doJoin = true;
+		}
+		
+		if(structKeyExists(arguments, 'title')){
+				column['title'] = arguments.title;
+		}else{
+			column['title'] = getCollectionEntityObject().getTitleByPropertyIdentifier(arguments.propertyIdentifier);
+			column["title"] &= " #arguments.aggregateFunction#"; 
 		}
 
 		//Add columns
@@ -1179,6 +1183,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var aggregateFilterHQL = '';
 		for(var filter in aggregateFilters){
+			var propertyIdentifierAlias = getPropertyIdentifierAlias(filter.propertyIdentifier,'aggregateFilter'); ///XXX workaround for joins
 			var logicalOperator = '';
 			if(structKeyExists(filter,"logicalOperator") && len(aggregateFilterHQL) > 0){
 				logicalOperator = filter.logicalOperator;
@@ -1545,6 +1550,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//decrement looping to remove invalid filters in order to identify the which one is first
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
+			
+			if( structKeyExists(filter, 'ignoredWhenSearch') && !isNull(getKeywords()) && len(getKeywords())  && filter.ignoredWhenSearch){ //XXX not considering this filter when ignoredWhenSearch is set 
+				arrayDeleteAt(reverseFilterGroup,i);
+				continue;
+			}
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -1595,6 +1605,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 			}
+			
 		}
 		return filterGroupHQL;
 	}
@@ -1621,6 +1632,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroups);
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filterGroup = reverseFilterGroup[i];
+			
 			var logicalOperator = '';
 			if(i != arraylen(reverseFilterGroup)){
 				if(structKeyExists(filterGroup,'logicalOperator') && len(filterGroup.logicalOperator)){
@@ -3434,7 +3446,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							//if propertyIdentifier is object vs primitive then restrict page count
 							
 							
-							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))){
+							if(getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier)) && !structKeyExists(column,'aggregate')){
 								restrictPageRecords();
 							}
 							//check if we have an aggregate
@@ -3610,6 +3622,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 	
+	public boolean function hasOrderBy(required string propertyIdentifier){
+		if(!structKeyExists(getCollectionConfigStruct(),'orderBys')){
+			return false;
+		}
+		for(var orderBy in getCollectionConfigStruct()['orderBys']){
+			if(arguments.propertyIdentifier == orderBy.propertyIdentifier){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean function hasGroupBys(){
 		getGroupBys();
 		if (
@@ -3717,7 +3741,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						){
 							variables.groupBys ="";
 							return;
-						}else if(Find(column.propertyIdentifier,getOrderByHQL())){
+						}else if(hasOrderBy(column.propertyIdentifier)){
 							
 							groupByOverride = listAppend(groupByOverride,column.propertyIdentifier);
 							
