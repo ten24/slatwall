@@ -1167,7 +1167,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		try{
 			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge() 
 		} catch (any e) {
-			rethrow; 
+			//if we have any error we probably don't have the required data for returning the total
 			var fulfillmentCharge = 0; 
 		} finally { 
 			local.tx.commit();
