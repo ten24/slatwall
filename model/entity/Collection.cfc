@@ -2902,168 +2902,238 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return filterValue;
 	}
+	
+	private struct function makeDateRangeFromCriteriaAndMeasureType(required any criteria, required any measureType){
+		var rangeStruct = StructNew();
+		
+		switch (arguments.measureType) {
+			case 'd':
+				var currentdatetime = DateAdd('d', -arguments.criteria, now());
+				rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
+				rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
+				break;
+			case 'm':
+				var currentdatetime = DateAdd('m', -arguments.criteria, now());
+				rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
+				rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
+				break;
+			case 'y':
+				var currentdatetime = DateAdd('yyyy', -arguments.criteria, now());
+				rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
+				rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
+				break;
+		}
+		
+		return rangeStruct;
+	}
+	
+	private struct function makeLocalDateRangeFromEpochRange(required any epochRange){ //XXX format   1556879525284-1556879525284  -  in mili sec.
+		var rangeStruct = StructNew();
+		
+		var tempRangeArr = listToArray(arguments.epochRange, "-");
+	
+		var fromDate = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(tempRangeArr[1]/1000) );
+		var toDate = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(tempRangeArr[2]/1000) );
+		
+		rangeStruct.rangStartValue = dateFormat(fromDate,"yyyy-mm-dd") & " " & timeFormat(fromDate, "HH:MM:SS");
+		rangeStruct.rangeEndValue = dateFormat(toDate,"yyyy-mm-dd") & " " & timeFormat(toDate, "HH:MM:SS");
+		
+		return rangeStruct;
+	}
+	
+	
+	private struct function formatDateRange(required any dateRange){ //XXX date-format dd/mm/yyyy-dd/mm/yyyy
+		var rangeStruct = StructNew();
+		
+		var tempRangeArr = listToArray(arguments.dateRange, "-");
+		var fromTemp = listToArray(tempRangeArr[1], "/");
+		var toTemp   = listToArray(tempRangeArr[2], "/");
 
+		var tempDateFrom = CreateDate(fromTemp[3], fromTemp[1], fromTemp[2]); //yyyy,dd,mm
+		var tempDateTo   = CreateDate(toTemp[3], toTemp[1], toTemp[2]);
+		
+		rangeStruct.rangStartValue = dateFormat(tempDateFrom,"yyyy-mm-dd");
+		rangeStruct.rangeEndValue = dateFormat(tempDateTo,"yyyy-mm-dd");
+		
+		return rangeStruct;
+	}
+	
+	private string function getDateRangePredicate(required any filter){
+		var dateRangePredicate = "";
+		var range = StructNew();
+		
+		if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
+			
+			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.measureCriteria, arguments.filter.measureType);
+		
+		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
+			
+			if(listLen(arguments.filter.value,'/') > 1) { // if it's a date range dd/mm/yyyy-dd/mm/yyyy
+				range = formatDateRange(arguments.filter.value);
+			} else { // otherwise it should be an epoch range
+				range = makeLocalDateRangeFromEpochRange(arguments.filter.value);
+			}
+		} else if(listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
+			//convert unix timestamp
+			if(isNumeric(arguments.filter.value)){
+				range.rangStartValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			} else {
+				range.rangStartValue = arguments.filter.value;
+			}
+					
+		} else if(listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)) {
+			
+			if(isNumeric(arguments.filter.value)){
+				range.rangeEndValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			}else{
+				range.rangeEndValue = arguments.filter.value;
+			}
+			
+		} else {
+				//XXX if list length is 1 then we treat it as a date range From Now() - Days to Now()
+				var fromDate = DateAdd("d",-arguments.filter.value, Now());
+				//make from value start at beginning of of day
+				range.rangStartValue = createDateTime(Year(fromDate),Month(fromDate),Day(fromDate),0,0,0);
+				range.rangeEndValue = Now();
+		}
+
+
+		if( StructKeyExists(range, "rangStartValue") && !isNull(range.rangStartValue) ) {
+			var rangeStartParamID = getParamID();
+			addHQLParam(rangeStartParamID, range.rangStartValue);
+		}
+		
+		if( StructKeyExists(range, "rangeEndValue") && !isNull(range.rangeEndValue) ) {
+			var rangeEndParamID = getParamID();
+			addHQLParam(rangeEndParamID, range.rangeEndValue);
+		}
+		
+		if(!isNull(rangeStartParamID) && !isNull(rangeEndParamID)) {
+			dateRangePredicate = ":#rangeStartParamID# AND :#rangeEndParamID#";
+		} else if(!isNull(rangeStartParamID)) {
+			dateRangePredicate = ":#rangeStartParamID#";
+		} else if(!isNull(rangeEndParamID)) {
+			dateRangePredicate = ":#rangeEndParamID#";
+		}
+		
+		return dateRangePredicate;
+	}
+	
+	private string function getNumericRangePredicate(required any filter){
+		var numericRangePredicate = "";
+	
+		var ranges = listToArray(arguments.filter.value,'-');
+		
+		if(arraylen(ranges) == 2) {
+			var rangStartValue = ranges[1];
+			var rangeEndValue = ranges[2];
+			
+			var rangeStartParamID = getParamID();
+			addHQLParam(rangeStartParamID,rangStartValue);
+			
+			var rangeEndParamID = getParamID();
+			addHQLParam(rangeEndParamID, rangeEndValue);
+
+			numericRangePredicate = ":#rangeStartParamID# AND :#rangeEndParamID#";
+
+		}else if(left(arguments.filter.value,1) == '-') { // we have the upper range
+		
+			var rangeEndValue = ranges[1];
+			var rangeEndParamID = getParamID();
+			addHQLParam(rangeEndParamID, rangeEndValue);
+			
+			var minValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
+			minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
+			minValueCollection.setPageRecordsShow(1);
+			
+			var minValue = 0;
+			var minValuePageRecords = minValueCollection.getPageRecords();
+			if(arraylen(minValuePageRecords)){
+				minValue = minValuePageRecords[1]['minValue'];
+			}
+			
+			numericRangePredicate = "#minValue# AND :#rangeEndParamID#";  //TODO MIN(arguments.filter.propertyIdentifier)
+			
+		} else{ // we have the lower range
+			
+			var rangStartValue = ranges[1];
+			var rangeStartParamID = getParamID();
+			addHQLParam(rangeStartParamID,rangStartValue);
+			var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
+			maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
+			maxValueCollection.setPageRecordsShow(1);
+			var maxValue = 0;
+			var maxValuePageRecords = maxValueCollection.getPageRecords();
+			if(arraylen(maxValuePageRecords)){
+				maxValue = maxValueCollection.getPageRecords()[1]['maxValue'];
+			}
+
+			numericRangePredicate = ":#rangeStartParamID# AND #maxValue#";  //TODO MAX(arguments.filter.propertyIdentifier)
+		}
+		
+		return numericRangePredicate;
+	}
+	
+	private string function getRangePredicate(required any filter){
+		
+		var rangePredicate = "";
+		
+		if(arguments.filter.ormtype eq 'timestamp') { // if date-range
+			
+			rangePredicate = getDateRangePredicate(arguments.filter);
+		
+		} else if( listfindnocase("between,not between",arguments.filter.comparisonOperator) 
+					&& listFind('integer,float,big_decimal,string',arguments.filter.ormtype)  ) { 
+			
+			rangePredicate = getNumericRangePredicate(arguments.filter);
+			
+		} else {
+			var paramID = getParamID();
+			addHQLParam(paramID,arguments.filter.value);
+			rangePredicate = ":#paramID#";
+		}
+		
+		return rangePredicate;
+	}
+	
+	
 	private string function getPredicate(required any filter){
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
 			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
 				filter.value = filter.displayValue;
-			}else{
+			} else {
 				filter.value = "";
 			}
 		}
 		//Session Filters
 		filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), filter.value);
 
-		//verify we are handling a range value
-		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
-			if( listfindnocase("between,not between",arguments.filter.comparisonOperator) && listFind('integer,float,big_decimal,string',arguments.filter.ormtype)){
-				var ranges = listToArray(arguments.filter.value,'-');
-				if(arraylen(ranges) > 1){
-					var fromValue = ranges[1];
- 					var toValue = ranges[2];
- 					var fromParamID = getParamID();
- 					addHQLParam(fromParamID,fromValue);
- 					var toParamID = getParamID();
- 					addHQLParam(toParamID,toValue);
- 					predicate = ":#fromParamID# AND :#toParamID#";
- 				}else{
- 					if(left(arguments.filter.value,1) == '-'){
- 						var toValue = ranges[1];
- 						var toParamID = getParamID();
- 						addHQLParam(toParamID,toValue);
- 						var minValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
- 
- 						minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
- 
- 						minValueCollection.setPageRecordsShow(1);
- 						var minValue = 0;
- 						var minValuePageRecords = minValueCollection.getPageRecords();
- 						if(arraylen(minValuePageRecords)){
- 							minValue = minValuePageRecords[1]['minValue'];
- 						}
- 						predicate = "#minValue# AND :#toParamID#";
- 					}else{
- 						var fromValue = ranges[1];
- 						var fromParamID = getParamID();
- 						addHQLParam(fromParamID,fromValue);
- 						var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
- 						maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
- 						maxValueCollection.setPageRecordsShow(1);
- 						var maxValue = 0; // 2,147,483,647
- 						var maxValuePageRecords = maxValueCollection.getPageRecords();
- 						if(arraylen(maxValuePageRecords)){
- 							maxValue = maxValueCollection.getPageRecords()[1]['maxValue'];
- 						}
- 
-						predicate = ":#fromParamID# AND #maxValue#";
-					}
-				}
-			}else if(listfindnocase("between,not between,>,>=,<,<=,gt,gte,lt,lte",arguments.filter.comparisonOperator)){
-
-
-				if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
-
-					switch (arguments.filter.measureType) {
-						case 'd':
-							var currentdatetime = DateAdd('d', - arguments.filter.criteriaNumberOf, now());
-							var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
-							var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
-							break;
-						case 'm':
-							var currentdatetime = DateAdd('m', - arguments.filter.criteriaNumberOf, now());
-							var fromValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
-							var toValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
-							break;
-						case 'y':
-							var currentdatetime = DateAdd('yyyy', - arguments.filter.criteriaNumberOf, now());
-							var fromValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
-							var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
-							break;
-					}
-				//regular date format mm/dd/yyyy
-				}else if(listLen(arguments.filter.value,'-') > 1 && listLen(arguments.filter.value,'/') > 1){
-					//convert unix timestamp
-
-					var tempRangeArr = listToArray(arguments.filter.value, "-");
-					var fromTemp = listToArray(tempRangeArr[1], "/");
-					var toTemp   = listToArray(tempRangeArr[2], "/");
-
-					var tempDateFrom = CreateDate(fromTemp[3], fromTemp[1], fromTemp[2]);
-					var tempDateTo   = CreateDate(toTemp[3], toTemp[1], toTemp[2]);
-
-					var fromValue = dateFormat(tempDateFrom,"yyyy-mm-dd");
-					var toValue = dateFormat(tempDateTo,"yyyy-mm-dd");
-				//Epoch date format
-				}else if(listLen(arguments.filter.value,'-') > 1){
-					//convert unix timestamp
-					var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
-					var fromValue = dateFormat(fromDate,"yyyy-mm-dd") & " " & timeFormat(fromDate, "HH:MM:SS");
-					var toDate = DateAdd("s", listLast(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
-					var toValue = dateFormat(toDate,"yyyy-mm-dd") & " " & timeFormat(toDate, "HH:MM:SS");
-				}else if(listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)){
-					//convert unix timestamp
-					if(isNumeric(arguments.filter.value)){
-						var fromValue = getService('HibachiUtilityService').getTimeByUtc(arguments.filter.value);
-					}else{
-						var fromValue = arguments.filter.value;
-					}
-					
-				}else if(listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)){
-					if(isNumeric(arguments.filter.value)){
-						var toValue = getService('HibachiUtilityService').getTimeByUtc(arguments.filter.value);
-					}else{
-						var toValue = arguments.filter.value;
-					}
-				}else{
-					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
-					var fromValue = DateAdd("d",-arguments.filter.value,Now());
-					//make from value start at beginning of of day
-					fromValue = createDateTime(Year(fromValue),Month(fromValue),Day(fromValue),0,0,0);
-					var toValue = Now();
-				}
-
-				if(!isNull(fromValue)){
-					var fromParamID = getParamID();
-					addHQLParam(fromParamID, fromValue);
-				}
-				if(!isNull(toValue)){
-					var toParamID = getParamID();
-					addHQLParam(toParamID, toValue);
-				}
-				if(!isNull(fromParamID) && !isNull(toParamID)){
-					predicate = ":#fromParamID# AND :#toParamID#";
-				}else if(!isNull(fromParamID)){
-					predicate = ":#fromParamID#";
-				}else if(!isNull(toParamID)){
-					predicate = ":#toParamID#";
-				}
-
-
-			}else {
-				var paramID = getParamID();
-				
-				addHQLParam(paramID,arguments.filter.value);
-				predicate = ":#paramID#";
-			}
-
-
-		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
+			//verify we are handling a range value
+		if(listfindnocase("between,not between,>,>=,<,<=,gt,gte,lt,lte",arguments.filter.comparisonOperator)) {
+			
+			predicate = getRangePredicate(arguments.filter);
+	
+		} else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not') {
+			
 			predicate = filter.value;
-		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
-			if(len(filter.value)){
+			
+		} else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in') {
+			
+			if(len(filter.value)) {
 				var paramList = '';
-				var values = listToArray(filter.value,variables.inlistDelimiter);
+				var values = listToArray(filter.value,this.getInlistDelimiter());
 				for(var value in values){
 					var paramID = getParamID();
 					addHQLParam(paramID,value);
 					paramList = listAppend(paramList, ':#paramID#');
 				}
 				predicate = '(#paramList#)';
-			}else{
+			} else {
 				predicate = "('')";
 			}
-		}else if(arguments.filter.comparisonOperator eq 'like' || arguments.filter.comparisonOperator eq 'not like'){
+			
+		} else if(arguments.filter.comparisonOperator eq 'like' || arguments.filter.comparisonOperator eq 'not like') {
 			var paramID = getParamID();
 
 			// Return empty string if comparison value is not set
@@ -3084,14 +3154,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						break;
 				}
 			}
+			
 			addHQLParam(paramID,arguments.filter.value);
 			predicate = ":#paramID#";
-		}else{
+		
+		} else {
+			
 			var paramID = getParamID();
-
 			addHQLParam(paramID,arguments.filter.value);
 			predicate = ":#paramID#";
 		}
+		
 		return predicate;
 	}
 
