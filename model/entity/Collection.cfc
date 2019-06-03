@@ -800,7 +800,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	//add display Aggregate
-	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}){
+	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}, string title){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = getBaseEntityAlias();
 		var join = {};
@@ -851,6 +851,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			join['aggregateColumn']=true;
 			doJoin = true;
+		}
+		
+		if(structKeyExists(arguments, 'title')){
+				column['title'] = arguments.title;
+		}else{
+			column['title'] = getCollectionEntityObject().getTitleByPropertyIdentifier(arguments.propertyIdentifier);
+			column["title"] &= " #arguments.aggregateFunction#"; 
 		}
 
 		//Add columns
