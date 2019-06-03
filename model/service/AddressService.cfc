@@ -194,7 +194,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 		}
 		
-		if (structKeyExists(addressVerificationStruct, 'success']){
+		if (structKeyExists(addressVerificationStruct, 'success')){
 			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
 			
 			if(!addressVerificationStruct['success']){
