@@ -49,7 +49,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.emailTemplateSmartList" type="any" />
 
 <cfoutput>
@@ -62,28 +61,28 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
-							   recordDetailAction="admin:entity.detailemailTemplate"
-							   recordEditAction="admin:entity.editemailTemplate">
 
-		<hb:HibachiListingColumn propertyIdentifier="emailTemplateName" />
-		<hb:HibachiListingColumn propertyIdentifier="emailTemplateObject" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-	    data-collection="'EmailTemplate'"
-	    data-edit="false"
-	    data-has-search="true"
-	    record-edit-action="admin:entity.editemailtemplate"
-	    record-detail-action="admin:entity.detailemailtemplate"
-	    data-is-angular-route="false"
-	    data-angular-links="false"
-	    data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="emailTemplateID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="emailTemplateName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="emailTemplateObject" ></sw-listing-column>
-	</sw-listing-display>
+	<cfset emailTemplateCollectionList = getHibachiScope().getService('emailService').getEmailTemplateCollectionList()>
+		<cfset serchableDisplayProperties = "emailTemplateName,emailTemplateObject"/>
+		<cfset emailTemplateCollectionList.setDisplayProperties(serchableDisplayProperties, {
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		})/>
+		
+		<cfset emailTemplateCollectionList.addDisplayProperty(displayProperty='emailTemplateID', columnConfig={
+			isVisible=false,
+			isSearchable=false,
+			isDeletable=false
+		})/>
+		
+		<hb:HibachiListingDisplay 
+			collectionList="#emailTemplateCollectionList#"
+			usingPersonalCollection="true"
+			recordEditAction="admin:entity.edit#lcase(emailTemplateCollectionList.getCollectionObject())#"
+			recordDetailAction="admin:entity.detail#lcase(emailTemplateCollectionList.getCollectionObject())#"
+		>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 
