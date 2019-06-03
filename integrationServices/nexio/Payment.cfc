@@ -356,7 +356,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
 				
 				// Request Data
-				// arguments.requestBean.getOriginalChargeProviderTransactionID();
 				var requestData = {
 					'data': {
 						'amount': arguments.requestBean.getOrder().getCalculatedTotal(),
@@ -364,13 +363,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	},
 			    	'id': arguments.requestBean.getOriginalChargeProviderTransactionID()
 				}
-				// writeDump(var="*** requestData");
-				// writeDump(var=requestData);
+				writeDump(var="*** requestData");
+				writeDump(var=requestData);
 				
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
 				
 				// writeDump(var="*** responseData")
-				// writeDump(var=responseData, abort=true);
+				writeDump(var=responseData, abort=true);
 				
 				// Response Data
 				arguments.responseBean.setProviderTransactionID(responseData.id);
@@ -468,28 +467,26 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			
 			// writeDump(var=[local,httpRequest], abort=true);
 			
-			// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
-			// if (!directoryExists(logPath)){
-			// 	directoryCreate(logPath);
-			// }
+			var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
+			if (!directoryExists(logPath)){
+				directoryCreate(logPath);
+			}
 			var timeSufix = getTickCount() & createHibachiUUID(); 
 			
-			// var httpRequestData = {
-			// 	'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-			// 	'apiUrl'=apiUrl,
-			// 	'username' = username,
-			// 	'password' = password,
-			// 	'httpContentTypeHeader' = 'application/json',
-			// 	'publicKey' = getPublicKey(arguments.requestBean),
-			// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-			// };
+			var httpRequestData = {
+				'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
+				'apiUrl'=apiUrl,
+				'username' = username,
+				'password' = password,
+				'httpContentTypeHeader' = 'application/json',
+				'publicKey' = getPublicKey(arguments.requestBean),
+				'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
+			};
 
-			// fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 			
 			// Make HTTP request to endpoint
 			var httpResponse = httpRequest.send().getPrefix();
-			
-			// writeDump(var=httpResponse, abort=true);
 			
 			var responseData = {};
 			// Server error handling - Unavailable or Communication Problem
@@ -514,7 +511,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					// Convert JSON response
 					responseData = deserializeJSON(httpResponse.fileContent);
 					
-					// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+					fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 
 					
 					if (structKeyExists(responseData, 'error')) {
@@ -538,7 +535,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
-				// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+				fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 			}
 
 			return responseData;
