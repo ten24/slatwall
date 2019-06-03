@@ -70,6 +70,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="account" type="any";
 	property name="order" type="any";
 	property name="orderDelivery" type="any";
+	property name="orderReturn" type="any";
 
 	property name="commitTaxDocFlag" type="boolean" default="false";
 	
@@ -131,6 +132,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			taxRateItemRequestBean.populateWithOrderFulfillment(arguments.referenceObject);
 		} else if (arguments.referenceObject.getClassName() == 'OrderDeliveryItem' ){
 			taxRateItemRequestBean.populateWithOrderDeliveryItem(arguments.referenceObject);
+		} else if (arguments.referenceObject.getClassName() == 'OrderReturn' ){
+			taxRateItemRequestBean.populateWithOrderReturn(arguments.referenceObject);
 		}
 
 		if(!isNull(taxAddress)) {

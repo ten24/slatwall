@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	
 	// Order Fulfillment Properties
 	property name="orderFulfillmentID" type="string" default="";
+	property name="orderReturnID" type="string" default="";
 
 	// Order Item Price and Quantity Properies
 	property name="orderItemID" type="string" default="";
@@ -78,6 +79,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	// Reference Objects
 	property name="referenceObjectType" type="string" default=""; // value should either be 'orderFulfillment' or 'orderItem'
 	property name="orderFulfillment" type="any" default="";
+	property name="orderReturn" type="any" default="";
 	property name="orderItem" type="any" default="";
 	property name="orderDeliveryItem" type="any" default="";
 	property name="taxAddress" type="any" default="";
@@ -161,5 +163,20 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 		if(!isNull(arguments.orderDeliveryItem.getExtendedPriceAfterDiscount())) {
 			setExtendedPriceAfterDiscount(arguments.orderDeliveryItem.getExtendedPriceAfterDiscount(forceCalculationFlag=true));
 		}
+	}
+	
+	public void function populateWithOrderReturn(required any orderReturn) {
+		// Set reference object and type
+		setOrderReturn(arguments.orderReturn);
+		setReferenceObjectType('OrderReturn');
+
+		setOrderReturnID(arguments.orderReturn.getOrderReturnID());
+		setCurrencyCode(arguments.orderReturn.getOrder().getCurrencyCode());
+
+		setPrice(arguments.orderReturn.getFulfillmentRefundAmount());
+		setExtendedPrice(arguments.orderReturn.getFulfillmentRefundAmount());
+		setDiscountAmount(0);
+		setExtendedPriceAfterDiscount(arguments.orderReturn.getFulfillmentRefundAmount());
+
 	}
 }

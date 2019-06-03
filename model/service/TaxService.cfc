@@ -905,6 +905,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if (arguments.entity.getClassName() == 'orderDelivery'){
 			var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegrationByOrderDelivery(arguments.entity, arguments.integration);
+		}else if (arguments.entity.getClassName() == 'orderReturn'){
+			var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegrationByOrderReturn(arguments.entity, arguments.integration);	
 		}else {
 			var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegrationByOrder(arguments.entity, arguments.integration);
 		}
@@ -1013,16 +1015,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.orderDelivery.getOrder() );
 
-		// If this is not a return delivery, get the shipping address from the order delivery
-		if (arguments.orderDelivery.getOrder().getTypeCode() != 'otReturnOrder'){
+		if(  arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq 'pickup' && !isNull(arguments.orderDelivery.getOrderFulfillment().getPickupLocation()) && !isNull(arguments.orderDelivery.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
+			taxAddresses.taxShippingAddress = arguments.orderDelivery.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
 
-			if(  arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq 'pickup' && !isNull(arguments.orderDelivery.getOrderFulfillment().getPickupLocation()) && !isNull(arguments.orderDelivery.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
-				taxAddresses.taxShippingAddress = arguments.orderDelivery.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
-
-			} else if( !isNull(arguments.orderDelivery.getShippingAddress()) && !getHibachiValidationService().validate(object=arguments.orderDelivery.getShippingAddress(), context="full", setErrors=false).hasErrors()) {
-				taxAddresses.taxShippingAddress = arguments.orderDelivery.getShippingAddress();
-			}
-
+		} else if( !isNull(arguments.orderDelivery.getShippingAddress()) && !getHibachiValidationService().validate(object=arguments.orderDelivery.getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+			taxAddresses.taxShippingAddress = arguments.orderDelivery.getShippingAddress();
 		}
 
 		// Create rates request bean and populate it with the taxCategory Info
@@ -1046,21 +1043,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderDeliveryItem in arguments.orderDelivery.getOrderDeliveryItems()) {
 
 			var orderItem = orderDeliveryItem.getOrderItem();
-
-			//Return orders should be based off of the referenced order Items
-			if (orderItem.getOrderItemType().getSystemCode() == "oitReturn" && !isNull(orderItem.getReferencedOrderItem())){
-				//
-				structDelete(taxAddresses, "taxShippingAddress");
-
-				//For Return Items we just want to calculate tax from the orginal item address
-				var referencedOrderItem = orderItem.getReferencedOrderItem();
-
-				if(!isNull(referencedOrderItem.getOrderFulfillment()) && referencedOrderItem.getOrderFulfillment().getFulfillmentMethodType() eq 'pickup' && !isNull(referencedOrderItem.getOrderFulfillment().getPickupLocation()) && !isNull(referencedOrderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
-					taxAddresses.taxShippingAddress = referencedOrderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
-				} else if(!isNull(referencedOrderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=referencedOrderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
-					taxAddresses.taxShippingAddress = referencedOrderItem.getOrderFulfillment().getShippingAddress();
-				}
-			}
 
 			// Get this sku's taxCategory
 			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
@@ -1102,6 +1084,71 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			} // End TaxCategoryRate Loop
 		}
+
+		return taxRatesRequestBean;
+	}
+	
+	public any function generateTaxRatesRequestBeanForIntegrationByOrderReturn( required any orderReturn, required any integration ){
+
+		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.orderReturn.getOrder() );
+
+		// Create rates request bean and populate it with the taxCategory Info
+		var taxRatesRequestBean = getTransient("TaxRatesRequestBean");
+
+		// Populate the ratesRequestBean with a billingAddress
+		if(structKeyExists(taxAddresses,"taxBillingAddress")) {
+			taxRatesRequestBean.populateBillToWithAddress( taxAddresses.taxBillingAddress );
+		}
+
+		taxRatesRequestBean.setOrderID( arguments.orderReturn.getOrder().getOrderID() );
+		taxRatesRequestBean.setOrder(arguments.orderReturn.getOrder())
+		taxRatesRequestBean.setOrderReturn( arguments.orderReturn );
+
+		if(!isNull(arguments.orderReturn.getOrder().getAccount())) {
+			taxRatesRequestBean.setAccountID( arguments.orderReturn.getOrder().getAccount().getAccountID() );
+			taxRatesRequestBean.setAccount( arguments.orderReturn.getOrder().getAccount() );
+		}
+
+		// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
+		for(var orderItem in arguments.orderReturn.getOrderReturnItems()) {
+
+			//Return orders should be based off of the referenced order Items
+			if ( !isNull(orderItem.getReferencedOrderItem())){
+				//
+				structDelete(taxAddresses, "taxShippingAddress");
+				//For Return Items we just want to calculate tax from the orginal item address
+				var referencedOrderItem = orderItem.getReferencedOrderItem();
+
+				if(!isNull(referencedOrderItem.getOrderFulfillment()) && referencedOrderItem.getOrderFulfillment().getFulfillmentMethodType() eq 'pickup' && !isNull(referencedOrderItem.getOrderFulfillment().getPickupLocation()) && !isNull(referencedOrderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress()) ) {
+					taxAddresses.taxShippingAddress = referencedOrderItem.getOrderFulfillment().getPickupLocation().getPrimaryAddress().getAddress();
+				} else if(!isNull(referencedOrderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=referencedOrderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+					taxAddresses.taxShippingAddress = referencedOrderItem.getOrderFulfillment().getShippingAddress();
+				}
+			}
+
+			// Get this sku's taxCategory
+			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
+
+			if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
+				// Loop over the rates of that category, looking for a unique integration
+				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+
+					// If a unique integration is found, then we add it to the integrations to call
+					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
+
+						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+
+						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+							taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderItem, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
+						}
+					}
+				} // End TaxCategoryRate Loop
+			}
+		}
+
+		/* 
+			Return Order Fulfillment does not exist
+		*/
 
 		return taxRatesRequestBean;
 	}

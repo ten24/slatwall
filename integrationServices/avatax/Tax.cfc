@@ -92,7 +92,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			}
 		}
 		
-		if ( arguments.requestBean.getOrder().getOrderType().getSystemCode() == 'otReturnOrder' ){
+		if ( arguments.requestBean.getOrder().getOrderType().getSystemCode() == 'otReturnOrder'  && setting('taxDocumentCommitType') == 'commitOnClose' ){
 			docType = 'ReturnInvoice';
 		} else if ( setting('taxDocumentCommitType') == 'commitOnClose' && !isNull(arguments.requestBean.getOrder().getOrderNumber()) && len(arguments.requestBean.getOrder().getOrderNumber()) ){
 			docType = 'SalesInvoice';
@@ -101,6 +101,9 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
 			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
 			docType = 'SalesInvoice';
+		} else if ( !isNull(arguments.requestBean.getOrderReturn()) && setting('taxDocumentCommitType') == 'commitOnDelivery' ){
+			var docCode = arguments.requestBean.getOrderReturn().getShortReferenceID( true )
+			docType = 'ReturnInvoice';
 		} else{
 			var docCode = arguments.requestBean.getOrder().getShortReferenceID( true )
 		}
@@ -130,10 +133,17 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		};
 		
 		if (docType =='ReturnInvoice'){
+			
+			if ( !isNull(arguments.requestBean.getOrder().getReferencedOrder()) ){
+				var taxDate = dateFormat(arguments.requestBean.getOrder().getReferencedOrder().getOrderOpenDateTime(), 'yyyy-mm-dd');
+			} else {
+				var taxDate =dateFormat(arguments.requestBean.getOrder().getOrderOpenDateTime(), 'yyyy-mm-dd');
+			}
+			
 			requestDataStruct.TaxOverride = {
 				reason = 'Return',
 				TaxOverrideType = 'TaxDate',
-				TaxDate = dateFormat(arguments.requestBean.getOrder().getReferencedOrder().getOrderOpenDateTime(), 'yyyy-mm-dd')
+				TaxDate = taxDate
 			};
 		}
 		
