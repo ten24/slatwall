@@ -35,6 +35,8 @@ class SWCustomerAccountPaymentMethodCardController{
 	){
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
+		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateAddOrderTemplateItemSuccess');
+		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
 		
 		this.title = this.rbkeyService.rbKey('define.billing');
 		
@@ -63,6 +65,30 @@ class SWCustomerAccountPaymentMethodCardController{
 			this.billingAccountAddress = data.billingAccountAddress; 
 			this.accountPaymentMethod = data.accountPaymentMethod; 
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
+		}
+		
+		if(data['fulfillmentTotal'] != null){
+			this.baseEntity.fulfillmentTotal = data['fulfillmentTotal'];
+		}
+		
+		if(data['subtotal'] != null){
+			this.baseEntity.subtotal = data['subtotal']; 
+		}
+		
+		if(data['total'] != null){
+			this.baseEntity.total = data['total'];
+		}
+		
+		if(data['orderTemplate.fulfillmentTotal'] != null){
+			this.baseEntity.fulfillmentTotal = data['orderTemplate.fulfillmentTotal'];
+		}
+		
+		if(data['orderTemplate.subtotal'] != null){
+			this.baseEntity.subtotal = data['orderTemplate.subtotal']; 
+		}
+		
+		if(data['orderTemplate.total'] != null){
+			this.baseEntity.total = data['orderTemplate.total'];
 		}
 	}
 }

@@ -75,7 +75,7 @@ export class OrderTemplateService {
 			entityID: state.orderTemplateItemID,
 			entityName: 'OrderTemplateItem',
 			context: 'save',
-			propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
+			propertyIdentifiersList: 'orderTemplate.fulfillmentTotal,orderTemplate.subtotal,orderTemplate.total',
 			quantity: state.quantity
 		};
 		
