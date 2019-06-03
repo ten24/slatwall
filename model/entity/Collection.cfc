@@ -3110,7 +3110,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			if(len(filter.value)) {
 				var paramList = '';
-				var values = listToArray(filter.value);
+				var values = listToArray(filter.value,variables.inlistDelimiter);
 				for(var value in values){
 					var paramID = getParamID();
 					addHQLParam(paramID,value);
