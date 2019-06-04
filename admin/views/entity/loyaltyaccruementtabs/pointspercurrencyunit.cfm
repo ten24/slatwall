@@ -5,13 +5,6 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	
-	<hb:HibachiProcessCaller 
-		action="admin:entity.preprocessloyaltyaccruement" 
-		entity="#rc.loyaltyAccruement#" 
-		processContext="addpointspercurrencyunit" 
-		type="link" modal="true" 
-	/>		
 
 	 <sw-listing-display data-base-entity-name="AccruementCurrency"
 									data-multi-slot="true"
@@ -48,4 +41,14 @@
 			</sw-collection-config>
 		</sw-collection-configs>
 	</sw-listing-display>
+	
+	<hb:HibachiProcessCaller 
+		action="admin:entity.preprocessloyaltyaccruement" 
+		entity="#rc.loyaltyAccruement#" 
+		processContext="addpointspercurrencyunit" 
+		class="btn btn-default"
+		icon="plus"
+		modal="true" 
+	/>		
+	
 </cfoutput>
