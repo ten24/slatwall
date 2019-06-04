@@ -51,8 +51,6 @@ class SWActionCallerController{
 
     public $onInit = ():void =>{
 
-        console.log('so modal???', this.modal);
-
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = this.utilityService.isAngularRoute();

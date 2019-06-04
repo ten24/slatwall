@@ -18,6 +18,7 @@ devConfig.context = PATHS.app;
 devConfig.plugins =  [
 ];   
 devConfig.resolve.modules= [
+    path.resolve(path.join(customPath, './'), 'src/'),
     path.resolve(path.join(customPath, '../../../admin/client'), 'src/'),
     path.resolve(path.join(customPath, '../../client'), 'src/'),
     path.resolve(__dirname, 'src/'),

@@ -53,8 +53,14 @@ Notes:
 <cfparam name="rc.productReviewSmartList" type="any" />
 <cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
-	<hb:HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" />
-
+	<hb:HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" >
+	
+	
+	<!--- Create --->
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createProductReview" entity="productReview" class="btn btn-primary" icon="plus icon-white" modal="false" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	<!--- <hb:HibachiListingDisplay smartList="#rc.productReviewSmartList#"
 								recordDetailAction="admin:entity.detailproductreview"
 								recordEditAction="admin:entity.editproductreview">
@@ -66,7 +72,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display data-using-personal-collection="true"
+	<!---<sw-listing-display data-using-personal-collection="true"
 		data-collection="'ProductReview'"
 		data-edit="false"
 		data-has-search="true"
@@ -84,6 +90,35 @@ Notes:
 		<sw-listing-column data-property-identifier="product.defaultSku.price" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-	</sw-listing-display>
+		<sw-listing-column data-property-identifier="productReviewsStatus.typeName" ></sw-listing-column>
+	</sw-listing-display>--->
+	<cfset displayPropertyList = "reviewTitle,reviewerName,rating,product.productName,product.defaultSku.price,createdDateTime"/>
+	<cfset rc.productReviewCollectionList.setDisplayProperties(
+		displayPropertyList,
+		{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}
+	)/>
+
+	<cfset rc.productReviewCollectionList.addDisplayProperty(displayProperty='productReviewsStatus.typeName',title="#getHibachiScope().rbKey('entity.ProductReview.productReviewsStatus')#",columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset rc.productReviewCollectionList.addDisplayProperty(displayProperty='productReviewID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#rc.productReviewCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(rc.productReviewCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(rc.productReviewCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

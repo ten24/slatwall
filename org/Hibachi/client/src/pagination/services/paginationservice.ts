@@ -141,6 +141,7 @@ class Pagination{
     
     
     public setPageRecordsInfo = (collection):void =>{
+        
         this.setRecordsCount(collection.recordsCount);
         if(this.getRecordsCount() === 0 ){
             this.setPageStart(0);
@@ -149,7 +150,7 @@ class Pagination{
         }
         this.setPageEnd(collection.pageRecordsEnd);
         this.setTotalPages(collection.totalPages);
-
+        this.currentPage=collection.currentPage;
         this.totalPagesArray = [];
 
         if(angular.isUndefined(this.getCurrentPage()) || this.getCurrentPage() < 5){
@@ -161,7 +162,7 @@ class Pagination{
         }
         for(var i = start; i < end; i++){
             this.totalPagesArray.push(i);
-        }
+        } 
     };
 
     public notify(event, parameters){

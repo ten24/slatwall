@@ -92,10 +92,50 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	property name="fulfillmentTotal" persistent="false";
+	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
-	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
+	property name="subtotal" persistent="false";
+	property name="total" persistent="false";
+
+	public struct function getStructRepresentation(){ 
+		var orderTemplateStruct = super.getStructRepresentation(); 
+		orderTemplateStruct['subtotal'] = this.getSubtotal();
+		orderTemplateStruct['fulfillmentTotal'] = this.getFulfillmentTotal();
+		orderTemplateStruct['total'] = this.getTotal();
+
+		return orderTemplateStruct;  
+	}  
+
+	public numeric function getFulfillmentTotal() {
+		if(!structKeyExists(variables, 'fulfillmentTotal')){
+			variables.fulfillmentTotal = getService('OrderService').getFulfillmentTotalForOrderTemplate(this); 
+		}
+		return variables.fulfillmentTotal;
+	}
+
+	public numeric function getSubtotal(){
+		if(!structKeyExists(variables, 'subtotal')){
+			var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
+			orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+		
+			var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
+
+			variables.subtotal = 0; 
+
+			for(var orderTemplateItem in orderTemplateItemRecords){ 
+				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode(), orderTemplateItem['quantity']); 	
+			} 
+		}
+		return variables.subtotal; 
+	}
+
+	public numeric function getTotal(){ 
+		return this.getSubtotal() + this.getFulfillmentTotal(); 
+	} 
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
