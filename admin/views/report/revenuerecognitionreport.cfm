@@ -184,7 +184,11 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#</td>
+                    <td>
+                        <cfif structKeyExists(deferredRevenueData[key],'deferredTotalLeftToBeRecognizedClosing')>
+                            #$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognizedClosing,'currency')#
+                        </cfif>
+                    </td>
                 </cfloop>
             </tr>
             
