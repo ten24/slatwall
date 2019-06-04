@@ -78,7 +78,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		
 		// The main entry point to process credit card (Slatwall convention)
 		public any function processCreditCard(required any requestBean) {
-			// writeDump(var=setting(settingName='passwordTest', requestBean=arguments.requestBean));	
 			verifyServerCompatibility();
 
 			var responseBean = getTransient('CreditCardTransactionResponseBean');
@@ -170,7 +169,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						'amount' = arguments.requestBean.getTransactionAmount(),
 						'uiOptions': {
 							'hideCvc': false
-				        }
+				        },
+				        'accountID' = arguments.requestBean.getAccountID(),
+				        'orderID' = arguments.requestBean.getOrderID(),
+				        'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
 					},
 					'processingOptions' = {
 						'checkFraud' = setting(settingName='checkFraud', requestBean=arguments.requestBean),
@@ -182,12 +184,17 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						'cardHolderName' = arguments.requestBean.getNameOnCreditCard()
 					}
 				};
-				
+					
 				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 				
 				if (!responseBean.hasErrors()) {
 					requestData = {
+						'data' = {
+					        'accountID' = arguments.requestBean.getAccountID(),
+					        'orderID' = arguments.requestBean.getOrderID(),
+					        'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
+						},
 						'token' = responseData.token,
 						'card' = {
 							'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
@@ -201,34 +208,48 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 							'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
 						}
 					};
-					
+
 					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
-					
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
-					
+				
 					// Extract data and set as part of the responseBean
 					if (!responseBean.hasErrors()) {
-						arguments.responseBean.setProviderToken(responseData.token.token);
 						arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
+						arguments.responseBean.setProviderToken(responseData.token.token);
 						arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
+						// arguments.responseBean.setAvsCode(responseData.cvcResults.gatewayMessage.cvvresponse);
 
-						arguments.responseBean.addMessage(messageName="nexio.merchantID", message="#responseData.merchantID#");
+						arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
 						arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
+						arguments.responseBean.addMessage(messageName="nexio.kountResponse.rules", message="#responseData.kountResponse.rules#");
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
 						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
-					
-					// writeDump(var="*** responseData.token.token");
-					// writeDump(var=responseData.token.token);
 					}
 				}
 			} else {
-				// throw('Attempting to generate token. The payment method used already had a valid token');
+				throw('Attempting to generate token. The payment method used already had a valid token');
 
 				// Uneccessary to make API request because same token generated during accountPaymentMethod create is valid for subsequent authorization requests
-				// arguments.responseBean.setProviderToken(responseData.token.token);
-				arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
-				arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
+				if (!responseBean.hasErrors()) {
+					// arguments.responseBean.setProviderToken(responseData.token.token);
+					arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
+					arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
+					// arguments.responseBean.setAvsCode(responseData.cvcResults.gatewayMessage.cvvresponse);
+					
+					arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
+					arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
+					arguments.responseBean.addMessage(messageName="nexio.kountResponse.rules", message="#responseData.kountResponse.rules#");
+					arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
+					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
+					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
+					arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
+					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
+					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+				}
 			}
 		}
 		
@@ -261,15 +282,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				
 				// Response Data
 				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderToken(requestData.tokenex.token);
 					arguments.responseBean.setProviderTransactionID(responseData.id);
 					arguments.responseBean.setAuthorizationCode(responseData.authCode);
-					arguments.responseBean.setAmountReceived(responseData.amount);
+					arguments.responseBean.setAmountAuthorized(responseData.data.amount);
+					// arguments.responseBean.setAmountReceived(responseData.amount);
 					
 					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
 					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 					arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
 				}
 			} else {
@@ -302,19 +328,25 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 				    }
 				};	
+
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
 				
 				// Response Data
 				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderToken(requestData.tokenex.token);
 					arguments.responseBean.setProviderTransactionID(responseData.id);
 					arguments.responseBean.setAuthorizationCode(responseData.authCode);
 					arguments.responseBean.setAmountReceived(responseData.amount);
+					arguments.responseBean.setAmountAuthorized(responseData.data.amount);
 					
 					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
 					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 					arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
 				}
 			} else {
@@ -325,25 +357,35 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		private void function sendRequestToChargePreAuthorization(required any requestBean, required any responseBean) {
 			if (!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()) && len(arguments.requestBean.getOriginalAuthorizationProviderTransactionID())) {
 				// Request Data
-				// var requestData = {
-				// 	'data': {
-				// 		'amount': arguments.requestBean.getTransactionAmount(),
-			 //   	},
-			 //   	'id': arguments.requestBean.getOriginalAuthorizationProviderTransactionID()
-				// }
-				
-				// writeDump(var="*** requestData");
-				// writeDump(var=requestData);
-				
-				// responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'chargePreAuthorization', requestData);
-				
-				// writeDump(var="*** responseData")
-				// writeDump(var=responseData, abort=true);
+				var requestData = {
+					"tokenex":{
+						'token' = arguments.requestBean.getProviderToken()
+				    },
+					'data': {
+						'amount': arguments.requestBean.getTransactionAmount(),
+			    	},
+			    	'id': arguments.requestBean.getOriginalAuthorizationProviderTransactionID()
+				}
+	
+				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'chargePreAuthorization', requestData);
 				
 				// Response Data
-				// arguments.responseBean.setProviderTransactionID(responseData.id);
-				// arguments.responseBean.setAmountReceived(responseData.amount);
-			
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setProviderToken(requestData.tokenex.token);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					// arguments.responseBean.setAmountAuthorized(responseData.data.amount);
+					arguments.responseBean.setAmountReceived(responseData.amount);
+
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
+				}
 			} else {
 				throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be the authorization code to reference for the charge/capture.");
 			}
@@ -359,30 +401,26 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				var requestData = {
 					'data': {
 						'amount': arguments.requestBean.getOrder().getCalculatedTotal(),
-						'partialAmount': arguments.requestBean.getTransactionAmount()
+						'partialAmount': LSParseNumber(arguments.requestBean.getTransactionAmount())
 			    	},
 			    	'id': arguments.requestBean.getOriginalChargeProviderTransactionID()
 				}
-				writeDump(var="*** requestData");
-				writeDump(var=requestData);
-				
-				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
-				
-				// writeDump(var="*** responseData")
-				writeDump(var=responseData, abort=true);
-				
-				// Response Data
-				arguments.responseBean.setProviderTransactionID(responseData.id);
-				arguments.responseBean.setAmountCredited(responseData.amount);
 
-				arguments.responseBean.addMessage(messageName="nexio.merchantId", message="#responseData.merchantId#");
-				arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
-				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
-				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
-			
+				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
+
+				// Response Data
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					arguments.responseBean.setAmountCredited(responseData.amount);
+					
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+				}
 			} else {
 				throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
 			}
@@ -401,7 +439,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				// Request Data
 				var requestData = {
 					'data': {
-						'amount': arguments.requestBean.getTransactionAmount(),
+						'amount': LSParseNumber(arguments.requestBean.getTransactionAmount())
 			    	},
 			    	'id': voidRequiredTransactionID
 				}
@@ -409,16 +447,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
 
 				// Response Data
-				arguments.responseBean.setProviderTransactionID(responseData.id);
-				// arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
-				
-				arguments.responseBean.addMessage(messageName="nexio.merchantId", message="#responseData.merchantId#");
-				arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
-				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
-				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.message", message="#responseData.gatewayResponse.message#");
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					// arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
+					
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.message", message="#responseData.gatewayResponse.message#");
+				}
 			} else {
 				throw("There is no 'originalChargeProviderTransactionID' or originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value to be a reference to transactionID for the original charge/capture or credit.");
 			}
@@ -464,26 +504,23 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			
+			// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
+			// if (!directoryExists(logPath)){
+			// 	directoryCreate(logPath);
+			// }
+			// var timeSufix = getTickCount() & createHibachiUUID(); 
 			
-			// writeDump(var=[local,httpRequest], abort=true);
-			
-			var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
-			if (!directoryExists(logPath)){
-				directoryCreate(logPath);
-			}
-			var timeSufix = getTickCount() & createHibachiUUID(); 
-			
-			var httpRequestData = {
-				'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-				'apiUrl'=apiUrl,
-				'username' = username,
-				'password' = password,
-				'httpContentTypeHeader' = 'application/json',
-				'publicKey' = getPublicKey(arguments.requestBean),
-				'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-			};
+			// var httpRequestData = {
+			// 	'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
+			// 	'apiUrl'=apiUrl,
+			// 	'username' = username,
+			// 	'password' = password,
+			// 	'httpContentTypeHeader' = 'application/json',
+			// 	'publicKey' = getPublicKey(arguments.requestBean),
+			// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
+			// };
 
-			fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			// fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 			
 			// Make HTTP request to endpoint
 			var httpResponse = httpRequest.send().getPrefix();
@@ -511,7 +548,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					// Convert JSON response
 					responseData = deserializeJSON(httpResponse.fileContent);
 					
-					fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+					// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 
 					
 					if (structKeyExists(responseData, 'error')) {
@@ -535,7 +572,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
-				fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+				// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
 			}
 
 			return responseData;
