@@ -157,12 +157,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		//CUSTOM PROPERTIES BEGIN
 
  property name="productBenefits" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="productBenefits" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="productIngredients" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="productIngredients" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="productWeSayNoTo" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="productWeSayNoTo" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="productDirections" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="productDirections" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="hairConcernType" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 
