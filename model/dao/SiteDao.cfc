@@ -65,7 +65,7 @@ Notes:
 	</cffunction>
 	
 	<cffunction name="getSiteCodes">
-		<cfargument name="delimiter" type="string" required="true" />
+		<cfargument name="delimiter" type="string" default="," />
 		<cfquery name="local.siteCodes">
 			SELECT siteCode FROM swsite where appID is not null
 		</cfquery>
