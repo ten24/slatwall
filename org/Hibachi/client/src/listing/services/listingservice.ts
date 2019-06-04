@@ -34,7 +34,7 @@ class ListingService{
     /**
      * The reducer is responsible for modifying the state of the state object into a new state for listeners.
      */
-    public listingDisplayStateReducer:Store.Reducer = (state:any, action:Store.Action<number>):Object => {
+    public listingDisplayStateReducer:Store.Reducer = (state:any, action:Store.Action<string>):Object => {
         switch(action.type) {
             case 'LISTING_PAGE_RECORDS_UPDATE':
                 return {

@@ -10,7 +10,7 @@ class SWTypeaheadInputFieldController {
     public typeaheadCollectionConfig; 
     public modelValue; 
     public columns = []; 
-    public filters = [];
+    public filters;
     public propertiesToLoad; 
     public placeholderRbKey;
     public propertyToSave;
@@ -33,6 +33,7 @@ class SWTypeaheadInputFieldController {
                 private $rootScope,
                 private observerService
     ){
+
         this.$root = $rootScope;
 
         if( angular.isUndefined(this.typeaheadCollectionConfig)){
@@ -61,7 +62,7 @@ class SWTypeaheadInputFieldController {
         angular.forEach(this.columns, (column)=>{
                 this.typeaheadCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
         });
-        
+
         angular.forEach(this.filters, (filter)=>{
                 this.typeaheadCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
@@ -109,6 +110,7 @@ class SWTypeaheadInputField implements ng.IDirective{
         fieldName:"@",
         entityName:"@",
         typeaheadCollectionConfig:"=?",
+        filters:"=?",
         propertiesToLoad:"@?",
         placeholderRbKey:"@?",
         propertyToShow:"@",
