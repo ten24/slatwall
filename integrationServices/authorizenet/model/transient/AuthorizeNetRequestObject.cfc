@@ -4,6 +4,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiTransient"{
 		if(isStruct(data)){
 			var json = "{";
 			for(var key in data){
+				if(!structKeyExists(data, key)){
+					continue;
+				}
+
 				json &= '"#key#":';
 				if(!isSimpleValue(data[key])){
 					json &= strictSerializeJSON(data[key]);
