@@ -67,14 +67,18 @@ component {
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var prices = [];
 				for(var i=1; i <= arrayLen(skuPriceResults); i++){
-					ArrayAppend(prices, skuPriceResults[i][customPriceField]);
+					ArrayAppend(prices, {price=skuPriceResults[i].price,'#customPriceField#'=skuPriceResults[i][customPriceField]});
 				}
-				ArraySort(prices, "numeric","asc");
+				ArraySort(prices, function(a,b){
+				    if(a.price < b.price){ return -1}
+				    else if (a.price > b.price){ return 1 }
+				    else{ return 0 };
+				});
 				variables[cacheKey]= prices[1];
 			} 
 			
 			if(structKeyExists(variables,cacheKey)){
-				return variables[cacheKey];
+				return variables[cacheKey][customPriceField];
 			}
 			
 			var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
@@ -85,6 +89,9 @@ component {
 		}
 		
 		if(structKeyExists(variables,cacheKey)){
+		    if(isStruct(variables[cacheKey])){
+		        return variables[cacheKey][customPriceField];
+		    }
 			return variables[cacheKey];
 		}
     }
