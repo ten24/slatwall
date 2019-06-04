@@ -60,6 +60,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processLoyaltyAccruement_addGiftCardValueByCurrency(required any loyaltyAccruement, required struct data) {
+		
+		accruementCurrency = this.newAccruementCurrency();
+		
+		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		accruementCurrency.setGiftCardValue(arguments.processObject.getGiftCardValue());
+
+		accruementCurrency.setLoyaltyAccruement(arguments.loyaltyAccruement);
+
+		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
+		
+		if(accruementCurrency.hasErrors()){
+			arguments.loyaltyAccruement.setErrors(accruementCurrency.getErrors());
+		}
+		
+		return arguments.loyaltyAccruement;	
+	}
+	
+	public any function processLoyaltyAccruement_addPointsPerCurrencyUnit(required any loyaltyAccruement, required struct data) {
+		
+		accruementCurrency = this.newAccruementCurrency();
+		
+		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		accruementCurrency.setPointQuantity(arguments.processObject.getPointQuantity());
+
+		accruementCurrency.setLoyaltyAccruement(arguments.loyaltyAccruement);
+
+		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
+		
+		if(accruementCurrency.hasErrors()){
+			arguments.loyaltyAccruement.setErrors(accruementCurrency.getErrors());
+		}
+		
+		return arguments.loyaltyAccruement;	
+	}
+	
 	public any function processLoyaltyRedemption_redeem(required any loyaltyRedemption, required struct data) {
 		var lifeTimeBalance = arguments.data.accountLoyalty.getLifetimeBalance();
 

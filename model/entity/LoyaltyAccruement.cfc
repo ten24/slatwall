@@ -52,7 +52,9 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	// Related Object Properties (many-to-one)
 	property name="loyalty" cfc="Loyalty" fieldtype="many-to-one" fkcolumn="loyaltyID";
 	property name="expirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="expirationTermID" hb_optionsNullRBKey="define.never";
-	
+	property name="giftCardSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="giftCardSkuID";
+	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
+
 	// Related Object Properties (one-to-many)
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";
 	property name="accruementCurrencies" singularname="accrumentCurrency" cfc="AccruementCurrency" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";

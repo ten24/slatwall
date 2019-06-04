@@ -40,10 +40,13 @@ component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrenc
 	
 	// Persistent Properties
 	property name="AccruementCurrencyID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	
+	property name="currencyCode" ormtype="string" length="3";
+	property name="pointQuantity" ormType="integer";
+	property name="giftCardValue" ormtype="big_decimal" hb_formatType="currency";
+
 	// Related Object Properties (many-to-one)
 	property name="loyaltyAccruement" cfc="LoyaltyAccruement" fieldtype="many-to-one" fkcolumn="loyaltyAccruementID";
-	property name="currencyCode" ormtype="string" length="3";
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	

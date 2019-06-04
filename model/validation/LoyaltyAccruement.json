@@ -9,7 +9,7 @@
 	    }
 	},
 	"properties":{
-		"pointQuantity":			[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"pointQuantity":			[{"contexts":"save","dataType":"numeric"}],
 		"accruementEvent":			[{"contexts":"save","required":true}],
 		"accruementType":			[{"contexts":"save","required":true}],
 		"startDateTime":			[{"contexts":"save","dataType":"date"}],
