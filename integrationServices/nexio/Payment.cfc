@@ -168,11 +168,12 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
 						'amount' = arguments.requestBean.getTransactionAmount(),
 						'uiOptions': {
-							'hideCvc': false
+							'hideCvc': false,
+							'hideBilling' = false,
 				        },
-				        'accountID' = arguments.requestBean.getAccountID(),
-				        'orderID' = arguments.requestBean.getOrderID(),
-				        'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
+				        // 'accountID' = arguments.requestBean.getAccountID(),
+				        // 'orderID' = arguments.requestBean.getOrderID(),
+				        // 'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
 					},
 					'processingOptions' = {
 						'checkFraud' = setting(settingName='checkFraud', requestBean=arguments.requestBean),
@@ -182,13 +183,33 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					},
 					'card' = {
 						'cardHolderName' = arguments.requestBean.getNameOnCreditCard(),
-					}
+					},
+					'customer'= {
+						'customerRef' = arguments.requestBean.getAccountID(),
+						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+						'billToCity' = arguments.requestBean.getBillingCity(),
+						'billToState' = arguments.requestBean.getBillingStateCode(),
+						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+						'billToCountry' = arguments.requestBean.getBillingCountryCode(),
+					},
 				};
 				
-				// writeDump(var=arguments.requestBean);	
+				// writeDump(var="*** 1st requestData");	
+				// writeDump(var=requestData);	
 				
 				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
+				
+				// writeDump(var="*** 1st responseData");
+				// writeDump(var=responseData.fraudUrl);
+				
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
+				}
+				
+				// writeDump(var="*** 1st arguments.responseBean");
+				// writeDump(var=arguments.responseBean);
 				
 				if (!responseBean.hasErrors()) {
 					requestData = {
@@ -204,32 +225,30 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 							'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
 							'securityCode' = arguments.requestBean.getSecurityCode(),
 						},
-						'customer': {
-							'customerRef' = arguments.requestBean.getAccountID(),
-							'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-							'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-							'billToCity' = arguments.requestBean.getBillingCity(),
-							'billToState' = arguments.requestBean.getBillingStateCode(),
-							'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-							'billToCountry' = arguments.requestBean.getBillingCountryCode(),
-						},
-						'processingOptions' = {
-							'verifyAvs' = setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
-							'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
-						}
+						// 'customer'= {
+						// 	'customerRef' = arguments.requestBean.getAccountID(),
+						// 	'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+						// 	'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+						// 	'billToCity' = arguments.requestBean.getBillingCity(),
+						// 	'billToState' = arguments.requestBean.getBillingStateCode(),
+						// 	'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+						// 	'billToCountry' = arguments.requestBean.getBillingCountryCode(),
+						// },
+						// 'processingOptions' = {
+						// 	'verifyAvs' = setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
+						// 	'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
+						// }
 					};
 
 					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 				
-				writeDump(var="*** requestData");
-				writeDump(var=requestData);
+				// writeDump(var="*** 2nd requestData");
+				// writeDump(var=requestData);
 				
-				// writeDump(var="*** arguments.responseBean");
-				// writeDump(var=arguments.responseBean);
 				
-				writeDump(var="*** responseData");
-				writeDump(var=responseData, abort=true);
+				// writeDump(var="*** 2nd responseData");
+				// writeDump(var=responseData);
 				
 				
 					// Extract data and set as part of the responseBean
@@ -248,6 +267,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+					
+				// writeDump(var="*** arguments.responseBean");
+				// writeDump(var=arguments.responseBean);
 					}
 				}
 			} else {
@@ -523,24 +545,26 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#"); // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
+		
+			// ---> Comment Out:
+			var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
+			if (!directoryExists(logPath)){
+				directoryCreate(logPath);
+			}
+			var timeSufix = getTickCount() & createHibachiUUID(); 
 			
-			// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
-			// if (!directoryExists(logPath)){
-			// 	directoryCreate(logPath);
-			// }
-			// var timeSufix = getTickCount() & createHibachiUUID(); 
-			
-			// var httpRequestData = {
-			// 	'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-			// 	'apiUrl'=apiUrl,
-			// 	'username' = username,
-			// 	'password' = password,
-			// 	'httpContentTypeHeader' = 'application/json',
-			// 	'publicKey' = getPublicKey(arguments.requestBean),
-			// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-			// };
+			var httpRequestData = {
+				'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
+				'apiUrl'=apiUrl,
+				'username' = username,
+				'password' = password,
+				'httpContentTypeHeader' = 'application/json',
+				'publicKey' = getPublicKey(arguments.requestBean),
+				'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
+			};
 
-			// fileWrite('#logPath#/#timeSufix#_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			fileWrite('#logPath#/#timeSufix#_AVSrequest.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			// Comment Out: <---
 			
 			// Make HTTP request to endpoint
 			var httpResponse = httpRequest.send().getPrefix();
@@ -568,7 +592,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					// Convert JSON response
 					responseData = deserializeJSON(httpResponse.fileContent);
 					
-					// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+					// ---> Comment Out:
+					fileWrite('#logPath#/#timeSufix#_AVSresponse.json',httpResponse.fileContent);
+					// Comment Out: <---
 
 					
 					if (structKeyExists(responseData, 'error')) {
@@ -592,7 +618,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
-				// fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+				// ---> Comment Out:
+				fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+				// Comment Out: <---
 			}
 
 			return responseData;
