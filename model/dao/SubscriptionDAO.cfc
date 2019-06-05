@@ -446,10 +446,8 @@ Notes:
 			<cfif !isNull(arguments.productID) AND len(arguments.productID)>
 				AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 			</cfif>
-			
 			<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
 				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(Year(arguments.minDate),Month(arguments.minDate),Day(arguments.minDate),0,0,0)#" cfsqltype="cf_sql_timestamp"/>
-				
 			</cfif>
 			group by soi.subscriptionOrderItemID
 		</cfquery>
@@ -460,7 +458,7 @@ Notes:
 					<cfloop query="local.subscriptionOrderItemQuery">
 						<cfset currentRecordsCount++/>	
 							(
-								SELECT DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M') as thisMonth, 
+								SELECT DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M') as thisMonth,
 								'#local.subscriptionOrderItemQuery.pricePerDelivery#' as pricePerDelivery,
 								'#local.subscriptionOrderItemQuery.taxPerDelivery#' as taxPerDelivery
 								FROM swDeliveryScheduleDate dsd

@@ -68,7 +68,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var deferredRevenueData = getSubscriptionDAO().getDeferredRevenueData(argumentCollection=arguments);
 		var deferredRevenueLeftToBeRecognizedData = getSubscriptionDAO().getDeferredRevenueLeftToBeRecognizedData(argumentCollection=arguments);
-		
 		var deferredActiveSubscriptionData = getSubscriptionDAO().getDeferredActiveSubscriptionData(argumentCollection=arguments);
 		var deferredExpiringSubscriptionData = getSubscriptionDAO().getDeferredExpiringSubscriptionData(argumentCollection=arguments);
 		
@@ -99,12 +98,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var monthNamePattern = startYear&'-'&possibleMonths[i % 12 +1];
 			monthData[monthNamePattern]={};
 			var closingMonthPattern = startYearClosed&'-'&possibleMonths[j % 12 + 1];
-			// writedump(monthNamePattern);
-			// writedump(startYear);
-			// writedump('<br>');
-			// writedump(closingMonthPattern);
-			// writedump(startYearClosed);
-			// writedump('<br>');
 			if(!isNull(deferredRevenueLeftToBeRecognizedData)){
 				for(var k=1; k <= deferredRevenueLeftToBeRecognizedData.recordCount;k++){
 					var currentRecord = QueryGetRow(deferredRevenueLeftToBeRecognizedData,k);

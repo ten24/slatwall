@@ -60,7 +60,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 	property name="deferredRevenueFlag" ormtype="boolean" description="This field identifies a product as having deferred revenue";
-	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
 	property name="startInCurrentPeriodFlag" ormtype="boolean" default="0";
  
 	// Calculated Properties
@@ -75,7 +74,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
-
+	property name="nextDeliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="many-to-one" fkcolumn="nextDeliveryScheduleDateID";
+	
 	// Related Object Properties (one-to-many)
 	property name="listingPages" singularname="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -158,14 +158,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
-			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();
-			deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
-			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue|ASC');
-			deliveryScheduleDateCollectionList.setPageRecordsShow(1);
-			var deliveryScheduleDateValueRecords = deliveryScheduleDateCollectionList.getPageRecords();
+			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
 			
-			if(arrayLen(deliveryScheduleDateValueRecords)){
-				variables.nextDeliveryScheduleDate=deliveryScheduleDateValueRecords[1]['deliveryScheduleDateValue'];
+			deliveryScheduleDateSmartList.addOrder('deliveryScheduleDateValue');
+			deliveryScheduleDateSmartList.setPageRecordsShow(1);
+			var deliveryScheduleDate= deliveryScheduleDateSmartList.getPageRecords();
+			
+			if(arrayLen(deliveryScheduleDate)){
+				variables.nextDeliveryScheduleDate=deliveryScheduleDate[1];
 			}
 			
 		}
