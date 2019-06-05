@@ -181,17 +181,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						'verboseResponse' = true
 					},
 					'card' = {
-						'cardHolderName' = arguments.requestBean.getNameOnCreditCard()
+						'cardHolderName' = arguments.requestBean.getNameOnCreditCard(),
 					}
 				};
-					
+				
+				// writeDump(var=arguments.requestBean);	
+				
 				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 				
 				if (!responseBean.hasErrors()) {
 					requestData = {
 						'data' = {
-					        'accountID' = arguments.requestBean.getAccountID(),
 					        'orderID' = arguments.requestBean.getOrderID(),
 					        'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
 						},
@@ -201,7 +202,16 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 							'expirationMonth' = arguments.requestBean.getExpirationMonth(),
 							'expirationYear' = arguments.requestBean.getExpirationYear(), 
 							'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
-							'securityCode' = arguments.requestBean.getSecurityCode()
+							'securityCode' = arguments.requestBean.getSecurityCode(),
+						},
+						'customer': {
+							'customerRef' = arguments.requestBean.getAccountID(),
+							'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+							'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+							'billToCity' = arguments.requestBean.getBillingCity(),
+							'billToState' = arguments.requestBean.getBillingStateCode(),
+							'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+							'billToCountry' = arguments.requestBean.getBillingCountryCode(),
 						},
 						'processingOptions' = {
 							'verifyAvs' = setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
@@ -211,6 +221,16 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 
 					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
+				
+				writeDump(var="*** requestData");
+				writeDump(var=requestData);
+				
+				// writeDump(var="*** arguments.responseBean");
+				// writeDump(var=arguments.responseBean);
+				
+				writeDump(var="*** responseData");
+				writeDump(var=responseData, abort=true);
+				
 				
 					// Extract data and set as part of the responseBean
 					if (!responseBean.hasErrors()) {
