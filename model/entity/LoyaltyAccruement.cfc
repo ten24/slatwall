@@ -103,7 +103,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	public string function getOptionalTargetAccountConfig(encodeForHTML=false){
 		
 		if(encodeForHTML){
-			return encodeForHTML(variables.optionalTargetAccountConfig);
+			return getService("HibachiUtilityService").hibachiHTMLEditFormat(variables.optionalTargetAccountConfig);
 		}
 		
 		return variables.optionalTargetAccountConfig;
