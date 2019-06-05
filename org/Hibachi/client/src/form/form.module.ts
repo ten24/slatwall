@@ -24,6 +24,7 @@ import {SWIsolateChildForm} from "./components/swisolatechildform";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
+import {SWCollectionConfigAsProperty} from "./components/swcollectionconfigasproperty";
 
 var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',coremodule.name]).config(()=>{
 
@@ -47,7 +48,8 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 .directive('swErrorDisplay',SWErrorDisplay.Factory())
 .directive('swIsolateChildForm', SWIsolateChildForm.Factory())
 .directive('swAddressForm',SWAddressForm.Factory())
-.directive('swFormSubscriber',SWFormSubscriber.Factory());
+.directive('swFormSubscriber',SWFormSubscriber.Factory())
+.directive('swCollectionConfigAsProperty',SWCollectionConfigAsProperty.Factory());
 
 export{
 	formmodule

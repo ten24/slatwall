@@ -88,6 +88,7 @@ Notes:
 
 
 				<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/optionalTargetAccountConfig" />
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />

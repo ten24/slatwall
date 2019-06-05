@@ -13,7 +13,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="expirationTerm" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementEvent" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="false">
-			
+
 			<!--- TYPE - POINTS --->
 			<cfif rc.loyaltyAccruement.getAccruementType() == 'points' >
 				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointType" edit="false" >

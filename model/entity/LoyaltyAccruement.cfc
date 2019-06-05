@@ -69,6 +69,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclSku" fkcolumn="loyaltyAccruementID" inversejoincolumn="skuID";
 	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProduct" fkcolumn="loyaltyAccruementID" inversejoincolumn="productID";
 	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProductType" fkcolumn="loyaltyAccruementID" inversejoincolumn="productTypeID";
+	property name="optionalTargetAccountConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -97,6 +98,15 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	public array function getPointTypeOptions() {
 		return this.getService("LoyaltyService").getPointTypeOptions();
+	}
+	
+	public string function getOptionalTargetAccountConfig(encodeForHTML=false){
+		
+		if(encodeForHTML){
+			return encodeForHTML(variables.optionalTargetAccountConfig);
+		}
+		
+		return variables.optionalTargetAccountConfig;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
