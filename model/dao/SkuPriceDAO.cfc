@@ -49,19 +49,19 @@ Notes:
 component extends="HibachiDAO" accessors="true" output="false" {
 
 	public function getSkuPricesForSku (required string skuID){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID", { skuID=arguments.skuID }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID", { skuID=arguments.skuID }, true );
 	}
 
 	public function getSkuPricesForSkuByCurrencyCode (required string skuID, required string currencyCode){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 	}
 
 	public function getBaseSkuPricesForSku (required string skuID){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null", { skuID=arguments.skuID }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null", { skuID=arguments.skuID }, true );
 	}
 
 	public function getBaseSkuPriceForSkuByCurrencyCode (required string skuID, required string currencyCode, priceGroups=getHibachiScope().getAccount().getPriceGroups()){
-		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode";
+		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode";
 		
 		if(arraylen(arguments.priceGroups)){
 			var priceGroupIDs = "";
@@ -79,7 +79,7 @@ component extends="HibachiDAO" accessors="true" output="false" {
 	}
 
 	public function getSkuPricesForSkuAndQuantity(required string skuID, required numeric quantity){
-		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
+		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
 	}
 
 	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups()){
@@ -94,7 +94,8 @@ component extends="HibachiDAO" accessors="true" output="false" {
 			FROM SlatwallSkuPrice _skuPrice 
 			left join _skuPrice.sku as _sku
 			left join _skuPrice.priceGroup as _priceGroup
-			WHERE _sku.skuID = :skuID 
+			WHERE _skuPrice.activeFlag = 1
+			AND _sku.skuID = :skuID 
 			AND _skuPrice.minQuantity <= :quantity 
 			AND _skuPrice.maxQuantity >= :quantity 
 			AND _skuPrice.currencyCode = :currencyCode
@@ -124,11 +125,11 @@ component extends="HibachiDAO" accessors="true" output="false" {
 	}
 
 	public function getSkuPricesForSkuAndQuantityRange (required string skuID, required numeric minQuantity, required numeric maxQuantity ){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity }, true );
 	}
 
 	public function getSkuPricesForSkuAndQuantityRangeByCurrencyCode (required string skuID, required numeric minQuantity, required numeric maxQuantity, required string currencyCode){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity, currencyCode=arguments.currencyCode }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity, currencyCode=arguments.currencyCode }, true );
 	}
 
 }
