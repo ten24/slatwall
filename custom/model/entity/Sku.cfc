@@ -10,45 +10,27 @@ component {
     property name="retailValueVolume" ormtype="big_decimal";
     
     public any function getPersonalVolumeByCurrencyCode(required string currencyCode){
-        if(!structKeyExists(variables,'personalVolume')){
-            variables.personalVolume = this.getCustomPriceByCurrencyCode('personalVolume',this.getCurrencyCode());
-        }
-        return variables.personalVolume;
+        return this.getCustomPriceByCurrencyCode('personalVolume',this.getCurrencyCode());
     }
     
     public any function getTaxableAmountByCurrencyCode(required string currencyCode){
-        if(!structKeyExists(variables,'taxableAmount')){
-            variables.taxableAmount = this.getCustomPriceByCurrencyCode('taxableAmount',this.getCurrencyCode());
-        }
-        return variables.taxableAmount;
+        return this.getCustomPriceByCurrencyCode('taxableAmount',this.getCurrencyCode());
     }
     
     public any function getCommissionableVolumeByCurrencyCode(required string currencyCode){
-        if(!structKeyExists(variables,'commissionableVolume')){
-            variables.commissionableVolume = this.getCustomPriceByCurrencyCode('commissionableVolume',this.getCurrencyCode());
-        }
-        return variables.commissionableVolume;
+        return this.getCustomPriceByCurrencyCode('commissionableVolume',this.getCurrencyCode());
     }
     
     public any function getSponsorVolumeByCurrencyCode(required string currencyCode){
-        if(!structKeyExists(variables,'sponsorVolume')){
-            variables.sponsorVolume = this.getCustomPriceByCurrencyCode('sponsorVolume',this.getCurrencyCode());
-        }
-        return variables.sponsorVolume;
+        return this.getCustomPriceByCurrencyCode('sponsorVolume',this.getCurrencyCode());
     }
     
     public any function getProductPackVolumeByCurrencyCode(required string currencyCode){
-        if(!structKeyExists(variables,'productPackVolume')){
-            variables.productPackVolume = this.getCustomPriceByCurrencyCode('productPackVolume',this.getCurrencyCode());
-        }
-        return variables.productPackVolume;
+        return this.getCustomPriceByCurrencyCode('productPackVolume',this.getCurrencyCode());
     }
     
     public any function getRetailValueVolumeByCurrencyCode(required string currencyCode){
-        if(!structKeyExists(variables,'retailValueVolume')){
-            variables.retailValueVolume = this.getCustomPriceByCurrencyCode('retailValueVolume',this.getCurrencyCode());
-        }
-        return variables.retailValueVolume;
+        return this.getCustomPriceByCurrencyCode('retailValueVolume',this.getCurrencyCode());
     }
 
     public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
@@ -76,7 +58,7 @@ component {
 				});
 				variables[cacheKey]= prices[1];
 			} 
-			
+
 			if(structKeyExists(variables,cacheKey)){
 				return variables[cacheKey][customPriceField];
 			}
@@ -87,7 +69,7 @@ component {
 			}
 			
 		}
-		
+        
 		if(structKeyExists(variables,cacheKey)){
 		    if(isStruct(variables[cacheKey])){
 		        return variables[cacheKey][customPriceField];

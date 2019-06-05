@@ -21,42 +21,66 @@ component {
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
-            variables.personalVolume = getSku().getPersonalVolumeByCurrencyCode(this.getCurrencyCode());
+            var personalVolume = getSku().getPersonalVolumeByCurrencyCode(this.getCurrencyCode());
+            if(isNull(personalVolume)){
+                personalVolume = 0;
+            }
+            variables.personalVolume = personalVolume;
         }
         return variables.personalVolume;
     }
     
     public any function getTaxableAmount(){
-        if(!structKeyExists(variables,'taxableAmount')){
-            variables.taxableAmount = getSku().getTaxableAmountByCurrencyCode(this.getCurrencyCode());
+       if(!structKeyExists(variables,'taxableAmount')){
+            var taxableAmount = getSku().getTaxableAmountByCurrencyCode(this.getCurrencyCode());
+            if(isNull(taxableAmount)){
+                taxableAmount = 0;
+            }
+            variables.taxableAmount = taxableAmount;
         }
         return variables.taxableAmount;
     }
     
     public any function getCommissionableVolume(){
         if(!structKeyExists(variables,'commissionableVolume')){
-            variables.commissionableVolume = getSku().getCommissionableVolumeByCurrencyCode(this.getCurrencyCode());
+            var commissionableVolume = getSku().getCommissionableVolumeByCurrencyCode(this.getCurrencyCode());
+            if(isNull(commissionableVolume)){
+                commissionableVolume = 0;
+            }
+            variables.commissionableVolume = commissionableVolume;
         }
         return variables.commissionableVolume;
     }
     
     public any function getSponsorVolume(){
         if(!structKeyExists(variables,'sponsorVolume')){
-            variables.sponsorVolume = getSku().getSponsorVolumeByCurrencyCode(this.getCurrencyCode());
+            var sponsorVolume = getSku().getSponsorVolumeByCurrencyCode(this.getCurrencyCode());
+            if(isNull(sponsorVolume)){
+                sponsorVolume = 0;
+            }
+            variables.sponsorVolume = sponsorVolume;
         }
         return variables.sponsorVolume;
     }
     
     public any function getProductPackVolume(){
         if(!structKeyExists(variables,'productPackVolume')){
-            variables.productPackVolume = getSku().getProductPackVolumeByCurrencyCode(this.getCurrencyCode());
+            var productPackVolume = getSku().getProductPackVolumeByCurrencyCode(this.getCurrencyCode());
+            if(isNull(productPackVolume)){
+                productPackVolume = 0;
+            }
+            variables.productPackVolume = productPackVolume;
         }
         return variables.productPackVolume;
     }
     
     public any function getRetailValueVolume(){
         if(!structKeyExists(variables,'retailValueVolume')){
-            variables.retailValueVolume = getSku().getRetailValueVolumeByCurrencyCode(this.getCurrencyCode());
+            var retailValueVolume = getSku().getRetailValueVolumeByCurrencyCode(this.getCurrencyCode());
+            if(isNull(retailValueVolume)){
+                retailValueVolume = 0;
+            }
+            variables.retailValueVolume = retailValueVolume;
         }
         return variables.retailValueVolume;
     }
