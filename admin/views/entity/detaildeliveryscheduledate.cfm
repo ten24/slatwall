@@ -46,36 +46,25 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<cfparam name="rc.deliveryScheduleDate" type="any" />
+<cfparam name="rc.productID" type="any" default=""/>
+<cfparam name="rc.edit" type="boolean" default="true" />
+<cfif !isNull(rc.deliveryScheduleDate.getProduct())>
+    <cfset rc.productID = rc.deliveryScheduleDate.getProduct().getProductID()/>
+</cfif>
 <cfoutput>
-    
-    <!---<hb:HibachiPropertyDisplay object="#rc.product#" property="startInCurrentPeriodFlag" edit="#rc.edit#">--->
-    <!---<sw-product-delivery-schedule-dates
-        data-product-id="#rc.product.getProductID()#"  
-        data-edit="#rc.edit#"
-    >
-    </sw-product-delivery-schedule-dates>--->
-    <cfset local.deliveryScheduleDateCollectionList = $.slatwall.getService('productService').getDeliveryScheduleDateCollectionList()  >
-    <cfset local.deliveryScheduleDateCollectionList.addFilter('product.productID',rc.product.getProductID())/>
-    <cfset displayPropertyList = 'deliveryScheduleDateName,deliveryScheduleDateValue'/>
-    <cfset local.deliveryScheduleDateCollectionList.setDisplayProperties(
-		displayPropertyList,
-		{
-			isVisible=true,
-			isSearchable=false,
-			isDeletable=true
-		})
-	/>
-	<cfset local.deliveryScheduleDateCollectionList.addDisplayProperty(displayProperty='deliveryScheduleDateID',columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-    <hb:HibachiListingDisplay collectionList="#local.deliveryScheduleDateCollectionList#" 
-		recordEditAction="admin:entity.edit#lcase(local.deliveryScheduleDateCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(local.deliveryScheduleDateCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
-	<hb:HibachiActionCaller action="admin:entity.createdeliveryscheduledate" queryString="productID=#rc.product.getProductID()#&sRedirectAction=admin:entity.detailProduct"  modal=true class="btn btn-default" icon="plus"/>
+	<hb:HibachiEntityDetailForm object="#rc.deliveryScheduleDate#" edit="#rc.edit#" >
+		<hb:HibachiEntityActionBar type="detail" object="#rc.deliveryScheduleDate#" edit="#rc.edit#"  />
+			
+		<input type="hidden" name="product.productID" value="#rc.productID#" />
+		<input type="hidden" name="sRedirectAction" value="admin:entity.detailproduct" />
+		<input type="hidden" name="sRedirectQS" value="productID=#rc.productID#" />
+		
+		<hb:HibachiEntityDetailGroup object="#rc.deliveryScheduleDate#">
+			<hb:HibachiEntityDetailItem view="admin:entity/deliveryscheduledatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
