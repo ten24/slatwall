@@ -76,6 +76,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 	property name="orderTemplateScheduleDateChangeReasons" singularname="orderTemplateScheduleDateChangeReason" cfc="OrderTemplateScheduleDateChangeReason" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
+	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="orderTemplateID";
 
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
 	

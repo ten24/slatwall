@@ -64301,6 +64301,7 @@ var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(646);
 var swordertemplateaddpromotionmodal_1 = __webpack_require__(647);
 var swordertemplatefrequencycard_1 = __webpack_require__(648);
 var swordertemplatefrequencymodal_1 = __webpack_require__(649);
+var swordertemplategiftcards_1 = __webpack_require__(919);
 var swordertemplateitems_1 = __webpack_require__(650);
 var swordertemplatepromotions_1 = __webpack_require__(651);
 var swordertemplatetotal_1 = __webpack_require__(652);
@@ -64322,6 +64323,7 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .directive('swOrderTemplateAddPromotionModal', swordertemplateaddpromotionmodal_1.SWOrderTemplateAddPromotionModal.Factory())
     .directive('swOrderTemplateFrequencyCard', swordertemplatefrequencycard_1.SWOrderTemplateFrequencyCard.Factory())
     .directive('swOrderTemplateFrequencyModal', swordertemplatefrequencymodal_1.SWOrderTemplateFrequencyModal.Factory())
+    .directive('swOrderTemplateGiftCards', swordertemplategiftcards_1.SWOrderTemplateGiftCards.Factory())
     .directive('swOrderTemplateItems', swordertemplateitems_1.SWOrderTemplateItems.Factory())
     .directive('swOrderTemplatePromotions', swordertemplatepromotions_1.SWOrderTemplatePromotions.Factory())
     .directive('swOrderTemplateTotal', swordertemplatetotal_1.SWOrderTemplateTotal.Factory())
@@ -95985,6 +95987,63 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(308);
+
+
+/***/ }),
+/* 919 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var SWOrderTemplateGiftCardsController = /** @class */ (function () {
+    function SWOrderTemplateGiftCardsController($hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.collectionConfigService = collectionConfigService;
+        this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
+        this.rbkeyService = rbkeyService;
+        this.edit = false;
+        this.$onInit = function () {
+            _this.giftCardCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateAppliedGiftCard');
+            _this.giftCardCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
+        };
+    }
+    return SWOrderTemplateGiftCardsController;
+}());
+var SWOrderTemplateGiftCards = /** @class */ (function () {
+    function SWOrderTemplateGiftCards(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.orderPartialsPath = orderPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.restrict = "EA";
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<?'
+        };
+        this.controller = SWOrderTemplateGiftCardsController;
+        this.controllerAs = "swOrderTemplateGiftCards";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/ordertemplategiftcards.html";
+    }
+    SWOrderTemplateGiftCards.Factory = function () {
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWOrderTemplateGiftCards(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        directive.$inject = [
+            'orderPartialsPath',
+            'slatwallPathBuilder',
+            '$hibachi',
+            'rbkeyService'
+        ];
+        return directive;
+    };
+    return SWOrderTemplateGiftCards;
+}());
+exports.SWOrderTemplateGiftCards = SWOrderTemplateGiftCards;
 
 
 /***/ })

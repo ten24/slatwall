@@ -73,6 +73,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
+	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="giftCardID";
 
 	// Related Object Properties (many-to-many)
 

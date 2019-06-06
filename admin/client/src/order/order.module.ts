@@ -12,6 +12,7 @@ import {SWCustomerAccountPaymentMethodCard} from "./components/swcustomeraccount
 import {SWOrderTemplateAddPromotionModal} from "./components/swordertemplateaddpromotionmodal";
 import {SWOrderTemplateFrequencyCard} from "./components/swordertemplatefrequencycard";
 import {SWOrderTemplateFrequencyModal} from "./components/swordertemplatefrequencymodal";
+import {SWOrderTemplateGiftCards} from "./components/swordertemplategiftcards";
 import {SWOrderTemplateItems} from "./components/swordertemplateitems";
 import {SWOrderTemplatePromotions} from "./components/swordertemplatepromotions";
 import {SWOrderTemplateTotal} from "./components/swordertemplatetotal";
@@ -36,6 +37,7 @@ var ordermodule = angular.module('order',[coremodule.name])
 .directive('swOrderTemplateAddPromotionModal', SWOrderTemplateAddPromotionModal.Factory())
 .directive('swOrderTemplateFrequencyCard', SWOrderTemplateFrequencyCard.Factory())
 .directive('swOrderTemplateFrequencyModal', SWOrderTemplateFrequencyModal.Factory())
+.directive('swOrderTemplateGiftCards', SWOrderTemplateGiftCards.Factory())
 .directive('swOrderTemplateItems', SWOrderTemplateItems.Factory())
 .directive('swOrderTemplatePromotions', SWOrderTemplatePromotions.Factory())
 .directive('swOrderTemplateTotal', SWOrderTemplateTotal.Factory())
