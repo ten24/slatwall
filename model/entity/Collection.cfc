@@ -3078,12 +3078,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var rangePredicate = "";
 		
-		if(arguments.filter.ormtype eq 'timestamp') { // if date-range
+		if(StructKeyExists(arguments.filter, "ormtype") && arguments.filter.ormtype == 'timestamp') { // if date-range
 			
 			rangePredicate = getDateRangePredicate(arguments.filter);
 		
 		} else if( listfindnocase("between,not between",arguments.filter.comparisonOperator) 
-					&& listFind('integer,float,big_decimal,string',arguments.filter.ormtype)  ) { 
+					&& StructKeyExists(arguments.filter, "ormtype") && listFind('integer,float,big_decimal,string',arguments.filter.ormtype)  ) { 
 			
 			rangePredicate = getNumericRangePredicate(arguments.filter);
 			
