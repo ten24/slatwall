@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,28 +45,21 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfparam name="rc.loyalty" type="any">
-<cfparam name="rc.edit" type="boolean">
+	// Injected Entity
+	property name="LoyaltyAccruement";
 
-<cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.loyalty.getloyaltyAccruementsSmartList()#"
-							   recordEditAction="admin:entity.editloyaltyAccruement"
-							   recorddetailaction="admin:entity.detailloyaltyAccruement">
-		<hb:HibachiListingColumn propertyIdentifier="startDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="endDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="expirationTerm.termName" />
-		<hb:HibachiListingColumn propertyIdentifier="accruementEvent" />
-		<hb:HibachiListingColumn propertyIdentifier="accruementType" />
-		<hb:HibachiListingColumn propertyIdentifier="pointType" />
-		<hb:HibachiListingColumn propertyIdentifier="pointQuantity" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	// Data Properties
+    
+    property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
+	property name="giftCardValue" ormtype="big_decimal" hb_formatType="currency";
 	
-	<hb:HibachiActionCaller action="admin:entity.createloyaltyaccruement" class="btn btn-default" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyAccruement" modal="false"  />
-
-</cfoutput>
-
+    public array function getCurrencyCodeOptions() {
+        return getService("currencyService").getCurrencyOptions();
+    }
+    
+    
+     
+}
