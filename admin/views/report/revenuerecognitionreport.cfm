@@ -7,13 +7,13 @@
 <cfoutput> 
     <cfset slatAction = 'report.deferredRevenueReport'/>
     
-    <cfset newOrderCollectionList = $.slatwall.getService('HibachiService').getOrderCollectionList()/>
-    <cfset newOrderCollectionList.setDisplayProperties('orderOpenDateTime',{isPeriod=true})/>
-    <cfset newOrderCollectionList.addDisplayAggregate('calculatedTotal','SUM','newOrdersTotal',false,{isMetric=true})/>
+    <cfset newOrderCollectionList = $.slatwall.getService('HibachiService').getSubscriptionUsageCollectionList()/>
+    <cfset newOrderCollectionList.setDisplayProperties('subscriptionOrderItems.orderItem.order.orderOpenDateTime',{isPeriod=true})/>
+    <cfset newOrderCollectionList.addDisplayAggregate('subscriptionOrderItems.orderItem.calculatedExtendedPrice','SUM','newOrdersTotal',false,{isMetric=true})/>
     <cfset newOrderCollectionList.setReportFlag(1)/>
     <cfset newOrderCollectionList.setPeriodInterval('Month')/>
-    <cfset newOrderCollectionList.addFilter('orderOpenDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
-    <cfset newOrderCollectionList.addFilter('orderOpenDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
+    <cfset newOrderCollectionList.addFilter('subscriptionOrderItems.orderItem.order.orderOpenDateTime', CreateDateTime(Year(rc.minDate),Month(rc.minDate),Day(rc.minDate),0,0,0),'>=')/>
+    <cfset newOrderCollectionList.addFilter('subscriptionOrderItems.orderItem.order.orderOpenDateTime', CreateDateTime(Year(rc.maxDate),Month(rc.maxDate),Day(rc.maxDate),23,59,59),'<=')/>
     
     
     <cfset cancelledOrdersCollectionList = $.slatwall.getService('HibachiService').getSubscriptionUsageCollectionList()/>
@@ -42,18 +42,19 @@
     
     
     <cfif structKeyExists(rc,'productType') and len(rc.productType)>
-        <cfset newOrderCollectionList.addFilter('orderItems.sku.product.productType.productTypeID', rc.productType,'IN')/>
+        <cfset newOrderCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
         <cfset cancelledOrdersCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
     </cfif>
     
     <cfif structKeyExists(rc,'productID') and len(rc.productID)>
-        <cfset newOrderCollectionList.addFilter('orderItems.sku.product.productID', rc.productID,'IN')/>
-        <cfset cancelledOrdersCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID', rc.productID,'IN')/>
-        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productID', rc.productID,'IN')/>
+        <cfset newOrderCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID', rc.productID,'=')/>
+        <cfset cancelledOrdersCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID', rc.productID,'=')/>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productID', rc.productID,'=')/>
     </cfif>
     
     <cfif structKeyExists(rc,'subscriptionType') and len(rc.subscriptionType)>
+        <cfset newOrderCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID', rc.productID,'=')/>
         <cfset cancelledOrdersCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemType.systemCode', rc.subscriptionType,'IN')/>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemType.systemCode', rc.subscriptionType,'IN')/>
     </cfif>
@@ -99,7 +100,7 @@
     </cfloop>
     
     <cfloop array="#newOrderCollectionList.getRecords()#" index="dataRecord">
-        <cfset index = DateDiff('m',rc.minDate,dataRecord['orderOpenDateTime'])+1/>
+        <cfset index = DateDiff('m',rc.minDate,dataRecord['subscriptionOrderItems_orderItem_order_orderOpenDateTime'])+1/>
         <cfset newOrders[index] = dataRecord['newOrdersTotal']/>
     </cfloop>
     
@@ -245,21 +246,23 @@
                         <td>
                             #deliveryScheduleDateRecord['deliveryScheduleDateName']#
                         </td>
+                        <cfset currentYear = Year(rc.minDate)/>
                         <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-                            
+                           
                             <cfset possibleMonth = possibleMonths[i%12+1]/>
                             <cfif  i%12 eq 0 and i neq 0 >
                                 <cfset currentYear++/>
                             </cfif>
-                            <cfset earnedRevenueByIssueCollectionlist = earnedRevenueCollectionList.duplicateCollection()/>
-                            <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,firstDayOfMonth(i%12+1),0,0,0),'>=')/>
-                            <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,DaysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59),'<=')/>
-                            <cfset earnedRevenueByIssueCollectionlist.addFilter('deliveryScheduleDate.deliveryScheduleDateID',deliveryScheduleDateRecord['deliveryScheduleDateID'])/>
-                            <td>
+                             <td>
+                                 <cfset earnedRevenueByIssueCollectionlist = earnedRevenueCollectionList.duplicateCollection()/>
+                                <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,1,0,0,0),'>=')/>
+                                <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,DaysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59),'<=')/>
+                                <cfset earnedRevenueByIssueCollectionlist.addFilter('deliveryScheduleDate.deliveryScheduleDateID',deliveryScheduleDateRecord['deliveryScheduleDateID'])/>
+                               
                                 <cfset earnedRevenueByIssueCollectionRecords = earnedRevenueByIssueCollectionlist.getRecords()/>
                                 <cfif arraylen(earnedRevenueByIssueCollectionRecords)>
                                     <cfset earnedRevenueByIssueCollectionRecord = earnedRevenueByIssueCollectionRecords[1]/>
-                                    #$.slatwall.getService('HibachiUtilityService').formatValue(earnedRevenueByIssueCollectionRecord['earnedSum']+earnedRevenueByIssueCollectionRecord['taxAmountSum'],'currency')#
+                                    #$.slatwall.getService('HibachiUtilityService').formatValue(earnedRevenueByIssueCollectionRecord['earnedSUM']+earnedRevenueByIssueCollectionRecord['taxAmountSUM'],'currency')#
                                 <cfelse>
                                     #$.slatwall.getService('HibachiUtilityService').formatValue(0,'currency')#
                                 </cfif>
