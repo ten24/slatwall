@@ -154,7 +154,7 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>-#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized+earnedRevenue[earnedRevenueIndex],'currency')#</td>
+                    <td>-#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized+earnedRevenue[earnedRevenueIndex]+cancelledOrders[earnedRevenueIndex]-newOrders[earnedRevenueIndex],'currency')#</td>
                     <cfset earnedRevenueIndex++/>
                 </cfloop>
             </tr>
@@ -260,6 +260,7 @@
                                 <cfset earnedRevenueByIssueCollectionlist.addFilter('deliveryScheduleDate.deliveryScheduleDateID',deliveryScheduleDateRecord['deliveryScheduleDateID'])/>
                                
                                 <cfset earnedRevenueByIssueCollectionRecords = earnedRevenueByIssueCollectionlist.getRecords()/>
+                                
                                 <cfif arraylen(earnedRevenueByIssueCollectionRecords)>
                                     <cfset earnedRevenueByIssueCollectionRecord = earnedRevenueByIssueCollectionRecords[1]/>
                                     #$.slatwall.getService('HibachiUtilityService').formatValue(earnedRevenueByIssueCollectionRecord['earnedSUM']+earnedRevenueByIssueCollectionRecord['taxAmountSUM'],'currency')#

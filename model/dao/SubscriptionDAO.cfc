@@ -304,10 +304,19 @@ Notes:
 						inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID
 						inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
 						inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
+						inner join SwOrder o on oi.orderID = o.orderID
 						inner join SwSku s on s.skuID = oi.skuID
 						inner join SwProduct p on p.productID = s.productID
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
-						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						where (
+							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+							and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+						)
+						OR (
+							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstCancelled')
+							and ss.effectiveDateTime >= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							and o.orderOpenDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+						)
 						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
 							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
 						</cfif>
@@ -317,7 +326,7 @@ Notes:
 						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
 							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 						</cfif>
-						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+						
 						and p.deferredRevenueFlag=1
 					),0) -
 					<!---total of currently earned --->
@@ -352,10 +361,20 @@ Notes:
 						inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID
 						inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
 						inner join SwOrderItem oi on oi.orderItemID = soi.orderItemID
+						inner join SwOrder o on o.orderID = oi.orderID
 						inner join SwSku s on s.skuID = oi.skuID
 						inner join SwProduct p on p.productID = s.productID
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
-						where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+						where 
+						(
+							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+							and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+						)
+						OR (
+							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstCancelled')
+							and ss.effectiveDateTime >= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							and o.orderOpenDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+						)
 						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
 							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
 						</cfif>
@@ -365,7 +384,6 @@ Notes:
 						<cfif !isNull(arguments.productID) AND len(arguments.productID)>
 							AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 						</cfif>
-						and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
 						and p.deferredRevenueFlag=1
 					),0) -
 					<!---total of currently earned --->
