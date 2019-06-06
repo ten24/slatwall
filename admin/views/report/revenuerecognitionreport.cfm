@@ -226,7 +226,7 @@
             </tr>
         </tbody>
     <!--- earned revenue --->
-    <cfif structKeyExists(rc,'productID')>
+    <cfif structKeyExists(rc,'productID') and len(rc.productID)>
         <cfset deliveryScheduleDateCollectionlist = getHibachiScope().getService('hibachiService').getDeliveryScheduleDateCollectionList()/>
         <cfset deliveryScheduleDateCollectionlist.setDisplayProperties('deliveryScheduleDateName,deliveryScheduleDateValue,deliveryScheduleDateID')/>
         <cfset deliveryScheduleDateCollectionlist.addFilter('product.productID',rc.productID)/>
