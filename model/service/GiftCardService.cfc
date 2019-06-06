@@ -110,12 +110,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.giftCard.setIssuedDate(now());
 
-		if(!giftCardCreditTransaction.hasErrors()){
-            		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
-		} else {
+		if(!isNull(giftCardTransaction) && giftCardCreditTransaction.hasErrors()){
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
-		}
-
+		} else { 
+            arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+		} 
 
 		return arguments.giftCard;
 

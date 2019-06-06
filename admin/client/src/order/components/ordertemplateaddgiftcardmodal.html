@@ -1,0 +1,24 @@
+<sw-modal-launcher data-modal-name="swOrderTemplateAddGiftCard" 
+                   data-title="{{swOrderTemplateAddGiftCard.title}}" 
+                   data-save-action="swOrderTemplateAddGiftCard.save">
+    
+    <sw-modal-button>
+        <a class="btn btn-default" ng-bind="swOrderTemplateAddGiftCard.modalButtonText"></a>
+    </sw-modal-button>
+    
+    <sw-modal-content> 
+        <div class="form-group">
+            <label class="form-label" 
+                    for="amountToApply" 
+                    sw-rbkey="'entity.OrderTemplateAppliedGiftCard.amountToApply'">
+            </label>
+            
+            <input type="text"
+                    class="form-control" 
+                    name="amountToApply" 
+                    required 
+                    ng-model="swOrderTemplateAddGiftCard.amountToApply">
+        </div>
+                
+    </sw-modal-content>
+</sw-modal-launcher>

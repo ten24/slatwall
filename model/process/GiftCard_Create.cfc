@@ -60,13 +60,15 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="ownerFirstName";
 	property name="ownerLastName";
 	property name="ownerEmailAddress";
-	property name="creditGiftCardFlag";
+	property name="creditGiftCardFlag" default="false";
 
 	//Overridden Getters
 	public string function getGiftCardCode(){
 		if(!isNull(getOriginalOrderItem()) && !isNull(getOriginalOrderItem().getSku()) && getOriginalOrderItem().getSku().getGiftCardAutoGenerateCodeFlag()){
 			return getService("hibachiUtilityService").generateRandomID(getOriginalOrderItem().getSku().setting('skuGiftCardCodeLength'));
-		} else {
+		} else if(!structKeyExists(variables, 'giftCardCode')) {
+			return getService("hibachiUtilityService").generateRandomID(getService('settingService').getSettingValue('skuGiftCardCodeLength'));
+		} else { 
 			return variables.giftCardCode;
 		}
 	}
