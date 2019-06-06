@@ -93,6 +93,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Execute request
 			if (arguments.requestBean.getTransactionType() == "generateToken") {
 				sendRequestToGenerateToken(arguments.requestBean, responseBean);
+			} else if (arguments.requestBean.getTransactionType() == "deleteToken") {
+				sendRequestToDeleteTokens(arguments.requestBean, responseBean);
 			} else if (arguments.requestBean.getTransactionType() == "authorize") {
 				sendRequestToAuthorize(arguments.requestBean, responseBean);
 			} else if (arguments.requestBean.getTransactionType() == "authorizeAndCharge") {
@@ -160,39 +162,57 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// We are expecting there is no provider token yet, however if accountPaymentMethod is used and attempt to generate another token prevent and short circuit
 			if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 				
+				if (!isNull(arguments.requestBean.getOrderPayment().getOrderPaymentType().getTypeName() ==="Charge")) {
+					var paymentMethod = "creditCard";
+				} else {
+					var paymentMethod = null;
+				}
+				
 				var publicKey = getPublicKey(arguments.requestBean);
 				
+				// writeDump(var=arguments.requestBean, abort=true);
+				
 				var requestData = {
-					'data' = {
-						'paymentMethod' = arguments.requestBean.getOrderPayment().getOrderPaymentType(),
-						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
-						'amount' = arguments.requestBean.getTransactionAmount(),
-						'uiOptions': {
-							'hideCvc': false,
-							'hideBilling' = false,
-				        },
-				        // 'accountID' = arguments.requestBean.getAccountID(),
-				        // 'orderID' = arguments.requestBean.getOrderID(),
-				        // 'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
+					'isAuthOnly': false,
+					'card' = {
+						'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
+						'expirationMonth' = LSParseNumber(arguments.requestBean.getExpirationMonth()),
+						'expirationYear' = LSParseNumber(arguments.requestBean.getExpirationYear()), 
+						'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
+						'securityCode' = LSParseNumber(arguments.requestBean.getSecurityCode())
 					},
+					// 'uiOptions': {
+					// 	'hideCvc': false,
+					// 	'hideBilling' = false,
+					// },
 					'processingOptions' = {
-						'checkFraud' = setting(settingName='checkFraud', requestBean=arguments.requestBean),
-						'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
-						'verifyAvs' = setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
+						'checkFraud' = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+						'verifyCvc' = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
+						'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 						'verboseResponse' = true
 					},
-					'card' = {
-						'cardHolderName' = arguments.requestBean.getNameOnCreditCard(),
-					},
-					'customer'= {
-						'customerRef' = arguments.requestBean.getAccountID(),
-						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-						'billToCity' = arguments.requestBean.getBillingCity(),
-						'billToState' = arguments.requestBean.getBillingStateCode(),
-						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-						'billToCountry' = arguments.requestBean.getBillingCountryCode(),
-					},
+					'data' = {
+						'paymentMethod' = paymentMethod,
+						'amount' = arguments.requestBean.getTransactionAmount(),
+						// 'amount': arguments.requestBean.getOrder().getCalculatedTotal(),
+						// 'partialAmount': LSParseNumber(arguments.requestBean.getTransactionAmount()),
+						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
+						'customer'= {
+							'orderNumber' = arguments.requestBean.getOrderID(),
+							'firstName' = arguments.requestBean.getAccountFirstName(),
+							'lastName' = arguments.requestBean.getAccountLastName(),
+							'customerRef' = arguments.requestBean.getAccountID(),
+							'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+							'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+							'billToCity' = arguments.requestBean.getBillingCity(),
+							'billToState' = arguments.requestBean.getBillingStateCode(),
+							'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+							'billToCountry' = arguments.requestBean.getBillingCountryCode()
+						}
+					}
+					// 'customFields'= {
+				       //'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
+					// },
 				};
 				
 				// writeDump(var="*** 1st requestData");	
@@ -202,7 +222,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 				
 				// writeDump(var="*** 1st responseData");
-				// writeDump(var=responseData.fraudUrl);
+				// writeDump(var=responseData);
 				
 				if (!responseBean.hasErrors()) {
 					arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
@@ -213,18 +233,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				
 				if (!responseBean.hasErrors()) {
 					requestData = {
-						'data' = {
-					        'orderID' = arguments.requestBean.getOrderID(),
-					        'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
-						},
 						'token' = responseData.token,
 						'card' = {
 							'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
-							'expirationMonth' = arguments.requestBean.getExpirationMonth(),
-							'expirationYear' = arguments.requestBean.getExpirationYear(), 
+							'expirationMonth' = LSParseNumber(arguments.requestBean.getExpirationMonth()),
+							'expirationYear' = LSParseNumber(arguments.requestBean.getExpirationYear()), 
 							'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
-							'securityCode' = arguments.requestBean.getSecurityCode(),
-						},
+							'securityCode' = LSParseNumber(arguments.requestBean.getSecurityCode())
+						}
+						// 'customFields'= {
+				           //'orderID' = arguments.requestBean.getOrderID(),
+					       //'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
+						// },
 						// 'customer'= {
 						// 	'customerRef' = arguments.requestBean.getAccountID(),
 						// 	'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
@@ -245,7 +265,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				
 				// writeDump(var="*** 2nd requestData");
 				// writeDump(var=requestData);
-				
 				
 				// writeDump(var="*** 2nd responseData");
 				// writeDump(var=responseData);
@@ -293,6 +312,19 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
 				}
 			}
+		}
+		
+		private void function sendRequestToDeleteTokens(required array tokens) {
+			// var requestBean = getTransient('CreditCardTransactionRequestBean');
+			// var responseBean = getTransient('CreditCardTransactionResponseBean');
+			// var requestData = {};
+			
+			// requestData.tokens = arguments.tokens;
+			
+			// sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
+			
+			// return responseBean;
+			// Add  any error handling about if a token is bad etc.
 		}
 		
 		private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
@@ -525,6 +557,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				apiUrl &= '/pay/v3/token';
 			} else if (arguments.transactionName == 'generateToken') {
 				apiUrl &= '/pay/v3/saveCard';
+			} else if (arguments.transactionName == 'deleteToken') {
+				apiUrl &= '/pay/v3/deleteToken';
 			} else if (arguments.transactionName == 'authorize') {
 				apiUrl &= '/pay/v3/process';
 			} else if (arguments.transactionName == 'authorizeAndCharge') {
@@ -535,7 +569,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				apiUrl &= '/pay/v3/refund';
 			} else if (arguments.transactionName == 'void') {
 				apiUrl &= '/pay/v3/void';
-			}
+			} 
 			
 			var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 			var httpRequest = new http();
@@ -563,7 +597,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
 			};
 
-			fileWrite('#logPath#/#timeSufix#_AVSrequest.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 			// Comment Out: <---
 			
 			// Make HTTP request to endpoint
@@ -593,7 +627,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					responseData = deserializeJSON(httpResponse.fileContent);
 					
 					// ---> Comment Out:
-					fileWrite('#logPath#/#timeSufix#_AVSresponse.json',httpResponse.fileContent);
+					fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 					// Comment Out: <---
 
 					
@@ -619,7 +653,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
 				// ---> Comment Out:
-				fileWrite('#logPath#/#timeSufix#_response.json',httpResponse.fileContent);
+				fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 				// Comment Out: <---
 			}
 
