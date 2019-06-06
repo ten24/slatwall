@@ -46,27 +46,18 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.loyalty" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.loyaltyAccruement" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.loyalty.getloyaltyAccruementsSmartList()#"
-							   recordEditAction="admin:entity.editloyaltyAccruement"
-							   recorddetailaction="admin:entity.detailloyaltyAccruement">
-		<hb:HibachiListingColumn propertyIdentifier="startDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="endDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="expirationTerm.termName" />
-		<hb:HibachiListingColumn propertyIdentifier="accruementEvent" />
-		<hb:HibachiListingColumn propertyIdentifier="accruementType" />
-		<hb:HibachiListingColumn propertyIdentifier="pointType" />
-		<hb:HibachiListingColumn propertyIdentifier="pointQuantity" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
-	
-	<hb:HibachiActionCaller action="admin:entity.createloyaltyaccruement" class="btn btn-default" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyAccruement" modal="false"  />
-
+	<hb:HibachiEntityProcessForm entity="#rc.loyaltyAccruement#" edit="#rc.edit#" sRedirectAction="admin:entity.detailloyaltyAccruement">
+        <hb:HibachiPropertyList>
+            <hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#" />
+            <hb:HibachiPropertyDisplay object="#rc.processObject#" property="pointQuantity" edit="#rc.edit#" />
+        </hb:HibachiPropertyList>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
-
