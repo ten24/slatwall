@@ -103,6 +103,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				break;
 			}
 		}
+		
+		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
+		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
+			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
+		}
 
 		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
 			//If is allowed to place order without payment and there is no payment, skip payment order
@@ -132,6 +137,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderRequirementsList = listAppend(orderRequirementsList, "payment");
 			}
 		}
+		
 		return orderRequirementsList;
 	}
 	
@@ -1151,7 +1157,81 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return this.newOrder();
 	}
 	
-	//begin order template functionality	
+	//begin order template functionality
+
+	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
+
+		local.ormSession = ormGetSessionFactory().openSession();
+	    local.tx = local.ormSession.beginTransaction();
+
+		try{
+			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge() 
+		} catch (any e) {
+			//if we have any error we probably don't have the required data for returning the total
+			var fulfillmentCharge = 0; 
+		} finally { 
+			local.tx.commit();
+			local.ormSession.close();
+		} 
+
+		return fulfillmentCharge; 
+	}
+
+	//order transient helper methods
+	public any function newTransientOrderFromOrderTemplate(required any orderTemplate){
+		var transientOrder = new Slatwall.model.entity.Order();
+		ORMGetSession().evict(transientOrder);
+		transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		return transientOrder;
+	}
+
+	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate){
+		var transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+		
+		ORMGetSession().evict(transientOrderFulfillment);
+		
+		transientOrderFulfillment.setOrder(this.newTransientOrderFromOrderTemplate(arguments.orderTemplate)); 
+		transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
+		transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
+		
+		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
+		ORMGetSession().evict(arguments.orderTemplate.getShippingAddress());
+
+		var orderTemplateItemCollectionList = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
+		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+	
+		var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
+		
+		var fulfillmentTotal = 0;
+		var orderFulfillmentItems = []; 
+	
+		for(var orderTemplateItem in orderTemplateItemRecords){ 
+			var transientOrderItem = new Slatwall.model.entity.OrderItem();
+			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+			
+			ORMGetSession().evict(sku);
+			ORMGetSession().evict(transientOrderItem);
+			
+			transientOrderItem.setSku(sku);
+			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+			transientOrderItem.setQuantity(orderTemplateItem['quantity']);
+
+			transientOrderFulfillment.addOrderFulfillmentItem(transientOrderItem);  
+		}
+
+		transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod(), false);  	
+		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment, false);
+
+		for(var shippingMethodOption in transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
+			ORMGetSession().evict(shippingMethodOption);
+		}	
+
+		return transientOrderFulfillment; 
+	}
+
+	//order template process methods	
 	public any function processOrderTemplate_activate(required any orderTemplate, any processObject, required struct data={}) {
 		
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstDraft'){
@@ -1955,14 +2035,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addError('return',rbKey('entity.order.process.placeOrder.returnRequirementError'));
 							}
 							if(listFindNoCase(orderRequirementsList, "payment")) {
-
 								arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
-
 							}
-
-
+							if(listFindNoCase(orderRequirementsList, "canPlaceOrderReward")){
+								arguments.order.addError('canPlaceOrderReward',rbKey('entity.order.process.placeOrder.canPlaceOrderRewardRequirementError'));
+							}
 						} else {
-
+							
 							// Setup a value to log the amount received, credited or authorized.  If any of these exists then we need to place the order
 							var amountAuthorizeCreditReceive = 0;
 
@@ -2101,8 +2180,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}	// END OF LOCK
-
-
 
 		return arguments.order;
 	}

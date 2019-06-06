@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true accessors=true output=false extends="HibachiEntity" hb_serviceName="skuService" hb_permission="this" {
+component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true accessors=true output=false extends="HibachiEntity" hb_serviceName="SkuPriceService" hb_permission="this" {
 
 	// Persistent Properties
 	property name="skuPriceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -83,7 +83,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
     property name="commissionableVolume" ormtype="big_decimal";
-    property name="sponsorVolume" ormtype="big_decimal";
+    property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";//CUSTOM PROPERTIES END
 	public boolean function hasValidQuantityConfiguration(){
@@ -96,6 +96,18 @@ property name="personalVolume" ormtype="big_decimal";
 		}
  		return true; 
  	} 
+ 	
+ 	public boolean function isDefaultSkuPrice(){
+ 		return isNull(getMinQuantity()) 
+ 			&& isNull(getMaxQuantity()) 
+ 			&& isNull(getPriceGroup()) 
+ 			&& (getSku().getCurrencyCode() == getCurrencyCode())
+ 		;
+ 	}
+ 	
+ 	public boolean function isNotDefaultSkuPrice(){
+ 		return !isDefaultSkuPrice();
+ 	}
  	
  	public any function getPriceGroupOptions(){
 		var options = getPropertyOptions("priceGroup");
@@ -114,6 +126,15 @@ property name="personalVolume" ormtype="big_decimal";
 		}
 	}
 	
+	// ================== START: Overridden Methods ========================
+	
+	public any function getDefaultCollectionProperties(){
+		var includesList = getService("SkuPriceService").getDefaultCollectionPropertiesList();
+		return super.getDefaultCollectionProperties(includesList,"");
+	}
+	
+	// ================== END: Overridden Methods ==========================
+	
 	// =================== START: ORM Event Hooks  =========================	
 	public void function preUpdate(struct oldData) {
 		
@@ -121,6 +142,12 @@ property name="personalVolume" ormtype="big_decimal";
 			for (var stock in getSku().getStocks()){
 				getHibachiScope().addModifiedEntity(stock);
 			}
+		}
+		
+		if( this.isDefaultSkuPrice() ) {
+			var sku = this.getSku();
+			sku.setPrice(this.getPrice());
+			sku = getService("SkuService").saveSku(sku);
 		}
 		
 		super.preUpdate(arguments.oldData);

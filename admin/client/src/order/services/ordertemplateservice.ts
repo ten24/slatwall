@@ -51,7 +51,7 @@ export class OrderTemplateService {
 			entityID: this.orderTemplateID,
 			entityName: 'OrderTemplate',
 			context: 'addOrderTemplateItem',
-			propertyIdentifiersList: '',
+			propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
 			skuID: state.skuID,
 			quantity: state.quantity
 		};
@@ -75,7 +75,7 @@ export class OrderTemplateService {
 			entityID: state.orderTemplateItemID,
 			entityName: 'OrderTemplateItem',
 			context: 'save',
-			propertyIdentifiersList: '',
+			propertyIdentifiersList: 'orderTemplate.fulfillmentTotal,orderTemplate.subtotal,orderTemplate.total',
 			quantity: state.quantity
 		};
 		
@@ -98,7 +98,7 @@ export class OrderTemplateService {
 			entityID: this.orderTemplateID,
 			entityName: 'OrderTemplate',
 			context: 'removePromotionCode',
-			propertyIdentifiersList: '',
+			propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
 			promotionCodeID: state.promotionCodeID
 		};
 		
@@ -121,7 +121,7 @@ export class OrderTemplateService {
 			entityID: state.orderTemplateItemID,
 			entityName: 'OrderTemplateItem',
 			context: 'delete',
-			propertyIdentifiersList: '',
+			propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
 		};
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');

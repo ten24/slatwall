@@ -68,7 +68,7 @@ Notes:
         <cfset local.includedSkuPricesCollection.addDisplayProperty('personalVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('taxableAmount','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('commissionableVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('sponsorVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailCommission','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('productPackVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('retailValueVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isSearchable': false}, true) />

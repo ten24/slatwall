@@ -148,6 +148,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="paymentAmountDueAfterGiftCards" persistent="false" hb_formatType="currency";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 	property name="promotionCodeList" persistent="false";
+	property name="qualifiedPromotionRewards" persistent="false";
+	property name="qualifiedRewardSkus" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
@@ -1293,7 +1295,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			} 
 		}
 		return totalItemQuantity; 
-	}	
+	}
+	
+	public array function getQualifiedPromotionRewards( boolean refresh=false ){
+		if(!structKeyExists(variables, 'qualifiedPromotionRewards') || arguments.refresh ){
+			return getService('PromotionService').getQualifiedPromotionRewardsForOrder( this );
+		}
+	}
+	
+	public array function getQualifiedPromotionRewardSkus( numeric pageRecordsShow=25, boolean refresh=false ){
+		if( !structKeyExists(variables,'qualifiedRewardSkus') || arguments.refresh ){
+			
+			variables.qualifiedRewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder( order=this, pageRecordsShow=arguments.pageRecordsShow );
+		}
+		return variables.qualifiedRewardSkus;
+	}
 
 
 	// ============  END:  Non-Persistent Property Methods =================

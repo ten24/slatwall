@@ -4,33 +4,69 @@
 	</div>
 	<content class="s-body-box">
 		
-		<div ng-if="swCustomerAccountPaymentMethodCard.billingAccountAddress">
-			<h5 ng-bind="swCustomerAccountPaymentMethodCard.billingAddressTitle"></h5>
+		<div class="col-md-6">
+			<div ng-if="swCustomerAccountPaymentMethodCard.billingAccountAddress">
+				<h5 ng-bind="swCustomerAccountPaymentMethodCard.billingAddressTitle"></h5>
+				
+				<ul class="list-unstyled">
+					<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressName"></li>
+					<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_streetAddress"></li>
+					<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_street2Address"></li>
+					<li>
+						<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_city"></span>
+						<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_stateCode"></span>
+						<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_postalCode"></span>
+					</li>
+					<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_countryCode"></li>
+				</ul>
+			</div>
+			
+			<div ng-if="swCustomerAccountPaymentMethodCard.accountPaymentMethod"> 
+				<h5 ng-bind="swCustomerAccountPaymentMethodCard.paymentTitle"></h5>
+				
+				<ul class="list-unstyled">
+					<li ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.accountPaymentMethodName"></li>
+					<li><span ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.creditCardType"></span> *<span ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.creditCardLastFour"></span></li>
+				</ul>
+			</div>
+			
+			<sw-account-payment-method-modal	ng-if="swCustomerAccountPaymentMethodCard.includeModal"
+												data-modal-button-text="{{swCustomerAccountPaymentMethodCard.modalButtonText}}">
+			</sw-account-payment-method-modal>
+		</div>
+		<div class="col-md-6">
+			<h5 sw-rbkey="'define.projectedTotals'"></h5>
 			
 			<ul class="list-unstyled">
-				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.accountAddressName"></li>
-				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_streetAddress"></li>
-				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_street2Address"></li>
+				
 				<li>
-					<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_city"></span>
-					<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_stateCode"></span>
-					<span ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_postalCode"></span>
+					<div class="row s-line-item">
+						<div class="col-xs-6 s-title" sw-rbkey="'entity.order.subtotal'"></div>
+						<div class="col-xs-6 s-value" ng-bind="swCustomerAccountPaymentMethodCard.baseEntity.subtotal | swcurrency">
+							
+						</div>
+					</div>
 				</li>
-				<li ng-bind="swCustomerAccountPaymentMethodCard.billingAccountAddress.address_countryCode"></li>
+				
+				<li>
+					<div class="row s-line-item">
+						<div class="col-xs-6 s-title" sw-rbkey="'entity.order.fulfillmentTotal'"></div>
+						<div class="col-xs-6 s-value" ng-bind="swCustomerAccountPaymentMethodCard.baseEntity.fulfillmentTotal | swcurrency">
+							
+						</div>
+					</div>
+				</li>
+				
+				<li>
+					<div class="row s-line-item">
+						<div class="col-xs-6 s-title" sw-rbkey="'entity.order.total'"></div>
+						<div class="col-xs-6 s-value" ng-bind="swCustomerAccountPaymentMethodCard.baseEntity.total | swcurrency">
+							
+						</div>
+					</div>
+				</li>
+	
 			</ul>
 		</div>
-		
-		<div ng-if="swCustomerAccountPaymentMethodCard.accountPaymentMethod"> 
-			<h5 ng-bind="swCustomerAccountPaymentMethodCard.paymentTitle"></h5>
-			
-			<ul class="list-unstyled">
-				<li ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.accountPaymentMethodName"></li>
-				<li><span ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.creditCardType"></span> *<span ng-bind="swCustomerAccountPaymentMethodCard.accountPaymentMethod.creditCardLastFour"></span></li>
-			</ul>
-		</div>
-		
-		<sw-account-payment-method-modal	ng-if="swCustomerAccountPaymentMethodCard.includeModal"
-											data-modal-button-text="{{swCustomerAccountPaymentMethodCard.modalButtonText}}">
-		</sw-account-payment-method-modal>
 	</content>
 </div>

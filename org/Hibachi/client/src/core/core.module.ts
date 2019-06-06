@@ -279,7 +279,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swExportAction',SWExportAction.Factory())
 .directive('swHref',SWHref.Factory())
 .directive('swProcessCaller',SWProcessCaller.Factory())
-.directive('sw:sortable',SWSortable.Factory())
+.directive('swSortable',SWSortable.Factory())
 .directive('swOrderByControls', SWOrderByControls.Factory())
 ;
 export{

@@ -64104,7 +64104,7 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct) {
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -64112,6 +64112,7 @@ var CollectionConfig = /** @class */ (function () {
         if (currentPage === void 0) { currentPage = 1; }
         if (pageShow === void 0) { pageShow = 10; }
         if (keywords === void 0) { keywords = ''; }
+        if (customEndpoint === void 0) { customEndpoint = ''; }
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
@@ -64134,6 +64135,7 @@ var CollectionConfig = /** @class */ (function () {
         this.currentPage = currentPage;
         this.pageShow = pageShow;
         this.keywords = keywords;
+        this.customEndpoint = customEndpoint;
         this.allRecords = allRecords;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
@@ -64280,7 +64282,8 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
-                periodInterval: _this.periodInterval
+                periodInterval: _this.periodInterval,
+                customEndpoint: _this.customEndpoint
             };
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
@@ -64771,6 +64774,9 @@ var CollectionConfig = /** @class */ (function () {
         this.getPageShow = function () {
             return _this.pageShow;
         };
+        this.getCustomEndpoint = function () {
+            return _this.customEndpoint;
+        };
         this.setAllRecords = function (allFlag) {
             if (allFlag === void 0) { allFlag = false; }
             _this.allRecords = allFlag;
@@ -64788,6 +64794,10 @@ var CollectionConfig = /** @class */ (function () {
         };
         this.setKeywords = function (keyword) {
             _this.keywords = keyword;
+            return _this;
+        };
+        this.setCustomEndpoint = function (endPoint) {
+            _this.customEndpoint = endPoint;
             return _this;
         };
         this.setId = function (id) {
@@ -70920,7 +70930,12 @@ var HibachiService = /** @class */ (function () {
                 params.processContext = options.processContext || '';
                 params.isReport = options.isReport || false;
                 params.periodInterval = options.periodInterval || "";
-                var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
+                if (angular.isDefined(options.customEndpoint) && options.customEndpoint.length) {
+                    var urlString = _this.getUrlWithActionPrefix() + options.customEndpoint;
+                }
+                else {
+                    var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
+                }
             }
             if (angular.isDefined(options.id)) {
                 urlString += '&entityId=' + options.id;
@@ -78593,6 +78608,9 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
             if (_this.collectionConfig) {
                 _this.collectionConfig.setEventID(_this.tableID);
+                if (_this.customEndpoint && _this.customEndpoint.length) {
+                    _this.collectionConfig.setCustomEndpoint(_this.customEndpoint);
+                }
             }
             if (angular.isDefined(_this.sortableFieldName)) {
                 _this.sortableFieldName = "sorting" + _this.tableID;
@@ -78917,6 +78935,7 @@ var SWListingDisplay = /** @class */ (function () {
             baseEntity: "<?",
             baseEntityName: "@?",
             baseEntityId: "@?",
+            customEndpoint: "@?",
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
