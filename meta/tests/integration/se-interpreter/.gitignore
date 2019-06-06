@@ -1,0 +1,13 @@
+# NPM can pull in the required dependencies on its own.
+node_modules/
+
+# OS garbage
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+

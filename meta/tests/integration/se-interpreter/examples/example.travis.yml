@@ -1,0 +1,7 @@
+language: node_js
+script:
+    - "./interpreter.js examples/example_travis_config.json"
+env:
+    global:
+        - SAUCE_USERNAME=<username>
+        - secure: <encrypted SAUCE_ACCESS_KEY>
