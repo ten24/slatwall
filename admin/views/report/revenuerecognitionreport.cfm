@@ -70,7 +70,6 @@
 	<cfset diff = DateDiff('m',createDateTime(Year(rc.minDate),Month(rc.minDate),1,0,0,0),createDateTime(Year(rc.maxDate),Month(rc.maxDate),DaysInMonth(rc.maxDate),0,0,0))/>
 	<cfset to = currentMonth + diff/>
 	<cfset currentYear = Year(rc.minDate)/>
-	
 	<!---prepare earned data--->
 	<cfset subscriptionsEarning = []/>
     <cfset earned = []/>
@@ -135,6 +134,7 @@
             </tr>
         </thead>
         <tbody>
+            
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
             	<cfset currentYear = Year(rc.minDate)/>
@@ -145,6 +145,7 @@
                     Price per Delivery is based on (Order item cost / subscription benefit items to deliver). "/>
                     <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span>
                 </td>
+                <cfset earnedRevenueIndex = 1/>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset currentIndex=i%12+1/>
                     <cfset possibleMonth = possibleMonths[currentIndex]/>
@@ -152,7 +153,8 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#</td>
+                    <td>-#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized+earnedRevenue[earnedRevenueIndex],'currency')#</td>
+                    <cfset earnedRevenueIndex++/>
                 </cfloop>
             </tr>
             <tr>
@@ -167,7 +169,7 @@
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <td>
-                        #$.slatwall.getService('HibachiUtilityService').formatValue(newOrder,'currency')#
+                        -#$.slatwall.getService('HibachiUtilityService').formatValue(newOrder,'currency')#
                     </td>
                 </cfloop>
             </tr>
@@ -210,15 +212,14 @@
                     Price per Delivery is based on (Order item cost / subscription benefit items to deliver). "/>
                 <td>Closing Deferred Revenue Balance <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-                    <cfset possibleMonth = possibleMonths[i%12+1]/>
+                    <cfset currentIndex=i%12+1/>
+                    <cfset possibleMonth = possibleMonths[currentIndex]/>
                     <cfif i%12 eq 0 and i neq 0>
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
                     <td>
-                        <cfif structKeyExists(deferredRevenueData[key],'deferredTotalLeftToBeRecognizedClosing')>
-                            #$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognizedClosing,'currency')#
-                        </cfif>
+                        -#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#
                     </td>
                 </cfloop>
             </tr>
