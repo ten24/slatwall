@@ -84,4 +84,27 @@ component output="false" accessors="true" extends="HibachiProcess"{
 		return this.getGiftCardExpirationTerm().getEndDate();
 	}
 
+	public string function getOwnerFirstName(){
+		if(!isNull(getOwnerAccount())){
+			return getOwnerAccount().getFirstName(); 
+		} else {
+			return variables.ownerFirstName;
+		} 
+	} 
+
+	public string function getOwnerLastName(){
+		if(!isNull(getOwnerAccount())){
+			return getOwnerAccount().getLastName(); 
+		} else {
+			return variables.ownerLastName;
+		} 
+	}
+
+	public string function getOwnerEmailAddress(){
+		if(!isNull(getOwnerAccount())){
+			return getOwnerAccount().getEmailAddress(); 
+		} else {
+			return variables.ownerEmailAddress;
+		} 
+	}
 }
