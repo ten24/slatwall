@@ -9,43 +9,50 @@
 <cfsilent>
     <cfinclude template="./revenuerecognitionreport.cfm"/>
 </cfsilent>
-<cfset currentMonth = Month(rc.minDate)/>
-<cfset currentYear = Year(rc.minDate)/>
-                
 
-<cfset colNamesList = 'Headers'/>
-<cfset data = [5]/>
-<!---explicitly written for control of the ordering--->
-<cfset headerRowItems = [
-	'New Subscriptions',
-	''
-]/>
-<cfloop from=1 to="#arraylen(headerRowItems)#" index="i">
-    <cfset data[i] = {}/>
-    <cfset data[i]['Headers']=headerRowItems[i]/>
-</cfloop>
-
-<!---get headers--->
-<!---properly order columns list--->
-<!---<cfset subscriptionsEarning = []/>
-    <cfset earned = []/>
-    <cfset taxAmount = []/>
-    <cfset refunded = []/>
-    <cfset refundedTaxAmount = []/>
-    <cfset possibleYearTotal = []/>--->
-<cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-    <cfset possibleMonth = possibleMonths[i%12+1]/>
-    <cfset colName = "#possibleMonth##currentYear#"/>
-    <cfset colNamesList = listAppend(colNamesList,colName)/>
+<cffunction name="renderReport">
+    <cfargument name="reportData"/>
+    <cfargument name="renderEarnedRevenue" type="boolean"/>
+    <cfscript>
+        var fileName = createUUID() ;
+		
+        var fileNameWithExt = fileName & ".csv" ;
+		var filePath = GetTempDirectory() & "/" & fileNameWithExt;
+			
+        var newLine     = (chr(13) & chr(10));
+    	var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
     
-</cfloop>
-<cfset colNamesArray = listToArray(listRest(colNamesList))/>
-<cfloop from=1 to="#arraylen(colNamesArray)#" index="j">
-    <cfset data[1][colNamesArray[j]] = subscriptionOrderItemCount[j]/>
-</cfloop>
-
-<cfset $.slatwall.getService('hibachiService').export( 
-    columns=colNamesList,
-    columnNames=colNamesList 
-    ,data=data
-)/>
+    	fileWrite(filePath,",#ListQualify(arrayToList(arguments.reportData.headers),'"',',','all')##newLine#");
+    
+    	var dataFile = fileOpen(filePath,"append");
+    	var thisRow = 'Opening Deferred Revenue Balance,#arrayToList(reportData.openingDeferredRevenue)#';
+    	fileWriteLine(dataFile,thisRow);
+    	
+    	thisRow = 'New Orders,#arrayToList(reportData.newOrders)#';
+    	fileWriteLine(dataFile,thisRow);
+    	
+    	thisRow = 'Cancellations,#arrayToList(reportData.cancelledOrders)#';
+    	fileWriteLine(dataFile,thisRow);
+    	
+    	thisRow = 'Earned Revenue,#arrayToList(reportData.earnedRevenue)#';
+    	fileWriteLine(dataFile,thisRow);
+    	
+    	thisRow = 'Closing Deferred Revenue Balance,#arrayToList(reportData.closingDeferredRevenue)#';
+    	fileWriteLine(dataFile,thisRow);
+    	
+    	if(arguments.renderEarnedRevenue){
+    	    thisRow = '#newLine#Earned Revenue By Issue';
+    	    fileWriteLine(dataFile,thisRow);
+    	    
+    	    for(var nameValue in reportData.earnedRevenueByIssueNames){
+    	        thisRow = '#nameValue#,#arrayToList(reportData.earnedRevenueByIssue[nameValue])#';
+    	        fileWriteLine(dataFile,thisRow);
+    	    }
+    	}
+    	
+    	fileClose(dataFile);
+    	getHibachiScope().getService('HibachiUtilityService').downloadFile(fileNameWithExt,filePath,"application/csv",true);
+    </cfscript>
+    
+</cffunction>
+<cfset renderReport(reportData,structKeyExists(rc,'productID') && len(rc.productID))/>

@@ -115,166 +115,207 @@
     </cfloop>
 	
     <cfinclude template="./revenuereportcontrols.cfm"/>
+    <!---creating data--->
+    <cfset reportData = {
+        headers=[],
+        openingDeferredRevenue=[],
+        newOrders=[],
+        cancelledOrders=[],
+        earnedRevenue=[],        
+        closingDeferredRevenue=[]
+    }/>
+    
+    <cfset currentMonth = Month(rc.minDate)/>
+    <cfset currentYear = Year(rc.minDate)/>
+    <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+        
+        <cfset possibleMonth = possibleMonths[i%12+1]/>
+        <cfif  i%12 eq 0 and i neq 0 >
+            <cfset currentYear++/>
+        </cfif>
+        
+        <cfset arrayAppend(reportData.headers,"#possibleMonth# - #currentYear#")/>
+    </cfloop>
+    
+    <cfset currentMonth = Month(rc.minDate)/>
+	<cfset currentYear = Year(rc.minDate)/>
+    <cfset earnedRevenueIndex = 1/>
+    <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+        <cfset currentIndex=i%12+1/>
+        <cfset possibleMonth = possibleMonths[currentIndex]/>
+        <cfif i%12 eq 0 and i neq 0>
+            <cfset currentYear++/>
+        </cfif>
+        <cfset key = '#currentYear#-#possibleMonth#'/>
+        <cfset arrayAppend(reportData.openingDeferredRevenue,'-#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized+earnedRevenue[earnedRevenueIndex]+cancelledOrders[earnedRevenueIndex]-newOrders[earnedRevenueIndex],'currency')#')/>
+        <cfset earnedRevenueIndex++/>
+    </cfloop>
+    
+    
+    <cfset currentMonth = Month(rc.minDate)/>
+	<cfset currentYear = Year(rc.minDate)/>
+    <cfloop array="#newOrders#" index="newOrder">
+        <cfset possibleMonth = possibleMonths[i%12+1]/>
+        <cfif i%12 eq 0 and i neq 0>
+            <cfset currentYear++/>
+        </cfif>
+        <cfset key = '#currentYear#-#possibleMonth#'/>
+        <cfset arrayAppend(reportData.newOrders,'-#$.slatwall.getService('HibachiUtilityService').formatValue(newOrder,'currency')#')/>
+    </cfloop>
+    
+    <cfset currentMonth = Month(rc.minDate)/>
+	<cfset currentYear = Year(rc.minDate)/>
+    <cfloop array="#cancelledOrders#" index="cancelledOrder">
+        <cfset possibleMonth = possibleMonths[i%12+1]/>
+        <cfif i%12 eq 0 and i neq 0>
+            <cfset currentYear++/>
+        </cfif>
+        <cfset key = '#currentYear#-#possibleMonth#'/>
+        <cfset arrayAppend(reportData.cancelledOrders,'#$.slatwall.getService('HibachiUtilityService').formatValue(cancelledOrder,'currency')#') />
+    </cfloop>
+    
+    <cfset currentMonth = Month(rc.minDate)/>
+	<cfset currentYear = Year(rc.minDate)/>
+    <cfset totalEarnedRevenue=0/>
+    <cfloop array="#earnedRevenue#" index="earnedRevenueRecord">
+        <cfset arrayAppend(reportData.earnedRevenue,$.slatwall.getService('hibachiUtilityService').formatValue(earnedRevenueRecord,'currency'))/>
+        <cfset totalEarnedRevenue+=earnedRevenueRecord/>
+    </cfloop>
+    
+    <cfset currentMonth = Month(rc.minDate)/>
+	<cfset currentYear = Year(rc.minDate)/>
+    <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+        <cfset currentIndex=i%12+1/>
+        <cfset possibleMonth = possibleMonths[currentIndex]/>
+        <cfif i%12 eq 0 and i neq 0>
+            <cfset currentYear++/>
+        </cfif>
+        <cfset key = '#currentYear#-#possibleMonth#'/>
+        <cfset arrayAppend(reportData.closingDeferredRevenue,'-#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#')/>
+    </cfloop>
     
     <table class="table table-bordered s-detail-content-table">
         <thead>
             <tr>
                 <th></th>
-                
-                <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-                    
-                    <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif  i%12 eq 0 and i neq 0 >
-                        <cfset currentYear++/>
-                    </cfif>
-                    
+                <cfloop array="#reportData.headers#" index="header">
                     <th>
-                        #possibleMonth# - #currentYear#
+                        #header#
                     </th>
                 </cfloop>
             </tr>
         </thead>
         <tbody>
-            
             <tr>
-                <cfset currentMonth = Month(rc.minDate)/>
-            	<cfset currentYear = Year(rc.minDate)/>
                 <td>Opening Deferred Revenue Balance 
                     <cfset tooltip = "Deferred revenue still to be earned at the beginning of the month.
-                    Formula: For each Order Item (Price Per Delivery + Tax Per Delivery)*Scheduled Deliveries Per Month. 
+                    Formula: For each Order Item Price Per Delivery*Scheduled Deliveries Per Month. 
                     Scheduled Deliveries are based on the Product Schedule where the delivery date is less than the expiration. 
-                    Price per Delivery is based on (Order item cost / subscription benefit items to deliver). "/>
+                    Price per Delivery is based on (Order item cost / subscription term ## of items to deliver). "/>
                     <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span>
                 </td>
                 <cfset earnedRevenueIndex = 1/>
-                <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-                    <cfset currentIndex=i%12+1/>
-                    <cfset possibleMonth = possibleMonths[currentIndex]/>
-                    <cfif i%12 eq 0 and i neq 0>
-                        <cfset currentYear++/>
-                    </cfif>
-                    <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>-#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized+earnedRevenue[earnedRevenueIndex]+cancelledOrders[earnedRevenueIndex]-newOrders[earnedRevenueIndex],'currency')#</td>
-                    <cfset earnedRevenueIndex++/>
+                <cfloop array="#reportData.openingDeferredRevenue#" index="openingDeferredRevenueItem">
+                    <td>#openingDeferredRevenueItem#</td>
                 </cfloop>
             </tr>
             <tr>
-                <cfset currentMonth = Month(rc.minDate)/>
-            	<cfset currentYear = Year(rc.minDate)/>
-            	<cfset tooltip = "total revenue (net of taxes) for new orders processed this month, all of which is credited to deferred revenue. Total value of orders for the month"/>
-                <td >New Orders <span sw-tooltip class="j-tool-tip-item" data-text="test" data-position="right"><i class="fa fa-question-circle"></i></span></td>
-                <cfloop array="#newOrders#" index="newOrder">
-                    <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 0 and i neq 0>
-                        <cfset currentYear++/>
-                    </cfif>
-                    <cfset key = '#currentYear#-#possibleMonth#'/>
+                <td >New Orders <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
+                <cfloop array="#reportData.newOrders#" index="newOrder">
                     <td>
-                        -#$.slatwall.getService('HibachiUtilityService').formatValue(newOrder,'currency')#
+                        #newOrder#
                     </td>
                 </cfloop>
             </tr>
             <tr>
-                <cfset currentMonth = Month(rc.minDate)/>
-            	<cfset currentYear = Year(rc.minDate)/>
-            	<cfset tooltip = "how much revenue was removed from earnings due to pro-rate. Formula: (OrderItems Expected Revenue - EarnedRevenue)"/>
                 <td>Cancellations <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
-                <cfloop array="#cancelledOrders#" index="cancelledOrder">
-                    <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 0 and i neq 0>
-                        <cfset currentYear++/>
-                    </cfif>
-                    <cfset key = '#currentYear#-#possibleMonth#'/>
+                <cfloop array="#reportData.cancelledOrders#" index="cancelledOrder">
                     <td>
-                        #$.slatwall.getService('HibachiUtilityService').formatValue(cancelledOrder,'currency')#
+                        #cancelledOrder#
                     </td>
                 </cfloop>
             </tr>
-            
             <tr>
-                <cfset currentMonth = Month(rc.minDate)/>
-            	<cfset currentYear = Year(rc.minDate)/>
-            	<cfset tooltip = "How much money was earned on the deferred revenue. Formula: (SUM of Subscription Order Delivery Items * (Price Per Delivery + Tax Per Delivery)). Price per Delivery is based on (Order item cost / subscription benefit items to deliver)."/>
-                <td>Earned Revenue Balance <span sw-tooltip class="j-tool-tip-item" data-text="test" data-position="right"><i class="fa fa-question-circle"></i></span></td>
-                <cfset totalEarnedRevenue=0/>
+                <td>Earned Revenue Balance <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
                 
-                <cfloop array="#earnedRevenue#" index="earnedRevenueRecord">
-                    <td>#$.slatwall.getService('hibachiUtilityService').formatValue(earnedRevenueRecord,'currency')#</td>
-                    <cfset totalEarnedRevenue+=earnedRevenueRecord/>
+                <cfloop array="#reportData.earnedRevenue#" index="earnedRevenueRecord">
+                    <td>#earnedRevenueRecord#</td>
                 </cfloop>
             </tr>
-            
             <tr>
-                <cfset currentMonth = Month(rc.minDate)/>
-            	<cfset currentYear = Year(rc.minDate)/>
             	<cfset tooltip = "Deferred revenue still to be earned at the end of the month.
                     Formula: For each Order Item (Price Per Delivery + Tax Per Delivery)*Scheduled Deliveries Per Month. 
                     Scheduled Deliveries are based on the Product Schedule where the delivery date is less than the expiration. 
-                    Price per Delivery is based on (Order item cost / subscription benefit items to deliver). "/>
+                    Price per Delivery is based on (Order item cost / subscription term ## of items to deliver). "/>
                 <td>Closing Deferred Revenue Balance <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
-                <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-                    <cfset currentIndex=i%12+1/>
-                    <cfset possibleMonth = possibleMonths[currentIndex]/>
-                    <cfif i%12 eq 0 and i neq 0>
-                        <cfset currentYear++/>
-                    </cfif>
-                    <cfset key = '#currentYear#-#possibleMonth#'/>
+                <cfloop array="#reportData.closingDeferredRevenue#" index="closingDeferredRevenueItem">
                     <td>
-                        -#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#
+                        #closingDeferredRevenueItem#
                     </td>
                 </cfloop>
             </tr>
         </tbody>
-    <!--- earned revenue --->
-    <cfif structKeyExists(rc,'productID') and len(rc.productID)>
-        <cfset deliveryScheduleDateCollectionlist = getHibachiScope().getService('hibachiService').getDeliveryScheduleDateCollectionList()/>
-        <cfset deliveryScheduleDateCollectionlist.setDisplayProperties('deliveryScheduleDateName,deliveryScheduleDateValue,deliveryScheduleDateID')/>
-        <cfset deliveryScheduleDateCollectionlist.addFilter('product.productID',rc.productID)/>
-        <cfset deliveryScheduleDateCollectionlist.addFilter('deliveryScheduleDateValue',rc.minDate,'>=')/>
-        <cfset deliveryScheduleDateCollectionlist.addFilter('deliveryScheduleDateValue',rc.maxDate,'<=')/>
-        <cfset deliveryScheduleDateCollectionlist.setOrderBy('deliveryScheduleDateValue')/>
-        <cfset deliveryScheduleDateRecords = deliveryScheduleDateCollectionlist.getRecords()/>
-        
+        <!--- earned revenue --->
+        <cfif structKeyExists(rc,'productID') and len(rc.productID)>
+            <cfset deliveryScheduleDateCollectionlist = getHibachiScope().getService('hibachiService').getDeliveryScheduleDateCollectionList()/>
+            <cfset deliveryScheduleDateCollectionlist.setDisplayProperties('deliveryScheduleDateName,deliveryScheduleDateValue,deliveryScheduleDateID')/>
+            <cfset deliveryScheduleDateCollectionlist.addFilter('product.productID',rc.productID)/>
+            <cfset deliveryScheduleDateCollectionlist.addFilter('deliveryScheduleDateValue',rc.minDate,'>=')/>
+            <cfset deliveryScheduleDateCollectionlist.addFilter('deliveryScheduleDateValue',rc.maxDate,'<=')/>
+            <cfset deliveryScheduleDateCollectionlist.setOrderBy('deliveryScheduleDateValue')/>
+            <cfset deliveryScheduleDateRecords = deliveryScheduleDateCollectionlist.getRecords()/>
             
+                
+            <cfset reportData.earnedRevenueByIssue={}/>
+            <cfset reportData.earnedRevenueByIssueNames=[]/>
+            
+            <cfloop array="#deliveryScheduleDateRecords#" index="deliveryScheduleDateRecord">
+                <cfset earnedRevenueByIssueName = "#deliveryScheduleDateRecord['deliveryScheduleDateName']#"/>
+                <cfset arrayAppend(reportData.earnedRevenueByIssueNames,earnedRevenueByIssueName)/>
+                <cfset reportData.earnedRevenueByIssue[earnedRevenueByIssueName]=[]/>
+                <cfset currentYear = Year(rc.minDate)/>
+                <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+                   
+                    <cfset possibleMonth = possibleMonths[i%12+1]/>
+                    <cfif  i%12 eq 0 and i neq 0 >
+                        <cfset currentYear++/>
+                    </cfif>
+                    <cfset earnedRevenueByIssueCollectionlist = earnedRevenueCollectionList.duplicateCollection()/>
+                    <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,1,0,0,0),'>=')/>
+                    <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,DaysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59),'<=')/>
+                    <cfset earnedRevenueByIssueCollectionlist.addFilter('deliveryScheduleDate.deliveryScheduleDateID',deliveryScheduleDateRecord['deliveryScheduleDateID'])/>
+                   
+                    <cfset earnedRevenueByIssueCollectionRecords = earnedRevenueByIssueCollectionlist.getRecords()/>
+                    
+                    <cfif arraylen(earnedRevenueByIssueCollectionRecords)>
+                        <cfset earnedRevenueByIssueCollectionRecord = earnedRevenueByIssueCollectionRecords[1]/>
+                        <cfset arrayAppend(reportData.earnedRevenueByIssue[earnedRevenueByIssueName],"#$.slatwall.getService('HibachiUtilityService').formatValue(earnedRevenueByIssueCollectionRecord['earnedSUM']+earnedRevenueByIssueCollectionRecord['taxAmountSUM'],'currency')#")/>
+                    <cfelse>
+                        <cfset arrayAppend(reportData.earnedRevenueByIssue[earnedRevenueByIssueName],"#$.slatwall.getService('HibachiUtilityService').formatValue(0,'currency')#")/>
+                    </cfif>
+                </cfloop>
+            </cfloop>
             <tbody>
                 <tr>
                     <td><b>Earned Revenue By Issue</b></td>
                 </tr>
-                <cfloop array="#deliveryScheduleDateRecords#" index="deliveryScheduleDateRecord">
+                <cfloop array="#reportData.earnedRevenueByIssueNames#" index="earnedRevenueByIssueName">
                     
                     <tr>
                         <td>
-                            #deliveryScheduleDateRecord['deliveryScheduleDateName']#
+                            #earnedRevenueByIssueName#
                         </td>
-                        <cfset currentYear = Year(rc.minDate)/>
-                        <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
+                        <cfloop array="#reportData.earnedRevenueByIssue[earnedRevenueByIssueName]#" index="earnedRevenueByIssueItem">
                            
-                            <cfset possibleMonth = possibleMonths[i%12+1]/>
-                            <cfif  i%12 eq 0 and i neq 0 >
-                                <cfset currentYear++/>
-                            </cfif>
                              <td>
-                                 <cfset earnedRevenueByIssueCollectionlist = earnedRevenueCollectionList.duplicateCollection()/>
-                                <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,1,0,0,0),'>=')/>
-                                <cfset earnedRevenueByIssueCollectionlist.addFilter('createdDateTime',createDateTime(currentYear,i%12+1,DaysInMonth(createDateTime(currentYear,i%12+1,1,0,0,0)),23,59,59),'<=')/>
-                                <cfset earnedRevenueByIssueCollectionlist.addFilter('deliveryScheduleDate.deliveryScheduleDateID',deliveryScheduleDateRecord['deliveryScheduleDateID'])/>
-                               
-                                <cfset earnedRevenueByIssueCollectionRecords = earnedRevenueByIssueCollectionlist.getRecords()/>
-                                
-                                <cfif arraylen(earnedRevenueByIssueCollectionRecords)>
-                                    <cfset earnedRevenueByIssueCollectionRecord = earnedRevenueByIssueCollectionRecords[1]/>
-                                    #$.slatwall.getService('HibachiUtilityService').formatValue(earnedRevenueByIssueCollectionRecord['earnedSUM']+earnedRevenueByIssueCollectionRecord['taxAmountSUM'],'currency')#
-                                <cfelse>
-                                    #$.slatwall.getService('HibachiUtilityService').formatValue(0,'currency')#
-                                </cfif>
+                               #earnedRevenueByIssueItem#
                             </td>
                         </cfloop>
-                        
                     </tr>    
                 </cfloop>
                 <tr>
                 </tr>
             </tbody>
-    </cfif>
+        </cfif>
     </table>
 </cfoutput>
