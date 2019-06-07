@@ -36,7 +36,8 @@ class SWListingReportController {
     public swListingDisplay:any;
     public isPublic:boolean;
     public accountOwnerID:string;
-    
+    public chartcolors=["F78F1E","4F667E","62B7C4","173040","f15532", "ffc515", "469E52", "497350", "284030", "719499", "03A6A6", "173040", "57225B", "933B8F", "DA92AA", "634635"];
+    public chartcount = 0;
     
     //@ngInject
     constructor(
@@ -133,9 +134,17 @@ class SWListingReportController {
         this.collectionNameSaveIsOpen = true;
     }
     
-    private random_rgba = ()=>{
-        let o = Math.round, r = Math.random, s = 255;
-        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
+    private random_rgba = (index)=>{
+        
+        //let o = Math.round, r = Math.random, s = 255;
+        //return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
+        //console.log("Index : "+index);
+        if( (index +1) > this.chartcolors.length )
+        {
+            index = 0;
+        }
+        //console.log("Color : "+this.chartcolors[index]);
+        return '#'+this.chartcolors[index];
     }
     
     //decides if report comes from persisted collection or transient
@@ -233,7 +242,7 @@ class SWListingReportController {
             this.endDate.setHours(23,59,59,999);
             //if date is in the wrong format then update those dates
             if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
-                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt')
                 this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
             }
             this.hasMetric = false;
@@ -358,8 +367,10 @@ class SWListingReportController {
 		if(ctx.is($("#myChartCompare"))){
 		    var chart = this.compareChart; 
 		    this.compareReportingData=reportingData;
+		    this.chartcount++;
 		}else{
 		    var chart = this.chart;
+		    this.chartcount = 0;
 		}
 		
 		
@@ -375,7 +386,7 @@ class SWListingReportController {
 		
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
-		        let color = this.random_rgba();
+		        let color = this.random_rgba(this.chartcount);
 		        let title = column.displayTitle || column.title;
 		        let metrics = [];
 		        this.reportingData.records.forEach(element=>{
@@ -400,6 +411,7 @@ class SWListingReportController {
 		});
 		//used to clear old rendered charts before adding new ones
 		if(chart!=null){
+		    console.log("Destroyed old graph");
             chart.destroy();
         }
         chart = new Chart(ctx, {
