@@ -1,0 +1,19 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 1,
+  "steps": [
+    {
+      "type": "get",
+      "url": "http://sebuilder.github.com/se-builder/"
+    },
+    {
+      "type": "storeTitle",
+      "variable": "t"
+    },
+    {
+      "type": "print",
+      "text": "Title: ${t}. That's what it is."
+    }
+  ]
+}

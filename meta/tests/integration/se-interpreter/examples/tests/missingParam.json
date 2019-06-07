@@ -1,0 +1,11 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 1,
+  "steps": [
+    {
+      "type": "get",
+      "notTheUrl": "http://sebuilder.github.com/se-builder/"
+    }
+  ]
+}
