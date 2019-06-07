@@ -156,7 +156,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 			//CUSTOM PROPERTIES BEGIN
-
+property name="distributorID" ormtype="string";
  property name="HyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
