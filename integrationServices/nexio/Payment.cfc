@@ -78,8 +78,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		
 		// The main entry point to process credit card (Slatwall convention)
 		public any function processCreditCard(required any requestBean) {
-			verifyServerCompatibility();
-
 			var responseBean = getTransient('CreditCardTransactionResponseBean');
 			
 			// Set default currency
@@ -110,37 +108,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			}
 			
 			return responseBean;
-		}
-
-		// Verifies that server meets Nexio specific minimum Lucee 5.3 requirement (RSA encryption introduced as new feature in Lucee 5.3 https://docs.lucee.org/guides/cookbooks/Encrypt_Decrypt.html)
-		public void function verifyServerCompatibility() {
-			if (!structKeyExists(variables, 'serverCompatibleFlag')) {
-				variables.serverCompatibleFlag = false;
-
-				if (structKeyExists(server,'lucee')) {
-
-					// Convert server version into semver components to verify compatibility
-					var semVer = {
-						versionLength = listLen(server.lucee.version, '.'),
-						fullVersion = server.lucee.version,
-						majorVersion = listFirst(server.lucee.version, '.'),
-						minorVersion = 0
-					}
-
-					if (semVer.versionLength >= 2) {
-						semVer.minorVersion = listGetAt(semVer.fullVersion, 2, '.');
-					}
-
-					// Verify version is 5.3 or above
-					if (semVer.majorVersion > 5 || (semVer.majorVersion == 5 && semVer.minorVersion >= 3)) {
-						variables.serverCompatibleFlag = true;
-					}
-				}
-			}
-
-			if (!variables.serverCompatibleFlag) {
-				throw('Nexio payment integration: Incompatible server version. Current version does not support the RSA encryption dependency. Upgrade server to at least version 5.3 to resolve issue.');
-			}
 		}
 
 		// Nexio relies on 3rd party TokenEx for tokenization. It uses PKCS #1 v1.5 as cipher algorithm for RSA encryption
