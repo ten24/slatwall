@@ -3078,12 +3078,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var rangePredicate = "";
 		
-		if(StructKeyExists(arguments.filter, "ormtype") && arguments.filter.ormtype == 'timestamp') { // if date-range
+		if(arguments.filter.ormtype == 'timestamp') { // if date-range
 			
 			rangePredicate = getDateRangePredicate(arguments.filter);
 		
 		} else if( listfindnocase("between,not between",arguments.filter.comparisonOperator) 
-					&& StructKeyExists(arguments.filter, "ormtype") && listFind('integer,float,big_decimal,string',arguments.filter.ormtype)  ) { 
+					&& listFind('integer,float,big_decimal,string',arguments.filter.ormtype)  ) { 
 			
 			rangePredicate = getNumericRangePredicate(arguments.filter);
 			
@@ -3098,6 +3098,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	
 	private string function getPredicate(required any filter){
+		
+		f(structkeyExists(arguments, "filter") && !structkeyExists(arguments.filter,"ormtype")){
+			arguments.filter['ormtype'] = "";
+			
+			var realPropertyIdentifier = ListLast(arguments.filter.propertyIdentifier,'.');
+			var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
+			var propertyMetaData = baseEntityObject.getPropertyMetaData(realPropertyIdentifier);
+
+			if(!isNull(propertyMetaData) && structKeyExists(propertyMetaData,'ormtype')){
+				arguments.filter['ormtype'] = propertyMetaData.ormtype;
+			}
+		}
+
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
 			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
