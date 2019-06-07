@@ -244,7 +244,6 @@ component extends="HibachiService" accessors="true" output="false" {
 						if(structKeyExists(evaluate(currentThreadName), 'error')){
 							writedump(evaluate(currentThreadName).error);
 							throw(evaluate(currentThreadName).error.message);
-							break;
 						}
 					}
 						
