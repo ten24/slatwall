@@ -192,7 +192,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalReturnQuantity" ormtype="integer";
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
-	
+		//CUSTOM PROPERTIES BEGIN
+property name="commissionBonusVolumeTotal" persistent="false" hb_formatType="currency";
+    property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+    property name="commissionPeriodEndDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+    property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
