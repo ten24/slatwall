@@ -36,7 +36,7 @@ class SWListingReportController {
     public swListingDisplay:any;
     public isPublic:boolean;
     public accountOwnerID:string;
-    
+    public chartobj:any;
     
     //@ngInject
     constructor(
@@ -355,11 +355,15 @@ class SWListingReportController {
 		var dates = [];
 		var datasets = [];
 		
+		if(this.chartobj){
+            this.chartobj.destroy();
+        }
+        
 		if(ctx.is($("#myChartCompare"))){
-		    var chart = this.compareChart; 
+		    this.chartobj = this.compareChart; 
 		    this.compareReportingData=reportingData;
 		}else{
-		    var chart = this.chart;
+		    this.chartobj = this.chart;
 		}
 		
 		
@@ -399,10 +403,8 @@ class SWListingReportController {
 		    }
 		});
 		//used to clear old rendered charts before adding new ones
-		if(chart!=null){
-            chart.destroy();
-        }
-        chart = new Chart(ctx, {
+		
+        this.chartobj = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: dates,
@@ -454,8 +456,8 @@ class SWListingReportController {
                  }
             }
         });
-        chart.draw();
-        this.observerService.notifyById('swListingReport_DrawChart',this.tableId,chart);
+        this.chartobj.draw();
+        this.observerService.notifyById('swListingReport_DrawChart',this.tableId,this.chartobj);
     }
     
     public popObjectPath=()=>{
