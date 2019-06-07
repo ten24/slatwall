@@ -39,7 +39,7 @@
 		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
 		"subscriptionBenefits": 	[{"conditions":"generateSubscriptionSkus","required":true}],
 		"subscriptionTerms":		[{"conditions":"generateSubscriptionSkus","required":true}],
-		"redemptionAmount":			[{"conditions":"createGiftCard", "dataType":"numeric","minValue":0}],
+		"baseRedemptionAmount":			[{"conditions":"createGiftCard", "dataType":"numeric","minValue":0}],
 		"redemptionAmountType":     [{"conditions":"createGiftCard", "required":true}],
 		"renewalSubscriptionBenefits": [{"conditions":"subscriptionWithoutRenewalSku","required":true}],
 		"renewalPrice":  	[{"conditions":"subscriptionWithoutRenewalSku","required":true,"dataType":"numeric","minValue":0}],

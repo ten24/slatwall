@@ -732,7 +732,7 @@ component extends="HibachiService" accessors="true" {
 
 		arguments.product = createSingleSku(arguments.product,arguments.processObject);
 		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
-		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		arguments.product.getDefaultSku().setBaseRedemptionAmount(arguments.processObject.getBaseRedemptionAmount());
 		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
 			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
 			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);
