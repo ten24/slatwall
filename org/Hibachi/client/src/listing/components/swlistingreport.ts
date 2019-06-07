@@ -242,7 +242,7 @@ class SWListingReportController {
             this.endDate.setHours(23,59,59,999);
             //if date is in the wrong format then update those dates
             if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
-                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt')
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
                 this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
             }
             this.hasMetric = false;
@@ -411,7 +411,6 @@ class SWListingReportController {
 		});
 		//used to clear old rendered charts before adding new ones
 		if(chart!=null){
-		    console.log("Destroyed old graph");
             chart.destroy();
         }
         chart = new Chart(ctx, {
