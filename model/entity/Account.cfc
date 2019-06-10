@@ -378,7 +378,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			var giftCardOptions = this.getActiveGiftCardCollectionList().getRecords();
 			var options = []; 
 			for(var giftCardOption in giftCardOptions){
-				var simpleRepresentation = getService('HibachiUtilityService').formatValue_currency(giftCardOption['calculatedBalanceAmount'],giftCardOption); 
+				
+				var balance = 0;
+				if(isNumeric(giftCardOption['calculatedBalanceAmount'])){
+					balance = giftCardOption['calculatedBalanceAmount'];  
+				}
+
+				var simpleRepresentation = getService('HibachiUtilityService').formatValue_currency(balance,giftCardOption); 
 				simpleRepresentation &= ' - ' & giftCardOption['ownerFirstName'] & ' ' & giftCardOption['ownerLastName']; 
 				var optionToAdd = {
 					'name': simpleRepresentation,
