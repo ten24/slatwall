@@ -98,17 +98,6 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
 			getBeanFactory().getBean('integrationService').loadDataFromIntegrations();
 			writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
-			
-			// Setup Default Data from custom folder... Not called on soft reloads.
-			var customdbPath = ExpandPath("/custom/dbdata");
-			if ( !directoryExists(customdbPath) )
-			{
-				writeLog(file="Slatwall", text="General Log - custom/dbdata is not found.");
-			}
-			else{
-				getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = customdbPath);
-				writeLog(file="Slatwall", text="General Log - Default Data from custom/dbdata Has Been Confirmed");
-			}
 		}
 		
 		// Clear the setting cache so that it can be reloaded

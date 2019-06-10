@@ -13,17 +13,12 @@
 <cfsetting requesttimeout="3600">
 <cfscript>
 // curate the base url for reference to root
-if(directoryExists(expandPath("/muraWRM"))){
-	rootDirectory = expandPath("/muraWRM");
-}else{
-	rootDirectory = expandPath("/Slatwall");
-}
-directory = replaceNoCase( getDirectoryFromPath(getCurrentTemplatePath()) , rootDirectory, "" );
-baseUrl = replaceNoCase(replace(directory, '\', '/', 'all'),'/meta/tests/test-runner/','');
+baseUrl = replaceNoCase(replace(replaceNoCase( getDirectoryFromPath(getCurrentTemplatePath()) , expandPath('/'), '/' ), '\', '/', 'all'),'/meta/tests/test-runner/','');
 // create testbox
 testBox = new testbox.system.TestBox();
 // create reporters
 reporters = [ "ANTJunit", "Console", "Codexwiki", "Doc", "Dot", "JSON", "JUnit", "Min", "Raw", "Simple", "Tap", "Text", "XML" ];
+
 if( url.opt_run ){
 	// clean up
 	for( key in URL ){

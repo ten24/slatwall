@@ -264,10 +264,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 private void function populateWithAddressVerification(required struct rc){
-		
 		if(
-			len(getHibachiScope().setting('globalShippingIntegrationForAddressVerification')) &&
-			getHibachiScope().setting('globalShippingIntegrationForAddressVerification') != 'internal' &&
 			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
 			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
 		){

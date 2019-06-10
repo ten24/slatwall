@@ -59,26 +59,38 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.orderPaymentSmartList#" showCreate="false" />
 
-    <cfset orderpaymentCollectionList = getHibachiScope().getService('orderService').getorderPaymentCollectionList()>
-	<cfset serchableDisplayProperties = "order.orderNumber,order.account.firstName,order.account.lastName,createdDateTime,paymentMethod.paymentMethodName,orderPaymentType.typeName,amount,amountReceived,amountCredited"/>
-	<cfset orderpaymentCollectionList.setDisplayProperties( serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset orderpaymentCollectionList.addDisplayProperty( displayProperty='orderPaymentID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
+	<!--- <hb:HibachiListingDisplay smartList="#rc.orderPaymentSmartList#"
+							   recorddetailaction="admin:entity.detailorderpayment">
+		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
+	</hb:HibachiListingDisplay> --->
 
-    <hb:HibachiListingDisplay 
-    		collectionList="#orderpaymentCollectionList#"
-    		usingPersonalCollection="true"
-    		recordEditAction="admin:entity.edit#lcase(orderpaymentCollectionList.getCollectionObject())#"
-    		recordDetailAction="admin:entity.detail#lcase(orderpaymentCollectionList.getCollectionObject())#"
-    	>
-    </hb:HibachiListingDisplay>
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'OrderPayment'"
+		data-edit="false"
+		data-has-search="true"
+		record-detail-action="admin:entity.detailorderpayment"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="orderPaymentID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.orderNumber" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.account.firstName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.account.lastName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="paymentMethod.paymentMethodName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderPaymentType.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="amount" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="amountReceived" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="amountCredited" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>

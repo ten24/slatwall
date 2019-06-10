@@ -134,7 +134,6 @@
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('week')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='week'}" class="btn btn-default">Week</button>
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('month')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='month'}" class="btn btn-default">Month</button>
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('year')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='year'}" class="btn btn-default">Year</button>
-                      <button type="button" ng-click="swListingReport.updatePeriod()"  class="btn btn-default">Refresh</button>
                     </div>
                 </div><!-- end of .col -->
                 
@@ -173,8 +172,8 @@
     	</div><!-- end of .col -->
     </div><!-- end of .flex -->
     
-    <div id="get-started-report" ng-hide="swListingReport.hasMetric==true">
-        <button type="button" class="close" aria-label="Close" ng-click="swListingReport.removeInfoWIndow($event);" >
+    <div id="get-started-report">
+        <button type="button" class="close" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         <div class="text">

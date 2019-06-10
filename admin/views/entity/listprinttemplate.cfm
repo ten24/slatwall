@@ -61,28 +61,28 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createprinttemplate" entity="printtemplate" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-	
-	<cfset printTemplateCollectionList = getHibachiScope().getService('templateService').getPrintTemplateCollectionList()>
-		<cfset serchableDisplayProperties = "printTemplateName"/>
-		<cfset printTemplateCollectionList.setDisplayProperties(serchableDisplayProperties, {
-			isVisible=true,
-			isSearchable=true,
-			isDeletable=true
-		})/>
-		
-		<cfset printTemplateCollectionList.addDisplayProperty(displayProperty='printTemplateID', columnConfig={
-			isVisible=false,
-			isSearchable=false,
-			isDeletable=false
-		})/>
-		
-		<hb:HibachiListingDisplay 
-			collectionList="#printTemplateCollectionList#"
-			usingPersonalCollection="true"
-			recordEditAction="admin:entity.edit#lcase(printTemplateCollectionList.getCollectionObject())#"
-			recordDetailAction="admin:entity.detail#lcase(printTemplateCollectionList.getCollectionObject())#"
-		>
-	</hb:HibachiListingDisplay>
+
+
+	<!--- <hb:HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
+							   recordDetailAction="admin:entity.detailPrintTemplate"
+							   recordEditAction="admin:entity.editPrintTemplate">
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'PrintTemplate'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editPrintTemplate"
+		record-detail-action="admin:entity.detailPrintTemplate"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="printTemplateID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="printTemplateName" tdclass="primary" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>
 

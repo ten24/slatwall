@@ -55,18 +55,28 @@ Notes:
 <cfset rc.sessionSmartList.addOrder('lastRequestDateTime|DESC') />
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.sessionSmartList#" showCreate="false" />
-    
-    <cfset sessionCollectionList = getHibachiScope().getService('hibachiSessionService').getSessionCollectionList()>
-	<cfset serchableDisplayProperties = "lastRequestDateTime,createdDateTime,lastRequestIPAddress,account.firstName,account.lastName"/>
-	<cfset sessionCollectionList.setDisplayProperties( serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
 
-    <hb:HibachiListingDisplay 
-    		collectionList="#sessionCollectionList#"
-    		usingPersonalCollection="true"
-    	>
-    </hb:HibachiListingDisplay>
 
+<!--- <hb:HibachiListingDisplay smartList="#rc.sessionSmartList#">
+	<hb:HibachiListingColumn propertyIdentifier="lastRequestDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="lastRequestIPAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
+</hb:HibachiListingDisplay> --->
+
+    <sw-listing-display data-using-personal-collection="true"
+        data-collection="'Session'"
+        data-edit="false"
+        data-has-search="true"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="sessionID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="lastRequestDateTime" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="lastRequestIPAddress" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
+    </sw-listing-display>

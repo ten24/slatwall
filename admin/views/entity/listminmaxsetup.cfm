@@ -50,33 +50,27 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-    <sw-entity-action-bar data-type="listing" data-page-title-rb-key="entity.MinMaxSetup" >
+    <sw-entity-action-bar
+            data-type="listing"
+            data-page-title-rb-key="entity.MinMaxSetup"
+    >
         <sw-entity-action-bar-button-group>
             <sw-process-caller data-action="entity.preprocessminmaxsetup" data-process-context="uploadimport" data-title-rb-key="entity.MinMaxSetup.process.uploadimport" data-class="adminentitycreateform btn btn-primary deafult-margin" data-icon="'upload'" data-type="link"></sw-process-caller>
             <sw-process-caller data-action="admin:entity.createminmaxsetup" data-title-rb-key="entity.MinMaxSetup.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
         </sw-entity-action-bar-button-group>
     </sw-entity-action-bar>
-    
-	<cfset minMaxSetupCollectionList = getHibachiScope().getService('stockService').getMinMaxSetupCollectionList()>
-	<cfset serchableDisplayProperties = "setupName"/>
-	<cfset minMaxSetupCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset minMaxSetupCollectionList.addDisplayProperty(displayProperty='minMaxSetupID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#minMaxSetupCollectionList#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(minMaxSetupCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(minMaxSetupCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
-
+    <sw-listing-display
+        data-using-personal-collection="true"
+        data-collection="'MinMaxSetup'"
+        data-edit="false"
+        data-has-search="true"
+        record-edit-action="admin:entity.editminmaxsetup"
+        record-detail-action="admin:entity.detailminmaxsetup"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="minMaxSetupID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="setupName" tdclass="primary" ></sw-listing-column>
+    </sw-listing-display>
 </cfoutput>

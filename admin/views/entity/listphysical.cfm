@@ -61,27 +61,30 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-	
-	<cfset physicalCollectionList = getHibachiScope().getService('physicalService').getPhysicalCollectionList()>
-	<cfset serchableDisplayProperties = "physicalName,physicalStatusType.typeName,createdDateTime"/>
-	<cfset physicalCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset physicalCollectionList.addDisplayProperty(displayProperty='physicalID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#physicalCollectionList#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(physicalCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(physicalCollectionList.getCollectionObject())#"
+
+	<!--- <hb:HibachiListingDisplay smartlist="#rc.physicalSmartList#"
+	                          recordeditaction="admin:entity.editphysical"
+							  recorddetailaction="admin:entity.detailphysical">
+
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />
+		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />
+		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'Physical'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editphysical"
+		record-detail-action="admin:entity.detailphysical"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
 	>
-	</hb:HibachiListingDisplay>
+		<sw-listing-column data-property-identifier="physicalID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="physicalName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>

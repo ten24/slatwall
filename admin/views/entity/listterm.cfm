@@ -62,27 +62,32 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<cfset termCollectionList = getHibachiScope().getService('settingService').getTermCollectionList()>
-	<cfset serchableDisplayProperties = "termName"/>
-	<cfset termCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset termCollectionList.addDisplayProperty(displayProperty='termID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#termCollectionList#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(termCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(termCollectionList.getCollectionObject())#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.termSmartList#"
+							   recordEditAction="admin:entity.editterm"
+							   recordEditQueryString="redirectAction=admin:entity.listterm"
+							   recordEditModal="true"
+							   recordDeleteAction="admin:entity.deleteterm"
+							   sortProperty="sortOrder">
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
+
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'Term'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editterm"
+		record-detail-action="admin:entity.detailterm"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+		data-sort-property="sortOrder"
 	>
-	</hb:HibachiListingDisplay>
+		<sw-listing-column data-property-identifier="termID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="termName" tdclass="primary" ></sw-listing-column>
+	</sw-listing-display>
+
 
 </cfoutput>
 

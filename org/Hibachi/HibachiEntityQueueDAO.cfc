@@ -96,7 +96,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
 		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_DATE", list="true");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount= COALESCE(tryCount, 0) + 1  WHERE entityQueueID IN ( :entityQueueID )";
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount= ISNULL(tryCount, 0) + 1  WHERE entityQueueID IN ( :entityQueueID )";
 						
 		queryService.execute(sql=sql);
 	}

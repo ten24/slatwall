@@ -65,28 +65,36 @@ Notes:
 			</hb:HibachiActionCallerDropdown>
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-	
-    <cfset stockadjustmentCollectionList = getHibachiScope().getService('stockService').getStockadjustmentCollectionList()>
-	<cfset serchableDisplayProperties = "referenceNumber,stockAdjustmentType.typeName,stockAdjustmentStatusType.typeName,fromLocation.locationName,toLocation.locationName,createdDateTime"/>
-	<cfset stockadjustmentCollectionList.setDisplayProperties( serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset stockadjustmentCollectionList.addDisplayProperty( displayProperty='stockAdjustmentID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
 
-    <hb:HibachiListingDisplay 
-    		collectionList="#stockadjustmentCollectionList#"
-    		usingPersonalCollection="true"
-    		recordEditAction="admin:entity.edit#lcase(stockadjustmentCollectionList.getCollectionObject())#"
-    		recordDetailAction="admin:entity.detail#lcase(stockadjustmentCollectionList.getCollectionObject())#"
-    	>
-    </hb:HibachiListingDisplay>
+	<!--- <hb:HibachiListingDisplay smartList="#rc.stockAdjustmentSmartList#"
+			recordeditaction="admin:entity.editstockadjustment"
+			recorddetailaction="admin:entity.detailstockadjustment"
+			showCreate="true">
 
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.typeName" filter="true" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
+		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
+		<hb:HibachiListingColumn propertyidentifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
+		<hb:HibachiListingColumn propertyidentifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
+		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+	    data-collection="'StockAdjustment'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editstockadjustment"
+	    record-detail-action="admin:entity.detailstockadjustment"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="stockAdjustmentID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="referenceNumber" filter="true" title="#$.slatwall.rbKey('entity.stockAdjustment.referenceNumber')#"></sw-listing-column>
+	    <sw-listing-column data-property-identifier="stockAdjustmentType.typeName" filter="true" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" tdclass="primary" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="stockAdjustmentStatusType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>

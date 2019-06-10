@@ -147,10 +147,6 @@ class SWDisplayOptions{
 
                     return title;
                 };
-                
-                scope.hasToMany=function(propertyIdentifier){
-                    return $hibachi.hasToManyByEntityNameAndPropertyIdentifier(scope.baseEntityName,scope.baseEntityAlias,propertyIdentifier);
-                }
 
                 scope.addColumn = (closeDialog)=>{
                     var selectedProperty:any = scope.selectedProperty;

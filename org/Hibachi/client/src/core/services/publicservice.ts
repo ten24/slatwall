@@ -774,7 +774,7 @@ class PublicService {
             if(!angular.isDefined(this.imagePath)){
                 this.imagePath = {};
             }
-            if (result && result.resizedImagePaths){
+            if (result.resizedImagePaths){
                 for(var skuID in result.resizedImagePaths){
                     this.imagePath[skuID] = result.resizedImagePaths[skuID]
                 }

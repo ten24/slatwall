@@ -54,29 +54,29 @@ Notes:
 
 <cfoutput>
 
-    <hb:HibachiEntityActionBar type="listing" object="#rc.measurementUnitSmartList#" showCreate="false" />
+<hb:HibachiEntityActionBar type="listing" object="#rc.measurementUnitSmartList#" showCreate="false" />
 
-	<cfset measurementUnitCollectionList = getHibachiScope().getService('measurementService').getMeasurementUnitCollectionList()>
-		<cfset serchableDisplayProperties = "unitName,measurementType"/>
-		<cfset measurementUnitCollectionList.setDisplayProperties(serchableDisplayProperties, {
-			isVisible=true,
-			isSearchable=true,
-			isDeletable=true
-		})/>
-		
-		<cfset measurementUnitCollectionList.addDisplayProperty(displayProperty='unitCode', columnConfig={
-			isVisible=true,
-			isSearchable=true,
-			isDeletable=false
-		})/>
-		
-		<hb:HibachiListingDisplay 
-			collectionList="#measurementUnitCollectionList#"
-			usingPersonalCollection="true"
-			recordEditAction="admin:entity.edit#lcase(measurementUnitCollectionList.getCollectionObject())#"
-			recordDetailAction="admin:entity.detail#lcase(measurementUnitCollectionList.getCollectionObject())#"
-		>
-	</hb:HibachiListingDisplay>
+<!--- <hb:HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="unitName" />
+	<hb:HibachiListingColumn propertyIdentifier="unitCode" />
+	<hb:HibachiListingColumn propertyIdentifier="measurementType" />
+</hb:HibachiListingDisplay> --->
+
+    <sw-listing-display data-using-personal-collection="true"
+        data-collection="'MeasurementUnit'"
+        data-edit="false"
+        data-has-search="true"
+        record-detail-action="admin:entity.detailmeasurementunit"
+        record-detail-modal="true"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="unitCode" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="unitName" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="unitCode" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="measurementType" ></sw-listing-column>
+    </sw-listing-display>
 
 </cfoutput>
 

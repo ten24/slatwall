@@ -119,8 +119,7 @@ class CollectionConfig {
         private keywords:string = '',
         private allRecords:boolean = false,
         private dirtyRead:boolean = false,
-        private isDistinct:boolean = false,
-        private enableAveragesAndSums:boolean = false,
+        private isDistinct:boolean = false
 
     ){
         this.$hibachi = $hibachi;
@@ -215,8 +214,7 @@ class CollectionConfig {
         this.isDistinct = jsonCollection.isDistinct;
         this.reportFlag = jsonCollection.reportFlag;
         this.useElasticSearch = jsonCollection.useElasticSearch;
-        this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-        
+
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
@@ -259,8 +257,7 @@ class CollectionConfig {
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
             orderBy:this.orderBy,
-            periodInterval:this.periodInterval,
-            enableAveragesAndSums: this.enableAveragesAndSums
+            periodInterval:this.periodInterval
         };
     };
 
@@ -284,7 +281,7 @@ class CollectionConfig {
             columnsConfig: angular.toJson(columns),
             filterGroupsConfig: angular.toJson(filters),
             joinsConfig: angular.toJson(this.joins),
-            orderByConfig: angular.toJson(this.orderBy),
+            orderByConfig:angular.toJson(this.orderBy),
             groupBysConfig: angular.toJson(this.groupBys),
             currentPage: this.currentPage,
             pageShow: this.pageShow,
@@ -294,9 +291,8 @@ class CollectionConfig {
             allRecords: this.allRecords,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
-            isReport: this.isReport(),
-            periodInterval: this.periodInterval,
-            enableAveragesAndSums: this.enableAveragesAndSums
+            isReport:this.isReport(),
+            periodInterval:this.periodInterval
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
@@ -805,8 +801,8 @@ class CollectionConfig {
         this.orderBy = [];
     }
 
-    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true, singleColumn:boolean = false ):void=>{
-        if(!this.orderBy || singleColumn){
+    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true):void=>{
+        if(!this.orderBy){
             this.orderBy = [];
         }
 
@@ -824,18 +820,11 @@ class CollectionConfig {
         this.orderBy.push(orderBy);
     };
 
-    public toggleOrderBy = (propertyIdentifier:string, singleColumn:boolean = false, formatPropertyIdentifier:boolean = false) => {
+    public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
 
         if(!this.orderBy){
             this.orderBy = [];
         }
-        
-        let formattedPropertyIdentifier = propertyIdentifier;
-        if(formatPropertyIdentifier){
-            formattedPropertyIdentifier = this.formatPropertyIdentifier(propertyIdentifier);
-        }
-        
-        
         var found = false;
         for(var i = this.orderBy.length - 1; i >= 0; i--){
             if(this.orderBy[i].propertyIdentifier == formattedPropertyIdentifier){
@@ -949,11 +938,6 @@ class CollectionConfig {
 
     public setDistinct = (flag:boolean=true)=>{
         this.isDistinct =  flag;
-        return this;
-    };
-
-    public setEnableAveragesAndSums = (flag:boolean = false)=>{
-        this.enableAveragesAndSums =  flag;
         return this;
     };
 

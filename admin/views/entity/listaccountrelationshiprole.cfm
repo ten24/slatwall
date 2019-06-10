@@ -71,31 +71,19 @@ Notes:
 
 	</hb:HibachiListingDisplay> --->
 
-	
-	<cfset accountRelationshipRoleCollectionList = getHibachiScope().getService('accountService').getAccountRelationshipRoleCollectionList()>
-	<cfset displayProperties = "accountRelationshipRoleName,parentAccountManagementPermissionGroup.permissionGroupName"/>
-	<cfset accountRelationshipRoleCollectionList.setDisplayProperties(
-	displayProperties,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset accountRelationshipRoleCollectionList.addDisplayProperty(
-	displayProperty='accountRelationshipRoleID',
-	columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-		<hb:HibachiListingDisplay 
-		collectionList="#accountRelationshipRoleCollectionList#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(accountRelationshipRoleCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(accountRelationshipRoleCollectionList.getCollectionObject())#"
+	<sw-listing-display data-using-personal-collection="true"
+	    data-collection="'AccountRelationshipRole'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editaccountrelationshiprole"
+	    record-detail-action="admin:entity.detailaccountrelationshiprole"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
 	>
-	</hb:HibachiListingDisplay>
+		<sw-listing-column data-property-identifier="accountRelationshipID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="accountRelationshipRoleName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="parentAccountManagementPermissionGroup.permissionGroupName" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>

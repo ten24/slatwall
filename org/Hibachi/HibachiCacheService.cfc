@@ -24,14 +24,11 @@ component accessors="true" output="false" extends="HibachiService" {
 	public any function getServerInstanceByServerInstanceKey(required string serverInstanceKey, boolean returnNewIfNotFound, string serverInstanceIPAddress){
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
 
-		if(isNull(serverInstance)){
-			serverInstance = this.newServerInstance();
-		}
-
-		if(serverInstance.getNewFlag()){
+		if(isNull(serverInstance) || serverInstance.getNewFlag()){
 			if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
 				arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
 			}
+			serverInstance = this.newServerInstance();
 			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
 			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			serverInstance.setServerInstanceExpired(false);

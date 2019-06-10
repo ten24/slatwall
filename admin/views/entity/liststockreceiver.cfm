@@ -55,26 +55,30 @@ Notes:
 <cfoutput>
 <hb:HibachiEntityActionBar type="listing" object="#rc.stockReceiverSmartList#" showCreate="false" />
 
-	<cfset stockReceiverCollectionList = getHibachiScope().getService('stockService').getStockReceiverCollectionList()>
-	<cfset serchableDisplayProperties = "packingSlipNumber,boxCount,receiverType,createdDateTime"/>
-	<cfset stockReceiverCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset stockReceiverCollectionList.addDisplayProperty(displayProperty='stockReceiverID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#stockReceiverCollectionList#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(stockReceiverCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(stockReceiverCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
+<!--- <hb:HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
+						   recordDetailAction="admin:entity.detailstockreceiver"
+						   recordEditAction="admin:entity.editstockreceiver">
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="packingSlipNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="boxCount" />
+	<hb:HibachiListingColumn propertyIdentifier="receiverType" />
+	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+</hb:HibachiListingDisplay> --->
+
+    <sw-listing-display data-using-personal-collection="true"
+        data-collection="'StockReceiver'"
+        data-edit="false"
+        data-has-search="true"
+        record-edit-action="admin:entity.editstockreceiver"
+        record-detail-action="admin:entity.detailstockreceiver"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="stockReceiverID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="packingSlipNumber" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="boxCount" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="receiverType" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+    </sw-listing-display>
 
 </cfoutput>

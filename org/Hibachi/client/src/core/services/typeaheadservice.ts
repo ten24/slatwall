@@ -55,10 +55,6 @@ class TypeaheadService {
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{
         return "typeaheadSelectionUpdated" + key; 
     }
-    
-    public getTypeaheadClearSearchEvent = (key:string) =>{
-        return key + "clearSearch"; 
-    }
 
     public attachTypeaheadSelectionUpdateEvent = (key:string, callback) =>{
         this.observerService.attach(callback, this.getTypeaheadSelectionUpdateEvent(key));
@@ -66,10 +62,6 @@ class TypeaheadService {
 
     public notifyTypeaheadSelectionUpdateEvent = (key:string, data:any) =>{
         this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key), data); 
-    }
-    
-    public notifyTypeaheadClearSearchEvent = (key:string, data:any) =>{
-        this.observerService.notify(this.getTypeaheadClearSearchEvent(key), data); 
     }
 
     public setTypeaheadState = (key:string, state:any) =>{

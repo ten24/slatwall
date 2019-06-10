@@ -462,8 +462,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
 		
-		if(!structKeyExists(variables.entityQueueData, '#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#')){
-			variables.entityQueueData['#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#'] = arguments;
+		if(!structKeyExists(variables.entityQueueData, '#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#')){
+			variables.entityQueueData['#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#'] = arguments;
 			getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
 		}
 	}

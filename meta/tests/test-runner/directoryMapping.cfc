@@ -10,7 +10,6 @@ component accessors=true output=false persistent=false {
 		var path ="/Slatwall/meta/tests/unit/";
 		var metaData= DirectoryList(expandPath(path), false, "name"); // get the directory list in root path
 		var arrayFolders =[];
-		
 		for (var item in metaData){
 			if(findNoCase(".cfc",item,0) == 0 && findNoCase(".cfm",item,0) == 0){ //condition to remove .cfc and .cfm files in unit folder
 				arrayAppend(arrayFolders, item);

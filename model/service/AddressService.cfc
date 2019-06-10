@@ -177,7 +177,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 			var shippingIntegrationID = getHibachiScope().setting('globalShippingIntegrationForAddressVerification');
 			
-			if(!isNull(shippingIntegrationID) && len(shippingIntegrationID) && shippingIntegrationID != 'internal' ){
+			if(!isNull(shippingIntegrationID) && len(shippingIntegrationID)){
 				
 				var shippingIntegration = getService("IntegrationService").getIntegrationByIntegrationPackage(shippingIntegrationID).getIntegrationCFC("Shipping");
 				
@@ -193,13 +193,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			addressVerificationStruct = deserializeJson(address.getVerificationJson());
 			
 		}
+		address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
 		
-		if (structKeyExists(addressVerificationStruct, 'success')){
-			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
-			
-			if(!addressVerificationStruct['success']){
-				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
-			}
+		if(!addressVerificationStruct['success']){
+			address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
 		}
 		
 		this.saveAddress(address);

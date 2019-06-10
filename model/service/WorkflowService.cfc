@@ -62,7 +62,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		var successFlag = false;
-		
+		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
+			continue;
+		}
+
 		if(arguments.workflowTrigger.getSaveTriggerHistoryFlag() == true) {
 
 			// Create a new workflowTriggerHistory to be logged
@@ -205,24 +208,12 @@ component extends="HibachiService" accessors="true" output="false" {
 				this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 				
 				
-			} else if(
-				!isNull(arguments.workflowTrigger.getScheduleCollectionConfig()) 
-				|| !isNull(arguments.workflowTrigger.getScheduleCollection())
-			){
-				//transient collection takes precedent
-				if(!isNull(arguments.workflowTrigger.getScheduleCollectionConfig())){
-					var scheduleCollectionConfig = deserializeJSON(arguments.workflowTrigger.getScheduleCollectionConfig());
-					var currentObjectName = scheduleCollectionConfig['baseEntityName'];
-					var scheduleCollection = getService('HibachiCollectionService').invokeMethod('get#currentObjectName#CollectionList');
-					scheduleCollection.setCollectionConfigStruct(scheduleCollectionConfig);
-				}else{
-					var scheduleCollection = arguments.workflow.getScheduleCollection();
-					var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
-				}
+			} else if(!isNull(arguments.workflowTrigger.getScheduleCollection())) {
 				//Instantiate one object per Collection Record returned
+				var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 				var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
 				//execute Collection and return only the IDs
-				var triggerCollectionResult = scheduleCollection.getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
+				var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
 	
 				//Loop Collection Data
 				for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){
@@ -234,9 +225,9 @@ component extends="HibachiService" accessors="true" output="false" {
 					thread action="run" name="#currentThreadName#" currentObjectName="#currentObjectName#" currentObjectID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#"{
 						//load Objects by id
 	
-						var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', attributes.workflowTriggerID);
+						var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
 						var processData = {
-							entity = getHibachiScope().getEntity(attributes.currentObjectName, attributes.currentObjectID),
+							entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
 							workflowTrigger = workflowTrigger
 						};
 	
@@ -248,11 +239,12 @@ component extends="HibachiService" accessors="true" output="false" {
 							//application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
 						}
 						threadJoin(currentThreadName);
-						
+		
 						//if there was any errors inside of the thread, propagate to catch
 						if(structKeyExists(evaluate(currentThreadName), 'error')){
 							writedump(evaluate(currentThreadName).error);
 							throw(evaluate(currentThreadName).error.message);
+							break;
 						}
 					}
 						
@@ -651,7 +643,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.comparisonOperator;
 	}	
-	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
 		
 		getHibachiDAO().flushORMSession();

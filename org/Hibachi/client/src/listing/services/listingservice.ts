@@ -937,9 +937,8 @@ class ListingService{
         }
         if(this.getListing(listingID).collectionConfig != null){
             var found = false;
-            let _formattedPropertyIdentifier = this.getListing(listingID).collectionConfig.formatPropertyIdentifier(propertyIdentifier);
             angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
-                if( _formattedPropertyIdentifier == orderBy.propertyIdentifier){
+                if(propertyIdentifier == orderBy.propertyIdentifier){
                     orderBy.direction = direction;
                     found = true;
                 } else {
@@ -947,7 +946,7 @@ class ListingService{
                 }
             });
             if(!found){
-                this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction, true, true);
+                this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction);
             }
             if(notify){
                 this.observerService.notify(this.getListingOrderByChangedEventString(listingID));
@@ -971,7 +970,7 @@ class ListingService{
             if(column.aggregate && column.aggregate.aggregateFunction){
                 orderByPropertyIdentifier = column.aggregate.aggregateFunction + '('+column.propertyIdentifier+')';
             }
-            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
+            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
         }
 
     };

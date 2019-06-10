@@ -60,27 +60,31 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createtask" entity="task" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-	
-	<cfset taskCollectionList = getHibachiScope().getService('taskService').getTaskCollectionList()>
-	<cfset serchableDisplayProperties = "taskName,runningFlag,activeFlag"/>
-	<cfset taskCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset taskCollectionList.addDisplayProperty(displayProperty='taskID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#taskCollectionList#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.edit#lcase(taskCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(taskCollectionList.getCollectionObject())#"
+
+	<!--- <hb:HibachiListingDisplay smartlist="#rc.taskSmartList#"
+	                          recorddetailaction="admin:entity.detailtask"
+							  recordeditaction="admin:entity.edittask">
+
+
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="taskName" />
+		<hb:HibachiListingColumn propertyidentifier="runningFlag" />
+		<hb:HibachiListingColumn propertyidentifier="activeFlag" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'Task'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.edittask"
+		record-detail-action="admin:entity.detailtask"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
 	>
-	</hb:HibachiListingDisplay>
+		<sw-listing-column data-property-identifier="taskID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="taskName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="runningFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>

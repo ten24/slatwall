@@ -18,9 +18,9 @@
                 data-ng-model-options='{ debounce: 500 }'
                 data-ng-change="swListingSearch.search()">
         <button class="btn btn-xs btn-default s-add-search-param"
-                data-ng-if="swListingSearch.swListingDisplay.searchText"
-                data-ng-disabled="!swListingSearch.selectedSearchColumn || (swListingSearch.selectedSearchColumn.title == 'All')"
-                data-ng-click="swListingSearch.swListingControls.addSearchFilter(swListingSearch.selectedSearchColumn )">
+                data-ng-if="swListingSearch.selectedSearchColumn && swListingSearch.swListingDisplay.searchText"
+                data-ng-disabled="!swListingSearch.selectedSearchColumn"
+                data-ng-click="swListingSearch.addSearchFilter()">
                 <span sw-tooltip class="tool-tip-item" data-text="Add Search to Filter List" data-position="bottom">
                     <i class="glyphicon glyphicon-plus"></i>
                 </span>
