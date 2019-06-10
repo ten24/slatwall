@@ -49,41 +49,31 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.productReviewSmartList" type="any" />
 <cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" />
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.productReviewSmartList#"
-								recordDetailAction="admin:entity.detailproductreview"
-								recordEditAction="admin:entity.editproductreview">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="reviewTitle" />
-		<hb:HibachiListingColumn propertyIdentifier="reviewerName" />
-		<hb:HibachiListingColumn propertyIdentifier="rating" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'ProductReview'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editproductreview"
-		record-detail-action="admin:entity.detailproductreview"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset productReviewCollectionList = getHibachiScope().getService('emailService').getProductReviewCollectionList()>
+	<cfset serchableDisplayProperties = "reviewTitle,reviewerName,rating,product.productName,product.defaultSku.price,createdDateTime"/>
+	<cfset productReviewCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset productReviewCollectionList.addDisplayProperty(displayProperty='productReviewID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#productReviewCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(productReviewCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(productReviewCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="productReviewID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="reviewTitle" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="reviewerName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="rating" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="product.productName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="product.defaultSku.price" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
