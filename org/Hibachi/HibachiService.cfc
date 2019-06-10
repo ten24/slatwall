@@ -1291,7 +1291,9 @@
 		
 		
 		public string function getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier) {
-			var object =  getEntityObject(arguments.entityName);
+			var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
+
+			var object =  getEntityObject(lastEntityName);
 			var propertyName = listLast(arguments.propertyIdentifier, '.');
 			if(
 				!isNull(object)
