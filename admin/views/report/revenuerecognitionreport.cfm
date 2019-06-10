@@ -90,7 +90,7 @@
         <cfset subscriptionsEarning[index] = dataRecord['subscriptionUsageCount']/>
         <cfset earned[index] = dataRecord['earnedSUM']/>
         <cfset taxAmount[index] = dataRecord['taxAmountSUM']/>
-        <cfset earnedRevenue[index]= dataRecord['earnedSUM']+dataRecord['taxAmountSUM']/>
+        <cfset earnedRevenue[index]= dataRecord['earnedSUM']/>
     </cfloop>
 	
 	<!-- prepare neworder data -->
@@ -111,7 +111,7 @@
     
     <cfloop array="#cancelledOrdersCollectionList.getRecords()#" index="dataRecord">
         <cfset index = DateDiff('m',rc.minDate,dataRecord['modifiedDateTime'])+1/>
-        <cfset cancelledOrders[index] = dataRecord['orderItemTotal'] - (dataRecord['earnedTotal']+dataRecord['taxTotal'])/>
+        <cfset cancelledOrders[index] = dataRecord['orderItemTotal']/>
     </cfloop>
 	
     <cfinclude template="./revenuereportcontrols.cfm"/>
@@ -244,7 +244,7 @@
             </tr>
             <tr>
             	<cfset tooltip = "Deferred revenue still to be earned at the end of the month.
-                    Formula: For each Order Item (Price Per Delivery + Tax Per Delivery)*Scheduled Deliveries Per Month. 
+                    Formula: For each Order Item (Price Per Delivery)*Scheduled Deliveries Per Month. 
                     Scheduled Deliveries are based on the Product Schedule where the delivery date is less than the expiration. 
                     Price per Delivery is based on (Order item cost / subscription term ## of items to deliver). "/>
                 <td>Closing Deferred Revenue Balance <span sw-tooltip class="j-tool-tip-item" data-text="#tooltip#" data-position="right"><i class="fa fa-question-circle"></i></span></td>
@@ -289,7 +289,7 @@
                     
                     <cfif arraylen(earnedRevenueByIssueCollectionRecords)>
                         <cfset earnedRevenueByIssueCollectionRecord = earnedRevenueByIssueCollectionRecords[1]/>
-                        <cfset arrayAppend(reportData.earnedRevenueByIssue[earnedRevenueByIssueName],"#$.slatwall.getService('HibachiUtilityService').formatValue(earnedRevenueByIssueCollectionRecord['earnedSUM']+earnedRevenueByIssueCollectionRecord['taxAmountSUM'],'currency')#")/>
+                        <cfset arrayAppend(reportData.earnedRevenueByIssue[earnedRevenueByIssueName],"#$.slatwall.getService('HibachiUtilityService').formatValue(earnedRevenueByIssueCollectionRecord['earnedSUM'],'currency')#")/>
                     <cfelse>
                         <cfset arrayAppend(reportData.earnedRevenueByIssue[earnedRevenueByIssueName],"#$.slatwall.getService('HibachiUtilityService').formatValue(0,'currency')#")/>
                     </cfif>
