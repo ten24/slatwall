@@ -8642,3 +8642,44 @@ table.s-detail-content-table tbody tr.s-done {
   position: absolute;
   display: inline-block;
 }
+
+.Mcard{
+  background-color:#ffffff;
+}
+
+.Mcard-body{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: .75em;
+}
+
+.Mcard-body h1{
+  color:grey;
+  display:inline;
+  vertical-align:middle;
+  font-weight:500;
+}
+
+
+.Mcard-footer{
+  padding: 8px 15px;
+  color: white;
+}
+
+.Mcard-footer1{
+  background-color:orange;
+  display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.Mcard-footer p{
+  display:inline;
+  vertical-align: top;
+
+}
+
+.Mcard-footer i{
+float:right;
+}
