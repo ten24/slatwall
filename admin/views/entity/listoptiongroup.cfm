@@ -62,30 +62,26 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.optionGroupSmartList#"
-							   recordDetailAction="admin:entity.detailoptiongroup"
-							   recordEditAction="admin:entity.editoptiongroup"
-							   sortProperty="sortOrder">
+    <cfset optiongroupCollectionList = getHibachiScope().getService('optionService').getOptiongroupCollectionList()>
+	<cfset serchableDisplayProperties = "optionGroupName,optionGroupCode"/>
+	<cfset optiongroupCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset optiongroupCollectionList.addDisplayProperty( displayProperty='optionGroupID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="optionGroupName" />
-		<hb:HibachiListingColumn propertyIdentifier="optionGroupCode" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'OptionGroup'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editoptiongroup"
-		record-detail-action="admin:entity.detailoptiongroup"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-		data-sortable="true"
-		data-sort-property="sortOrder"
-	>
-		<sw-listing-column data-property-identifier="optionGroupID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="optionGroupName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="optionGroupCode" ></sw-listing-column>
-	</sw-listing-display>
+    <hb:HibachiListingDisplay 
+    		collectionList="#optiongroupCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(optiongroupCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(optiongroupCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>

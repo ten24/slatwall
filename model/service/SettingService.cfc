@@ -277,7 +277,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -569,7 +572,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
 			case "globalShippingIntegrationForAddressVerification":
-				return getShippingIntegrationOptions();
+				var options = getShippingIntegrationOptions();
+				arrayPrepend(options, {name='Internal', value='internal'});
+				return options;
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');

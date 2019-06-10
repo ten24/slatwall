@@ -49,13 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.productSmartList" type="any" />
 <cfset contentDisabled = "" />
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
-
 
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
 
@@ -72,42 +70,26 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.productSmartList#"
-			recordEditAction="admin:entity.editproduct"
-			recorddetailaction="admin:entity.detailproduct"
-			showCreate="false">
-
-		<hb:HibachiListingColumn propertyIdentifier="productType.productTypeName" />
-		<hb:HibachiListingColumn propertyIdentifier="brand.brandName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
-		<hb:HibachiListingColumn propertyIdentifier="productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="defaultSku.price" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display 
-		data-using-personal-collection="true"
-		data-collection="'Product'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editproduct"
-		record-detail-action="admin:entity.detailproduct"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-		data-show-simple-listing-controls="true"
+	<cfset productCollectionList = getHibachiScope().getService('productService').getProductCollectionList()>
+	<cfset serchableDisplayProperties = "productType.productTypeName,brand.brandName,productName,productCode,defaultSku.price,activeFlag,publishedFlag,calculatedQATS"/>
+	<cfset productCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset productCollectionList.addDisplayProperty(displayProperty='productID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#productCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(productCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(productCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="productID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="productType.productTypeName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="brand.brandName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="productName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="productCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="defaultSku.price" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="publishedFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedQATS" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

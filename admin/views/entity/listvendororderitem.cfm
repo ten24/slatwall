@@ -57,26 +57,7 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.vendorOrderItemSmartList#" showCreate="false" />
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.vendorOrderItemSmartList#"
-							   recorddetailaction="admin:entity.detailvendororderitem"
-							   recorddetailmodal="true"
-							   recordeditaction="admin:entity.editvendororderitem"
-							   recordEditQueryString="redirectAction=admin:entity.listVendorOrderItem"
-							   recordeditmodal="true">
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.typeName" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.product.brand.brandName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuName" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.price" />
-		<hb:HibachiListingColumn propertyIdentifier="quantity" />
-    <hb:HibachiListingColumn propertyIdentifier="cost" />
-
-	</hb:HibachiListingDisplay> --->
-
+	
 	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'VendorOrderItem'"
 		data-edit="false"
@@ -102,4 +83,28 @@ Notes:
 		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
 	    <sw-listing-column data-property-identifier="cost" ></sw-listing-column>
 	</sw-listing-display>
+	
+    <cfset vendororderitemCollectionList = getHibachiScope().getService('vendorOrderService').getVendorOrderItemCollectionList()>
+	<cfset serchableDisplayProperties = "vendorOrder.vendor.vendorName,vendorOrder.vendorOrderNumber,vendorOrder.vendorOrderStatusType.typeName,stock.sku.product.brand.brandName,stock.sku.product.calculatedTitle,stock.sku.skuCode,stock.calculatedCurrentMargin,currencyCode,quantity,cost"/>
+	<cfset vendororderitemCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset vendororderitemCollectionList.addDisplayProperty( displayProperty='vendorOrderItemID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+
+    <hb:HibachiListingDisplay 
+    		collectionList="#vendororderitemCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(vendororderitemCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(vendororderitemCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
+
+	
 </cfoutput>
