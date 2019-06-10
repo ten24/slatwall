@@ -8647,18 +8647,24 @@ table.s-detail-content-table tbody tr.s-done {
   background-color:#ffffff;
 }
 
-.Mcard-body{
+.Mcard-body {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
     justify-content: space-between;
-    padding: .75em;
+    padding: .75em 1em;
 }
 
-.Mcard-body h1{
-  color:grey;
-  display:inline;
-  vertical-align:middle;
-  font-weight:500;
+.Mcard-body h1 {
+    color: #676767;
+    display: inline;
+    vertical-align: sub;
+    font-weight: 500;
+    line-height: 0;
+}
+
+.Mcard-body div img{
+  height:7em;
+  width:auto;
 }
 
 
