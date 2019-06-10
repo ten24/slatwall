@@ -7,31 +7,41 @@
     </sw-modal-button>
     
     <sw-modal-content> 
-        <div class="form-group">
+        <form name="addGiftCard">
+            <div class="form-group">
+                    <label class="form-label" 
+                            for="giftCard" 
+                            sw-rbkey="'entity.GiftCard'">
+                    </label>
+                    
+                    <select name="giftCard" 
+                            class="form-control"
+                            ng-model="swOrderTemplateAddGiftCard.giftCard"
+                            ng-change="swOrderTemplateAddGiftCard.prefillGiftCardAmount()"
+                            ng-options="giftCard as giftCard.name for giftCard in swOrderTemplateAddGiftCard.customerGiftCards track by giftCard.value">
+                    </select> 
+            </div>
+    
+            <div class="form-group">
                 <label class="form-label" 
-                        for="giftCard" 
-                        sw-rbkey="'entity.GiftCard'">
+                        for="amountToApply" 
+                        sw-rbkey="'entity.OrderTemplateAppliedGiftCard.amountToApply'">
                 </label>
                 
-                <select name="giftCard" 
-                        class="form-control"
-                        ng-model="swOrderTemplateAddGiftCard.giftCard"
-                        ng-options="giftCard as giftCard.name for giftCard in swOrderTemplateAddGiftCard.customerGiftCards track by giftCard.value">
-                </select> 
-        </div>
-
-        <div class="form-group">
-            <label class="form-label" 
-                    for="amountToApply" 
-                    sw-rbkey="'entity.OrderTemplateAppliedGiftCard.amountToApply'">
-            </label>
-            
-            <input type="text"
-                    class="form-control" 
-                    name="amountToApply" 
-                    required 
-                    ng-model="swOrderTemplateAddGiftCard.amountToApply">
-        </div>
+                <div class="alert alert-danger" ng-if="addGiftCard.amountToApply.$invalid" sw-rbkey="'process.orderTemplate.applyGiftCard.amountToApply.invalid'">
+                    
+                </div>
                 
+                <input type="text"
+                        class="form-control" 
+                        name="amountToApply"
+                        ng-max="swOrderTemplateAddGiftCard.maxAmount"
+                        ng-disabled="!swOrderTemplateAddGiftCard.giftCard.value.length"
+                        ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" 
+                        step="0.01"
+                        required 
+                        ng-model="swOrderTemplateAddGiftCard.amountToApply">
+            </div>
+        </form>        
     </sw-modal-content>
 </sw-modal-launcher>

@@ -12,15 +12,23 @@ class SWOrderTemplateAddGiftCardModalController{
     
     public swOrderTemplateGiftCards;
     
-    public customerGiftCards
+    public customerGiftCards:any;
+    
+    public giftCard:any;
+    public amountToApply:number=0
+    public maxAmount;
+    
+    public currencyFilter:any;
 
 	constructor(public $hibachi,
 	            public collectionConfigService, 
 				public observerService,
 	            public orderTemplateService,
 	            public requestService,
-				public rbkeyService
+				public rbkeyService,
+				public $filter
 	){
+		this.currencyFilter = this.$filter('swcurrency');
         this.observerService.attach(this.$onInit, 'OrderTemplateApplyGiftCardSuccess');
 	}
 	
@@ -31,10 +39,20 @@ class SWOrderTemplateAddGiftCardModalController{
 	    }
 	    
 	    if(this.swOrderTemplateGiftCards != null && this.swOrderTemplateGiftCards.customerGiftCards != null){
-	    	this.customerGiftCards = this.swOrderTemplateGiftCards.customerGiftCards
+	    	this.customerGiftCards = this.swOrderTemplateGiftCards.customerGiftCards;
+	    	this.giftCard = this.customerGiftCards[0];
 	    }
-	    
-	    console.log('do we have gift cards?', this.customerGiftCards);
+	}
+	
+	public prefillGiftCardAmount = () =>{
+		if(this.orderTemplate.calculatedTotal < this.giftCard.calculatedBalanceAmount){
+			this.amountToApply = this.orderTemplate.calculatedTotal; 	
+		} else { 
+			this.amountToApply = this.giftCard.calculatedBalanceAmount;
+		}
+		this.maxAmount = this.amountToApply;
+		
+		this.amountToApply = this.$filter('number')(this.amountToApply.toString(), 2);
 	}
 	
 	public save = () =>{

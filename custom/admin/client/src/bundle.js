@@ -63681,7 +63681,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
-    function SWOrderTemplateAddGiftCardModalController($hibachi, collectionConfigService, observerService, orderTemplateService, requestService, rbkeyService) {
+    function SWOrderTemplateAddGiftCardModalController($hibachi, collectionConfigService, observerService, orderTemplateService, requestService, rbkeyService, $filter) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.collectionConfigService = collectionConfigService;
@@ -63689,9 +63689,11 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.requestService = requestService;
         this.rbkeyService = rbkeyService;
+        this.$filter = $filter;
         this.processContext = 'applyGiftCard';
         this.title = 'Apply Gift Card';
         this.modalButtonText = 'Apply Gift Card';
+        this.amountToApply = 0;
         this.$onInit = function () {
             if (_this.orderTemplate != null) {
                 _this.baseEntityPrimaryID = _this.orderTemplate.orderTemplateID;
@@ -63699,8 +63701,18 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
             }
             if (_this.swOrderTemplateGiftCards != null && _this.swOrderTemplateGiftCards.customerGiftCards != null) {
                 _this.customerGiftCards = _this.swOrderTemplateGiftCards.customerGiftCards;
+                _this.giftCard = _this.customerGiftCards[0];
             }
-            console.log('do we have gift cards?', _this.customerGiftCards);
+        };
+        this.prefillGiftCardAmount = function () {
+            if (_this.orderTemplate.calculatedTotal < _this.giftCard.calculatedBalanceAmount) {
+                _this.amountToApply = _this.orderTemplate.calculatedTotal;
+            }
+            else {
+                _this.amountToApply = _this.giftCard.calculatedBalanceAmount;
+            }
+            _this.maxAmount = _this.amountToApply;
+            _this.amountToApply = _this.$filter('number')(_this.amountToApply.toString(), 2);
         };
         this.save = function () {
             var formDataToPost = {
@@ -63714,6 +63726,7 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
         };
+        this.currencyFilter = this.$filter('swcurrency');
         this.observerService.attach(this.$onInit, 'OrderTemplateApplyGiftCardSuccess');
     }
     return SWOrderTemplateAddGiftCardModalController;

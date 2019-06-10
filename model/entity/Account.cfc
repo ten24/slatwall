@@ -388,10 +388,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				simpleRepresentation &= ' - ' & giftCardOption['ownerFirstName'] & ' ' & giftCardOption['ownerLastName']; 
 				var optionToAdd = {
 					'name': simpleRepresentation,
+					'calculatedBalanceAmount': balance,
 					'value': giftCardOption['giftCardID']
 				}
 				arrayAppend(options, optionToAdd); 
-			} 
+			}
+			arrayPrepend(options, {'name': '-- #rbKey('entity.giftCard.option.select')#','value':''});
+ 
 			variables.giftCardOptions = options;  
 		} 
 		return variables.giftCardOptions;  
