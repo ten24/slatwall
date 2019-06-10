@@ -1290,19 +1290,18 @@
 		}
 		
 		
-		public string getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+		public string function getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier) {
 			var object =  getEntityObject(arguments.entityName);
-			var propertyName = listLast(arguments.propertyIdentifier,'.');
+			var propertyName = listLast(arguments.propertyIdentifier, '.');
 			if(
-				!isNull(object) 
+				!isNull(object)
 				&& !isSimpleValue(object)
-				&& structKeyExists(object.getPropertyMetaData( propertyName ),'ormtype')
+				&& structKeyExists(object.getPropertyMetaData(propertyName),'ormtype')
 			) {
-				return object.getPropertyMetaData( propertyName ).ormtype;
+				return object.getPropertyMetaData(propertyName).ormtype;
 			}
 			return "";
 		}
-		
 		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(
 			required any collectionList, required string entityName, required string propertyIdentifier, string inversePropertyIdentifier
