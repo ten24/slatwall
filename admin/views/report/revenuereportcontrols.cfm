@@ -1,34 +1,82 @@
-<cfoutput>
+
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery('body').on('click', '##ApplyBtn', function(e){
-				e.preventDefault();
-				jQuery("input[name='slatAction']").val('#rc.slatAction#');
-				jQuery('##revrecognition').submit();
-			});
 			
-			jQuery('body').on('click', '##ExportBtn', function(e){
-				e.preventDefault();
+	        $(function() {
+    			$('.date-picker').datepicker(
+                    {
+                        dateFormat: "yy/mm",
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true,
+                        minViewMode: "months",
+                        onClose: function(dateText, inst) {
+
+
+                            function isDonePressed(){
+                                return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+                            }
+
+                            if (isDonePressed()){
+                                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                                $(this).datepicker('setDate', new Date(year, month, 1)).trigger('change');
+                                
+                                 $('.date-picker').focusout()//Added to remove focus from datepicker input box on selecting date
+                            }
+                        },
+                        beforeShow : function(input, inst) {
+
+                            inst.dpDiv.addClass('month_year_datepicker')
+
+                            if ((datestr = $(this).val()).length > 0) {
+                                year = datestr.substring(datestr.length-4, datestr.length);
+                                month = datestr.substring(0, 2);
+                                $(this).datepicker('option', 'defaultDate', new Date(year, month-1, 1));
+                                $(this).datepicker('setDate', new Date(year, month-1, 1));
+                                $(".ui-datepicker-calendar").hide();
+                            }
+                        }
+                    })
+				});
+    
+			<cfoutput>
+				jQuery('body').on('click', '##ApplyBtn', function(e){
+					e.preventDefault();
+					jQuery("input[name='slatAction']").val('#rc.slatAction#');
+					jQuery('##revrecognition').submit();
+				});
 				
-				//creates a hidden form based on current form and alters for export
-				if(jQuery('##revrecognitionexport')){
-					jQuery('##revrecognitionexport').remove();
-				}
-				
-				var exportForm = jQuery('##revrecognition').clone();
-				exportForm.children('input[name="slatAction"]').val(jQuery("input[name='slatAction']").val()+'export');
-				exportForm.attr('id','revrecognitionexport');
-				exportForm.hide();
-				jQuery(document.body).append(exportForm);
-				exportForm.submit();
-				
-			});
+				jQuery('body').on('click', '##ExportBtn', function(e){
+					e.preventDefault();
+					
+					//creates a hidden form based on current form and alters for export
+					if(jQuery('##revrecognitionexport')){
+						jQuery('##revrecognitionexport').remove();
+					}
+					
+					var exportForm = jQuery('##revrecognition').clone();
+					exportForm.children('input[name="slatAction"]').val(jQuery("input[name='slatAction']").val()+'export');
+					exportForm.attr('id','revrecognitionexport');
+					exportForm.hide();
+					jQuery(document.body).append(exportForm);
+					exportForm.submit();
+					
+				});
+			</cfoutput>
 		});
 		
 	</script>
-
+	<style>
+	    .ui-datepicker-calendar {
+	        display: none;
+	    }
+    </style>
+<cfoutput>
 	<div id="reporting-top">
+		
 		<form id="revrecognition" action="?s=1" method="post">
+		
 			<input type="hidden" name="slatAction" value="#rc.slatAction#"/>
 			<div id="u119_state0" class="panel_state" data-label="State1" style="">
 			    <div id="u119_state0_content" class="panel_state_content flex flex-space-bettween">
@@ -122,11 +170,11 @@
 						                    </option>
 						                </cfloop>
 						            </select>--->
-						            <input id="minDate" name="minDate" class="datepicker form-control" value="#dateFormat(rc.minDate,'yyyy-mm-dd')#" />
+						            <input id="minDate" name="minDate" class="date-picker form-control" value="#dateFormat(rc.minDate,'yyyy/mm')#" />
 					            </div>
 					            <div class="col">
 						            <h4>To Date</h4>
-						            <input id="maxDate" name="maxDate" class=" datepicker form-control" value="#dateFormat(rc.maxDate,'yyyy-mm-dd')#" />
+						            <input id="maxDate" name="maxDate" class=" date-picker form-control" value="#dateFormat(rc.maxDate,'yyyy/mm')#" />
 						        </div>
 	                        </div>
 	                        <!-- Button (Rectangle) -->
