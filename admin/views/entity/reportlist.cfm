@@ -69,8 +69,7 @@ Notes:
     	    <cfif structKeyExists(rc,'collection')>
     	        <cfif !rc.collection.isNew()>
         		    <hb:HibachiProcessCaller action="admin:entity.processcollection" entity="#rc.collection#" processContext="clearCache"  type="list" />
-        		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="clone" type="list" />
-        		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="report" type="list" />
+        		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="clone" text="#$.slatwall.rbkey('entity.Collection.process.listOrderReport')#" type="list" />
         		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="rename" type="list" modal="true" />
         		    <hb:HibachiProcessCaller action="admin:entity.preprocesscollection" entity="#rc.collection#" processContext="configure" type="list" modal="true" />
         	    </cfif>
