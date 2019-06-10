@@ -72,20 +72,31 @@ Notes:
 
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display data-using-personal-collection="true"
-	    data-collection="'App'"
-	    data-edit="false"
-	    data-has-search="true"
-	    record-edit-action="admin:entity.editapp"
-	    record-detail-action="admin:entity.detailapp"
-	    data-is-angular-route="false"
-	    data-angular-links="false"
-	    data-has-action-bar="false"
+<cfset appCollectionList = getHibachiScope().getService('appService').getappCollectionList()>
+	<cfset displayProperties = "appName,appCode,appRootPath"/>
+	<cfset appCollectionList.setDisplayProperties(
+	displayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset appCollectionList.addDisplayProperty(
+	displayProperty='appID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+		<hb:HibachiListingDisplay 
+		collectionList="#appCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(appCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(appCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="appID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-	    <sw-listing-column data-property-identifier="appName" ></sw-listing-column>
-	    <sw-listing-column data-property-identifier="appCode" ></sw-listing-column>
-	    <sw-listing-column data-property-identifier="appRootPath" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
+	
 
 </cfoutput>

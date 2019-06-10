@@ -426,6 +426,10 @@ class OrderFulfillmentService {
         }
         
         this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then((result)=>{
+            if (result.data.errors){
+                this.state.loading=false;
+                return result;
+            }
             this.state.loading=false;
             
             if (result.orderDeliveryID != undefined && result.orderDeliveryID != ''){
@@ -780,13 +784,16 @@ class OrderFulfillmentService {
             for(let i = 0; i < this.state.orderFulfillmentItemsCollection.length; i++){
                 skuIDs[i] = this.state.orderFulfillmentItemsCollection[i]['sku_skuID'];
             }
-            this.$rootScope.slatwall.getResizedImageByProfileName('small',skuIDs.join(',')).then(result=>{
-                if(!angular.isDefined(this.$rootScope.slatwall.imagePath)){
-                    this.$rootScope.slatwall.imagePath = {};
-                }
-                this.state.imagePath = this.$rootScope.slatwall.imagePath;
-            });
-            
+           try {
+                this.$rootScope.slatwall.getResizedImageByProfileName('small',skuIDs.join(',')).then(result=>{
+                    if(!angular.isDefined(this.$rootScope.slatwall.imagePath)){
+                        this.$rootScope.slatwall.imagePath = {};
+                    }
+                    this.state.imagePath = this.$rootScope.slatwall.imagePath;
+                });
+           } catch(e){
+               console.warn("Error while trying to retrieve the image for an item", e);
+           }  
             this.emitUpdateToClient();
         });
      }

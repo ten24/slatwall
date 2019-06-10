@@ -65,38 +65,26 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.vendorOrderSmartList#"
-							   recordDetailAction="admin:entity.detailvendororder"
-							   recordEditAction="admin:entity.editvendororder">
+    <cfset vendororderCollectionList = getHibachiScope().getService('VendorOrderService').getvendorOrderCollectionList()>
+	<cfset serchableDisplayProperties = "vendor.vendorName,vendorOrderNumber,vendorOrderType.typeName,estimatedReceivalDateTime,vendorOrderStatusType.typeName,createdDateTime,calculatedTotal,currencyCode"/>
+	<cfset vendororderCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset vendororderCollectionList.addDisplayProperty( displayProperty='vendorOrderID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendor.vendorName" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.typeName" />
-		<hb:HibachiListingColumn propertyIdentifier="estimatedReceivalDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrderStatusType.typeName" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="total" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'VendorOrder'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editvendororder"
-		record-detail-action="admin:entity.detailvendororder"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="vendorOrderID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="vendor.vendorName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="vendorOrderNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="vendorOrderType.typeName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="estimatedReceivalDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="vendorOrderStatusType.typeName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedTotal" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="currencyCode" search="true" ></sw-listing-column>
-	</sw-listing-display>
+    <hb:HibachiListingDisplay 
+    		collectionList="#vendororderCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(vendororderCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(vendororderCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>

@@ -49,35 +49,35 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.giftCardSmartList" type="any" />
 
 <cfoutput>
 
 	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
-
-		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'GiftCard'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailgiftcard"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="giftCardID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag"></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedBalanceAmount"></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerEmailAddress"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
-	</sw-listing-display>
+    <cfset giftcardCollectionList = getHibachiScope().getService('giftCardService').getGiftcardCollectionList()>
+	<cfset serchableDisplayProperties = "ownerFirstName,ownerLastName,ownerEmailAddress,createdDateTime,giftCardCode,calculatedBalanceAmount,activeFlag"/>
+	<cfset giftcardCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset giftCardCollectionList.addDisplayProperty( displayProperty='giftCardID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+
+    <hb:HibachiListingDisplay 
+    		collectionList="#giftcardCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(giftcardCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(giftcardCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>

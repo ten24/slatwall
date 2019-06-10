@@ -49,8 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.addressZoneSmartList" type="any" />
+<cfparam name="rc.addressZoneSmartList" type="any" />	
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.addressZoneSmartList#" showCreate="false">
 
@@ -69,17 +68,31 @@ Notes:
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="addresszoneName" search="true" />
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display data-using-personal-collection="true"
-    data-collection="'AddressZone'"
-    data-edit="false"
-    data-has-search="true"
-    record-edit-action="admin:entity.editaddresszone"
-    record-detail-action="admin:entity.detailaddresszone"
-    record-delete-action="admin:entity.deleteaddresszone"
-    data-is-angular-route="false"
-    data-angular-links="false"
-    data-has-action-bar="false"
->
-    <sw-listing-column data-property-identifier="addressZoneID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="addressZoneName" search="true" tdclass="primary" ></sw-listing-column>
-</sw-listing-display>
+
+<cfset addressZoneCollectionList = getHibachiScope().getService('addressService').getaddressZoneCollectionList()>
+	<cfset displayProperties = "addressZoneName"/>
+	<cfset addressZoneCollectionList.setDisplayProperties(
+	displayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset addressZoneCollectionList.addDisplayProperty(
+	displayProperty='addressZoneID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+		<hb:HibachiListingDisplay 
+		collectionList="#addressZoneCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(addressZoneCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(addressZoneCollectionList.getCollectionObject())#"
+		recordDeleteAction="admin:entity.delete#lcase(addressZoneCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
+

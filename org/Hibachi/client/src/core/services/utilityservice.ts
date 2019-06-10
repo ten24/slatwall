@@ -463,12 +463,6 @@ class UtilityService extends BaseService{
             return m.getMinutes() + m.getHours() * 60;
         };
 
-        public removeTimeOffset = (timestampStr) =>{ 
-            var date = new Date(timestampStr);
-            var correctDate = new Date();
-            correctDate.setUTCFullYear(date.getFullYear(),date.getMonth(),date.getDate());
-            return correctDate.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
-        };
 
 }
 export {

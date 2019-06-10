@@ -572,7 +572,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
 			case "globalShippingIntegrationForAddressVerification":
-				return getShippingIntegrationOptions();
+				var options = getShippingIntegrationOptions();
+				arrayPrepend(options, {name='Internal', value='internal'});
+				return options;
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
