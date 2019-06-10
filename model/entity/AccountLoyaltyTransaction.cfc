@@ -69,20 +69,11 @@ component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoy
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getAccruementTypeOptions() {
-		return [
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.itemFulfilled'), value="itemFulfilled"},
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.orderClosed'), value="orderClosed"},
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.fulfillmentMethodUsed'), value="fulfillmentMethodUsed"},
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.enrollment'), value="enrollment"}
-		];
+		return this.getService("LoyaltyService").getAccruementTypeOptions();
 	}
 	
 	public array function getRedemptionTypeOptions() {
-		return [
-			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.productPurchase'), value="productPurchase"},
-			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.cashCouponCreation'), value="cashCouponCreation"},
-			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.priceGroupAssignment'), value="priceGroupAssignment"}
-		];
+		return this.getService("LoyaltyService").getRedemptionTypeOptions();
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
