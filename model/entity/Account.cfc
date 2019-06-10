@@ -186,7 +186,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="oldDtxName4" ormtype="string";
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
- property name="commStatusUser" ormtype="string";//CUSTOM PROPERTIES END
+ property name="commStatusUser" ormtype="string";
+ property name="accountNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -370,6 +371,37 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		giftCardSmartList.addFilter("ownerAccount.AccountID", this.getAccountID());
 
 		return giftCardSmartList;
+	}
+
+	public any function getGiftCardOptions() {
+		if(!structKeyExists(variables, "giftCardOptions")) {
+			var giftCardOptions = this.getActiveGiftCardCollectionList().getRecords();
+			var options = []; 
+			for(var giftCardOption in giftCardOptions){
+				var simpleRepresentation = getService('HibachiUtilityService').formatValue_currency(giftCardOption['calculatedBalanceAmount'],giftCardOption); 
+				simpleRepresentation &= ' - ' & giftCardOption['ownerFirstName'] & ' ' & giftCardOption['ownerLastName']; 
+				var optionToAdd = {
+					'name': simpleRepresentation,
+					'value': giftCardOption['giftCardID']
+				}
+				arrayAppend(options, optionToAdd); 
+			} 
+			variables.giftCardOptions = options;  
+		} 
+		return variables.giftCardOptions;  
+	} 
+	
+	public any function getActiveGiftCardCollectionList() {
+		if(!structKeyExists(variables, "activeGiftCardCollectionList")) {
+			var giftCardCollection = getService('GiftCardService').getGiftCardCollectionList(); 
+			giftCardCollection.addFilter("ownerAccount.AccountID", this.getAccountID());
+			giftCardCollection.addFilter('activeFlag', true); 
+			giftCardCollection.addOrderBy('calculatedBalanceAmount|DESC'); 		
+
+			variables.activeGiftCardCollectionList = giftCardCollection;
+
+		} 
+		return variables.activeGiftCardCollectionList;  
 	}
 
 	public any function getOrdersPlacedCollectionList() {

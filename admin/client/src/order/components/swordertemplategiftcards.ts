@@ -2,6 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderTemplateGiftCardsController{
 
+	public customerGiftCards;
+
     public giftCardCollection;
     
     public edit:boolean=false;
@@ -29,7 +31,8 @@ class SWOrderTemplateGiftCards implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-        orderTemplate: '<?'
+        orderTemplate: '<?',
+        customerGiftCards: '<?'
 	};
 	public controller=SWOrderTemplateGiftCardsController;
 	public controllerAs="swOrderTemplateGiftCards";

@@ -8,6 +8,19 @@
     
     <sw-modal-content> 
         <div class="form-group">
+                <label class="form-label" 
+                        for="giftCard" 
+                        sw-rbkey="'entity.GiftCard'">
+                </label>
+                
+                <select name="giftCard" 
+                        class="form-control"
+                        ng-model="swOrderTemplateAddGiftCard.giftCard"
+                        ng-options="giftCard as giftCard.name for giftCard in swOrderTemplateAddGiftCard.customerGiftCards track by giftCard.value">
+                </select> 
+        </div>
+
+        <div class="form-group">
             <label class="form-label" 
                     for="amountToApply" 
                     sw-rbkey="'entity.OrderTemplateAppliedGiftCard.amountToApply'">

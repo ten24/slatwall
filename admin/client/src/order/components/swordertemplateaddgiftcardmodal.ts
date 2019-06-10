@@ -9,6 +9,10 @@ class SWOrderTemplateAddGiftCardModalController{
     public promotionCode:string;
     public title='Apply Gift Card';
     public modalButtonText='Apply Gift Card';
+    
+    public swOrderTemplateGiftCards;
+    
+    public customerGiftCards
 
 	constructor(public $hibachi,
 	            public collectionConfigService, 
@@ -25,6 +29,12 @@ class SWOrderTemplateAddGiftCardModalController{
             this.baseEntityPrimaryID = this.orderTemplate.orderTemplateID;
             this.baseEntityName = 'OrderTemplate';
 	    }
+	    
+	    if(this.swOrderTemplateGiftCards != null && this.swOrderTemplateGiftCards.customerGiftCards != null){
+	    	this.customerGiftCards = this.swOrderTemplateGiftCards.customerGiftCards
+	    }
+	    
+	    console.log('do we have gift cards?', this.customerGiftCards);
 	}
 	
 	public save = () =>{
@@ -53,6 +63,9 @@ class SWOrderTemplateAddGiftCardModal implements ng.IDirective {
 	public bindToController = {
         orderTemplate: '<?'
 	};
+	public require = {
+		swOrderTemplateGiftCards:"^^swOrderTemplateGiftCards"
+	}
 	public controller=SWOrderTemplateAddGiftCardModalController;
 	public controllerAs="swOrderTemplateAddGiftCard";
 

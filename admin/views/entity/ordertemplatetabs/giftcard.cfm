@@ -5,5 +5,5 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	 <sw-order-template-gift-cards data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"></sw-order-template-gift-cards>
+	<sw-order-template-gift-cards data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#" data-customer-gift-cards="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getGiftCardOptions()))#"></sw-order-template-gift-cards>
 </cfoutput>
