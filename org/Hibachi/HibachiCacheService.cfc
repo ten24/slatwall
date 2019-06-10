@@ -32,7 +32,6 @@ component accessors="true" output="false" extends="HibachiService" {
 			if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
 				arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
 			}
-			serverInstance = this.newServerInstance();
 			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
 			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			serverInstance.setServerInstanceExpired(false);
