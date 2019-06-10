@@ -63694,6 +63694,7 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
         this.title = 'Apply Gift Card';
         this.modalButtonText = 'Apply Gift Card';
         this.amountToApply = 0;
+        this.maxAmount = 0;
         this.$onInit = function () {
             if (_this.orderTemplate != null) {
                 _this.baseEntityPrimaryID = _this.orderTemplate.orderTemplateID;
@@ -63711,8 +63712,8 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
             else {
                 _this.amountToApply = _this.giftCard.calculatedBalanceAmount;
             }
-            _this.maxAmount = _this.amountToApply;
-            _this.amountToApply = _this.$filter('number')(_this.amountToApply.toString(), 2);
+            _this.maxAmount = Number(_this.amountToApply);
+            _this.amountToApply = Number(_this.amountToApply);
         };
         this.save = function () {
             var formDataToPost = {

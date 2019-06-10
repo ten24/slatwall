@@ -16,7 +16,7 @@ class SWOrderTemplateAddGiftCardModalController{
     
     public giftCard:any;
     public amountToApply:number=0
-    public maxAmount;
+    public maxAmount:number=0;
     
     public currencyFilter:any;
 
@@ -50,9 +50,8 @@ class SWOrderTemplateAddGiftCardModalController{
 		} else { 
 			this.amountToApply = this.giftCard.calculatedBalanceAmount;
 		}
-		this.maxAmount = this.amountToApply;
-		
-		this.amountToApply = this.$filter('number')(this.amountToApply.toString(), 2);
+		this.maxAmount = Number(this.amountToApply);
+		this.amountToApply = Number(this.amountToApply);
 	}
 	
 	public save = () =>{

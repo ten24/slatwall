@@ -32,12 +32,14 @@
                     
                 </div>
                 
-                <input type="text"
+                <input type="number"
                         class="form-control" 
                         name="amountToApply"
                         ng-max="swOrderTemplateAddGiftCard.maxAmount"
                         ng-disabled="!swOrderTemplateAddGiftCard.giftCard.value.length"
                         ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" 
+                        sw-currency-formatter 
+                        currency-code="{{swOrderTemplateAddGiftCard.orderTemplate.currencyCode}}"
                         step="0.01"
                         required 
                         ng-model="swOrderTemplateAddGiftCard.amountToApply">
