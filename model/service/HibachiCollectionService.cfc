@@ -81,23 +81,5 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
 
         return newCollection;
     }
-    
-    public any function processCollection_Report(required any collection, required any processObject, struct data={}) {
-
-        var newCollection = this.newCollection();
-
-        newCollection.setCollectionName(arguments.processObject.getCollectionName());
-        newCollection.setCollectionCode(arguments.processObject.getCollectionCode());
-        newCollection.setCollectionDescription(arguments.collection.getCollectionDescription());
-        newCollection.setCollectionObject(arguments.collection.getCollectionObject());
-        newCollection.setCollectionConfig(arguments.collection.getCollectionConfig());
-	    if(!isNull(arguments.collection.getParentCollection())){
-		    newCollection.setParentCollection(arguments.collection.getParentCollection());
-	    }
-
-        newCollection = this.saveCollection(newCollection);
-
-        return newCollection;
-    }
 
 }
