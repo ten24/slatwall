@@ -546,6 +546,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"value" = arguments.value,
 			"hidden"=arguments.hidden
 		};
+		
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
 		}
@@ -612,10 +613,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"hidden"=arguments.hidden,
 			"ignoredWhenSearch"= arguments.ignoredWhenSearch
 		};
+		
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
 		}
-
 
 		if(len(aggregate)){
 			filter["aggregate"] = aggregate;
@@ -722,7 +723,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty)){
 					column['persistent'] = false;
 				}
-				var ormtype = getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.displayProperty);
+				var ormtype = getOrmTypeByPropertyIdentifier(arguments.displayProperty);
 				if(len(ormtype)){
 					column['ormtype'] = ormtype;
 				}
@@ -3099,16 +3100,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getPredicate(required any filter){
 		
-		f(structkeyExists(arguments, "filter") && !structkeyExists(arguments.filter,"ormtype")){
-			arguments.filter['ormtype'] = "";
-			
-			var realPropertyIdentifier = ListLast(arguments.filter.propertyIdentifier,'.');
-			var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
-			var propertyMetaData = baseEntityObject.getPropertyMetaData(realPropertyIdentifier);
-
-			if(!isNull(propertyMetaData) && structKeyExists(propertyMetaData,'ormtype')){
-				arguments.filter['ormtype'] = propertyMetaData.ormtype;
-			}
+		if(!structkeyExists(arguments.filter,"ormtype")) { //TODO we shouldn't be having this check, instead we should be throwing error.
+			arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(arguments.filter.propertyIdentifier);
 		}
 
 		var predicate = '';

@@ -1290,6 +1290,20 @@
 		}
 		
 		
+		public string getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+			var object =  getEntityObject(arguments.entityName);
+			var propertyName = listLast(arguments.propertyIdentifier,'.');
+			if(
+				!isNull(object) 
+				&& !isSimpleValue(object)
+				&& structKeyExists(object.getPropertyMetaData( propertyName ),'ormtype')
+			) {
+				return object.getPropertyMetaData( propertyName ).ormtype;
+			}
+			return "";
+		}
+		
+		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(
 			required any collectionList, required string entityName, required string propertyIdentifier, string inversePropertyIdentifier
 		){
