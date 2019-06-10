@@ -7,7 +7,6 @@ class SWListingControlsController {
     private filterPropertiesList;
     private collectionConfig;
 
-    private searchText;
     private backupColumnsConfig;
     private listingColumns;
     private displayOptionsClosed:boolean=true;
@@ -112,22 +111,22 @@ class SWListingControlsController {
         return this.columnIsControllableMap[column.propertyIdentifier];
     }
 
-    private addSearchFilter=()=>{
-        if(angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
-
-        var keywords = this.searchText.split(" ");
+    private addSearchFilter=(column)=>{
+        if(!this.swListingDisplay.searchText) return;
+        //TODO consider wildcard setting
+        var keywords = this.swListingDisplay.searchText.split(" ");
         for(var i = 0; i < keywords.length; i++){
             this.collectionConfig.addLikeFilter(
-                this.selectedSearchColumn.propertyIdentifier,
+                column.propertyIdentifier,
                 keywords[i],
                 '%w%',
                 undefined,
-                this.selectedSearchColumn.title
+                column.title
             );
         }
 
-        this.searchText = '';
-        this.collectionConfig.setKeywords(this.searchText);
+        this.swListingDisplay.searchText = '';
+        this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
     };
 

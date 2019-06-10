@@ -18,7 +18,7 @@ class SWListingSearchController {
     private listingId;
     public swListingDisplay:any;
     public searchableOptions;
-    public swListingControls;
+    public swListingControls:any;
     public hasPersonalCollections:boolean=false;
     public personalCollections:any;
     public selectedPersonalCollection:any;
@@ -242,7 +242,6 @@ class SWListingSearchController {
     };
 
     private configureSearchableColumns=(column)=>{
-
         var searchableColumn = "";
         if(column.propertyIdentifier){
             searchableColumn = column.propertyIdentifier;

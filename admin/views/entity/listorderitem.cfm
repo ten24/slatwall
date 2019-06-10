@@ -73,43 +73,26 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.orderItemSmartList#" showCreate="false" />
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.orderItemSmartList#"
-							   recorddetailaction="admin:entity.detailorderitem"
-							   recordeditaction="admin:entity.editorderitem">
-		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.typeName" title="#$.slatwall.rbKey('entity.order.orderStatusType')#" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
-		<hb:HibachiListingColumn propertyIdentifier="price" />
-		<hb:HibachiListingColumn propertyIdentifier="quantity" />
-		<hb:HibachiListingColumn propertyIdentifier="extendedPrice" />
-	</hb:HibachiListingDisplay> --->
+    <cfset orderitemCollectionList = getHibachiScope().getService('orderService').getorderItemCollectionList()>
+	<cfset serchableDisplayProperties = "order.account.firstName,order.account.lastName,order.orderNumber,order.orderStatusType.typeName,order.orderOpenDateTime,sku.product.calculatedTitle,price,quantity,extendedPrice"/>
+	<cfset orderitemCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset orderitemCollectionList.addDisplayProperty( displayProperty='orderItemID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-	<sw-listing-display 
-		data-using-personal-collection="false"
-		data-show-filters="false"
-		data-personal-collection-identifier="OrderItem"
-		data-collection="'OrderItem'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editorderitem"
-		record-detail-action="admin:entity.detailorderitem"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="orderItemID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.account.firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.account.lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderStatusType.typeName" title="#$.slatwall.rbKey('entity.order.orderStatusType')#" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderOpenDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="sku.product.calculatedTitle" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="price" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="extendedPrice" ></sw-listing-column>
-	</sw-listing-display>
+    <hb:HibachiListingDisplay 
+    		collectionList="#orderitemCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(orderitemCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(orderitemCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>
