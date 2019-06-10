@@ -57,7 +57,7 @@
       							</span>
 							</cfif>
 						</label>
-						<div class="col-sm-8">
+						<div class="col-sm-8"><!--- Editable Form --->
 							<hb:HibachiFormField attributecollection="#attributes#" />
 							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 						</div>
@@ -98,10 +98,11 @@
 										</div>
 									</cfif>										
 								<cfelse>
+								
 									<cfif attributes.fieldType EQ "password" AND len(attributes.value) GT 0 >
 									    <p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">****</p>
-										<cfelse>
-											<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+									<cfelse>
+										<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 									</cfif>
 								</cfif>
 							</cfif>

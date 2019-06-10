@@ -1,0 +1,7 @@
+language: node_js
+script:
+    - "./interpreter.js examples/example_travis_config.json"
+env:
+    global:
+        - SAUCE_USERNAME=zarkonnen
+        - secure: "DwSFBwqekQX4Pdti73L4BJ/iLN3626xdPk7AlvzB2dDUoa+Zv1FUbUdvuMmM\nDCMBKnhJMPzKv1mdRGdwVC7vXgvR1gCGJJaKYqhPbKYgeBT5mFICCATGJ36G\n76j75A+mtNppGmypEY43dPEdBNkwlvPm1YjAt2vopJbmVd4EPWI="

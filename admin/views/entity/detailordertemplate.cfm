@@ -87,13 +87,13 @@
 		</sw-entity-action-bar>
 
 		<div class="panel-group s-pannel-group row">	
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
 											data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
 				</sw-customer-account-card> 
 			</div>
 
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<sw-account-shipping-address-card data-title="#getHibachiScope().rbkey('define.shipping')#"
 													<cfif not isNull(rc.orderTemplate.getShippingMethod())>
 														data-shipping-method="#rc.orderTemplate.getShippingMethod().getEncodedJsonRepresentation()#"
@@ -112,7 +112,7 @@
 				</sw-account-shipping-address-card>
 			</div>
 
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#"
 														<cfif not isNull(rc.orderTemplate.getAccountPaymentMethod())>
 															data-account-payment-method="#rc.orderTemplate.getAccountPaymentMethod().getEncodedJsonRepresentation()#"

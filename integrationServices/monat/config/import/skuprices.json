@@ -30,7 +30,7 @@
         },
         {
             "sourceColumn":"RetailsCommissions",
-            "propertyIdentifier":"sponsorVolume"
+            "propertyIdentifier":"retailCommission"
         },
         {
             "sourceColumn":"ProductPackBonus",

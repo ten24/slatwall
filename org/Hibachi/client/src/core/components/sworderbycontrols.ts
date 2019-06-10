@@ -132,7 +132,6 @@ class SWOrderByControls implements ng.IDirective{
     public controller=SWOrderByControlsController;
     public controllerAs="swOrderByControls";
 
-    // @ngInject
     constructor( public $compile,
                  private scopeService,
                  private listingService,
@@ -164,6 +163,7 @@ class SWOrderByControls implements ng.IDirective{
         };
     }
 
+    // @ngInject
     public static Factory(){
         var directive:ng.IDirectiveFactory = (
             $compile

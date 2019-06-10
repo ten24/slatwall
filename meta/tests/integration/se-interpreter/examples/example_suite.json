@@ -1,0 +1,15 @@
+{
+  "type": "suite",
+  "seleniumVersion": "2",
+  "formatVersion": 1,
+  "scripts": [
+    {
+      "where": "local",
+      "path": "tests/printTitle.json"
+    },
+    {
+      "where": "local",
+      "path": "tests/get.json"
+    }
+  ]
+}

@@ -125,6 +125,7 @@ class SWListingDisplayController{
     public usingPersonalCollection:boolean;
     public personalCollectionIdentifier:string;
     public persistedReportCollections:any;
+    public customEndpoint: string;
     //@ngInject
     constructor(
         public $scope,
@@ -485,6 +486,9 @@ class SWListingDisplayController{
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
         if(this.collectionConfig){
             this.collectionConfig.setEventID(this.tableID);
+            if(this.customEndpoint && this.customEndpoint.length){
+                this.collectionConfig.setCustomEndpoint(this.customEndpoint);
+            }
         }
        
         if(angular.isDefined(this.sortableFieldName)){
@@ -567,6 +571,19 @@ class SWListingDisplayController{
         // Show all of the chosen calculations
         $(`.sw-${show}`).show();
     }
+    
+    public hasAverageOrTotal(){
+        if(this.collectionData){
+            for(var key in this.collectionData){
+                if(key.indexOf('recordsAvg') > -1 || key.indexOf('recordsTotal') > -1){
+                    return true
+                }   
+            }
+        }
+        
+        return false;
+    }
+    
     public hasNumerical=()=>{
         
         // Iterate over columns, find out if we have any numericals and return
@@ -769,6 +786,7 @@ class SWListingDisplay implements ng.IDirective{
             baseEntity:"<?",
             baseEntityName:"@?",
             baseEntityId:"@?",
+            customEndpoint:"@?",
 
             /*Admin Actions*/
             actions:"<?",

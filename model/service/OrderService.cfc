@@ -1157,7 +1157,81 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return this.newOrder();
 	}
 	
-	//begin order template functionality	
+	//begin order template functionality
+
+	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
+
+		local.ormSession = ormGetSessionFactory().openSession();
+	    local.tx = local.ormSession.beginTransaction();
+
+		try{
+			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge() 
+		} catch (any e) {
+			//if we have any error we probably don't have the required data for returning the total
+			var fulfillmentCharge = 0; 
+		} finally { 
+			local.tx.commit();
+			local.ormSession.close();
+		} 
+
+		return fulfillmentCharge; 
+	}
+
+	//order transient helper methods
+	public any function newTransientOrderFromOrderTemplate(required any orderTemplate){
+		var transientOrder = new Slatwall.model.entity.Order();
+		ORMGetSession().evict(transientOrder);
+		transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		return transientOrder;
+	}
+
+	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate){
+		var transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+		
+		ORMGetSession().evict(transientOrderFulfillment);
+		
+		transientOrderFulfillment.setOrder(this.newTransientOrderFromOrderTemplate(arguments.orderTemplate)); 
+		transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
+		transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
+		
+		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
+		ORMGetSession().evict(arguments.orderTemplate.getShippingAddress());
+
+		var orderTemplateItemCollectionList = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
+		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+	
+		var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
+		
+		var fulfillmentTotal = 0;
+		var orderFulfillmentItems = []; 
+	
+		for(var orderTemplateItem in orderTemplateItemRecords){ 
+			var transientOrderItem = new Slatwall.model.entity.OrderItem();
+			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+			
+			ORMGetSession().evict(sku);
+			ORMGetSession().evict(transientOrderItem);
+			
+			transientOrderItem.setSku(sku);
+			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+			transientOrderItem.setQuantity(orderTemplateItem['quantity']);
+
+			transientOrderFulfillment.addOrderFulfillmentItem(transientOrderItem);  
+		}
+
+		transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod(), false);  	
+		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment, false);
+
+		for(var shippingMethodOption in transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
+			ORMGetSession().evict(shippingMethodOption);
+		}	
+
+		return transientOrderFulfillment; 
+	}
+
+	//order template process methods	
 	public any function processOrderTemplate_activate(required any orderTemplate, any processObject, required struct data={}) {
 		
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstDraft'){

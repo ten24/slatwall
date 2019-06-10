@@ -225,7 +225,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
     property name="commissionableVolume" ormtype="big_decimal";
-    property name="sponsorVolume" ormtype="big_decimal";
+    property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
@@ -1926,6 +1926,46 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
+	
+	public void function preInsert(){
+		super.preInsert();
+		
+		var skuPrice = getService("SkuPriceService").newSkuPrice();
+		
+		skuPrice.setCurrencyCode(this.getCurrencyCode());
+		skuPrice.setSku(this);
+		skuPrice.setPrice(this.getPrice());
+		skuPrice.setCreatedDateTime(NOW());
+
+		skuPrice = getService("SkuPriceService").saveSkuPrice(skuPrice);
+	}
+
+	public void function preUpdate(Struct oldData){
+		super.preUpdate(argumentCollection=arguments);
+		
+		var sql =  "UPDATE 
+						swskuprice 
+					SET 
+						price = :price 
+					WHERE 
+						minQuantity IS NULL 
+					AND 
+						maxQuantity IS NULL 
+					AND 
+						priceGroupID IS NULL 
+					AND 
+						currencyCode = :currencyCode 
+					AND 
+						skuID = :skuID";
+		
+		var params = {
+			price = this.getPrice(),
+			currencyCode = this.getCurrencyCode(),
+			skuID = this.getSkuID()
+		}
+		
+		var query = QueryExecute(sql, params);
+	}
 
 	// ===================  END:  ORM Event Hooks  =========================
 

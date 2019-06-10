@@ -2,6 +2,10 @@
 	"conditions":{
 	},
 	"properties":{
+		"skuPriceID":[{
+			"contexts":"delete",
+			"method":"isNotDefaultSkuPrice"
+		}],
 	    "price": [{
 	        "contexts":"save",
 	        "required":"true",

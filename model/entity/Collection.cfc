@@ -1708,7 +1708,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						structKeyExists(join,'filter')	
 						&& !structKeyExists(join,'column')
 					)
-				)
+				) 
 			){
 				return true;
 			}
@@ -1731,6 +1731,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getValidJoins(boolean recordsCountJoin=false){
 		var validJoins = [];
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
+			
 			for(var join in getCollectionConfigStruct()["joins"]){
 				if(
 					!arguments.recordsCountJoin
@@ -1743,6 +1744,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							)||(
 								structKeyExists(join,'aggregateFilter')
 								&& join.aggregateFilter
+							)||(
+								structKeyExists(join,'aggregateColumn')
+								&& join.aggregateColumn
 							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
@@ -1764,7 +1768,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public string function getJoinHQL(boolean recordsCountJoin=false){
 		var joinHQL = '';
 		var joins = getValidJoins(arguments.recordsCountJoin);
-			
         var allAliases = getAllAliases();
 		for(var join in joins){
                 if(listFind(allAliases, join.alias)){
@@ -2723,7 +2726,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							setRunningGetRecordsCount(true);
 						}
 						HQL = getSelectionCountHQL();
-
+						
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -3082,6 +3085,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var countHQLSelections = "";
 		var countHQLSuffix = "";
+		
+		if(
+			hasAggregateFilter() 
+			||
+			hasExclusiveToManyFilter(getRunningGetRecordsCount())
+			||
+			(
+				hasGroupBys()
+				&& !getprimaryIDFound()
+			)
+		){
+			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
+			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
+ 		}else{
+ 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
+ 			var countHQLSuffix = getHQL(true,false,false,false,true);
+		}
 
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
@@ -3117,22 +3137,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		
-		if(
-			hasAggregateFilter() 
-			||
-			hasExclusiveToManyFilter(getRunningGetRecordsCount())
-			||
-			(
-				hasGroupBys()
-				&& !getprimaryIDFound()
-			)
-		){
-			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
-			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
- 		}else{
- 			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
- 			var countHQLSuffix = getHQL(true,false,false,false,true);
-		}
+		
 
 
 		HQL = countHQLSelections & ') ' & countHQLSuffix;
@@ -3305,6 +3310,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						|| column.ormtype eq 'double'
 					) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
 				){
+					
 					addTotalAvgAggregate(column);
 					addTotalSumAggregate(column);
 				}
@@ -3395,6 +3401,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	
 	public boolean function getDisableAveragesAndSumsFlag(){
+		//hack should be driven by frontend
+		if(getCollectionObject()=='SkuPrice'){
+			return true
+		}
+		
 		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
 			variables.disableAveragesAndSumsFlag = false;
 		}
@@ -3402,28 +3413,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function addTotalAvgAggregate(required struct column){
-		var found = false;
-		for(var item in variables.totalAvgAggregates){
-			if(item.propertyIdentifier == column.propertyIdentifier){
-				found = true;
+		if(!getDisableAveragesAndSumsFlag()){
+			getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+			var found = false;
+			for(var item in variables.totalAvgAggregates){
+				if(item.propertyIdentifier == column.propertyIdentifier){
+					found = true;
+				}
 			}
-		}
-
-		if(!found){
-			arrayAppend(variables.totalAvgAggregates,column);
+	
+			if(!found){
+				arrayAppend(variables.totalAvgAggregates,column);
+			}
 		}
 
 	}
 
 	public void function addTotalSumAggregate(required struct column){
-		var found = false;
-		for(var item in variables.totalSumAggregates){
-			if(item.propertyIdentifier == column.propertyIdentifier){
-				found = true;
+		if(!getDisableAveragesAndSumsFlag()){
+			getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+			var found = false;
+			for(var item in variables.totalSumAggregates){
+				if(item.propertyIdentifier == column.propertyIdentifier){
+					found = true;
+				}
 			}
-		}
-		if(!found){
-			arrayAppend(variables.totalSumAggregates,column);
+			if(!found){
+				arrayAppend(variables.totalSumAggregates,column);
+			}
 		}
 	}
 
