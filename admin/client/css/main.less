@@ -800,6 +800,7 @@ table tr th .glyphicon {vertical-align:text-top;}
 .row .s-body-nav nav.navbar.navbar-default {background-color: @white;margin-bottom: 0px;.border-radius(0);border-top: 0px;}
 .actionbar-title{padding: 0px;margin: 0px;font-size: 16px;font-family: @font-family-semibold;vertical-align: middle;margin-top: 18px;}
 
+.s-property.form-horizontal .actionbar-title {margin: 0px 0px 15px 0px; color: #000000;}
 .s-toggle-panels {padding:0px;margin-bottom:3px;}
 .s-toggle-panels a {background-color: @black-30;.border-radius(15px);color:@white !important;display: inline-block;text-align: center;width: 14px;height: 14px;font-size: 8px !important;line-height: 14px;}
 .s-toggle-panels a:hover {background-color:@black-60;}
@@ -1168,7 +1169,7 @@ table .s-table-header .table-section a.s-hint {float:none;margin-left:10px;}
 .s-titled-select-wrapper.s-sort-by {display: inline-block;margin-right: 5px;}
 .s-titled-select-wrapper.s-sort-by select {padding: 3px 18px 0px 58px !important;}
 .s-titled-select-wrapper.s-template select {padding: 3px 18px 0px 76px !important;}
-.s-titled-select-wrapper.s-site select {padding: 3px 18px 0px 44px !important;}
+.s-titled-select-wrapper.s-site select {padding: 3px 18px 0px 44px !important;margin-top: 5px;}
 .s-titled-select-wrapper select {-webkit-appearance: none;-moz-appearance: none;appearance: none;border-radius: 2px !important;font-size: 12px !important;}
 .s-titled-select-wrapper span {position: absolute;left: 12px;font-size: 12px;top: 8px;color: #aaa;pointer-events: none;    }
 .s-titled-select-wrapper.s-disabled {opacity: .5;pointer-events: none;}
@@ -1289,7 +1290,8 @@ table .s-table-header .table-section a.s-hint {float:none;margin-left:10px;}
 .s-search-wrapper .input-group .input-group-btn.s-action .btn {border-radius: 2px;}
 .s-search-wrapper .input-group .s-search {border-bottom-right-radius: 2px;border-top-right-radius: 2px;height: 30px;}
 .s-search-wrapper .s-search {position: relative;position: relative;display: inline-block;width: 100%;}
-.s-search-wrapper  .btn.s-add-search-param {position: absolute;right: 4px;top: 4px;z-index: 2;}
+.s-search-wrapper  .btn.s-add-search-param {position: absolute;right: 4px;top: 4px; z-index: 222;}
+#customListingControls input.form-control.s-search {margin-top: 5px;}
 
 .dropdown.s-search-results-wrapper .input-group-btn {vertical-align: top;}
 .s-search-wrapper .input-group .s-search:before {content: "\f002";font-family:"Font Awesome 5 Free";font-weight: 600;position: absolute;left: 9px;top: 6px;z-index: 30;font-size: 14px;color: #aaa;pointer-events: none;}
@@ -2062,7 +2064,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
   font-weight: 600;
 }
 #reporting-top {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 #reporting-top label {
   display: block;
@@ -2172,6 +2174,38 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
   background-color: #fff;
   border: 1px solid #DDDDDD;
   color: #5E5E5E;
+}
+
+#reporting-top #subreport .flex .col.larger {
+  margin-right: 20px;
+  margin-top: 22px;
+}
+#reporting-top #subreport .content-right>.col {
+  margin-left: 10px;
+}
+#reporting-top #subreport .btn-secondary {
+  border: 1px solid #DDDDDD;
+}
+#reporting-top #subreport .btn-secondary:hover {
+  background: #DDDDDD;
+}
+#reporting-top #subreport .row {
+  margin: 15px 0 0 0;
+}
+#reporting-top #subreport h3 {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+#reporting-top #subreport .ax_default button {
+  height: 34px;
+  margin-left: 7x;
+}
+#reporting-top #subreport .ax_default .single-select {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+#reporting-top #subreport .report-select {
+  margin-top: 20px;
 }
 
 #get-started-report {
@@ -3395,7 +3429,7 @@ table tr td .s-loading-icon {
 .s-body-box .table-responsive thead {background: @black-2;}
 .s-detail-content-table tr.s-selected-row {color: #798c9c;background: #eff9fd;}
 .s-detail-content-table tbody tr {font-weight: 600;}
-.s-detail-content-table tbody tr td {position:relative;font-weight: 500;}
+.s-detail-content-table tbody tr td {position:relative;font-weight: 500;border: 1px solid #ddd!important;}
 .s-detail-content-table tbody tr td .form-group {margin-bottom: 0px;}
 .s-detail-content-table tbody tr td .s-list {padding-left: 17px;margin-top: 9px;font-weight: 500;}
 .s-detail-content-table tbody tr td .s-title > a[data-toggle="collapse"] {text-decoration:underline;}

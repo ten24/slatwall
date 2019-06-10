@@ -61,34 +61,28 @@ Notes:
 			<hb:HibachiProcessCaller action="admin:entity.preprocesssite" entity="site" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.site')#" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
+	
+    <cfset siteCollectionList = getHibachiScope().getService('siteService').getSiteCollectionList()>
+	<cfset serchableDisplayProperties = "siteName,siteCode,domainNames,app.appName,allowAdminAccessFlag"/>
+	<cfset siteCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset siteCollectionList.addDisplayProperty( displayProperty='siteID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.siteSmartList#"
-							   recordEditAction="admin:entity.editSite"
-							   recordDetailAction="admin:entity.detailSite">
+    <hb:HibachiListingDisplay 
+    		collectionList="#siteCollectionList#"
+    		usingPersonalCollection="true"
+    		recordEditAction="admin:entity.edit#lcase(siteCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(siteCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
-		<hb:HibachiListingColumn propertyIdentifier="siteCode" />
-		<hb:HibachiListingColumn propertyIdentifier="domainNames" />
-		<hb:HibachiListingColumn propertyIdentifier="app.appName" />
-		<hb:HibachiListingColumn propertyIdentifier="allowAdminAccessFlag" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'Site'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editsite"
-		record-detail-action="admin:entity.detailsite"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="siteID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="siteName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="siteCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="domainNames" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="app.appName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="allowAdminAccessFlag" ></sw-listing-column>
-	</sw-listing-display>
 
 </cfoutput>

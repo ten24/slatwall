@@ -31970,6 +31970,10 @@ var OrderFulfillmentService = /** @class */ (function () {
                 }
             }
             _this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then(function (result) {
+                if (result.data.errors) {
+                    _this.state.loading = false;
+                    return result;
+                }
                 _this.state.loading = false;
                 if (result.orderDeliveryID != undefined && result.orderDeliveryID != '') {
                     return result;
@@ -32288,12 +32292,17 @@ var OrderFulfillmentService = /** @class */ (function () {
                 for (var i = 0; i < _this.state.orderFulfillmentItemsCollection.length; i++) {
                     skuIDs[i] = _this.state.orderFulfillmentItemsCollection[i]['sku_skuID'];
                 }
-                _this.$rootScope.slatwall.getResizedImageByProfileName('small', skuIDs.join(',')).then(function (result) {
-                    if (!angular.isDefined(_this.$rootScope.slatwall.imagePath)) {
-                        _this.$rootScope.slatwall.imagePath = {};
-                    }
-                    _this.state.imagePath = _this.$rootScope.slatwall.imagePath;
-                });
+                try {
+                    _this.$rootScope.slatwall.getResizedImageByProfileName('small', skuIDs.join(',')).then(function (result) {
+                        if (!angular.isDefined(_this.$rootScope.slatwall.imagePath)) {
+                            _this.$rootScope.slatwall.imagePath = {};
+                        }
+                        _this.state.imagePath = _this.$rootScope.slatwall.imagePath;
+                    });
+                }
+                catch (e) {
+                    console.warn("Error while trying to retrieve the image for an item", e);
+                }
                 _this.emitUpdateToClient();
             });
         };
@@ -70497,6 +70506,42 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "More Than N Day(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Days'
+                                }
+                            },
+                            {
+                                display: "More Than N Week(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'w',
+                                    measureTypeDisplay: 'Weeks'
+                                }
+                            },
+                            {
+                                display: "More Than N Month(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'm',
+                                    measureTypeDisplay: 'Months'
+                                }
+                            },
+                            {
+                                display: "More Than N Year(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'exactDate',
+                                    measureType: 'y',
+                                    measureTypeDisplay: 'Years'
+                                }
+                            },
+                            {
                                 display: "Exact N Day(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
@@ -70781,12 +70826,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 && angular.isDefined(scope.filterItem.value)
                                 && scope.filterItem.value.length) {
                                 var dateRangeArray = scope.filterItem.value.split("-");
-                                var rangeStart = new Date(parseInt(dateRangeArray[0])).toUTCString();
-                                rangeStart = rangeStart.split(' ').slice(0, 5).join(' ');
-                                var rangeEnd = new Date(parseInt(dateRangeArray[1])).toUTCString();
-                                rangeEnd = rangeEnd.split(' ').slice(0, 5).join(' ');
-                                scope.selectedFilterProperty.criteriaRangeStart = rangeStart;
-                                scope.selectedFilterProperty.criteriaRangeEnd = rangeEnd;
+                                scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
+                                scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
                             }
                             if (angular.isDefined(scope.selectedConditionChanged)) {
                                 scope.selectedConditionChanged(scope.selectedFilterProperty);
@@ -70796,8 +70837,8 @@ var SWCriteriaDate = /** @class */ (function () {
                 }
                 else {
                     scope.selectedFilterProperty.criteriaValue = '';
-                    scope.selectedFilterProperty.criteriaRangeStart = '';
-                    scope.selectedFilterProperty.criteriaRangeEnd = '';
+                    scope.selectedFilterProperty.criteriaRangeStart = new Date().setHours(0, 0, 0, 0);
+                    scope.selectedFilterProperty.criteriaRangeEnd = new Date().setHours(11, 59, 59, 999);
                 }
             }
         };
@@ -72024,6 +72065,9 @@ var SWDisplayOptions = /** @class */ (function () {
                     });
                     return title;
                 };
+                scope.hasToMany = function (propertyIdentifier) {
+                    return $hibachi.hasToManyByEntityNameAndPropertyIdentifier(scope.baseEntityName, scope.baseEntityAlias, propertyIdentifier);
+                };
                 scope.addColumn = function (closeDialog) {
                     var selectedProperty = scope.selectedProperty;
                     if (angular.isDefined(scope.selectedAggregate)) {
@@ -72501,8 +72545,7 @@ var SWEditFilterItem = /** @class */ (function () {
                                         }
                                     }
                                     else {
-                                        var dateValueString = utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeStart) + '-' + utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeEnd);
-                                        filterItem.value = dateValueString;
+                                        filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                         var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
                                         filterItem.displayValue = formattedDateValueString;
                                         if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
@@ -72543,6 +72586,13 @@ var SWEditFilterItem = /** @class */ (function () {
                         }
                         for (var siblingIndex in filterItem.$$siblingItems) {
                             filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+                        }
+                        if (angular.isDefined(selectedFilterProperty.aggregate)) {
+                            var aggregateFunction = selectedFilterProperty.aggregate.toUpperCase();
+                            if (aggregateFunction == 'AVERAGE') {
+                                aggregateFunction = 'AVG';
+                            }
+                            filterItem.aggregate = aggregateFunction;
                         }
                         filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
                         //if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
@@ -73339,7 +73389,7 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -73350,6 +73400,7 @@ var CollectionConfig = /** @class */ (function () {
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
+        if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
@@ -73372,6 +73423,7 @@ var CollectionConfig = /** @class */ (function () {
         this.allRecords = allRecords;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
+        this.enableAveragesAndSums = enableAveragesAndSums;
         this.filterGroupAliasMap = {};
         this.reportFlag = false;
         this.periodInterval = "";
@@ -73445,6 +73497,7 @@ var CollectionConfig = /** @class */ (function () {
             _this.isDistinct = jsonCollection.isDistinct;
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
+            _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -73485,7 +73538,8 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 orderBy: _this.orderBy,
-                periodInterval: _this.periodInterval
+                periodInterval: _this.periodInterval,
+                enableAveragesAndSums: _this.enableAveragesAndSums
             };
         };
         this.getEntityName = function () {
@@ -73515,7 +73569,8 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
-                periodInterval: _this.periodInterval
+                periodInterval: _this.periodInterval,
+                enableAveragesAndSums: _this.enableAveragesAndSums
             };
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
@@ -73918,9 +73973,10 @@ var CollectionConfig = /** @class */ (function () {
         this.clearOrderBy = function () {
             _this.orderBy = [];
         };
-        this.addOrderBy = function (orderByString, formatPropertyIdentifier) {
+        this.addOrderBy = function (orderByString, formatPropertyIdentifier, singleColumn) {
             if (formatPropertyIdentifier === void 0) { formatPropertyIdentifier = true; }
-            if (!_this.orderBy) {
+            if (singleColumn === void 0) { singleColumn = false; }
+            if (!_this.orderBy || singleColumn) {
                 _this.orderBy = [];
             }
             var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
@@ -73934,10 +73990,15 @@ var CollectionConfig = /** @class */ (function () {
             };
             _this.orderBy.push(orderBy);
         };
-        this.toggleOrderBy = function (formattedPropertyIdentifier, singleColumn) {
+        this.toggleOrderBy = function (propertyIdentifier, singleColumn, formatPropertyIdentifier) {
             if (singleColumn === void 0) { singleColumn = false; }
+            if (formatPropertyIdentifier === void 0) { formatPropertyIdentifier = false; }
             if (!_this.orderBy) {
                 _this.orderBy = [];
+            }
+            var formattedPropertyIdentifier = propertyIdentifier;
+            if (formatPropertyIdentifier) {
+                formattedPropertyIdentifier = _this.formatPropertyIdentifier(propertyIdentifier);
             }
             var found = false;
             for (var i = _this.orderBy.length - 1; i >= 0; i--) {
@@ -74014,6 +74075,11 @@ var CollectionConfig = /** @class */ (function () {
         this.setDistinct = function (flag) {
             if (flag === void 0) { flag = true; }
             _this.isDistinct = flag;
+            return _this;
+        };
+        this.setEnableAveragesAndSums = function (flag) {
+            if (flag === void 0) { flag = false; }
+            _this.enableAveragesAndSums = flag;
             return _this;
         };
         this.setDirtyRead = function (flag) {
@@ -76580,7 +76646,7 @@ var SWOrderByControlsController = /** @class */ (function () {
                     _this.disabled = false;
                     if (propertyIdentifier != null) {
                         if (angular.isDefined(_this.collectionConfig)) {
-                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true); //single column mode true
+                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true, true); //single column mode true, format propIdentifier true
                         }
                         if (_this.inListingDisplay) {
                             _this.listingService.setSingleColumnOrderBy(_this.listingId, propertyIdentifier, "ASC");
@@ -76593,7 +76659,7 @@ var SWOrderByControlsController = /** @class */ (function () {
                     _this.disabled = false;
                     if (propertyIdentifier != null) {
                         if (angular.isDefined(_this.collectionConfig)) {
-                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true); //single column mode true
+                            _this.collectionConfig.toggleOrderBy(propertyIdentifier, true, true); //single column mode true, format propIdentifier true
                         }
                         if (_this.inListingDisplay) {
                             _this.listingService.setSingleColumnOrderBy(_this.listingId, propertyIdentifier, "DESC");
@@ -77495,6 +77561,15 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.collectionConfigService = collectionConfigService;
         this.addSelection = function (item) {
+            if (!item) {
+                return;
+            }
+            if (_this.singleSelection) {
+                _this.typeaheadService.notifyTypeaheadClearSearchEvent(_this.typeaheadDataKey);
+            }
+            if (_this.singleSelection && _this.getSelections().length) {
+                _this.removeSelection(0);
+            }
             _this.typeaheadService.addSelection(_this.typeaheadDataKey, item);
             if (_this.inListingDisplay) {
                 _this.listingService.insertListingPageRecord(_this.listingId, item);
@@ -77520,6 +77595,9 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
         }
         if (angular.isUndefined(this.showSelections)) {
             this.showSelections = false;
+        }
+        if (angular.isUndefined(this.singleSelection)) {
+            this.singleSelection = false;
         }
         if (angular.isUndefined(this.multiselectMode)) {
             this.multiselectMode = true;
@@ -77555,6 +77633,7 @@ var SWTypeaheadMultiselect = /** @class */ (function () {
             selectedCollectionConfig: "=?",
             typeaheadDataKey: "@?",
             multiselectModeOn: "=?multiselectMode",
+            singleSelection: "=?",
             showSelections: "=?",
             dataTarget: "=?",
             dataTargetIndex: "=?",
@@ -78106,9 +78185,13 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
         this.compile = function (element, attrs, transclude) {
             return {
                 pre: function (scope, element, attrs) {
+                    var propertyIdentifier = scope.swTypeaheadSearchLineItem.propertyIdentifier;
+                    if (!propertyIdentifier && scope.$parent.swTypeaheadMultiselect) {
+                        propertyIdentifier = scope.$parent.swTypeaheadMultiselect.rightContentPropertyIdentifier;
+                    }
                     var innerHTML = element[0].innerHTML;
                     element[0].innerHTML = '';
-                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                    var span = '<span ng-if="item.' + propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + propertyIdentifier + '"></span>';
                     element.append(span);
                 },
                 post: function (scope, element, attrs) { }
@@ -79935,6 +80018,7 @@ var HibachiService = /** @class */ (function () {
                 params.processContext = options.processContext || '';
                 params.isReport = options.isReport || false;
                 params.periodInterval = options.periodInterval || "";
+                params.enableAveragesAndSums = options.enableAveragesAndSums || false;
                 var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
             }
             if (angular.isDefined(options.id)) {
@@ -80010,6 +80094,47 @@ var HibachiService = /** @class */ (function () {
             }
             var request = _this.requestService.newAdminRequest(urlString, params);
             return request.promise;
+        };
+        this.convertAliasToPropertyIdentifier = function (entityName, entityAlias, propertyIdentifierWithAlias) {
+            //handle legacy alias that is in Account.firstName format instead of _account.firstName
+            var slicedvalue = propertyIdentifierWithAlias.slice(0, entityAlias.length);
+            if (slicedvalue == entityAlias) {
+                propertyIdentifierWithAlias = propertyIdentifierWithAlias.slice(entityAlias.length);
+                propertyIdentifierWithAlias = propertyIdentifierWithAlias.split('_').join('.');
+                if (propertyIdentifierWithAlias.charAt(0) === '.') {
+                    propertyIdentifierWithAlias = propertyIdentifierWithAlias.slice(1);
+                }
+            }
+            return propertyIdentifierWithAlias;
+        };
+        this.hasToManyByEntityNameAndPropertyIdentifier = function (entityName, entityAlias, propertyIdentifier) {
+            if (!propertyIdentifier) {
+                return false;
+            }
+            if (entityAlias) {
+                if (propertyIdentifier) {
+                    propertyIdentifier = _this.convertAliasToPropertyIdentifier(entityName, entityAlias, propertyIdentifier);
+                }
+            }
+            var propertyIdentifierArray = propertyIdentifier.split('.');
+            if (propertyIdentifierArray.length >= 1) {
+                var propertiesStruct = _this.getEntityMetaData(entityName);
+                var currentProperty = propertyIdentifierArray.shift();
+                if (propertiesStruct[currentProperty].fieldtype
+                    && (propertiesStruct[currentProperty].fieldtype == 'one-to-many'
+                        || propertiesStruct[currentProperty].fieldtype == 'many-to-many')) {
+                    return true;
+                }
+                if (!propertiesStruct[currentProperty]) {
+                    throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
+                }
+                if (propertiesStruct[currentProperty].cfc) {
+                    var currentEntityName = propertiesStruct[currentProperty].cfc;
+                    var currentPropertyIdentifier = propertyIdentifierArray.join('.');
+                    return _this.hasToManyByEntityNameAndPropertyIdentifier(currentEntityName, undefined, currentPropertyIdentifier);
+                }
+            }
+            return false;
         };
         this.getPropertyTitle = function (propertyName, metaData) {
             var propertyMetaData = metaData[propertyName];
@@ -82362,7 +82487,7 @@ var PublicService = /** @class */ (function () {
                 if (!angular.isDefined(_this.imagePath)) {
                     _this.imagePath = {};
                 }
-                if (result.resizedImagePaths) {
+                if (result && result.resizedImagePaths) {
                     for (var skuID in result.resizedImagePaths) {
                         _this.imagePath[skuID] = result.resizedImagePaths[skuID];
                     }
@@ -83570,11 +83695,17 @@ var TypeaheadService = /** @class */ (function () {
         this.getTypeaheadSelectionUpdateEvent = function (key) {
             return "typeaheadSelectionUpdated" + key;
         };
+        this.getTypeaheadClearSearchEvent = function (key) {
+            return key + "clearSearch";
+        };
         this.attachTypeaheadSelectionUpdateEvent = function (key, callback) {
             _this.observerService.attach(callback, _this.getTypeaheadSelectionUpdateEvent(key));
         };
         this.notifyTypeaheadSelectionUpdateEvent = function (key, data) {
             _this.observerService.notify(_this.getTypeaheadSelectionUpdateEvent(key), data);
+        };
+        this.notifyTypeaheadClearSearchEvent = function (key, data) {
+            _this.observerService.notify(_this.getTypeaheadClearSearchEvent(key), data);
         };
         this.setTypeaheadState = function (key, state) {
             _this.typeaheadStates[key] = state;
@@ -84201,12 +84332,6 @@ var UtilityService = /** @class */ (function (_super) {
         };
         _this.minutesOfDay = function (m) {
             return m.getMinutes() + m.getHours() * 60;
-        };
-        _this.removeTimeOffset = function (timestampStr) {
-            var date = new Date(timestampStr);
-            var correctDate = new Date();
-            correctDate.setUTCFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-            return correctDate.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
         };
         return _this;
     }
@@ -87162,15 +87287,16 @@ var SWListingControlsController = /** @class */ (function () {
             }
             return _this.columnIsControllableMap[column.propertyIdentifier];
         };
-        this.addSearchFilter = function () {
-            if (angular.isUndefined(_this.selectedSearchColumn) || !_this.searchText)
+        this.addSearchFilter = function (column) {
+            if (!_this.swListingDisplay.searchText)
                 return;
-            var keywords = _this.searchText.split(" ");
+            //TODO consider wildcard setting
+            var keywords = _this.swListingDisplay.searchText.split(" ");
             for (var i = 0; i < keywords.length; i++) {
-                _this.collectionConfig.addLikeFilter(_this.selectedSearchColumn.propertyIdentifier, keywords[i], '%w%', undefined, _this.selectedSearchColumn.title);
+                _this.collectionConfig.addLikeFilter(column.propertyIdentifier, keywords[i], '%w%', undefined, column.title);
             }
-            _this.searchText = '';
-            _this.collectionConfig.setKeywords(_this.searchText);
+            _this.swListingDisplay.searchText = '';
+            _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
             _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
         };
         this.toggleDisplayOptions = function (closeButton) {
@@ -88943,6 +89069,9 @@ var SWListingReport = /** @class */ (function () {
                 $event.stopPropagation();
                 scope.swListingReport.openedCalendarEndCompare = true;
             };
+            scope.swListingReport.removeInfoWIndow = function (event) {
+                $("#get-started-report").remove();
+            };
         };
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingreport.html";
     }
@@ -90098,8 +90227,9 @@ var ListingService = /** @class */ (function () {
             }
             if (_this.getListing(listingID).collectionConfig != null) {
                 var found = false;
+                var _formattedPropertyIdentifier_1 = _this.getListing(listingID).collectionConfig.formatPropertyIdentifier(propertyIdentifier);
                 angular.forEach(_this.getListing(listingID).collectionConfig.orderBy, function (orderBy, index) {
-                    if (propertyIdentifier == orderBy.propertyIdentifier) {
+                    if (_formattedPropertyIdentifier_1 == orderBy.propertyIdentifier) {
                         orderBy.direction = direction;
                         found = true;
                     }
@@ -90108,7 +90238,7 @@ var ListingService = /** @class */ (function () {
                     }
                 });
                 if (!found) {
-                    _this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction);
+                    _this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction, true, true);
                 }
                 if (notify) {
                     _this.observerService.notify(_this.getListingOrderByChangedEventString(listingID));
@@ -90130,7 +90260,7 @@ var ListingService = /** @class */ (function () {
                 if (column.aggregate && column.aggregate.aggregateFunction) {
                     orderByPropertyIdentifier = column.aggregate.aggregateFunction + '(' + column.propertyIdentifier + ')';
                 }
-                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
+                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
             }
         };
         //End Order By Functions
