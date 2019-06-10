@@ -55,25 +55,34 @@ Notes:
 <cfoutput>
 
     <hb:HibachiEntityActionBar type="listing" object="#rc.containerPresetSmartList#" showCreate="true" />
+    
+    <cfset containerPresetCollectionList = getHibachiScope().getService('containerService').getContainerPresetCollectionList()>
+	<cfset serchableDisplayProperties = "containerName,height,width,depth,dimensionUnit.unitName"/>
+	<cfset containerPresetCollectionList.setDisplayProperties(
+	serchableDisplayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
 
-    <sw-listing-display data-using-personal-collection="true"
-        data-collection="'ContainerPreset'"
-        data-edit="false"
-        data-has-search="true"
-        record-detail-action="admin:entity.detailcontainerpreset"
-        record-edit-action="admin:entity.editcontainerpreset"
-        record-detail-modal="false"
-        data-is-angular-route="false"
-        data-angular-links="false"
-        data-has-action-bar="false"
-    >
-        <sw-listing-column data-property-identifier="containerPresetID" data-is-visible="false"></sw-listing-column>
-        <sw-listing-column data-property-identifier="containerName" tdclass="primary" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="height" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="width" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="depth" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="dimensionUnit.unitName" ></sw-listing-column>
-    </sw-listing-display>
+
+	<cfset containerPresetCollectionList.addDisplayProperty(
+	displayProperty='containerPresetID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+
+	<hb:HibachiListingDisplay 
+			collectionList="#containerPresetCollectionList#"
+			usingPersonalCollection="true"
+			recordEditAction="admin:entity.edit#lcase(containerPresetCollectionList.getCollectionObject())#"
+			recordDetailAction="admin:entity.detail#lcase(containerPresetCollectionList.getCollectionObject())#"
+		>
+		
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

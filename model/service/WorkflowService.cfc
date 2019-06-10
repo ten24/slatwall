@@ -62,10 +62,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		var successFlag = false;
-		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
-			continue;
-		}
-
+		
 		if(arguments.workflowTrigger.getSaveTriggerHistoryFlag() == true) {
 
 			// Create a new workflowTriggerHistory to be logged
@@ -208,12 +205,24 @@ component extends="HibachiService" accessors="true" output="false" {
 				this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 				
 				
-			} else if(!isNull(arguments.workflowTrigger.getScheduleCollection())) {
+			} else if(
+				!isNull(arguments.workflowTrigger.getScheduleCollectionConfig()) 
+				|| !isNull(arguments.workflowTrigger.getScheduleCollection())
+			){
+				//transient collection takes precedent
+				if(!isNull(arguments.workflowTrigger.getScheduleCollectionConfig())){
+					var scheduleCollectionConfig = deserializeJSON(arguments.workflowTrigger.getScheduleCollectionConfig());
+					var currentObjectName = scheduleCollectionConfig['baseEntityName'];
+					var scheduleCollection = getService('HibachiCollectionService').invokeMethod('get#currentObjectName#CollectionList');
+					scheduleCollection.setCollectionConfigStruct(scheduleCollectionConfig);
+				}else{
+					var scheduleCollection = arguments.workflow.getScheduleCollection();
+					var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+				}
 				//Instantiate one object per Collection Record returned
-				var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 				var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
 				//execute Collection and return only the IDs
-				var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
+				var triggerCollectionResult = scheduleCollection.getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
 	
 				//Loop Collection Data
 				for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){

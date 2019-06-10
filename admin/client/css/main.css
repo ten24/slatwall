@@ -2176,6 +2176,10 @@ table .s-edit-elements a:hover {
   border-color: #dddddd;
   font-size: 12px;
 }
+.form-control.read-only { 
+  background-color: #f7f7f7; 
+  line-height: 1.7;
+}
 /*Custom CSS*/
 .s-pannel-group .panel {
   border: none;
@@ -3758,10 +3762,10 @@ table .s-table-header .table-section a.s-hint {
   position: absolute;
   right: 4px;
   top: 4px;
-  z-index: 2;
+  z-index: 222;
 }
-#customListingControls input.form-control.s-search { 
-  margin-top: 5px; 
+#customListingControls input.form-control.s-search {
+  margin-top: 5px;
 }
 .dropdown.s-search-results-wrapper .input-group-btn {
   vertical-align: top;
@@ -5843,7 +5847,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   font-weight: 600;
 }
 #reporting-top {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 #reporting-top label {
   display: block;
@@ -5953,6 +5957,37 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-color: #fff;
   border: 1px solid #DDDDDD;
   color: #5E5E5E;
+}
+#reporting-top #subreport .flex .col.larger {
+  margin-right: 20px;
+  margin-top: 22px;
+}
+#reporting-top #subreport .content-right > .col {
+  margin-left: 10px;
+}
+#reporting-top #subreport .btn-secondary {
+  border: 1px solid #DDDDDD;
+}
+#reporting-top #subreport .btn-secondary:hover {
+  background: #DDDDDD;
+}
+#reporting-top #subreport .row {
+  margin: 15px 0 0 0;
+}
+#reporting-top #subreport h3 {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+#reporting-top #subreport .ax_default button {
+  height: 34px;
+  margin-left: 7x;
+}
+#reporting-top #subreport .ax_default .single-select {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+#reporting-top #subreport .report-select {
+  margin-top: 20px;
 }
 #get-started-report {
   background: #fff;
@@ -7699,7 +7734,7 @@ table tr td .s-loading-icon {
 .s-detail-content-table tbody tr td {
   position: relative;
   font-weight: 500;
-  border: 1px solid #ddd!important;
+  border: 1px solid #ddd !important;
 }
 .s-detail-content-table tbody tr td .form-group {
   margin-bottom: 0px;
