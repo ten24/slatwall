@@ -434,7 +434,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// =============== Order Item Reward ==============
 						if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
 							processOrderItemRewards(arguments.order, promotionPeriodQualifications, promotionRewardUsageDetails, orderItemQualifiedDiscounts, reward);
-	
+							
 						// =============== Fulfillment Reward ======================
 						} else if (!orderRewards and reward.getRewardType() eq "fulfillment" ) {
 							processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
@@ -447,17 +447,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 					// This forces the loop to repeat looking for "order" discounts
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
+						// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
+						removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
+		
+						// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
+						applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 						pr = 0;
 						orderRewards = true;
 					}
 	
 				} // END of PromotionReward Loop
 	
-				// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-				removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-
-				// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-				applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 	
 			} // END of Sale or Exchange Loop
 	

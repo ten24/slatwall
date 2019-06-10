@@ -59,19 +59,6 @@
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPriceAfterDiscount" edit="false" displayType="table" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
 				<hb:HibachiPropertyTableBreak />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="itemTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPersonalVolume" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPersonalVolumeAfterDiscount" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedTaxableAmount" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedTaxableAmountAfterDiscount" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedCommissionableVolume" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedCommissionableVolumeAfterDiscount" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedSponsorVolume" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedSponsorVolumeAfterDiscount" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedProductPackVolume" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedProductPackVolumeAfterDiscount" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedRetailValueVolume" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedRetailValueVolumeAfterDiscount" edit="false" displayType="table" />
 			</hb:HibachiPropertyTable>
 			
 		</hb:HibachiPropertyList>
