@@ -8665,13 +8665,9 @@ table.s-detail-content-table tbody tr.s-done {
 .Mcard-footer{
   padding: 8px 15px;
   color: white;
-}
-
-.Mcard-footer1{
-  background-color:orange;
   display: flex;
-    align-items: center;
-    justify-content: space-between;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .Mcard-footer p{
@@ -8682,4 +8678,20 @@ table.s-detail-content-table tbody tr.s-done {
 
 .Mcard-footer i{
 float:right;
+}
+
+.Mcard-footer1{
+  background-color:#f38631;
+}
+
+.Mcard-footer2{
+  background-color:#5f7d8b;
+}
+
+.Mcard-footer3{
+  background-color:#90d08c;
+}
+
+.Mcard-footer4{
+  background-color:#dc7374;
 }
