@@ -79,6 +79,33 @@
 		
 			<input type="hidden" name="slatAction" value="#rc.slatAction#"/>
 			<div id="u119_state0" class="panel_state" data-label="State1" style="">
+				<div class="flex flex-space-bettween align-items-end">
+					<div class="col flex align-items-end">
+						<!--- BACKEND TODO: Add logic for subscription name --->
+						<h3>[Report Name Here]</h3>
+					</div>
+					
+                    <!-- Button (Rectangle) -->
+					<div class="col flex flex-end">	
+						<div class="report-select">
+	                        <!--- BACKEND TODO: Wireup subscription report dropdown --->
+	                        <select name="report" data-live-search="true" data-width="auto">
+	                        	<option value="##">Subscription Reports ...</option>
+	                        	 <option value="##">Deferred Revenue Report</option>
+	                        	 <option value="##">Earned Revenue Report</option>
+	                        	 <option value="##">New Subscription Orders Report</option>
+	                        	 <option value="##">Cancelled Orders Report</option>
+	                        </select>
+	                    </div>
+				        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
+				            <div id="u123_div" class="" tabindex="0"></div>
+				            <div id="u123_text" class="text single-select">
+				                <button id="ExportBtn" type="button" class="btn btn-secondary" ><i class="fas fa-download"></i> Export</button>
+				                <button id="ApplyBtn" type="button" class="btn btn-success" ><i class="fas fa-check"></i> Apply</button>
+				            </div>
+				        </div>
+			        </div>
+				</div>
 			    <div id="u119_state0_content" class="panel_state_content flex flex-space-bettween">
 			    	<div class="col larger">	
 					    <div class="single-select">
@@ -127,19 +154,21 @@
 			            </div>
 				    </div>
 			    	
-			        <div class="col">
-				        <!--get avaiable order item subscripiont type-->
-				        <cfset subscriptionOrderItemTypeCollectionList = $.slatwall.getService('hibachiService').getTypeCollectionList()/>
-				        <cfset subscriptionOrderItemTypeCollectionList.setDisplayProperties('systemCode,typeName')/>
-				        <cfset subscriptionOrderItemTypeCollectionList.addFilter('typeIDPath','444df3100babdbe1086cf951809a60ca,%','like')/>
-				         <div class="multi-select">
-	                        <h4>Subscription Type</h4>
-	                        <select name="subscriptionType" class="selectpicker" data-live-search="true" data-width="auto" multiple>
-	                          <cfloop array="#subscriptionOrderItemTypeCollectionList.getRecords()#" index="subscriptionOrderItemTypeRecord">
-	                        	 <option value="#subscriptionOrderItemTypeRecord['systemCode']#" <cfif structKeyExists(rc,'subscriptionType') && listFind(rc.subscriptionType,subscriptionOrderItemTypeRecord['systemCode'])>selected</cfif>>#subscriptionOrderItemTypeRecord['typeName']#</option>
-	                          </cfloop>
-	                        </select>
-	                    </div>
+			    	<div class="col flex content-right">
+			    		<div class="col">
+					        <!--get avaiable order item subscripiont type-->
+					        <cfset subscriptionOrderItemTypeCollectionList = $.slatwall.getService('hibachiService').getTypeCollectionList()/>
+					        <cfset subscriptionOrderItemTypeCollectionList.setDisplayProperties('systemCode,typeName')/>
+					        <cfset subscriptionOrderItemTypeCollectionList.addFilter('typeIDPath','444df3100babdbe1086cf951809a60ca,%','like')/>
+					         <div class="multi-select">
+		                        <label>Subscription Type</label>
+		                        <select name="subscriptionType" class="selectpicker" data-live-search="true" data-width="auto" multiple>
+		                          <cfloop array="#subscriptionOrderItemTypeCollectionList.getRecords()#" index="subscriptionOrderItemTypeRecord">
+		                        	 <option value="#subscriptionOrderItemTypeRecord['systemCode']#" <cfif structKeyExists(rc,'subscriptionType') && listFind(rc.subscriptionType,subscriptionOrderItemTypeRecord['systemCode'])>selected</cfif>>#subscriptionOrderItemTypeRecord['typeName']#</option>
+		                          </cfloop>
+		                        </select>
+		                    </div>
+				        </div>
 				        
 			        </div>
 			        <div class="col">
@@ -190,9 +219,7 @@
 	                    </div>
 	                    
 			    </div><!-- end of .flex -->
-			    
 			</div>
-			
 		</form>
 	</div>
 </cfoutput>

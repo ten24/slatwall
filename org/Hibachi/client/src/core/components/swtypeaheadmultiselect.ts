@@ -45,6 +45,9 @@ class SWTypeaheadMultiselectController {
         if(angular.isUndefined(this.showSelections)){
             this.showSelections = false; 
         }
+        if(angular.isUndefined(this.singleSelection)){
+            this.singleSelection = false; 
+        }
         if(angular.isUndefined(this.multiselectMode)){
             this.multiselectMode = true; 
         }
@@ -61,6 +64,18 @@ class SWTypeaheadMultiselectController {
     }
     
     public addSelection = (item) => {
+        
+        if(!item){
+            return;
+        }
+        if(this.singleSelection){
+            this.typeaheadService.notifyTypeaheadClearSearchEvent(this.typeaheadDataKey);
+        }
+
+        if(this.singleSelection && this.getSelections().length){
+            this.removeSelection(0);
+        }
+        
         this.typeaheadService.addSelection(this.typeaheadDataKey, item);
         if(this.inListingDisplay){
             this.listingService.insertListingPageRecord(this.listingId, item);
@@ -96,6 +111,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         ,selectedCollectionConfig:"=?"
         ,typeaheadDataKey:"@?"
         ,multiselectModeOn:"=?multiselectMode"
+        ,singleSelection:"=?"
         ,showSelections:"=?"
         ,dataTarget:"=?"
         ,dataTargetIndex:"=?"

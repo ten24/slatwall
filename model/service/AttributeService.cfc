@@ -86,6 +86,7 @@ component  extends="HibachiService" accessors="true" {
 		if(getHibachiCacheService().hasCachedValue(modelCacheKey)){
 			model = getHibachiCacheService().getCachedValue(modelCacheKey);
 		}else{
+			getService('hibachiTagService').cfsetting(requesttimeout=5000);
 			lock name="application_#getHibachiInstanceApplicationScopeKey()#_#modelCacheKey#" timeout="5000"{
 		        var entitiesListArray = listToArray(structKeyList(getHibachiScope().getService('hibachiService').getEntitiesMetaData()));
 		        for(var entityName in entitiesListArray) {
