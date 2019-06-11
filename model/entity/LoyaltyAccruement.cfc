@@ -124,10 +124,11 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	public any function getAccountCurrency(required string currencyCode){
 		var accountCurrenciesList = getService("LoyaltyService").getAccountCurrencyCollectionList();
+		accountCurrenciesList.setDisplayProperties("accountCurrencyID");
 		accountCurrenciesList.addFilter("loyaltyAccruement.loyaltyAccruementID",this.getLoyaltyAccruementID());
 		accountCurrenciesList.addFilter("currencyCode",arguments.currencyCode);
-		accountCurrencies = accountCurrenciesList.getRecords();
-		if(len(accountCurrencies)){
+		accountCurrencies = accountCurrenciesList.getPageRecords();
+		if(arrayLen(accountCurrencies)){
 			return accountCurrencies[1];
 		}
 	}
