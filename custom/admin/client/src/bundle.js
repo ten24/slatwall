@@ -63722,7 +63722,8 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
                 context: _this.processContext,
                 propertyIdentifiersList: ''
             };
-            formDataToPost.promotionCode = _this.promotionCode;
+            formDataToPost.giftCardID = _this.giftCard.giftCardID;
+            formDataToPost.amountToApply = _this.amountToApply;
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;

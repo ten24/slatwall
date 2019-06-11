@@ -62,7 +62,8 @@ class SWOrderTemplateAddGiftCardModalController{
 			propertyIdentifiersList: ''
 		};
 		
-		formDataToPost.promotionCode = this.promotionCode;
+		formDataToPost.giftCardID = this.giftCard.giftCardID;
+		formDataToPost.amountToApply = this.amountToApply;
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
 		

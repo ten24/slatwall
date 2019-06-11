@@ -1507,6 +1507,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate; 
+	}
+
+	public any function processOrderTemplate_applyGiftCard (required any orderTemplate, required any processObject, struct data={}){ 
+
+
+		return arguments.orderTemplate; 	
 	} 
 	//end order template functionality	
 
