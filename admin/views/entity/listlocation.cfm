@@ -65,20 +65,20 @@ Notes:
 
 	<cfset rc.locationCollectionList.addFilter(propertyIdentifier='parentLocation', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.locationCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true"
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true
 	})/>
 	<cfset rc.locationCollectionList.addDisplayProperty(displayProperty='locationName',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true",
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true,
 		tdclass="primary"
 	},prepend=true)/>
 	<cfset rc.locationCollectionList.addDisplayProperty(displayProperty='locationID',columnConfig={
-		isSearchable="false",
-		isVisible="false",
-		isDeletable="false"
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
 	})/>
 	<cfset rc.locationCollectionList.addDisplayAggregate('childLocations','COUNT','childLocationsCount')/>
 
