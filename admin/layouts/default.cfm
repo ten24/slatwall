@@ -429,7 +429,9 @@ Notes:
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 		
-				<div class="card-wrapper">
+		<!--- HTML TEMPLATE FOR NEW REPORTING LAYOUT --->
+				<cfif $.slatwall.getLoggedInFlag() >
+				<div class="Mcard-wrapper">
 	                <div class="col-xs-3">
 	                    <div class="Mcard">
 	                        <div class="Mcard-body ">
@@ -437,7 +439,7 @@ Notes:
 	                           <div><img src="/assets/images/piggy-bank-1.png" alt="Piggy Bank"></div>
 	                        </div>
 	                        <div class="Mcard-footer Mcard-footer1">
-	                            <div><p>Sales This Week</p></div> <div><span><i class="fa fa-arrow-circle-right"></i></span></div>
+	                            <div><p>Sales This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
 	                        </div>
 	                    </div>
 	                </div>
@@ -449,7 +451,7 @@ Notes:
 	                           <div><img src="/assets/images/shopping-bag-gray.png" alt="Shopping Bags"></div>
 	                        </div>
 	                        <div class="Mcard-footer Mcard-footer2">
-	                            <div><p>Orders This Week</p></div> <div><span><i class="fa fa-arrow-circle-right"></i></span></div>
+	                            <div><p>Orders This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
 	                        </div>
 	                    </div>
 	                </div>
@@ -461,7 +463,7 @@ Notes:
 	                           <div><img src="/assets/images/user-2.png" alt="User Icon"></div>
 	                        </div>
 	                        <div class="Mcard-footer Mcard-footer3">
-	                            <div><p>New Accounts This Week</p></div> <div><span><i class="fa fa-arrow-circle-right"></i></span></div>
+	                            <div><p>New Accounts This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
 	                        </div>
 	                    </div>
 	                </div>
@@ -472,11 +474,12 @@ Notes:
 	                           <div><img src="/assets/images/dollar-symbol-gray.png" alt="User Icon"></div>
 	                        </div>
 	                        <div class="Mcard-footer Mcard-footer4">
-	                            <div><p>Popular Item This Week</p></div> <div><span><i class="fa fa-arrow-circle-right"></i></span></div>
+	                            <div><p>Popular Item This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
 	                        </div>
 	                    </div>
 	                </div>
 	    		</div>
+	    		</cfif>
 	</body>
 </html>
 </cfoutput>

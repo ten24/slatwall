@@ -8643,6 +8643,10 @@ table.s-detail-content-table tbody tr.s-done {
   display: inline-block;
 }
 
+.Mcard-wrapper{
+  padding:1em;
+}
+
 .Mcard{
   background-color:#ffffff;
 }
@@ -8655,7 +8659,7 @@ table.s-detail-content-table tbody tr.s-done {
 }
 
 .Mcard-body h1 {
-    color: #676767;
+    color: #666666;
     display: inline;
     vertical-align: sub;
     font-weight: 500;
@@ -8682,8 +8686,9 @@ table.s-detail-content-table tbody tr.s-done {
 
 }
 
-.Mcard-footer i{
-float:right;
+.Mcard-footer img{
+  height:1.5em;
+  cursor:pointer;
 }
 
 .Mcard-footer1{
