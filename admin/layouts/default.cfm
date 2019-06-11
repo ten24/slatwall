@@ -428,6 +428,176 @@ Notes:
  		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
+		
+				<cfif $.slatwall.getLoggedInFlag() >
+				<div class="navTabs-Container col-md-12" id="navTabs-Container">
+					<ul class="nav nav-tabs" role="tablist">
+						  <li class="active tab-selector"><a href="##reports-overview" role="tab" data-toggle="tab">My Custom Reports</a></li>
+						  <li class="tab-selector"><a href="##popular-reports" role="tab" data-toggle="tab">Popular Reports</a></li>
+						  <li class="tab-selector"><a href="##all-reports" role="tab" data-toggle="tab">All Reports</a></li>
+					</ul>
+					
+					<!-- Markup for reporting tab panes -->
+					<div class="tab-content col-md-12">
+					  <div class="tab-pane active flex" id="reports-overview">
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Reports Overview Content <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>
+					  	</div>
+					  	
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>	
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+						  		<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>					  	
+					  </div>
+					  
+					  
+					  
+					  <div class="tab-pane flex" id="popular-reports">			  	
+					  <div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Popular Reports Content <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>
+					  	</div>
+					  	
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>	
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+						  		<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div></div>
+					  <div class="tab-pane flex" id="all-reports">
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>All reports Content <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>
+					  	</div>
+					  	
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>	
+					  	<div class="col-sm-3">
+					  		<ul class="list-unstyled">
+						  		<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
+					  		</ul>					  		
+					  	</div>
+					  </div>
+					</div>
+				</div>	
+		
+			</cfif>
 	</body>
 </html>
 </cfoutput>
