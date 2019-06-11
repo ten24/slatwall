@@ -72,7 +72,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		address.setStreet2Address("");
 		address.setCity("Omaha");
 		address.setStateCode("NE");
-		address.setPostalCode("68136");
+		address.setPostalCode("56649"); //"49802" for AVS failure OR "56649" for AVS valid
 		address.setCountryCode("US");
 		payment.setNameOnCreditCard(account.getFullName());
 		payment.setCreditCardNumber(values.cardNumber);
