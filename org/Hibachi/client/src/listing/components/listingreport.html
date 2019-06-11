@@ -3,7 +3,6 @@
     <div class="alert alert-error" ng-show="swListingReport.hasMetric==false">You must have an aggregate column to render the report</div>
     
         <!---Ready to be saved indicator --->
-    <div class="alert alert-success" >Changes can be saved.</div>
     
     <div class="flex flex-space-between">
         <div class="col">
@@ -140,8 +139,14 @@
                     </div>
                 </div><!-- end of .col -->
                 
+                <div class="col">
+                    <div class="tooltip">Text</div>
+                    <span><i class="fas fa-exclamation save-icon fa-2x"></i></span>
+                </div>
+                
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
+            	         
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         >
@@ -161,6 +166,7 @@
                                         font-size: 12px;
                                         padding: 0px 5px;"
                                     >
+                                   
                                     <a class="btn btn-xs btn-success s-action-btn"
                                         ng-click="swListingReport.saveReportCollection(swListingReport.collectionName)">
                                         save
