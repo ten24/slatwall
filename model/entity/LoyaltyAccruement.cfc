@@ -122,6 +122,16 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	}
 	
 	
+	public any function getAccountCurrency(required string currencyCode){
+		var accountCurrenciesList = getService("LoyaltyService").getAccountCurrencyCollectionList();
+		accountCurrenciesList.addFilter("loyaltyAccruement.loyaltyAccruementID",this.getLoyaltyAccruementID());
+		accountCurrenciesList.addFilter("currencyCode",arguments.currencyCode);
+		accountCurrencies = accountCurrenciesList.getRecords();
+		if(len(accountCurrencies)){
+			return accountCurrencies[1];
+		}
+	}
+	
 	// loyalty Program (many-to-one)
 	public void function setLoyalty(required any loyalty) {
 		variables.loyalty = arguments.loyalty;

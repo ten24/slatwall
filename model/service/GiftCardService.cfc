@@ -77,6 +77,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getOriginalOrderItem())){
 			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
 		}
+		
+		if(!isNull(arguments.processObject.getSku())){
+			arguments.giftCard.setSku(arguments.processObject.getSku());
+		}
 
         if(!isNull(arguments.processObject.getOrderItemGiftRecipient())){
             arguments.giftCard.setOrderItemGiftRecipient(arguments.processObject.getOrderItemGiftRecipient());

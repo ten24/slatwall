@@ -67,6 +67,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
+	property name="Sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="SkuID" cascade="all";
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
     property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";
@@ -93,6 +94,13 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		} else {
 			return false;
 		}
+	}
+	
+	public any function getSku(){
+		if(!structKeyExists(variables,"sku") || isNull(variables.sku)){
+			variables.sku.getOriginalOrderItem().getSku();
+		}
+		return variables.sku;
 	}
 
 	public boolean function isExpired(){
