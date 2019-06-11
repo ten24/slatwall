@@ -1651,6 +1651,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var joinHQL = '';
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
             var allAliases = getAllAliases();
+            
 			for(var join in getCollectionConfigStruct()["joins"]){
                 if(listFind(allAliases, join.alias)){
                     joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
@@ -2675,6 +2676,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(structKeyExists(column,'attributeID')){
 					columnsHQL &= getColumnAttributeHQL(column);
 				}else{
+					getPropertyIdentifierAlias(column.propertyIdentifier);
+					var columnAlias = getColumnAlias(column);
 					//verify that column is valid, if not remove it
 					if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
 						//check if we have an aggregate
@@ -2726,12 +2729,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}//<--end function
 
 	public string function getColumnAlias(required struct column){
+
 		if(structKeyExists(column,'attributeID')){
 			return listLast(column.propertyIdentifier,'.');
 		}else{
-			if(structKeyExists(column,'aggregate')){
+			if(
+				structKeyExists(column,'aggregate')
+				&& structKeyExists(column.aggregate,'aggregateFunction')
+				&& len(column.aggregate.aggregateFunction)
+			){
 				return column.aggregate.aggregateAlias;
 			}else{
+
+
 				var currentAlias = '';
 				var currentAliasStepped = '';
 				var columnPropertyIdentiferArray = listToArray(arguments.column.propertyIdentifier,'.');
@@ -2747,13 +2757,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							var join = {
 									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+									alias=currentAlias&'_'&columnPropertyIdentiferArray[j],
+									column=true
 							};
-
+							
 
 							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
 							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-
 							addJoin(join);
 
 						}
@@ -2766,6 +2776,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						currentAlias = columnPropertyIdentiferArray[1];
 					}
 				}
+
 				if(structKeyExists(column, 'alias')){
 					return column.alias;
 				}
