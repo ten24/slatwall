@@ -309,13 +309,15 @@ Notes:
 						inner join SwProduct p on p.productID = s.productID
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
 						where (
-							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
-							and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
-						)
-						OR (
-							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstCancelled')
-							and ss.effectiveDateTime >= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
-							and o.orderOpenDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							(
+								ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+								and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							)
+							OR (
+								ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstCancelled')
+								and ss.effectiveDateTime >= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+								and o.orderOpenDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							)
 						)
 						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
 							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
@@ -367,13 +369,15 @@ Notes:
 						inner join SwProductType pt on pt.productTypeID = p.productTypeID
 						where 
 						(
-							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
-							and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
-						)
-						OR (
-							ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstCancelled')
-							and ss.effectiveDateTime >= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
-							and o.orderOpenDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							(
+								ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+								and ss.effectiveDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							)
+							OR (
+								ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstCancelled')
+								and ss.effectiveDateTime >= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+								and o.orderOpenDateTime <= <cfqueryparam value="#currentMonth#" cfsqltype="cf_sql_timestamp"/>
+							)
 						)
 						<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
 							AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
