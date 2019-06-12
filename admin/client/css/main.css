@@ -2176,10 +2176,6 @@ table .s-edit-elements a:hover {
   border-color: #dddddd;
   font-size: 12px;
 }
-.form-control.read-only { 
-  background-color: #f7f7f7; 
-  line-height: 1.7;
-}
 /*Custom CSS*/
 .s-pannel-group .panel {
   border: none;
@@ -8645,15 +8641,13 @@ table.s-detail-content-table tbody tr.s-done {
   position: absolute;
   display: inline-block;
 }
-
-.col span .save-icon{
-    margin: 0 5px;
-    font-size: 16px;
+.col span .save-icon {
+  margin: 0 5px;
+  font-size: 16px;
 }
-
-.Malert{
-    margin: 0 1em;
-    padding: 8px;
-        color: #3a2f2f;
-    background-color: #efe4ab;
+.Malert {
+  margin: 0 1em;
+  padding: 8px;
+  color: #3a2f2f;
+  background-color: #efe4ab;
 }
