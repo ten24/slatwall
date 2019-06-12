@@ -14,7 +14,7 @@
 <cfif $.slatwall.content().getUrlTitle() EQ "order">
 	<h3>Order ###order.getOrderNumber()#</h3>
 <cfelse>
-    <h3>Quote ###order.getOrderNumber()#</h3>
+    <h3>Quote</h3>
 </cfif>
 
 

@@ -8,8 +8,8 @@
 <cfelse>
     <!--- Quotes --->
     <cfset local.ordersCollection.addFilter("orderStatusType.systemCode", "ostNotPlaced", "=") />
-    <cfset local.ordersCollection.addFilter("quoteFlag","1","=") />
-    <cfset local.ordersCollection.addFilter("quotePriceExpiration",NOW(),">") />
+    <!--- <cfset local.ordersCollection.addFilter("quoteFlag","1","=") /> --->
+    <cfset local.ordersCollection.addFilter("quotePriceExpiration",NOW(),">") /> 
 </cfif>
 
 <cfset local.ordersCollection.addFilter("orderType.systemCode", "otSalesOrder","=") />
@@ -17,12 +17,7 @@
 <cfset local.ordersCollection.addDisplayProperty('calculatedTotal') />
 <cfset local.ordersCollection.addDisplayProperty('createdDateTime|DESC') />
 <cfset local.ordersCollection.applyData()>
-
-<cfif $.slatwall.content().getUrlTitle() EQ "order-history" OR $.slatwall.content().getUrlTitle() EQ "order">
-    <cfset local.ordersCollection.setPageRecordsShow(10)>
-<cfelse>
-    <cfset local.ordersCollection.setPageRecordsShow(3)>
-</cfif>
+<cfset local.ordersCollection.setPageRecordsShow(10)>
 
 <cfset local.orders = local.ordersCollection.getPageRecords() />
 
