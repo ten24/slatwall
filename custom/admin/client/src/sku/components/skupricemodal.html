@@ -1,6 +1,6 @@
 <sw-modal-launcher data-launch-event-name="EDIT_SKUPRICE"
                    data-modal-name="{{swSkuPriceModal.uniqueName}}" 
-                   data-title="Add Sku Price Detail" 
+                   data-title="Sku Price - Detail" 
                    data-save-action="swSkuPriceModal.save">
     
     <sw-modal-content> 
@@ -167,7 +167,24 @@
                                 />
                             </div>
                         </div>
-                        
+                        <div class="row">
+                            
+                            <div class="col-xs-6">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.activeFlag'">
+                                </label>
+                                <div class="s-ladel-options">
+                                    <div class="col-xs-4 radio">
+                                        <input id="active" type="radio" name="activeFlag" value="1" ng-model="swSkuPriceModal.skuPrice.activeFlag">
+                                        <label for="active">Yes</label>
+                                    </div>
+                                    <div class="col-xs-4 radio">
+                                        <input id="inactive" type="radio" name="activeFlag" value="0" ng-model="swSkuPriceModal.skuPrice.activeFlag">
+                                        <label for="inactive">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <!-- BEGIN HIDDEN FIELDS -->
                         
                         <!-- END HIDDEN FIELDS -->
