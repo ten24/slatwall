@@ -78,6 +78,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#subscriptionBenefitCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(subscriptionBenefitCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(subscriptionBenefitCollectionList.getCollectionObject())#"
 	>

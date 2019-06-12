@@ -83,6 +83,7 @@ Notes:
     <hb:HibachiListingDisplay 
     		collectionList="#stockadjustmentCollectionList#"
     		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
     		recordEditAction="admin:entity.edit#lcase(stockadjustmentCollectionList.getCollectionObject())#"
     		recordDetailAction="admin:entity.detail#lcase(stockadjustmentCollectionList.getCollectionObject())#"
     	>
