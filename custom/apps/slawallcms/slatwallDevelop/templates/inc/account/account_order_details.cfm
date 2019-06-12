@@ -245,12 +245,26 @@
             			</cfif>
             			<p>Tax:
             			    <span class="pull-right">#order.getFormattedValue('calculatedTaxTotal')#</span>
-            			</p>			
+            			</p>
             			<hr />				
             			<p>Total:
             			    <span class="pull-right">#order.getFormattedValue('calculatedTotal')#</span>
             			</p>
-            			
+            			<cfif order.getPaymentAmountReceivedTotal() GT 0>
+	            			<p>Received:
+	            			    <span class="pull-right">(#order.getFormattedValue('paymentAmountReceivedTotal')#)</span>
+	            			</p>
+            			</cfif>
+            			<cfif order.getPaymentAmountCreditedTotal() GT 0>
+	            			<p>Credited:
+	            			    <span class="pull-right">(#order.getFormattedValue('paymentAmountCreditedTotal')#)</span>
+	            			</p>
+            			</cfif>
+            			<cfif order.getCalculatedTotal() NEQ order.getPaymentAmountDue()>
+	            			<p>Balance Due:
+	            			    <span class="pull-right">#order.getFormattedValue('paymentAmountDue')#</span>
+	            			</p>
+            			</cfif>
             			<cfif $.slatwall.content().getUrlTitle() EQ "order">
             			    <a href="javascript:window.print();" class="btn btn-primary"><i class="fa fa-print"></i> Print Order</a>
             			<cfelse>
