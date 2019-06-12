@@ -78,6 +78,7 @@ Notes:
 		<hb:HibachiListingDisplay 
 			collectionList="#fileGroupCollectionList#"
 			usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 			recordEditAction="admin:entity.edit#lcase(fileGroupCollectionList.getCollectionObject())#"
 			recordDetailAction="admin:entity.detail#lcase(fileGroupCollectionList.getCollectionObject())#"
 		>

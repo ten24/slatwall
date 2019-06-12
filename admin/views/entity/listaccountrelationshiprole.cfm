@@ -93,6 +93,7 @@ Notes:
 		<hb:HibachiListingDisplay 
 		collectionList="#accountRelationshipRoleCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(accountRelationshipRoleCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(accountRelationshipRoleCollectionList.getCollectionObject())#"
 	>

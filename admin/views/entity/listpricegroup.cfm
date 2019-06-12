@@ -79,6 +79,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#priceGroupCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(priceGroupCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(priceGroupCollectionList.getCollectionObject())#"
 	>

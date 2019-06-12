@@ -79,6 +79,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#roundingRuleCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(roundingRuleCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(roundingRuleCollectionList.getCollectionObject())#"
 	>

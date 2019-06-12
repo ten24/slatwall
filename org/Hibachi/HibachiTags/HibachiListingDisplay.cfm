@@ -118,6 +118,11 @@
 				>
 				</span>
 			</cfif>
+			
+			<cfif !len(attributes.personalCollectionKey)>
+				<cfset personalCollectionKey = hash(serializeJson(attributes.collectionList.getCollectionConfigStruct()))/>
+			</cfif>
+			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-title="'#attributes.title#'"
