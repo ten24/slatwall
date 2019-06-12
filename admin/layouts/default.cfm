@@ -429,6 +429,7 @@ Notes:
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 		
+			<!---This if statement is only to show the markup on the home page for ease of future modification and should be deleted or altered in production as it filters out ?reload --->
 				<cfif $.slatwall.getLoggedInFlag() AND FindNoCase("?", $.slatwall.getURL()) LTE 0 >
 				<div class="navTabs-Container col-md-12" id="navTabs-Container">
 					<ul class="nav nav-tabs" role="tablist">
