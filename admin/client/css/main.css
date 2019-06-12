@@ -3758,7 +3758,7 @@ table .s-table-header .table-section a.s-hint {
   position: absolute;
   right: 4px;
   top: 4px;
-  z-index: 2;
+  z-index: 222;
 }
 #customListingControls input.form-control.s-search {
   margin-top: 5px;
@@ -8642,6 +8642,8 @@ table.s-detail-content-table tbody tr.s-done {
   position: absolute;
   display: inline-block;
 }
-#reporting-top .btn-group button:focus {
-  outline: none !important;
-}
+#reporting-top .btn-group button:focus{
+  outline:none !important;
+} 
+
+
