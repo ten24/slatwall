@@ -41,6 +41,7 @@ class SWSkuPriceModalController extends SkuPriceModalController{
                 this.skuPrice.productPackVolume = this.pageRecord.productPackVolume;
                 this.skuPrice.retailValueVolume = this.pageRecord.retailValueVolume;
                 this.skuPrice.handlingFee = this.pageRecord.handlingFee;
+                this.skuPrice.activeFlag = this.pageRecord.activeFlag;
             }
         }
     }

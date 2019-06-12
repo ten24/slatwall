@@ -59,6 +59,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
+	property name="promotionService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
@@ -654,6 +655,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		this.saveAccount(account);
 		
+		return arguments.account;
+	}
+	
+	public any function processAccount_removePromotionCode(required any account, required struct data) {
+
+		if(structKeyExists(arguments.data, "promotionCodeID")) {
+			var promotionCode = getPromotionService().getPromotionCode( arguments.data.promotionCodeID );
+		} else if (structKeyExists(arguments.data, "promotionCode")) {
+			var promotionCode = getPromotionService().getPromotionCodeByPromotionCode( arguments.data.promotionCode );
+		}
+
+		if(!isNull(promotionCode)) {
+			arguments.account.removePromotionCode( promotionCode );
+		}
+
+		// Call saveOrder to recalculate all the orderTotal stuff
+		arguments.account = this.saveAccount(arguments.account);
 		return arguments.account;
 	}
 	

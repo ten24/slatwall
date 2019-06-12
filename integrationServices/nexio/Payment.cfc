@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
     
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
     - You also meet the terms and conditions of the license of each 
       independent module 
     - You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
     - Your custom code must not alter or create any files inside Slatwall, 
       except in the following directories:
         /integrationServices/
-
     You may copy and distribute the modified version of this program that meets 
     the above guidelines as a combined work under the terms of GPL for this program, 
     provided that you include the source code of that other code when and as the 
@@ -42,12 +39,10 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 
-component accessors="true" output="false" displayname="Stripe" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
+component accessors="true" output="false" displayname="Nexio" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
 
 		public any function init() {
 			return this;
@@ -57,6 +52,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			return "creditCard";
 		}
 
+		// Override allow site settings
 		public any function setting(required any requestBean) {
 			// Allows settings to be requested in the context of the site where the order was created
 			if (!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
@@ -67,7 +63,20 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			return super.setting(argumentCollection=arguments);
 		}
+
+		// Helper method to get proper public key value
+		private string function getPublicKey(required any requestBean) {
+			var publicKey = setting(settingName='publicKeyTest', requestBean=arguments.requestBean);
+			
+			// Set Live Endpoint Url if not testing
+			if (!getTestModeFlag(arguments.requestBean, 'testMode')) {
+				publicKey = setting(settingName='publicKeyLive', requestBean=arguments.requestBean);
+			}
+
+			return publicKey;
+		}
 		
+		// The main entry point to process credit card (Slatwall convention)
 		public any function processCreditCard(required any requestBean) {
 			var responseBean = getTransient('CreditCardTransactionResponseBean');
 			
@@ -78,10 +87,12 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			// Adding currency to transaction message for admin purposes
 			responseBean.addMessage('transactionCurrencyCode', arguments.requestBean.getTransactionCurrencyCode());
-			
+
 			// Execute request
 			if (arguments.requestBean.getTransactionType() == "generateToken") {
 				sendRequestToGenerateToken(arguments.requestBean, responseBean);
+			} else if (arguments.requestBean.getTransactionType() == "deleteToken") {
+				sendRequestToDeleteTokens(arguments.requestBean, responseBean);
 			} else if (arguments.requestBean.getTransactionType() == "authorize") {
 				sendRequestToAuthorize(arguments.requestBean, responseBean);
 			} else if (arguments.requestBean.getTransactionType() == "authorizeAndCharge") {
@@ -93,80 +104,291 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			} else if (arguments.requestBean.getTransactionType() == "void") {
 				sendRequestToVoid(arguments.requestBean, responseBean);
 			} else {
-				throw("CyberSource Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+				throw("Nexio Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 			}
 			
 			return responseBean;
 		}
+
+		// Nexio relies on 3rd party TokenEx for tokenization. It uses PKCS #1 v1.5 as cipher algorithm for RSA encryption
+		private any function encryptCardNumber(required string cardNumber, required string publicKey) {
+			var secureRandom = createObject("java", "java.security.SecureRandom").init();
+			var cipher = createObject("java", "javax.crypto.Cipher").getInstance("RSA/ECB/PKCS1Padding", "SunJCE"); // This also is equivalent: getInstance("RSA/None/PKCS1Padding", "BC") for BouncyCastle (org.bouncycastle.jce.provider.BouncyCastleProvider)
+
+			// Convert public key from string to java Key object
+			// First need to convert raw string to ByteArray
+			var publicKeySpec = createObject('java', 'java.security.spec.X509EncodedKeySpec').init(toBinary(arguments.publicKey));
+			var keyFactory = createObject('java', 'java.security.KeyFactory').getInstance('RSA');
+			var key = keyFactory.generatePublic(publicKeySpec);
+			cipher.init(createObject("java", "javax.crypto.Cipher").ENCRYPT_MODE, key, secureRandom);
+			
+			return cipher.doFinal(toBinary(toBase64(arguments.cardNumber)));
+		}
 		
 		private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
-			
-			// We are expecting there is no provider token yet, however if accountPaymentMethod is used and attempt to generate another token prevent and short circuit
+			// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 			if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 				
+				if (!isNull(arguments.requestBean.getOrderID())) {
+					var orderNumber = arguments.requestBean.getOrderID();
+				} else {
+					var orderNumber = null;
+				}
+				
+				var publicKey = getPublicKey(arguments.requestBean);
+
 				var requestData = {
+					'isAuthOnly': false,
+					'card' = {
+						'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
+						'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
+						'expirationMonth' = arguments.requestBean.getExpirationMonth(),
+						'expirationYear' = arguments.requestBean.getExpirationYear(), 
+						'securityCode' = arguments.requestBean.getSecurityCode()
+					},
+					'processingOptions' = {
+						'checkFraud' = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+						'verifyCvc' = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
+						'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
+						'verboseResponse' = true
+					},
 					'data' = {
 						'paymentMethod' = 'creditCard',
+						'amount' = arguments.requestBean.getTransactionAmount(),
 						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
+						'customer'= {
+							'orderNumber' = orderNumber,
+							'customerRef' = arguments.requestBean.getAccountID(),
+							'firstName' = arguments.requestBean.getAccountFirstName(),
+							'lastName' = arguments.requestBean.getAccountLastName(),
+							'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+							'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+							'billToCity' = arguments.requestBean.getBillingCity(),
+							'billToState' = arguments.requestBean.getBillingStateCode(),
+							'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+							'billToCountry' = arguments.requestBean.getBillingCountryCode()
+						}
 					}
 				};
-				
-				// Step 1. Generate a "one time use token"
+	
+				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
-				
+
 				if (!responseBean.hasErrors()) {
-					
-					requestData = {};
-					
-					// Step 2. Save Card using the "one time use token"... this is the token we are really after
+					arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
+				}
+
+				if (!responseBean.hasErrors()) {
+					requestData = {
+						'token' = responseData.token,
+						'card' = {
+							'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
+							'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
+							'expirationMonth' = arguments.requestBean.getExpirationMonth(),
+							'expirationYear' = arguments.requestBean.getExpirationYear(), 
+							'securityCode' = arguments.requestBean.getSecurityCode()
+						}
+					};
+
+					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 					
+					// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
+					var responseDataAvsCode = "";
+					
+					if (!isNull(responseData.avsResults.matchAddress) 
+					and !isNull(responseData.avsResults.matchPostal)){
+						if (responseData.avsResults.matchAddress===true and responseData.avsResults.matchPostal===true){
+							responseDataAvsCode = "D";
+						}else if (responseData.avsResults.matchAddress===false and responseData.avsResults.matchPostal===true){
+							responseDataAvsCode = "Z";
+						}else if (responseData.avsResults.matchAddress===false and responseData.avsResults.matchPostal===false){
+							responseDataAvsCode = "C";
+						}else if (responseData.avsResults.matchAddress===true and responseData.avsResults.matchPostal===false){
+							responseDataAvsCode = "A";
+						}
+					}else if (!isNull(responseData.avsResults.matchAddress) 
+					and responseData.avsResults.matchAddress===true
+					and isNull(responseData.avsResults.matchPostal)){
+						responseDataAvsCode = "B";
+					}else if (
+					isNull(responseData.avsResults.matchAddress) 
+					and !isNull(responseData.avsResults.matchPostal)
+					and responseData.avsResults.matchPostal===true){
+						responseDataAvsCode = "P";
+					}else {
+						responseDataAvsCode = "E";
+					}
+
+					// Extract data and set as part of the responseBean
 					if (!responseBean.hasErrors()) {
-						// Extract data and set as part of the responseBean
-						arguments.responseBean.setProviderToken();
-						arguments.responseBean.setAmountReceived();
-						arguments.responseBean.setAmountCredited();
-						arguments.requestBean.getOriginalProviderTransactionID()
+						arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
+						arguments.responseBean.setProviderToken(responseData.token.token);
+						arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
+						arguments.responseBean.setAvsCode(responseDataAvsCode);
+
+						arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
+						arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
+						arguments.responseBean.addMessage(messageName="nexio.kountResponse.rules", message="#responseData.kountResponse.rules#");
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
 					}
 				}
 			} else {
 				throw('Attempting to generate token. The payment method used already had a valid token');
-				
-				// Uneccessary to make API request because same token generated during accountPaymentMethod create is valid for subsequent authorization requests
-				arguments.responseBean.setProviderToken(requestBean.getProviderToken());
-				arguments.responseBean.setProviderTransactionID(requestBean.getOriginalProviderTransactionID());
 			}
+		}
+		
+		private void function sendRequestToDeleteTokens(required array tokens) {
+			// var requestBean = getTransient('CreditCardTransactionRequestBean');
+			// var responseBean = getTransient('CreditCardTransactionResponseBean');
+			// var requestData = {};
+			
+			// requestData.tokens = arguments.tokens;
+			
+			// sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
+			
+			// return responseBean;
+			// Add  any error handling about if a token is bad etc.
 		}
 		
 		private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
 			// Request Data
-			// arguments.requestBean.getProviderToken();
-			
-			// Response Data
-			// arguments.responseBean.setProviderTransactionID();
-			// arguments.responseBean.setAuthorizationCode();
-			// arguments.responseBean.setAmountAuthorized();
+			if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
+				var requestData = {
+					"isAuthOnly": true,
+					"tokenex":{
+						'token' = arguments.requestBean.getProviderToken()
+				    },
+				    "card":{
+				    	"expirationMonth": arguments.requestBean.getExpirationMonth(),
+				    	"expirationYear": arguments.requestBean.getExpirationYear(),
+				    	"cardHolderName": arguments.requestBean.getNameOnCreditCard(),
+				    	"lastFour": arguments.requestBean.getCreditCardLastFour()
+				    },
+				    "data": {
+				      "currency": arguments.requestBean.getTransactionCurrencyCode(),
+				      "amount": arguments.requestBean.getTransactionAmount()
+				    },
+				    "processingOptions":{
+					    "checkFraud": setting(settingName='checkFraud', requestBean=arguments.requestBean),
+					    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
+					    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
+					    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+				    }
+				};	
+				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
+				
+				// Response Data
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderToken(requestData.tokenex.token);
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					arguments.responseBean.setAmountAuthorized(responseData.data.amount);
+					// arguments.responseBean.setAmountReceived(responseData.amount);
+					
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
+					arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
+				}
+			} else {
+				throw('Error attempting to authorize. Review providerToken.');
+			}
 		}
 		
 		private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
 			// Request Data
-			// arguments.requestBean.getProviderToken();
-			
-			// Response Data
-			// arguments.responseBean.setProviderTransactionID();
-			// arguments.responseBean.setAuthorizationCode();
-			// arguments.responseBean.setAmountAuthorized();
-			// arguments.responseBean.setAmountReceived();
+			if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
+				var requestData = {
+					"isAuthOnly": false,
+					"tokenex":{
+						'token' = arguments.requestBean.getProviderToken()
+				    },
+				    "card":{
+				    	"expirationMonth": arguments.requestBean.getExpirationMonth(),
+				    	"expirationYear": arguments.requestBean.getExpirationYear(),
+				    	"cardHolderName": arguments.requestBean.getNameOnCreditCard(),
+				    	"lastFour": arguments.requestBean.getCreditCardLastFour()
+				    },
+				    "data": {
+				      "currency": arguments.requestBean.getTransactionCurrencyCode(),
+				      "amount": arguments.requestBean.getTransactionAmount()
+				    },
+				    "processingOptions":{
+					    "checkFraud": setting(settingName='checkFraud', requestBean=arguments.requestBean),
+					    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
+					    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
+					    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+				    }
+				};	
+
+				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
+				
+				// Response Data
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderToken(requestData.tokenex.token);
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					arguments.responseBean.setAmountReceived(responseData.amount);
+					arguments.responseBean.setAmountAuthorized(responseData.data.amount);
+					
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
+					arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
+				}
+			} else {
+				throw('Error attempting to authorize and charge. Review providerToken.');
+			}
 		}
 		
 		private void function sendRequestToChargePreAuthorization(required any requestBean, required any responseBean) {
 			if (!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()) && len(arguments.requestBean.getOriginalAuthorizationProviderTransactionID())) {
 				// Request Data
-				// arguments.requestBean.getOriginalAuthorizationProviderTransactionID();
+				var requestData = {
+					"tokenex":{
+						'token' = arguments.requestBean.getProviderToken()
+				    },
+					'data': {
+						'amount': arguments.requestBean.getTransactionAmount(),
+			    	},
+			    	'id': arguments.requestBean.getOriginalAuthorizationProviderTransactionID()
+				}
+	
+				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'chargePreAuthorization', requestData);
 				
 				// Response Data
-				// arguments.responseBean.setProviderTransactionID();
-				// arguments.responseBean.setAmountReceived();
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setProviderToken(requestData.tokenex.token);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					// arguments.responseBean.setAmountAuthorized(responseData.data.amount);
+					arguments.responseBean.setAmountReceived(responseData.amount);
+
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
+				}
 			} else {
 				throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be the authorization code to reference for the charge/capture.");
 			}
@@ -177,12 +399,31 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			// The amount of the credit is allowed to exceed the original charge with proper configuration in the external Nexio admin dashboard
 			
 			if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
-				// Request Data
-				// arguments.requestBean.getOriginalChargeProviderTransactionID();
 				
+				// Request Data
+				var requestData = {
+					'data': {
+						'amount': arguments.requestBean.getOrder().getCalculatedTotal(),
+						'partialAmount': LSParseNumber(arguments.requestBean.getTransactionAmount())
+			    	},
+			    	'id': arguments.requestBean.getOriginalChargeProviderTransactionID()
+				}
+
+				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
+
 				// Response Data
-				// arguments.responseBean.setProviderTransactionID();
-				// arguments.responseBean.setAmountCredited();
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					arguments.responseBean.setAmountCredited(responseData.amount);
+					
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+				}
 			} else {
 				throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
 			}
@@ -190,27 +431,54 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 		
 		private void function sendRequestToVoid(required any requestBean, required any responseBean) {
 			if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
+				// Void Authorize & Charge
+				var voidRequiredTransactionID = arguments.requestBean.getOriginalChargeProviderTransactionID();
+			} else if ((!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()) && len(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()))) {
+				// Void Authorize
+				var voidRequiredTransactionID = arguments.requestBean.getOriginalAuthorizationProviderTransactionID();
+			}
+			 
+			if (!isNull(voidRequiredTransactionID) && len(voidRequiredTransactionID)) {
 				// Request Data
-				// arguments.requestBean.getOriginalChargeProviderTransactionID();
+				var requestData = {
+					'data': {
+						'amount': LSParseNumber(arguments.requestBean.getTransactionAmount())
+			    	},
+			    	'id': voidRequiredTransactionID
+				}
 				
+				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
+
 				// Response Data
-				// arguments.responseBean.setProviderTransactionID();
+				if (!responseBean.hasErrors()) {
+					arguments.responseBean.setProviderTransactionID(responseData.id);
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+					// arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
+					
+					arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+					arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.message", message="#responseData.gatewayResponse.message#");
+				}
 			} else {
-				throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture or credit.");
+				throw("There is no 'originalChargeProviderTransactionID' or originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value to be a reference to transactionID for the original charge/capture or credit.");
 			}
 		}
 		
 		private struct function sendHttpAPIRequest(required any requestBean, required any responseBean, required string transactionName, required struct data) {
-			
 			var apiUrl = setting(settingName='apiUrlTest', requestBean=arguments.requestBean);
-			var username = setting(settingName='usernameTest', requestBean=arguments.requestBean);
+			var merchantID = setting(settingName='merchantIDTest', requestBean=arguments.requestBean);
 			var password = setting(settingName='passwordTest', requestBean=arguments.requestBean);
+			var username = setting(settingName='usernameTest', requestBean=arguments.requestBean);
 			
 			// Set Live Endpoint Url if not testing
 			if (!getTestModeFlag(arguments.requestBean, 'testMode')) {
 				apiUrl = setting(settingName='apiUrlLive', requestBean=arguments.requestBean);
-				username = setting(settingName='usernameLive', requestBean=arguments.requestBean);
+				merchantID = setting(settingName='merchantIDLive', requestBean=arguments.requestBean);
 				password = setting(settingName='passwordLive', requestBean=arguments.requestBean);
+				username = setting(settingName='usernameLive', requestBean=arguments.requestBean);
 			}
 			
 			// Append appropriate API Resource
@@ -218,6 +486,8 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				apiUrl &= '/pay/v3/token';
 			} else if (arguments.transactionName == 'generateToken') {
 				apiUrl &= '/pay/v3/saveCard';
+			} else if (arguments.transactionName == 'deleteToken') {
+				apiUrl &= '/pay/v3/deleteToken';
 			} else if (arguments.transactionName == 'authorize') {
 				apiUrl &= '/pay/v3/process';
 			} else if (arguments.transactionName == 'authorizeAndCharge') {
@@ -228,548 +498,114 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				apiUrl &= '/pay/v3/refund';
 			} else if (arguments.transactionName == 'void') {
 				apiUrl &= '/pay/v3/void';
-			}
+			} 
 			
 			var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 			var httpRequest = new http();
 			httpRequest.setUrl(apiUrl);
 			httpRequest.setMethod('post');
 			httpRequest.setCharset('UTF-8');
-			httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#");
+			httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#"); // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
+		
+			// ---> Comment Out:
+			var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
+			if (!directoryExists(logPath)){
+				directoryCreate(logPath);
+			}
+			var timeSufix = getTickCount() & createHibachiUUID(); 
 			
-			// Make HTTP request to SOAP endpoint
+			var httpRequestData = {
+				'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
+				'apiUrl'=apiUrl,
+				'username' = username,
+				'password' = password,
+				'httpContentTypeHeader' = 'application/json',
+				'publicKey' = getPublicKey(arguments.requestBean),
+				'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
+			};
+
+			fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+			// Comment Out: <---
+			
+			// Make HTTP request to endpoint
 			var httpResponse = httpRequest.send().getPrefix();
 			
-			writeDump([apiUrl,username,password,httpResponse]);
-			abort;
-	
 			var responseData = {};
 			// Server error handling - Unavailable or Communication Problem
-			if (left(httpResponse.statusCode, 1) == 5 || left(httpResponse.statusCode, 1) == 4) {
+			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-
-				// Only for admin purposes
-				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#");
 
 				// Public error message
 				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
-				
-			// Server response successful, process SOAP body
-			} else {
-				
-				// Convert raw XML response to xmlObject
-				responseData = deserializeJSON(httpResponse.fileContent);
-			}
-	
-			return responseData;
-		}
-		
-		/** EXAMPLE IMPLEMENTATION
-		public any function processCreditCard(required any requestBean) {
-			var responseBean = getTransient('CreditCardTransactionResponseBean');
-
-			// Set default currency, CyberSource SOAP API requires a currency for tokenization
-			if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
-				arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
-			}
-
-			// Adding currency to transaction message for admin purposes
-			responseBean.addMessage('transactionCurrencyCode', arguments.requestBean.getTransactionCurrencyCode());
-	
-			// Execute request
-			if (arguments.requestBean.getTransactionType() == "generateToken") {
-				sendRequestToGenerateToken(arguments.requestBean, responseBean);
-			} else if (arguments.requestBean.getTransactionType() == "authorize") {
-				sendRequestToAuthorize(arguments.requestBean, responseBean);
-			} else if (arguments.requestBean.getTransactionType() == "authorizeAndCharge") {
-				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
-			} else if (arguments.requestBean.getTransactionType() == "chargePreAuthorization") {
-				sendRequestToChargePreAuthorization(arguments.requestBean, responseBean);
-			} else if (arguments.requestBean.getTransactionType() == "credit") {
-				sendRequestToCredit(arguments.requestBean, responseBean);
-			} else if (arguments.requestBean.getTransactionType() == "void") {
-				sendRequestToVoid(arguments.requestBean, responseBean);
-			} else {
-				throw("CyberSource Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
-			}
-
-			// Output merchantID for admin troubleshooting purposes, masked for better security
-			var merchantID = setting(settingName='merchantID', requestBean=arguments.requestBean);
-			var maxCharactersToReveal = min(8, len(merchantID));
-			responseBean.addMessage('merchantID', "xxxx#mid(merchantID, len(merchantID) - maxCharactersToReveal + 1, maxCharactersToReveal)#");
-	
-			// Adding testMode flag indicator to message when transaction occurs during test mode for admin purposes
-			if (getTestModeFlag(arguments.requestBean, 'testMode')) {
-				responseBean.addMessage('testMode', yesNoFormat(getTestModeFlag(arguments.requestBean, 'testMode')));
-			}
-	
-			return responseBean;
-		}
-	
-		private struct function populateRequestMessageDataWithCardInfo(required any requestBean, required any responseBean, struct requestMessageData={}) {
-			
-			if (!isNull(arguments.requestBean.getNameOnCreditCard()) && len(arguments.requestBean.getNameOnCreditCard())) {
-				if (arguments.requestBean.getNameOnCreditCard() contains " ") {
-					try{	
-						arguments.requestMessageData.lastName = trim(listLast(arguments.requestBean.getNameOnCreditCard(), ' '));
-						arguments.requestMessageData.firstName = trim(left(arguments.requestBean.getNameOnCreditCard(), len(arguments.requestBean.getNameOnCreditCard()) - len(arguments.requestMessageData.lastName)));
-					}catch(any e){
-					    arguments.requestMessageData.lastName = arguments.requestBean.getNameOnCreditCard();
-					    arguments.requestMessageData.firstName = arguments.requestBean.getNameOnCreditCard();
-					}
-				}else{
-					arguments.requestMessageData.lastName = trim(arguments.requestBean.getNameOnCreditCard());
-					arguments.requestMessageData.firstName = trim(arguments.requestBean.getNameOnCreditCard());
-				}
-			}
-
-			// Set email if available
-			arguments.requestMessageData.email = "no-email@noemail.com";
-			if (!isNull(arguments.requestBean.getAccountPrimaryEmailAddress()) && len(arguments.requestBean.getAccountPrimaryEmailAddress())) {
-				arguments.requestMessageData.email = arguments.requestBean.getAccountPrimaryEmailAddress();
-			}
-			
-			arguments.requestMessageData.street1 = arguments.requestBean.getBillingStreetAddress();
-			arguments.requestMessageData.street2 = arguments.requestBean.getBillingStreet2Address();
-			arguments.requestMessageData.city = arguments.requestBean.getBillingCity();
-			arguments.requestMessageData.state = arguments.requestBean.getBillingStateCode();
-			arguments.requestMessageData.postalCode = arguments.requestBean.getBillingPostalCode();
-			arguments.requestMessageData.country = arguments.requestBean.getBillingCountryCode();
-			arguments.requestMessageData.currency = arguments.requestBean.getTransactionCurrencyCode();
-			arguments.requestMessageData.grandTotalAmount = arguments.requestBean.getTransactionAmount();
-			arguments.requestMessageData.cardNumber = arguments.requestBean.getCreditCardNumber();
-			arguments.requestMessageData.expirationMonth = arguments.requestBean.getExpirationMonth();
-			arguments.requestMessageData.expirationYear = arguments.requestBean.getExpirationYear();
-			
-			// Flags for dealing with potential credit card type technicalities
-			arguments.requestMessageData.verifyCVNumberFlag = false;
-			arguments.requestMessageData.cardTypeSupportedFlag = false;
-			
-			// Only do extra credit card processing for specific transactionTypes not relying on previous tokenization or authentication transactions
-			if (
-				(isNull(arguments.requestBean.getProviderToken()) && listFindNoCase('generateToken,authorize,authorizeAndCharge', arguments.requestBean.getTransactionType()))
-				||
-				(isNull(arguments.requestBean.getProviderToken()) && isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && listFindNoCase('credit', arguments.requestBean.getTransactionType()))
-			) {
-				
-				// CardType Mappings 
-				// Defined by Appendix G of Credit Card Services Documentation
-				// Resource: http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SO_API/Credit_Cards_SO_API.pdf#page=410
-				// Resource: http://apps.cybersource.com/library/documentation/dev_guides/Payment_Tokenization/SO_API/Payment_Tokenization_SO_API.pdf#page=45
-				var cardTypes = {
-					'Visa' = {value='001', cvNumberSupported=true, tokenizationAutoAuthSupported=true},
-					'MasterCard' = {value='002', cvNumberSupported=true, tokenizationAutoAuthSupported=true},
-					'American Express' = {value='003', cvNumberSupported=true, tokenizationAutoAuthSupported=true},
-					'Discover' = {value='004', cvNumberSupported=true, tokenizationAutoAuthSupported=true},
-					'Diners Club' = {value='005', cvNumberSupported=true, tokenizationAutoAuthSupported=true},
-					'JCB' = {value='007', cvNumberSupported=true, tokenizationAutoAuthSupported=true},
-					'Maestro' = {value='024', cvNumberSupported=false, tokenizationAutoAuthSupported=true} 
-				};
 
 				// Only for admin purposes
-				arguments.responseBean.addMessage('configCvNumberVerificationEnabled', yesNoFormat(setting(settingName='verifyCVNumber', requestBean=arguments.requestBean)));
-				arguments.responseBean.addMessage('configCardType', arguments.requestBean.getCreditCardType());
+				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
+				
+				// No response from server
+				if (httpResponse.status_code == 0) {
+					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
 
-				// Configure cardType messageData if credit card type is supported by CyberSource processor
-				// And also configure cvNumber messageData if verification is requested and is supported
-				if (!isNull(arguments.requestBean.getCreditCardType()) && structKeyExists(cardTypes, arguments.requestBean.getCreditCardType())) {
-					// Update flag for template logic
-					arguments.requestMessageData.cardTypeSupportedFlag = true;
-					arguments.requestMessageData.cardType = cardTypes[arguments.requestBean.getCreditCardType()].value;
+				// Error response
+				} else {
+					arguments.responseBean.setStatusCode(httpResponse.status_code);
+					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
+
+					// Convert JSON response
+					responseData = deserializeJSON(httpResponse.fileContent);
 					
-					// Configure to verify CVN
-					if (setting(settingName='verifyCVNumber', requestBean=arguments.requestBean)) {
+					// ---> Comment Out:
+					fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
+					// Comment Out: <---
 
-						// Only if the credit card type supports CVN verification
-						if (cardTypes[arguments.requestBean.getCreditCardType()].cvNumberSupported) {
-							// Only for admin purposes
-							arguments.responseBean.addMessage('configCvNumberCardTypeVerificationSupported', yesNoFormat(true));
-
-							// If a securityCode was provided update flag for template logic
-							if (!isNull(arguments.requestBean.getSecurityCode()) && len(arguments.requestBean.getSecurityCode())) {
-								arguments.requestMessageData.verifyCVNumberFlag = true;
-								arguments.requestMessageData.cvNumber = arguments.requestBean.getSecurityCode();
-							}
-							
-							// Error if we are supposed to verify cvNumber but was not provided and the card type is supported
-							if (!arguments.requestMessageData.verifyCVNumberFlag) {
-								// Public error message
-								arguments.responseBean.addError('cvn', rbKey('cyberSource.error.cvv_invalid'));
-
-								// Only for admin purposes
-								arguments.responseBean.addMessage('cvnMatchError', "Security Code Not Provided: #rbKey('cyberSource.error.cvv_invalid')#");
-							}
-							
-
-						// CNV verification is not support by credit card type, for admin purposes
-						} else {
-							arguments.responseBean.addMessage('configCvNumberCardTypeVerificationSupported', yesNoFormat(false));
-						}
+					
+					if (structKeyExists(responseData, 'error')) {
+						arguments.responseBean.addMessage('errorCode', "#responseData.error#");
 					}
-				// Credit card type not supported, so update message to indicate CVN verification not supported either
-				} else if (setting(settingName='verifyCVNumber', requestBean=arguments.requestBean)) {
-					arguments.responseBean.addMessage('configCvNumberCardTypeVerificationSupported', yesNoFormat(false));
+
+					if (structKeyExists(responseData, 'message')) {
+						// Add additional instructions for unauthorized error.
+						if (httpResponse.status_code == '401') {
+							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";
+						}
+
+						arguments.responseBean.addMessage('errorMessage', "#httpResponse.statuscode#. #responseData.message#");
+					}
 				}
-			}
 
-			// Only for admin purposes
-			arguments.responseBean.addMessage('apiRequestCVNumberProvided', yesNoFormat(arguments.requestMessageData.verifyCVNumberFlag));
-			arguments.responseBean.addMessage('apiRequestCardTypeProvided', yesNoFormat(arguments.requestMessageData.cardTypeSupportedFlag));
-	
-			return arguments.requestMessageData;
-		}
-	
-		private string function populateSOAPRequestBody(required string requestMessageTemplateFileName, required any requestBean, required struct requestMessageData) {
-			var body = "";
-	
-			// Values made availabe to .cfm templates that assemble the SOAP request body
-			local.requestMessageData = {};
-			local.requestMessageData['merchantID'] = setting(settingName='merchantID', requestBean=arguments.requestBean);
-			local.requestMessageData['requestMessageTemplateFileName'] = arguments.requestMessageTemplateFileName;
-			local.requestMessageData['transactionKey'] = setting(settingName='transactionKeyTest', requestBean=arguments.requestBean);
-			local.requestMessageData['soapApiVersion'] = setting(settingName='soapApiVersion', requestBean=arguments.requestBean);
-
-			// Must be unique, otherwise CyberSource request results in error response
-			if (!isNull( arguments.requestBean.getTransactionID())){
-				local.requestMessageData['merchantReferenceCode'] = arguments.requestBean.getTransactionID();
-			}else{
-				throw("TransactionID does not exist to use as CyberSource merchant reference code.");
-			}
-			
-			// Set Live transactionKey if not testing
-			if (!getTestModeFlag(arguments.requestBean, 'testMode')) {
-				local.requestMessageData['transactionKey'] = setting(settingName='transactionKeyLive', requestBean=arguments.requestBean);
-			}
-	
-			// Aggregate requestMessageData structs, values defined in arguments override locally defined
-			structAppend(local.requestMessageData, arguments.requestMessageData, true);
-			
-			// Root level SOAP Request template document 
-			// SOAP Request for CyberSource Simple Order API
-			// Root level template loads an additional child template (determined by requestMessageData.requestMessageTemplateFileName) to format request specific SOAP body
-			savecontent variable="body" {
-				include "PaymentSOAPRequestTemplate.cfm";
-			}
-	
-			return body;
-		}
-	
-		private struct function sendHttpSOAPRequest(required any requestBean, required any responseBean, required string body) {
-			var httpRequest = new http();
-			httpRequest.setMethod('post');
-			httpRequest.setCharset('UTF-8');
-			httpRequest.addParam(type="xml", value=arguments.body);
-			httpRequest.setUrl(setting(settingName='endpointUrlTest', requestBean=arguments.requestBean));
-	
-			// Set Live Endpoint Url if not testing
-			if (!getTestModeFlag(arguments.requestBean, 'testMode')) {
-				httpRequest.setUrl(setting(settingName='endpointUrlLive', requestBean=arguments.requestBean));
-			}
-	
-			// Make HTTP request to SOAP endpoint
-			var httpResponse = httpRequest.send().getPrefix();
-	
-			var responseData = {};
-			// Server error handling - Unavailable or Communication Problem
-			if (left(httpResponse.statusCode, 1) == 5 || left(httpResponse.statusCode, 1) == 4) {
-				arguments.responseBean.setStatusCode("ERROR");
-
-				var faultString = "";
-				try {
-					faultString = xmlSearch(xmlParse(httpResponse.fileContent), "//*[local-name() = 'Fault']/*[local-name() = 'faultstring']")[1].xmlText;
-				} catch (any e) {}
-
-				// Only for admin purposes
-				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('cyberSource.error.serverCommunication_admin')# #httpResponse.statusCode#" & (len(faultString) ? ", faultstring: '#trim(faultString)#'" : ""));
-
-				// Public error message
-				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('cyberSource.error.serverCommunication_public')#");
-				
-			// Server response successful, process SOAP body
+			// Server response successful
 			} else {
-				// Convert raw XML response to xmlObject
-				responseData = {
-					xml = xmlParse(httpResponse.fileContent)
-				};
-	
-				// Further response processing
-				handleResponse(arguments.requestBean, arguments.responseBean, responseData);
+				arguments.responseBean.setStatusCode(httpResponse.status_code);
+
+				// Convert JSON response
+				responseData = deserializeJSON(httpResponse.fileContent);
+				
+				// ---> Comment Out:
+				fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
+				// Comment Out: <---
 			}
-	
+
 			return responseData;
 		}
-	
-		private void function handleResponse(required any requestBean, required any responseBean, required any responseData) {
+		
+		public any function testIntegration() {
+			var requestBean = new Slatwall.model.transient.payment.CreditCardTransactionRequestBean();
+			var testAccount = getHibachiScope().getAccount();
 			
-			// Set statusCode using 'decision' value. Eg. ACCEPT, REJECT, ERROR, REVIEW
-			arguments.responseBean.setStatusCode(xmlSearch(responseData.xml, "//*[local-name() = 'decision']")[1].xmlText);
+			requestBean.setTransactionType('generateToken');
+			requestBean.setOrderID('1');
+			requestBean.setCreditCardNumber('4111111111111111');
+			requestBean.setSecurityCode('123');
+			requestBean.setExpirationMonth('01');
+			requestBean.setExpirationYear(year(now())+1);
+			requestBean.setTransactionAmount('1');
+			requestBean.setAccountFirstName(testAccount.getFirstName());
+			requestBean.setAccountLastName(testAccount.getLastName());
 			
-			// Set providerTransactionID with 'requestID' value, requestID is always present whether SOAP response is success or error
-			arguments.responseBean.setProviderTransactionID(xmlSearch(responseData.xml, "//*[local-name() = 'requestID']")[1].xmlText);
-
-			// Extract the AVS code if present.
-			var avsCodeResult = xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'avsCode']");
-			if (arrayLen(avsCodeResult)) {
-				try {
-					arguments.responseBean.setAVSCode(avsCodeResult[1].xmlText);
-				} catch (any e) {
-					// Only for admin purposes
-					arguments.responseBean.addMessage('avsCodeUnsupported', avsCodeResult[1].xmlText);
-				}
-			}
-			
-			// Extract the CV code if present.
-			var cvCodeResult = xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'cvCode']");
-			if (arrayLen(cvCodeResult)) {
-				// Resource: http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SO_API/Credit_Cards_SO_API.pdf#page=427
-				arguments.responseBean.setSecurityCodeMatchFlag(cvCodeResult[1].xmlText == 'M');
-
-				// Start special handling for cvNumber errors.
-				var cvNumberErrorWasSimulatedFlag = false;
-
-				// Test mode only logic for simulating cvNumber error
-				// NOTE: During simluation CyberSource test mode will still show a successful transaction in the CyberSource Business Center "Test" backend
-				// 		 CyberSource cannot differentiate our intent, we can only control our end of the logic and behavior for simulating an CVN error in this way
-				if (getTestModeFlag(arguments.requestBean, 'testMode')) {
-
-					// Setting stores a cvNumber which triggers when to simulate the cvNumber error (eg. "234")
-					var simulateErrorCVNumberValue = setting(settingName='simulateErrorCVNumberValue', requestBean=arguments.requestBean);
-
-					// Check if provided securityCode is trying to simulate error
-					if (len(simulateErrorCVNumberValue) && !isNull(arguments.requestBean.getSecurityCode()) && len(arguments.requestBean.getSecurityCode()) && arguments.requestBean.getSecurityCode() == simulateErrorCVNumberValue) {
-						// Public error message
-						arguments.responseBean.addError('cvn', rbKey('cyberSource.error.cvv_invalid'));
-
-						// Only for admin purposes
-						arguments.responseBean.addMessage('cvnMatchError', "Simulated error: #rbKey('cyberSource.error.cvv_invalid')#");
-
-						// Flag so we don't stack error messages in addition to the simulated error
-						cvNumberErrorWasSimulatedFlag = true;
-					}				
-				}
-
-				// Setting indicates which modes we want transaction errors to occur if there is CV security code mismatch
-				var requireCVNumberMatchMode = setting(settingName='requireCVNumberMatchMode', requestBean=arguments.requestBean);
-
-				// Check the cvNumber match result provided as part of CyberSource response only if integration setting indicates so
-				// NOTE: only executes for test mode if setting condition is met AND we haven't already simulated a cvNumber error
-				if (
-					(getTestModeFlag(arguments.requestBean, 'testMode') && listFindNoCase('both,test', requireCVNumberMatchMode) && !cvNumberErrorWasSimulatedFlag)
-					|| (!getTestModeFlag(arguments.requestBean, 'testMode') && listFindNoCase('both,live', requireCVNumberMatchMode))
-				) {
-					if (isBoolean(arguments.responseBean.getSecurityCodeMatchFlag()) && !arguments.responseBean.getSecurityCodeMatchFlag()) {
-						// Public error message
-						arguments.responseBean.addError('cvn', rbKey('cyberSource.error.cvv_invalid'));
-
-						// Only for admin purposes
-						arguments.responseBean.addMessage('cvnMatchError', rbKey('cyberSource.error.cvv_invalid'));
-					}
-				}
-			}
-
-			// Extract the reference code
-			var referenceCodeResult = xmlSearch(responseData.xml, "//*[local-name() = 'merchantReferenceCode']");
-			if (arrayLen(referenceCodeResult)) {
-				// Only for admin purposes
-				arguments.responseBean.addMessage('apiRequestMerchantReferenceNumber', referenceCodeResult[1].xmlText);
-			}
-
-			// Handle any defined SOAP API errors
-			var reasonCode = xmlSearch(responseData.xml, "//*[local-name() = 'reasonCode']")[1].xmlText;
-			if (responseBean.getStatusCode() != "ACCEPT" || reasonCode != "100") {
-				var errorMessage = "";
-
-				// Only for admin purposes
-				arguments.responseBean.addMessage('reasonCode', "Decision: '#arguments.responseBean.getStatusCode()#' - #reasonCode# - "& rbKey('cyberSource.reasonCode.#reasonCode#'));
-
-				// GlobalPayments CyberSource connectivity testing requires obfuscating reason code error details for certain errors to the public
-				if (listFindNoCase('201,203,204,205,208,210,211', reasonCode)) {
-					errorMessage = rbKey('cyberSource.reasonCode.2XX.sensitiveErrors');
-				} else {
-					errorMessage = rbKey('cyberSource.reasonCode.2XX.processingErrors');
-				}
-
-				// Only for admin purposes
-				arguments.responseBean.addMessage('transactionError', errorMessage);
-
-				// Special CVN error handling might have already added error message
-				if (!arguments.responseBean.hasError('cvn')) {
-					// Set the public friendly error message
-					arguments.responseBean.addError('transactionError', errorMessage);
-				}
-			}
-		}
-	
-		private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
-			
-			if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-				var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-
-				if (!arguments.responseBean.hasErrors()) {
-					// cardType is valid cardType is required for tokenization and functionality must be available from CyberSource for specific card type
-					if (!structKeyExists(requestMessageData, 'cardType')) {
-						// Only for admin purposes
-						arguments.responseBean.addMessage('cardType', "No tokenization is available for '#arguments.requestBean.getCreditCardType()#' credit cards.");
-
-						// Public error message
-						arguments.responseBean.addError('cardType', "#rbKey('cyberSource.error.cardTypeInvalid')# card type: '#arguments.requestBean.getCreditCardType()#'");
-		
-					// cardType is valid
-					} else {
-						// Set autoAuth override the default setting in CyberSource Business Center based on the integration setting
-						// CyberSource Business Center > Payment Tokenization > Settings > Perform an automatic pre-authorization before creating profile
-						requestMessageData.disableAutoAuth = setting(settingName='disableAutoAuth', requestBean=arguments.requestBean);
-
-						var soapRequestBody = populateSOAPRequestBody("generateTokenTemplate.cfm", requestBean, requestMessageData);
-						var responseData = sendHttpSOAPRequest(requestBean=arguments.requestBean, responseBean=arguments.responseBean, body=soapRequestBody);
-						
-						// Only for admin purposes
-						arguments.responseBean.addMessage('apiRequestTokenizationWithAutoAuthEnabled', yesNoFormat(!requestMessageData.disableAutoAuth));
-
-						if (!responseBean.hasErrors()) {
-		
-							// Extract subscriptionID and set it as part of the responseBean
-							var subscriptionID = xmlSearch(responseData.xml, "//*[local-name() = 'paySubscriptionCreateReply']/*[local-name() = 'subscriptionID']")[1].xmlText;
-							arguments.responseBean.setProviderToken(subscriptionID);
-
-							// Extract the preAuthorization code
-							var autoPreAuthorizatonCodeResult = xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'authorizationCode']");
-							if (arrayLen(autoPreAuthorizatonCodeResult)) {
-								arguments.responseBean.setAuthorizationCode(autoPreAuthorizatonCodeResult[1].xmlText);
-							}
-
-							// Extract the preAuthorization amount. This should be 0.00 or 1.00, depends on the payment processor and card type.
-							// Visa and MasterCard allow zero dollar pre-authorizations
-							var autoPreAuthorizationAmountResult = xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'amount']");
-							if (arrayLen(autoPreAuthorizationAmountResult)) {
-								arguments.responseBean.setAmountAuthorized(autoPreAuthorizationAmountResult[1].xmlText);
-							}
-						}
-					}
-				}
-
-			// Uneccessary to make API request because same token generated during accountPaymentMethod create is valid for subsequent authorization requests
-			// Manually populate responseBean with the relevant data
-			} else {
-				arguments.responseBean.setStatusCode("INTERALTOKENOBTAINED");
-				arguments.responseBean.setProviderToken(requestBean.getProviderToken());
-				arguments.responseBean.setProviderTransactionID(requestBean.getOriginalProviderTransactionID());
-
-				// Only for admin purposes
-				arguments.responseBean.addMessage('internalTokenObtained', rbKey('cyberSource.info.internalTokenObtained'));
-			}
-		}
-	
-		private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
-			var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-			if (!arguments.responseBean.hasErrors()) {
-				// Determine if we have a subscriptionID
-				if (!isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
-					// Only for admin purposes
-					arguments.responseBean.addMessage('apiRequestSubscriptionID', arguments.requestBean.getProviderToken());
-					requestMessageData['subscriptionID'] = arguments.requestBean.getProviderToken();
-				}
-		
-				var soapRequestBody = populateSOAPRequestBody("authorizeTemplate.cfm", requestBean, requestMessageData);
-				var responseData = sendHttpSOAPRequest(requestBean=arguments.requestBean, responseBean=arguments.responseBean, body=soapRequestBody);
-		
-				if (!responseBean.hasErrors()) {
-					// providerTransactionID for authorization automatically set by handleResponse() method
-					arguments.responseBean.setAuthorizationCode(xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'authorizationCode']")[1].xmlText);
-					arguments.responseBean.setAmountAuthorized(xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'amount']")[1].xmlText);
-				}
-			}
+			var response = processCreditCard(requestBean); 
+			structDelete(response.getData(),"requestData");
+			return response;;
 		}
 		
-		private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
-			var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-			
-			if (!arguments.responseBean.hasErrors()) {
-				// Determine if we have a subscriptionID
-				if (!isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
-					// Only for admin purposes
-					arguments.responseBean.addMessage('apiRequestSubscriptionID', arguments.requestBean.getProviderToken());
-					requestMessageData['subscriptionID'] = arguments.requestBean.getProviderToken();
-				}
-		
-				var soapRequestBody = populateSOAPRequestBody("authorizeAndChargeTemplate.cfm", requestBean, requestMessageData);
-				var responseData = sendHttpSOAPRequest(requestBean=arguments.requestBean, responseBean=arguments.responseBean, body=soapRequestBody);
-		
-				if (!responseBean.hasErrors()) {
-					// providerTransactionID for authorization automatically set by handleResponse() method
-					arguments.responseBean.setAuthorizationCode(xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'authorizationCode']")[1].xmlText);
-					arguments.responseBean.setAmountAuthorized(xmlSearch(responseData.xml, "//*[local-name() = 'ccAuthReply']/*[local-name() = 'amount']")[1].xmlText);
-					arguments.responseBean.setAmountReceived(xmlSearch(responseData.xml, "//*[local-name() = 'ccCaptureReply']/*[local-name() = 'amount']")[1].xmlText);
-				}
-			}
-		}
-	
-		private void function sendRequestToChargePreAuthorization(required any requestBean, required any responseBean) {
-			var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-			if (!arguments.responseBean.hasErrors()) {
-				// Determine if we have a authorization code
-				if (!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()) && len(arguments.requestBean.getOriginalAuthorizationProviderTransactionID())) {
-					requestMessageData['authRequestID'] = arguments.requestBean.getOriginalAuthorizationProviderTransactionID();
-				} else {
-					throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be the authorization code to reference for the charge/capture.");
-				}
-		
-				var soapRequestBody = populateSOAPRequestBody("chargePreAuthorizationTemplate.cfm", requestBean, requestMessageData);
-				var responseData = sendHttpSOAPRequest(requestBean=arguments.requestBean, responseBean=arguments.responseBean, body=soapRequestBody);
-		
-				if (!responseBean.hasErrors()) {
-					// providerTransactionID for charge automatically set by handleResponse() method
-					arguments.responseBean.setAmountReceived(xmlSearch(responseData.xml, "//*[local-name() = 'ccCaptureReply']/*[local-name() = 'amount']")[1].xmlText);
-				}
-			}
-		}
-	
-		private void function sendRequestToCredit(required any requestBean, required any responseBean) {
-			var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-
-			if (!arguments.responseBean.hasErrors()) {
-				// creditCaptureRequestID can also be set as the providerTransactionID from the originalAuthorizationProviderTransactionID only if the charge has already been voided
-				if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
-					logHibachi("CyberSource - Follow-on credit - Using original charge provider transactionID '#arguments.requestBean.getOriginalChargeProviderTransactionID()#' for 'credit'.");
-					requestMessageData['creditCaptureRequestID'] = arguments.requestBean.getOriginalChargeProviderTransactionID();
-				
-				// Determine if we have subscriptionID
-				} else if (!isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
-					logHibachi("CyberSource - On-demand credit - Using previously created token (subscriptionID) '#arguments.requestBean.getProviderToken()#' from 'generateToken'.");
-					requestMessageData['subscriptionID'] = arguments.requestBean.getProviderToken();
-				
-				// Stand-alone credit transaction
-				} else {
-					logHibachi("CyberSource - Stand-alone credit - Expecting direct credit card information.");
-				}
-		
-				var soapRequestBody = populateSOAPRequestBody("creditTemplate.cfm", requestBean, requestMessageData);
-				var responseData = sendHttpSOAPRequest(requestBean=arguments.requestBean, responseBean=arguments.responseBean, body=soapRequestBody);
-		
-				if (!responseBean.hasErrors()) {
-					// providerTransactionID for charge automatically set by handleResponse() method
-					arguments.responseBean.setAmountCredited(arguments.requestBean.getTransactionAmount());
-				}
-			}
-		}
-		
-		private void function sendRequestToVoid(required any requestBean, required any responseBean) {
-			// Void any captures and credits, and related authorization with either with automatically be reversed when all is voided.
-			// But cannot void authorization with no capture or credits to trigger authorization an auto-reversal, must explicitly invoke authorization reversal
-			// Error with reason code 246 will occur and then we could try an authorization reversal
-	
-			var requestMessageData = populateRequestMessageDataWithCardInfo(arguments.requestBean, arguments.responseBean);
-			if (!arguments.responseBean.hasErrors()) {
-				// voidRequestID can be set to either a chargeID/captureID or creditID
-				if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
-					requestMessageData['voidRequestID'] = arguments.requestBean.getOriginalChargeProviderTransactionID();
-				}
-		
-				var soapRequestBody = populateSOAPRequestBody("voidTemplate.cfm", requestBean, requestMessageData);
-				var responseData = sendHttpSOAPRequest(requestBean=arguments.requestBean, responseBean=arguments.responseBean, body=soapRequestBody);
-			}
-		}
-		*/
 	}

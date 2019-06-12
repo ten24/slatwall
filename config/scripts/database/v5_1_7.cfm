@@ -42,12 +42,13 @@ Notes:
 
 <cftry>
 	<cfquery name="local.createSkuPrices">
-		INSERT INTO swskuprice (skuPriceID, price, skuID, createdDateTime, currencyCode)
+		INSERT INTO swskuprice (skuPriceID, price, skuID, createdDateTime, activeFlag, currencyCode)
 		SELECT 
     		LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', '')),
     		s.price,
     		s.skuID,
     		NOW(),
+    	    1,
     		<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.defaultCurrencyCode#" />
 		FROM swsku s
         LEFT JOIN swskuprice sp ON s.skuID = sp.skuID AND sp.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.defaultCurrencyCode#" /> 
