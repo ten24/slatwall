@@ -108,6 +108,9 @@
                                 </p>
                             </div>
                 		</div>
+                		<div>
+                		   <button type="button" ng-click="swListingReport.updatePeriod()" class="btn btn-default btn-sm btn-cal small-ml" ><i class="glyphicon glyphicon-refresh"></i></button>
+                		</div>
                     </div><!-- end of .flex-cal -->
                     
             	</div><!-- end of .col -->
@@ -134,7 +137,6 @@
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('week')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='week'}" class="btn btn-default">Week</button>
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('month')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='month'}" class="btn btn-default">Month</button>
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('year')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='year'}" class="btn btn-default">Year</button>
-                      <button type="button" ng-click="swListingReport.updatePeriod()"  class="btn btn-default">Refresh</button>
                     </div>
                 </div><!-- end of .col -->
                 

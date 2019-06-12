@@ -8642,3 +8642,6 @@ table.s-detail-content-table tbody tr.s-done {
   position: absolute;
   display: inline-block;
 }
+.small-ml {
+  margin-left: 2em;
+}
