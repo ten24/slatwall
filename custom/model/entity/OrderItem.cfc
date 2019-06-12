@@ -2,22 +2,35 @@ component {
     property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
     property name="commissionableVolume" ormtype="big_decimal";
-    property name="sponsorVolume" ormtype="big_decimal";
+    property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
     
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";
     property name="extendedCommissionableVolume" persistent="false";
-    property name="extendedSponsorVolume" persistent="false";
+    property name="extendedRetailCommission" persistent="false";
     property name="extendedProductPackVolume" persistent="false";
     property name="extendedRetailValueVolume" persistent="false";
     property name="extendedPersonalVolumeAfterDiscount" persistent="false";
     property name="extendedTaxableAmountAfterDiscount" persistent="false";
     property name="extendedCommissionableVolumeAfterDiscount" persistent="false";
-    property name="extendedSponsorVolumeAfterDiscount" persistent="false";
+    property name="extendedRetailCommissionAfterDiscount" persistent="false";
     property name="extendedProductPackVolumeAfterDiscount" persistent="false";
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
+    
+    property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
+    property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
+    property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
+    property name="calculatedExtendedRetailCommission" ormtype="big_decimal";
+    property name="calculatedExtendedProductPackVolume" ormtype="big_decimal";
+    property name="calculatedExtendedRetailValueVolume" ormtype="big_decimal";
+    property name="calculatedExtendedPersonalVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedTaxableAmountAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedCommissionableVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
@@ -52,15 +65,15 @@ component {
         return variables.commissionableVolume;
     }
     
-    public any function getSponsorVolume(){
-        if(!structKeyExists(variables,'sponsorVolume')){
-            var sponsorVolume = getSku().getSponsorVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(sponsorVolume)){
-                sponsorVolume = 0;
+    public any function getRetailCommission(){
+        if(!structKeyExists(variables,'retailCommission')){
+            var retailCommission = getSku().getRetailCommissionByCurrencyCode(this.getCurrencyCode());
+            if(isNull(retailCommission)){
+                retailCommission = 0;
             }
-            variables.sponsorVolume = sponsorVolume;
+            variables.retailCommission = retailCommission;
         }
-        return variables.sponsorVolume;
+        return variables.retailCommission;
     }
     
     public any function getProductPackVolume(){
@@ -97,8 +110,8 @@ component {
         return getCustomDiscountAmount('commissionableVolume');
     }
     
-    public any function getSponsorVolumeDiscountAmount(){
-        return getCustomDiscountAmount('sponsorVolume');
+    public any function getRetailCommissionDiscountAmount(){
+        return getCustomDiscountAmount('retailCommission');
     }
     
     public any function getProductPackVolumeDiscountAmount(){
@@ -121,8 +134,8 @@ component {
         return getCustomExtendedPrice('commissionableVolume');
     }
     
-    public any function getExtendedSponsorVolume(){
-        return getCustomExtendedPrice('sponsorVolume');
+    public any function getExtendedRetailCommission(){
+        return getCustomExtendedPrice('retailCommission');
     }
     
     public any function getExtendedProductPackVolume(){
@@ -145,8 +158,8 @@ component {
         return getCustomExtendedPriceAfterDiscount('commissionableVolume');
     }
     
-    public any function getExtendedSponsorVolumeAfterDiscount(){
-        return getCustomExtendedPriceAfterDiscount('sponsorVolume');
+    public any function getExtendedRetailCommissionAfterDiscount(){
+        return getCustomExtendedPriceAfterDiscount('retailCommission');
     }
     
     public any function getExtendedProductPackVolumeAfterDiscount(){

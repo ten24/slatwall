@@ -75,7 +75,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 
 	// Related Object Properties (one-to-many)
 	property name="promotionRewardCurrencies" singularname="promotionRewardCurrency" cfc="PromotionRewardCurrency" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
-
+	property name="skuPrices" singularname="skuPrice" cfc="SkuPrice" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
+	
 	// Related Object Properties (many-to-many - owner)
 	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";
 	
@@ -119,10 +120,11 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 property name="personalVolumeAmount" ormtype="big_decimal";
     property name="taxableAmountAmount" ormtype="big_decimal";
     property name="commissionableVolumeAmount" ormtype="big_decimal";
-    property name="sponsorVolumeAmount" ormtype="big_decimal";
+    property name="retailCommissionAmount" ormtype="big_decimal";
     property name="productPackVolumeAmount" ormtype="big_decimal";
     property name="retailValueVolumeAmount" ormtype="big_decimal";
-    //CUSTOM PROPERTIES END
+    
+   //CUSTOM PROPERTIES END
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -170,17 +172,38 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 		return variables.currencyCode;
 	}
 	
-	public numeric function getAmount(){
+	public numeric function getAmount(any sku, string currencyCode){
+		
+		//Get price from sku prices table for fixed amount rewards
+		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
+			if(structKeyExists(arguments,'currencyCode')){
+				var currencyCode = arguments.currencyCode;
+			}else{
+				var currencyCode = getCurrencyCode();
+			}
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,currencyCode);
+			
+			if(!isNull(skuPrice)){
+				return skuPrice.getPrice();
+			}
+		}
+
 		if(!structKeyExists(variables,'amount')){
 			variables.amount = 0;
 		}
 		return variables.amount;
 	}
 
+	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode){
+		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(arguments.sku.getSkuID(),this.getPromotionRewardID(),arguments.currencyCode);
+	}
 
-	public numeric function getAmountByCurrencyCode(required string currencyCode){
-		
-		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() neq 'percentageOff'){
+	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku){
+		var amountParams = {};
+		if(structKeyExists(arguments,'sku')){
+			amountParams['sku'] = arguments.sku;
+		}
+		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
 			//Check for explicity defined promotion reward currencies
 			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
 				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
@@ -190,12 +213,14 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 			//Check for defined conversion rate 
 			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
 			if(!isNull(currencyRate)) {
-				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*getAmount());
+				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*getAmount(amountParams));
 			}
 		
+		}else if(arguments.currencyCode != getCurrencyCode()){
+			amountParams['currencyCode'] = arguments.currencyCode;
 		}
 		//Either no conversion was needed, or we couldn't find a conversion rate.
-		return getAmount();
+		return getAmount(argumentCollection=amountParams);
 	}
 	
 	public any function getIncludedSkusCollection(){
@@ -567,5 +592,110 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 		}
 	}
 	
-	// =================  END: Deprecated Methods   ========================
+	// =================  END: Deprecated Methods   ========================	
+		//CUSTOM FUNCTIONS BEGIN
+
+public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'personalVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getTaxableAmountAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'taxableAmount';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getCommissionableVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'commissionableVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailCommissionAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'retailCommission';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getProductPackVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'productPackVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailValueVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'retailValueVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getPersonalVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'personalVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getTaxableAmountAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'taxableAmount';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getCommissionableVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'commissionableVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailCommissionAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'retailCommission';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getProductPackVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'productPackVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailValueVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'retailValueVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku){
+		var amountParams = {
+		    'customPriceField':arguments.customPriceField
+		};
+		if(structKeyExists(arguments,'sku')){
+			amountParams['sku'] = arguments.sku;
+		}
+		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
+			//Check for defined conversion rate 
+			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
+			if(!isNull(currencyRate)) {
+				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*invokeMethod('get#customPriceField#Amount'));
+			}
+		
+		}else if(arguments.currencyCode != getCurrencyCode()){
+			amountParams['currencyCode'] = arguments.currencyCode;
+		}
+		//Either no conversion was needed, or we couldn't find a conversion rate.
+		return getCustomAmount(argumentCollection=amountParams);
+	}
+	
+	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode){
+		
+		//Get price from sku prices table for fixed amount rewards
+		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
+			if(structKeyExists(arguments,'currencyCode')){
+				var currencyCode = arguments.currencyCode;
+			}else{
+				var currencyCode = getCurrencyCode();
+			}
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,currencyCode);
+			if(!isNull(skuPrice)){
+
+				return skuPrice.invokeMethod('get#customPriceField#');
+			}
+		}
+		
+		if(!structKeyExists(variables,'#customPriceField#Amount')){
+			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
+		}
+		return variables['#customPriceField#Amount'];
+	}
+    //CUSTOM FUNCTIONS END
 }

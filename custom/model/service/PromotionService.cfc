@@ -2,7 +2,7 @@ component extends="Slatwall.model.service.PromotionService" {
     
     public function init(){
     	super.init(argumentCollection=arguments);
-    	variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,sponsorVolume,productPackVolume,retailValueVolume';
+    	variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     }
     private void function applyTop1Discounts(required any order, required any orderItemQualifiedDiscounts){
 
@@ -26,10 +26,11 @@ component extends="Slatwall.model.service.PromotionService" {
 			            reward=promotionReward,
 			            price=orderItem.invokeMethod('get#customPriceField#'),
 			            quantity=orderItem.getQuantity(),
-			            customPriceField=customPriceField
+			            customPriceField=customPriceField,
+			            sku=orderItem.getSku()
 			        };
 
-	        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=getDiscountAmount(argumentCollection=args)});
+	        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=getCustomDiscountAmount(argumentCollection=args)});
 			    }
 				//making sure calculated props run
 				getHibachiScope().addModifiedEntity(orderItem);
@@ -61,7 +62,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		for(var customPriceField in customPriceFields){
 			var totalCustomDiscountableAmount = arguments.order.invokeMethod('get#customPriceField#SubtotalAfterItemDiscounts');
 			if(!isNull(totalCustomDiscountableAmount)){
-				customDiscountAmountStruct[customPriceField] = getDiscountAmount(arguments.promotionReward, totalCustomDiscountableAmount, 1, order.getCurrencyCode(),customPriceField);
+				customDiscountAmountStruct[customPriceField] = getCustomDiscountAmount(arguments.promotionReward, totalCustomDiscountableAmount, 1, order.getCurrencyCode(),customPriceField);
 			}
 		}
 		var addNew = false;
@@ -98,41 +99,42 @@ component extends="Slatwall.model.service.PromotionService" {
 
 	}
 	
-	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, string customPriceField) {
+	private numeric function getCustomDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, string customPriceField, any sku) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));
+
+		var amountMethod = '';
+		var amountParams = {};
+		if(structKeyExists(arguments,'customPriceField')){
+			amountMethod &= 'get#arguments.customPriceField#Amount';
+		}else{
+			amountMethod &= 'getAmount';
+		}
+		if(structKeyExists(arguments,'currencyCode') && len(arguments.currencyCode)){
+			amountMethod &= 'ByCurrencyCode';
+			amountParams['currencyCode'] = arguments.currencyCode;
+		}
+		if(structKeyExists(arguments,'sku')){
+			amountParams['sku'] = arguments.sku;
+		}
 		
-        if(structKeyExists(arguments,'customPriceField') && reward.getAmountType() == "percentageOff"){
-            
-			discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (reward.invokeMethod('get#customPriceField#Amount')/100)));
-        
-        }else{
-    		if(structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)){
-    			switch(reward.getAmountType()) {
-    				case "percentageOff" :
-    					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (reward.getAmountByCurrencyCode(arguments.currencyCode)/100)));
-    					break;
-    				case "amountOff" :
-    					discountAmountPreRounding = reward.getAmountByCurrencyCode(arguments.currencyCode) * quantity;
-    					break;
-    				case "amount" :
-    					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - reward.getAmountByCurrencyCode(arguments.currencyCode)) * arguments.quantity));
-    					break;
-    			}
-    		}else{
-    			switch(reward.getAmountType()) {
-    				case "percentageOff" :
-    					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (reward.getAmount()/100)));
-    					break;
-    				case "amountOff" :
-    					discountAmountPreRounding = reward.getAmount() * quantity;
-    					break;
-    				case "amount" :
-    					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - reward.getAmount()) * arguments.quantity));
-    					break;
-    			}
-    		}
+		var rewardAmount = arguments.reward.invokeMethod(amountMethod,amountParams);
+		
+		switch(reward.getAmountType()) {
+			case "percentageOff" :
+				discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (rewardAmount/100)));
+				break;
+			case "amountOff" :
+				discountAmountPreRounding = rewardAmount * quantity;
+				break;
+			case "amount" :
+				if(structKeyExists(arguments,'sku')){
+				discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - rewardAmount) * arguments.quantity));
+				}else{
+					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - rewardAmount) * arguments.quantity));
+				}
+				break;
         }
 
 		if(!isNull(reward.getRoundingRule())) {
