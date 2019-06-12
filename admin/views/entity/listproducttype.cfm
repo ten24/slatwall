@@ -72,22 +72,22 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<cfset rc.productTypeCollectionList.addFilter('parentProductType','null','is')/>
+	<cfset rc.productTypeCollectionList.addFilter(propertyIdentifier='parentProductType', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.productTypeCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true"
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true
 	})/>
 	<cfset rc.productTypeCollectionList.addDisplayProperty(displayProperty='productTypeName',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true",
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true,
 		tdclass="primary"
 	},prepend=true)/>
 	<cfset rc.productTypeCollectionList.addDisplayProperty(displayProperty='productTypeID',columnConfig={
-		isSearchable="false",
-		isVisible="false",
-		isDeletable="false"
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
 	})/>
 	<cfset rc.productTypeCollectionList.addDisplayAggregate('childProductTypes','COUNT','childProductTypesCount')/>
 	

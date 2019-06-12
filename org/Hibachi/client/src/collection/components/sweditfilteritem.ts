@@ -377,8 +377,7 @@ class SWEditFilterItem{
                                             filterItem.displayValue += ((filterItem.criteriaNumberOf > 1)?'s':'')+' Ago';
                                         }
                                     }else{
-										var dateValueString = utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeStart) + '-' + utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeEnd);
-                                        filterItem.value = dateValueString;
+                                        filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                         var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
                                         filterItem.displayValue = formattedDateValueString;
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
@@ -428,6 +427,14 @@ class SWEditFilterItem{
                         }
                         for(var siblingIndex in filterItem.$$siblingItems){
                             filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+                        }
+                        
+                        if(angular.isDefined(selectedFilterProperty.aggregate)){
+                            let aggregateFunction = selectedFilterProperty.aggregate.toUpperCase();
+                            if(aggregateFunction == 'AVERAGE'){
+                                aggregateFunction = 'AVG';
+                            }
+                            filterItem.aggregate = aggregateFunction;
                         }
 
                         filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;

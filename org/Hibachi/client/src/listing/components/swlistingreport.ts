@@ -605,6 +605,10 @@ class SWListingReport  implements ng.IDirective{
 			$event.stopPropagation();
 		    scope.swListingReport.openedCalendarEndCompare = true;
 		};
+		
+		scope.swListingReport.removeInfoWIndow = function(event) {
+		   $("#get-started-report").remove();
+        };
     }
 }
 
