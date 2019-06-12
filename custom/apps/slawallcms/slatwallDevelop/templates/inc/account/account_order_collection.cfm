@@ -8,8 +8,8 @@
 <cfelse>
     <!--- Quotes --->
     <cfset local.ordersCollection.addFilter("orderStatusType.systemCode", "ostNotPlaced", "=") />
-    <!--- <cfset local.ordersCollection.addFilter("quoteFlag","1","=") /> --->
-    <cfset local.ordersCollection.addFilter("quotePriceExpiration",NOW(),">") /> 
+    <!--- <cfset local.ordersCollection.addFilter("quoteFlag","1","=") /> 
+    <cfset local.ordersCollection.addFilter("quotePriceExpiration",NOW(),">") /> --->
 </cfif>
 
 <cfset local.ordersCollection.addFilter("orderType.systemCode", "otSalesOrder","=") />
@@ -20,7 +20,3 @@
 <cfset local.ordersCollection.setPageRecordsShow(10)>
 
 <cfset local.orders = local.ordersCollection.getPageRecords() />
-
-
-
-
