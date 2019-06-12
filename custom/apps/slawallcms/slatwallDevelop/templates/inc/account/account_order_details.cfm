@@ -17,7 +17,6 @@
     <h3>Quote Details</h3>
 </cfif>
 
-
         <!--- Address & Payment Indo --->
 	    <div class="row">
 		    <!--- Shipping --->
@@ -215,11 +214,7 @@
     	        		AND local.orderItem.getSku().getProduct().getActiveFlag() EQ true
     	        		AND local.orderItem.getSku().getProduct().getPublishedFlag() EQ true>
         	        		<div class="col-xl-2 col-lg-12 mt-2">
-<<<<<<< HEAD
-        	        		    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary"><i class="fa fa-shopping-cart"></i> Reorder</a>
-=======
-        	        		    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary"><i class="fa fa-print"></i> Reorder</a>
->>>>>>> aa221085d54a2cdd25f30aea887630566c49b983
+        	        			<a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary"><i class="fa fa-shopping-cart"></i> Reorder</a>
         	        		</div>
     	        		</cfif>
     	        	</div>
