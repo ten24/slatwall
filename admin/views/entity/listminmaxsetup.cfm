@@ -74,6 +74,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#minMaxSetupCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(minMaxSetupCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(minMaxSetupCollectionList.getCollectionObject())#"
 	>

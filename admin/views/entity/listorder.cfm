@@ -85,7 +85,9 @@ Notes:
 	<cfset displayPropertyList = ""/>
 	<cfset searchableDisplayPropertyList = "" />
 	<cfif rc.slatAction eq "admin:entity.listorder">
-		<cfset displayPropertyList &= "orderOpenDateTime,"/>	
+		<cfset displayPropertyList &= "orderOpenDateTime,"/>
+		
+	<cfelse>
 	</cfif>
 	<cfset displayPropertyList &= 'createdDateTime,calculatedTotal'/>
 
@@ -135,6 +137,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(rc.orderCollectionlist.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.orderCollectionlist.getCollectionObject())#"
 	>

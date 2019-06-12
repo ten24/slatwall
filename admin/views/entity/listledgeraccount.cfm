@@ -79,6 +79,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#ledgerAccountCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(ledgerAccountCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(ledgerAccountCollectionList.getCollectionObject())#"
 	>
