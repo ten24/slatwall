@@ -1310,10 +1310,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// if it's not fixed, it's pointsPerCurrencyUnit
-
-		var currencyCode = arguments.data.order.getCurrencyCode();
-		
-		var accruementCurrency = arguments.data.loyaltyAccruement.getAccruementCurrency(currencyCode);
+		var accruementCurrency = arguments.data.loyaltyAccruement.getAccruementCurrency(arguments.data.currencyCode);
 		
 		if(isNull(accruementCurrency)){
 			return arguments.accountLoyaltyTransaction;
@@ -1331,7 +1328,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			amount = accruementCurrency.getPointQuantity() * (arguments.data.orderDeliveryItem.getQuantity() * arguments.data.orderDeliveryItem.getOrderItem().getPrice());
 		
 		} else if (arguments.data.accruementEvent eq 'orderClosed') {
-			
+
 			amount = accruementCurrency.getPointQuantity() * arguments.data.order.getTotal();
 			
 		} else if (arguments.data.accruementEvent eq 'fulfillmentMethodUsed') {
@@ -1345,19 +1342,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountLoyaltyTransaction;
 	}
 	
-	public any function createPromotionLoyaltyTransaction(required any data){
+	public any function createPromotionLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			arguments.data.order.getCustomerAccount().addAccountPromotion(arguments.data.loyaltyAccruement.getPromotion());
-			return;
+			promo = arguments.data.loyaltyAccruement.getPromotion();
+			promoCode = getService("PromotionService").NewPromotionCode();
+			promoCode.setPromotion(promo);
+			promoCode.addAccount(arguments.data.account);
+			promoCode.setMaximumAccountUseCount(1);
+			promoCode = getService("PromotionService").savePromotionCode(promoCode);
+			getHibachiEventService().announceEvent("Promotion Code Assigned to Account", promoCode);
+			arrayAppend(arguments.accountLoyaltyTransaction.getErrors(),promoCode.getErrors());
 		}
 		
-		// if we haven't returned, it's a points out. Let's remove the promo.
-		arguments.data.order.getCustomerAccount().removeAccountPromotion(arguments.data.loyaltyAccruement.getPromotion());
-		
+		return arguments.accountLoyaltyTransaction;
 	}
 	
-	public any function createGiftCardLoyaltyTransaction(required any data){
+	public any function createGiftCardLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
 			var newGiftCard = getService("GiftCardService").newGiftCard(); 
@@ -1368,7 +1369,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			createGiftCardProcessObject.setSku(arguments.data.loyaltyAccruement.getGiftCardSku());
 			
-			createGiftCardProcessObject.setOwnerAccount(arguments.data.order.getCustomerAccount()); 
+			createGiftCardProcessObject.setOwnerAccount(arguments.data.order.getAccount()); 
 	
 			newGiftCard = getGiftCardService().processGiftCard_Create(newGiftCard,createGiftCardProcessObject);  
 	
@@ -1413,14 +1414,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Set the order, orderItem and orderFulfillment if they exist
 		if(structKeyExists(arguments.data, "order")) {
 			arguments.accountLoyaltyTransaction.setOrder(arguments.data.order );
+			arguments.data.currencyCode = arguments.data.order.getCurrencyCode();
 		}
 
 		if(structKeyExists(arguments.data, "orderItem")) {
 			arguments.accountLoyaltyTransaction.setOrderItem( arguments.data.orderItem );
+			arguments.data.currencyCode = arguments.data.orderItem.getCurrencyCode();
 		}
 
 		if(structKeyExists(arguments.data, "orderFulfillment")) {
 			arguments.accountLoyaltyTransaction.setOrderFulfillment( arguments.data.orderFulfillment );
+			arguments.data.currencyCode = arguments.data.orderFulfillment.getCurrencyCode();
 		}
 
 		// Set up loyalty program expiration date / time based upon the expiration term
@@ -1428,16 +1432,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		    arguments.accountLoyaltyTransaction.setExpirationDateTime( arguments.data.loyaltyAccruement.getExpirationTerm().getEndDate() );
 		}
 		
-		
 		this.RedeemLoyaltyRedemptions(arguments.data.accountLoyalty);
 
 		switch(arguments.data.loyaltyAccruement.getAccruementType()){
 			case "points":
 				arguments.accountLoyaltyTransaction = this.createPointsLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);
+				break;
 			case "promotion":
-				arguments.accountLoyaltyTransaction = this.createPromotionLoyaltyTransaction(arguments.data); //TODO
+				arguments.accountLoyaltyTransaction = this.createPromotionLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);
+				break;
 			case "giftCard":
-				arguments.accountLoyaltyTransaction = this.createGiftCardLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data); // TODO
+				arguments.accountLoyaltyTransaction = this.createGiftCardLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);
+				break;
 		}
 
 		return arguments.accountLoyaltyTransaction;

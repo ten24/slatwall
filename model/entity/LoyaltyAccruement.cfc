@@ -121,15 +121,13 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 		arguments.accountLoyaltyTransaction.removeLoyaltyAccruement( this );
 	}
 	
-	
-	public any function getAccountCurrency(required string currencyCode){
-		var accountCurrenciesList = getService("LoyaltyService").getAccountCurrencyCollectionList();
-		accountCurrenciesList.setDisplayProperties("accountCurrencyID");
-		accountCurrenciesList.addFilter("loyaltyAccruement.loyaltyAccruementID",this.getLoyaltyAccruementID());
-		accountCurrenciesList.addFilter("currencyCode",arguments.currencyCode);
-		accountCurrencies = accountCurrenciesList.getPageRecords();
-		if(arrayLen(accountCurrencies)){
-			return accountCurrencies[1];
+	public any function getAccruementCurrency(required string currencyCode){
+		var accruementCurrenciesList = getService("LoyaltyService").getAccruementCurrencySmartList();
+		accruementCurrenciesList.addFilter("loyaltyAccruement.loyaltyAccruementID",this.getLoyaltyAccruementID());
+		accruementCurrenciesList.addFilter("currencyCode",arguments.currencyCode);
+		accruementCurrencies = accruementCurrenciesList.getPageRecords();
+		if(arrayLen(accruementCurrencies)){
+			return accruementCurrencies[1];
 		}
 	}
 	
@@ -149,6 +147,14 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 			arrayDeleteAt(arguments.loyalty.getLoyaltyAccruements(), index);
 		}
 		structDelete(variables, "loyalty");
+	}
+	
+	public void function addAccruementCurrency(required any accruementCurrency) {
+		arguments.accruementCurrency.setLoyaltyAccruement( this );
+	}
+	
+	public void function removeAccruementCurrency(required any accruementCurrency) {
+		arguments.accruementCurrency.removeLoyaltyAccruement( this );
 	}
 	
 	// Brands (many-to-many - owner)

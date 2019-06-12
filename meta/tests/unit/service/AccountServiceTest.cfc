@@ -400,6 +400,139 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.getAccount().setSuperUserFlag(true);
 	}
 	
+	private any function setupLoyaltyTransactionData(data){
+		
+		//case tests if organization flag is flipped that account code is required
+		var accountData = {
+			accountID="",
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0
+		};
+		
+		data.account = createPersistedTestEntity('Account',accountData);
+		
+		data.loyalty = createPersistedTestEntity('Loyalty',{});
+		
+		data.loyaltyAccruement = createPersistedTestEntity('LoyaltyAccruement',{});
+		
+		data.loyaltyAccruement.setAccruementType(data.accruementType);
+		
+		data.loyaltyAccruement.setLoyalty(data.loyalty);
+		
+		data.loyalty.addLoyaltyAccruement(data.loyaltyAccruement);
+		
+		data.accountLoyalty = createPersistedTestEntity('AccountLoyalty',{});
+
+		data.accountLoyalty.setAccount(data.account);
+		
+		data.accountLoyalty.setLoyalty(data.loyalty);
+
+		switch(data.accruementType){
+			case "points":
+				data.loyaltyAccruement.setPointType(data.pointType);
+				data.loyaltyAccruement.setPointQuantity(data.pointQuantity);
+				data.accruementCurrency = createPersistedTestEntity('AccruementCurrency',{});
+				data.accruementCurrency.setCurrencyCode("USD");
+				data.accruementCurrency.setPointQuantity(data.pointQuantity);
+				data.loyaltyAccruement.addAccruementCurrency(data.accruementCurrency);
+				break;
+			case "promotion":
+				data.loyaltyAccruement.setPromotion(createPersistedTestEntity('Promotion',{}));
+				break;
+			case "giftCard":
+				
+				break;
+		}
+		
+		switch(data.accruementEvent){
+			case "itemFulfilled":
+				break;
+			case "orderClosed":
+				data.order = (createPersistedTestEntity('Order',{}));
+				data.order.setCurrencyCode('USD');
+				data.order.setAccount(data.account);
+				data.orderItem = createPersistedTestEntity('OrderItem',{});
+				data.orderItem.setPrice(data.orderItemPrice);
+				data.orderItem.setCurrencyCode('USD');
+				data.orderItem.setQuantity(1);
+				data.order.addOrderItem(data.orderItem);
+				break;
+			case "fulfillmentMethodUsed":
+				break;
+			case "enrollment":
+				break;
+		}
+		
+		return data;
+	}
+	
+	/**
+	* @test
+	*/
+	public void function processAccountLoyaltyTransaction_createTest(){
+		request.slatwallScope.getAccount().setSuperUserFlag(false);
+		
+		// create dependencies
+		
+		var testCases = [
+			{
+				accruementEvent = "orderClosed",
+				pointAdjustmentType = "pointsIn",
+				accruementType = "points",
+				pointType = "fixed",
+				pointQuantity = 10,
+				orderItemPrice=19.99,
+				assertion = function(data, loyaltyTransaction){
+					return loyaltyTransaction.getPointsIn() == data.pointQuantity;
+				}
+			},
+			{
+				accruementEvent = "orderClosed",
+				pointAdjustmentType = "pointsOut",
+				accruementType = "points",
+				pointType = "fixed",
+				pointQuantity = 20,
+				orderItemPrice=19.99,
+				assertion = function(data, loyaltyTransaction){
+					return loyaltyTransaction.getPointsOut() == data.pointQuantity;
+				}
+			},
+			{
+				accruementEvent = "orderClosed",
+				pointAdjustmentType = "pointsIn",
+				accruementType = "points",
+				pointType = "pointsPerCurrencyUnit",
+				pointQuantity=10,
+				orderItemPrice=19.99,
+				assertion = function(data, loyaltyTransaction){
+					return loyaltyTransaction.getPointsIn() == data.loyaltyAccruement.getAccruementCurrency(data.order.getCurrencyCode()).getPointQuantity() * data.orderItemPrice;
+				}
+			},
+			{
+				accruementEvent = "itemFulfilled",
+				accruementType = "promotion",
+				pointAdjustmentType = "pointsIn",
+				assertion = function(data, loyaltyTransaction){
+					return data.account.getPromotionCodes()[1].getPromotion().getPromotionID() == data.loyaltyAccruement.getPromotion().getPromotionID();
+				}
+			},
+		]
+
+		for(var data in testCases){
+			
+			data = this.setupLoyaltyTransactionData(data);
+			
+			var loyaltyTransaction = request.slatwallScope.getService("LoyaltyService").newAccountLoyaltyTransaction();
+			
+			loyaltyTransaction = request.slatwallScope.getService("AccountService").processAccountLoyaltyTransaction(loyaltyTransaction,data,"create");
+		
+			assert(data.assertion(data,loyaltyTransaction));
+			
+			request.slatwallScope.getAccount().setSuperUserFlag(true);
+		}
+	}
+	
 	/**
 	* @test
 	*/
