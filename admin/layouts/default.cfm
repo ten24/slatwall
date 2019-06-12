@@ -429,7 +429,7 @@ Notes:
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 		
-				<cfif $.slatwall.getLoggedInFlag() >
+				<cfif $.slatwall.getLoggedInFlag() AND FindNoCase("?", $.slatwall.getURL()) LTE 0 >
 				<div class="navTabs-Container col-md-12" id="navTabs-Container">
 					<ul class="nav nav-tabs" role="tablist">
 						  <li class="active tab-selector"><a href="##reports-overview" role="tab" data-toggle="tab">My Custom Reports</a></li>
