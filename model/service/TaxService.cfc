@@ -1031,7 +1031,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		taxRatesRequestBean.setOrderID( arguments.orderDelivery.getOrder().getOrderID() );
-		taxRatesRequestBean.setOrder(arguments.orderDelivery.getOrder())
+		taxRatesRequestBean.setOrder(arguments.orderDelivery.getOrder());
 		taxRatesRequestBean.setOrderDelivery( arguments.orderDelivery );
 
 		if(!isNull(arguments.orderDelivery.getOrder().getAccount())) {
@@ -1101,7 +1101,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		taxRatesRequestBean.setOrderID( arguments.orderReturn.getOrder().getOrderID() );
-		taxRatesRequestBean.setOrder(arguments.orderReturn.getOrder())
+		taxRatesRequestBean.setOrder(arguments.orderReturn.getOrder());
 		taxRatesRequestBean.setOrderReturn( arguments.orderReturn );
 
 		if(!isNull(arguments.orderReturn.getOrder().getAccount())) {
