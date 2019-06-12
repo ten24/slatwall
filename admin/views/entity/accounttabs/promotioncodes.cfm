@@ -53,16 +53,23 @@ Notes:
 <cfparam name="rc.account" type="any" />
 
 <cfset local.promotionCodeCollectionList = getHibachiScope().getService('PromotionService').getPromotionCodeCollectionList() />
+<cfset local.displayPropertyList = "promotionCode,startDateTime,endDateTime,maximumUseCount,maximumAccountUseCount" />
+<cfset local.promotionCodeCollectionList.setDisplayProperties(
+    local.displayPropertyList,
+    {
+        isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+    }
+)/>
+
+<cfset local.promotionCodeCollectionList.addDisplayProperty("promotionCodeID") />
 <cfset local.promotionCodeCollectionList.addFilter("accounts.accountID", rc.account.getAccountID()) />
 
 <hb:HibachiListingDisplay collectionList="#local.promotionCodeCollectionList#"
 						  recordDetailAction="admin:entity.detailpromotioncode"
 						  recordEditAction="admin:entity.editpromotioncode"
 						  recordDetailActionProperty="promotionCode.promotionCodeID"
-						  recordDeleteAction="admin:entity.deleteaccountrelationship"
-						  recordDeleteQueryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
-
+						  recordDeleteAction="admin:entity.processAccount&processContext=removePromotionCode&sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"       
 						  >
 </hb:HibachiListingDisplay>
-<!---<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&childAccountID=#rc.account.getAccountID()#&processcontext=addaccountrelationship" modal=true />
---->
