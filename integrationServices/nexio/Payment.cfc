@@ -132,7 +132,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				if (!isNull(arguments.requestBean.getOrderID())) {
 					var orderNumber = arguments.requestBean.getOrderID();
 				} else {
-					var orderNumber = null;
+					var orderNumber = "";
 				}
 				
 				var publicKey = getPublicKey(arguments.requestBean);
@@ -154,7 +154,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					},
 					'data' = {
 						'paymentMethod' = 'creditCard',
-						'amount' = arguments.requestBean.getTransactionAmount(),
+						// 'amount' = arguments.requestBean.getTransactionAmount(),
+						'amount' = 0,
 						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
 						'customer'= {
 							'orderNumber' = orderNumber,
@@ -170,10 +171,16 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						}
 					}
 				};
-	
+				
+				writeDump(var="***requestData 1");
+				writeDump(var=requestData);
+						
 				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 
+				writeDump(var="***responseData 1");
+				writeDump(var=responseData);
+				
 				if (!responseBean.hasErrors()) {
 					arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
 				}
@@ -236,6 +243,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+					
+						writeDump(var="***arguments.responseBean");
+						writeDump(var=arguments.responseBean);
 					}
 				}
 			} else {
