@@ -71,6 +71,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#productReviewCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(productReviewCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(productReviewCollectionList.getCollectionObject())#"
 	>

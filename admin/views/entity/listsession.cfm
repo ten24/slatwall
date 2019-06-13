@@ -67,6 +67,7 @@ Notes:
     <hb:HibachiListingDisplay 
     		collectionList="#sessionCollectionList#"
     		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
     	>
     </hb:HibachiListingDisplay>
 
