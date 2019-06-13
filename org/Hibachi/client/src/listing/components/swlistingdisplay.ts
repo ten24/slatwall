@@ -114,6 +114,7 @@ class SWListingDisplayController{
     public name;
     public usingPersonalCollection:boolean;
     public personalCollectionIdentifier:string;
+    public personalCollectionKey:string;
     public persistedReportCollections:any;
     //@ngInject
     constructor(
@@ -136,6 +137,10 @@ class SWListingDisplayController{
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
+        if(angular.isUndefined(this.personalCollectionKey)){
+            this.personalCollectionKey = this.baseEntityName.toLowerCase();
+        }
+        
         if(angular.isUndefined(this.usingPersonalCollection)){
             this.usingPersonalCollection=false;
         }
@@ -174,17 +179,17 @@ class SWListingDisplayController{
              (this.baseEntityName) 
              && (
                  this.usingPersonalCollection 
-                 && this.listingService.hasPersonalCollectionSelected(this.baseEntityName)
+                 && this.listingService.hasPersonalCollectionSelected(this.personalCollectionKey)
              )
              && (
                 angular.isUndefined(this.personalCollectionIdentifier) 
                 || (
-                    angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) 
-                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier
+                    angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription']) 
+                    && this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier
                 )
             )
         ){
-            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
+            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
            
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
@@ -537,9 +542,11 @@ class SWListingDisplayController{
         
         // Iterate over columns, find out if we have any numericals and return
         if(this.columns != null && this.columns.length){
+            
             return this.columns.reduce((totalNumericalCols, col) => {
+            
                 return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-            });    
+            }, 0);    
         }
         return false;
     }
@@ -716,6 +723,7 @@ class SWListingDisplay implements ng.IDirective{
     public bindToController={
             usingPersonalCollection:"<?",
             personalCollectionIdentifier:'@?',
+            personalCollectionKey:"@?",
             isRadio:"<?",
             angularLinks:"<?",
             isAngularRoute:"<?",

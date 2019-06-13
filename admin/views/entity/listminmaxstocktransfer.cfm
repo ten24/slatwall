@@ -77,6 +77,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#minMaxStockTransferCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(minMaxStockTransferCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(minMaxStockTransferCollectionList.getCollectionObject())#"
 	>

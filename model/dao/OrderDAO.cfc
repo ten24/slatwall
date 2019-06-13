@@ -190,7 +190,8 @@ Notes:
 			required string subscriptionOrderItemID, 
 			numeric quantity=1, 
 			numeric extendedprice,
-			numeric taxAmount
+			numeric taxAmount,
+			required string deliveryScheduleDateID
 		){
 			var q = new query();
 			
@@ -206,9 +207,10 @@ Notes:
 			q.addParam(name='modifiedDateTime',value=now(),cfsqltype="cf_sql_timestamp");
 			//Subscription Order Delivery Item Type Delivered
 			q.addParam(name='subscriptionOrderDeliveryItemTypeID',value='f22e6a41d678334700a550bddec925d2');
+			q.addParam(name="deliveryScheduleDateID",value=arguments.deliveryScheduleDateID);
 			
-			var sql = "INSERT INTO swsubscriptionorderdeliveryitem (subscriptionOrderDeliveryItemID,subscriptionOrderItemID,quantity,createdByAccountID,createdDateTime,modifiedByAccountID,modifiedDateTime,earned,taxAmount,subscriptionOrderDeliveryItemTypeID) 
-						VALUES (:subscriptionOrderDeliveryItemID,:subscriptionOrderItemID,:quantity,:createdByAccountID,:createdDateTime,:modifiedByAccountID,:modifiedDateTime,:earned,:taxAmount,:subscriptionOrderDeliveryItemTypeID)";
+			var sql = "INSERT INTO swsubscriptionorderdeliveryitem (subscriptionOrderDeliveryItemID,subscriptionOrderItemID,quantity,createdByAccountID,createdDateTime,modifiedByAccountID,modifiedDateTime,earned,taxAmount,subscriptionOrderDeliveryItemTypeID,deliveryScheduleDateID) 
+						VALUES (:subscriptionOrderDeliveryItemID,:subscriptionOrderItemID,:quantity,:createdByAccountID,:createdDateTime,:modifiedByAccountID,:modifiedDateTime,:earned,:taxAmount,:subscriptionOrderDeliveryItemTypeID,:deliveryScheduleDateID)";
 			
 			q.setSQL(sql);
 			
