@@ -1363,15 +1363,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
 			var newGiftCard = getService("GiftCardService").newGiftCard(); 
 			var createGiftCardProcessObject = newGiftCard.getProcessObject('create'); 
-			var currencyCode = arguments.data.order.getCurrencyCode();
+			var currencyCode = arguments.data.currencyCode;
 			
 			createGiftCardProcessObject.setCurrencyCode(currencyCode);
 			
 			createGiftCardProcessObject.setSku(arguments.data.loyaltyAccruement.getGiftCardSku());
 			
-			createGiftCardProcessObject.setOwnerAccount(arguments.data.order.getAccount()); 
+			createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
+			
+			createGiftCardProcessObject.setCreditGiftCardFlag(false);
 	
-			newGiftCard = getGiftCardService().processGiftCard_Create(newGiftCard,createGiftCardProcessObject);  
+			newGiftCard = getService("GiftCardService").processGiftCard_Create(newGiftCard,createGiftCardProcessObject);  
 	
 			var creditGiftCardProcessObject = newGiftCard.getProcessObject('addCredit');
 		
@@ -1383,15 +1385,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 			creditGiftCardProcessObject.setCreditAmount(accruementCurrency.getGiftCardValue());
 	
-			newGiftCard = getGiftCardService().processGiftCard_addCredit(newGiftCard, creditGiftCardProcessObject);
+			newGiftCard = getService("GiftCardService").processGiftCard_addCredit(newGiftCard, creditGiftCardProcessObject);
 	
 			if(newGiftCard.hasErrors()){
-				arguments.account.addErrors(newGiftCard.getErrors());
-			} else {
-				arguments.account = this.saveAccount(arguments.account);  
+				arguments.accountLoyaltyTransaction.addErrors(newGiftCard.getErrors());
 			} 
 	
-			return arguments.account;
+			return arguments.accountLoyaltyTransaction;
 		}
 		
 		// TODO: Remove giftCard if pointsOut
@@ -1433,7 +1433,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		this.RedeemLoyaltyRedemptions(arguments.data.accountLoyalty);
-
+		
+		arguments.data.account = arguments.data.accountLoyalty.getAccount();
+		
 		switch(arguments.data.loyaltyAccruement.getAccruementType()){
 			case "points":
 				arguments.accountLoyaltyTransaction = this.createPointsLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);

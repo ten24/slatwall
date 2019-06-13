@@ -60,7 +60,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="ownerFirstName";
 	property name="ownerLastName";
 	property name="ownerEmailAddress";
-	property name="creditGiftCardFlag";
+	property name="creditGiftCardFlag" type="boolean";
 	property name="sku" cfc="Sku";
 
 	//Overridden Getters
@@ -70,7 +70,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 			return getService("hibachiUtilityService").generateRandomID(getSku().setting('skuGiftCardCodeLength'));
 		}
 		
-		return variables.giftCardCode;
+		// return variables.giftCardCode;
 	}
 
 	public string function getGiftCardPin(){

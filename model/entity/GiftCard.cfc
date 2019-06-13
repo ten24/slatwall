@@ -86,8 +86,9 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-
 	// Non-Persistent Properties
+	property name="price" persistent="false";
+
 	public any function getOrder(){
 		if(!isNull(this.getOriginalOrderItem())){
 			return this.getOriginalOrderItem().getOrder();
@@ -96,9 +97,20 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 	
+	public numeric function getPrice(){
+		
+		if(structKeyExists(variables,'originalOrderItem')){
+			return variables.originalOrderItem.getPrice();
+		}
+		
+		if(structKeyExists(variables,'sku')){
+			return variables.sku.getPrice();
+		}
+	}
+	
 	public any function getSku(){
 		if(!structKeyExists(variables,"sku") || isNull(variables.sku)){
-			variables.sku.getOriginalOrderItem().getSku();
+			variables.sku = this.getOriginalOrderItem().getSku();
 		}
 		return variables.sku;
 	}
@@ -179,6 +191,9 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 	public void function removeOriginalOrderItem(any orderItem) {
+		if(!structKeyExists(variables,"originalOrderItem")){
+			return;
+		}
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.originalOrderItem;
 		}
@@ -191,7 +206,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Owner Account (many-to-one)
 	public void function setOwnerAccount(required any ownerAccount) {
-
 		variables.ownerAccount = arguments.ownerAccount;
 		if(isNew() or !arguments.ownerAccount.hasGiftCard( this )) {
 			arrayAppend(arguments.ownerAccount.getGiftCards(), this);

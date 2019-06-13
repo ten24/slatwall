@@ -261,6 +261,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var accountData = {
 			accountID=""
 		};
+		
 		var account = createTestEntity('Account',accountData);
 		
 		var data = {
@@ -401,7 +402,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	private any function setupLoyaltyTransactionData(data){
-		
+		param name="data.accruementType" required="true";
 		//case tests if organization flag is flipped that account code is required
 		var accountData = {
 			accountID="",
@@ -427,21 +428,53 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		data.accountLoyalty.setAccount(data.account);
 		
 		data.accountLoyalty.setLoyalty(data.loyalty);
-
+		
 		switch(data.accruementType){
 			case "points":
 				data.loyaltyAccruement.setPointType(data.pointType);
+				
 				data.loyaltyAccruement.setPointQuantity(data.pointQuantity);
+				
 				data.accruementCurrency = createPersistedTestEntity('AccruementCurrency',{});
+				
 				data.accruementCurrency.setCurrencyCode("USD");
+				
 				data.accruementCurrency.setPointQuantity(data.pointQuantity);
+		
 				data.loyaltyAccruement.addAccruementCurrency(data.accruementCurrency);
 				break;
 			case "promotion":
 				data.loyaltyAccruement.setPromotion(createPersistedTestEntity('Promotion',{}));
 				break;
 			case "giftCard":
+				var productData = {
+					productID="",
+					productCode="testProduct"&createUUID(),
+					productType={
+						//merchandise
+						productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+					}
+				};
+				var product = createPersistedTestEntity('Product',productData);
+		
+				var skuData={
+					skuID="",
+					price=data.price,
+					skuCode="testSku"&createUUID(),
+					product={
+						productID=product.getProductID()
+					}
+				};
 				
+				data.accruementCurrency = createPersistedTestEntity('AccruementCurrency',{});
+				
+				data.accruementCurrency.setCurrencyCode("USD");
+				
+				data.accruementCurrency.setGiftCardValue(data.giftCardValue);
+		
+				data.loyaltyAccruement.addAccruementCurrency(data.accruementCurrency);
+				
+				data.loyaltyAccruement.setGiftCardSku(createPersistedTestEntity('sku',skuData));
 				break;
 		}
 		
@@ -449,14 +482,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			case "itemFulfilled":
 				break;
 			case "orderClosed":
-				data.order = (createPersistedTestEntity('Order',{}));
+				data.order = createPersistedTestEntity('Order',{});
 				data.order.setCurrencyCode('USD');
 				data.order.setAccount(data.account);
-				data.orderItem = createPersistedTestEntity('OrderItem',{});
-				data.orderItem.setPrice(data.orderItemPrice);
-				data.orderItem.setCurrencyCode('USD');
-				data.orderItem.setQuantity(1);
-				data.order.addOrderItem(data.orderItem);
+				data.order.getTotal = function(){
+					return data.price;
+				}
 				break;
 			case "fulfillmentMethodUsed":
 				break;
@@ -482,7 +513,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				accruementType = "points",
 				pointType = "fixed",
 				pointQuantity = 10,
-				orderItemPrice=19.99,
+				price=19.99,
 				assertion = function(data, loyaltyTransaction){
 					return loyaltyTransaction.getPointsIn() == data.pointQuantity;
 				}
@@ -493,7 +524,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				accruementType = "points",
 				pointType = "fixed",
 				pointQuantity = 20,
-				orderItemPrice=19.99,
+				price=19.99,
 				assertion = function(data, loyaltyTransaction){
 					return loyaltyTransaction.getPointsOut() == data.pointQuantity;
 				}
@@ -504,9 +535,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				accruementType = "points",
 				pointType = "pointsPerCurrencyUnit",
 				pointQuantity=10,
-				orderItemPrice=19.99,
+				price=19.99,
 				assertion = function(data, loyaltyTransaction){
-					return loyaltyTransaction.getPointsIn() == data.loyaltyAccruement.getAccruementCurrency(data.order.getCurrencyCode()).getPointQuantity() * data.orderItemPrice;
+					return loyaltyTransaction.getPointsIn() == data.loyaltyAccruement.getAccruementCurrency(data.order.getCurrencyCode()).getPointQuantity() * data.price;
 				}
 			},
 			{
@@ -515,6 +546,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				pointAdjustmentType = "pointsIn",
 				assertion = function(data, loyaltyTransaction){
 					return data.account.getPromotionCodes()[1].getPromotion().getPromotionID() == data.loyaltyAccruement.getPromotion().getPromotionID();
+				}
+			},
+			{
+				accruementEvent = "orderClosed",
+				accruementType = "giftCard",
+				pointAdjustmentType = "pointsIn",
+				price=19.99,
+				giftCardValue=100,
+				assertion = function(data, loyaltyTransaction){
+					return len(data.account.getGiftCards()) > 0 && data.account.getGiftCards()[1].getBalanceAmount() == data.loyaltyAccruement.getAccruementCurrency("USD").getGiftCardValue();
 				}
 			},
 		]
@@ -529,7 +570,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 			assert(data.assertion(data,loyaltyTransaction));
 			
-			request.slatwallScope.getAccount().setSuperUserFlag(true);
+			this.tearDown();
+			
+			this.setUp();
 		}
 	}
 	
