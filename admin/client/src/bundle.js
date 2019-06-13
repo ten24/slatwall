@@ -79481,7 +79481,7 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.$injector = $injector;
         this.utilityService = utilityService;
         this.isSuperUser = function () {
-            return _this.$rootScope.slatwall.role == 'SuperUser';
+            return _this.$rootScope.slatwall.role == 'superUser';
         };
         this.authenticateActionByAccount = function (action, processContext) {
             var authDetails = _this.getActionAuthenticationDetailsByAccount(action, processContext);
@@ -79552,12 +79552,14 @@ var HibachiAuthenticationService = /** @class */ (function () {
                 // Check to see if this is a defined secure method, and if so we can test it against the account
                 if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].secureMethods, itemName) != -1) {
                     var pgOK = false;
-                    var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
-                    if (accountPermissionGroups) {
-                        for (var p in accountPermissionGroups) {
-                            pgOK = _this.authenticateSubsystemSectionItemActionByPermissionGroup(subsystemName, sectionName, itemName, accountPermissionGroups[p]);
-                            if (pgOK) {
-                                break;
+                    if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                        var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                        if (accountPermissionGroups) {
+                            for (var p in accountPermissionGroups) {
+                                pgOK = _this.authenticateSubsystemSectionItemActionByPermissionGroup(subsystemName, sectionName, itemName, accountPermissionGroups[p]);
+                                if (pgOK) {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -79657,8 +79659,8 @@ var HibachiAuthenticationService = /** @class */ (function () {
                 return true;
             }
             // Loop over each permission group for this account, and ckeck if it has access
-            var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
             if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
                 for (var i in accountPermissionGroups) {
                     var pgOK = _this.authenticateEntityByPermissionGroup(crudType, entityName, accountPermissionGroups[i]);
                     if (pgOK) {

@@ -14,7 +14,7 @@ class HibachiAuthenticationService{
     }
     
     public isSuperUser=()=>{
-        return this.$rootScope.slatwall.role == 'SuperUser';
+        return this.$rootScope.slatwall.role == 'superUser';
     }
     
     public authenticateActionByAccount=(action:string,processContext:string)=>{
@@ -103,14 +103,16 @@ class HibachiAuthenticationService{
 			if(this.utilityService.listFindNoCase(actionPermissions[ subsystemName ].sections[ sectionName ].secureMethods, itemName)!=-1) {
 				
 				var pgOK = false;
-				var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
-				if(accountPermissionGroups){
-    				for(var p in accountPermissionGroups){
-    					pgOK = this.authenticateSubsystemSectionItemActionByPermissionGroup(subsystemName, sectionName, itemName, accountPermissionGroups[p]); 
-    					if(pgOK){
-    						break;
-    					}
-    					
+				if(this.$rootScope.slatwall.authInfo.permissionGroups){
+    				var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
+    				if(accountPermissionGroups){
+        				for(var p in accountPermissionGroups){
+        					pgOK = this.authenticateSubsystemSectionItemActionByPermissionGroup(subsystemName, sectionName, itemName, accountPermissionGroups[p]); 
+        					if(pgOK){
+        						break;
+        					}
+        					
+        				}
     				}
 				}
 				
@@ -208,8 +210,8 @@ class HibachiAuthenticationService{
 		
 		
 		// Loop over each permission group for this account, and ckeck if it has access
-		var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
 		if(this.$rootScope.slatwall.authInfo.permissionGroups){
+		    var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
     		for(var i in accountPermissionGroups){
     			var pgOK = this.authenticateEntityByPermissionGroup(crudType, entityName, accountPermissionGroups[i]);
     			if(pgOK) {
