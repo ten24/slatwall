@@ -126,32 +126,26 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		
 		private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
-			// We are expecting there is no provider token yet, however if accountPaymentMethod is used and attempt to generate another token prevent and short circuit
+			// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 			if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 				
-				if (!isNull(arguments.requestBean.getOrderPayment().getOrderPaymentType().getTypeName() ==="Charge")) {
-					var paymentMethod = "creditCard";
+				if (!isNull(arguments.requestBean.getOrderID())) {
+					var orderNumber = arguments.requestBean.getOrderID();
 				} else {
-					var paymentMethod = null;
+					var orderNumber = null;
 				}
 				
 				var publicKey = getPublicKey(arguments.requestBean);
-				
-				// writeDump(var=arguments.requestBean, abort=true);
-				
+
 				var requestData = {
 					'isAuthOnly': false,
 					'card' = {
-						'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
-						'expirationMonth' = LSParseNumber(arguments.requestBean.getExpirationMonth()),
-						'expirationYear' = LSParseNumber(arguments.requestBean.getExpirationYear()), 
 						'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
-						'securityCode' = LSParseNumber(arguments.requestBean.getSecurityCode())
+						'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
+						'expirationMonth' = arguments.requestBean.getExpirationMonth(),
+						'expirationYear' = arguments.requestBean.getExpirationYear(), 
+						'securityCode' = arguments.requestBean.getSecurityCode()
 					},
-					// 'uiOptions': {
-					// 	'hideCvc': false,
-					// 	'hideBilling' = false,
-					// },
 					'processingOptions' = {
 						'checkFraud' = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
 						'verifyCvc' = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
@@ -159,16 +153,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						'verboseResponse' = true
 					},
 					'data' = {
-						'paymentMethod' = paymentMethod,
+						'paymentMethod' = 'creditCard',
 						'amount' = arguments.requestBean.getTransactionAmount(),
-						// 'amount': arguments.requestBean.getOrder().getCalculatedTotal(),
-						// 'partialAmount': LSParseNumber(arguments.requestBean.getTransactionAmount()),
 						'currency' = arguments.requestBean.getTransactionCurrencyCode(),
 						'customer'= {
-							'orderNumber' = arguments.requestBean.getOrderID(),
+							'orderNumber' = orderNumber,
+							'customerRef' = arguments.requestBean.getAccountID(),
 							'firstName' = arguments.requestBean.getAccountFirstName(),
 							'lastName' = arguments.requestBean.getAccountLastName(),
-							'customerRef' = arguments.requestBean.getAccountID(),
 							'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
 							'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
 							'billToCity' = arguments.requestBean.getBillingCity(),
@@ -177,72 +169,63 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 							'billToCountry' = arguments.requestBean.getBillingCountryCode()
 						}
 					}
-					// 'customFields'= {
-				       //'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
-					// },
 				};
-				
-				// writeDump(var="*** 1st requestData");	
-				// writeDump(var=requestData);	
-				
+	
 				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
-				
-				// writeDump(var="*** 1st responseData");
-				// writeDump(var=responseData);
-				
+
 				if (!responseBean.hasErrors()) {
 					arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
 				}
-				
-				// writeDump(var="*** 1st arguments.responseBean");
-				// writeDump(var=arguments.responseBean);
-				
+
 				if (!responseBean.hasErrors()) {
 					requestData = {
 						'token' = responseData.token,
 						'card' = {
-							'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
-							'expirationMonth' = LSParseNumber(arguments.requestBean.getExpirationMonth()),
-							'expirationYear' = LSParseNumber(arguments.requestBean.getExpirationYear()), 
 							'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
-							'securityCode' = LSParseNumber(arguments.requestBean.getSecurityCode())
+							'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
+							'expirationMonth' = arguments.requestBean.getExpirationMonth(),
+							'expirationYear' = arguments.requestBean.getExpirationYear(), 
+							'securityCode' = arguments.requestBean.getSecurityCode()
 						}
-						// 'customFields'= {
-				           //'orderID' = arguments.requestBean.getOrderID(),
-					       //'orderPaymentID' = arguments.requestBean.getOrderPaymentID()
-						// },
-						// 'customer'= {
-						// 	'customerRef' = arguments.requestBean.getAccountID(),
-						// 	'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-						// 	'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-						// 	'billToCity' = arguments.requestBean.getBillingCity(),
-						// 	'billToState' = arguments.requestBean.getBillingStateCode(),
-						// 	'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-						// 	'billToCountry' = arguments.requestBean.getBillingCountryCode(),
-						// },
-						// 'processingOptions' = {
-						// 	'verifyAvs' = setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
-						// 	'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)
-						// }
 					};
 
 					// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 					responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
-				
-				// writeDump(var="*** 2nd requestData");
-				// writeDump(var=requestData);
-				
-				// writeDump(var="*** 2nd responseData");
-				// writeDump(var=responseData);
-				
-				
+					
+					// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
+					var responseDataAvsCode = "";
+					
+					if (!isNull(responseData.avsResults.matchAddress) 
+					and !isNull(responseData.avsResults.matchPostal)){
+						if (responseData.avsResults.matchAddress===true and responseData.avsResults.matchPostal===true){
+							responseDataAvsCode = "D";
+						}else if (responseData.avsResults.matchAddress===false and responseData.avsResults.matchPostal===true){
+							responseDataAvsCode = "Z";
+						}else if (responseData.avsResults.matchAddress===false and responseData.avsResults.matchPostal===false){
+							responseDataAvsCode = "C";
+						}else if (responseData.avsResults.matchAddress===true and responseData.avsResults.matchPostal===false){
+							responseDataAvsCode = "A";
+						}
+					}else if (!isNull(responseData.avsResults.matchAddress) 
+					and responseData.avsResults.matchAddress===true
+					and isNull(responseData.avsResults.matchPostal)){
+						responseDataAvsCode = "B";
+					}else if (
+					isNull(responseData.avsResults.matchAddress) 
+					and !isNull(responseData.avsResults.matchPostal)
+					and responseData.avsResults.matchPostal===true){
+						responseDataAvsCode = "P";
+					}else {
+						responseDataAvsCode = "E";
+					}
+
 					// Extract data and set as part of the responseBean
 					if (!responseBean.hasErrors()) {
 						arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
 						arguments.responseBean.setProviderToken(responseData.token.token);
 						arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
-						// arguments.responseBean.setAvsCode(responseData.cvcResults.gatewayMessage.cvvresponse);
+						arguments.responseBean.setAvsCode(responseDataAvsCode);
 
 						arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
 						arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
@@ -253,31 +236,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
-					
-				// writeDump(var="*** arguments.responseBean");
-				// writeDump(var=arguments.responseBean);
 					}
 				}
 			} else {
 				throw('Attempting to generate token. The payment method used already had a valid token');
-
-				// Uneccessary to make API request because same token generated during accountPaymentMethod create is valid for subsequent authorization requests
-				if (!responseBean.hasErrors()) {
-					// arguments.responseBean.setProviderToken(responseData.token.token);
-					arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
-					arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
-					// arguments.responseBean.setAvsCode(responseData.cvcResults.gatewayMessage.cvvresponse);
-					
-					arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
-					arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
-					arguments.responseBean.addMessage(messageName="nexio.kountResponse.rules", message="#responseData.kountResponse.rules#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
-				}
 			}
 		}
 		
