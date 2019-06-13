@@ -245,74 +245,60 @@
                 </div>
             </div>
             
-            <div class="container-fluid">
-                <div class="col-12">
-                    <div class="dashboard_sec">
-                        <div class="row top_bar">
-                            
-                            <div class="col-xl-3 col-md-6">
-                                <div class="inner orange-bg">
-                                    <span class="icon"><i class="fa fa-shopping-cart"></i></span>
-                                    <div class="right_side">
-                                        <div class="heading">
-                                            <h2>Orders</h2>
-                                            <span class="value">Today</span>
-                                        </div>
-                                        <div class="detail">
-                                            <span class="order">2,127</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <div class="col-xl-3 col-md-6">
-                                <div class="inner blue-bg">
-                                    <span class="icon"><i class="fa fa-dollar"></i></span>
-                                    <div class="right_side">
-                                        <div class="heading">
-                                            <h2>Revenue</h2>
-                                            <span class="value">This Month</span>
-                                        </div>
-                                        <div class="detail">
-                                            <span class="amount">$<strong>9,232,245</strong></span>
-                                            <span class="number">^10% &nbsp;($8,232,245)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <div class="col-xl-3 col-md-6">
-                                <div class="inner red-bg">
-                                    <span class="icon"><i class="fa fa-dollar"></i></span>
-                                    <div class="right_side">
-                                        <div class="heading">
-                                            <h2>Revenue</h2>
-                                            <span class="value">Today</span>
-                                        </div>
-                                        <div class="detail">
-                                            <span class="amount">$<strong>42,245</strong></span>
-                                            <span class="number">2,425 sales</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <div class="col-xl-3 col-md-6">
-                                <div class="inner white-bg">
-                                    <span class="icon"><i class="fa fa-star"></i></span>
-                                    <div class="right_side">
-                                        <div class="heading">
-                                            <h2>Neque</h2>
-                                            <span class="value">porro</span>
-                                        </div>
-                                        <div class="detail">
-                                            <a class="btn" href="#">minim</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
+<!--- HTML MARKUP FOR REPORTING CARDS --->
+				<cfif $.slatwall.getLoggedInFlag()  >
+ 					<div class="Mcard-wrapper col-md-12">
+		                <div class="col-xs-3">
+		                    <div class="Mcard">
+		                        <div class="Mcard-body ">
+		                           <div><h1> $5,216 </h1></div>
+		                           <div><img src="/assets/images/piggy-bank-1.png" alt="Piggy Bank"></div>
+		                        </div>
+		                        <div class="Mcard-footer Mcard-footer1">
+		                            <div><p>Sales This Week </p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
+		                        </div>
+		                    </div>
+		                </div>
+
+ 		                <div class="col-xs-3">
+		                    <div class="Mcard">
+		                        <div class="Mcard-body ">
+		                           <div><h1> 37 </h1></div>
+		                           <div><img src="/assets/images/shopping-bag-gray.png" alt="Shopping Bags"></div>
+		                        </div>
+		                        <div class="Mcard-footer Mcard-footer2">
+		                            <div><p>Orders This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
+		                        </div>
+		                    </div>
+		                </div>
+
+ 		                <div class="col-xs-3">
+		                    <div class="Mcard">
+		                        <div class="Mcard-body ">
+		                           <div><h1> 8 </h1></div>
+		                           <div><img src="/assets/images/user-2.png" alt="User Icon"></div>
+		                        </div>
+		                        <div class="Mcard-footer Mcard-footer3">
+		                            <div><p>New Accounts This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="col-xs-3">
+		                    <div class="Mcard">
+		                        <div class="Mcard-body ">
+		                           <div><h1> 274 </h1></div>
+		                           <div><img src="/assets/images/dollar-symbol-gray.png" alt="User Icon"></div>
+		                        </div>
+		                        <div class="Mcard-footer Mcard-footer4">
+		                            <div><p>Popular Item This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
+		                        </div>
+		                    </div>
+		                </div>
+		    		</div>
+
+
                         </div><!-- end of .top_bar -->
+                        
                         
                         <div class="row custom-dropdown">
                             <div class="col-xl-3 col-md-6">
@@ -334,8 +320,8 @@
                                       <option>Ketchup</option>
                                       <option>Relish</option>
                                     </select>
-                                </div>
-                            </div>
+                                </div> 
+                            </div> 
                         </div><!-- end of .custom-dropdown -->
                         
                     </div><!-- end of .dashboard_sec -->
