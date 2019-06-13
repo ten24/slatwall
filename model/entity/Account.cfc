@@ -186,7 +186,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="oldDtxName4" ormtype="string";
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
- property name="commStatusUser" ormtype="string";//CUSTOM PROPERTIES END
+ property name="commStatusUser" ormtype="string";
+ property name="accountNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
