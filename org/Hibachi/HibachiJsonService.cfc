@@ -105,7 +105,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	    createPermissionJson(permissionGroup.getPermissionGroupID(),permissionGroup.getPermissionsByDetails(true));
     	}
     }
-
+    
     //permission types are entity and action
     public void function createPermissionJson(required string permissionType,required struct permissionDetails){
          var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/permissions";
@@ -116,12 +116,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(arguments.permissionType=='entity'){
             var jsonStruct = {};
             for(var entityName in arguments.permissionDetails){
+                entityName = lcase(entityName);
                 var entityStruct = arguments.permissionDetails[entityName];
                 jsonStruct[entityName] = {};
                 for(var propertyRelationshipTypeKey in entityStruct){
+                    propertyRelationshipTypeKey=lcase(propertyRelationshipTypeKey);
                     var propertyRelationshipTypeValue = arguments.permissionDetails[entityName][propertyRelationshipTypeKey];
                     jsonStruct[entityName][propertyRelationshipTypeKey]={};
                     for(var propertyName in propertyRelationshipTypeValue){
+                        propertyName = lcase(propertyName);
                         jsonStruct[entityName][propertyRelationshipTypeKey][propertyName]=true;
                     }
                 }
@@ -129,7 +132,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             arguments.permissionDetails = jsonStruct;
         }
         //format permission group data to lighten json
-        if(arguments.permissionType!='entity' && arguments.permissionType!='action' && arguments.permissionTYpe=='402828ee565b36220157907aa5a0330f'){
+        if(arguments.permissionType!='entity' && arguments.permissionType!='action'){
             var jsonStruct = {};
             for(var permissionTypeKey in arguments.permissionDetails){
                 var permissionTypeValue = arguments.permissionDetails[permissionTypeKey];
@@ -184,6 +187,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     }
                     if(structKeyExists(permissionTypeValue,'entities')){
                         for(var entityName in permissionTypeValue.entities){
+                            entityName = lcase(entityName);
                             var entityNameValue = permissionTypeValue.entities[entityName];
                             jsonStruct['entity']['entities'][entityName]={};
                             if(structKeyExists(entityNameValue,'permission')){
@@ -197,6 +201,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             if(structKeyExists(entityNameValue,'properties')){
                                 jsonStruct['entity']['entities'][entityName]['properties']={};
                                 for(var propertyNameKey in entityNameValue.properties){
+                                    propertyNameKey = lcase(propertyNameKey);
                                     var propertyNameValue = entityNameValue.properties[propertyNameKey];
                                     jsonStruct['entity']['entities'][entityName]['properties'][propertyNameKey]={};
                                     for(var key in propertyNamevalue){
