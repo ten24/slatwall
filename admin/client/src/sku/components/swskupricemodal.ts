@@ -5,6 +5,7 @@ var swSkuPriceModalHTML = require("html-loader!sku/components/skupricemodal");
 class SWSkuPriceModalController{
     
     public productId:string;
+    public promotionRewardId:string;
     public pageRecord:any; 
     public sku:any;
     public skuOptions:any;
@@ -46,17 +47,25 @@ class SWSkuPriceModalController{
         public observerService, 
         public skuPriceService,
         public utilityService,
+        public collectionConfigService,
         public scopeService,
-        public $scope
+        public $scope,
+        public $timeout
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "skuPriceForm" + this.utilityService.createID(16);
-        this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        if(angular.isDefined(this.productId)){
+            this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        } else if (angular.isDefined(this.promotionRewardId)){
+            var collectionConfigStruct = angular.fromJson(this.skuCollectionConfig);
+            $timeout(()=>{
+                this.skuCollectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(collectionConfigStruct);
+            });
+        }
         //hack for listing hardcodeing id
         this.listingID = 'pricingListing';
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
         this.observerService.attach(this.inlineSave, "SAVE_SKUPRICE");
-        
     }
     
     
@@ -78,6 +87,7 @@ class SWSkuPriceModalController{
 
     public initData (pageRecord?:any) {
         this.pageRecord = pageRecord;
+        
         if(pageRecord){
            let skuPriceData = {
                 skuPriceID : pageRecord.skuPriceID,
@@ -312,12 +322,14 @@ class SWSkuPriceModal implements ng.IDirective{
         sku:"=?",
         pageRecord:"=?",
         productId:"@?",
+        promotionRewardId:"@?",
         minQuantity:"@?",
         maxQuantity:"@?",
         priceGroupId:"@?",
         currencyCode:"@?",
         eligibleCurrencyCodeList:"@?",
         defaultCurrencyOnly:"=?",
+        skuCollectionConfig:"@?",
         disableAllFieldsButPrice:"=?"
     };
     public controller = SWSkuPriceModalController;

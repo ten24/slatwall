@@ -75,6 +75,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 
 	// Related Object Properties (one-to-many)
 	property name="promotionRewardCurrencies" singularname="promotionRewardCurrency" cfc="PromotionRewardCurrency" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
+	property name="skuPrices" singularname="skuPrice" cfc="SkuPrice" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";

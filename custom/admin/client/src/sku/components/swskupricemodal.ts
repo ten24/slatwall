@@ -12,8 +12,10 @@ class SWSkuPriceModalController extends SkuPriceModalController{
         public observerService, 
         public skuPriceService,
         public utilityService,
+        public collectionConfigService,
         public scopeService,
-        public $scope
+        public $scope,
+        public $timeout
     ){
         super(  
             $hibachi,
@@ -23,8 +25,10 @@ class SWSkuPriceModalController extends SkuPriceModalController{
             observerService, 
             skuPriceService,
             utilityService,
+            collectionConfigService,
             scopeService,
-            $scope
+            $scope,
+            $timeout
         );
         this.observerService.detachByEvent('EDIT_SKUPRICE'); // Detach core event
         this.observerService.attach(this.initData, "EDIT_SKUPRICE"); // Attach custom event

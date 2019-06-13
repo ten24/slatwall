@@ -65,18 +65,79 @@ Notes:
 
         <cfset local.includedSkuPricesCollection = $.slatwall.getService('HibachiService').getSkuPriceCollectionList() />
         <cfset local.includedSkuPricesCollection.setDisplayProperties('sku.skuCode,currencyCode,price',{'isVisible': true, 'isSearchable': true, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('personalVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('taxableAmount','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('commissionableVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailCommission','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('productPackVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailValueVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('personalVolume','Personal Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('taxableAmount','Taxable Amount',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('commissionableVolume','Commissionable Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailCommission','Retail Commission',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('productPackVolume','Product Pack Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailValueVolume','Retail Value Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isEditable': true, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addFilter('promotionReward.promotionRewardID', rc.promotionReward.getPromotionRewardID()) />
+       
+        <cfset local.collectionConfig = getHibachiScope().getService('HibachiUtilityService').hibachiHTMLEditFormat(local.includedSkuPricesCollection.getCollectionConfig()) />
+        <cfset local.includedSkusCollectionConfig = getHibachiScope().getService('HibachiUtilityService').hibachiHTMLEditFormat(rc.promotionReward.getIncludedSkusCollection().getCollectionConfig()) />
+        
+        <div class="pull-right">
+            <sw-action-caller
+                    data-event="EDIT_SKUPRICE"
+                    data-payload="undefined"
+                    data-class="btn btn-primary btn-md"
+                    data-icon="plus"
+                    data-text="Add Sku Price"
+                    data-iconOnly="false">
                 
-        <hb:HibachiListingDisplay 
-            collectionList="#local.includedSkuPricesCollection#" 
-            collectionConfigFieldName="includedSkuPricesCollectionConfig" 
-            edit="#rc.edit#" 
-            recordDeleteEvent="REMOVE_PROMOTIONSKUPRICE"
-            displaytype="plainTitle"/>
+            </sw-action-caller>
+        </div>
+        <hb:hibachiListingDisplay collectionList="#local.includedSkuPricesCollection#"
+                                  recordEditEvent="EDIT_SKUPRICE"
+                                  recordDeleteEvent="DELETE_SKUPRICE"
+                                  recordActions="[{
+                                                    'event' : 'SAVE_SKUPRICE',
+                                                    'icon' : 'floppy-disk',
+                                                    'iconOnly' : true
+                                                }]"
+                                  listingID="pricingListing"
+        />
+        <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>
+        <sw-sku-price-modal data-promotion-reward-id="#rc.promotionreward.getPromotionRewardID()#"
+                            data-sku-collection-config="#local.includedSkusCollectionConfig#"
+        ></sw-sku-price-modal>
+                
+        <!---<div class="pull-right">
+                    <sw-action-caller
+                            data-event="EDIT_SKUPRICE"
+                            data-payload="undefined"
+                            data-class="btn btn-primary btn-md"
+                            data-icon="plus"
+                            data-text="Add Sku Price"
+                            data-iconOnly="false">
+                        
+                    </sw-action-caller>
+                </div>
+                <!--hack forcing listing id to pricing listing-->
+                <div>
+                    <sw-listing-display
+                            data-has-search="true"
+                            data-is-angular-route="false"
+                            data-angular-links="false"
+                            data-has-action-bar="false"
+                            data-base-entity-name="SkuPrice"
+                            data-actions="[{
+                                'event' : 'SAVE_SKUPRICE',
+                                'icon' : 'floppy-disk',
+                                'iconOnly' : true
+                            }]"
+                            data-record-edit-event="EDIT_SKUPRICE"
+                            data-record-delete-event="DELETE_SKUPRICE"
+                            data-collection-config="#local.collectionConfig#"
+                            data-using-personal-collection="true"
+                            data-show-report="false"
+                    >
+                            
+                    </sw-listing-display>
+                </div>
+                
+                <sw-sku-price-modal data-promotion-id="{{swPricingManager.productId}}"></sw-sku-price-modal>
+                
+                <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>--->
     </cfoutput>
