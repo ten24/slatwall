@@ -17,6 +17,6 @@ component accessors="true" extends="AuthorizeNetRequestObject"{
 		createCustomerProfileRequest['merchantAuthentication'] = getMerchantAuthentication();
 		createCustomerProfileRequest['profile'] = getCustomerProfile().getData();
 		var data = {'createCustomerProfileRequest'=createCustomerProfileRequest};
-		return strictSerializeJson(data);
+		return getService("HibachiUtilityService").strictSerializeJson(data);
 	}
 }

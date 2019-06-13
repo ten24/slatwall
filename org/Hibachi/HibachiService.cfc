@@ -1290,6 +1290,21 @@
 		}
 		
 		
+		public string function getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier) {
+			var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
+
+			var object =  getEntityObject(lastEntityName);
+			var propertyName = listLast(arguments.propertyIdentifier, '.');
+			if(
+				!isNull(object)
+				&& !isSimpleValue(object)
+				&& structKeyExists(object.getPropertyMetaData(propertyName),'ormtype')
+			) {
+				return object.getPropertyMetaData(propertyName).ormtype;
+			}
+			return "";
+		}
+		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(
 			required any collectionList, required string entityName, required string propertyIdentifier, string inversePropertyIdentifier
 		){

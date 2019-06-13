@@ -75,7 +75,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
 			taxDocumentCommitType = {fieldType="select", valueOptions=[
 				{name="Commit Tax Documents When Order Closes",value="commitOnClose"},
-				{name="Commit Tax Documents Upon Delivery",value="commitOnDelivery"},
+				{name="Commit Tax Documents Upon Delivery",value="commitOnDelivery"}
 			], defaultValue="commitOnClose"},
 			companyCode = {fieldType="text"},
 			customerUsageTypePropertyIdentifier = {fieldType="text"},

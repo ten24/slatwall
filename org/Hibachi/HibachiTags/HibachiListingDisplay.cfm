@@ -88,7 +88,7 @@
 	<cfparam name="attributes.exportAction" type="string" default="" />
 	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 	<cfparam name="attributes.personalCollectionIdentifier" type="string" default="" />
-
+	<cfparam name="attributes.personalCollectionKey" type="string" default="" />
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
@@ -118,6 +118,11 @@
 				>
 				</span>
 			</cfif>
+			
+			<cfif !len(attributes.personalCollectionKey)>
+				<cfset personalCollectionKey = hash(serializeJson(attributes.collectionList.getCollectionConfigStruct()))/>
+			</cfif>
+			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-title="'#attributes.title#'"
@@ -125,6 +130,9 @@
 			    data-collection-config="#scopeVariableID#"
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
+				</cfif>
+				<cfif len(attributes.personalCollectionKey)>
+					data-personal-collection-key="#attributes.personalCollectionKey#"
 				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
