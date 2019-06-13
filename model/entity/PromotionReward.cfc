@@ -186,12 +186,12 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 			if(!isNull(skuPrice)){
 				return skuPrice.getPrice();
 			}
+		}else{
+			if(!structKeyExists(variables,'amount')){
+				variables.amount = 0;
+			}
+			return variables.amount;
 		}
-
-		if(!structKeyExists(variables,'amount')){
-			variables.amount = 0;
-		}
-		return variables.amount;
 	}
 
 	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode){
@@ -677,7 +677,7 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
 	}
 	
 	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode){
-		
+
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
 			if(structKeyExists(arguments,'currencyCode')){
@@ -687,15 +687,14 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
 			}
 			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,currencyCode);
 			if(!isNull(skuPrice)){
-
 				return skuPrice.invokeMethod('get#customPriceField#');
 			}
+		}else{
+    		if(!structKeyExists(variables,'#customPriceField#Amount')){
+    			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
+    		}
+    		return variables['#customPriceField#Amount'];
 		}
-		
-		if(!structKeyExists(variables,'#customPriceField#Amount')){
-			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
-		}
-		return variables['#customPriceField#Amount'];
 	}
     //CUSTOM FUNCTIONS END
 }

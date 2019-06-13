@@ -878,22 +878,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		var rewardAmount = arguments.reward.invokeMethod(amountMethod,amountParams);
-		
-		switch(reward.getAmountType()) {
-			case "percentageOff" :
-				discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (rewardAmount/100)));
-				break;
-			case "amountOff" :
-				discountAmountPreRounding = rewardAmount * quantity;
-				break;
-			case "amount" :
-				if(structKeyExists(arguments,'sku')){
-				discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - rewardAmount) * arguments.quantity));
-				}else{
+		if(!isNull(rewardAmount)){
+			switch(reward.getAmountType()) {
+				case "percentageOff" :
+					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (rewardAmount/100)));
+					break;
+				case "amountOff" :
+					discountAmountPreRounding = rewardAmount * quantity;
+					break;
+				case "amount" :
 					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - rewardAmount) * arguments.quantity));
-				}
-				break;
-        }
+					break;
+	        }
+		}else{
+			discountAmountPreRounding = 0;
+		}
 
 		if(!isNull(reward.getRoundingRule())) {
 			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=val(getService('HibachiUtilityService').precisionCalculate(originalAmount - discountAmountPreRounding)), roundingRule=reward.getRoundingRule());

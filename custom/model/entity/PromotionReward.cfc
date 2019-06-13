@@ -101,12 +101,12 @@ component {
 			if(!isNull(skuPrice)){
 				return skuPrice.invokeMethod('get#customPriceField#');
 			}
+		}else{
+    		if(!structKeyExists(variables,'#customPriceField#Amount')){
+    			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
+    		}
+    		return variables['#customPriceField#Amount'];
 		}
-		
-		if(!structKeyExists(variables,'#customPriceField#Amount')){
-			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
-		}
-		return variables['#customPriceField#Amount'];
 	}
     
 }
