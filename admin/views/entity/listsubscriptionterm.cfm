@@ -80,6 +80,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#subscriptionTermCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(subscriptionTermCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(subscriptionTermCollectionList.getCollectionObject())#"
 	>

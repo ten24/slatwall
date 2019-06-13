@@ -2545,11 +2545,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!this.getNewFlag()){
 				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
 				reportCacheKey &= getIgnorePeriodInterval();
-				
-			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
-				return getService('HibachiCacheService').getCachedValue(reportCacheKey);
+				if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
+					return getService('HibachiCacheService').getCachedValue(reportCacheKey);
 				}
 			}
+			
+			
 			
 		
 			
