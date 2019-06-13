@@ -88376,12 +88376,279 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector) {
+    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector, utilityService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$q = $q;
         this.appConfig = appConfig;
         this.$injector = $injector;
+        this.utilityService = utilityService;
+        this.isSuperUser = function () {
+            return _this.$rootScope.slatwall.role == 'SuperUser';
+        };
+        this.authenticateActionByAccount = function (action, processContext) {
+            var authDetails = _this.getActionAuthenticationDetailsByAccount(action, processContext);
+            return authDetails.authorizedFlag;
+        };
+        this.getActionAuthenticationDetailsByAccount = function (action, processContext) {
+            var authDetails = {
+                authorizedFlag: false,
+                superUserAccessFlag: false,
+                anyLoginAccessFlag: false,
+                anyAdminAccessFlag: false,
+                publicAccessFlag: false,
+                entityPermissionAccessFlag: false,
+                actionPermissionAccessFlag: false,
+                forbidden: false,
+                invalidToken: false,
+                timeout: false
+            };
+            if (_this.isSuperUser()) {
+                authDetails.authorizedFlag = true;
+                authDetails.superUserAccessFlag = true;
+                return authDetails;
+            }
+            var subsystemName = action.split(':')[0];
+            var sectionName = action.split(':')[1].split('.')[0];
+            if (action.split('.').length > 1) {
+                var itemName = action.split('.')[1];
+            }
+            else {
+                var itemName = 'default';
+            }
+            if ((_this.utilityService.left(itemName, 10) == 'preprocess' || _this.utilityService.left(itemName, 7) == 'process')
+                && processContext
+                && processContext.length) {
+                itemName += '_processContext';
+            }
+            var actionPermissions = _this.getActionPermissionDetails();
+            // Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
+            if (!actionPermissions[subsystemName]
+                || !actionPermissions[subsystemName].hasSecureMethods
+                || !actionPermissions[subsystemName].sections[sectionName]) {
+                authDetails.authorizedFlag = true;
+                authDetails.publicAccessFlag = true;
+                return authDetails;
+            }
+            // Check if the action is public, if public no need to worry about security
+            if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].publicMethods, itemName) != -1) {
+                authDetails.authorizedFlag = true;
+                authDetails.publicAccessFlag = true;
+                return authDetails;
+            }
+            // All these potentials require the account to be logged in, and that it matches the hibachiScope
+            if (_this.$rootScope.slatwall.account
+                && _this.$rootScope.slatwall.account.accountID
+                && _this.$rootScope.slatwall.account.accountID.length) {
+                // Check if the action is anyLogin, if so and the user is logged in, then we can return true
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].anyLoginMethods, itemName) != -1) {
+                    authDetails.authorizedFlag = true;
+                    authDetails.anyLoginAccessFlag = true;
+                    return authDetails;
+                }
+                // Look for the anyAdmin methods next to see if this is an anyAdmin method, and this user is some type of admin
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].anyAdminMethods, itemName) != -1) {
+                    authDetails.authorizedFlag = true;
+                    authDetails.anyAdminAccessFlag = true;
+                    return authDetails;
+                }
+                // Check to see if this is a defined secure method, and if so we can test it against the account
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].secureMethods, itemName) != -1) {
+                    var pgOK = false;
+                    var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                    if (accountPermissionGroups) {
+                        for (var p in accountPermissionGroups) {
+                            pgOK = _this.authenticateSubsystemSectionItemActionByPermissionGroup(subsystemName, sectionName, itemName, accountPermissionGroups[p]);
+                            if (pgOK) {
+                                break;
+                            }
+                        }
+                    }
+                    if (pgOK) {
+                        authDetails.authorizedFlag = true;
+                        authDetails.actionPermissionAccessFlag = true;
+                    }
+                    return authDetails;
+                }
+                //start line130
+                // For process / preprocess strip out process context from item name		
+                if (itemName.split('_').length > 1) {
+                    itemName = itemName.split('_')[0];
+                }
+                // Check to see if the controller is an entity, and then verify against the entity itself
+                if (_this.getActionPermissionDetails()[subsystemName].sections[sectionName].entityController) {
+                    if (_this.utilityService.left(itemName, 6) == "create") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 6) == "detail") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("read", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 6) == "delete") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("delete", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "edit") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("update", _this.utilityService.right(itemName, itemName.length - 4));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "list") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("read", _this.utilityService.right(itemName, itemName.length - 4));
+                    }
+                    else if (_this.utilityService.left(itemName, 10) == "reportlist") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("report", _this.utilityService.right(itemName, itemName.length - 10));
+                    }
+                    else if (_this.utilityService.left(itemName, 15) == "multiPreProcess") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 15));
+                    }
+                    else if (_this.utilityService.left(itemName, 12) == "multiProcess") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 12));
+                    }
+                    else if (_this.utilityService.left(itemName, 10) == "preProcess") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 10));
+                    }
+                    else if (_this.utilityService.left(itemName, 7) == "process") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 7));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "save") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 4));
+                        if (!authDetails.authorizedFlag) {
+                            authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("update", _this.utilityService.right(itemName, itemName.length - 4));
+                        }
+                    }
+                    if (authDetails.authorizedFlag) {
+                        authDetails.entityPermissionAccessFlag = true;
+                    }
+                }
+                //TODO: see if this applies on the client side and how
+                // Check to see if the controller is for rest, and then verify against the entity itself
+                /*if(this.getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
+                    //require a token to validate
+                    if (StructKeyExists(arguments.restInfo, "context")){
+                        var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
+                    }else{
+                        var hasProcess = false;
+                    }
+                    if(hasProcess){
+                        authDetails.authorizedFlag = true;
+                    }else if(itemName == 'get'){
+                        authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+                    }else if(itemName == 'post'){
+                        if(arguments.restInfo.context == 'get'){
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+                        }else if(arguments.restInfo.context == 'save'){
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=arguments.restInfo.entityName, account=arguments.account);
+                            if(!authDetails.authorizedFlag) {
+                                authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=arguments.restInfo.entityName, account=arguments.account);
+                            }
+                        }else{
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType=arguments.restInfo.context,entityName=arguments.restInfo.entityName,account=arguments.account);
+                        }
+                    }
+                    if(authDetails.authorizedFlag) {
+                        authDetails.entityPermissionAccessFlag = true;
+                    }else{
+                        authDetails.forbidden = true;
+                    }
+                        
+                }*/
+            }
+            return authDetails;
+        };
+        this.authenticateEntityCrudByAccount = function (crudType, entityName) {
+            crudType = _this.utilityService.toCamelCase(crudType);
+            entityName = entityName.toLowerCase();
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+            if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                for (var i in accountPermissionGroups) {
+                    var pgOK = _this.authenticateEntityByPermissionGroup(crudType, entityName, accountPermissionGroups[i]);
+                    if (pgOK) {
+                        return true;
+                    }
+                }
+            }
+            // If for some reason not of the above were meet then just return false
+            return false;
+        };
+        this.authenticateEntityByPermissionGroup = function (crudType, entityName, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            var permissionDetails = _this.getEntityPermissionDetails();
+            // Check for entity specific values
+            if (permissions.entity.entities[entityName]
+                && permissions.entity.entities[entityName]["permission"]
+                && permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
+                if (permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            // Check for an inherited permission
+            if (permissionDetails[entityName]
+                && permissionDetails[entityName]["inheritPermissionEntityName"]) {
+                return _this.authenticateEntityByPermissionGroup(crudType, permissionDetails[entityName].inheritPermissionEntityName, permissionGroup);
+            }
+            // Check for generic permssion
+            if (permissions.entity["permission"]
+                && permissions.entity.permission["allow" + crudType + "Flag"]
+                && permissions.entity.permission["allow" + crudType + "Flag"]) {
+                return true;
+            }
+            return false;
+        };
+        this.authenticateSubsystemSectionItemActionByPermissionGroup = function (subsystem, section, item, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem].sections[section]
+                && permissions.action.subsystems[subsystem].sections[section].items[item]) {
+                return;
+                permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
+                    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag;
+            }
+            return _this.authenticateSubsystemSectionActionByPermissionGroup(subsystem = subsystem, section = section, permissionGroup = permissionGroup);
+        };
+        this.authenticateSubsystemSectionActionByPermissionGroup = function (subsystem, section, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem].sections[section]
+                && permissions.action.subsystems[subsystem].sections[section]["permission"]) {
+                if (permissions.action.subsystems[subsystem].sections[section].permission.allowActionFlag
+                    && permissions.action.subsystems[subsystem].sections[section].permission.allowActionFlag) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            return _this.authenticateSubsystemActionByPermissionGroup(subsystem = subsystem, permissionGroup = permissionGroup);
+        };
+        this.authenticateSubsystemActionByPermissionGroup = function (subsystem, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem]["permission"]) {
+                if (permissions.action.subsystems[subsystem].permission.allowActionFlag
+                    && permissions.action.subsystems[subsystem].permission.allowActionFlag) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            return false;
+        };
+        this.getActionPermissionDetails = function () {
+            return _this.$rootScope.slatwall.authInfo.action;
+        };
+        this.getEntityPermissionDetails = function () {
+            return _this.$rootScope.slatwall.authInfo.entity;
+        };
         this.getUserRole = function () {
             return _this.$rootScope.slatwall.role;
         };
@@ -93068,6 +93335,10 @@ var UtilityService = /** @class */ (function (_super) {
         _this.isLowerCase = function (character) {
             return character == character.toLowerCase();
         };
+        _this.toCamelCase = function (s) {
+            return s.toUpperCase().split("")[0] + s.toLowerCase().slice(1);
+            ;
+        };
         _this.snakeToCapitalCase = function (s) {
             return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function (m) { return m[1].toUpperCase(); }).slice(1);
         };
@@ -93370,6 +93641,23 @@ var UtilityService = /** @class */ (function (_super) {
                 }
                 return val;
             });
+        };
+        _this.getCaseInsensitiveStructKey = function (obj, prop) {
+            prop = (prop + "").toLowerCase();
+            for (var p in obj) {
+                if (obj.hasOwnProperty(p) && prop == (p + "").toLowerCase()) {
+                    return p;
+                    break;
+                }
+            }
+        };
+        _this.listFindNoCase = function (list, value, delimiter) {
+            if (list === void 0) { list = ''; }
+            if (value === void 0) { value = ''; }
+            if (delimiter === void 0) { delimiter = ','; }
+            list = list.toLowerCase();
+            value = value.toLowerCase();
+            return _this.listFind(list, value, delimiter);
         };
         _this.listFind = function (list, value, delimiter) {
             if (list === void 0) { list = ''; }

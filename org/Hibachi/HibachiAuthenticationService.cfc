@@ -166,6 +166,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					authDetails.entityPermissionAccessFlag = true;
 				}
 			}
+			
 			// Check to see if the controller is for rest, and then verify against the entity itself
 			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
 				//require a token to validate
@@ -199,6 +200,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					
 				}
 			}
+			
 		}else{
 			authDetails.timeout = true;
 		}
