@@ -430,60 +430,6 @@ Notes:
  		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
-		
-		<!--- HTML MARKUP FOR REPORTING LAYOUT --->
-				<cfif $.slatwall.getLoggedInFlag() AND FindNoCase("?", $.slatwall.getURL()) LTE 0  >
-					
-					<div class="Mcard-wrapper col-md-12">
-		                <div class="col-xs-3">
-		                    <div class="Mcard">
-		                        <div class="Mcard-body ">
-		                           <div><h1> $5,216 </h1></div>
-		                           <div><img src="/assets/images/piggy-bank-1.png" alt="Piggy Bank"></div>
-		                        </div>
-		                        <div class="Mcard-footer Mcard-footer1">
-		                            <div><p>Sales This Week </p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
-		                        </div>
-		                    </div>
-		                </div>
-		                
-		                <div class="col-xs-3">
-		                    <div class="Mcard">
-		                        <div class="Mcard-body ">
-		                           <div><h1> 37 </h1></div>
-		                           <div><img src="/assets/images/shopping-bag-gray.png" alt="Shopping Bags"></div>
-		                        </div>
-		                        <div class="Mcard-footer Mcard-footer2">
-		                            <div><p>Orders This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
-		                        </div>
-		                    </div>
-		                </div>
-		                
-		                <div class="col-xs-3">
-		                    <div class="Mcard">
-		                        <div class="Mcard-body ">
-		                           <div><h1> 8 </h1></div>
-		                           <div><img src="/assets/images/user-2.png" alt="User Icon"></div>
-		                        </div>
-		                        <div class="Mcard-footer Mcard-footer3">
-		                            <div><p>New Accounts This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
-		                        </div>
-		                    </div>
-		                </div>
-		                <div class="col-xs-3">
-		                    <div class="Mcard">
-		                        <div class="Mcard-body ">
-		                           <div><h1> 274 </h1></div>
-		                           <div><img src="/assets/images/dollar-symbol-gray.png" alt="User Icon"></div>
-		                        </div>
-		                        <div class="Mcard-footer Mcard-footer4">
-		                            <div><p>Popular Item This Week</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
-		                        </div>
-		                    </div>
-		                </div>
-		    		</div>
-	    		
-	    		</cfif>
 	</body>
 </html>
 </cfoutput>
