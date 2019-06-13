@@ -186,12 +186,12 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 			if(!isNull(skuPrice)){
 				return skuPrice.getPrice();
 			}
-		}else{
-			if(!structKeyExists(variables,'amount')){
-				variables.amount = 0;
-			}
-			return variables.amount;
 		}
+		
+		if(!structKeyExists(variables,'amount')){
+			variables.amount = 0;
+		}
+		return variables.amount;
 	}
 
 	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode){
