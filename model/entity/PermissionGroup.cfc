@@ -86,8 +86,9 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	
 	public struct function getPermissionsByDetails(boolean excludeObjects=false) {
 		
-		var cacheKey = getPermissionsByDetailsCacheKey()&arguments.excludeObjects;
-		if(getService("HibachiCacheService").hasCachedValue(cacheKey)) {
+		var cacheKey = "#getPermissionsByDetailsCacheKey()##arguments.excludeObjects#";
+		//TODO: figure out issue with boolean cache keys
+		if(getService("hibachiCacheService").hasCachedValue(cacheKey)) {
 			variables.permissionsByDetails = getService("hibachiCacheService").getCachedValue(cacheKey);
 		}else{
 			
@@ -117,7 +118,7 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 				if(thisPermission.getAccessType() eq 'process'){
 					// Check to see if this is the 'core' or very top level permission
 					if(isNull(thisPermission.getEntityClassName())) {
-						if(!excludeObjects){
+						if(!arguments.excludeObjects){
 							variables.permissionsByDetails.process.permission = thisPermission;
 						}else{
 							variables.permissionsByDetails.process.permission = thisPermission.getStructRepresentation();
@@ -135,13 +136,13 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 						
 						// Check if this is a context level permission
 						if(isNull(thisPermission.getProcessContext())) {
-							if(!excludeObjects){
+							if(!arguments.excludeObjects){
 								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].permission = thisPermission;
 							}else{
 								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].permission = thisPermission.getStructRepresentation();
 							}
 						} else {
-							if(!excludeObjects){
+							if(!arguments.excludeObjects){
 								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].context[ thisPermission.getProcessContext() ] = thisPermission;
 							}else{
 								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].context[ thisPermission.getProcessContext() ] = thisPermission.getStructRepresentation();
@@ -172,13 +173,13 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 						
 						// Check if this is a property level permission
 						if(isNull(thisPermission.getPropertyName())) {
-							if(!excludeObjects){
+							if(!arguments.excludeObjects){
 								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].permission = thisPermission;
 							}else{
 								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].permission = thisPermission.getStructRepresentation();
 							}
 						} else {
-							if(!excludeObjects){
+							if(!arguments.excludeObjects){
 								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].properties[ thisPermission.getPropertyName() ] = thisPermission;
 							}else{
 								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].properties[ thisPermission.getPropertyName() ] = thisPermission.getStructRepresentation();
@@ -201,18 +202,19 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 					}
 					
 					if(!isNull( thisPermission.getSubsystem() ) && !isNull( thisPermission.getSection()) && !isNull(thisPermission.getItem())) {
-						if(!excludeObjects){
+						if(!arguments.excludeObjects){
 							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].items[ thisPermission.getItem() ] = thisPermission;	
 						}else{
 							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].items[ thisPermission.getItem() ] = thisPermission.getStructRepresentation();	
 						}
 					} else if (!isNull( thisPermission.getSubsystem() ) && !isNull( thisPermission.getSection())) {
-						if(!excludeObjects){
+						if(!arguments.excludeObjects){
 							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].permission = thisPermission;
 						}else{
-						}	variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].permission = thisPermission.getStructRepresentation();
+							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].permission = thisPermission.getStructRepresentation();
+						}	
 					} else {
-						if(!excludeObjects){
+						if(!arguments.excludeObjects){
 							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].permission = thisPermission;
 						}else{
 							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].permission = thisPermission.getStructRepresentation();

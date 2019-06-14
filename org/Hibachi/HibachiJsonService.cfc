@@ -132,7 +132,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             arguments.permissionDetails = jsonStruct;
         }
         //format permission group data to lighten json
-        if(arguments.permissionType!='entity' && arguments.permissionType!='action'){
+        if(arguments.permissionType!='entity' && arguments.permissionType!='action' && arguments.permissionType !='process'){
             var jsonStruct = {};
             for(var permissionTypeKey in arguments.permissionDetails){
                 var permissionTypeValue = arguments.permissionDetails[permissionTypeKey];
@@ -173,7 +173,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         }
                     }
                     
-                }else{
+                }else if(permissionTypeKey=='entity'){
                     
                     var jsonStruct['entity']={};
                     

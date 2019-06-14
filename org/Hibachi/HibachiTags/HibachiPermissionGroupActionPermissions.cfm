@@ -47,9 +47,14 @@
 									<cfif attributes.edit>
 										<cfset request.context.permissionFormIndex++ />
 										<cfset sectionFormIndex = request.context.permissionFormIndex />
+										<cftry>
 										<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='action', subsystem=subsystemName, section=sectionName) />
 										
 										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+										<cfcatch>
+												<cfdump var="#thisPermission#" top=2><cfabort>
+											</cfcatch>
+											</cftry>
 										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="action" />
 										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
 										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].section" value="#sectionName#" />
@@ -69,8 +74,9 @@
 										<cfif attributes.edit>
 											<cfset request.context.permissionFormIndex++ />
 											<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='action', subsystem=subsystemName, section=sectionName, item=itemName) />
-										
+											
 											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+											
 											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="action" />
 											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
 											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].section" value="#sectionName#" />
