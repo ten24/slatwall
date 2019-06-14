@@ -33255,9 +33255,6 @@ var SWSkuPriceModalController = /** @class */ (function () {
         };
         this.inlineSave = function (pageRecord) {
             _this.initData(pageRecord);
-            // this.$timeout(()=>{
-            //     this.save();
-            // },1000)    
             var formDataToPost = {
                 entityName: 'SkuPrice',
                 entityID: pageRecord['skuPriceID'],
@@ -33283,7 +33280,6 @@ var SWSkuPriceModalController = /** @class */ (function () {
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise.then(function (response) {
-                console.log("response: ", response);
                 _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
             });
         };

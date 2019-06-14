@@ -115,7 +115,6 @@ class SWSkuPriceModalController{
 		
 		return adminRequest.promise.then(
 		    (response)=>{
-		        console.log("response: ", response)
 		        this.listingService.notifyListingPageRecordsUpdate(this.listingID);
 		    });
     }
