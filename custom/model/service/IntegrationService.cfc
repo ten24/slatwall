@@ -35,10 +35,12 @@ component extends="Slatwall.model.service.IntegrationService" {
             }
             
             // writeDump(var=tokens, abort=true);
-    	
-        // 	writeDump(var=arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens), abort=true);
+            
+            arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
         	
-        	arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
+        	writeDump(var=arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens));
+        	
+        	return arguments.integration;
 
         } else {
             throw('IntegrationPackage for Nexio is not setup.');

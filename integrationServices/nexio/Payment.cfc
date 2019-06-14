@@ -172,14 +172,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				}
 			};
 			
-			writeDump(var="***requestData 1");
-			writeDump(var=requestData);
+			// writeDump(var="***requestData 1");
+			// writeDump(var=requestData);
 					
 			// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 
-			writeDump(var="***responseData 1");
-			writeDump(var=responseData);
+			// writeDump(var="***responseData 1");
+			// writeDump(var=responseData);
 			
 			if (!responseBean.hasErrors()) {
 				arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
@@ -268,24 +268,25 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		writeDump(var="***requestData");
 		writeDump(var=requestData);
 		
-		writeDump(var="***sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData)");
-		writeDump(var=sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData), abort=true);
+		writeDump(var="***responseBean");
+		writeDump(var=responseBean);
 		
-		responseData = sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
+		var responseDataDeleteToken = sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
 		
-		writeDump(var="***responseData");
-		writeDump(var=responseData);
+		writeDump(var="***BREAKING HERE");
+		writeDump(var="***responseDataDeleteToken");
+		writeDump(var=responseDataDeleteToken);
 		
-		if (!responseBean.hasErrors()) {
-			writeDump(var="***responseBean");
-			writeDump(var=responseBean);
+		// if (!responseBean.hasErrors()) {
+		// 	writeDump(var="***responseBean");
+		// 	writeDump(var=responseBean);
 			
-			// arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
+		// 	// arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
 			
-			// arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
-		} else {
-			throw('Attempting to delete token(s). Token array is invalid.');
-		}
+		// 	// arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
+		// } else {
+		// 	throw('Attempting to delete token(s). Token array is invalid.');
+		// }
 	}
 	
 	private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
@@ -499,7 +500,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	// 	}
 	// }
 	
-	private struct function sendHttpAPIRequest(required any requestBean, required any responseBean, required string transactionName, required struct data) {
+	private any function sendHttpAPIRequest(required any requestBean, required any responseBean, required string transactionName, required struct data) {
 		var apiUrl = setting(settingName='apiUrlTest', requestBean=arguments.requestBean);
 		var merchantID = setting(settingName='merchantIDTest', requestBean=arguments.requestBean);
 		var password = setting(settingName='passwordTest', requestBean=arguments.requestBean);
@@ -565,65 +566,72 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		var httpResponse = httpRequest.send().getPrefix();
 		
 		if (arguments.transactionName == 'deleteToken') {
-			var responseData = [];
+			var responseData = {};
+			
+			responseData = deserializeJSON(httpResponse.fileContent);
+			
+			writeDump(var="***responseData");
+			writeDump(var=responseData);
+			
+			return responseData;
 		} else {
 			var responseData = {};
-		}
 		
-		// Server error handling - Unavailable or Communication Problem
-		if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
-			arguments.responseBean.setStatusCode("ERROR");
-
-			// Public error message
-			arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
-
-			// Only for admin purposes
-			arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
-			
-			// No response from server
-			if (httpResponse.status_code == 0) {
-				arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
-
-			// Error response
+			// Server error handling - Unavailable or Communication Problem
+			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
+				arguments.responseBean.setStatusCode("ERROR");
+	
+				// Public error message
+				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
+	
+				// Only for admin purposes
+				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
+				
+				// No response from server
+				if (httpResponse.status_code == 0) {
+					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
+	
+				// Error response
+				} else {
+					arguments.responseBean.setStatusCode(httpResponse.status_code);
+					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
+	
+					// Convert JSON response
+					responseData = deserializeJSON(httpResponse.fileContent);
+					
+					// ---> Comment Out:
+					fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
+					// Comment Out: <---
+	
+					
+					if (structKeyExists(responseData, 'error')) {
+						arguments.responseBean.addMessage('errorCode', "#responseData.error#");
+					}
+	
+					if (structKeyExists(responseData, 'message')) {
+						// Add additional instructions for unauthorized error.
+						if (httpResponse.status_code == '401') {
+							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";
+						}
+	
+						arguments.responseBean.addMessage('errorMessage', "#httpResponse.statuscode#. #responseData.message#");
+					}
+				}
+	
+			// Server response successful
 			} else {
 				arguments.responseBean.setStatusCode(httpResponse.status_code);
-				arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
-
+	
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
 				// ---> Comment Out:
 				fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 				// Comment Out: <---
-
-				
-				if (structKeyExists(responseData, 'error')) {
-					arguments.responseBean.addMessage('errorCode', "#responseData.error#");
-				}
-
-				if (structKeyExists(responseData, 'message')) {
-					// Add additional instructions for unauthorized error.
-					if (httpResponse.status_code == '401') {
-						responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";
-					}
-
-					arguments.responseBean.addMessage('errorMessage', "#httpResponse.statuscode#. #responseData.message#");
-				}
 			}
-
-		// Server response successful
-		} else {
-			arguments.responseBean.setStatusCode(httpResponse.status_code);
-
-			// Convert JSON response
-			responseData = deserializeJSON(httpResponse.fileContent);
 			
-			// ---> Comment Out:
-			fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
-			// Comment Out: <---
+			return responseData;
 		}
-
-		return responseData;
 	}
 	
 	public any function testIntegration() {
