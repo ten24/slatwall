@@ -1082,7 +1082,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Change the status
-		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
+		this.updateOrderStatusBySystemCode(arguments.order, "ostCanceled");
 		arguments.order.setOrderCanceledDateTime(now());
 		
 		return arguments.order;
@@ -2134,7 +2134,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								}
 
 								// Update the order status
-								order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostNew") );
+								this.updateOrderStatusBySystemCode(arguments.order, "ostNew");
 
 								// Update the orderPlaced
 								order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
@@ -2242,7 +2242,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Change the status
-		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostOnHold") );
+		this.updateOrderStatusBySystemCode(arguments.order, "ostOnHold");
 
 		return arguments.order;
 	}
@@ -2374,7 +2374,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Change the status
-		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostProcessing") );
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 
 		// Call the update order status incase this needs to be changed to closed.
 		arguments.order = this.processOrder(arguments.order, {}, 'updateStatus');
@@ -2404,12 +2404,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			if(isOrderPaidFor && isOrderFullyDelivered)	{
-				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostClosed") );
+				this.updateOrderStatusBySystemCode(arguments.order, "ostClosed");
 			// The default case is just to set it to processing if only one thing is done
 			} else if(
 				!arguments.order.getPlaceOrderFlag()
 			){
-				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostProcessing") );
+				this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 			}
 
 		}
@@ -2511,11 +2511,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var orderItem in arguments.order.getOrderItems()){
 						var skuPrice = val(orderItem.getSkuPrice());
 						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
-	 					
+	 				
 	 					if(
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
 	 					){
-	 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
+	 						var userDefinedPrice = false;
+	 						if (!isNull(orderItem.getSku().getUserDefinedPriceFlag())){
+	 							userDefinedPrice = orderItem.getSku().getUserDefinedPriceFlag();
+	 						}
+	 						
+	 						if(!userDefinedPrice) {
 	 							orderItem.setPrice(SkuPriceByCurrencyCode);
 	 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 	 						}
@@ -4310,6 +4315,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
+	private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
+		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
+	}
+
 	// ==================  END:  Private Helper Functions =====================
 
 	// =================== START: Deprecated Functions ========================
@@ -4325,7 +4334,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrder_reopenOrder(required any order, struct data={}) {
-		arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostProcessing") );
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 		return arguments.order;
 	}
 

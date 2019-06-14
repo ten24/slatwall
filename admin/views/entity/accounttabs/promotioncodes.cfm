@@ -1,4 +1,5 @@
-/*
+<!---
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -25,6 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
+
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -32,6 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
+
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -39,61 +42,34 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
+
 Notes:
-	
-	Nexio Documentation: https://developer.nexiopay.com/
-	Tutorials: https://developer.nexiopaystg.com/tutorials.html
-	Live Tester: https://tester.nexiopaysandbox.com/
-	Sandbox Dashboard: https://dashboard.nexiopaysandbox.com/
-*/
-component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
-	
-	public any function init() {
-		return this;
-	}
-	
-	public string function getIntegrationTypes() {
-		return "payment";
-	}
-	
-	public string function getDisplayName() {
-		return "Nexio";
-	}
 
-	public struct function getSettings() {
-		var settings = {
-			apiUrlLive = {fieldType="text", defaultValue="https://api.nexiopay.com"},
-			apiUrlTest = {fieldType="text", defaultValue="https://api.nexiopaysandbox.com"},
-			checkFraud = {fieldType="yesno", defaultValue="1"},
-			merchantIDLive = {fieldType="text"},
-			merchantIDTest = {fieldType="text"},
-			passwordLive = {fieldType="password", encryptValue=true},
-			passwordTest = {fieldType="password", encryptValue=true},
-			publicKeyLive = {fieldType="text"},
-			publicKeyTest = {fieldType="text"},
-			testMode = {fieldType="yesno", defaultValue="1"},
-			usernameLive = {fieldType="text"},
-			usernameTest = {fieldType="text"},
-			verifyAvsSetting = {fieldType="select", defaultValue="3",
-			valueOptions=[
-				{name="Do not perform AVS check", value=0},
-				{name="Always save card regardless of result", value=1},
-				{name="Do not save card if the address match fails", value=2},
-				{name="Do not save card if the postal code match fails", value=3},
-				{name="Do not save the card if either the address match fails OR the postal code match fails", value=4},
-				{name="Do not save the card if both the address match AND the postal code match fail",value="5"}
-			]},
-			verifyCvcFlag = {fieldType="yesno", defaultValue="1"}
-		};
-		
-		return settings;
-	}
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	public boolean function getAllowSiteSpecificSettingsFlag() {
-		return true;
-	}
 
-	public string function getAllowedSiteSettingNames() {
-		return "checkFraud,verifyAvsSetting,verifyCvcFlag";
-	}
-}
+<cfparam name="rc.account" type="any" />
+
+<cfset local.promotionCodeCollectionList = getHibachiScope().getService('PromotionService').getPromotionCodeCollectionList() />
+<cfset local.displayPropertyList = "promotionCode,startDateTime,endDateTime,maximumUseCount,maximumAccountUseCount" />
+<cfset local.promotionCodeCollectionList.setDisplayProperties(
+    local.displayPropertyList,
+    {
+        isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+    }
+)/>
+
+<cfset local.promotionCodeCollectionList.addDisplayProperty("promotionCodeID") />
+<cfset local.promotionCodeCollectionList.addFilter("accounts.accountID", rc.account.getAccountID()) />
+
+<hb:HibachiListingDisplay collectionList="#local.promotionCodeCollectionList#"
+						  recordDetailAction="admin:entity.detailpromotioncode"
+						  recordEditAction="admin:entity.editpromotioncode"
+						  recordDetailActionProperty="promotionCode.promotionCodeID"
+						  recordDeleteAction="admin:entity.processAccount&processContext=removePromotionCode&sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"       
+						  >
+</hb:HibachiListingDisplay>
