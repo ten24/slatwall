@@ -23,6 +23,7 @@ class SWActionCallerController{
     public formController:any;
     public form:ng.IFormController;
     public authenticateActionByAccount:any;
+    public actionAuthenticated:boolean;
     //@ngInject
     constructor(
         private $scope,
