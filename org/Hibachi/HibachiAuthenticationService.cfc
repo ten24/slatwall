@@ -28,12 +28,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
 	
-	public boolean function authenticateActionByAccount(required string action, required any account) {
+	public boolean function authenticateActionByAccount(required string action, required any account, string processContext="") {
 		var authDetails = getActionAuthenticationDetailsByAccount(argumentcollection=arguments); 
 		return authDetails.authorizedFlag;
 	}
 	
-	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo, string processContext) {
+	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo, string processContext="") {
 		
 		var authDetails = {
 			authorizedFlag = false,
@@ -148,13 +148,13 @@ component output="false" accessors="true" extends="HibachiService" {
 				} else if ( left(itemName, 10) == "reportlist" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="report", entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 15) == "multiPreProcess" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-15), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-15), account=arguments.account);
 				} else if ( left(itemName, 12) == "multiProcess" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-12), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-12), account=arguments.account);
 				} else if ( left(itemName, 10) == "preProcess" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-10), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 7) == "process" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-7), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-7), account=arguments.account);
 				} else if ( left(itemName, 4) == "save" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 					if(!authDetails.authorizedFlag) {
@@ -210,6 +210,32 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public boolean function authenticateCollectionCrudByAccount(required string crudType, required any collection, required any account){
 		return authenticateEntityCrudByAccount(crudType=arguments.crudType, entityName=arguments.collection.getCollectionObject(), account=arguments.account);
+	}
+	
+	public boolean function authenticateProcessByAccount(required string processContext, required string entityName, required any account){
+		// Check if the user is a super admin, if true no need to worry about security
+		if( arguments.account.getSuperUserFlag() ) {
+			return true;
+		}
+		
+		var cacheKey = "authenticateProcess_#arguments.processContext##arguments.entityName##arguments.account.getPermissionGroupCacheKey()#";
+		
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			// Loop over each permission group for this account, and ckeck if it has access
+			var accountPermissionGroups = arguments.account.getPermissionGroups();
+			for(var i=1; i<=arrayLen(accountPermissionGroups); i++){
+				var pgOK = authenticateProcessByPermissionGroup(processContext=arguments.processContext, entityName=arguments.entityName, permissionGroup=accountPermissionGroups[i]);
+				if(pgOK) {
+						getService('HibachiCacheService').setCachedValue(cacheKey,true);
+					return true;
+				}
+			}
+		
+		// If for some reason not of the above were meet then just return false
+			getService('HibachiCacheService').setCachedValue(cacheKey,false);
+			return false;
+		}
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	public boolean function authenticateEntityCrudByAccount(required string crudType, required string entityName, required any account) {
@@ -558,13 +584,41 @@ component output="false" accessors="true" extends="HibachiService" {
 		return authenticateSubsystemSectionActionByPermissionGroup(subsystem=arguments.subsystem, section=arguments.section, permissionGroup=arguments.permissionGroup);
 	}
 	
+	public boolean function authenticateProcessByPermissionGroup(required string processContext, required string entityName, required any permissionGroup){
+		// Pull the permissions detail struct out of the permission group
+		var permissions = arguments.permissionGroup.getPermissionsByDetails();
+		//TODO:would we want to have default process permission details based on meta data like entity and action have?
+		var permissionDetails = getEntityPermissionDetails();
+		//do we have access to the process for the entity to begin with
+		if(!authenticateEntityByPermissionGroup('Process',arguments.entityName,arguments.permissionGroup)){
+			return false;
+		}
+		//if nothing specific then all processes are ok
+		if(!structKeyExists(permissions.process.entities, arguments.entityName)){
+			return true;
+		}
+		//if we find perms then what are they?
+		if(
+			structKeyExists(permissions.process.entities, arguments.entityName)
+			&& structKeyExists(permissions.process.entities[arguments.entityName].context,arguments.processContext)
+		){
+			return permissions.process.entities[arguments.entityName].context[arguments.processContext].getAllowProcessFlag();
+		}
+		
+		return false;
+	}
+	
 	public boolean function authenticateEntityByPermissionGroup(required string crudType, required string entityName, required any permissionGroup) {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 		var permissionDetails = getEntityPermissionDetails();
 		
 		// Check for entity specific values
-		if(structKeyExists(permissions.entity.entities, arguments.entityName) && structKeyExists(permissions.entity.entities[arguments.entityName], "permission") && !isNull(permissions.entity.entities[arguments.entityName].permission.invokeMethod("getAllow#arguments.crudType#Flag"))) {
+		if(
+			structKeyExists(permissions.entity.entities, arguments.entityName) 
+			&& structKeyExists(permissions.entity.entities[arguments.entityName], "permission") 
+			&& !isNull(permissions.entity.entities[arguments.entityName].permission.invokeMethod("getAllow#arguments.crudType#Flag"))
+		) {
 			if( permissions.entity.entities[arguments.entityName].permission.invokeMethod("getAllow#arguments.crudType#Flag") ) {
 				return true;
 			} else {
