@@ -10,7 +10,7 @@ component extends="Slatwall.model.service.OrderService" {
         } else if (arguments.systemCode == 'ostCanceled') {
             arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9")); // "Deleted"
         // Sales Orders
-        } else if (orderType.getSystemCode() == 'otSalesOrder') {
+        } else if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
             if (arguments.systemCode == 'ostProcessing') {
                 arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
             } else if (arguments.systemCode == 'ostClosed') {
