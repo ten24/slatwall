@@ -23,6 +23,7 @@ class SWOrderTemplateGiftCardsController{
 	    this.giftCardCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateAppliedGiftCard');
 	    this.giftCardCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID, '=', undefined, true);
 		this.giftCardCollection.setDisplayProperties('giftCard.giftCardCode,giftCard.calculatedBalanceAmount,amountToApply','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+
 		this.giftCardCollection.addDisplayProperty('orderTemplateAppliedGiftCardID','',{isVisible:false,isSearchable:false,isDeletable:true,isEditable:false})
 		
 	}
