@@ -1347,10 +1347,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
 			promo = arguments.data.loyaltyAccruement.getPromotion();
 			promoCode = getService("PromotionService").NewPromotionCode();
+			promoCode.setPromotionCode(createUUID());
 			promoCode.setPromotion(promo);
 			promoCode.addAccount(arguments.data.account);
 			promoCode.setMaximumAccountUseCount(1);
 			promoCode = getService("PromotionService").savePromotionCode(promoCode);
+			promoCode.setStartDateTime(Now());
+			promo = getService("PromotionService").savePromotion(promo);
 			getHibachiEventService().announceEvent("Promotion Code Assigned to Account", promoCode);
 			arrayAppend(arguments.accountLoyaltyTransaction.getErrors(),promoCode.getErrors());
 		}

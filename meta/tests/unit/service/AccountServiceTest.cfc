@@ -444,28 +444,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				data.loyaltyAccruement.addAccruementCurrency(data.accruementCurrency);
 				break;
 			case "promotion":
-				data.loyaltyAccruement.setPromotion(createPersistedTestEntity('Promotion',{}));
+				data.loyaltyAccruement.setPromotion(createPersistedTestEntity('Promotion',{promotionName="promotiontest"}));
 				break;
 			case "giftCard":
-				var productData = {
-					productID="",
-					productCode="testProduct"&createUUID(),
-					productType={
-						//merchandise
-						productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
-					}
-				};
-				var product = createPersistedTestEntity('Product',productData);
-		
-				var skuData={
-					skuID="",
-					price=data.price,
-					skuCode="testSku"&createUUID(),
-					product={
-						productID=product.getProductID()
-					}
-				};
+
+				var product = createPersistedTestEntity('Product',{productCode="testProduct"&createUUID()});
 				
+				product.setProductType(variables.service.getProductType("444df2f7ea9c87e60051f3cd87b435a1"));
+				
+				data.sku = variables.service.newSku();
+				data.sku.setProduct(product);
+				data.sku.setPrice(data.price);
+				data.sku.setSkuCode("testSku"&createUUID());
+				
+				persistTestEntity(data.sku);
 				data.accruementCurrency = createPersistedTestEntity('AccruementCurrency',{});
 				
 				data.accruementCurrency.setCurrencyCode("USD");
@@ -474,7 +466,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 				data.loyaltyAccruement.addAccruementCurrency(data.accruementCurrency);
 				
-				data.loyaltyAccruement.setGiftCardSku(createPersistedTestEntity('sku',skuData));
+				data.loyaltyAccruement.setGiftCardSku(data.sku);
 				break;
 		}
 		
@@ -570,9 +562,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 			assert(data.assertion(data,loyaltyTransaction));
 			
-			this.tearDown();
-			
-			this.setUp();
 		}
 	}
 	
