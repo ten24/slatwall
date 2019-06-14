@@ -87,7 +87,6 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	public struct function getPermissionsByDetails(boolean excludeObjects=false) {
 		
 		var cacheKey = "#getPermissionsByDetailsCacheKey()##arguments.excludeObjects#";
-		//TODO: figure out issue with boolean cache keys
 		if(getService("hibachiCacheService").hasCachedValue(cacheKey)) {
 			variables.permissionsByDetails = getService("hibachiCacheService").getCachedValue(cacheKey);
 		}else{
