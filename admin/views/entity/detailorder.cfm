@@ -93,7 +93,10 @@ Notes:
 			</cfif>
 			
 			<!--- Create Return --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReturnOrder" type="list" modal="true" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.return')#" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otExchangeOrder" type="list" modal="true" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.exchange')#" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReplacementOrder" type="list" modal="true" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.replacement')#" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otRefundOrder" type="list" modal="true" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.refund')#" />
 
 			<li class="divider"></li>
 
