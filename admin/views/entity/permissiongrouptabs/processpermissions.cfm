@@ -46,29 +46,11 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.permissionGroup" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.editEntityName" type="string" default="" />
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionGroup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#">
-                <hb:HibachiProcessCaller entity="#rc.permissionGroup#" action="admin:entity.preprocesspermissiongroup" processContext="clonepermission" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem tabid="entitypermissions" lazyLoad="true" view="admin:entity/permissiongrouptabs/entitypermissions">
-			<hb:HibachiEntityDetailItem tabid="actionpermissions" lazyLoad="true" view="admin:entity/permissiongrouptabs/actionpermissions">
-            <hb:HibachiEntityDetailItem tabid="processpermissions" lazyLoad="true" view="admin:entity/permissiongrouptabs/processpermissions">
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts">
-            
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/recordrestrictions">
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+<hb:HibachiPermissionGroupProcessPermissions permissionGroup="#rc.permissionGroup#" edit="#rc.edit#" editEntityName="#rc.editEntityName#" />
