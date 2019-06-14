@@ -64022,6 +64022,8 @@ var SWOrderTemplateGiftCardsController = /** @class */ (function () {
         this.$onInit = function () {
             _this.giftCardCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateAppliedGiftCard');
             _this.giftCardCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
+            _this.giftCardCollection.setDisplayProperties('giftCard.giftCardCode,giftCard.calculatedBalanceAmount,amountToApply', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.giftCardCollection.addDisplayProperty('orderTemplateAppliedGiftCardID', '', { isVisible: false, isSearchable: false, isDeletable: true, isEditable: false });
         };
     }
     return SWOrderTemplateGiftCardsController;
