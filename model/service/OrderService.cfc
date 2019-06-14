@@ -902,7 +902,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
-            	if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
+            	
+				if(arguments.processMethod.getAmount()){
+					newOrderPayment.setAmount(arguments.processMethod.getAmount());
+				} else if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
 					newOrderPayment.setAmount(arguments.order.getPaymentAmountDue());
@@ -1349,7 +1352,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
 	
 			arguments.orderTemplate = this.processOrderTemplate_removePromotionCode(arguments.orderTemplate, processOrderTemplateRemovePromotionCode);  
-		} 
+		}
+
+		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
+
+		var giftCardPaymentMethod = getPaymentService().getPaymentMethod('50d8cd61009931554764385482347f3a')
+
+		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
+			var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
+			processOrderAddOrderPayment.setGiftCardID(orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID());
+			processOrderAddOrderPayment.setAmount(orderTemplateAppliedGiftCard.getAmountToApply());
+
+			newOrderPayment = this.newOrderPayment(); 
+			newOrderPayment.setPaymentMethod(giftCardPaymentMethod);
+			
+			processOrderAddOrderPayment.setNewOrderPayment(newOrderPayment); 
+
+			newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+		}  
 
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
 		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
