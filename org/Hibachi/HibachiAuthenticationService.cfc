@@ -148,13 +148,13 @@ component output="false" accessors="true" extends="HibachiService" {
 				} else if ( left(itemName, 10) == "reportlist" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="report", entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 15) == "multiPreProcess" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-15), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-15), account=arguments.account);
 				} else if ( left(itemName, 12) == "multiProcess" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-12), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-12), account=arguments.account);
 				} else if ( left(itemName, 10) == "preProcess" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-10), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 7) == "process" ) {
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-7), account=arguments.account);
+					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-7), account=arguments.account);
 				} else if ( left(itemName, 4) == "save" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 					if(!authDetails.authorizedFlag) {
