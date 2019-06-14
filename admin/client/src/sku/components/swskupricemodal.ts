@@ -51,7 +51,8 @@ class SWSkuPriceModalController{
         public collectionConfigService,
         public scopeService,
         public $scope,
-        public $timeout
+        public $timeout,
+        public requestService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "skuPriceForm" + this.utilityService.createID(16);
@@ -83,7 +84,40 @@ class SWSkuPriceModalController{
     
      public inlineSave = (pageRecord:any) =>{
         this.initData(pageRecord);
-        this.skuPrice.$$save();
+        
+        var formDataToPost:any = {
+			entityName: 'SkuPrice',
+			entityID : pageRecord['skuPriceID'],
+			context: 'save',
+			propertyIdentifiersList: ''
+		};
+		
+		for(var key in pageRecord){
+        if(key.indexOf("$") > -1 || key.indexOf("skuPriceID") > -1){
+		        continue;
+		    } else if(key.indexOf("_") > -1){
+		        if(key.indexOf("ID") == -1){
+		            continue;
+		        }
+		        var property = key.split("_");
+		        formDataToPost[property[0]] = { };
+		        formDataToPost[property[0]][property[1]] = pageRecord[key];
+		          
+		    } else {
+		        formDataToPost[key] = pageRecord[key];
+		    }
+		}
+		
+		
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		return adminRequest.promise.then(
+		    (response)=>{
+		        console.log("response: ", response)
+		        this.listingService.notifyListingPageRecordsUpdate(this.listingID);
+		    });
     }
 
     public initData (pageRecord?:any) {
@@ -202,7 +236,7 @@ class SWSkuPriceModalController{
                 if(this.promotionReward){
                     var promotionRewardForms = this.promotionReward.forms;
                 }
-                this.promotionReward = this.$hibachi.populateEntity('PromotionReward', this.promotionRewardId);
+                this.promotionReward = this.$hibachi.populateEntity('PromotionReward', {promotionRewardID : this.promotionRewardId});
                 if(promotionRewardForms){
                     this.promotionReward.forms=promotionRewardForms;
                 }

@@ -15,7 +15,8 @@ class SWSkuPriceModalController extends SkuPriceModalController{
         public collectionConfigService,
         public scopeService,
         public $scope,
-        public $timeout
+        public $timeout,
+        public requestService
     ){
         super(  
             $hibachi,
@@ -28,7 +29,8 @@ class SWSkuPriceModalController extends SkuPriceModalController{
             collectionConfigService,
             scopeService,
             $scope,
-            $timeout
+            $timeout,
+            requestService
         );
         this.observerService.detachByEvent('EDIT_SKUPRICE'); // Detach core event
         this.observerService.attach(this.initData, "EDIT_SKUPRICE"); // Attach custom event
@@ -36,8 +38,9 @@ class SWSkuPriceModalController extends SkuPriceModalController{
     
     public initData = (pageRecord?:any) =>{
         super.initData(pageRecord);
+        
         if(angular.isDefined(this.pageRecord) && angular.isDefined(this.pageRecord.skuPriceID) && this.pageRecord.skuPriceID.length){
-            
+            console.log("pageRecord: ", pageRecord)
             this.skuPrice.personalVolume = this.pageRecord.personalVolume;
             this.skuPrice.taxableAmount = this.pageRecord.taxableAmount;
             this.skuPrice.commissionableVolume = this.pageRecord.commissionableVolume;
@@ -48,8 +51,6 @@ class SWSkuPriceModalController extends SkuPriceModalController{
             this.skuPrice.activeFlag = this.pageRecord.activeFlag;
         }
     }
-    
-   
     
     public $onDestroy = ()=>{
 		this.observerService.detachByEvent('EDIT_SKUPRICE');

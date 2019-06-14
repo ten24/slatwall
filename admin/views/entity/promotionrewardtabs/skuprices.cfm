@@ -54,13 +54,6 @@ Notes:
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
 <cfparam name="rc.edit" type="boolean">
 
-
-    <sw-add-sku-price-modal-launcher>
-        <a href="#" title="Add Price" class="pull-right btn btn-primary" data-target="#">
-            <i class="fa fa-plus"></i> Add Sku Price
-        </a>
-    </sw-add-sku-price-modal-launcher>
-
     <cfoutput>
 
         <cfset local.includedSkuPricesCollection = $.slatwall.getService('HibachiService').getSkuPriceCollectionList() />
@@ -74,6 +67,7 @@ Notes:
         <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isSearchable': false}, true) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('sku.skuID', '', {'isVisible': false, 'isSearchable': false}, true) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('promotionReward.promotionRewardID', '', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('activeFlag', '', {'isVisible': false, 'isSearchable': false}, true) />
         <cfset local.includedSkuPricesCollection.addFilter('promotionReward.promotionRewardID', rc.promotionReward.getPromotionRewardID()) />
        
         <cfset local.collectionConfig = getHibachiScope().getService('HibachiUtilityService').hibachiHTMLEditFormat(local.includedSkuPricesCollection.getCollectionConfig()) />
@@ -90,6 +84,7 @@ Notes:
                 
             </sw-action-caller>
         </div>
+        
         <hb:hibachiListingDisplay collectionList="#local.includedSkuPricesCollection#"
                                   recordEditEvent="EDIT_SKUPRICE"
                                   recordDeleteEvent="DELETE_SKUPRICE"
@@ -98,48 +93,10 @@ Notes:
                                                     'icon' : 'floppy-disk',
                                                     'iconOnly' : true
                                                 }]"
-                                  listingID="pricingListing"
-        />
+                                  listingID="pricingListing" />
+        
         <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>
         <sw-sku-price-modal data-promotion-reward-id="#rc.promotionreward.getPromotionRewardID()#"
-                            data-sku-collection-config="#local.includedSkusCollectionConfig#"
-        ></sw-sku-price-modal>
-                
-        <!---<div class="pull-right">
-                    <sw-action-caller
-                            data-event="EDIT_SKUPRICE"
-                            data-payload="undefined"
-                            data-class="btn btn-primary btn-md"
-                            data-icon="plus"
-                            data-text="Add Sku Price"
-                            data-iconOnly="false">
-                        
-                    </sw-action-caller>
-                </div>
-                <!--hack forcing listing id to pricing listing-->
-                <div>
-                    <sw-listing-display
-                            data-has-search="true"
-                            data-is-angular-route="false"
-                            data-angular-links="false"
-                            data-has-action-bar="false"
-                            data-base-entity-name="SkuPrice"
-                            data-actions="[{
-                                'event' : 'SAVE_SKUPRICE',
-                                'icon' : 'floppy-disk',
-                                'iconOnly' : true
-                            }]"
-                            data-record-edit-event="EDIT_SKUPRICE"
-                            data-record-delete-event="DELETE_SKUPRICE"
-                            data-collection-config="#local.collectionConfig#"
-                            data-using-personal-collection="true"
-                            data-show-report="false"
-                    >
-                            
-                    </sw-listing-display>
-                </div>
-                
-                <sw-sku-price-modal data-promotion-id="{{swPricingManager.productId}}"></sw-sku-price-modal>
-                
-                <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>--->
+                            data-sku-collection-config="#local.includedSkusCollectionConfig#">
+        </sw-sku-price-modal>
     </cfoutput>
