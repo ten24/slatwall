@@ -28,12 +28,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
 	
-	public boolean function authenticateActionByAccount(required string action, required any account) {
+	public boolean function authenticateActionByAccount(required string action, required any account, string processContext="") {
 		var authDetails = getActionAuthenticationDetailsByAccount(argumentcollection=arguments); 
 		return authDetails.authorizedFlag;
 	}
 	
-	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo, string processContext) {
+	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo, string processContext="") {
 		
 		var authDetails = {
 			authorizedFlag = false,
