@@ -5,7 +5,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
    
         //set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
         try{
-            var commissionDate = dateFormat( now(), "mm/YYYY" );
+            var commissionDate = dateFormat( now(), "mm/yyyy" );
             order.setCommissionPeriod(commissionDate);
             getOrderService().saveOrder(order);
         }catch(dateError){
