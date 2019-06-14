@@ -1510,8 +1510,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrderTemplate_applyGiftCard (required any orderTemplate, required any processObject, struct data={}){ 
+	
+		var newOrderTemplateAppliedGiftCard = this.newOrderTemplateAppliedGiftCard(); 
 
+		newOrderTemplateAppliedGiftCard.setGiftCard(processObject.getGiftCard()); 
+		newOrderTemplateAppliedGiftCard.setAmountToApply(processObject.getAmountToApply());  
 
+		newOrderTemplateAppliedGiftCard	= this.saveOrderTemplateAppliedGiftCard(newOrderTemplateAppliedGiftCard); 
+
+		if(!newOrderTemplateAppliedGiftCard.hasErrors()){
+			arguments.orderTemplate.addOrderTemplateAppliedGiftCard(newOrderTemplateAppliedGiftCard); 
+			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		} else {
+			arguments.orderTemplate.addErrors(newOrderTemplateAppliedGiftCard.getErrors()); 
+		}
+		
 		return arguments.orderTemplate; 	
 	} 
 	//end order template functionality	
