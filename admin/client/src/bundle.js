@@ -82540,7 +82540,7 @@ exports.CollectionService = CollectionService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWActionCallerController = /** @class */ (function () {
     //@ngInject
-    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiPathBuilder) {
+    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiAuthenticationService, hibachiPathBuilder) {
         var _this = this;
         this.$scope = $scope;
         this.$element = $element;
@@ -82553,10 +82553,15 @@ var SWActionCallerController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.hibachiPathBuilder = hibachiPathBuilder;
 =======
 >>>>>>> 820b72cea3... saving work
+=======
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
+>>>>>>> 3ede300d05... using client side permissions in the ui
         this.$onInit = function () {
+            _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
@@ -82796,6 +82801,7 @@ var SWActionCallerController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
             var template = angular.element(html);
             _this.$element.parent().append(template);
@@ -82804,6 +82810,7 @@ var SWActionCallerController = /** @class */ (function () {
             //need to perform init after promise completes
             //this.init();
         });
+        this.authenticateActionByAccount = this.hibachiAuthenticationService.autheticateActionByAccount;
     }
     return SWActionCallerController;
 }());
@@ -88422,6 +88429,9 @@ var HibachiAuthenticationService = /** @class */ (function () {
                 itemName += '_processContext';
             }
             var actionPermissions = _this.getActionPermissionDetails();
+            if (!actionPermissions) {
+                return false;
+            }
             // Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
             if (!actionPermissions[subsystemName]
                 || !actionPermissions[subsystemName].hasSecureMethods
@@ -91195,7 +91205,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
     //@ngInject
-    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout) {
+    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout, hibachiAuthenticationService) {
         var _this = this;
         this.$http = $http;
         this.$q = $q;
@@ -91211,6 +91221,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.appConfig = appConfig;
         this.$timeout = $timeout;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.requests = {};
         this.errors = {};
         this.baseActionPath = "";
@@ -91566,6 +91577,9 @@ var PublicService = /** @class */ (function () {
                 }
             }
             return true;
+        };
+        this.authenticateActionByAccount = function (action, processContext) {
+            return _this.hibachiAuthenticationService.authenticateActionByAccount(action, processContext);
         };
         this.removeInvalidOrderPayments = function (cart) {
             cart.orderPayments = cart.orderPayments.filter(function (payment) { return !payment.hasErrors; });
@@ -92596,6 +92610,7 @@ var PublicService = /** @class */ (function () {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     PublicService.prototype.getOrderFulfillmentItemList = function (fulfillmentIndex) {
         return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');

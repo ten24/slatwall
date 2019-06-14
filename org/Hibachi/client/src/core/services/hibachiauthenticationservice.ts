@@ -58,6 +58,9 @@ class HibachiAuthenticationService{
 		}
         
         var actionPermissions = this.getActionPermissionDetails();
+        if(!actionPermissions){
+            return false;
+        }
         // Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
         if(
             !actionPermissions[subsystemName] 
