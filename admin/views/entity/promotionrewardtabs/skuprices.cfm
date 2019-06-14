@@ -71,7 +71,9 @@ Notes:
         <cfset local.includedSkuPricesCollection.addDisplayProperty('retailCommission','Retail Commission',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('productPackVolume','Product Pack Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('retailValueVolume','Retail Value Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isEditable': true, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('sku.skuID', '', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('promotionReward.promotionRewardID', '', {'isVisible': false, 'isSearchable': false}, true) />
         <cfset local.includedSkuPricesCollection.addFilter('promotionReward.promotionRewardID', rc.promotionReward.getPromotionRewardID()) />
        
         <cfset local.collectionConfig = getHibachiScope().getService('HibachiUtilityService').hibachiHTMLEditFormat(local.includedSkuPricesCollection.getCollectionConfig()) />

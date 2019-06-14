@@ -8,6 +8,7 @@ class SWSkuPriceModalController{
     public promotionRewardId:string;
     public pageRecord:any; 
     public sku:any;
+    public promotionReward:any;
     public skuOptions:any;
     public submittedSku:any;
     public selectedSku:any;
@@ -103,6 +104,10 @@ class SWSkuPriceModalController{
                 calculatedSkuDefinition : pageRecord["sku_calculatedSkuDefinition"]
             }
             
+            let promotionRewardData = {
+                promotionRewardID : pageRecord['promotionRewardID']
+            }
+            
             let priceGroupData = {
                 priceGroupID : pageRecord["priceGroup_priceGroupID"],
                 priceGroupCode : pageRecord["priceGroup_priceGroupCode"]
@@ -122,6 +127,14 @@ class SWSkuPriceModalController{
             this.sku = this.$hibachi.populateEntity('Sku', skuData);
             if(skuForms){
                 this.skuPrice.forms=skuForms;
+            }
+            
+            if(this.promotionReward){
+                var promotionRewardForms = this.promotionReward.forms;
+            }
+            this.promotionReward = this.$hibachi.populateEntity('PromotionReward', promotionRewardData);
+            if(promotionRewardForms){
+                this.promotionReward.forms=promotionRewardForms;
             }
             
             if(this.priceGroup){
@@ -173,6 +186,7 @@ class SWSkuPriceModalController{
             
             this.skuPrice.$$setPriceGroup(this.priceGroup);
             this.skuPrice.$$setSku(this.sku);
+            this.skuPrice.$$setPromotionReward(this.promotionReward);
             
         } else {
             //reference to form is being wiped
@@ -183,6 +197,19 @@ class SWSkuPriceModalController{
             if(skuPriceForms){
                 this.skuPrice.forms=skuPriceForms;
             }
+            
+            if(this.promotionRewardId){
+                if(this.promotionReward){
+                    var promotionRewardForms = this.promotionReward.forms;
+                }
+                this.promotionReward = this.$hibachi.populateEntity('PromotionReward', this.promotionRewardId);
+                if(promotionRewardForms){
+                    this.promotionReward.forms=promotionRewardForms;
+                }
+                this.skuPrice.$$setPromotionReward(this.promotionReward);
+            }
+            
+            
             
             this.skuPriceService.getSkuOptions(this.productId).then(
                 (response)=>{
