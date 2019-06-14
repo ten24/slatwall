@@ -8,12 +8,12 @@ class SWPricingManagerController extends PricingManagerController{
         
         if(this.skuPriceCollectionConfig){
             
-            this.skuPriceCollectionConfig.addDisplayProperty("personalVolume");
-            this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount");
-            this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume");
-            this.skuPriceCollectionConfig.addDisplayProperty("retailCommission");
-            this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume");
-            this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume");
+            this.skuPriceCollectionConfig.addDisplayProperty("personalVolume", "" ,{isEditable:true});
+            this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount", "" ,{isEditable:true});
+            this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume", "" ,{isEditable:true});
+            this.skuPriceCollectionConfig.addDisplayProperty("retailCommission", "" ,{isEditable:true});
+            this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume", "" ,{isEditable:true});
+            this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume", "" ,{isEditable:true});
         }
     }
 }

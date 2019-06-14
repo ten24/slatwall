@@ -26,24 +26,30 @@ class SWSkuPriceModalController extends SkuPriceModalController{
             scopeService,
             $scope
         );
-        
-        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        this.observerService.detachByEvent('EDIT_SKUPRICE'); // Detach core event
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE"); // Attach custom event
     }
     
     public initData = (pageRecord?:any) =>{
-        if(angular.isDefined(this.pageRecord)){ 
-            if(angular.isDefined(this.pageRecord.skuPriceID) && this.pageRecord.skuPriceID.length){
+        super.initData(pageRecord);
+        if(angular.isDefined(this.pageRecord) && angular.isDefined(this.pageRecord.skuPriceID) && this.pageRecord.skuPriceID.length){
             
-                this.skuPrice.personalVolume = this.pageRecord.personalVolume;
-                this.skuPrice.taxableAmount = this.pageRecord.taxableAmount;
-                this.skuPrice.commissionableVolume = this.pageRecord.commissionableVolume;
-                this.skuPrice.retailCommission = this.pageRecord.retailCommission;
-                this.skuPrice.productPackVolume = this.pageRecord.productPackVolume;
-                this.skuPrice.retailValueVolume = this.pageRecord.retailValueVolume;
-                this.skuPrice.handlingFee = this.pageRecord.handlingFee;
-            }
+            this.skuPrice.personalVolume = this.pageRecord.personalVolume;
+            this.skuPrice.taxableAmount = this.pageRecord.taxableAmount;
+            this.skuPrice.commissionableVolume = this.pageRecord.commissionableVolume;
+            this.skuPrice.retailCommission = this.pageRecord.retailCommission;
+            this.skuPrice.productPackVolume = this.pageRecord.productPackVolume;
+            this.skuPrice.retailValueVolume = this.pageRecord.retailValueVolume;
+            this.skuPrice.handlingFee = this.pageRecord.handlingFee;
+            this.skuPrice.activeFlag = this.pageRecord.activeFlag;
         }
     }
+    
+   
+    
+    public $onDestroy = ()=>{
+		this.observerService.detachByEvent('EDIT_SKUPRICE');
+	}
     
 }
 

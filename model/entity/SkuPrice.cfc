@@ -57,6 +57,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="expiresDateTime" ormtype="timestamp";
+	property name="activeFlag" ormtype="boolean" default=1;
 
 	// Calculated Properties
 
