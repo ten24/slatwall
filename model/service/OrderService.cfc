@@ -1369,7 +1369,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processOrderAddOrderPayment.setNewOrderPayment(newOrderPayment); 
 
 			newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+
 		}  
+		
+		arguments.orderTemplate = this.processOrderTemplate_removeAppliedGiftCards(arguments.orderTemplate);  
+		
 
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
 		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
@@ -1547,7 +1551,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return arguments.orderTemplate; 	
-	} 
+	}
+
+	public any function processOrderTemplate_removeAppliedGiftCards (required any orderTemplate, any processObject, struct data={}){
+	
+		var appliedGiftCardsCount = arguments.orderTemplate.getOrderTemplateAppliedGiftCardsCount(); 
+		var appliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards();
+
+		for(var i=appliedGiftCardsCount; i>0; i--){
+			arguments.orderTemplate.removeOrderTemplateAppliedGiftCard(appliedGiftCards[i]); 
+		} 
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate; 	
+	}   
 	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
