@@ -59,6 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="orderItems" type="array" hb_populateArray="true";
+	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
 	
 	property name="fulfillmentRefundAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
@@ -68,6 +69,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
 	
+	// Option Properties
+    property name="returnReasonTypeOptions";
+	
 
 	variables.orderItems = [];
 
@@ -76,6 +80,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
 	}
 	
+	// ====================== START: Data Options ==========================
+    
 	public array function getLocationOptions() {
 		if(!structKeyExists(variables, "locationOptions")) {
 			variables.locationOptions = getService('locationService').getLocationOptions(); 
@@ -97,6 +103,35 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.refundOrderPaymentIDOptions;
 	}
+	
+	public array function getOrderTypeCodeOptions() {
+		if(!structKeyExists(variables, "orderTypeCodeOptions")) {
+			var collectionList = getService('TypeService').getCollectionList('Type');
+			collectionList.setDisplayProperties('systemCode|value,typeName|name');
+			collectionList.addFilter('systemCode', 'otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', 'IN');
+			collectionList.setOrderBy('sortOrder|ASC');
+			
+			// May need to overwrite name with rbKey('define.exchange')
+			variables.orderTypeCodeOptions = collectionList.getRecords();
+		}
+		return variables.orderTypeCodeOptions;
+	}
+	
+	public array function getReturnReasonTypeOptions() {
+        if (!structKeyExists(variables, 'returnReasonTypeOptions')) {
+            var typeCollection = getService('typeService').getTypeCollectionList();
+		    typeCollection.setDisplayProperties('typeName|name,typeID|value');
+		    typeCollection.addFilter('parentType.systemCode','orderReturnReasonType');
+            typeCollection.addOrderBy('sortOrder|ASC');
+
+            variables.returnReasonTypeOptions = typeCollection.getRecords();
+            arrayPrepend(variables.returnReasonTypeOptions, {name=rbKey('define.select'), value=""});
+        }
+
+        return variables.returnReasonTypeOptions;
+    }
+	
+	// ======================  END: Data Options ===========================
 	
 	public numeric function getFulfillmentRefundAmount() {
 		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
@@ -122,19 +157,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return false;
-	}
-
-	public array function getOrderTypeCodeOptions() {
-		if(!structKeyExists(variables, "orderTypeCodeOptions")) {
-			var collectionList = getService('TypeService').getCollectionList('Type');
-			collectionList.setDisplayProperties('systemCode|value,typeName|name');
-			collectionList.addFilter('systemCode', 'otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', 'IN');
-			collectionList.setOrderBy('sortOrder|ASC');
-			
-			// May need to overwrite name with rbKey('define.exchange')
-			variables.orderTypeCodeOptions = collectionList.getRecords();
-		}
-		return variables.orderTypeCodeOptions;
 	}
 
 	public string function getOrderTypeCode(){

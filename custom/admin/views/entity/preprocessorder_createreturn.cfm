@@ -65,6 +65,9 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeCode"  edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnReasonType" edit="true" />
+				<cfif rc.processObject.getOrderTypeCode() eq 'otReturnOrder'>
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="secondaryReturnReasonType" edit="true" />
+				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
 				
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="refundOrderPaymentID" edit="true" />
