@@ -64082,12 +64082,12 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price";
-            var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
+            var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
             if (_this.skuPropertiesToDisplay != null) {
                 var properties = _this.skuPropertiesToDisplay.split(',');
                 for (var i = 0; i < properties.length; i++) {
-                    orderTemplateDisplayProperties += "sku." + properties[i];
-                    skuDisplayProperties += properties[i];
+                    orderTemplateDisplayProperties += ",sku." + properties[i];
+                    skuDisplayProperties += ',' + properties[i];
                 }
             }
             _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
@@ -64102,7 +64102,6 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('price', _this.rbkeyService.rbKey('entity.sku.price'), { isVisible: true, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);

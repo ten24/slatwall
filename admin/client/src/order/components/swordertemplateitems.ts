@@ -27,7 +27,7 @@ class SWOrderTemplateItemsController{
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
 		var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price";
-		var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
+		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
 		
 		if(this.skuPropertiesToDisplay != null){
 			var properties = this.skuPropertiesToDisplay.split(',');
@@ -53,7 +53,6 @@ class SWOrderTemplateItemsController{
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
         this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('price',this.rbkeyService.rbKey('entity.sku.price'),{isVisible:true,isSearchable:true,isDeletable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
