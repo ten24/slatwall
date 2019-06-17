@@ -3100,9 +3100,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getPredicate(required any filter){
 		
-		if(!structkeyExists(arguments.filter,"ormtype")) { //TODO we shouldn't be having this check, instead we should be throwing error.
-			
-			arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier));
+		if(!structkeyExists(arguments.filter,"ormtype")) { 
+			arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(convertAliasToPropertyIdentifier(getPropertyIdentifierAlias(arguments.filter.propertyIdentifier)));
 		}
 
 		var predicate = '';

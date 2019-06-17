@@ -2608,7 +2608,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		var pageRecords = collectionEntity.getPageRecords();
-
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
 
