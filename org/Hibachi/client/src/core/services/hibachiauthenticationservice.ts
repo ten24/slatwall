@@ -18,7 +18,7 @@ class HibachiAuthenticationService{
     }
     
     public authenticateActionByAccount=(action:string,processContext:string)=>{
-        var authDetails = this.getActionAuthenticationDetailsByAccount(action,processContext);
+        var authDetails:any = this.getActionAuthenticationDetailsByAccount(action,processContext);
         return authDetails.authorizedFlag;
     }
     
