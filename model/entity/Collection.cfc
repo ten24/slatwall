@@ -1013,6 +1013,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public string function getOrmTypeByPropertyIdentifier(required string propertyIdentifier){
+		if(arguments.propertyIdentifier == 'id'){
+			return 'string';
+		}
 		if(!isNull(getCollectionEntityObject())){
 			return getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
 		}
