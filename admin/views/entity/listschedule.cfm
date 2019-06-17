@@ -79,6 +79,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#scheduleCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(scheduleCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(scheduleCollectionList.getCollectionObject())#"
 	>

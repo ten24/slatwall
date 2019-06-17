@@ -72945,7 +72945,7 @@ var CollectionController = /** @class */ (function () {
             }, function (reason) {
             });
         };
-        observerService.attach($scope.saveCollection, 'swPaginationUpdate', $attrs.tableId);
+        //observerService.attach($scope.saveCollection,'swPaginationUpdate',$attrs.tableId);
     }
     return CollectionController;
 }());
@@ -88209,7 +88209,7 @@ var SWListingDisplayController = /** @class */ (function () {
             if (_this.columns != null && _this.columns.length) {
                 return _this.columns.reduce(function (totalNumericalCols, col) {
                     return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-                });
+                }, 0);
             }
             return false;
         };
@@ -88351,6 +88351,9 @@ var SWListingDisplayController = /** @class */ (function () {
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
+        if (angular.isUndefined(this.personalCollectionKey)) {
+            this.personalCollectionKey = this.baseEntityName.toLowerCase();
+        }
         if (angular.isUndefined(this.usingPersonalCollection)) {
             this.usingPersonalCollection = false;
         }
@@ -88378,11 +88381,11 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         if ((this.baseEntityName)
             && (this.usingPersonalCollection
-                && this.listingService.hasPersonalCollectionSelected(this.baseEntityName))
+                && this.listingService.hasPersonalCollectionSelected(this.personalCollectionKey))
             && (angular.isUndefined(this.personalCollectionIdentifier)
-                || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'])
-                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))) {
-            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
+                || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'])
+                    && this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))) {
+            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
             // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
@@ -88445,6 +88448,7 @@ var SWListingDisplay = /** @class */ (function () {
         this.bindToController = {
             usingPersonalCollection: "<?",
             personalCollectionIdentifier: '@?',
+            personalCollectionKey: "@?",
             isRadio: "<?",
             angularLinks: "<?",
             isAngularRoute: "<?",
@@ -89005,6 +89009,7 @@ var SWListingReportController = /** @class */ (function () {
         this.periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
         this.objectPath = [];
         this.selectedPeriodPropertyIdentifierArray = [];
+        this.chartcolors = ["F78F1E", "4F667E", "62B7C4", "173040", "f15532", "ffc515", "469E52", "497350", "284030", "719499", "03A6A6", "173040", "57225B", "933B8F", "DA92AA", "634635"];
         this.$onInit = function () {
         };
         this.updateReportFromListing = function (params) {
@@ -89053,9 +89058,11 @@ var SWListingReportController = /** @class */ (function () {
             }
             _this.collectionNameSaveIsOpen = true;
         };
-        this.random_rgba = function () {
-            var o = Math.round, r = Math.random, s = 255;
-            return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 1 + ')';
+        this.assign_color = function (index) {
+            if ((index + 1) > _this.chartcolors.length) {
+                index = 0;
+            }
+            return '#' + _this.chartcolors[index];
         };
         //decides if report comes from persisted collection or transient
         this.getReportCollectionConfig = function () {
@@ -89249,10 +89256,16 @@ var SWListingReportController = /** @class */ (function () {
             var datasets = [];
             if (ctx.is($("#myChartCompare"))) {
                 var chart = _this.compareChart;
+                var oldchart = _this.comparechartobj;
                 _this.compareReportingData = reportingData;
             }
             else {
+                var oldchart = _this.initchartobj;
                 var chart = _this.chart;
+            }
+            //check and destroy old chart
+            if (oldchart) {
+                oldchart.destroy();
             }
             _this.reportingData.records.forEach(function (element) {
                 var pidAliasArray = _this.selectedPeriodColumn.propertyIdentifier.split('.');
@@ -89261,9 +89274,10 @@ var SWListingReportController = /** @class */ (function () {
                 var value = _this.$filter('swdatereporting')(element[pidAlias], _this.selectedPeriodInterval.value);
                 dates.push(value);
             });
+            var colorcount = 0;
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
-                    var color = _this.random_rgba();
+                    var color = _this.assign_color(colorcount++);
                     var title = column.displayTitle || column.title;
                     var metrics_1 = [];
                     _this.reportingData.records.forEach(function (element) {
@@ -89283,9 +89297,6 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             //used to clear old rendered charts before adding new ones
-            if (chart != null) {
-                chart.destroy();
-            }
             chart = new chart_js_1.Chart(ctx, {
                 type: 'line',
                 data: {
@@ -89341,6 +89352,13 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             chart.draw();
+            //assign chart object to global variables
+            if (ctx.is($("#myChartCompare"))) {
+                _this.comparechartobj = chart;
+            }
+            else {
+                _this.initchartobj = chart;
+            }
             _this.observerService.notifyById('swListingReport_DrawChart', _this.tableId, chart);
         };
         this.popObjectPath = function () {
@@ -89613,14 +89631,14 @@ var SWListingSearchController = /** @class */ (function () {
             }
             var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
             if (personalCollection) {
-                selectedPersonalCollection[personalCollection.collectionObject.toLowerCase()] = personalCollection;
+                selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey] = personalCollection;
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
             else {
-                delete selectedPersonalCollection[_this.swListingDisplay.baseEntityName.toLowerCase()];
+                delete selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey];
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
-            window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
+            window.location.reload();
         };
         this.deleteReportCollection = function (persistedCollection) {
             _this.$hibachi.saveEntity('Collection', persistedCollection.collectionID, {}, 'delete').then(function (data) {
@@ -89632,7 +89650,7 @@ var SWListingSearchController = /** @class */ (function () {
             }, 'save').then(function (data) {
                 if (_this.localStorageService.hasItem('selectedPersonalCollection')) {
                     var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
-                    var currentSelectedPersonalCollection = selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()];
+                    var currentSelectedPersonalCollection = selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey];
                     if (currentSelectedPersonalCollection) {
                         var currentSelectedPersonalCollectionID = currentSelectedPersonalCollection.collectionID;
                         if (personalCollection.collectionID === currentSelectedPersonalCollectionID) {
@@ -89646,13 +89664,13 @@ var SWListingSearchController = /** @class */ (function () {
         };
         this.savePersonalCollection = function (collectionName) {
             if (_this.localStorageService.hasItem('selectedPersonalCollection') &&
-                _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] &&
+                _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey] &&
                 (angular.isUndefined(_this.personalCollectionIdentifier) ||
-                    (angular.isDefined(_this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription']) &&
-                        _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription'] == _this.personalCollectionIdentifier))) {
+                    (angular.isDefined(_this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey]['collectionDescription']) &&
+                        _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey]['collectionDescription'] == _this.personalCollectionIdentifier))) {
                 var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
-                if (selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]) {
-                    _this.$hibachi.saveEntity('Collection', selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()].collectionID, {
+                if (selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey]) {
+                    _this.$hibachi.saveEntity('Collection', selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID, {
                         'accountOwner.accountID': _this.$rootScope.slatwall.account.accountID,
                         'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString
                     }, 'save').then(function (data) {
@@ -89678,7 +89696,7 @@ var SWListingSearchController = /** @class */ (function () {
                         _this.localStorageService.setItem('selectedPersonalCollection', '{}');
                     }
                     var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
-                    selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
+                    selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey] = {
                         collectionID: data.data.collectionID,
                         collectionObject: data.data.collectionObject,
                         collectionName: data.data.collectionName,
@@ -90773,14 +90791,14 @@ var ListingService = /** @class */ (function () {
         };
         //End Expandable Functions
         //Begin Personal Collections Functions
-        this.hasPersonalCollectionSelected = function (baseEntityName) {
+        this.hasPersonalCollectionSelected = function (personalCollectionKey) {
             return _this.localStorageService.hasItem('selectedPersonalCollection')
-                && _this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
+                && _this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey];
         };
-        this.getPersonalCollectionByBaseEntityName = function (baseEntityName) {
+        this.getPersonalCollectionByBaseEntityName = function (personalCollectionKey) {
             var personalCollection = _this.collectionConfigService.newCollectionConfig('Collection');
             personalCollection.setDisplayProperties('collectionConfig');
-            personalCollection.addFilter('collectionID', _this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
+            personalCollection.addFilter('collectionID', _this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey].collectionID);
             return personalCollection;
         };
         //Setup a store so that controllers can listing for state changes and fire action requests.

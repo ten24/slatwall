@@ -90,6 +90,7 @@ Notes:
 		<hb:HibachiListingDisplay 
 		collectionList="#addressZoneCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(addressZoneCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(addressZoneCollectionList.getCollectionObject())#"
 		recordDeleteAction="admin:entity.delete#lcase(addressZoneCollectionList.getCollectionObject())#"

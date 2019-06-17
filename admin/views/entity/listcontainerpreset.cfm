@@ -78,6 +78,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 			collectionList="#containerPresetCollectionList#"
 			usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 			recordEditAction="admin:entity.edit#lcase(containerPresetCollectionList.getCollectionObject())#"
 			recordDetailAction="admin:entity.detail#lcase(containerPresetCollectionList.getCollectionObject())#"
 		>

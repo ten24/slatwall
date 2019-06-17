@@ -75,6 +75,7 @@ Notes:
     <hb:HibachiListingDisplay 
     		collectionList="#giftcardCollectionList#"
     		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
     		recordEditAction="admin:entity.edit#lcase(giftcardCollectionList.getCollectionObject())#"
     		recordDetailAction="admin:entity.detail#lcase(giftcardCollectionList.getCollectionObject())#"
     	>
