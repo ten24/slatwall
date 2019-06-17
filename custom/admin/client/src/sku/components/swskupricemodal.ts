@@ -40,7 +40,6 @@ class SWSkuPriceModalController extends SkuPriceModalController{
         super.initData(pageRecord);
         
         if(angular.isDefined(this.pageRecord) && angular.isDefined(this.pageRecord.skuPriceID) && this.pageRecord.skuPriceID.length){
-            console.log("pageRecord: ", pageRecord)
             this.skuPrice.personalVolume = this.pageRecord.personalVolume;
             this.skuPrice.taxableAmount = this.pageRecord.taxableAmount;
             this.skuPrice.commissionableVolume = this.pageRecord.commissionableVolume;

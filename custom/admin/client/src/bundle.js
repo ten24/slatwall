@@ -70702,7 +70702,6 @@ var SWSkuPriceModalController = /** @class */ (function (_super) {
         _this.initData = function (pageRecord) {
             _super.prototype.initData.call(_this, pageRecord);
             if (angular.isDefined(_this.pageRecord) && angular.isDefined(_this.pageRecord.skuPriceID) && _this.pageRecord.skuPriceID.length) {
-                console.log("pageRecord: ", pageRecord);
                 _this.skuPrice.personalVolume = _this.pageRecord.personalVolume;
                 _this.skuPrice.taxableAmount = _this.pageRecord.taxableAmount;
                 _this.skuPrice.commissionableVolume = _this.pageRecord.commissionableVolume;
