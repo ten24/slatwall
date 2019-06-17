@@ -172,17 +172,21 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				}
 			};
 			
-			// writeDump(var="***requestData 1");
-			// writeDump(var=requestData);
+			writeDump(var="***requestData 1");
+			writeDump(var=requestData);
 					
 			// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
 
-			// writeDump(var="***responseData 1");
-			// writeDump(var=responseData);
+			writeDump(var="***responseData 1");
+			writeDump(var=responseData);
 			
 			if (!responseBean.hasErrors()) {
-				arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
+				if (!isNull(responseData.fraudUrl)){
+					arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="#responseData.fraudUrl#");
+				}else{
+					arguments.responseBean.addMessage(messageName="nexio.fraudUrl", message="fraudUrl is undefinied; checkFraud set to 'No'");
+				}
 			}
 
 			if (!responseBean.hasErrors()) {
@@ -196,14 +200,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						'securityCode' = arguments.requestBean.getSecurityCode()
 					}
 				};
-
+				
+				writeDump(var="***requestData2");
+				writeDump(var=requestData);
+				
 				// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 				
 				// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
 				var responseDataAvsCode = "";
 				
-				if (!isNull(responseData.avsResults.matchAddress) 
+				if (!isNull(responseData.avsResults)
+				and !isNull(responseData.avsResults.matchAddress) 
 				and !isNull(responseData.avsResults.matchPostal)){
 					if (responseData.avsResults.matchAddress==true and responseData.avsResults.matchPostal==true){
 						responseDataAvsCode = "D";
@@ -214,37 +222,55 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					}else if (responseData.avsResults.matchAddress==true and responseData.avsResults.matchPostal==false){
 						responseDataAvsCode = "A";
 					}
-				}else if (!isNull(responseData.avsResults.matchAddress) 
+				}else if (!isNull(responseData.avsResults)
+				and !isNull(responseData.avsResults.matchAddress) 
 				and responseData.avsResults.matchAddress==true
 				and isNull(responseData.avsResults.matchPostal)){
 					responseDataAvsCode = "B";
-				}else if (
-				isNull(responseData.avsResults.matchAddress) 
+				}else if (!isNull(responseData.avsResults)
+				and isNull(responseData.avsResults.matchAddress) 
 				and !isNull(responseData.avsResults.matchPostal)
 				and responseData.avsResults.matchPostal==true){
 					responseDataAvsCode = "P";
 				}else {
 					responseDataAvsCode = "E";
 				}
+				writeDump(var="***responseData2");
+				writeDump(var=responseData);
 
 				// Extract data and set as part of the responseBean
 				if (!responseBean.hasErrors()) {
+					
 					arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
 					arguments.responseBean.setProviderToken(responseData.token.token);
 					arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
 					arguments.responseBean.setAvsCode(responseDataAvsCode);
-
+					
 					arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
-					arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
-					arguments.responseBean.addMessage(messageName="nexio.kountResponse.rules", message="#responseData.kountResponse.rules#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
-				
-					writeDump(var="***arguments.responseBean");
+					
+					if (!isNull(responseData.kountResponse)){
+						arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
+						arguments.responseBean.addMessage(messageName="nexio.kountResponse.rules", message="#responseData.kountResponse.rules#");
+					} else {
+						arguments.responseBean.addMessage(messageName="nexio.kountResponse", message="kountResponse is undefinied; checkFraud set to 'No'");
+					}
+					
+					if (!isNull(responseData.avsResults)){
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
+					} else {
+						arguments.responseBean.addMessage(messageName="nexio.avsResults", message="avsResults is undefinied; verifyAvsSetting set to 'Do not perform AVS check'");
+					}
+					
+					if (!isNull(responseData.cvcResults)){
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+					} else {
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults", message="cvcResults is undefinied; verifyCvcFlag set to 'No'");
+					}
+					writeDump(var="***arguments.responseBean2");
 					writeDump(var=arguments.responseBean);
 				}
 			}
