@@ -122,7 +122,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 				getService('HibachiCacheService').setCachedValue(cacheKey,getService("ProductService").getProductType(baseID).getSystemCode());
 			}
-			return getService('HibachiCacheService').getCachedValue(cacheKey);;
+			return getService('HibachiCacheService').getCachedValue(cacheKey);
 		}
 		return getSystemCode();
 	}
