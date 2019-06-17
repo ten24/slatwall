@@ -64082,16 +64082,16 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            _this.viewOrderTemplateItemsCollection.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.viewOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
             _this.editOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            _this.editOrderTemplateItemsCollection.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.editOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.editOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), { isVisible: true, isSearchable: false, isDeletable: false, isEditable: true });
             _this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
-            _this.addSkuCollection.setDisplayProperties('skuName,skuCode,skuDefinition,product.productName', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.addSkuCollection.setDisplayProperties('skuCode,skuDefinition,product.productName', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('price', _this.rbkeyService.rbKey('entity.sku.price'), { isVisible: true, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });

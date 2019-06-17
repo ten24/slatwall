@@ -25,18 +25,18 @@ class SWOrderTemplateItemsController{
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
         this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.viewOrderTemplateItemsCollection.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.viewOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
         
         this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.editOrderTemplateItemsCollection.setDisplayProperties('sku.skuName,sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.editOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true,isSearchable:false,isDeletable:false,isEditable:true});
         this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
         
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
-        this.addSkuCollection.setDisplayProperties('skuName,skuCode,skuDefinition,product.productName','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.addSkuCollection.setDisplayProperties('skuCode,skuDefinition,product.productName','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('price',this.rbkeyService.rbKey('entity.sku.price'),{isVisible:true,isSearchable:true,isDeletable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
