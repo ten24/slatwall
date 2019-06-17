@@ -104,12 +104,12 @@ property name="refereeFlag" ormtype="boolean" default="0";
 	}
 	
 	public string function getOptionalTargetAccountConfig(encodeForHTML=false){
-		
-		if(encodeForHTML){
-			return getService("HibachiUtilityService").hibachiHTMLEditFormat(variables.optionalTargetAccountConfig);
+		if(structKeyExists(variables,"optionalTargetAccountConfig")){
+			if(encodeForHTML){
+				return getService("HibachiUtilityService").hibachiHTMLEditFormat(variables.optionalTargetAccountConfig);
+			}
+			return variables.optionalTargetAccountConfig;
 		}
-		
-		return variables.optionalTargetAccountConfig;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

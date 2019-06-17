@@ -73,7 +73,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
 		
 		if(accruementCurrency.hasErrors()){
-			arguments.loyaltyAccruement.setErrors(accruementCurrency.getErrors());
+			arguments.loyaltyAccruement.addErrors(accruementCurrency.getErrors());
 		}
 		
 		return arguments.loyaltyAccruement;	

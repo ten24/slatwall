@@ -47,6 +47,7 @@
 			action="admin:entity.preprocessloyaltyaccruement" 
 			entity="#rc.loyaltyAccruement#" 
 			processContext="addgiftcardvaluebycurrency"
+			querystring="fRedirectAction=admin:entity.detailLoyaltyAccruement"
 			class="btn btn-default"
 			icon="plus"
 			modal="true" 
