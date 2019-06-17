@@ -79659,6 +79659,8 @@ var HibachiAuthenticationService = /** @class */ (function () {
             return authDetails;
         };
         this.authenticateProcessByAccount = function (processContext, entityName) {
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
             // Check if the user is a super admin, if true no need to worry about security
             if (_this.isSuperUser()) {
                 return true;
@@ -79667,12 +79669,13 @@ var HibachiAuthenticationService = /** @class */ (function () {
             if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
                 var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
                 for (var i in accountPermissionGroups) {
-                    var pgOK = _this.authenticateProcessByPermissionGroup('Process', entityName, accountPermissionGroups[i]);
+                    var pgOK = _this.authenticateProcessByPermissionGroup(processContext, entityName, accountPermissionGroups[i]);
                     if (pgOK) {
                         return true;
                     }
                 }
             }
+            return false;
         };
         this.authenticateEntityCrudByAccount = function (crudType, entityName) {
             crudType = _this.utilityService.toCamelCase(crudType);
@@ -79697,6 +79700,8 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.authenticateProcessByPermissionGroup = function (processContext, entityName, permissionGroup) {
             var permissions = permissionGroup;
             var permissionDetails = _this.getEntityPermissionDetails();
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
             if (!_this.authenticateEntityByPermissionGroup('Process', entityName, permissionGroup)) {
                 return false;
             }
