@@ -90,6 +90,7 @@ Notes:
     <hb:HibachiListingDisplay 
     		collectionList="#orderitemCollectionList#"
     		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
     		recordEditAction="admin:entity.edit#lcase(orderitemCollectionList.getCollectionObject())#"
     		recordDetailAction="admin:entity.detail#lcase(orderitemCollectionList.getCollectionObject())#"
     	>
