@@ -64081,17 +64081,26 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.edit = false;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
+            var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price";
+            var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
+            if (_this.skuPropertiesToDisplay != null) {
+                var properties = _this.skuPropertiesToDisplay.split(',');
+                for (var i = 0; i < properties.length; i++) {
+                    orderTemplateDisplayProperties += "sku." + properties[i];
+                    skuDisplayProperties += properties[i];
+                }
+            }
             _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            _this.viewOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
             _this.editOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            _this.editOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.editOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.editOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), { isVisible: true, isSearchable: false, isDeletable: false, isEditable: true });
             _this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
-            _this.addSkuCollection.setDisplayProperties('skuCode,skuDefinition,product.productName', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('price', _this.rbkeyService.rbKey('entity.sku.price'), { isVisible: true, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
@@ -64125,7 +64134,8 @@ var SWOrderTemplateItems = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
-            orderTemplate: '<?'
+            orderTemplate: '<?',
+            skuPropertiesToDisplay: '@?'
         };
         this.controller = SWOrderTemplateItemsController;
         this.controllerAs = "swOrderTemplateItems";

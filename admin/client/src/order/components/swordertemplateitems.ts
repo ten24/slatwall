@@ -11,6 +11,8 @@ class SWOrderTemplateItemsController{
     public orderTemplate;
     
     public skuColumns; 
+    
+    public skuPropertiesToDisplay:string;
 
 	constructor(public $hibachi,
 	            public collectionConfigService, 
@@ -21,22 +23,35 @@ class SWOrderTemplateItemsController{
 	}
 	
 	public $onInit = () =>{
-	    
+			    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
+		var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price";
+		var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
+		
+		if(this.skuPropertiesToDisplay != null){
+			var properties = this.skuPropertiesToDisplay.split(',');
+			
+			for(var i=0; i<properties.length; i++){
+				orderTemplateDisplayProperties += ",sku." + properties[i]; 
+				skuDisplayProperties += ',' + properties[i];
+			}
+			
+		}
+	    
         this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.viewOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
         
         this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.editOrderTemplateItemsCollection.setDisplayProperties('sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.editOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true,isSearchable:false,isDeletable:false,isEditable:true});
         this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
         
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
-        this.addSkuCollection.setDisplayProperties('skuCode,skuDefinition,product.productName','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('price',this.rbkeyService.rbKey('entity.sku.price'),{isVisible:true,isSearchable:true,isDeletable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
@@ -72,7 +87,8 @@ class SWOrderTemplateItems implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-        orderTemplate: '<?'
+        orderTemplate: '<?', 
+        skuPropertiesToDisplay: '@?'
 	};
 	public controller=SWOrderTemplateItemsController;
 	public controllerAs="swOrderTemplateItems";
