@@ -122,7 +122,7 @@
         <div class="col">
             <div class="flex flex-col-right">
             	
-            	<div class="col">
+            	<div class="col mPush-down">
                     <!--- <select 
             		    ng-model="swListingReport.selectedPeriodInterval"
             			ng-options="periodInterval as periodInterval.value for periodInterval in swListingReport.periodIntervals track by periodInterval.value"
@@ -142,11 +142,6 @@
                     </div>
                 </div><!-- end of .col -->
                 
-                <div class="col save-callout">
-                    <div class ="Malert alert alert-warning">
-                           <span><i class="fas fa-exclamation-triangle save-icon Mfade-in"></i><span>Report Changed 
-                    </div>
-                </div>
                 
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
