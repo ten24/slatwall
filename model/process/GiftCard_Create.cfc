@@ -70,7 +70,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 			return getService("hibachiUtilityService").generateRandomID(getSku().setting('skuGiftCardCodeLength'));
 		}
 		
-		// return variables.giftCardCode;
+		return variables.giftCardCode;
 	}
 
 	public string function getGiftCardPin(){
