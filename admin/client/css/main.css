@@ -5794,7 +5794,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   display: block;
 }
 #reporting-top .input-group .form-control {
-  max-width: 110px;
+  max-width: 10em;
 }
 #reporting-top .flex {
   display: flex;
@@ -5890,13 +5890,11 @@ a.disabled > i.hibachi-ui-radio-checked {
   position: relative;
   padding-left: 20px;
 }
-#reporting-top .flex.compare:before {
-  content: '-';
-  position: absolute;
-  left: 15px;
-  top: 10px;
+.flex.compare .icon-wrapper {
   margin: auto;
-  font-size: 35px;
+}
+.flex.compare .icon-wrapper i {
+  margin-top: 10px;
 }
 #reporting-top .flex select {
   width: 100%;
@@ -5913,7 +5911,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-image: url(data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%20%3C%21DOCTYPE%20svg%20PUBLIC%20%22-//W3C//DTD%20SVG%201.1//EN%22%20%22http%3A//www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd%22%3E%20%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2214px%22%20height%3D%2212px%22%20viewBox%3D%220%200%2014%2012%22%20enable-background%3D%22new%200%200%2014%2012%22%20xml%3Aspace%3D%22preserve%22%3E%20%3Cpolygon%20points%3D%223.862%2C7.931%200%2C4.069%207.725%2C4.069%20%22/%3E%3C/svg%3E);
 }
 #reporting-top .flex.flex-col-left .col {
-  margin-right: 50px;
+  margin-right: 25px;
 }
 #reporting-top .flex.flex-col-left .col:last-child {
   flex: 1 0 50%;
@@ -5921,6 +5919,11 @@ a.disabled > i.hibachi-ui-radio-checked {
 #reporting-top .flex.flex-col-left {
   margin-bottom: 20px;
   justify-content: flex-start;
+}
+#reporting-top .mBorder {
+  border: 1px solid #cecaca;
+  border-radius: 5px;
+  padding: 21px 10px 12px 10px;
 }
 #reporting-top .col-cal {
   margin-left: 10px;
@@ -8694,4 +8697,12 @@ table.s-detail-content-table tbody tr.s-done {
 }
 .Mbtn-round {
   border-radius: 17px;
+}
+#hibachi-report-disable-compare {
+  position: absolute;
+  top: -29%;
+  right: -2px;
+  color: grey;
+  font-weight: bold;
+  font-size: 1.2em;
 }
