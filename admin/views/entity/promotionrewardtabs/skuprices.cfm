@@ -85,7 +85,7 @@ Notes:
             </sw-action-caller>
         </div>
         
-        <hb:hibachiListingDisplay collectionList="#local.includedSkuPricesCollection#"
+        <hb:HibachiListingDisplay collectionList="#local.includedSkuPricesCollection#"
                                   recordEditEvent="EDIT_SKUPRICE"
                                   recordDeleteEvent="DELETE_SKUPRICE"
                                   recordActions="[{
