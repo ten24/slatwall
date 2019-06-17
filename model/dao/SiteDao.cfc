@@ -72,6 +72,24 @@ Notes:
 
 		<cfreturn ValueList(local.siteCodes.siteCode, arguments.delimiter) />
 	</cffunction>
+<<<<<<< HEAD
+=======
+	
+	<cffunction name="validateDomainName">
+		<cfargument name="domainNames" type="string" required="true" />
+		<cfargument name="siteID" type="string" default="" />
+		<cfif len(arguments.siteID) >
+			<cfquery name="local.query" >
+				SELECT st.siteID FROM swsite AS st where st.siteID <> "#arguments.siteID#" AND FIND_IN_SET("#arguments.domainNames#",LOWER(st.domainNames))
+			</cfquery>
+		<cfelse>
+			<cfquery name="local.query" >
+				SELECT st.siteID FROM swsite AS st where FIND_IN_SET("#arguments.domainNames#",LOWER(st.domainNames))
+			</cfquery>
+		</cfif>
+		<cfreturn local.query.recordCount />
+	</cffunction>
+>>>>>>> 8951a7b992... fixing unit tests
 
 </cfcomponent>
 
