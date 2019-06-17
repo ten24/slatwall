@@ -1101,14 +1101,14 @@ class ListingService{
     
     //Begin Personal Collections Functions
     
-    public hasPersonalCollectionSelected=(baseEntityName:string):boolean=>{
+    public hasPersonalCollectionSelected=(personalCollectionKey:string):boolean=>{
         return this.localStorageService.hasItem('selectedPersonalCollection') 
-            && this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
+            && this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey];
     }
-     public getPersonalCollectionByBaseEntityName=(baseEntityName:string):any=>{
+     public getPersonalCollectionByBaseEntityName=(personalCollectionKey:string):any=>{
         var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
         personalCollection.setDisplayProperties('collectionConfig');
-        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
+        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey].collectionID);
         return personalCollection;
     }
         

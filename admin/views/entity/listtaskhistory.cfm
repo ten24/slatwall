@@ -70,6 +70,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#taskHistoryCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 	>
 	</hb:HibachiListingDisplay>
 
