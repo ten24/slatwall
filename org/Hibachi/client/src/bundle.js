@@ -63284,7 +63284,7 @@ var CollectionController = /** @class */ (function () {
             }, function (reason) {
             });
         };
-        observerService.attach($scope.saveCollection, 'swPaginationUpdate', $attrs.tableId);
+        //observerService.attach($scope.saveCollection,'swPaginationUpdate',$attrs.tableId);
     }
     return CollectionController;
 }());
@@ -64765,7 +64765,7 @@ exports.CollectionService = CollectionService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWActionCallerController = /** @class */ (function () {
     //@ngInject
-    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiPathBuilder) {
+    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiAuthenticationService, hibachiPathBuilder) {
         var _this = this;
         this.$scope = $scope;
         this.$element = $element;
@@ -64777,7 +64777,9 @@ var SWActionCallerController = /** @class */ (function () {
         this.observerService = observerService;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$onInit = function () {
+            _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
@@ -64990,6 +64992,7 @@ var SWActionCallerController = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
             var template = angular.element(html);
             _this.$element.parent().append(template);
@@ -64997,6 +65000,7 @@ var SWActionCallerController = /** @class */ (function () {
             //need to perform init after promise completes
             //this.init();
         });
+        this.authenticateActionByAccount = this.hibachiAuthenticationService.autheticateActionByAccount;
     }
     return SWActionCallerController;
 }());
@@ -69812,12 +69816,322 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector) {
+    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector, utilityService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$q = $q;
         this.appConfig = appConfig;
         this.$injector = $injector;
+        this.utilityService = utilityService;
+        this.isSuperUser = function () {
+            return _this.$rootScope.slatwall.role == 'superUser';
+        };
+        this.authenticateActionByAccount = function (action, processContext) {
+            var authDetails = _this.getActionAuthenticationDetailsByAccount(action, processContext);
+            return authDetails.authorizedFlag;
+        };
+        this.getActionAuthenticationDetailsByAccount = function (action, processContext) {
+            var authDetails = {
+                authorizedFlag: false,
+                superUserAccessFlag: false,
+                anyLoginAccessFlag: false,
+                anyAdminAccessFlag: false,
+                publicAccessFlag: false,
+                entityPermissionAccessFlag: false,
+                actionPermissionAccessFlag: false,
+                forbidden: false,
+                invalidToken: false,
+                timeout: false
+            };
+            if (_this.isSuperUser()) {
+                authDetails.authorizedFlag = true;
+                authDetails.superUserAccessFlag = true;
+                return authDetails;
+            }
+            var subsystemName = action.split(':')[0];
+            var sectionName = action.split(':')[1].split('.')[0];
+            if (action.split('.').length > 1) {
+                var itemName = action.split('.')[1];
+            }
+            else {
+                var itemName = 'default';
+            }
+            if ((_this.utilityService.left(itemName, 10) == 'preprocess' || _this.utilityService.left(itemName, 7) == 'process')
+                && processContext
+                && processContext.length) {
+                itemName += '_processContext';
+            }
+            var actionPermissions = _this.getActionPermissionDetails();
+            if (!actionPermissions) {
+                return false;
+            }
+            // Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
+            if (!actionPermissions[subsystemName]
+                || !actionPermissions[subsystemName].hasSecureMethods
+                || !actionPermissions[subsystemName].sections[sectionName]) {
+                authDetails.authorizedFlag = true;
+                authDetails.publicAccessFlag = true;
+                return authDetails;
+            }
+            // Check if the action is public, if public no need to worry about security
+            if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].publicMethods, itemName) != -1) {
+                authDetails.authorizedFlag = true;
+                authDetails.publicAccessFlag = true;
+                return authDetails;
+            }
+            // All these potentials require the account to be logged in, and that it matches the hibachiScope
+            if (_this.$rootScope.slatwall.account
+                && _this.$rootScope.slatwall.account.accountID
+                && _this.$rootScope.slatwall.account.accountID.length) {
+                // Check if the action is anyLogin, if so and the user is logged in, then we can return true
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].anyLoginMethods, itemName) != -1) {
+                    authDetails.authorizedFlag = true;
+                    authDetails.anyLoginAccessFlag = true;
+                    return authDetails;
+                }
+                // Look for the anyAdmin methods next to see if this is an anyAdmin method, and this user is some type of admin
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].anyAdminMethods, itemName) != -1) {
+                    authDetails.authorizedFlag = true;
+                    authDetails.anyAdminAccessFlag = true;
+                    return authDetails;
+                }
+                // Check to see if this is a defined secure method, and if so we can test it against the account
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].secureMethods, itemName) != -1) {
+                    var pgOK = false;
+                    if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                        var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                        if (accountPermissionGroups) {
+                            for (var p in accountPermissionGroups) {
+                                pgOK = _this.authenticateSubsystemSectionItemActionByPermissionGroup(subsystemName, sectionName, itemName, accountPermissionGroups[p]);
+                                if (pgOK) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (pgOK) {
+                        authDetails.authorizedFlag = true;
+                        authDetails.actionPermissionAccessFlag = true;
+                    }
+                    return authDetails;
+                }
+                //start line130
+                // For process / preprocess strip out process context from item name		
+                if (itemName.split('_').length > 1) {
+                    itemName = itemName.split('_')[0];
+                }
+                // Check to see if the controller is an entity, and then verify against the entity itself
+                if (_this.getActionPermissionDetails()[subsystemName].sections[sectionName].entityController) {
+                    if (_this.utilityService.left(itemName, 6) == "create") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 6) == "detail") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("read", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 6) == "delete") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("delete", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "edit") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("update", _this.utilityService.right(itemName, itemName.length - 4));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "list") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("read", _this.utilityService.right(itemName, itemName.length - 4));
+                    }
+                    else if (_this.utilityService.left(itemName, 10) == "reportlist") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("report", _this.utilityService.right(itemName, itemName.length - 10));
+                    }
+                    else if (_this.utilityService.left(itemName, 15) == "multiPreProcess") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 15));
+                    }
+                    else if (_this.utilityService.left(itemName, 12) == "multiProcess") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 12));
+                    }
+                    else if (_this.utilityService.left(itemName, 10) == "preProcess") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 10));
+                    }
+                    else if (_this.utilityService.left(itemName, 7) == "process") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 7));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "save") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 4));
+                        if (!authDetails.authorizedFlag) {
+                            authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("update", _this.utilityService.right(itemName, itemName.length - 4));
+                        }
+                    }
+                    if (authDetails.authorizedFlag) {
+                        authDetails.entityPermissionAccessFlag = true;
+                    }
+                }
+                //TODO: see if this applies on the client side and how
+                // Check to see if the controller is for rest, and then verify against the entity itself
+                /*if(this.getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
+                    //require a token to validate
+                    if (StructKeyExists(arguments.restInfo, "context")){
+                        var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
+                    }else{
+                        var hasProcess = false;
+                    }
+                    if(hasProcess){
+                        authDetails.authorizedFlag = true;
+                    }else if(itemName == 'get'){
+                        authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+                    }else if(itemName == 'post'){
+                        if(arguments.restInfo.context == 'get'){
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+                        }else if(arguments.restInfo.context == 'save'){
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=arguments.restInfo.entityName, account=arguments.account);
+                            if(!authDetails.authorizedFlag) {
+                                authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=arguments.restInfo.entityName, account=arguments.account);
+                            }
+                        }else{
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType=arguments.restInfo.context,entityName=arguments.restInfo.entityName,account=arguments.account);
+                        }
+                    }
+                    if(authDetails.authorizedFlag) {
+                        authDetails.entityPermissionAccessFlag = true;
+                    }else{
+                        authDetails.forbidden = true;
+                    }
+                        
+                }*/
+            }
+            return authDetails;
+        };
+        this.authenticateProcessByAccount = function (processContext, entityName) {
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                for (var i in accountPermissionGroups) {
+                    var pgOK = _this.authenticateProcessByPermissionGroup(processContext, entityName, accountPermissionGroups[i]);
+                    if (pgOK) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        this.authenticateEntityCrudByAccount = function (crudType, entityName) {
+            crudType = _this.utilityService.toCamelCase(crudType);
+            entityName = entityName.toLowerCase();
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                for (var i in accountPermissionGroups) {
+                    var pgOK = _this.authenticateEntityByPermissionGroup(crudType, entityName, accountPermissionGroups[i]);
+                    if (pgOK) {
+                        return true;
+                    }
+                }
+            }
+            // If for some reason not of the above were meet then just return false
+            return false;
+        };
+        this.authenticateProcessByPermissionGroup = function (processContext, entityName, permissionGroup) {
+            var permissions = permissionGroup;
+            var permissionDetails = _this.getEntityPermissionDetails();
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
+            if (!_this.authenticateEntityByPermissionGroup('Process', entityName, permissionGroup)) {
+                return false;
+            }
+            //if nothing specific then all processes are ok
+            if (!permissions.process.entities[entityName]) {
+                return true;
+            }
+            //if we find perms then what are they?
+            if (permissions.process.entities[entityName]
+                && permissions.process.entities[entityName].context[processContext]) {
+                return permissions.process.entities[entityName].context[processContext].allowProcessFlag;
+            }
+            return false;
+        };
+        this.authenticateEntityByPermissionGroup = function (crudType, entityName, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            var permissionDetails = _this.getEntityPermissionDetails();
+            // Check for entity specific values
+            if (permissions.entity.entities[entityName]
+                && permissions.entity.entities[entityName]["permission"]
+                && permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
+                if (permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            // Check for an inherited permission
+            if (permissionDetails[entityName]
+                && permissionDetails[entityName]["inheritPermissionEntityName"]) {
+                return _this.authenticateEntityByPermissionGroup(crudType, permissionDetails[entityName].inheritPermissionEntityName, permissionGroup);
+            }
+            // Check for generic permssion
+            if (permissions.entity["permission"]
+                && permissions.entity.permission["allow" + crudType + "Flag"]
+                && permissions.entity.permission["allow" + crudType + "Flag"]) {
+                return true;
+            }
+            return false;
+        };
+        this.authenticateSubsystemSectionItemActionByPermissionGroup = function (subsystem, section, item, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem].sections[section]
+                && permissions.action.subsystems[subsystem].sections[section].items[item]) {
+                return;
+                permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
+                    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag;
+            }
+            return _this.authenticateSubsystemSectionActionByPermissionGroup(subsystem = subsystem, section = section, permissionGroup = permissionGroup);
+        };
+        this.authenticateSubsystemSectionActionByPermissionGroup = function (subsystem, section, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem].sections[section]
+                && permissions.action.subsystems[subsystem].sections[section]["permission"]) {
+                if (permissions.action.subsystems[subsystem].sections[section].permission.allowActionFlag
+                    && permissions.action.subsystems[subsystem].sections[section].permission.allowActionFlag) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            return _this.authenticateSubsystemActionByPermissionGroup(subsystem = subsystem, permissionGroup = permissionGroup);
+        };
+        this.authenticateSubsystemActionByPermissionGroup = function (subsystem, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem]["permission"]) {
+                if (permissions.action.subsystems[subsystem].permission.allowActionFlag
+                    && permissions.action.subsystems[subsystem].permission.allowActionFlag) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            return false;
+        };
+        this.getActionPermissionDetails = function () {
+            return _this.$rootScope.slatwall.authInfo.action;
+        };
+        this.getEntityPermissionDetails = function () {
+            return _this.$rootScope.slatwall.authInfo.entity;
+        };
         this.getUserRole = function () {
             return _this.$rootScope.slatwall.role;
         };
@@ -72290,7 +72604,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
     //@ngInject
-    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout) {
+    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout, hibachiAuthenticationService) {
         var _this = this;
         this.$http = $http;
         this.$q = $q;
@@ -72306,6 +72620,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.appConfig = appConfig;
         this.$timeout = $timeout;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.requests = {};
         this.errors = {};
         this.baseActionPath = "";
@@ -72661,6 +72976,9 @@ var PublicService = /** @class */ (function () {
                 }
             }
             return true;
+        };
+        this.authenticateActionByAccount = function (action, processContext) {
+            return _this.hibachiAuthenticationService.authenticateActionByAccount(action, processContext);
         };
         this.removeInvalidOrderPayments = function (cart) {
             cart.orderPayments = cart.orderPayments.filter(function (payment) { return !payment.hasErrors; });
@@ -73688,6 +74006,7 @@ var PublicService = /** @class */ (function () {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     PublicService.prototype.getOrderFulfillmentItemList = function (fulfillmentIndex) {
         return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');
@@ -74362,6 +74681,10 @@ var UtilityService = /** @class */ (function (_super) {
         _this.isLowerCase = function (character) {
             return character == character.toLowerCase();
         };
+        _this.toCamelCase = function (s) {
+            return s.toUpperCase().split("")[0] + s.toLowerCase().slice(1);
+            ;
+        };
         _this.snakeToCapitalCase = function (s) {
             return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function (m) { return m[1].toUpperCase(); }).slice(1);
         };
@@ -74664,6 +74987,23 @@ var UtilityService = /** @class */ (function (_super) {
                 }
                 return val;
             });
+        };
+        _this.getCaseInsensitiveStructKey = function (obj, prop) {
+            prop = (prop + "").toLowerCase();
+            for (var p in obj) {
+                if (obj.hasOwnProperty(p) && prop == (p + "").toLowerCase()) {
+                    return p;
+                    break;
+                }
+            }
+        };
+        _this.listFindNoCase = function (list, value, delimiter) {
+            if (list === void 0) { list = ''; }
+            if (value === void 0) { value = ''; }
+            if (delimiter === void 0) { delimiter = ','; }
+            list = list.toLowerCase();
+            value = value.toLowerCase();
+            return _this.listFind(list, value, delimiter);
         };
         _this.listFind = function (list, value, delimiter) {
             if (list === void 0) { list = ''; }
@@ -78288,7 +78628,7 @@ var SWListingDisplayController = /** @class */ (function () {
             if (_this.columns != null && _this.columns.length) {
                 return _this.columns.reduce(function (totalNumericalCols, col) {
                     return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-                });
+                }, 0);
             }
             return false;
         };
@@ -78430,6 +78770,9 @@ var SWListingDisplayController = /** @class */ (function () {
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
+        if (angular.isUndefined(this.personalCollectionKey)) {
+            this.personalCollectionKey = this.baseEntityName.toLowerCase();
+        }
         if (angular.isUndefined(this.usingPersonalCollection)) {
             this.usingPersonalCollection = false;
         }
@@ -78457,11 +78800,11 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         if ((this.baseEntityName)
             && (this.usingPersonalCollection
-                && this.listingService.hasPersonalCollectionSelected(this.baseEntityName))
+                && this.listingService.hasPersonalCollectionSelected(this.personalCollectionKey))
             && (angular.isUndefined(this.personalCollectionIdentifier)
-                || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'])
-                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))) {
-            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
+                || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'])
+                    && this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))) {
+            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
             // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
@@ -78524,6 +78867,7 @@ var SWListingDisplay = /** @class */ (function () {
         this.bindToController = {
             usingPersonalCollection: "<?",
             personalCollectionIdentifier: '@?',
+            personalCollectionKey: "@?",
             isRadio: "<?",
             angularLinks: "<?",
             isAngularRoute: "<?",
@@ -79084,6 +79428,7 @@ var SWListingReportController = /** @class */ (function () {
         this.periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
         this.objectPath = [];
         this.selectedPeriodPropertyIdentifierArray = [];
+        this.chartcolors = ["F78F1E", "4F667E", "62B7C4", "173040", "f15532", "ffc515", "469E52", "497350", "284030", "719499", "03A6A6", "173040", "57225B", "933B8F", "DA92AA", "634635"];
         this.$onInit = function () {
         };
         this.updateReportFromListing = function (params) {
@@ -79132,9 +79477,11 @@ var SWListingReportController = /** @class */ (function () {
             }
             _this.collectionNameSaveIsOpen = true;
         };
-        this.random_rgba = function () {
-            var o = Math.round, r = Math.random, s = 255;
-            return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 1 + ')';
+        this.assign_color = function (index) {
+            if ((index + 1) > _this.chartcolors.length) {
+                index = 0;
+            }
+            return '#' + _this.chartcolors[index];
         };
         //decides if report comes from persisted collection or transient
         this.getReportCollectionConfig = function () {
@@ -79328,10 +79675,16 @@ var SWListingReportController = /** @class */ (function () {
             var datasets = [];
             if (ctx.is($("#myChartCompare"))) {
                 var chart = _this.compareChart;
+                var oldchart = _this.comparechartobj;
                 _this.compareReportingData = reportingData;
             }
             else {
+                var oldchart = _this.initchartobj;
                 var chart = _this.chart;
+            }
+            //check and destroy old chart
+            if (oldchart) {
+                oldchart.destroy();
             }
             _this.reportingData.records.forEach(function (element) {
                 var pidAliasArray = _this.selectedPeriodColumn.propertyIdentifier.split('.');
@@ -79340,9 +79693,10 @@ var SWListingReportController = /** @class */ (function () {
                 var value = _this.$filter('swdatereporting')(element[pidAlias], _this.selectedPeriodInterval.value);
                 dates.push(value);
             });
+            var colorcount = 0;
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
-                    var color = _this.random_rgba();
+                    var color = _this.assign_color(colorcount++);
                     var title = column.displayTitle || column.title;
                     var metrics_1 = [];
                     _this.reportingData.records.forEach(function (element) {
@@ -79362,9 +79716,6 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             //used to clear old rendered charts before adding new ones
-            if (chart != null) {
-                chart.destroy();
-            }
             chart = new chart_js_1.Chart(ctx, {
                 type: 'line',
                 data: {
@@ -79420,6 +79771,13 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             chart.draw();
+            //assign chart object to global variables
+            if (ctx.is($("#myChartCompare"))) {
+                _this.comparechartobj = chart;
+            }
+            else {
+                _this.initchartobj = chart;
+            }
             _this.observerService.notifyById('swListingReport_DrawChart', _this.tableId, chart);
         };
         this.popObjectPath = function () {
@@ -79692,14 +80050,14 @@ var SWListingSearchController = /** @class */ (function () {
             }
             var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
             if (personalCollection) {
-                selectedPersonalCollection[personalCollection.collectionObject.toLowerCase()] = personalCollection;
+                selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey] = personalCollection;
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
             else {
-                delete selectedPersonalCollection[_this.swListingDisplay.baseEntityName.toLowerCase()];
+                delete selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey];
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
-            window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
+            window.location.reload();
         };
         this.deleteReportCollection = function (persistedCollection) {
             _this.$hibachi.saveEntity('Collection', persistedCollection.collectionID, {}, 'delete').then(function (data) {
@@ -79711,7 +80069,7 @@ var SWListingSearchController = /** @class */ (function () {
             }, 'save').then(function (data) {
                 if (_this.localStorageService.hasItem('selectedPersonalCollection')) {
                     var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
-                    var currentSelectedPersonalCollection = selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()];
+                    var currentSelectedPersonalCollection = selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey];
                     if (currentSelectedPersonalCollection) {
                         var currentSelectedPersonalCollectionID = currentSelectedPersonalCollection.collectionID;
                         if (personalCollection.collectionID === currentSelectedPersonalCollectionID) {
@@ -79725,13 +80083,13 @@ var SWListingSearchController = /** @class */ (function () {
         };
         this.savePersonalCollection = function (collectionName) {
             if (_this.localStorageService.hasItem('selectedPersonalCollection') &&
-                _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] &&
+                _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey] &&
                 (angular.isUndefined(_this.personalCollectionIdentifier) ||
-                    (angular.isDefined(_this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription']) &&
-                        _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription'] == _this.personalCollectionIdentifier))) {
+                    (angular.isDefined(_this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey]['collectionDescription']) &&
+                        _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey]['collectionDescription'] == _this.personalCollectionIdentifier))) {
                 var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
-                if (selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]) {
-                    _this.$hibachi.saveEntity('Collection', selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()].collectionID, {
+                if (selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey]) {
+                    _this.$hibachi.saveEntity('Collection', selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID, {
                         'accountOwner.accountID': _this.$rootScope.slatwall.account.accountID,
                         'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString
                     }, 'save').then(function (data) {
@@ -79757,7 +80115,7 @@ var SWListingSearchController = /** @class */ (function () {
                         _this.localStorageService.setItem('selectedPersonalCollection', '{}');
                     }
                     var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
-                    selectedPersonalCollection[_this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
+                    selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey] = {
                         collectionID: data.data.collectionID,
                         collectionObject: data.data.collectionObject,
                         collectionName: data.data.collectionName,
@@ -80852,14 +81210,14 @@ var ListingService = /** @class */ (function () {
         };
         //End Expandable Functions
         //Begin Personal Collections Functions
-        this.hasPersonalCollectionSelected = function (baseEntityName) {
+        this.hasPersonalCollectionSelected = function (personalCollectionKey) {
             return _this.localStorageService.hasItem('selectedPersonalCollection')
-                && _this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
+                && _this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey];
         };
-        this.getPersonalCollectionByBaseEntityName = function (baseEntityName) {
+        this.getPersonalCollectionByBaseEntityName = function (personalCollectionKey) {
             var personalCollection = _this.collectionConfigService.newCollectionConfig('Collection');
             personalCollection.setDisplayProperties('collectionConfig');
-            personalCollection.addFilter('collectionID', _this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
+            personalCollection.addFilter('collectionID', _this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey].collectionID);
             return personalCollection;
         };
         //Setup a store so that controllers can listing for state changes and fire action requests.
