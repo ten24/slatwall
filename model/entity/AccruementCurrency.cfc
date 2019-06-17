@@ -89,6 +89,14 @@ component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrenc
        }
        structDelete(variables,"loyaltyAccruement");
     }
+    
+    public boolean function isCurrencyCodeUnique(){
+    	accruementCurrencyList = getService("LoyaltyService").getAccruementCurrencyCollectionList();
+    	accruementCurrencyList.setDisplayProperties("accruementCurrencyID");
+    	accruementCurrencyList.addFilter("currencyCode",this.getCurrencyCode());
+    	accruementCurrencyList.addFilter("accruementCurrencyID",this.getAccruementCurrencyID(),"!=");
+    	return !accruementCurrencyList.getRecordsCount();
+    }
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

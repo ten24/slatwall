@@ -156,7 +156,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 			//CUSTOM PROPERTIES BEGIN
-
+property name="firstFlexshipOrder" persistent="false";
+    property name="accountTypeList" persistent="false";
+    
+   
  property name="hyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
@@ -186,7 +189,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="oldDtxName4" ormtype="string";
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
- property name="commStatusUser" ormtype="string";//CUSTOM PROPERTIES END
+ property name="commStatusUser" ormtype="string";
+ property name="accountNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -1096,5 +1100,41 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 
 
-	
+		//CUSTOM FUNCTIONS BEGIN
+
+public any function getFirstFlexshipOrder(){
+        var orderList = getService("OrderService").getOrderCollectionList();
+        orderList.setDisplayProperties("orderID");
+        orderList.addFilter("Account.accountID",this.getAccountID());
+        orderList.addFilter("OrderTemplate.orderTemplateID","NULL","IS NOT");
+        orderList.addOrderBy("orderCloseDateTime|ASC");
+        var orders = orderList.getPageRecords(formatRecords=false);
+        if(!arrayIsEmpty(orders)){
+            return getService("OrderService").getOrder(orders[1]['orderID']);
+        }
+    }
+    
+    public boolean function hasAccountType(required string accountTypeList){
+        fullAccountTypeList = this.getAccountTypeList();
+        for(var accountType in arguments.accountTypeList){
+            if(!listFindNoCase(fullAccountTypeList,accountType)){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public string function getAccountTypeList(){
+        if(!structKeyExists(variables,"accountTypeList")){
+            variables.accountTypeList = "";
+            var priceGroupCollection = getService("PriceGroupService").getPriceGroupCollectionList;
+            priceGroupCollection.setDisplayProperties("priceGroupID,priceGroupCode");
+            priceGroupCollection.addFilter("accounts.accountID",this.getAccountID());
+            var priceGroups = priceGroupCollection.getRecords();
+            for(var priceGroup in priceGroups){
+                variables.accountTypeList = listAppend(variables.accountTypeList,priceGroup['priceGroupCode']);
+            }
+        }
+        return variables.accountTypeList;
+    }//CUSTOM FUNCTIONS END
 }
