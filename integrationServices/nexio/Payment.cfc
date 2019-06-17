@@ -154,8 +154,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				},
 				'data' = {
 					'paymentMethod' = 'creditCard',
-					// 'amount' = arguments.requestBean.getTransactionAmount(),
-					'amount' = 0,
+					'amount' = arguments.requestBean.getTransactionAmount(),
 					'currency' = arguments.requestBean.getTransactionCurrencyCode(),
 					'customer'= {
 						'orderNumber' = orderNumber,

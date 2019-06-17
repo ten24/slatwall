@@ -94,6 +94,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	}
 
 	public string function getAllowedSiteSettingNames() {
-		return "checkFraud,verifyAvsSetting,valueOptions,verifyCvcFlag";
+		// return "checkFraud,verifyAvsSetting,valueOptions,verifyCvcFlag";
+		return "checkFraud,verifyAvsSetting,verifyCvcFlag";
 	}
 }
