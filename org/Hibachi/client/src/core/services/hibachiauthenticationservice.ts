@@ -22,6 +22,8 @@ class HibachiAuthenticationService{
         return authDetails.authorizedFlag;
     }
     
+    
+    
     public getActionAuthenticationDetailsByAccount=(action:string, processContext:string)=>{
         var authDetails = {
 			authorizedFlag : false,
@@ -147,13 +149,13 @@ class HibachiAuthenticationService{
 				} else if ( this.utilityService.left(itemName, 10) == "reportlist" ) {
 					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("report", this.utilityService.right(itemName, itemName.length-10));
 				} else if ( this.utilityService.left(itemName, 15) == "multiPreProcess" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-15));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-15));
 				} else if ( this.utilityService.left(itemName, 12) == "multiProcess" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-12));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-12));
 				} else if ( this.utilityService.left(itemName, 10) == "preProcess" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-10));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-10));
 				} else if ( this.utilityService.left(itemName, 7) == "process" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-7));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-7));
 				} else if ( this.utilityService.left(itemName, 4) == "save" ) {
 					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("create", this.utilityService.right(itemName, itemName.length-4));
 					if(!authDetails.authorizedFlag) {
@@ -202,7 +204,32 @@ class HibachiAuthenticationService{
 		return authDetails;
     }
     
-    public authenticateEntityCrudByAccount=(crudType:string,entityName:string)=>{
+    
+    
+    public authenticateProcessByAccount = (processContext:string,entityName:string):boolean=>{
+    	entityName = entityName.toLowerCase();
+    	processContext = processContext.toLowerCase();
+    	
+    	// Check if the user is a super admin, if true no need to worry about security
+		if( this.isSuperUser() ) {
+			return true;
+		}
+		
+		// Loop over each permission group for this account, and ckeck if it has access
+		if(this.$rootScope.slatwall.authInfo.permissionGroups){
+		    var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
+    		for(var i in accountPermissionGroups){
+    			var pgOK = this.authenticateProcessByPermissionGroup(processContext, entityName, accountPermissionGroups[i]);
+    			if(pgOK) {
+    				return true;
+    			}
+    		}
+		}
+		
+		return false;
+    }
+    
+    public authenticateEntityCrudByAccount=(crudType:string,entityName:string):boolean=>{
         crudType = this.utilityService.toCamelCase(crudType);
         entityName = entityName.toLowerCase();
         
@@ -225,6 +252,34 @@ class HibachiAuthenticationService{
 		
 		// If for some reason not of the above were meet then just return false
 		return false;
+    }
+    
+    public authenticateProcessByPermissionGroup = (processContext:string, entityName:string,permissionGroup:any):boolean=>{
+    	var permissions = permissionGroup;
+		var permissionDetails = this.getEntityPermissionDetails();
+		
+		entityName = entityName.toLowerCase();
+		processContext = processContext.toLowerCase();
+		
+		if(!this.authenticateEntityByPermissionGroup('Process',entityName,permissionGroup)){
+			return false;
+		}
+		
+		//if nothing specific then all processes are ok
+		if(!permissions.process.entities[entityName]){
+			return true;
+		}
+		
+		//if we find perms then what are they?
+		if(
+			permissions.process.entities[entityName]
+			&& permissions.process.entities[entityName].context[processContext]
+		){
+			return permissions.process.entities[entityName].context[processContext].allowProcessFlag;
+		}
+		
+		return false;
+		
     }
     
     public authenticateEntityByPermissionGroup = (crudType,entityName,permissionGroup):boolean=>{

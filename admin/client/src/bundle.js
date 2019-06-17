@@ -79602,16 +79602,16 @@ var HibachiAuthenticationService = /** @class */ (function () {
                         authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("report", _this.utilityService.right(itemName, itemName.length - 10));
                     }
                     else if (_this.utilityService.left(itemName, 15) == "multiPreProcess") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 15));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 15));
                     }
                     else if (_this.utilityService.left(itemName, 12) == "multiProcess") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 12));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 12));
                     }
                     else if (_this.utilityService.left(itemName, 10) == "preProcess") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 10));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 10));
                     }
                     else if (_this.utilityService.left(itemName, 7) == "process") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 7));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 7));
                     }
                     else if (_this.utilityService.left(itemName, 4) == "save") {
                         authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 4));
@@ -79658,6 +79658,25 @@ var HibachiAuthenticationService = /** @class */ (function () {
             }
             return authDetails;
         };
+        this.authenticateProcessByAccount = function (processContext, entityName) {
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                for (var i in accountPermissionGroups) {
+                    var pgOK = _this.authenticateProcessByPermissionGroup(processContext, entityName, accountPermissionGroups[i]);
+                    if (pgOK) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
         this.authenticateEntityCrudByAccount = function (crudType, entityName) {
             crudType = _this.utilityService.toCamelCase(crudType);
             entityName = entityName.toLowerCase();
@@ -79676,6 +79695,25 @@ var HibachiAuthenticationService = /** @class */ (function () {
                 }
             }
             // If for some reason not of the above were meet then just return false
+            return false;
+        };
+        this.authenticateProcessByPermissionGroup = function (processContext, entityName, permissionGroup) {
+            var permissions = permissionGroup;
+            var permissionDetails = _this.getEntityPermissionDetails();
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
+            if (!_this.authenticateEntityByPermissionGroup('Process', entityName, permissionGroup)) {
+                return false;
+            }
+            //if nothing specific then all processes are ok
+            if (!permissions.process.entities[entityName]) {
+                return true;
+            }
+            //if we find perms then what are they?
+            if (permissions.process.entities[entityName]
+                && permissions.process.entities[entityName].context[processContext]) {
+                return permissions.process.entities[entityName].context[processContext].allowProcessFlag;
+            }
             return false;
         };
         this.authenticateEntityByPermissionGroup = function (crudType, entityName, permissionGroup) {
