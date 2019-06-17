@@ -22,6 +22,8 @@ class HibachiAuthenticationService{
         return authDetails.authorizedFlag;
     }
     
+    
+    
     public getActionAuthenticationDetailsByAccount=(action:string, processContext:string)=>{
         var authDetails = {
 			authorizedFlag : false,
@@ -202,7 +204,27 @@ class HibachiAuthenticationService{
 		return authDetails;
     }
     
-    public authenticateEntityCrudByAccount=(crudType:string,entityName:string)=>{
+    
+    
+    public authenticateProcessByAccount = (processContext:string,entityName:string):boolean=>{
+    	// Check if the user is a super admin, if true no need to worry about security
+		if( this.isSuperUser() ) {
+			return true;
+		}
+		
+		// Loop over each permission group for this account, and ckeck if it has access
+		if(this.$rootScope.slatwall.authInfo.permissionGroups){
+		    var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
+    		for(var i in accountPermissionGroups){
+    			var pgOK = this.authenticateProcessByPermissionGroup('Process', entityName, accountPermissionGroups[i]);
+    			if(pgOK) {
+    				return true;
+    			}
+    		}
+		}
+    }
+    
+    public authenticateEntityCrudByAccount=(crudType:string,entityName:string):boolean=>{
         crudType = this.utilityService.toCamelCase(crudType);
         entityName = entityName.toLowerCase();
         
@@ -225,6 +247,30 @@ class HibachiAuthenticationService{
 		
 		// If for some reason not of the above were meet then just return false
 		return false;
+    }
+    
+    public authenticateProcessByPermissionGroup = (processContext:string,entityName:string,permissionGroup:any):boolean=>{
+    	var permissions = permissionGroup;
+		var permissionDetails = this.getEntityPermissionDetails();
+		if(!this.authenticateEntityByPermissionGroup('Process',entityName,permissionGroup)){
+			return false;
+		}
+		
+		//if nothing specific then all processes are ok
+		if(!permissions.process.entities[entityName]){
+			return true;
+		}
+		
+		//if we find perms then what are they?
+		if(
+			permissions.process.entities[entityName]
+			&& permissions.process.entities[entityName].context[processContext]
+		){
+			return permissions.process.entities[entityName].context[processContext].allowProcessFlag;
+		}
+		
+		return false;
+		
     }
     
     public authenticateEntityByPermissionGroup = (crudType,entityName,permissionGroup):boolean=>{

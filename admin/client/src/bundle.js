@@ -88564,6 +88564,22 @@ var HibachiAuthenticationService = /** @class */ (function () {
             }
             return authDetails;
         };
+        this.authenticateProcessByAccount = function (processContext, entityName) {
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                for (var i in accountPermissionGroups) {
+                    var pgOK = _this.authenticateProcessByPermissionGroup('Process', entityName, accountPermissionGroups[i]);
+                    if (pgOK) {
+                        return true;
+                    }
+                }
+            }
+        };
         this.authenticateEntityCrudByAccount = function (crudType, entityName) {
             crudType = _this.utilityService.toCamelCase(crudType);
             entityName = entityName.toLowerCase();
@@ -88582,6 +88598,23 @@ var HibachiAuthenticationService = /** @class */ (function () {
                 }
             }
             // If for some reason not of the above were meet then just return false
+            return false;
+        };
+        this.authenticateProcessByPermissionGroup = function (processContext, entityName, permissionGroup) {
+            var permissions = permissionGroup;
+            var permissionDetails = _this.getEntityPermissionDetails();
+            if (!_this.authenticateEntityByPermissionGroup('Process', entityName, permissionGroup)) {
+                return false;
+            }
+            //if nothing specific then all processes are ok
+            if (!permissions.process.entities[entityName]) {
+                return true;
+            }
+            //if we find perms then what are they?
+            if (permissions.process.entities[entityName]
+                && permissions.process.entities[entityName].context[processContext]) {
+                return permissions.process.entities[entityName].context[processContext].allowProcessFlag;
+            }
             return false;
         };
         this.authenticateEntityByPermissionGroup = function (crudType, entityName, permissionGroup) {
