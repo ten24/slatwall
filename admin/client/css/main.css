@@ -5793,9 +5793,6 @@ a.disabled > i.hibachi-ui-radio-checked {
 #reporting-top label {
   display: block;
 }
-#reporting-top .input-group .form-control {
-  max-width: 10em;
-}
 #reporting-top .flex {
   display: flex;
 }
