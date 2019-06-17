@@ -149,13 +149,13 @@ class HibachiAuthenticationService{
 				} else if ( this.utilityService.left(itemName, 10) == "reportlist" ) {
 					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("report", this.utilityService.right(itemName, itemName.length-10));
 				} else if ( this.utilityService.left(itemName, 15) == "multiPreProcess" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-15));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-15));
 				} else if ( this.utilityService.left(itemName, 12) == "multiProcess" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-12));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-12));
 				} else if ( this.utilityService.left(itemName, 10) == "preProcess" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-10));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-10));
 				} else if ( this.utilityService.left(itemName, 7) == "process" ) {
-					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("process", this.utilityService.right(itemName, itemName.length-7));
+					authDetails.authorizedFlag = this.authenticateProcessByAccount(processContext, this.utilityService.right(itemName, itemName.length-7));
 				} else if ( this.utilityService.left(itemName, 4) == "save" ) {
 					authDetails.authorizedFlag = this.authenticateEntityCrudByAccount("create", this.utilityService.right(itemName, itemName.length-4));
 					if(!authDetails.authorizedFlag) {

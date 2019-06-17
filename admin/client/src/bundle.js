@@ -88508,16 +88508,16 @@ var HibachiAuthenticationService = /** @class */ (function () {
                         authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("report", _this.utilityService.right(itemName, itemName.length - 10));
                     }
                     else if (_this.utilityService.left(itemName, 15) == "multiPreProcess") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 15));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 15));
                     }
                     else if (_this.utilityService.left(itemName, 12) == "multiProcess") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 12));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 12));
                     }
                     else if (_this.utilityService.left(itemName, 10) == "preProcess") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 10));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 10));
                     }
                     else if (_this.utilityService.left(itemName, 7) == "process") {
-                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("process", _this.utilityService.right(itemName, itemName.length - 7));
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 7));
                     }
                     else if (_this.utilityService.left(itemName, 4) == "save") {
                         authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 4));
