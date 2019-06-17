@@ -4,6 +4,7 @@
         <column name="typeID" fieldtype="id" />
         <column name="typeIDPath" />
         <column name="parentTypeID" />
+        <column name="typeCode" update="false" />
         <column name="typeName"  update="false" />
         <column name="typeDescription"  update="false" />
         <column name="systemCode" update="false" />
@@ -11,7 +12,11 @@
         <column name="childRequiresSystemCodeFlag" datatype="bit" />
     </Columns>
     <Records>
-
+        
+        <Record typeID="2c9180866b4d105e016b4e23aee70027" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9180866b4d105e016b4e23aee70027" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Received" systemCode="ostProcessing" sortOrder="9" typeCode="rmaReceived" typeDescription="An order delivery/fulfillment has been created and entered but is unfulfilled" />
+		<Record typeID="2c9180866b4d105e016b4e25bf350028" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9180866b4d105e016b4e25bf350028" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Approved" systemCode="ostProcessing" sortOrder="10" typeCode="rmaApproved" typeDescription="Order delivery items were approved, confirmed, and updated as fulfilled." />
+		<Record typeID="2c9180866b4d105e016b4e2666760029" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9180866b4d105e016b4e2666760029" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Released" systemCode="ostClosed" sortOrder="11" typeCode="rmaReleased" typeDescription="RMA return order closed" />
+        
 		<Record typeID="2c9280846a023949016a0299578c000d" typeIDPath="2c9280846a023949016a028c33ff000b,2c9280846a023949016a0299578c000d" parentTypeID="2c9280846a023949016a028c33ff000b" typeName="Too Much Flexship" typeDescription="I have too much product from my last Flexship" systemCode="otsdcrtTooMuchFlexship" sortOrder="1" />
 		<Record typeID="2c9280846a023949016a02a03eb5000e" typeIDPath="2c9280846a023949016a028c33ff000b,2c9280846a023949016a02a03eb5000e" parentTypeID="2c9280846a023949016a028c33ff000b" typeName="Too Expensive" typeDescription="I don't have the budget right now" systemCode="otsdcrtTooExpensive"  sortOrder="2" />
 		<Record typeID="2c9280846a023949016a02a18939000f" typeIDPath="2c9280846a023949016a028c33ff000b,2c9280846a023949016a02a18939000f" parentTypeID="2c9280846a023949016a028c33ff000b" typeName="Not Needed" typeDescription="I do not intend to purchase right now" systemCode="otsdcrtNotNeeded"  sortOrder="3" />
