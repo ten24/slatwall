@@ -171,15 +171,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					}
 				}
 			};
-			
-			writeDump(var="***requestData 1");
-			writeDump(var=requestData);
 					
 			// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
-
-			writeDump(var="***responseData 1");
-			writeDump(var=responseData);
 			
 			if (!responseBean.hasErrors()) {
 				if (!isNull(responseData.fraudUrl)){
@@ -200,9 +194,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 						'securityCode' = arguments.requestBean.getSecurityCode()
 					}
 				};
-				
-				writeDump(var="***requestData2");
-				writeDump(var=requestData);
 				
 				// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 				responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
@@ -235,8 +226,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				}else {
 					responseDataAvsCode = "E";
 				}
-				writeDump(var="***responseData2");
-				writeDump(var=responseData);
 
 				// Extract data and set as part of the responseBean
 				if (!responseBean.hasErrors()) {
@@ -270,8 +259,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					} else {
 						arguments.responseBean.addMessage(messageName="nexio.cvcResults", message="cvcResults is undefinied; verifyCvcFlag set to 'No'");
 					}
-					writeDump(var="***arguments.responseBean2");
-					writeDump(var=arguments.responseBean);
 				}
 			}
 		} else {
@@ -284,28 +271,15 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		var requestBean = getTransient('CreditCardTransactionRequestBean');
 		var responseBean = getTransient('CreditCardTransactionResponseBean');
 		
-		writeDump(var="***arguments.tokens");
-		writeDump(var=arguments.tokens);
-		
 		var requestData = {
 			'tokens' = arguments.tokens
 		}
 		
-		writeDump(var="***requestData");
-		writeDump(var=requestData);
-		
-		writeDump(var="***responseBean");
-		writeDump(var=responseBean);
-		
 		var responseData = sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
 		responseBean.setData(responseData);
-		//writeDump(var="***responseData");
-		//writeDump(var=responseData);
 		
 		if (!responseBean.hasErrors()) {
 			return responseBean;
-			// arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
-			// arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
 		} else {
 			throw('Attempting to delete token(s). Token array is invalid.');
 		}
@@ -591,9 +565,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			var responseData = {};
 			
 			responseData = deserializeJSON(httpResponse.fileContent);
-			
-			writeDump(var="***responseData");
-			writeDump(var=responseData);
 			
 			return responseData;
 		} else {
