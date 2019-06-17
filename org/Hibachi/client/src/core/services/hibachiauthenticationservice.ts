@@ -207,6 +207,9 @@ class HibachiAuthenticationService{
     
     
     public authenticateProcessByAccount = (processContext:string,entityName:string):boolean=>{
+    	entityName = entityName.toLowerCase();
+    	processContext = processContext.toLowerCase();
+    	
     	// Check if the user is a super admin, if true no need to worry about security
 		if( this.isSuperUser() ) {
 			return true;
@@ -216,12 +219,14 @@ class HibachiAuthenticationService{
 		if(this.$rootScope.slatwall.authInfo.permissionGroups){
 		    var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
     		for(var i in accountPermissionGroups){
-    			var pgOK = this.authenticateProcessByPermissionGroup('Process', entityName, accountPermissionGroups[i]);
+    			var pgOK = this.authenticateProcessByPermissionGroup(processContext, entityName, accountPermissionGroups[i]);
     			if(pgOK) {
     				return true;
     			}
     		}
 		}
+		
+		return false;
     }
     
     public authenticateEntityCrudByAccount=(crudType:string,entityName:string):boolean=>{
@@ -249,9 +254,13 @@ class HibachiAuthenticationService{
 		return false;
     }
     
-    public authenticateProcessByPermissionGroup = (processContext:string,entityName:string,permissionGroup:any):boolean=>{
+    public authenticateProcessByPermissionGroup = (processContext:string, entityName:string,permissionGroup:any):boolean=>{
     	var permissions = permissionGroup;
 		var permissionDetails = this.getEntityPermissionDetails();
+		
+		entityName = entityName.toLowerCase();
+		processContext = processContext.toLowerCase();
+		
 		if(!this.authenticateEntityByPermissionGroup('Process',entityName,permissionGroup)){
 			return false;
 		}

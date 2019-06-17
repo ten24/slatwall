@@ -131,8 +131,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
             arguments.permissionDetails = jsonStruct;
         }
+        //check if permission type is a permission group uuid vs a string
         //format permission group data to lighten json
-        if(arguments.permissionType!='entity' && arguments.permissionType!='action' && arguments.permissionType !='process'){
+        if(getService('HibachiUtilityService').isHibachiUUID(arguments.permissionType)){
             var jsonStruct = {};
             for(var permissionTypeKey in arguments.permissionDetails){
                 var permissionTypeValue = arguments.permissionDetails[permissionTypeKey];
@@ -214,6 +215,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         }
                     }
                     
+                }else if(permissionTypeKey=='process'){
+                    var jsonStruct['process']={};
+                    
+                    if(structKeyExists(permissionTypeValue,'entities')){
+                        for(var entityName in permissionTypeValue.entities){
+                            entityName = lcase(entityName);
+                            var entityNameValue = permissionTypeValue.entities[entityName];
+                            jsonStruct['process']['entities'][entityName]={};
+                            if(structKeyExists(entityNameValue,'context')){
+                                jsonStruct['process']['entities'][entityName]['context']={};
+                                for(var contextNameKey in entityNameValue.context){
+                                    contextNameKey = lcase(contextNameKey);
+                                    var contextNameValue = entityNameValue.context[contextNameKey];
+                                    jsonStruct['process']['entities'][entityName]['context'][contextNameKey]={};
+                                    for(var key in contextNameValue){
+                                        if(structKeyExists(contextNameValue,key)){
+                                            jsonStruct['process']['entities'][entityName]['context'][contextNameKey][key]=contextNameValue[key];
+                                        }                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             arguments.permissionDetails=jsonStruct;
