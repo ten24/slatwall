@@ -1127,7 +1127,7 @@ public any function getFirstFlexshipOrder(){
     public string function getAccountTypeList(){
         if(!structKeyExists(variables,"accountTypeList")){
             variables.accountTypeList = "";
-            var priceGroupCollection = getService("PriceGroupService").getPriceGroupCollectionList;
+            var priceGroupCollection = getService("PriceGroupService").getPriceGroupCollectionList();
             priceGroupCollection.setDisplayProperties("priceGroupID,priceGroupCode");
             priceGroupCollection.addFilter("accounts.accountID",this.getAccountID());
             var priceGroups = priceGroupCollection.getRecords();
