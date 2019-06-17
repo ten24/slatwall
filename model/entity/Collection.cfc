@@ -546,6 +546,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"value" = arguments.value,
 			"hidden"=arguments.hidden
 		};
+		
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
 		}
@@ -612,10 +613,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"hidden"=arguments.hidden,
 			"ignoredWhenSearch"= arguments.ignoredWhenSearch
 		};
+		
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
 		}
-
 
 		if(len(aggregate)){
 			filter["aggregate"] = aggregate;
@@ -722,7 +723,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty)){
 					column['persistent'] = false;
 				}
-				var ormtype = getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.displayProperty);
+				var ormtype = getOrmTypeByPropertyIdentifier(arguments.displayProperty);
 				if(len(ormtype)){
 					column['ormtype'] = ormtype;
 				}
@@ -1012,6 +1013,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public string function getOrmTypeByPropertyIdentifier(required string propertyIdentifier){
+		if(arguments.propertyIdentifier == 'id'){
+			return 'string';
+		}
 		if(!isNull(getCollectionEntityObject())){
 			return getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
 		}
@@ -2242,7 +2246,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private void function applyPermissionRecordRestrictions(){
 
 		var excludedEntities = 'Session,PermissionGroup,Permission';
-
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
@@ -2544,11 +2547,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!this.getNewFlag()){
 				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
 				reportCacheKey &= getIgnorePeriodInterval();
-				
-			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
-				return getService('HibachiCacheService').getCachedValue(reportCacheKey);
+				if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
+					return getService('HibachiCacheService').getCachedValue(reportCacheKey);
 				}
 			}
+			
+			
 			
 		
 			
@@ -3078,7 +3082,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var rangePredicate = "";
 		
-		if(arguments.filter.ormtype eq 'timestamp') { // if date-range
+		if(arguments.filter.ormtype == 'timestamp') { // if date-range
 			
 			rangePredicate = getDateRangePredicate(arguments.filter);
 		
@@ -3098,6 +3102,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	
 	private string function getPredicate(required any filter){
+		
+		if(!structkeyExists(arguments.filter,"ormtype")) { 
+			arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(convertAliasToPropertyIdentifier(getPropertyIdentifierAlias(arguments.filter.propertyIdentifier)));
+		}
+
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
 			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
@@ -4028,7 +4037,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						structDelete(currentFilter, "logicalOperator");
 					}
 				}
-
+				
+				currentFilter['ormtype'] = column.ormtype;
+				
 				arrayAppend(postFilterGroup['filterGroup'],currentFilter);
 
 				columnIndex++;
