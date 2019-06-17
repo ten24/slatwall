@@ -96,6 +96,7 @@ Notes:
 		recordEditAction="admin:entity.edit#lcase(rc.productTypeCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.productTypeCollectionList.getCollectionObject())#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 	>
 	</hb:HibachiListingDisplay>
 
