@@ -271,22 +271,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		writeDump(var="***responseBean");
 		writeDump(var=responseBean);
 		
-		var responseDataDeleteToken = sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
+		var responseData = sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
+		responseBean.setData(responseData);
+		//writeDump(var="***responseData");
+		//writeDump(var=responseData);
 		
-		writeDump(var="***BREAKING HERE");
-		writeDump(var="***responseDataDeleteToken");
-		writeDump(var=responseDataDeleteToken);
-		
-		// if (!responseBean.hasErrors()) {
-		// 	writeDump(var="***responseBean");
-		// 	writeDump(var=responseBean);
-			
-		// 	// arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
-			
-		// 	// arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
-		// } else {
-		// 	throw('Attempting to delete token(s). Token array is invalid.');
-		// }
+		if (!responseBean.hasErrors()) {
+			return responseBean;
+			// arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
+			// arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
+		} else {
+			throw('Attempting to delete token(s). Token array is invalid.');
+		}
 	}
 	
 	private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {

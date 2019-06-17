@@ -33,12 +33,10 @@ component extends="Slatwall.model.service.IntegrationService" {
     		} else {
                 throw('The orderPaymentMethodCollection is empty.') 
             }
-            
-            // writeDump(var=tokens, abort=true);
-            
+
             arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
         	
-        	writeDump(var=arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens));
+        // 	writeDump(var=arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens));
         	
         	return arguments.integration;
 
