@@ -384,6 +384,7 @@ component extends="framework.one" {
 				getHibachiScope().getSession().setAccount( accessKeyAccount );
 				AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 			}
+			
 		}
 
 		//check if we have the authorization header
@@ -394,7 +395,7 @@ component extends="framework.one" {
 			//get token by stripping prefix
 			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
 			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
+			
 			if(jwt.verify()){
 
 				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
