@@ -273,11 +273,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		var requestData = {
 			'tokens' = arguments.tokens
 		}
-		
+		writeDump(var="***Payment.cfc requestData");
+        writeDump(var=requestData);
+        	
 		var responseData = sendHttpAPIRequest(requestBean, responseBean, 'deleteToken', requestData);
 		responseBean.setData(responseData);
 		
+		writeDump(var="***Payment.cfc responseData");
+        writeDump(var=responseData);
+		
 		if (!responseBean.hasErrors()) {
+			
+			writeDump(var="***Payment.cfc responseBean");
+        	writeDump(var=responseBean);
+        	
 			return responseBean;
 		} else {
 			throw('Attempting to delete token(s). Token array is invalid.');
