@@ -104,7 +104,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// } else if (arguments.requestBean.getTransactionType() == "void") {
 		// 	sendRequestToVoid(arguments.requestBean, responseBean);
 		} else {
-			throw("Nexio Payment Intgration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+			responseBean.addError("Processing error", "Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+			// throw("Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		}
 		
 		return responseBean;
@@ -129,10 +130,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			
+			var orderNumber = "";
 			if (!isNull(arguments.requestBean.getOrderID())) {
-				var orderNumber = arguments.requestBean.getOrderID();
-			} else {
-				var orderNumber = "";
+				orderNumber = arguments.requestBean.getOrderID();
 			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
@@ -261,7 +261,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				}
 			}
 		} else {
-			throw('Attempting to generate token. The payment method used already had a valid token');
+			responseBean.addError("Processing error", "Attempting to generate token. The payment method used already had a valid token");
+			// throw('Attempting to generate token. The payment method used already had a valid token');
 		}
 	}
 	
@@ -278,10 +279,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		responseBean.setData(responseData);
 		
 		if (!responseBean.hasErrors()) {
-        	
 			return responseBean;
 		} else {
-			throw('Attempting to delete token(s). Token array is invalid.');
+			responseBean.addError("Processing error", "Attempting to delete token(s). Token array is invalid");
+			// throw('Attempting to delete token(s). Token array is invalid.');
 		}
 	}
 	
@@ -331,7 +332,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
 			}
 		} else {
-			throw('Error attempting to authorize. Review providerToken.');
+			responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			// throw('Error attempting to authorize. Review providerToken.');
 		}
 	}
 	
@@ -382,7 +384,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
 			}
 		} else {
-			throw('Error attempting to authorize and charge. Review providerToken.');
+			responseBean.addError("Processing error", "Error attempting to authorize and charge. Review providerToken.");
+			// throw('Error attempting to authorize and charge. Review providerToken.');
 		}
 	}
 	
@@ -419,7 +422,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 			}
 		} else {
-			throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be the authorization code to reference for the charge/capture.");
+			responseBean.addError("Processing error", "There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be the authorization code to reference for the charge/capture.");
+			// throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be the authorization code to reference for the charge/capture.");
 		}
 	}
 	
@@ -454,7 +458,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 			}
 		} else {
-			throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
+			responseBean.addError("Processing error", "There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
+			// throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
 		}
 	}
 	
