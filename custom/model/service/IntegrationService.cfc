@@ -5,11 +5,12 @@ component extends="Slatwall.model.service.IntegrationService" {
             var accountPaymentMethodCollection = getService('hibachiCollectionService').getCollectionByCollectionCode('staleAccountPaymentMethods');
             var orderPaymentMethodCollection = getService('hibachiCollectionService').getCollectionByCollectionCode('staleOrderPaymentMethods');
             
-            var paymentToken = "";
             var tokens = [];
             
-    		if(len(accountPaymentMethodCollection)){
-    		    accountPaymentMethodCollection.setDisplayProperties('providerToken');
+    		if(isNull(accountPaymentMethodCollection)){
+    		    throw("The process to deleteStalePaymentTokens from Nexio requires a collection to be configured with collectionCode: 'accountPaymentMethodCollection'") 
+    		} else {
+                accountPaymentMethodCollection.setDisplayProperties('providerToken');
     		    var accountPaymentRecords = accountPaymentMethodCollection.getRecords(); 
                 
                 for(var accountPaymentRecord in accountPaymentRecords) {
@@ -17,11 +18,11 @@ component extends="Slatwall.model.service.IntegrationService" {
     		            arrayAppend(tokens,accountPaymentRecord.providerToken);
     		        }
     		    }
-    		} else {
-                throw('The accountPaymentMethodCollection is empty.') 
             }
     		    
-    		if(len(orderPaymentMethodCollection)){
+    		if(isNull(orderPaymentMethodCollection)){
+    		    throw("The process to deleteStalePaymentTokens from Nexio requires a collection to be configured with collectionCode: 'orderPaymentMethodCollection'") 
+    		} else {
     		    orderPaymentMethodCollection.setDisplayProperties('providerToken');
     		    var orderPaymentRecords = orderPaymentMethodCollection.getRecords(); 
                 
@@ -30,13 +31,13 @@ component extends="Slatwall.model.service.IntegrationService" {
     		            arrayAppend(tokens,orderPaymentRecord.providerToken);
     		        }
     		    }
-    		} else {
-                throw('The orderPaymentMethodCollection is empty.') 
             }
 
-            arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
-        	
-        // 	writeDump(var=arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens));
+            var responseBean = arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
+            
+            if (!responseBean.hasErrors()){
+                getAccountDAO().removeStalePaymentProviderTokens(tokens)
+            }
         	
         	return arguments.integration;
 
