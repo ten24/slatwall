@@ -8,7 +8,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         }
         
         if(
-            this.order.getAccount().getOwnerAccount().hasAccountType("vip") || 
+            !this.order.getAccount().getOwnerAccount().hasAccountType("vip") ||
+            !this.order.getAccount().hasAccountType("vip") ||
             this.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()
         ){
             return;
