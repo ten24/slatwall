@@ -64590,10 +64590,11 @@ var OrderTemplateService = /** @class */ (function () {
         };
         this.deleteOrderTemplateItem = function (state) {
             var formDataToPost = {
-                entityID: state.orderTemplateItemID,
-                entityName: 'OrderTemplateItem',
-                context: 'delete',
-                propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
+                entityID: _this.orderTemplateID,
+                entityName: 'OrderTemplate',
+                orderTemplateItemID: state.orderTemplateItemID,
+                context: 'removeOrderTemplateItem',
+                propertyIdentifiersList: 'fulfillmentTotal,subtotal,total'
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
@@ -64607,6 +64608,7 @@ var OrderTemplateService = /** @class */ (function () {
         this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateAddOrderTemplateItemSuccess');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateItemDeleteSuccess');
+        this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateRemoveOrderTemplateItemSuccess');
         this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateAddPromotionCodeSuccess');
         this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateRemovePromotionCodeSuccess');
     }

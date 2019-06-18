@@ -1180,27 +1180,45 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return fulfillmentCharge; 
 	}
 
+	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
+		if(!isNull(arguments.orderTemplate.getTemporaryOrder())){
+			var transientOrder = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate, false);  
+			transientOrder = this.saveOrder(transientOrder);
+			arguments.orderTemplate.setTemporaryOrder(transientOrder);
+		} else {
+			var transientOrder = arguments.orderTemplate.getTemporaryOrder(); 	
+		} 
+		
+		return getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder);   	
+	}
+
 	//order transient helper methods
-	public any function newTransientOrderFromOrderTemplate(required any orderTemplate){
+	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
 		var transientOrder = new Slatwall.model.entity.Order();
-		ORMGetSession().evict(transientOrder);
+		if(arguments.evictFromSession){	
+			ORMGetSession().evict(transientOrder);
+		}
 		transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		return transientOrder;
 	}
 
-	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate){
+	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
 		var transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
-		
-		ORMGetSession().evict(transientOrderFulfillment);
-		
+	
+		if(arguments.evictFromSession){	
+			ORMGetSession().evict(transientOrderFulfillment);
+		}	
+
 		transientOrderFulfillment.setOrder(this.newTransientOrderFromOrderTemplate(arguments.orderTemplate)); 
 		transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
 		transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
 		
-		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
-		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
-		ORMGetSession().evict(arguments.orderTemplate.getShippingAddress());
+		if(arguments.evictFromSession){	
+			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
+			ORMGetSession().evict(arguments.orderTemplate.getShippingAddress());
+		}
 
 		var orderTemplateItemCollectionList = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
 		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
@@ -1214,9 +1232,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var transientOrderItem = new Slatwall.model.entity.OrderItem();
 			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
 			
-			ORMGetSession().evict(sku);
-			ORMGetSession().evict(transientOrderItem);
-			
+			if(arguments.evictFromSession){	
+				ORMGetSession().evict(sku);
+				ORMGetSession().evict(transientOrderItem);
+			}
+
 			transientOrderItem.setSku(sku);
 			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 			transientOrderItem.setQuantity(orderTemplateItem['quantity']);
@@ -1227,8 +1247,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod(), false);  	
 		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment, false);
 
-		for(var shippingMethodOption in transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
-			ORMGetSession().evict(shippingMethodOption);
+		if(arguments.evictFromSession){	
+			for(var shippingMethodOption in transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
+				ORMGetSession().evict(shippingMethodOption);
+			}	
 		}	
 
 		return transientOrderFulfillment; 
@@ -1425,6 +1447,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return arguments.orderTemplate; 	
+	} 
+
+	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
+			
+		arguments.orderTemplate.removeOrderTemplateItem(arguments.processObject.getOrderTemplateItem()); 		
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate
 	} 
 
 	public any function processOrderTemplate_updateSchedule(required any orderTemplate, required any processObject, required struct data={}){ 

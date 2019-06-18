@@ -70,6 +70,9 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 
+	//order created for applying promos ahead of scheduled order placement
+	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
+	
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
 
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
@@ -94,6 +97,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	property name="fulfillmentTotal" persistent="false";
+	property name="canBePlacedFlag" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
@@ -108,7 +112,18 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		orderTemplateStruct['total'] = this.getTotal();
 
 		return orderTemplateStruct;  
-	}  
+	} 
+
+	public string function getStatusCode() {
+		return getOrderTemplateStatusType().getSystemCode();
+	}
+
+	public boolean function getCanBePlacedFlag(){
+		if(!structKeyExists(variables, 'orderTemplateCanBePlacedFlag')){
+			variables.canBePlacedFlag = getService('OrderService').getOrderTemplateCanBePlaced(this); 
+		} 
+		return variables.canBePlacedFlag
+	} 
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
