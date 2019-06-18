@@ -97,7 +97,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	property name="fulfillmentTotal" persistent="false";
-	property name="canBePlacedFlag" persistent="false";
+	property name="canPlaceOrderFlag" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
@@ -118,11 +118,11 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		return getOrderTemplateStatusType().getSystemCode();
 	}
 
-	public boolean function getCanBePlacedFlag(){
-		if(!structKeyExists(variables, 'orderTemplateCanBePlacedFlag')){
-			variables.canBePlacedFlag = getService('OrderService').getOrderTemplateCanBePlaced(this); 
+	public boolean function getCanPlaceOrderFlag(){
+		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
+			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this); 
 		} 
-		return variables.canBePlacedFlag
+		return variables.canPlaceOrderFlag;
 	} 
 
 	public numeric function getFulfillmentTotal() {
