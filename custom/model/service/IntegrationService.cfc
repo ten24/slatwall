@@ -1,7 +1,6 @@
-component extends="Slatwall.model.service.IntegrationService" {
+component extends="Slatwall.model.service.IntegrationService" accessors="true" {
     property name="accountDAO" type="any";
-    property name="accountService";
-    
+
     public any function processIntegration_deleteStalePaymentTokens(required any integration, struct any data) { 
         
         if(arguments.integration.getIntegrationPackage() == "nexio"){
@@ -38,15 +37,9 @@ component extends="Slatwall.model.service.IntegrationService" {
 
             var responseBean = arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
             
-            writeDump(var="***IntegrationService responseBean");
-            writeDump(var=responseBean);
-            
             if (!responseBean.hasErrors()){
                 getAccountDAO().removeStalePaymentProviderTokens(tokens);
             }
-        	
-        	writeDump(var="***IntegrationService arguments.integration");
-            writeDump(var=arguments.integration);
             
         	return arguments.integration;
 
