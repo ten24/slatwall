@@ -173,11 +173,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
             var debitData = {
             	debitAmount=arguments.processObject.getAmount(),
-            	allowNegativeBalanceFlag=true
+            	allowNegativeBalanceFlag=getService("SettingService").getSettingValue("globalGiftCardAllowNegativeBalance")
             };
             
             if(
-            	!getService("SettingService").getSettingValue("globalGiftCardAllowNegativeBalance")
+            	!debitData.allowNegativeBalanceFlag
             	&& debitData.debitAmount > arguments.giftCard.getBalanceAmount()
             ){
 				arguments.giftCard.addError("ownerAccount", rbKey('validate.offlineTransaction.GiftCard_OfflineTransaction.amount.lteProperty.giftCardBalanceAmount'));
