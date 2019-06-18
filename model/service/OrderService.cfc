@@ -1482,6 +1482,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate; 	
 	} 
 
+	public any function saveOrderTemplateItem(required any orderTemplateItem, struct data={}){
+		arguments.orderTemplateItem = super.saveOrderTemplateItem(arguments.orderTemplateItem, arguments.data);
+		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate(); 
+		if(!isNull(orderTemplate)){
+			orderTemplate = this.saveOrderTemplate(orderTemplate); 
+			if(orderTemplate.hasErrors()){
+				arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
+			} 
+		}
+		return arguments.orderTemplateItem;
+	}  
+
 	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
 			
 		arguments.orderTemplate.removeOrderTemplateItem(arguments.processObject.getOrderTemplateItem()); 		
