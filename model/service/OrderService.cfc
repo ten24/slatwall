@@ -1168,7 +1168,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    local.tx = local.ormSession.beginTransaction();
 
 		try{
-			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge() 
+			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
 		} catch (any e) {
 			//if we have any error we probably don't have the required data for returning the total
 			var fulfillmentCharge = 0; 
