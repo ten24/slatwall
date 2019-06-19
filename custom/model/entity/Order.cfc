@@ -163,5 +163,9 @@ component {
 	public numeric function getCustomPriceFieldTotal(customPriceField) {
 		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(customPriceField)  - getCustomDiscountTotal(customPriceField)));
 	}
+	
+	public boolean function isNotPaid() {
+		return getPaymentAmountDue() > 0;
+	}
     
 }
