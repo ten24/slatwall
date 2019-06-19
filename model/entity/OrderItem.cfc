@@ -164,7 +164,8 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
     
-   //CUSTOM PROPERTIES END
+   
+ property name="lineNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
@@ -1107,68 +1108,45 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
-	public any function getPersonalVolume(){
+
+public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
-            var personalVolume = getSku().getPersonalVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(personalVolume)){
-                personalVolume = 0;
-            }
-            variables.personalVolume = personalVolume;
+            variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
         }
         return variables.personalVolume;
     }
     
     public any function getTaxableAmount(){
        if(!structKeyExists(variables,'taxableAmount')){
-            var taxableAmount = getSku().getTaxableAmountByCurrencyCode(this.getCurrencyCode());
-            if(isNull(taxableAmount)){
-                taxableAmount = 0;
-            }
-            variables.taxableAmount = taxableAmount;
+            variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
         }
         return variables.taxableAmount;
     }
     
     public any function getCommissionableVolume(){
         if(!structKeyExists(variables,'commissionableVolume')){
-            var commissionableVolume = getSku().getCommissionableVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(commissionableVolume)){
-                commissionableVolume = 0;
-            }
-            variables.commissionableVolume = commissionableVolume;
+            variables.commissionableVolume = getCustomPriceFieldAmount('commissionableVolume');
         }
         return variables.commissionableVolume;
     }
     
     public any function getRetailCommission(){
         if(!structKeyExists(variables,'retailCommission')){
-            var retailCommission = getSku().getRetailCommissionByCurrencyCode(this.getCurrencyCode());
-            if(isNull(retailCommission)){
-                retailCommission = 0;
-            }
-            variables.retailCommission = retailCommission;
+            variables.retailCommission = getCustomPriceFieldAmount('retailCommission');
         }
         return variables.retailCommission;
     }
     
     public any function getProductPackVolume(){
         if(!structKeyExists(variables,'productPackVolume')){
-            var productPackVolume = getSku().getProductPackVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(productPackVolume)){
-                productPackVolume = 0;
-            }
-            variables.productPackVolume = productPackVolume;
+            variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
         }
         return variables.productPackVolume;
     }
     
     public any function getRetailValueVolume(){
         if(!structKeyExists(variables,'retailValueVolume')){
-            var retailValueVolume = getSku().getRetailValueVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(retailValueVolume)){
-                retailValueVolume = 0;
-            }
-            variables.retailValueVolume = retailValueVolume;
+            variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
         }
         return variables.retailValueVolume;
     }
@@ -1245,6 +1223,14 @@ property name="personalVolume" ormtype="big_decimal";
         return getCustomExtendedPriceAfterDiscount('retailValueVolume');
     }
     
+    private numeric function getCustomPriceFieldAmount(required string priceField){
+        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode());
+        if(isNull(personalVolume)){
+            amount = 0;
+        }
+        return amount;
+    }
+    
     public numeric function getCustomDiscountAmount(required string priceField, boolean forceCalculationFlag = true) {
 		var discountAmount = 0;
 	
@@ -1261,6 +1247,7 @@ property name="personalVolume" ormtype="big_decimal";
 		return discountAmount;
 	}
 
+    
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#priceField#')){
 			var price = 0;
@@ -1275,6 +1262,5 @@ property name="personalVolume" ormtype="big_decimal";
 	
 	public numeric function getCustomExtendedPriceAfterDiscount(required string priceField, boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments));
-	}
-	//CUSTOM FUNCTIONS END
+	}//CUSTOM FUNCTIONS END
 }

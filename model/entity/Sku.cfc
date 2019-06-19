@@ -2005,7 +2005,8 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 	// ==================  END:  Deprecated Methods ========================
 
 	//CUSTOM FUNCTIONS BEGIN
-	public any function getPersonalVolumeByCurrencyCode(required string currencyCode){
+
+public any function getPersonalVolumeByCurrencyCode(required string currencyCode){
         return this.getCustomPriceByCurrencyCode('personalVolume',this.getCurrencyCode());
     }
     
@@ -2073,6 +2074,5 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			return variables[cacheKey];
 		}
     }
-    
-	//CUSTOM FUNCTIONS END
+    //CUSTOM FUNCTIONS END
 }

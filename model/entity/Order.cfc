@@ -193,7 +193,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 		//CUSTOM PROPERTIES BEGIN
-	property name="personalVolumeSubtotal" persistent="false";
+property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
     property name="commissionableVolumeSubtotal" persistent="false";
     property name="retailCommissionSubtotal" persistent="false";
@@ -232,7 +232,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
     
     
-   	//CUSTOM PROPERTIES END
+   
+ property name="businessDate" ormtype="string";
+ property name="commissionPeriod" ormtype="string";
+ property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -1720,7 +1723,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
-	public numeric function getPersonalVolumeSubtotal(){
+
+public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
     public numeric function getTaxableAmountSubtotal(){
@@ -1844,6 +1848,5 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getCustomPriceFieldTotal(customPriceField) {
 		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(customPriceField)  - getCustomDiscountTotal(customPriceField)));
 	}
-    
-	//CUSTOM FUNCTIONS END
+    //CUSTOM FUNCTIONS END
 }

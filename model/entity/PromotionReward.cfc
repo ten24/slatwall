@@ -117,12 +117,12 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
 		//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeAmount" ormtype="big_decimal";
-    property name="taxableAmountAmount" ormtype="big_decimal";
-    property name="commissionableVolumeAmount" ormtype="big_decimal";
-    property name="retailCommissionAmount" ormtype="big_decimal";
-    property name="productPackVolumeAmount" ormtype="big_decimal";
-    property name="retailValueVolumeAmount" ormtype="big_decimal";
+property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     
    //CUSTOM PROPERTIES END
 	public boolean function getIsDeletableFlag(){
@@ -625,6 +625,36 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
         return getCustomAmount(argumentCollection=arguments);
     }
     
+    public string function getPersonalVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'personalVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getTaxableAmountAmountFormatted(){
+        arguments['customPriceField'] = 'taxableAmount';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getCommissionableVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'commissionableVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getRetailCommissionAmountFormatted(){
+        arguments['customPriceField'] = 'retailCommission';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getProductPackVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'productPackVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getRetailValueVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'retailValueVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
     public numeric function getPersonalVolumeAmountByCurrencyCode(required string currencyCode, any sku){
         arguments['customPriceField'] = 'personalVolume';
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
@@ -689,12 +719,20 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
 			if(!isNull(skuPrice)){
 				return skuPrice.invokeMethod('get#customPriceField#');
 			}
-		}else{
-    		if(!structKeyExists(variables,'#customPriceField#Amount')){
-    			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
-    		}
-    		return variables['#customPriceField#Amount'];
 		}
+		
+		if(!structKeyExists(variables,'#customPriceField#Amount')){
+			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
+		}
+		return variables['#customPriceField#Amount'];
+	}
+	
+    public string function getCustomAmountFormatted( required string customPriceField ) {
+		if(getAmountType() == "percentageOff") {
+			return formatValue(this.invokeMethod('get#customPriceField#Amount'), "percentage");
+		}
+		
+		return formatValue(this.invokeMethod('get#customPriceField#Amount'), "currency");
 	}
     //CUSTOM FUNCTIONS END
 }
