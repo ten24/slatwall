@@ -132,7 +132,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
-	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false"; 
+	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
 	property name="address" persistent="false";
 	property name="adminIcon" persistent="false";
 	property name="adminAccountFlag" persistent="false" hb_formatType="yesno";
@@ -155,39 +155,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 
-			//CUSTOM PROPERTIES BEGIN
 
- property name="hyperWalletAcct" ormtype="string";
- property name="allowCorporateEmails" ormtype="boolean";
- property name="allowUplineEmails" ormtype="boolean";
- property name="userName" ormtype="string";
- property name="subscriptionType" ormtype="string" hb_formFieldType="select";
- property name="renewalDate" ormtype="timestamp" hb_formatType="date";
- property name="ssn" ormtype="string";
- property name="sin" ormtype="string";
- property name="spouseName" ormtype="string";
- property name="driverLicense" ormtype="string";
- property name="spouseDriverLicense" ormtype="string";
- property name="accountType" ormtype="string" hb_formFieldType="select";
- property name="governmentIDNumber" ormtype="string";
- property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
- property name="productPack" ormtype="string";
- property name="gender" ormtype="string" hb_formFieldType="select";
- property name="businessAcc" ormtype="boolean";
- property name="isFlagged" ormtype="boolean";
- property name="dob" ormtype="string";
- property name="lastRenewDate" ormtype="string";
- property name="nextRenewDate" ormtype="string";
- property name="lastStatusDate" ormtype="string";
- property name="pickupCenter" ormtype="string";
- property name="oldDtxName1" ormtype="string";
- property name="oldDtxName2" ormtype="string";
- property name="oldDtxName3" ormtype="string";
- property name="oldDtxName4" ormtype="string";
- property name="carProgram" ormtype="string";
- property name="holdEarningsToAR" ormtype="string";
- property name="commStatusUser" ormtype="string";
- property name="accountNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -607,7 +575,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 				if(len(trim(accountAddress['address_stateCode']))){
 					addressName &= accountAddress['address_stateCode'] & ', ';
 				}	
-
+				
 				var accountAddressOption = {
 					"name":  addressName & accountAddress['address_countryCode'],
 					"value": accountAddress['value']  
@@ -1069,7 +1037,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public string function getSimpleRepresentation() {
 		return getFullName();
 	}
-
+	
 	public string function getSimpleRepresentationPropertyName(){
 		return 'calculatedFullName';
 	}

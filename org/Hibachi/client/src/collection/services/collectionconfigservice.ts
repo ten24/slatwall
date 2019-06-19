@@ -120,7 +120,8 @@ class CollectionConfig {
         private customEndpoint:string = '',
         private allRecords:boolean = false,
         private dirtyRead:boolean = false,
-        private isDistinct:boolean = false
+        private isDistinct:boolean = false,
+        private enableAveragesAndSums:boolean = false,
 
     ){
         this.$hibachi = $hibachi;
@@ -185,7 +186,7 @@ class CollectionConfig {
             for(let filterGroup of jsonCollection.filterGroups){
 
                 for(let filter of filterGroup['filterGroup']){
-
+                
                     if(!filter.displayPropertyIdentifier && filter.propertyIdentifier){
                         let convertedPropertyIdentifier = filter.propertyIdentifier.replace(/_/g, '.');
                         if(convertedPropertyIdentifier[0] === "."){
@@ -215,6 +216,7 @@ class CollectionConfig {
         this.isDistinct = jsonCollection.isDistinct;
         this.reportFlag = jsonCollection.reportFlag;
         this.useElasticSearch = jsonCollection.useElasticSearch;
+        this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
 
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
@@ -258,7 +260,8 @@ class CollectionConfig {
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
             orderBy:this.orderBy,
-            periodInterval:this.periodInterval
+            periodInterval:this.periodInterval,
+            enableAveragesAndSums: this.enableAveragesAndSums
         };
     };
 
@@ -294,7 +297,8 @@ class CollectionConfig {
             isDistinct: this.isDistinct,
             isReport:this.isReport(),
             periodInterval:this.periodInterval,
-            customEndpoint:this.customEndpoint
+            customEndpoint:this.customEndpoint,
+            enableAveragesAndSums: this.enableAveragesAndSums
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
@@ -368,7 +372,7 @@ class CollectionConfig {
         }
         return propertyIdentifier;
     };
-
+    
     public hasNonPersistentProperty=()=>{
         for(var i in this.columns){
             var column = this.columns[i];
@@ -803,8 +807,8 @@ class CollectionConfig {
         this.orderBy = [];
     }
 
-    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true):void=>{
-        if(!this.orderBy){
+    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true, singleColumn:boolean = false ):void=>{
+        if(!this.orderBy || singleColumn){
             this.orderBy = [];
         }
 
@@ -822,11 +826,18 @@ class CollectionConfig {
         this.orderBy.push(orderBy);
     };
 
-    public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
+    public toggleOrderBy = (propertyIdentifier:string, singleColumn:boolean = false, formatPropertyIdentifier:boolean = false) => {
 
         if(!this.orderBy){
             this.orderBy = [];
         }
+        
+        let formattedPropertyIdentifier = propertyIdentifier;
+        if(formatPropertyIdentifier){
+            formattedPropertyIdentifier = this.formatPropertyIdentifier(propertyIdentifier);
+        }
+        
+        
         var found = false;
         for(var i = this.orderBy.length - 1; i >= 0; i--){
             if(this.orderBy[i].propertyIdentifier == formattedPropertyIdentifier){
@@ -932,7 +943,7 @@ class CollectionConfig {
     public getPageShow=():number=>{
         return this.pageShow;
     };
-    
+
     public getCustomEndpoint=():string=>{
         return this.customEndpoint;
     };
@@ -947,6 +958,11 @@ class CollectionConfig {
         return this;
     };
 
+    public setEnableAveragesAndSums = (flag:boolean = false)=>{
+        this.enableAveragesAndSums =  flag;
+        return this;
+    };
+
     public setDirtyRead = (flag:boolean=false)=>{
         this.dirtyRead = flag;
         return this;
@@ -956,7 +972,7 @@ class CollectionConfig {
         this.keywords = keyword;
         return this;
     };
-    
+
     public setCustomEndpoint= (endPoint:string) =>{
         this.customEndpoint = endPoint;
         return this;

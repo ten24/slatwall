@@ -1653,6 +1653,10 @@ table tr th .glyphicon {
   vertical-align: middle;
   margin-top: 18px;
 }
+.s-property.form-horizontal .actionbar-title {
+  margin: 0px 0px 15px 0px;
+  color: #000000;
+}
 .s-toggle-panels {
   padding: 0px;
   margin-bottom: 3px;
@@ -3174,6 +3178,7 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-titled-select-wrapper.s-site select {
   padding: 3px 18px 0px 44px !important;
+  margin-top: 5px;
 }
 .s-titled-select-wrapper select {
   -webkit-appearance: none;
@@ -3767,7 +3772,10 @@ table .s-table-header .table-section a.s-hint {
   position: absolute;
   right: 4px;
   top: 4px;
-  z-index: 2;
+  z-index: 222;
+}
+#customListingControls input.form-control.s-search {
+  margin-top: 5px;
 }
 .dropdown.s-search-results-wrapper .input-group-btn {
   vertical-align: top;
@@ -4236,7 +4244,7 @@ table .s-table-header .table-section a.s-hint {
 .s-bundle-group-items .s-search-button:hover,
 .s-bundle-group-items .s-search-button:active,
 .s-bundle-group-items .s-search-button:focus {
-  color: #333!important;
+  color: #333 !important;
   border-color: #cccccc !important;
   background-color: #cccccc;
 }
@@ -5325,11 +5333,11 @@ a[data-toggle="collapse"] {
 }
 .s-gift-card-table .s-save-row .btn-save {
   color: #FFF;
-  background: #3C763D!important;
+  background: #3C763D !important;
 }
 .s-gift-card-table .s-save-row .btn-save:hover {
   color: #FFF;
-  background: #4E884F!important;
+  background: #4E884F !important;
 }
 .s-gift-card-table .s-save-row:hover {
   background-color: #DFF0D8 !important;
@@ -5849,7 +5857,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   font-weight: 600;
 }
 #reporting-top {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 #reporting-top label {
   display: block;
@@ -5959,6 +5967,37 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-color: #fff;
   border: 1px solid #DDDDDD;
   color: #5E5E5E;
+}
+#reporting-top #subreport .flex .col.larger {
+  margin-right: 20px;
+  margin-top: 22px;
+}
+#reporting-top #subreport .content-right > .col {
+  margin-left: 10px;
+}
+#reporting-top #subreport .btn-secondary {
+  border: 1px solid #DDDDDD;
+}
+#reporting-top #subreport .btn-secondary:hover {
+  background: #DDDDDD;
+}
+#reporting-top #subreport .row {
+  margin: 15px 0 0 0;
+}
+#reporting-top #subreport h3 {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+#reporting-top #subreport .ax_default button {
+  height: 34px;
+  margin-left: 7x;
+}
+#reporting-top #subreport .ax_default .single-select {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+#reporting-top #subreport .report-select {
+  margin-top: 20px;
 }
 #get-started-report {
   background: #fff;
@@ -6997,7 +7036,7 @@ sw-sku-thumbnail .thumbnail .caption {
   background: #eee;
 }
 .s-datepicker table thead tr:first-child th button:hover {
-  border-color: #eee ;
+  border-color: #eee;
   border-radius: none;
 }
 .s-datepicker table tbody button {
@@ -7705,6 +7744,7 @@ table tr td .s-loading-icon {
 .s-detail-content-table tbody tr td {
   position: relative;
   font-weight: 500;
+  border: 1px solid #ddd !important;
 }
 .s-detail-content-table tbody tr td .form-group {
   margin-bottom: 0px;
@@ -8615,4 +8655,57 @@ table.s-detail-content-table tbody tr.s-done {
 .tooltip.right {
   position: absolute;
   display: inline-block;
+}
+.Mcard-wrapper {
+  padding: 1em;
+}
+.Mcard {
+  background-color: #ffffff;
+}
+.Mcard-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0.75em 1em;
+}
+.Mcard-body h1 {
+  color: #666666;
+  display: inline;
+  vertical-align: sub;
+  font-weight: 500;
+  line-height: 0;
+}
+.Mcard-body div img {
+  height: 7em;
+  width: auto;
+}
+.Mcard-footer {
+  padding: 8px 15px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.Mcard-footer p {
+  display: inline;
+  vertical-align: top;
+}
+.Mcard-footer img {
+  height: 1.5em;
+  cursor: pointer;
+}
+.Mcard-footer1 {
+  background-color: #f38631;
+}
+.Mcard-footer2 {
+  background-color: #5f7d8b;
+}
+.Mcard-footer3 {
+  background-color: #90d08c;
+}
+.Mcard-footer4 {
+  background-color: #dc7374;
+}
+.Mbtn-round {
+  border-radius: 17px;
 }

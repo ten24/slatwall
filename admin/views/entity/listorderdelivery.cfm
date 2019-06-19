@@ -54,38 +54,28 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.orderDeliverySmartList#" showCreate="false" />
-	<!--- <hb:HibachiListingDisplay smartList="#rc.orderDeliverySmartList#"
-				recorddetailaction="admin:entity.detailorderdelivery"
-				recordEditAction="admin:entity.editorderdelivery">
-		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />
-		<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
-		<hb:HibachiListingColumn propertyIdentifier="fulfillmentMethod.fulfillmentMethodType" />
-		<hb:HibachiListingColumn propertyIdentifier="shippingMethod.shippingMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="trackingNumber" />
-	</hb:HibachiListingDisplay> --->
+	
+    <cfset orderdeliveryCollectionList = getHibachiScope().getService('orderService').getOrderdeliveryCollectionList()>
+	<cfset serchableDisplayProperties = "order.orderNumber,order.orderOpenDateTime,createdDateTime,order.account.fullName,location.locationName,trackingNumber,shippingMethod.shippingMethodName,fulfillmentMethod.fulfillmentMethodType"/>
+	<cfset orderdeliveryCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset orderdeliveryCollectionList.addDisplayProperty( displayProperty='orderDeliveryID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'OrderDelivery'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editorderdelivery"
-		record-detail-action="admin:entity.detailorderdelivery"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="orderDeliveryID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.orderOpenDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="order.account.fullName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="location.locationName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="trackingNumber" ></sw-listing-column>
-	</sw-listing-display>
+    <hb:HibachiListingDisplay 
+    		collectionList="#orderdeliveryCollectionList#"
+    		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+    		recordEditAction="admin:entity.edit#lcase(orderdeliveryCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(orderdeliveryCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>

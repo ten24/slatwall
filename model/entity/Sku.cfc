@@ -218,18 +218,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
-		//CUSTOM PROPERTIES BEGIN
-property name="disableOnFlexshipFlag" ormtype="boolean";
-    property name="disableOnRegularOrderFlag" ormtype="boolean";
-    property name="onTheFlyKitFlag" ormtype="boolean";
-    property name="personalVolume" ormtype="big_decimal";
-    property name="taxableAmount" ormtype="big_decimal";
-    property name="commissionableVolume" ormtype="big_decimal";
-    property name="retailCommission" ormtype="big_decimal";
-    property name="productPackVolume" ormtype="big_decimal";
-    property name="retailValueVolume" ormtype="big_decimal";
-    
-   //CUSTOM PROPERTIES END
+
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -692,46 +681,46 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			cacheKey &= arguments.currencyCode;
 		}
 		if( !structKeyExists(variables, cacheKey) ) {
-		// Request for calculated quantity
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
-			// If this is a calculated quantity and locationID exists, then delegate
-			if( structKeyExists(arguments, "locationID") ) {
-				
-				// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
-				if (arguments.quantityType == 'MQATSBOM' ){
-					var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
+			// Request for calculated quantity
+			if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
+				// If this is a calculated quantity and locationID exists, then delegate
+				if( structKeyExists(arguments, "locationID") ) {
+					
+					// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
+					if (arguments.quantityType == 'MQATSBOM' ){
+						var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
 						var totalQuantity = stock.getQuantity(arguments.quantityType);
 						setDataCache(cacheKey,totalQuantity);
 						return totalQuantity;
-					
-				}else{
-					//Need to get location and all children of location
-					var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
-					var totalQuantity = 0;
-					
-					for(var i=1;i<=arraylen(locations);i++) {
-						var location = getService('locationService').getLocation(locations[i]['value']);
-						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
-							var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
-							totalQuantity += stock.getQuantity(arguments.quantityType);
-							
-						}  
-				}
+						
+					}else{
+						//Need to get location and all children of location
+						var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+						var totalQuantity = 0;
+						
+						for(var i=1;i<=arraylen(locations);i++) {
+							var location = getService('locationService').getLocation(locations[i]['value']);
+							if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+								var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
+								totalQuantity += stock.getQuantity(arguments.quantityType);
+								
+							}  
+					}
 					setDataCache(cacheKey,totalQuantity);
-				return totalQuantity;
-
-				}
-
-			// If this is a calculated quantity and stockID exists, then delegate
-			} else if ( structKeyExists(arguments, "stockID") ) {
-				var stock = getService("stockService").getStock(arguments.stockID);
+					return totalQuantity;
+	
+					}
+	
+				// If this is a calculated quantity and stockID exists, then delegate
+				} else if ( structKeyExists(arguments, "stockID") ) {
+					var stock = getService("stockService").getStock(arguments.stockID);
 					var totalQuantity = stock.getQuantity(arguments.quantityType);
 					setDataCache(cacheKey,totalQuantity);
 					return totalQuantity;
+				}
 			}
-		}
 
-		// Standard Logic
+			// Standard Logic
 		
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
@@ -1928,7 +1917,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
-	
+
 	public void function preInsert(){
 		super.preInsert();
 		
@@ -1964,7 +1953,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			price = this.getPrice(),
 			currencyCode = this.getCurrencyCode(),
 			skuID = this.getSkuID()
-		}
+		};
 		
 		var query = QueryExecute(sql, params);
 	}
@@ -2004,75 +1993,5 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================
 
-	//CUSTOM FUNCTIONS BEGIN
-
-public any function getPersonalVolumeByCurrencyCode(required string currencyCode){
-        return this.getCustomPriceByCurrencyCode('personalVolume',this.getCurrencyCode());
-    }
-    
-    public any function getTaxableAmountByCurrencyCode(required string currencyCode){
-        return this.getCustomPriceByCurrencyCode('taxableAmount',this.getCurrencyCode());
-    }
-    
-    public any function getCommissionableVolumeByCurrencyCode(required string currencyCode){
-        return this.getCustomPriceByCurrencyCode('commissionableVolume',this.getCurrencyCode());
-    }
-    
-    public any function getRetailCommissionByCurrencyCode(required string currencyCode){
-        return this.getCustomPriceByCurrencyCode('retailCommission',this.getCurrencyCode());
-    }
-    
-    public any function getProductPackVolumeByCurrencyCode(required string currencyCode){
-        return this.getCustomPriceByCurrencyCode('productPackVolume',this.getCurrencyCode());
-    }
-    
-    public any function getRetailValueVolumeByCurrencyCode(required string currencyCode){
-        return this.getCustomPriceByCurrencyCode('retailValueVolume',this.getCurrencyCode());
-    }
-
-    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
-		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
-		
-		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_#priceGroup.getPriceGroupID()#';
-		}
-		
-		if(structKeyExists(arguments, "quantity")){
-			cacheKey &= '#arguments.quantity#';
-		}
-		
-		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
-			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-				var prices = [];
-				for(var i=1; i <= arrayLen(skuPriceResults); i++){
-					ArrayAppend(prices, {price=skuPriceResults[i].price,'#customPriceField#'=skuPriceResults[i][customPriceField]});
-				}
-				ArraySort(prices, function(a,b){
-				    if(a.price < b.price){ return -1}
-				    else if (a.price > b.price){ return 1 }
-				    else{ return 0 };
-				});
-				variables[cacheKey]= prices[1];
-			} 
-
-			if(structKeyExists(variables,cacheKey)){
-				return variables[cacheKey][customPriceField];
-			}
-			
-			var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
-			if(!isNull(baseSkuPrice)){
-				variables[cacheKey] = baseSkuPrice.invokeMethod('get#customPriceField#'); 
-			}
-			
-		}
-        
-		if(structKeyExists(variables,cacheKey)){
-		    if(isStruct(variables[cacheKey])){
-		        return variables[cacheKey][customPriceField];
-		    }
-			return variables[cacheKey];
-		}
-    }
-    //CUSTOM FUNCTIONS END
+	
 }

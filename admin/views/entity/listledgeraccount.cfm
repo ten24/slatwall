@@ -62,28 +62,27 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!---<hb:HibachiListingDisplay smartList="#rc.ledgerAccountSmartList#"
-							   recordEditAction="admin:entity.editLedgerAccount"
-							   recordDetailAction="admin:entity.detailLedgerAccount">
-
-		<hb:HibachiListingColumn propertyIdentifier="ledgerAccountName" />
-		<hb:HibachiListingColumn propertyIdentifier="ledgerAccountType.typeName" />
-
-	</hb:HibachiListingDisplay>--->
-
-  <sw-listing-display data-using-personal-collection="true"
-			data-collection="'LedgerAccount'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editledgeraccount"
-			data-record-detail-action="admin:entity.detailledgeraccount"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="ledgerAccountID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="ledgerAccountName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="ledgerAccountType.typeName" ></sw-listing-column>
-	</sw-listing-display>
+	<cfset ledgerAccountCollectionList = getHibachiScope().getService('ledgerAccountService').getLedgerAccountCollectionList()>
+	<cfset serchableDisplayProperties = "ledgerAccountName,ledgerAccountType.typeName"/>
+	<cfset ledgerAccountCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset ledgerAccountCollectionList.addDisplayProperty(displayProperty='ledgerAccountID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#ledgerAccountCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(ledgerAccountCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(ledgerAccountCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
