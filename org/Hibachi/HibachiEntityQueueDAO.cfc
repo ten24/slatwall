@@ -87,7 +87,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		sql &= "'#accountID#' as modifiedByAccountID ";
 
 		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
-		sql &= "WHERE #primaryIDPropertyName# in (:primaryIDList)"
+		sql &= "WHERE #primaryIDPropertyName# in (:primaryIDList)";
 
 		if(arguments.unique){
 			sql &= " AND #primaryIDPropertyName# not in (";
