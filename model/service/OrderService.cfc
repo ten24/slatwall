@@ -2610,7 +2610,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");
 		
 		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
-		if (actualAllocatedAmountTotal - arguments.order.getOrderDiscountAmountTotal() != 0) {
+		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderDiscountAmountTotal()) != 0) {
 			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.", true);
 		}
 
