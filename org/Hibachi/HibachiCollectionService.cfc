@@ -1237,8 +1237,10 @@ component output="false" accessors="true" extends="HibachiService" {
 				if (arguments.getTitleFlag){
 					if ( structKeyExists(column, 'displayTitle') ){
 						headersList = listAppend(headersList, column.displayTitle);
-					} else {
+					} else if ( structKeyExists(column, 'title') ){
 						headersList = listAppend(headersList, column.title);
+					} else {
+						headersList = listAppend(headersList, column.propertyIdentifier);
 					}
 				}else {
 					headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
