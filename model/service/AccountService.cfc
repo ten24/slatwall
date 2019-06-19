@@ -1354,6 +1354,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			promoCode = getService("PromotionService").savePromotionCode(promoCode);
 			promoCode.setStartDateTime(Now());
 			promo = getService("PromotionService").savePromotion(promo);
+			arguments.accountLoyaltyTransaction.setPromotionCode(promoCode);
 			getHibachiEventService().announceEvent("Promotion Code Assigned to Account", promoCode);
 			arrayAppend(arguments.accountLoyaltyTransaction.getErrors(),promoCode.getErrors());
 		}
@@ -1361,24 +1362,45 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountLoyaltyTransaction;
 	}
 	
+	private any function getExistingGiftCardBySkuAndAccount(required any sku,required any account){
+		giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
+		giftCardCollectionList.addFilter("ownerAccount.accountID",arguments.account.getAccountID());
+		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.skuID);
+		giftCardCollectionList.setDisplayProperties("giftCardID");
+		giftCards = giftCardCollectionList.getPageRecords();
+		if(arrayLen(giftCards)){
+			return getService("GiftCardService").getGiftCard(giftCards[1]['giftCardID']);
+		}
+	}
+	
 	public any function createGiftCardLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			var newGiftCard = getService("GiftCardService").newGiftCard(); 
-			var createGiftCardProcessObject = newGiftCard.getProcessObject('create'); 
+			
 			var currencyCode = arguments.data.currencyCode;
+			var sku = arguments.data.loyaltyAccruement.getGiftCardSku();
 			
-			createGiftCardProcessObject.setCurrencyCode(currencyCode);
+			var giftCard = getExistingGiftCardBySkuAndAccount(sku,arguments.data.account);
 			
-			createGiftCardProcessObject.setSku(arguments.data.loyaltyAccruement.getGiftCardSku());
+			if(isNull(giftCard)){
+				
+				giftCard = getService("GiftCardService").newGiftCard();
+				
+				var createGiftCardProcessObject = giftCard.getProcessObject('create'); 
+				
+				createGiftCardProcessObject.setCurrencyCode(currencyCode);
+				
+				createGiftCardProcessObject.setSku(sku);
+				
+				createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
+				
+				createGiftCardProcessObject.setCreditGiftCardFlag(false);
+		
+				giftCard = getService("GiftCardService").processGiftCard_Create(giftCard,createGiftCardProcessObject);  
+				
+			}
 			
-			createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
-			
-			createGiftCardProcessObject.setCreditGiftCardFlag(false);
-	
-			newGiftCard = getService("GiftCardService").processGiftCard_Create(newGiftCard,createGiftCardProcessObject);  
-	
-			var creditGiftCardProcessObject = newGiftCard.getProcessObject('addCredit');
+			var creditGiftCardProcessObject = giftCard.getProcessObject('addCredit');
 		
 			var accruementCurrency = arguments.data.loyaltyAccruement.getAccruementCurrency(currencyCode);
 			
@@ -1388,11 +1410,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 			creditGiftCardProcessObject.setCreditAmount(accruementCurrency.getGiftCardValue());
 	
-			newGiftCard = getService("GiftCardService").processGiftCard_addCredit(newGiftCard, creditGiftCardProcessObject);
+			giftCard = getService("GiftCardService").processGiftCard_addCredit(giftCard, creditGiftCardProcessObject);
 	
-			if(newGiftCard.hasErrors()){
-				arguments.accountLoyaltyTransaction.addErrors(newGiftCard.getErrors());
+			if(giftCard.hasErrors()){
+				arguments.accountLoyaltyTransaction.addErrors(giftCard.getErrors());
 			} 
+			
+			arguments.accountLoyaltyTransaction.setGiftCard(giftCard);
 	
 			return arguments.accountLoyaltyTransaction;
 		}

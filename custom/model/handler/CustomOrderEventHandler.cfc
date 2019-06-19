@@ -8,14 +8,14 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         }
         
         if(
-            !this.order.getAccount().getOwnerAccount().hasAccountType("vip") ||
-            !this.order.getAccount().hasAccountType("vip") ||
-            this.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()
+            !arguments.order.getAccount().getOwnerAccount().hasAccountType("vip") ||
+            !arguments.order.getAccount().hasAccountType("vip") ||
+            arguments.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()
         ){
             return;
         }
         
-        var referee = this.order.getAccount();
+        var referee = arguments.order.getAccount();
         var referer = referee.getOwnerAccount();
         
         var accrList = arguments.slatwallScope.getService("LoyaltyService").getLoyaltyAccruementCollectionList();
@@ -46,6 +46,48 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     			newAccountLoyalty = getService("AccountService").processAccountLoyalty(newAccountLoyalty, {}, 'orderClosed');
     		}
     		
+        }
+    }
+    public void function afterOrderProcess_createReturnSuccess(required any slatwallScope, required any order, required any data ={}) {
+        
+        if(this.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()){
+            return;
+        }
+        
+        var referee = arguments.order.getAccount();
+        var referer = referee.getOwnerAccount();
+        
+        var accountIDList = "";
+        accountIDList = listAppend(accountIDList,referee.getAccountID());
+        accountIDList = listAppend(accountIDList,referer.getAccountID());
+        
+        var transactionList = arguments.slatwallScope.getService("LoyaltyService").getAccountLoyaltyTransactionCollectionList();
+        
+        transactionList.setDisplayProperties("accountLoyaltyTransactionID");
+        transactionList.addFilter("order.orderID",arguments.order.getOrderID());
+        transactionList.addFilter("accountLoyalty.account.accountID",accountIDList,"IN");
+        transactions = transactionList.getRecords();
+        for(var transaction in transactions){
+            
+            transaction = getService("LoyaltyService").getAccountLoyaltyTransaction(transaction['accountLoyaltyTransactionID']);
+            
+            var promotionCode = transaction.getPromotionCode();
+            var giftCard = transaction.getGiftCard();
+            
+            if(!isNull(promotionCode)){
+                promotionCode.setEndDateTime(now());
+                getService("promotionService").savePromotionCode(promotionCode);
+            }
+                        
+            if(!isNull(giftCard)){
+                accruement = transaction.getLoyaltyAccruement();
+                accruementCurrency = accruement.getAccruementCurrency(arguments.order.getCurrencyCode());
+    			var debitGiftCardProcessObject = giftCard.getProcessObject('addDebit');
+			    debitGiftCardProcessObject.setDebitAmount(accruementCurrency.getGiftCardValue());
+			    debitGiftCardProcessObject.setAllowNegativeBalanceFlag(true);
+			    giftCard = getService("GiftCardService").processGiftCard_addDebit(giftCard, debitGiftCardProcessObject);
+	            getService("giftCardService").saveGiftCard(giftCard);
+            }
         }
     }
 }
