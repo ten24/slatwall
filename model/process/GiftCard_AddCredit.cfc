@@ -50,6 +50,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one";
 
 	 property name="creditAmount";
+	 property name="reasonForAdjustment" ormtype="string";
 
 	 public any function getCreditAmount(){
 	 	if(isNull(variables.creditAmount)){

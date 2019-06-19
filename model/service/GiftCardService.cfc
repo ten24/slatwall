@@ -129,6 +129,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getCreditAmount(), arguments.processObject.getOrderPayment());
 
+		if(!isNull(arguments.processObject.getReasonForAdjustment())){
+			giftCardCreditTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
+		}
+
 		if(!giftCardCreditTransaction.hasErrors()){
 			arguments.giftCard.updateCalculatedProperties();
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
@@ -143,7 +147,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processGiftCard_addDebit(required any giftCard, required any processObject){
 
 		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount(), arguments.processObject.getOrderPayment(),arguments.processObject.getAllowNegativeBalanceFlag());
-
+	
+		if(!isNull(arguments.processObject.getReasonForAdjustment())){
+			giftCardCreditTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
+		}
+		
 		if(!giftCardDebitTransaction.hasErrors()){
 			if(arguments.giftCard.getBalanceAmount() == 0){
 				arguments.giftCard.setActiveFlag(false);//this will trigger updateCalculateProperties to run when gift card is saved
@@ -164,7 +172,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
        if(arguments.processObject.getTransactionType() == 'credit'){
 
          	var creditData = {
-         		creditAmount=arguments.processObject.getAmount()
+         		creditAmount=arguments.processObject.getAmount(),
+         		reasonForAdjustment=arguments.processObject.getReasonForAdjustment()
          	};
 
             return this.processGiftCard(arguments.GiftCard, creditData, 'addCredit'); 
@@ -173,7 +182,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
             var debitData = {
             	debitAmount=arguments.processObject.getAmount(),
-            	allowNegativeBalanceFlag=getService("SettingService").getSettingValue("globalGiftCardAllowNegativeBalance")
+            	allowNegativeBalanceFlag=getService("SettingService").getSettingValue("globalGiftCardAllowNegativeBalance"),
+         		reasonForAdjustment=arguments.processObject.getReasonForAdjustment()
             };
             
             if(

@@ -67,6 +67,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
 	property name="validationService" type="any";
+	property name="hibachiEventService" type="any";
 
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -1355,7 +1356,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			promoCode.setStartDateTime(Now());
 			promo = getService("PromotionService").savePromotion(promo);
 			arguments.accountLoyaltyTransaction.setPromotionCode(promoCode);
-			getHibachiEventService().announceEvent("Promotion Code Assigned to Account", promoCode);
+			getHibachiEventService().announceEvent("LoyaltyTransaction_PromotionCodeAssigned", promoCode);
 			arrayAppend(arguments.accountLoyaltyTransaction.getErrors(),promoCode.getErrors());
 		}
 		
@@ -1415,6 +1416,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(giftCard.hasErrors()){
 				arguments.accountLoyaltyTransaction.addErrors(giftCard.getErrors());
 			} 
+			
+			getHibachiEventService().announceEvent("LoyaltyTransaction_GiftCardCredited", giftCard);
 			
 			arguments.accountLoyaltyTransaction.setGiftCard(giftCard);
 	

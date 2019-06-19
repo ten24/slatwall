@@ -51,5 +51,6 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 // Data Property 
 	 property name="debitAmount";
 	 property name="allowNegativeBalanceFlag" type="boolean" default=false;
+	 property name="reasonForAdjustment" ormtype="string";
     
 }

@@ -77,16 +77,18 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             if(!isNull(promotionCode)){
                 promotionCode.setEndDateTime(now());
                 getService("promotionService").savePromotionCode(promotionCode);
+			    getHibachiEventService().announceEvent("ReferAFriend_PromotionCodeRevoked", promotionCode);
             }
                         
             if(!isNull(giftCard)){
-                accruement = transaction.getLoyaltyAccruement();
-                accruementCurrency = accruement.getAccruementCurrency(arguments.order.getCurrencyCode());
+                var accruement = transaction.getLoyaltyAccruement();
+                var accruementCurrency = accruement.getAccruementCurrency(arguments.order.getCurrencyCode());
     			var debitGiftCardProcessObject = giftCard.getProcessObject('addDebit');
 			    debitGiftCardProcessObject.setDebitAmount(accruementCurrency.getGiftCardValue());
 			    debitGiftCardProcessObject.setAllowNegativeBalanceFlag(true);
 			    giftCard = getService("GiftCardService").processGiftCard_addDebit(giftCard, debitGiftCardProcessObject);
 	            getService("giftCardService").saveGiftCard(giftCard);
+			    getHibachiEventService().announceEvent("ReferAFriend_GiftCardDebiter", giftCard);
             }
         }
     }
