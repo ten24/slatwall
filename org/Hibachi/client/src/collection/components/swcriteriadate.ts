@@ -167,7 +167,43 @@ class SWCriteriaDate{
 				    				measureTypeDisplay:'Years'
 				    			}
 				    		},
+				    		{
+				    			display:"More Than N Day(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'d',
+				    				measureTypeDisplay:'Days'
+				    			}
+				    		},
+				    		{
+				    			display:"More Than N Week(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'w',
+				    				measureTypeDisplay:'Weeks'
 
+ 				    			}
+				    		},
+				    		{
+				    			display:"More Than N Month(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'m',
+				    				measureTypeDisplay:'Months'
+				    			}
+				    		},
+				    		{
+				    			display:"More Than N Year(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'y',
+				    				measureTypeDisplay:'Years'
+				    			}
+				    		},
                             {
                                 display:"Exact N Day(s) Ago",
                                 comparisonOperator:	"between",
@@ -494,8 +530,8 @@ class SWCriteriaDate{
                                     var rangeEnd = new Date(parseInt(dateRangeArray[1]));
                                     rangeEnd = rangeEnd.toLocaleString("en-US", dateOptions);
 
-									scope.selectedFilterProperty.criteriaRangeStart = rangeStart;
-									scope.selectedFilterProperty.criteriaRangeEnd = rangeEnd;
+									scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
+									scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
 								}
 
 								if(angular.isDefined(scope.selectedConditionChanged)){
@@ -505,8 +541,8 @@ class SWCriteriaDate{
 					  });
 				  }else{
 					  scope.selectedFilterProperty.criteriaValue = '';
-					  scope.selectedFilterProperty.criteriaRangeStart = '';
-					  scope.selectedFilterProperty.criteriaRangeEnd = '';
+					  scope.selectedFilterProperty.criteriaRangeStart = new Date().setHours(0,0,0,0);
+					  scope.selectedFilterProperty.criteriaRangeEnd = new Date().setHours(11,59,59,999);
 				  }
 
 			}

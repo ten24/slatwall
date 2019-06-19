@@ -69,6 +69,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="capturableAmount" hb_formatType="currency";
 
 	variables.orderDeliveryItems = [];
+	
+	public array function getContainers(){
+		if(!structKeyExists(variables,'containers')){
+			variables.containers = [];
+		}
+		return variables.containers;
+		
+	}
 
 	public array function getUndeliveredOrderItemsWithoutProvidedGiftCardCodePlaceholders() {
 		var placeholders = [];
