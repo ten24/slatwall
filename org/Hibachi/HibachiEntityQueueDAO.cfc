@@ -67,7 +67,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			params
 		);
 	}
-
+	
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
@@ -103,15 +103,39 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
 		var queryService = new query();
-		var sql = "INSERT INTO SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
-			VALUES ('#createHibachiUUID()#','#arguments.entityQueueType#','#arguments.entityName#','#arguments.entityID#',:createdDateTime,'#getHibachiScope().getAccount().getAccountID()#',
-				'#getHibachiScope().getAccount().getAccountID()#',:modifiedDatetime
-			)
-		";
-		queryService.addParam(name='createdDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
-		queryService.addParam(name='modifiedDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='entityQueueType',value='#arguments.entityQueueType#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseObject',value='#arguments.baseObject#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseID',value='#arguments.baseID#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='processMethod',value='#arguments.processMethod#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='dateTimeNow',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='accountID',value='#getHibachiScope().getAccount().getAccountID()#',CFSQLTYPE="CF_SQL_STRING");
+		
+		var sql =	"INSERT INTO 
+						SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,processMethod,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
+					VALUES 
+						(:entityQueueID,:entityQueueType,:baseObject,:baseID,:processMethod,:dateTimeNow,:accountID,:accountID,:dateTimeNow)";
+						
 		queryService.execute(sql=sql);
 	}
+	
+	public void function deleteEntityQueues(required string entityQueueIDs){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID IN ( :entityQueueID )";
+						
+		queryService.execute(sql=sql);
+	}
+	
+	public void function updateModifiedDateTime(required string entityQueueIDs){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_DATE", list="true");
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount= COALESCE(tryCount, 0) + 1  WHERE entityQueueID IN ( :entityQueueID )";
+						
+		queryService.execute(sql=sql);
+	}
+
 	
 	public void function addEntityToQueue(required any entity,required entityQueueType){
 		

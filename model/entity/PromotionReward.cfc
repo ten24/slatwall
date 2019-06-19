@@ -111,18 +111,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
-	property name="isDeletableFlag" type="boolean" persistent="false";
+	property name="isDeletableFlag" type="boolean" persistent="false"; 
 	property name="includedSkusCollection" persistent="false";
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
-		//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeAmount" ormtype="big_decimal";
-    property name="taxableAmountAmount" ormtype="big_decimal";
-    property name="commissionableVolumeAmount" ormtype="big_decimal";
-    property name="retailCommissionAmount" ormtype="big_decimal";
-    property name="productPackVolumeAmount" ormtype="big_decimal";
-    property name="retailValueVolumeAmount" ormtype="big_decimal";
-    //CUSTOM PROPERTIES END
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -169,7 +161,7 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 		}
 		return variables.currencyCode;
 	}
-	
+
 	public numeric function getAmount(){
 		if(!structKeyExists(variables,'amount')){
 			variables.amount = 0;
@@ -179,7 +171,6 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 
 
 	public numeric function getAmountByCurrencyCode(required string currencyCode){
-		
 		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() neq 'percentageOff'){
 			//Check for explicity defined promotion reward currencies
 			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
@@ -197,7 +188,7 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 		//Either no conversion was needed, or we couldn't find a conversion rate.
 		return getAmount();
 	}
-	
+
 	public any function getIncludedSkusCollection(){
 		if(isNull(variables.includedSkusCollection)){
 			var collectionConfig = getIncludedSkusCollectionConfig();
@@ -317,7 +308,7 @@ property name="personalVolumeAmount" ormtype="big_decimal";
 			arrayDeleteAt(arguments.shippingMethod.getPromotionRewards(), thatIndex);    
 		}    
 	}
-	
+
 	// Collection Skus
 	
 	public boolean function hasSkuBySkuID(required any skuID){

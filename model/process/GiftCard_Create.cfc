@@ -60,17 +60,15 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="ownerFirstName";
 	property name="ownerLastName";
 	property name="ownerEmailAddress";
-	property name="creditGiftCardFlag" type="boolean";
-	property name="sku" cfc="Sku";
+	property name="creditGiftCardFlag";
 
 	//Overridden Getters
 	public string function getGiftCardCode(){
-		
-		if(!isNull(getSku()) && getSku().getGiftCardAutoGenerateCodeFlag()){
-			return getService("hibachiUtilityService").generateRandomID(getSku().setting('skuGiftCardCodeLength'));
+		if(!isNull(getOriginalOrderItem()) && !isNull(getOriginalOrderItem().getSku()) && getOriginalOrderItem().getSku().getGiftCardAutoGenerateCodeFlag()){
+			return getService("hibachiUtilityService").generateRandomID(getOriginalOrderItem().getSku().setting('skuGiftCardCodeLength'));
+		} else {
+			return variables.giftCardCode;
 		}
-		
-		return variables.giftCardCode;
 	}
 
 	public string function getGiftCardPin(){

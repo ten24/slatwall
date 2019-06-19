@@ -216,6 +216,14 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
+	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
+		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
+			variables.scrollableRecords = getService('ORMService').getScrollableRecordsBySmartList(smartList=this,ormSession=arguments.ormSession);
+		}
+
+		return variables.scrollableRecords;
+	}
+	
 	public string function joinRelatedProperty(required string parentEntityName, required string relatedProperty, string joinType="", boolean fetch=false, boolean isAttribute=false) {
 		var newEntityName = "";
 		if(arguments.isAttribute) {

@@ -414,7 +414,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderItemQualifiedDiscounts = {};
 	
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
-
+	
 				// Loop over all Potential Discounts that require qualifications
 				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 				var orderRewards = false;
@@ -434,7 +434,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// =============== Order Item Reward ==============
 						if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
 							processOrderItemRewards(arguments.order, promotionPeriodQualifications, promotionRewardUsageDetails, orderItemQualifiedDiscounts, reward);
-							
+	
 						// =============== Fulfillment Reward ======================
 						} else if (!orderRewards and reward.getRewardType() eq "fulfillment" ) {
 							processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
@@ -447,17 +447,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 					// This forces the loop to repeat looking for "order" discounts
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
-						// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-						removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-		
-						// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-						applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 						pr = 0;
 						orderRewards = true;
 					}
 	
 				} // END of PromotionReward Loop
 	
+				// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
+				removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
+	
+				// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
+				applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 	
 			} // END of Sale or Exchange Loop
 	
@@ -816,17 +816,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Check to make sure that this is an orderItem type of qualifier
 			if(listFindNoCase("merchandise,subscription,contentAccess", qualifier.getQualifierType())) {
-				
+
 				// Setup a local var for this orderItem
 				var orderItemQualifierCount = arguments.orderItem.getQuantity();
 
 				// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
 				if(!getOrderItemInQualifier(qualifier=qualifier, orderItem=arguments.orderItem)){
 					orderItemQualifierCount = 0;
-				}
+					}
 
-				qualifierCount += orderItemQualifierCount;
-				
+					qualifierCount += orderItemQualifierCount;
+
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
 				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifier.getMinimumItemQuantity() != 0 ) {
 					qualifierCount = int(qualifierCount / qualifier.getMinimumItemQuantity() );
@@ -1075,7 +1075,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return details;
 	}
-	
+
 	public boolean function getOrderQualifiesForCanPlaceOrderReward( required any order ){
 		var canPlaceOrder = true;
 		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now());

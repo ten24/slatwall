@@ -717,6 +717,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			collectionOptions.periodInterval=periodInterval;
 		}
 		
+		if(structKeyExists(arguments.data, "enableAveragesAndSums")){ 
+			collectionOptions['enableAveragesAndSums'] = arguments.data['enableAveragesAndSums'];
+		}
+		
 		return collectionOptions;
 	}
 
@@ -797,7 +801,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var response = {};
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-
+		
 		if(!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
 			if(structkeyExists(collectionOptions,'currentPage') && len(collectionOptions.currentPage)){
 				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
@@ -864,7 +868,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setProcessContext(collectionOptions.processContext);
 			}
 			if(structKeyExists(collectionOptions,'isDistinct')){
-				collectionEntity.getCollectionConfigStruct().isDistinct = collectionOptions.isDistinct;
+				collectionEntity.getCollectionConfigStruct()['isDistinct'] = collectionOptions.isDistinct;
 			}
 			if(structKeyExists(collectionOptions,'dirtyRead')){
 				collectionEntity.setDirtyReadFlag(collectionOptions.dirtyRead);
@@ -880,6 +884,13 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setReportFlag(1);
 			}
 			
+			if(structKeyExists(collectionOptions,'enableAveragesAndSums')){
+				//XXX we're override enableAveragesAndSums  from frontnd;   By defalut the flag is "Collection.disableAveragesAndSumsFlag = true" i.e. no averages and sums
+				
+				collectionEntity.getCollectionConfigStruct()['enableAveragesAndSums'] = collectionOptions.enableAveragesAndSums;
+			
+				collectionEntity.setDisableAveragesAndSumsFlag(!collectionOptions.enableAveragesAndSums);
+			}  
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 
@@ -922,7 +933,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			for(var authorizedProperty in authorizedProperties){
 				arguments.collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
-
+			
 			var collectionStruct = {};
 			if(structKeyExists(collectionOptions,'allRecords') && collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
@@ -950,7 +961,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(
 				(
 					!arguments.enforeAuthorization
-					&& !findnocase('_',collectionPropertyIdentifier)
 				)||
 				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
 			){

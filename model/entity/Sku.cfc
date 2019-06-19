@@ -218,16 +218,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
-		//CUSTOM PROPERTIES BEGIN
-property name="disableOnFlexshipFlag" ormtype="boolean";
-    property name="disableOnRegularOrderFlag" ormtype="boolean";
-    property name="onTheFlyKitFlag" ormtype="boolean";
-    property name="personalVolume" ormtype="big_decimal";
-    property name="taxableAmount" ormtype="big_decimal";
-    property name="commissionableVolume" ormtype="big_decimal";
-    property name="retailCommission" ormtype="big_decimal";
-    property name="productPackVolume" ormtype="big_decimal";
-    property name="retailValueVolume" ormtype="big_decimal";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -690,46 +680,46 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			cacheKey &= arguments.currencyCode;
 		}
 		if( !structKeyExists(variables, cacheKey) ) {
-		// Request for calculated quantity
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
-			// If this is a calculated quantity and locationID exists, then delegate
-			if( structKeyExists(arguments, "locationID") ) {
-				
-				// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
-				if (arguments.quantityType == 'MQATSBOM' ){
-					var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
+			// Request for calculated quantity
+			if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
+				// If this is a calculated quantity and locationID exists, then delegate
+				if( structKeyExists(arguments, "locationID") ) {
+					
+					// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
+					if (arguments.quantityType == 'MQATSBOM' ){
+						var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
 						var totalQuantity = stock.getQuantity(arguments.quantityType);
 						setDataCache(cacheKey,totalQuantity);
 						return totalQuantity;
-					
-				}else{
-					//Need to get location and all children of location
-					var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
-					var totalQuantity = 0;
-					
-					for(var i=1;i<=arraylen(locations);i++) {
-						var location = getService('locationService').getLocation(locations[i]['value']);
-						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
-							var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
-							totalQuantity += stock.getQuantity(arguments.quantityType);
-							
-						}  
-				}
+						
+					}else{
+						//Need to get location and all children of location
+						var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+						var totalQuantity = 0;
+						
+						for(var i=1;i<=arraylen(locations);i++) {
+							var location = getService('locationService').getLocation(locations[i]['value']);
+							if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+								var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
+								totalQuantity += stock.getQuantity(arguments.quantityType);
+								
+							}  
+					}
 					setDataCache(cacheKey,totalQuantity);
-				return totalQuantity;
-
-				}
-
-			// If this is a calculated quantity and stockID exists, then delegate
-			} else if ( structKeyExists(arguments, "stockID") ) {
-				var stock = getService("stockService").getStock(arguments.stockID);
+					return totalQuantity;
+	
+					}
+	
+				// If this is a calculated quantity and stockID exists, then delegate
+				} else if ( structKeyExists(arguments, "stockID") ) {
+					var stock = getService("stockService").getStock(arguments.stockID);
 					var totalQuantity = stock.getQuantity(arguments.quantityType);
 					setDataCache(cacheKey,totalQuantity);
 					return totalQuantity;
+				}
 			}
-		}
 
-		// Standard Logic
+			// Standard Logic
 		
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
@@ -1926,7 +1916,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
-	
+
 	public void function preInsert(){
 		super.preInsert();
 		
