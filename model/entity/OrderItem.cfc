@@ -50,6 +50,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
+	property name="allocatedOrderDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 
