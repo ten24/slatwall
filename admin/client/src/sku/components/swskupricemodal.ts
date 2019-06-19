@@ -55,6 +55,7 @@ class SWSkuPriceModalController{
         //hack for listing hardcodeing id
         this.listingID = 'pricingListing';
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        this.observerService.attach(this.inlineSave, "SAVE_SKUPRICE");
         
     }
     
@@ -69,8 +70,13 @@ class SWSkuPriceModalController{
         }
         this.observerService.notify("pullBindings");
     }
+    
+     public inlineSave = (pageRecord:any) =>{
+        this.initData(pageRecord);
+        this.skuPrice.$$save();
+    }
 
-    public initData = (pageRecord?:any) =>{
+    public initData (pageRecord?:any) {
         this.pageRecord = pageRecord;
         if(pageRecord){
            let skuPriceData = {
@@ -246,6 +252,7 @@ class SWSkuPriceModalController{
     
     public $onDestroy = ()=>{
 		this.observerService.detachByEvent('EDIT_SKUPRICE');
+		this.observerService.detachByEvent('SAVE_SKUPRICE');
 	}
     
     public save = () => {
