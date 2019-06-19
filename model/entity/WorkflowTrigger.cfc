@@ -52,7 +52,6 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="collectionFetchSize" ormtype="integer";
 	property name="collectionPassthrough" ormType="boolean" hb_formatType="yesno" default="false";
 	property name="timeout" ormtype="integer" default="90"; 
-	property name="collectionPassthrough" ormType="boolean" hb_formatType="yesno" default="false";
 	property name="scheduleCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hint="json object used to construct the base collection HQL query";
 
 	

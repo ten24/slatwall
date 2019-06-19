@@ -1952,7 +1952,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			price = this.getPrice(),
 			currencyCode = this.getCurrencyCode(),
 			skuID = this.getSkuID()
-		}
+		};
 		
 		var query = QueryExecute(sql, params);
 	}

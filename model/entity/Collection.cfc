@@ -3533,7 +3533,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function getDisableAveragesAndSumsFlag(){
 		//hack should be driven by frontend
 		if(getCollectionObject()=='SkuPrice'){
-			return true
+			return true;
 		}
 		
 		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
@@ -3560,9 +3560,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!found){
 			arrayAppend(variables.totalAvgAggregates,column);
 		}
-		}
-
 	}
+
 
 	public void function addTotalSumAggregate(required struct column){
 		
@@ -3581,7 +3580,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!found){
 			arrayAppend(variables.totalSumAggregates,column);
 		}
-	}
 	}
 	
 	public string function getColumnAlias(required struct column){
