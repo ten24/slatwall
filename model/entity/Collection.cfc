@@ -2868,14 +2868,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getPredicate(required any filter){
-<<<<<<< HEAD
-=======
-		
-		if(!structkeyExists(arguments.filter,"ormtype")) { 
-			arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(convertAliasToPropertyIdentifier(getPropertyIdentifierAlias(arguments.filter.propertyIdentifier)));
-		}
 
->>>>>>> 1b3067cd4f... fixing unit tests
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
 			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
