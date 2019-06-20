@@ -49,14 +49,12 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
-		public void function updateNextDeliveryScheduleDate(required string productID, required any nextDeliveryScheduleDate){
+		public void function updateNextDeliveryScheduleDate(required string productID, required any nextDeliveryScheduleDateID){
 			var q = new query();
 			
 			q.addParam(name="productID",value=arguments.productID);
-			q.addParam(name="nextDeliveryScheduleDate",value=arguments.nextDeliveryScheduleDate,cfsqltype="cf_sql_timestamp");
-			
-			var sql = "UPDATE swproduct set nextDeliveryScheduleDate=:nextDeliveryScheduleDate where productID = :productID";
-			
+			q.addParam(name="nextDeliveryScheduleDateID",value=arguments.nextDeliveryScheduleDateID);
+			sql = "UPDATE swproduct set nextDeliveryScheduleDateID=:nextDeliveryScheduleDateID where productID = :productID";
 			q.execute(sql=sql);
 		}
 		

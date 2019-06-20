@@ -434,7 +434,11 @@
 			} else if ( lCaseMissingMethodName.startsWith( 'export' ) ) {
 				return onMissingExportMethod( missingMethodName, missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'process' ) ) {
-				return onMissingProcessMethod( missingMethodName, missingMethodArguments );
+				if(right(lCaseMissingMethodName,27) == "_updateCalculatedProperties") {
+					return onMissingUpdateCalculatedProperties(missingMethodName, missingMethodArguments);
+				}else{
+					return onMissingProcessMethod( missingMethodName, missingMethodArguments );
+				}
 			}
 
 			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# service.');
@@ -774,6 +778,14 @@
 			
 			export(data=exportQry);
 		}
+		
+
+		private any function onMissingUpdateCalculatedProperties( required string missingMethodName, required struct missingMethodArguments ){
+			var entity = missingMethodArguments[1];
+			entity.updateCalculatedProperties();
+			return entity;
+		}
+		
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public boolean function getEntityNameIsValidFlag( required string entityName ) {
@@ -1277,6 +1289,21 @@
 			return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
 		}
 		
+		
+		public string function getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier) {
+			var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
+
+			var object =  getEntityObject(lastEntityName);
+			var propertyName = listLast(arguments.propertyIdentifier, '.');
+			if(
+				!isNull(object)
+				&& !isSimpleValue(object)
+				&& structKeyExists(object.getPropertyMetaData(propertyName),'ormtype')
+			) {
+				return object.getPropertyMetaData(propertyName).ormtype;
+			}
+			return "";
+		}
 		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(
 			required any collectionList, required string entityName, required string propertyIdentifier, string inversePropertyIdentifier

@@ -593,17 +593,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {
-		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
-		var object = getService('HibachiService').getEntityObject(entityName);
-		var propertyName = listLast(arguments.propertyIdentifier,'.');
-		if(
-			!isNull(object) 
-			&& !isSimpleValue(object)
-			&& structKeyExists(object.getPropertyMetaData( propertyName ),'ormtype')
-		) {
-			return object.getPropertyMetaData( propertyName ).ormtype;
-		}
-		return "";
+		return getService('HibachiService').getOrmTypeByEntityNameAndPropertyIdentifier(this.getClassName(), arguments.propertyIdentifier);
 	}
 	
 	public string function getSingularNameByPropertyIdentifier( required string propertyIdentifier ) {
