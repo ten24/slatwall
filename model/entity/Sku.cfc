@@ -1943,7 +1943,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					AND 
 						maxQuantity IS NULL 
 					AND 
-						priceGroupID IS NULL 
+						priceGroupID IS NULL
+					AND
+						promotionRewardID IS NULL
 					AND 
 						currencyCode = :currencyCode 
 					AND 
@@ -1993,5 +1995,4 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// ==================  END:  Deprecated Methods ========================
 
-	
 }

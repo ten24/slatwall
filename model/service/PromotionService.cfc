@@ -867,7 +867,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));
 
 		var amountMethod = 'getAmount';
-		var amountParams = {};
+		var amountParams = {
+			quantity:arguments.quantity
+		};
 
 		if(structKeyExists(arguments,'currencyCode') && len(arguments.currencyCode)){
 			amountMethod &= 'ByCurrencyCode';

@@ -164,16 +164,14 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return variables.currencyCode;
 	}
 	
-	public numeric function getAmount(any sku, string currencyCode){
+	public numeric function getAmount(any sku, string currencyCode, numeric quantity){
 		
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
-			if(structKeyExists(arguments,'currencyCode')){
-				var currencyCode = arguments.currencyCode;
-			}else{
-				var currencyCode = getCurrencyCode();
+			if(!structKeyExists(arguments,'currencyCode')){
+				arguments.currencyCode = getCurrencyCode();
 			}
-			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,currencyCode);
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(argumentCollection=arguments);
 			
 			if(!isNull(skuPrice)){
 				return skuPrice.getPrice();
@@ -186,12 +184,24 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return variables.amount;
 	}
 
-	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode){
-		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(arguments.sku.getSkuID(),this.getPromotionRewardID(),arguments.currencyCode);
+	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity){
+		var daoArguments = {
+			skuID:arguments.sku.getSkuID(),
+			promotionRewardID:this.getPromotionRewardID(),
+			currencyCode:arguments.currencyCode
+		};
+		if(!isNull(arguments.quantity)){
+			daoArguments.quantity = arguments.quantity;
+		}
+
+		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(argumentCollection=daoArguments);
 	}
 
-	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku){
+	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku, numeric quantity){
 		var amountParams = {};
+		if(structKeyExists(arguments,'quantity')){
+			amountParams['quantity'] = arguments.quantity;
+		}
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
 		}
@@ -585,5 +595,5 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	}
 	
 	// =================  END: Deprecated Methods   ========================	
-		
+
 }
