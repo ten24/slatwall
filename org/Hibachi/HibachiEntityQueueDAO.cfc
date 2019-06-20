@@ -101,7 +101,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	} 
 	
-	public void function insertEntityQueue(required string baseID, required string baseObject, required string entityQueueType){
+	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
 		var queryService = new query();
 		var sql = "INSERT INTO SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
 			VALUES ('#createHibachiUUID()#','#arguments.entityQueueType#','#arguments.entityName#','#arguments.entityID#',:createdDateTime,'#getHibachiScope().getAccount().getAccountID()#',
