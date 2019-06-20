@@ -380,7 +380,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getChargeTaxAmount() - getDiscountAmount());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
 	}
 
 	public numeric function getDiscountAmount() {
@@ -725,11 +725,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return variables.fulfillmentCharge;
 	}
 
-	public boolean function getManualfulfillmentChargeFlag() {
+	public boolean function getManualFulfillmentChargeFlag() {
 		if(!structKeyExists(variables, "manualFulfillmentChargeFlag")) {
 			variables.manualFulfillmentChargeFlag = 0;
 		}
 		return variables.manualFulfillmentChargeFlag;
+	}
+	
+	public boolean function getManualHandlingFeeFlag() {
+		if(!structKeyExists(variables, "manualHandlingFeeFlag")) {
+			variables.manualHandlingFeeFlag = 0;
+		}
+		return variables.manualHandlingFeeFlag;
 	}
 
 	public struct function getContainerStruct() {

@@ -130,7 +130,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeTotalBeforeHandlingFees" persistent="false" hb_formatType="currency";
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
 	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
 	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
@@ -615,23 +617,50 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getFulfillmentTotal() {
 		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeTotal() - getFulfillmentRefundTotal());
 	}
+	
+	public numeric function getFulfillmentHandlingFeeTotal() {
+		var handlingFeeTotal = 0;
+		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			
+			// Include any handling fees associated with shipping method rate via settings (but always requires a third party shipping account identifier?)
+			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
+				if(
+					(
+						!isNull(getOrderFulfillments()[i].getShippingMethodRate()) 
+						&& getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')
+					) 
+					|| getService('SettingService').getSettingValue('shippingMethodRateHandlingFeeFlag')
+				){
+					handlingFeeTotal = getService('HibachiUtilityService').precisionCalculate(handlingFeeTotal + getOrderFulfillments()[i].getHandlingFee());
+				}
+				continue;
+				
+			// Include any manual handling fees
+			} else if (getOrderFulfillments()[i].getManualHandlingFeeFlag()) {
+				handlingFeeTotal = getService('HibachiUtilityService').precisionCalculate(handlingFeeTotal + getOrderFulfillments()[i].getHandlingFee());
+			}
+		}
+		
+		return handlingFeeTotal;
+	}
 
 	public numeric function getFulfillmentChargeTotal() {
 		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
-				if(
-					(!isNull(getOrderFulfillments()[i].getShippingMethodRate()) &&
-					getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')) ||
-					getService('SettingService').getSettingValue('shippingMethodRateHandlingFeeFlag')
-				){
-					fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getHandlingFee());
-				}
-				continue;
-			}
 			fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
+		fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getFulfillmentHandlingFeeTotal());
+		
 		return fulfillmentChargeTotal;
+	}
+	
+	public numeric function getFulfillmentChargeTotalBeforeHandlingFees() {
+		var fulfillmentChargeTotalBeforeHandlingFees = 0;
+		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			fulfillmentChargeTotalBeforeHandlingFees = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotalBeforeHandlingFees + getOrderFulfillments()[i].getFulfillmentCharge());
+		}
+		
+		return fulfillmentChargeTotalBeforeHandlingFees;
 	}
 
 	public numeric function getFulfillmentRefundTotal() {
