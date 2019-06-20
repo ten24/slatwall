@@ -2,8 +2,8 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
     public void function afterOrderProcess_updateStatusSuccess(required any slatwallScope, required any order, required any data ={}) {
-        
-        if(arguments.order.getStatusCode != "osClosed"){
+
+        if(arguments.order.getStatusCode() != "osClosed"){
             return;
         }
         
@@ -26,11 +26,10 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         accrList.addFilter("activeFlag",true);
         
         var accruements = accrList.getRecords();
-        
         for(var accruement in accruements){
             accruement = arguments.slatwallScope.getService("LoyaltyService").getLoyaltyAccruement(accruement['loyaltyAccruementID']);
             var account = referer;
-            if(accruement.geRefereeFlag()){
+            if(accruement.getRefereeFlag()){
                 account = referee;
             }
             
@@ -43,7 +42,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     		newAccountLoyalty = getService("AccountService").saveAccountLoyalty( newAccountLoyalty );
     
     		if(!newAccountLoyalty.hasErrors()) {
-    			newAccountLoyalty = getService("AccountService").processAccountLoyalty(newAccountLoyalty, {}, 'orderClosed');
+    			newAccountLoyalty = getService("AccountService").processAccountLoyalty(newAccountLoyalty, {order=arguments.order}, 'orderClosed');
     		}
     		
         }
