@@ -3,6 +3,7 @@
 
 class SWListingSearchController {
     private selectedSearchColumn;
+    private selectedSearchFilter;
     private filterPropertiesList;
     private collectionConfig;
     private paginator;
@@ -18,6 +19,7 @@ class SWListingSearchController {
     private listingId;
     public swListingDisplay:any;
     public searchableOptions;
+    public searchableFilterOptions;
     public swListingControls:any;
     public hasPersonalCollections:boolean=false;
     public personalCollections:any;
@@ -46,6 +48,27 @@ class SWListingSearchController {
         }
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.swListingDisplay.collectionConfig.columns);
+        
+        this.searchableFilterOptions = [
+            {
+                title:'Last 3 Months',
+                value:new Date().setMonth(new Date().getMonth()-3)
+            },
+            {
+                title:'Last 6 Months',
+                value:new Date().setMonth(new Date().getMonth()-6)
+            },
+            {
+                title:'1 Year Ago',
+                value:new Date().setMonth(new Date().getMonth()-12)
+            },
+            {
+                title:'All Time',
+                value:'All'
+            }
+        ];
+        
+        this.selectSearchFilter(this.searchableFilterOptions[0]);
         this.selectedSearchColumn={title:'All'};
 
         this.configureSearchableColumns(this.selectedSearchColumn);
@@ -71,6 +94,13 @@ class SWListingSearchController {
                     throw("swListingSearch couldn't load printTemplateOptions because: " + reason);
                 }
             );
+        }
+    }
+    
+    public selectSearchFilter = (filter?)=>{
+        this.selectedSearchFilter = filter;
+        if(this.swListingDisplay.searchText){
+            this.search();
         }
     }
 
@@ -234,9 +264,13 @@ class SWListingSearchController {
         }
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
-
+        this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+        if(this.selectedSearchFilter.value!='All'){
+            this.collectionConfig.addFilter('createdDateTime',this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
+        }
         this.swListingDisplay.collectionConfig = this.collectionConfig;
-
+        
+        
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
     };
