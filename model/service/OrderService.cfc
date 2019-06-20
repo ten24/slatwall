@@ -1206,14 +1206,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			ormFlush(); 
 
-			this.logHibachi('we checked can place order and found #thread.canPlaceOrder# when we deleted order: #deleteOk#', true);
 		}
 
 		ThreadJoin(threadName);
 
 		if(StructKeyExists(evaluate(threadName), "ERROR")){
 			canPlaceOrder = false;
-			writeDump(evaluate(threadName));abort;
+			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#');
 		} else {
 			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
 		} 
