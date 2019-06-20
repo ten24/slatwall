@@ -100,22 +100,9 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		}
 		
-<<<<<<< HEAD
-		// Setup Default Data from custom folder... Not called on soft reloads.
-		var customdbPath = ExpandPath("/custom/dbdata");
-		if ( !directoryExists(customdbPath) )
-		{
-			writeLog(file="Slatwall", text="General Log - custom/dbdata is not found.");
-		}
-		else{
-			getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = customdbPath);
-			writeLog(file="Slatwall", text="General Log - Default Data from custom/dbdata Has Been Confirmed");
-		}
-=======
 		// Clear the setting cache so that it can be reloaded
 		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
 		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
->>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 		
 		// Clear the setting meta cache so that it can be reloaded
         	getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');
