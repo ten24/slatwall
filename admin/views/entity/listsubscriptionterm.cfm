@@ -49,7 +49,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.subscriptionTermSmartList" type="any" />
 <cfif getHibachiScope().getService('subscriptionService').hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() >
 	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info') />
@@ -63,27 +62,29 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
-							recordDetailAction="admin:entity.detailsubscriptionterm"
-							recordEditAction="admin:entity.editsubscriptionterm">
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'SubscriptionTerm'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editsubscriptionterm"
-		record-detail-action="admin:entity.detailsubscriptionterm"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset subscriptionTermCollectionList = getHibachiScope().getService('subscriptionService').getSubscriptionTermCollectionList()>
+	<cfset serchableDisplayProperties = "subscriptionTermName"/>
+	<cfset subscriptionTermCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset subscriptionTermCollectionList.addDisplayProperty(displayProperty='subscriptionTermID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#subscriptionTermCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(subscriptionTermCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(subscriptionTermCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="subscriptionTermID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="subscriptionTermName" tdclass="primary" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

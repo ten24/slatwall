@@ -50,6 +50,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
+	property name="allocatedOrderDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 
@@ -121,6 +122,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityUnreceived" persistent="false";
 	property name="registrants" persistent="false";
 	property name="renewalSku" persistent="false";
+	property name="skuPerformCascadeCalculateFlag" persistent="false";
+	property name="stockPerformCascadeCalculateFlag" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
@@ -426,7 +429,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 		
-		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+		if(!isNull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			for(var childOrderItem in this.getChildOrderItems()){
 				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
 			}
@@ -441,7 +444,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			var price = 0;
 		
 			//get bundle price
-			if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(!isnull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 				price = getProductBundlePrice();
 			}else if(!isNull(getPrice())){
 				price = getPrice();
@@ -570,6 +573,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 
 		return variables.activeRegistrationsSmartList;
+	}
+	
+	public boolean function getSkuPerformCascadeCalculateFlag() {
+		return getOrderStatusCode() != 'ostNotPlaced';
+	}
+	
+	public boolean function getStockPerformCascadeCalculateFlag() {
+		return getOrderStatusCode() != 'ostNotPlaced';
 	}
 
 	public numeric function getTaxAmount() {
@@ -1071,5 +1082,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	
+
 }

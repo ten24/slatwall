@@ -5,7 +5,7 @@
 	        "endDateTime":{"required":true}
 	    },
 	    "accruementTypeEnroll":{
-	        "accruementEvent":{"eq":"enrollment"}
+	        "accruementType":{"eq":"enrollment"}
 	    }
 	},
 	"properties":{

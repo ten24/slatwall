@@ -103,7 +103,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				break;
 			}
 		}
-		
+
 		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
 		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
 			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
@@ -153,7 +153,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(required any currentDateTime, required string productsScheduledForDelivery){
 		//find all order items that require delivery based on the term
 		var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
-		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
+		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount,orderItem.sku.product.nextDeliveryScheduleDate.deliveryScheduleDateID');
 		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
 		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',arguments.productsScheduledForDelivery,'IN');
 		//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
@@ -173,13 +173,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
 			//subscription order item data for creating 
 			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(arguments.currentDateTime,productsScheduledForDelivery);
-			
 			//create a delivery for each subscription Order Item 
 			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
 				//insert a single subscriptionOrderDeliveryItem if we haven't completed delivering all the items in the subscription
 				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
 					getOrderDao().insertSubscriptionOrderDeliveryItem(
-						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],subscriptionOrderItemRecord['orderItem_calculatedTaxAmount']
+						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),
+						1,
+						subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],
+						subscriptionOrderItemRecord['orderItem_calculatedTaxAmount'],
+						subscriptionOrderItemRecord['orderItem_sku_product_nextDeliveryScheduleDate_deliveryScheduleDateID']
 					);
 				}
 			}
@@ -190,7 +193,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
 				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
-				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
+				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateID,deliveryScheduleDateValue');
 				deliveryScheduleDateCollectionList.addFilter('product.productID',productsScheduledForDeliveryRecord['productID']);
 				
 				//if start in current period flag is set then get the closest previous date in the past otherwise closest in the future
@@ -208,7 +211,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords(formatRecords=false);
 				
 				if(arrayLen(deliveryScheduleDateRecords)){
-					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']));
+					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateID']));
 				}
 			}
 		}
@@ -1159,8 +1162,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.newOrder();
 	}
-	
-	//begin order template functionality
+
+	//begin order template functionality	
 
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 
@@ -1168,7 +1171,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    local.tx = local.ormSession.beginTransaction();
 
 		try{
-			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge() 
+			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
 		} catch (any e) {
 			//if we have any error we probably don't have the required data for returning the total
 			var fulfillmentCharge = 0; 
@@ -1449,7 +1452,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
-		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
+		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());	
 		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
 
 		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
@@ -1587,7 +1590,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var account = arguments.orderTemplate.getAccount(); 
 
-		if(!isNull(processObject.getNewAccountAddress())){
+	if(!isNull(processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1603,13 +1606,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
 			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
-		} 	
+		}	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
 			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
 
-			accountPaymentMethod.setAccount(account);
+			accountPaymentMethod.setAccount(account); 
 			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
 
 			//set payment method as credit card
@@ -2193,7 +2196,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addError('canPlaceOrderReward',rbKey('entity.order.process.placeOrder.canPlaceOrderRewardRequirementError'));
 							}
 						} else {
-							
+
 							// Setup a value to log the amount received, credited or authorized.  If any of these exists then we need to place the order
 							var amountAuthorizeCreditReceive = 0;
 
@@ -2332,7 +2335,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}	// END OF LOCK
-
+		if(order.hasErrors()){
+			getHibachiScope().setORMHasErrors( true );
+		}
 		return arguments.order;
 	}
 
@@ -2657,7 +2662,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var orderItem in arguments.order.getOrderItems()){
 						var skuPrice = val(orderItem.getSkuPrice());
 						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
-	 				
+	 					
 	 					if(
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
 	 					){
@@ -2680,6 +2685,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+			
+			updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 		    	if(arguments.order.getPaymentAmountDue() != 0){
@@ -2691,6 +2698,79 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}
 		return arguments.order;
+	}
+	
+	// hint: Distributes the order-level discount amount total proportionally to all order items and if necessary handle any remainder due to uneven division
+	private void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
+		
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: START");
+		logHibachi("order['orderID']: #arguments.order.getOrderID()#");
+		logHibachi("order['orderAmounts.orderSubtotalAfterItemDiscounts']: #arguments.order.getSubtotalAfterItemDiscounts()#");
+		logHibachi("order['orderAmounts.orderDiscountAmountTotal']: #arguments.order.getOrderDiscountAmountTotal()#");
+		
+		// Allocate the order-level discount amount total in appropriate proportions to all order items and if necessary handle any remainder due to uneven division
+		var actualAllocatedAmountTotal = 0;
+		var actualAllocatedAmountAsPercentage = 0;
+		var orderItemCount = 0;
+		for (var orderItem in arguments.order.getOrderItems()) {
+			orderItemCount++;
+			
+			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
+			var currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();
+			
+			// Approximate amount to allocate (rounded to nearest penny)
+		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;
+		    
+		    var actualAllocatedAmountTotaUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
+		    
+		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
+		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * arguments.order.getOrderDiscountAmountTotal();
+			
+			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
+			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears
+			// NOTE: If instead we deferred handling the discrepancy the likelihood that a noticeable discrepancy will need to be offset on the final order item increases as the number of order items increases on an order.
+		    var currentDiscrepancyAmount =  actualAllocatedAmountTotaUnadjusted - expectedAllocatedAmountTotal;
+		    
+		    // If there is a discrepancy greater than 1/2 cent let's deal with it now, adjust the allocation amount by rounding up or down to nearest cent
+		    if (abs(currentDiscrepancyAmount) >= .005) {
+		    	// Need to decrease the allocation amount by a cent to prevent over allocating
+		        if (currentDiscrepancyAmount > 0) {
+		            currentOrderItemAllocationAmount = (ceiling(currentOrderItemAllocationAmount * 100) - 1) / 100;
+		            
+		        // Need to increase the allocation by a cent to prevent under allocating 
+		        } else if (currentDiscrepancyAmount < 0) {
+		            currentOrderItemAllocationAmount = (floor(currentOrderItemAllocationAmount * 100) + 1) / 100;
+		        }
+		    }
+		    
+		    // Update the actuals to retain maximum precision
+		    actualAllocatedAmountTotal += currentOrderItemAllocationAmount;
+		    actualAllocatedAmountAsPercentage += currentOrderItemAmountAsPercentage;
+		    
+		    // Finally update the order item
+		    orderItem.setAllocatedOrderDiscountAmount(currentOrderItemAllocationAmount);
+		    
+		    // Collect details for debugging/logging
+		    logHibachi("orderItem[#orderItemCount#]: Start");
+		    logHibachi("orderItem[#orderItemCount#]['extendedPriceAfterOrderItemDiscount']: #orderItem.getExtendedPriceAfterDiscount()#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAmountAsPercentage']: #currentOrderItemAmountAsPercentage * 100#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmount']: #round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmountAdjusted']: #currentOrderItemAllocationAmount#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.expectedAllocatedAmountTotal']: #expectedAllocatedAmountTotal#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotaUnadjusted']: #actualAllocatedAmountTotaUnadjusted#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.currentDiscrepancyAmount']: #currentDiscrepancyAmount#");
+		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountAsPercentage']: #actualAllocatedAmountAsPercentage  * 100#");
+		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
+		}
+		
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");
+		
+		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
+		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderDiscountAmountTotal()) != 0) {
+			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.", true);
+		}
+
 	}
 
 	public numeric function getAmountToBeCapturedByCaptureAuthorizationPayments(required any orderDelivery, required any processObject){
@@ -2927,9 +3007,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Prepare orderDelivery to auto-fulfill all "undelivered" orderItems from orderFulfillment
 				addOrderFulfillmentItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 
-			} else {
+			}  else {
 				
-				if(!arrayLen(arguments.processObject.getContainers())){
+				if(!isNull(arguments.processObject.getContainers()) && !arrayLen(arguments.processObject.getContainers())){
 					// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
 					arguments.orderDelivery = addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 				}else{
@@ -2963,7 +3043,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
-			
 			// Clean up if not needed
 			if (!arrayLen(arguments.data.giftCardCodes)) {
 				structDelete(arguments.data, 'giftCardCodes');
@@ -4083,6 +4162,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
+				
+				//verify address
+				arguments.orderFulfillment.setVerifiedShippingAddressFlag( arguments.orderFulfillment.getShippingAddress().getVerifiedByIntegrationFlag() );
 			}
 		}
 
@@ -4199,7 +4281,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Save Overrides ============================
 
 	// ==================== START: Smart List Overrides =======================
-
+	
 	public any function getOrderSmartList(struct data={}) {
 		arguments.entityName = "SlatwallOrder";
 

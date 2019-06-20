@@ -106,7 +106,9 @@ Notes:
 				</cfif>
 				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
-					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skuprices" />
+					<cfif rc.amountType EQ "amount">
+						<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skuprices" />
+					</cfif>
 				<cfelseif rc.rewardType eq "fulfillment">
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />

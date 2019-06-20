@@ -67,7 +67,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
-	property name="Sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="SkuID" cascade="all";
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
     property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";
@@ -87,33 +86,14 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non-Persistent Properties
-	property name="price" persistent="false";
 
+	// Non-Persistent Properties
 	public any function getOrder(){
 		if(!isNull(this.getOriginalOrderItem())){
 			return this.getOriginalOrderItem().getOrder();
 		} else {
 			return false;
 		}
-	}
-	
-	public numeric function getPrice(){
-		
-		if(structKeyExists(variables,'originalOrderItem')){
-			return variables.originalOrderItem.getPrice();
-		}
-		
-		if(structKeyExists(variables,'sku')){
-			return variables.sku.getPrice();
-		}
-	}
-	
-	public any function getSku(){
-		if(!structKeyExists(variables,"sku") || isNull(variables.sku)){
-			variables.sku = this.getOriginalOrderItem().getSku();
-		}
-		return variables.sku;
 	}
 
 	public boolean function isExpired(){
@@ -192,9 +172,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 	public void function removeOriginalOrderItem(any orderItem) {
-		if(!structKeyExists(variables,"originalOrderItem")){
-			return;
-		}
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.originalOrderItem;
 		}
@@ -207,6 +184,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Owner Account (many-to-one)
 	public void function setOwnerAccount(required any ownerAccount) {
+
 		variables.ownerAccount = arguments.ownerAccount;
 		if(isNew() or !arguments.ownerAccount.hasGiftCard( this )) {
 			arrayAppend(arguments.ownerAccount.getGiftCards(), this);

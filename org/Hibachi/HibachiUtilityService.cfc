@@ -74,7 +74,7 @@
 		public string function camelCaseToTitleCase(required string stringValue){
 			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
-
+		
 		public string function arrayOfStructsToList(required array structs, required string structKeyForList){
 			var listToReturn = "";
 			for(var record in arguments.structs){
@@ -1141,6 +1141,30 @@
 	        
 		}
 
+		public numeric function getTimeZoneOffsetInSecondsWithDST() {
+			var timezoneInfo = GetTimeZoneInfo();
+			var timezoneOffsetInSeconds = timezoneInfo.utcTotalOffset ;
+
+ 			if ( timezoneInfo.isDSTon) {
+				if(!isNull(SERVER.lucee) && Left(SERVER.lucee.version,1) >= 5) {  //XXX DSTOffset is only available since lucee 5
+
+ 					timezoneOffsetInSeconds += timezoneInfo.DSTOffset;
+
+ 				}else{ //HACK  This only works if you're in the America/NewYork timezone.
+
+ 					timezoneOffsetInSeconds += 3600; 
+				}
+			}
+
+ 			return timezoneOffsetInSeconds;
+		}
+
+ 		public date function getLocalServerDateTimeByUtcEpoch(number utcEpoch) {
+			//XXX explaination: for "* -1"  ==> https://www.bennadel.com/blog/1595-converting-to-gmt-and-from-gmt-in-coldfusion-for-use-with-http-time-stamps.htm
+			var localEpoch = utcEpoch + getTimeZoneOffsetInSecondsWithDST() * -1 ;
+			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
+		}
+
 	</cfscript>
 
 	<cffunction name="logException" returntype="void" access="public"  output="false">
@@ -1484,17 +1508,16 @@
 
 	    </cfloop>
 
-
 	    <!--- Return the CSV value. --->
 	    <cfreturn LOCAL.Buffer.ToString() />
 	</cffunction>
 
 	<cffunction name="getCurrentUtcTime" returntype="Numeric"  output="false">
-        <cfset local.currentDate = Now()>
-        <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
-        <cfset local.timezoneOffset = getTimeZoneInfo().utcTotalOffset />
-        <cfset local.utcDate.setTime(local.utcDate.getTime() - (local.timezoneOffset * 1000) ) />
-        <cfreturn round( local.utcDate.getTime() / 1000 )>
+        <!--- 
+	        According to https://www.bennadel.com/blog/2428-change-in-coldfusion-date-gettime-method-in-coldfusion-10.htm 
+	        getTime() returns the current UTC time independently of server time zone
+         --->
+        <cfreturn round( now().getTime() / 1000 )>
     </cffunction>
     
     <cffunction name="getTimeByUtc" returntype="any">
