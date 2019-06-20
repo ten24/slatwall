@@ -159,6 +159,19 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return false;
 	}
 
+	public array function getOrderTypeCodeOptions() {
+		if(!structKeyExists(variables, "orderTypeCodeOptions")) {
+			var collectionList = getService('TypeService').getCollectionList('Type');
+			collectionList.setDisplayProperties('systemCode|value,typeName|name');
+			collectionList.addFilter('systemCode', 'otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', 'IN');
+			collectionList.setOrderBy('sortOrder|ASC');
+			
+			// May need to overwrite name with rbKey('define.exchange')
+			variables.orderTypeCodeOptions = collectionList.getRecords();
+		}
+		return variables.orderTypeCodeOptions;
+	}
+
 	public string function getOrderTypeCode(){
 		if(!structKeyExists(variables,"orderTypeCode")){
 			variables.orderTypeCode="otReturnOrder";
