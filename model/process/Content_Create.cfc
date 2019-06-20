@@ -55,9 +55,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="site";
 	property name="parentContent";
 	
-	property name="contentTemplateTypeID";
-	property name="contentTemplateType" type="any";
-	
 	// New Properties
 
 	// Data Properties (ID's)
@@ -88,20 +85,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.parentContent = getService("contentService").getContent(getParentContentID());
 		}
 		return variables.parentContent;
-	}
-	
-	
-		public any function getContentTemplateType() {
-		if(!structKeyExists(variables, "contentTemplateType") && !isNull(getContentTemplateTypeID())) {
-			
-			variables.contentTemplateType = getService("typeService").getType(getContentTemplateTypeID());
-			return variables.contentTemplateType;
-		}
-		if(structKeyExists(variables,'contentTemplateType')){
-			return variables.contentTemplateType;
-		}
-		
-		
 	}
 	
 	// ========================  END: Defaults =============================

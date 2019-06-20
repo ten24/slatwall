@@ -84,8 +84,7 @@ class PublicService {
         public orderService,
         public observerService,
         public appConfig,
-        public $timeout,
-        public hibachiAuthenticationService
+        public $timeout
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -107,7 +106,6 @@ class PublicService {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
-        this.hibachiAuthenticationService=hibachiAuthenticationService;
     }
 
     // public hasErrors = ()=>{
@@ -493,10 +491,6 @@ class PublicService {
         }
         return true;
     }
-    
-    public authenticateActionByAccount = (action:string,processContext:string)=>{
-        return this.hibachiAuthenticationService.authenticateActionByAccount(action,processContext);
-    }
 
     public removeInvalidOrderPayments = (cart) =>{
         cart.orderPayments = cart.orderPayments.filter((payment)=>!payment.hasErrors);
@@ -664,8 +658,6 @@ class PublicService {
     /** Selects shippingAddress*/
     public selectShippingAccountAddress = (accountAddressID,orderFulfillmentID)=>{
         
-        this.observerService.notify("shippingAddressSelected",{"accountAddressID":accountAddressID});
-        
         let fulfillmentIndex = this.cart.orderFulfillments.findIndex(fulfillment => fulfillment.orderFulfillmentID == orderFulfillmentID);
         let oldAccountAddressID;
         
@@ -780,7 +772,7 @@ class PublicService {
             if(!angular.isDefined(this.imagePath)){
                 this.imagePath = {};
             }
-            if (result && result.resizedImagePaths){
+            if (result.resizedImagePaths){
                 for(var skuID in result.resizedImagePaths){
                     this.imagePath[skuID] = result.resizedImagePaths[skuID]
                 }

@@ -153,10 +153,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
                 } else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
 
-                	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
-                	if (verifyPerformCascadeCalculateForProperty(property)) {
                     variables[ property.name ].updateCalculatedProperties();
-					}
+
                 }
             }
 
@@ -403,7 +401,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return variables.auditSmartList;
 	}
-	
+
 	public any function getAuditCollectionList(){
 		if(!structKeyExists(variables,'auditCollectionList')){
 			variables.auditCollectionList = getService('hibachiAuditService').getAuditCollectionListForEntity(entity=this);
@@ -866,19 +864,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
 	}
 
-	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
-		// NOTE: Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
-        
-    	// Implies calculation should cascade in any state
-    	var performCascadeCalculateFlag = true;
-    	
-    	// Entity has defined method for this property to handle determining whether calculation should cascade in the current state
-		if (structKeyExists(this, 'get#arguments.property.name#PerformCascadeCalculateFlag')) {
-			performCascadeCalculateFlag = this.invokeMethod('get#arguments.property.name#PerformCascadeCalculateFlag');
-		}
 
-		return performCascadeCalculateFlag;
-	}
 
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
@@ -1288,13 +1274,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// Loop over all properties
         for(var property in getProperties()) {
             if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
-            	
-            	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
-                if (verifyPerformCascadeCalculateForProperty(property)) {
                 getHibachiScope().addModifiedEntity(variables[ property.name ]);
             }
         }
-	}
 	}
 
 	/*

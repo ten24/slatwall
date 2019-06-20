@@ -30,7 +30,7 @@ class CollectionController{
 			});
 
 		};
-		//observerService.attach($scope.saveCollection,'swPaginationUpdate',$attrs.tableId);
+		observerService.attach($scope.saveCollection,'swPaginationUpdate',$attrs.tableId);
 	}
 	
 }

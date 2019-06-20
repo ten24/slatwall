@@ -199,7 +199,7 @@ Notes:
 									<h5>#attributeSet.getAttributeSetName()#</h5>
 									<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
 								</cfif>
-							</cfloop> 
+							</cfloop>
 
 							<!--- Order Fulfillment --->
 							<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
@@ -297,7 +297,7 @@ Notes:
 												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
 											</span>
 										</cfloop>
-										
+										<span ng-if="shippingAccountAddressID == ''">
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">

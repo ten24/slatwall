@@ -262,7 +262,6 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.subscriptionUsageCollectionList#"
 		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(rc.subscriptionUsageCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.subscriptionUsageCollectionList.getCollectionObject())#"
 	>

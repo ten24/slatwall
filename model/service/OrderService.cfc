@@ -103,7 +103,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				break;
 			}
 		}
-
+		
 		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
 		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
 			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
@@ -153,7 +153,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(required any currentDateTime, required string productsScheduledForDelivery){
 		//find all order items that require delivery based on the term
 		var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
-		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount,orderItem.sku.product.nextDeliveryScheduleDate.deliveryScheduleDateID');
+		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
 		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
 		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',arguments.productsScheduledForDelivery,'IN');
 		//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
@@ -173,16 +173,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
 			//subscription order item data for creating 
 			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(arguments.currentDateTime,productsScheduledForDelivery);
+			
 			//create a delivery for each subscription Order Item 
 			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
 				//insert a single subscriptionOrderDeliveryItem if we haven't completed delivering all the items in the subscription
 				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
 					getOrderDao().insertSubscriptionOrderDeliveryItem(
-						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),
-						1,
-						subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],
-						subscriptionOrderItemRecord['orderItem_calculatedTaxAmount'],
-						subscriptionOrderItemRecord['orderItem_sku_product_nextDeliveryScheduleDate_deliveryScheduleDateID']
+						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],subscriptionOrderItemRecord['orderItem_calculatedTaxAmount']
 					);
 				}
 			}
@@ -193,7 +190,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
 				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
-				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateID,deliveryScheduleDateValue');
+				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
 				deliveryScheduleDateCollectionList.addFilter('product.productID',productsScheduledForDeliveryRecord['productID']);
 				
 				//if start in current period flag is set then get the closest previous date in the past otherwise closest in the future
@@ -211,7 +208,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords(formatRecords=false);
 				
 				if(arrayLen(deliveryScheduleDateRecords)){
-					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateID']));
+					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']));
 				}
 			}
 		}
@@ -1159,8 +1156,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.newOrder();
 	}
-
-	//begin order template functionality	
+	
+	//begin order template functionality
 
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 
@@ -1355,7 +1352,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
-		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());	
+		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
 		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
 
 		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
@@ -1472,7 +1469,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var account = arguments.orderTemplate.getAccount(); 
 
-	if(!isNull(processObject.getNewAccountAddress())){
+		if(!isNull(processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1488,13 +1485,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
 			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
-		}	
+		} 	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
 			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
 
-			accountPaymentMethod.setAccount(account); 
+			accountPaymentMethod.setAccount(account);
 			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
 
 			//set payment method as credit card
@@ -2044,7 +2041,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addError('canPlaceOrderReward',rbKey('entity.order.process.placeOrder.canPlaceOrderRewardRequirementError'));
 							}
 						} else {
-
+							
 							// Setup a value to log the amount received, credited or authorized.  If any of these exists then we need to place the order
 							var amountAuthorizeCreditReceive = 0;
 
@@ -2510,7 +2507,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var orderItem in arguments.order.getOrderItems()){
 						var skuPrice = val(orderItem.getSkuPrice());
 						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
-	 					
+	 				
 	 					if(
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
 	 					){
@@ -2855,9 +2852,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Prepare orderDelivery to auto-fulfill all "undelivered" orderItems from orderFulfillment
 				addOrderFulfillmentItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 
-			}  else {
+			} else {
 				
-				if(!isNull(arguments.processObject.getContainers()) && !arrayLen(arguments.processObject.getContainers())){
+				if(!arrayLen(arguments.processObject.getContainers())){
 					// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
 					arguments.orderDelivery = addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 				}else{
@@ -2891,6 +2888,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
+			
 			// Clean up if not needed
 			if (!arrayLen(arguments.data.giftCardCodes)) {
 				structDelete(arguments.data, 'giftCardCodes');
@@ -4010,9 +4008,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
-				
-				//verify address
-				arguments.orderFulfillment.setVerifiedShippingAddressFlag( arguments.orderFulfillment.getShippingAddress().getVerifiedByIntegrationFlag() );
 			}
 		}
 
@@ -4129,7 +4124,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Save Overrides ============================
 
 	// ==================== START: Smart List Overrides =======================
-	
+
 	public any function getOrderSmartList(struct data={}) {
 		arguments.entityName = "SlatwallOrder";
 

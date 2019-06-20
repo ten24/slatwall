@@ -72,22 +72,22 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
 	</hb:HibachiListingDisplay> --->
 
-	<cfset rc.typeCollectionList.addFilter(propertyIdentifier='parentType', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
+	<cfset rc.typeCollectionList.addFilter('parentType','null','is')/>
 	<cfset rc.typeCollectionList.setDisplayProperties(displayPropertiesList='typeCode,systemCode',columnConfig={
-		isSearchable=true,
-		isVisible=true,
-		isDeletable=true
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true"
 	})/>
 	<cfset rc.typeCollectionList.addDisplayProperty(displayProperty='typeName',columnConfig={
-		isSearchable=true,
-		isVisible=true,
-		isDeletable=true,
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true",
 		tdclass="primary"
 	},prepend=true)/>
 	<cfset rc.typeCollectionList.addDisplayProperty(displayProperty='typeID',columnConfig={
-		isSearchable=false,
-		isVisible=false,
-		isDeletable=false
+		isSearchable="false",
+		isVisible="false",
+		isDeletable="false"
 	})/>
 	<cfset rc.typeCollectionList.addDisplayAggregate('childTypes','COUNT','childTypesCount')/>
 	

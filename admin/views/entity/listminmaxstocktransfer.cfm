@@ -50,36 +50,29 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-    <sw-entity-action-bar data-type="listing" data-page-title-rb-key="entity.MinMaxStockTransfer" >
+    <sw-entity-action-bar
+            data-type="listing"
+            data-page-title-rb-key="entity.MinMaxStockTransfer"
+    >
         <sw-entity-action-bar-button-group>
             <sw-process-caller data-action="admin:entity.createminmaxstocktransfer" data-title-rb-key="entity.MinMaxStockTransfer.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
         </sw-entity-action-bar-button-group>
     </sw-entity-action-bar>
-    
-    <cfset minMaxStockTransferCollectionList = getHibachiScope().getService('stockService').getMinMaxStockTransferCollectionList()>
-	<cfset serchableDisplayProperties = "fromLocation.locationName,toLocation.locationName,createdDateTime"/>
-	<cfset minMaxStockTransferCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset minMaxStockTransferCollectionList.addDisplayProperty(
-    	displayProperty='minMaxStockTransferID', 
-    	columnConfig={
-    		isVisible=false,
-    		isSearchable=false,
-    		isDeletable=false
-    	}, 
-    	prepend=true)
-	/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#minMaxStockTransferCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(minMaxStockTransferCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(minMaxStockTransferCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
+
+    <sw-listing-display
+        data-using-personal-collection="true"
+        data-collection="'MinMaxStockTransfer'"
+        data-edit="false"
+        data-has-search="true"
+        record-edit-action="admin:entity.editminmaxstocktransfer"
+        record-detail-action="admin:entity.detailminmaxstocktransfer"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="minMaxStockTransferID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.MinMaxStockTransfer.fromLocation')#" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.MinMaxStockTransfer.toLocation')#" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+    </sw-listing-display>
 </cfoutput>

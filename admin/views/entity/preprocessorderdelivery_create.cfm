@@ -73,7 +73,7 @@ Notes:
 				<cfelse>
 					<cfset local.selectedLocationID = "" />
 				</cfif>
-				<swa:SlatwallLocationTypeahead locationPropertyName="location.locationID"  locationLabelText="#$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="false" selectedLocationID="#local.selectedLocationID#"></swa:SlatwallLocationTypeahead>
+				<swa:SlatwallLocationTypeahead locationPropertyName="location.locationID"  locationLabelText="#$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true" selectedLocationID="#local.selectedLocationID#"></swa:SlatwallLocationTypeahead>
 
 				<!--- Shipping - Hidden Fields --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
@@ -82,7 +82,7 @@ Notes:
 					<input type="hidden" name="shippingAddress.addressID" value="#rc.processObject.getShippingAddress().getAddressID()#" />
 				</cfif>
 				<hb:HibachiActionCaller action="admin:entity.detailorder" queryString="orderID=#rc.processObject.getOrder().getOrderID()#" text=" #$.slatwall.rbkey('entity.Order.OrderNumber')#: #rc.processObject.getOrder().getOrderNumber()#">
-
+				
 				<!--- Shipping - Inputs --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
@@ -197,6 +197,6 @@ Notes:
 				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
-		
+
 	</hb:HibachiEntityProcessForm>
 </cfoutput>

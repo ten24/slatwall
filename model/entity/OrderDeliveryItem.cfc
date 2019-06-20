@@ -99,41 +99,6 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 		}
 		return;
 	}
-	
-	public numeric function getPrice() {
-		if(!structKeyExists(variables,'price')){
-			var variables.price = 0;
-
-			if( !isNull(getOrderItem().getPrice()) ){
-				variables.price = getOrderItem().getPrice();
-			}
-		}
-
-		return variables.price;
-
-	}
-
-	public numeric function getExtendedPrice() {
-		if(!structKeyExists(variables,'extendedPrice')){
-			variables.extendedPrice = val(getService('HibachiUtilityService').precisionCalculate(round(getPrice() * val(getQuantity()) * 100) / 100));
-		}
-
-		return variables.extendedPrice;
-	}
-
-	public numeric function getDiscountAmount(boolean forceCalculationFlag = true) {
-		var discountAmount = getOrderItem().getDiscountAmount();
-
-		if (discountAmount > 0 ) {
-			discountAmount = getService('HibachiUtilityService').precisionCalculate( (discountAmount * 100) / getOrderItem().getQuantity() * getQuantity() / 100);
-		}
-
-		return discountAmount;
-	}
-
-	public numeric function getExtendedPriceAfterDiscount(boolean forceCalculationFlag = false) {
-		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments));
-	}
 
 	// ============ START: Non-Persistent Property Methods =================
 

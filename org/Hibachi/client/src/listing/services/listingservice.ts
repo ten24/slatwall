@@ -844,16 +844,16 @@ class ListingService{
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
                 if(this.getListing(listingID).multiSlot){
                 	this.getListing(listingID).collectionConfig.getEntity().then(
-                    (data)=>{
-                        this.getListing(listingID).collectionData = data;
-                        this.setupDefaultCollectionInfo(listingID);
-                        this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
-                        this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
-                    },
-                    (reason)=>{
-                        throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
-                    }
-                );
+                        (data)=>{
+                            this.getListing(listingID).collectionData = data;
+                            this.setupDefaultCollectionInfo(listingID);
+                            this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
+                            this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                        },
+                        (reason)=>{
+                            throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
+                        }
+                    );
                 }else{
                 	this.getListing(listingID).collectionPromise.then(
                     (data)=>{
@@ -944,9 +944,8 @@ class ListingService{
         }
         if(this.getListing(listingID).collectionConfig != null){
             var found = false;
-            let _formattedPropertyIdentifier = this.getListing(listingID).collectionConfig.formatPropertyIdentifier(propertyIdentifier);
             angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
-                if( _formattedPropertyIdentifier == orderBy.propertyIdentifier){
+                if(propertyIdentifier == orderBy.propertyIdentifier){
                     orderBy.direction = direction;
                     found = true;
                 } else {
@@ -954,7 +953,7 @@ class ListingService{
                 }
             });
             if(!found){
-                this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction, true, true);
+                this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction);
             }
             if(notify){
                 this.observerService.notify(this.getListingOrderByChangedEventString(listingID));
@@ -978,7 +977,7 @@ class ListingService{
             if(column.aggregate && column.aggregate.aggregateFunction){
                 orderByPropertyIdentifier = column.aggregate.aggregateFunction + '('+column.propertyIdentifier+')';
             }
-            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
+            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true);
         }
 
     };
@@ -1108,14 +1107,14 @@ class ListingService{
     
     //Begin Personal Collections Functions
     
-    public hasPersonalCollectionSelected=(personalCollectionKey:string):boolean=>{
+    public hasPersonalCollectionSelected=(baseEntityName:string):boolean=>{
         return this.localStorageService.hasItem('selectedPersonalCollection') 
-            && this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey];
+            && this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()];
     }
-     public getPersonalCollectionByBaseEntityName=(personalCollectionKey:string):any=>{
+     public getPersonalCollectionByBaseEntityName=(baseEntityName:string):any=>{
         var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
         personalCollection.setDisplayProperties('collectionConfig');
-        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[personalCollectionKey].collectionID);
+        personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[baseEntityName.toLowerCase()].collectionID);
         return personalCollection;
     }
         

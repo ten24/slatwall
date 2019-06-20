@@ -28,12 +28,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
 	
-	public boolean function authenticateActionByAccount(required string action, required any account, string processContext="") {
+	public boolean function authenticateActionByAccount(required string action, required any account) {
 		var authDetails = getActionAuthenticationDetailsByAccount(argumentcollection=arguments); 
 		return authDetails.authorizedFlag;
 	}
 	
-	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo, string processContext="") {
+	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo, string processContext) {
 		
 		var authDetails = {
 			authorizedFlag = false,
@@ -148,13 +148,13 @@ component output="false" accessors="true" extends="HibachiService" {
 				} else if ( left(itemName, 10) == "reportlist" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="report", entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 15) == "multiPreProcess" ) {
-					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-15), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-15), account=arguments.account);
 				} else if ( left(itemName, 12) == "multiProcess" ) {
-					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-12), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-12), account=arguments.account);
 				} else if ( left(itemName, 10) == "preProcess" ) {
-					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-10), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 7) == "process" ) {
-					authDetails.authorizedFlag = authenticateProcessByAccount(processContext=arguments.processContext, entityName=right(itemName, len(itemName)-7), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-7), account=arguments.account);
 				} else if ( left(itemName, 4) == "save" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 					if(!authDetails.authorizedFlag) {
@@ -166,7 +166,6 @@ component output="false" accessors="true" extends="HibachiService" {
 					authDetails.entityPermissionAccessFlag = true;
 				}
 			}
-			
 			// Check to see if the controller is for rest, and then verify against the entity itself
 			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
 				//require a token to validate
@@ -200,7 +199,6 @@ component output="false" accessors="true" extends="HibachiService" {
 					
 				}
 			}
-			
 		}else{
 			authDetails.timeout = true;
 		}
@@ -210,32 +208,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public boolean function authenticateCollectionCrudByAccount(required string crudType, required any collection, required any account){
 		return authenticateEntityCrudByAccount(crudType=arguments.crudType, entityName=arguments.collection.getCollectionObject(), account=arguments.account);
-	}
-	
-	public boolean function authenticateProcessByAccount(required string processContext, required string entityName, required any account){
-		// Check if the user is a super admin, if true no need to worry about security
-		if( arguments.account.getSuperUserFlag() ) {
-			return true;
-		}
-		
-		var cacheKey = "authenticateProcess_#arguments.processContext##arguments.entityName##arguments.account.getPermissionGroupCacheKey()#";
-		
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			// Loop over each permission group for this account, and ckeck if it has access
-			var accountPermissionGroups = arguments.account.getPermissionGroups();
-			for(var i=1; i<=arrayLen(accountPermissionGroups); i++){
-				var pgOK = authenticateProcessByPermissionGroup(processContext=arguments.processContext, entityName=arguments.entityName, permissionGroup=accountPermissionGroups[i]);
-				if(pgOK) {
-						getService('HibachiCacheService').setCachedValue(cacheKey,true);
-					return true;
-				}
-			}
-		
-		// If for some reason not of the above were meet then just return false
-			getService('HibachiCacheService').setCachedValue(cacheKey,false);
-			return false;
-		}
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	public boolean function authenticateEntityCrudByAccount(required string crudType, required string entityName, required any account) {
@@ -388,15 +360,15 @@ component output="false" accessors="true" extends="HibachiService" {
 						
 						// Setup basic placeholder info
 						entityPermissions[ entityName ] = {};
-						entityPermissions[ entityName ]['properties'] = {};
-						entityPermissions[ entityName ]['mtmproperties'] = {};
-						entityPermissions[ entityName ]['mtoproperties'] = {};
-						entityPermissions[ entityName ]['otmproperties'] = {};
+						entityPermissions[ entityName ].properties = {};
+						entityPermissions[ entityName ].mtmproperties = {};
+						entityPermissions[ entityName ].mtoproperties = {};
+						entityPermissions[ entityName ].otmproperties = {};
 						
 						// If for some reason this entities permissions are managed by a parent entity then define it as such
 						if(entityMetaData.hb_permission neq "this") {
-							entityPermissions[ entityName ]['inheritPermissionEntityName'] = getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
-							entityPermissions[ entityName ]['inheritPermissionPropertyName'] = listLast(entityMetaData.hb_permission, ".");	
+							entityPermissions[ entityName ].inheritPermissionEntityName = getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
+							entityPermissions[ entityName ].inheritPermissionPropertyName = listLast(entityMetaData.hb_permission, ".");	
 						}
 						
 						// Loop over each of the properties
@@ -408,32 +380,31 @@ component output="false" accessors="true" extends="HibachiService" {
 								
 								// Add to ManyToMany Properties
 								if(structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-one") {
-									entityPermissions[ entityName ]['mtoproperties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
+									entityPermissions[ entityName ].mtoproperties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
 								
 								// Add to OneToMany Properties
 								} else if (structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "one-to-many") {
-									entityPermissions[ entityName ]['otmproperties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
+									entityPermissions[ entityName ].otmproperties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
 									
 								// Add to ManyToMany Properties
 								} else if (structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-many") {
-									entityPermissions[ entityName ]['mtmproperties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
+									entityPermissions[ entityName ].mtmproperties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];
 								
 								// Add to regular field Properties
 								} else {
-									entityPermissions[ entityName ]['properties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];	
+									entityPermissions[ entityName ].properties[ entityMetaData.properties[p].name ] = entityMetaData.properties[p];	
 								}
 							}
 						}
 						
 						// Sort the structure in order by propertyName
-						structSort(entityPermissions[ entityName ]['properties'], "text", "ASC", "name");
+						structSort(entityPermissions[ entityName ].properties, "text", "ASC", "name");
 					}
 				}
 			}
 			
 			// Update the cached value to be used in the future
 			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
-			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
 			
 		}
 		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
@@ -457,7 +428,6 @@ component output="false" accessors="true" extends="HibachiService" {
 				
 			} // End Subsytem Loop
 			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
-			getService('HibachiJsonService').createPermissionJson('action',allPermissions);
 		}
 		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
 	}
@@ -474,8 +444,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Setup subsytem structure
 			var subsystemPermissions = {
-				'hasSecureMethods' = false,
-				'sections' = {}
+				hasSecureMethods = false,
+				sections = {}
 			};
 			
 			// Grab a list of all the files in the controllers directory
@@ -489,40 +459,40 @@ component output="false" accessors="true" extends="HibachiService" {
 				var obj = createObject('component', '#getApplicationValue('applicationKey')#.#replace(ssDirectory, '/','.','all')#controllers.#section#');
 				
 				// Setup section structure
-				subsystemPermissions['sections'][ section ] = {
-					'anyAdminMethods' = "",
-					'anyLoginMethods' = "",
-					'publicMethods' = "",
-					'secureMethods' = "",
-					'restController' = false,
-					'entityController' = false
+				subsystemPermissions.sections[ section ] = {
+					anyAdminMethods = "",
+					anyLoginMethods = "",
+					publicMethods = "",
+					secureMethods = "",
+					restController = false,
+					entityController = false
 				};
 				
 				// Check defined permissions
 				if(structKeyExists(obj, 'anyAdminMethods')){
-					subsystemPermissions['sections'][ section ]['anyAdminMethods'] = obj.anyAdminMethods;
+					subsystemPermissions.sections[ section ].anyAdminMethods = obj.anyAdminMethods;
 				}
 				if(structKeyExists(obj, 'anyLoginMethods')){
-					subsystemPermissions['sections'][ section ]['anyLoginMethods'] = obj.anyLoginMethods;
+					subsystemPermissions.sections[ section ].anyLoginMethods = obj.anyLoginMethods;
 				}
 				if(structKeyExists(obj, 'publicMethods')){
-					subsystemPermissions['sections'][ section ]['publicMethods'] = obj.publicMethods;
+					subsystemPermissions.sections[ section ].publicMethods = obj.publicMethods;
 				}
 				if(structKeyExists(obj, 'secureMethods')){
-					subsystemPermissions['sections'][ section ]['secureMethods'] = obj.secureMethods;
+					subsystemPermissions.sections[ section ].secureMethods = obj.secureMethods;
 				}
 				
 				// Check for Controller types
 				if(structKeyExists(obj, 'entityController') && isBoolean(obj.entityController) && obj.entityController) {
-					subsystemPermissions['sections'][ section ]['entityController'] = true;
+					subsystemPermissions.sections[ section ].entityController = true;
 				}
 				if(structKeyExists(obj, 'restController') && isBoolean(obj.restController) && obj.restController) {
-					subsystemPermissions['sections'][ section ]['restController'] = true;
+					subsystemPermissions.sections[ section ].restController = true;
 				}
 				
 				// Setup the 'hasSecureMethods' value
-				if(len(subsystemPermissions['sections'][ section ].secureMethods & subsystemPermissions.sections[ section ].anyAdminMethods & subsystemPermissions.sections[ section ].anyLoginMethods)) {
-					subsystemPermissions['hasSecureMethods'] = true;
+				if(len(subsystemPermissions.sections[ section ].secureMethods & subsystemPermissions.sections[ section ].anyAdminMethods & subsystemPermissions.sections[ section ].anyLoginMethods)) {
+					subsystemPermissions.hasSecureMethods = true;
 				}
 				
 			} // END Section Loop
@@ -584,41 +554,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		return authenticateSubsystemSectionActionByPermissionGroup(subsystem=arguments.subsystem, section=arguments.section, permissionGroup=arguments.permissionGroup);
 	}
 	
-	public boolean function authenticateProcessByPermissionGroup(required string processContext, required string entityName, required any permissionGroup){
-		// Pull the permissions detail struct out of the permission group
-		var permissions = arguments.permissionGroup.getPermissionsByDetails();
-		//TODO:would we want to have default process permission details based on meta data like entity and action have?
-		var permissionDetails = getEntityPermissionDetails();
-		//do we have access to the process for the entity to begin with
-		if(!authenticateEntityByPermissionGroup('Process',arguments.entityName,arguments.permissionGroup)){
-			return false;
-		}
-		//if nothing specific then all processes are ok
-		if(!structKeyExists(permissions.process.entities, arguments.entityName)){
-			return true;
-		}
-		//if we find perms then what are they?
-		if(
-			structKeyExists(permissions.process.entities, arguments.entityName)
-			&& structKeyExists(permissions.process.entities[arguments.entityName].context,arguments.processContext)
-		){
-			return permissions.process.entities[arguments.entityName].context[arguments.processContext].getAllowProcessFlag();
-		}
-		
-		return false;
-	}
-	
 	public boolean function authenticateEntityByPermissionGroup(required string crudType, required string entityName, required any permissionGroup) {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 		var permissionDetails = getEntityPermissionDetails();
 		
 		// Check for entity specific values
-		if(
-			structKeyExists(permissions.entity.entities, arguments.entityName) 
-			&& structKeyExists(permissions.entity.entities[arguments.entityName], "permission") 
-			&& !isNull(permissions.entity.entities[arguments.entityName].permission.invokeMethod("getAllow#arguments.crudType#Flag"))
-		) {
+		if(structKeyExists(permissions.entity.entities, arguments.entityName) && structKeyExists(permissions.entity.entities[arguments.entityName], "permission") && !isNull(permissions.entity.entities[arguments.entityName].permission.invokeMethod("getAllow#arguments.crudType#Flag"))) {
 			if( permissions.entity.entities[arguments.entityName].permission.invokeMethod("getAllow#arguments.crudType#Flag") ) {
 				return true;
 			} else {
