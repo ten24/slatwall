@@ -218,6 +218,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
+
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -1992,5 +1993,5 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// ==================  END:  Deprecated Methods ========================
 
-
+	
 }
