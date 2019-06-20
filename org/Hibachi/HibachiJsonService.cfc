@@ -126,7 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     				arrayAppend(directoryListing,item);
     			}
     		}
-    	
+    	}
     	for(var rb in directoryListing){
     		var locale = listFirst(rb,'.');
     		var resourceBundle = getService('HibachiRBService').getResourceBundle(locale);

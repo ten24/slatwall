@@ -1321,7 +1321,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			return arguments.accountLoyaltyTransaction;
 		}
 		
-		var amount;
+		var amount=0;
 		
 		if (arguments.data.accruementEvent eq 'itemFulfilled') {
 			

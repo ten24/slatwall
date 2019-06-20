@@ -3403,7 +3403,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function getDisableAveragesAndSumsFlag(){
 		//hack should be driven by frontend
 		if(getCollectionObject()=='SkuPrice'){
-			return true
+			return true;
 		}
 		
 		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
