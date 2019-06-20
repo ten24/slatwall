@@ -2533,6 +2533,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+			
+			updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 		    	if(arguments.order.getPaymentAmountDue() != 0){
@@ -2544,6 +2546,79 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}
 		return arguments.order;
+	}
+	
+	// hint: Distributes the order-level discount amount total proportionally to all order items and if necessary handle any remainder due to uneven division
+	private void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
+		
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: START");
+		logHibachi("order['orderID']: #arguments.order.getOrderID()#");
+		logHibachi("order['orderAmounts.orderSubtotalAfterItemDiscounts']: #arguments.order.getSubtotalAfterItemDiscounts()#");
+		logHibachi("order['orderAmounts.orderDiscountAmountTotal']: #arguments.order.getOrderDiscountAmountTotal()#");
+		
+		// Allocate the order-level discount amount total in appropriate proportions to all order items and if necessary handle any remainder due to uneven division
+		var actualAllocatedAmountTotal = 0;
+		var actualAllocatedAmountAsPercentage = 0;
+		var orderItemCount = 0;
+		for (var orderItem in arguments.order.getOrderItems()) {
+			orderItemCount++;
+			
+			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
+			var currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();
+			
+			// Approximate amount to allocate (rounded to nearest penny)
+		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;
+		    
+		    var actualAllocatedAmountTotaUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
+		    
+		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
+		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * arguments.order.getOrderDiscountAmountTotal();
+			
+			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
+			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears
+			// NOTE: If instead we deferred handling the discrepancy the likelihood that a noticeable discrepancy will need to be offset on the final order item increases as the number of order items increases on an order.
+		    var currentDiscrepancyAmount =  actualAllocatedAmountTotaUnadjusted - expectedAllocatedAmountTotal;
+		    
+		    // If there is a discrepancy greater than 1/2 cent let's deal with it now, adjust the allocation amount by rounding up or down to nearest cent
+		    if (abs(currentDiscrepancyAmount) >= .005) {
+		    	// Need to decrease the allocation amount by a cent to prevent over allocating
+		        if (currentDiscrepancyAmount > 0) {
+		            currentOrderItemAllocationAmount = (ceiling(currentOrderItemAllocationAmount * 100) - 1) / 100;
+		            
+		        // Need to increase the allocation by a cent to prevent under allocating 
+		        } else if (currentDiscrepancyAmount < 0) {
+		            currentOrderItemAllocationAmount = (floor(currentOrderItemAllocationAmount * 100) + 1) / 100;
+		        }
+		    }
+		    
+		    // Update the actuals to retain maximum precision
+		    actualAllocatedAmountTotal += currentOrderItemAllocationAmount;
+		    actualAllocatedAmountAsPercentage += currentOrderItemAmountAsPercentage;
+		    
+		    // Finally update the order item
+		    orderItem.setAllocatedOrderDiscountAmount(currentOrderItemAllocationAmount);
+		    
+		    // Collect details for debugging/logging
+		    logHibachi("orderItem[#orderItemCount#]: Start");
+		    logHibachi("orderItem[#orderItemCount#]['extendedPriceAfterOrderItemDiscount']: #orderItem.getExtendedPriceAfterDiscount()#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAmountAsPercentage']: #currentOrderItemAmountAsPercentage * 100#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmount']: #round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmountAdjusted']: #currentOrderItemAllocationAmount#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.expectedAllocatedAmountTotal']: #expectedAllocatedAmountTotal#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotaUnadjusted']: #actualAllocatedAmountTotaUnadjusted#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.currentDiscrepancyAmount']: #currentDiscrepancyAmount#");
+		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountAsPercentage']: #actualAllocatedAmountAsPercentage  * 100#");
+		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
+		}
+		
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");
+		
+		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
+		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderDiscountAmountTotal()) != 0) {
+			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.", true);
+		}
+
 	}
 
 	public numeric function getAmountToBeCapturedByCaptureAuthorizationPayments(required any orderDelivery, required any processObject){
