@@ -86029,6 +86029,12 @@ var SWActionCallerController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.$onInit = function () {
+<<<<<<< HEAD
+=======
+            if (angular.isDefined(_this.action)) {
+                _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
+            }
+>>>>>>> 14d4362ede46263ff8509f253aaf3778c8175d93
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
