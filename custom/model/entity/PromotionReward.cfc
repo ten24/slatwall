@@ -122,12 +122,10 @@ component {
 
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
-			if(structKeyExists(arguments,'currencyCode')){
-				var currencyCode = arguments.currencyCode;
-			}else{
-				var currencyCode = getCurrencyCode();
+			if(!structKeyExists(arguments,'currencyCode')){
+				arguments.currencyCode = getCurrencyCode();
 			}
-			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,currencyCode);
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,arguments.currencyCode);
 			if(!isNull(skuPrice)){
 				return skuPrice.invokeMethod('get#customPriceField#');
 			}

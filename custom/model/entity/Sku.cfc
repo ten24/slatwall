@@ -51,11 +51,15 @@ component {
 				for(var i=1; i <= arrayLen(skuPriceResults); i++){
 					ArrayAppend(prices, {price=skuPriceResults[i].price,'#customPriceField#'=skuPriceResults[i][customPriceField]});
 				}
-				ArraySort(prices, function(a,b){
-				    if(a.price < b.price){ return -1}
-				    else if (a.price > b.price){ return 1 }
-				    else{ return 0 };
-				});
+				var sortFunction = function(a,b){
+				    if(a.price < b.price){ return -1;}
+				    else if (a.price > b.price){ return 1; }
+				    else{ return 0; }
+					
+				};
+				ArraySort(prices, 
+				sortFunction
+				);
 				variables[cacheKey]= prices[1];
 			} 
 

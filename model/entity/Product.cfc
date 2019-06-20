@@ -62,6 +62,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 	property name="deferredRevenueFlag" ormtype="boolean" description="This field identifies a product as having deferred revenue";
+	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
 	property name="startInCurrentPeriodFlag" ormtype="boolean" default="0";
  
 	// Calculated Properties
@@ -76,7 +77,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
-	property name="nextDeliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="many-to-one" fkcolumn="nextDeliveryScheduleDateID";
 
 	// Related Object Properties (one-to-many)
 	property name="listingPages" singularname="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -153,18 +153,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	
+		//CUSTOM PROPERTIES BEGIN
 
+ property name="productBenefits" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="productIngredients" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="productWeSayNoTo" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="productDirections" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="hairConcernType" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
-			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
+			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();
+			deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
+			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue|ASC');
+			deliveryScheduleDateCollectionList.setPageRecordsShow(1);
+			var deliveryScheduleDateValueRecords = deliveryScheduleDateCollectionList.getPageRecords();
 			
-			deliveryScheduleDateSmartList.addOrder('deliveryScheduleDateValue');
-			deliveryScheduleDateSmartList.setPageRecordsShow(1);
-			var deliveryScheduleDate= deliveryScheduleDateSmartList.getPageRecords();
-			
-			if(arrayLen(deliveryScheduleDate)){
-				variables.nextDeliveryScheduleDate=deliveryScheduleDate[1];
+			if(arrayLen(deliveryScheduleDateValueRecords)){
+				variables.nextDeliveryScheduleDate=deliveryScheduleDateValueRecords[1]['deliveryScheduleDateValue'];
 			}
 			
 		}
@@ -459,7 +466,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					);
 				}
 				//let's make sure the default sku image always comes first
-				if(!isNull(getDefaultSku()) && skuData['skuID'] == getDefaultSku().getSkuID()){
+				if(skuData['skuID'] == getDefaultSku().getSkuID()){
 					arrayPrepend(imageGalleryArray, thisImage);
 				} else {
 					arrayAppend(imageGalleryArray, thisImage);

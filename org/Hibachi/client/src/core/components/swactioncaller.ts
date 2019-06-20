@@ -18,16 +18,12 @@ class SWActionCallerController{
     public text:string;
     public disabled:boolean;
     public actionItemEntityName:string;
-    public hibachiPathBuilder:any;
-    
     public eventListeners:any;
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
     public formController:any;
     public form:ng.IFormController;
-    public authenticateActionByAccount:any;
-    public actionAuthenticated:boolean;
     //@ngInject
     constructor(
         private $scope,
@@ -40,20 +36,8 @@ class SWActionCallerController{
         private observerService,
         private $hibachi,
         private rbkeyService,
-        private hibachiAuthenticationService,
-        hibachiPathBuilder
-        
+        private hibachiPathBuilder
     ){
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$timeout = $timeout;
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.rbkeyService = rbkeyService;
-        this.$hibachi = $hibachi;
-        this.utilityService = utilityService;
-        this.hibachiPathBuilder = hibachiPathBuilder;
-        this.hibachiAuthenticationService = hibachiAuthenticationService;
 
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
@@ -62,12 +46,10 @@ class SWActionCallerController{
             //need to perform init after promise completes
             //this.init();
         });
-
-        this.authenticateActionByAccount = this.hibachiAuthenticationService.autheticateActionByAccount;
     }
 
+
     public $onInit = ():void =>{
-        this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
@@ -81,7 +63,7 @@ class SWActionCallerController{
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
         }
-
+    
         if(angular.isUndefined(this.display)){
             this.display = true;
         }
@@ -96,19 +78,19 @@ class SWActionCallerController{
             this.text = this.title;
         }
 
-            if (this.type == "button"){
-                //handle submit.
-                /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
-                    if (newValue !== undefined){
-                        this.formController = newValue;
+        if (this.type == "button"){
+            //handle submit.
+            /** in order to attach the correct controller to local vm, we need a watch to bind */
+            var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
+                if (newValue !== undefined){
+                    this.formController = newValue;
 
-                    }
+                }
 
-                    unbindWatcher();
-                });
+                unbindWatcher();
+            });
 
-            }
+        }
 
         if(this.eventListeners){
             for(var key in this.eventListeners){
@@ -117,7 +99,7 @@ class SWActionCallerController{
         }
 
     }
-
+    
     public emit = () =>{
         this.observerService.notify(this.event, this.payload);
     }

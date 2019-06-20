@@ -51,11 +51,8 @@ Notes:
 	<cffunction name="getAttributeValuesForEntity" returntype="array" access="public">
 		<cfargument name="primaryIDPropertyIdentifier">
 		<cfargument name="primaryIDValue" />
-		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier("attributeValue",primaryIDPropertyIdentifier)>
+		
 		<cfreturn ormExecuteQuery("SELECT av FROM SlatwallAttributeValue av INNER JOIN FETCH av.attribute att INNER JOIN FETCH att.attributeSet ats WHERE av.#primaryIDPropertyIdentifier# = ?", [arguments.primaryIDValue], false, {ignoreCase="true"}) />
-		<cfelse>
-		<cfthrow message = "UnKnown Property Identifier" /> 
-		</cfif>
 	</cffunction>
 	
 	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public">

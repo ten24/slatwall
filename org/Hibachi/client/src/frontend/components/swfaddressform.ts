@@ -15,16 +15,14 @@ class SWFAddressFormController extends SWFFormController{
         public $hibachi,
         public $element,
         public validationService,
-        public hibachiValidationService,
-        public observerService){
+        public hibachiValidationService){
         super( $rootScope,
          $scope,
          $timeout,
          $hibachi,
          $element,
          validationService,
-         hibachiValidationService,
-         observerService);
+         hibachiValidationService);
         this.$rootScope = $rootScope;
         this.slatwall = $rootScope.slatwall;
         
@@ -45,12 +43,12 @@ class SWFAddressFormController extends SWFFormController{
     public submitAddressForm = ()=>{
         this.submitForm().then(result=>{
             if(result && result.successfulActions.length){
-                this.observerService.notify("shippingAddressSelected",{accountAddressID:result['newAccountAddressID']});
+                console.log(this.ngModel);
                 this.slatwall.editingAddress = null;
                 this.$timeout(()=>{
                     this.ngModel.$setViewValue(null);
                     this.ngModel.$commitViewValue();
-                });
+                })
             }
         })
     }

@@ -125,6 +125,13 @@ component  extends="HibachiService" accessors="true" {
 				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBrand"),
 				settingName='brand',
 				contentTemplateFile='slatwall-brand.cfm'
+			},
+			{
+				title='Category Template Page',
+				urlTitle="category-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttCategory"),
+				settingName='category',
+				contentTemplateFile='slatwall-category.cfm'
 			}
 		];
 
@@ -135,7 +142,7 @@ component  extends="HibachiService" accessors="true" {
 				activeFlag=true,
 				title=slatwallTemplatesChild.title,
 				urlTitle=slatwallTemplatesChild.urlTitle,
-				contentTemplateTypeID=slatwallTemplatesChild.contentTemplateType.getTypeID(),
+				contentTemplateType=slatwallTemplatesChild.contentTemplateType,
 				siteID=arguments.site.getSiteID(),
 				parentContentID=arguments.slatwallTemplatesContent.getContentID(),
 				allowPurchaseFlag=false,

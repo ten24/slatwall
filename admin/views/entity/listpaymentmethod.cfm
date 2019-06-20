@@ -54,8 +54,6 @@ Notes:
 <cfif getHibachiScope().getService('subscriptionService').hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() >
 	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info') />
 </cfif>
-
-<cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.paymentMethodSmartList#" showCreate="false">
 
 		<!--- Create --->
@@ -72,29 +70,29 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<cfset paymentMethodCollectionList = getHibachiScope().getService('paymentService').getPaymentMethodCollectionList()>
-	<cfset serchableDisplayProperties = "paymentMethodName,paymentMethodType,activeFlag"/>
-	<cfset paymentMethodCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset paymentMethodCollectionList.addDisplayProperty(displayProperty='paymentMethodID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#paymentMethodCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(paymentMethodCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(paymentMethodCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
+	<!--- <hb:HibachiListingDisplay type="listing" smartList="#rc.paymentMethodSmartList#"
+			recordDetailAction="admin:entity.detailpaymentmethod"
+			recordEditAction="admin:entity.editpaymentmethod"
+			sortProperty="sortOrder"
+			showCreate="true">
 
-	
-	
-</cfoutput>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="paymentMethodType" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'PaymentMethod'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editpaymentmethod"
+		record-detail-action="admin:entity.detailpaymentmethod"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="paymentMethodID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="paymentMethodName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="paymentMethodType" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
+	</sw-listing-display>

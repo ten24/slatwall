@@ -17,6 +17,6 @@ component accessors="true" extends="AuthorizeNetRequestObject"{
 		data['createTransactionRequest'] = createObject("java", "java.util.LinkedHashMap").init();
 		data['createTransactionRequest']['merchantAuthentication'] = getMerchantAuthentication();
 		data['createTransactionRequest']['transactionRequest'] = getTransactionRequest().getData();
-		return getService("HibachiUtilityService").strictSerializeJson(data);
+		return strictSerializeJson(data);
 	}
 }

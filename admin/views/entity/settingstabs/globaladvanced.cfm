@@ -73,16 +73,13 @@ Notes:
 		<swa:SlatwallSetting settingName="globalFileTypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalMIMETypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
-		<swa:SlatwallSetting settingName="globalShippingIntegrationForAddressVerification" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
-		<swa:SlatwallSetting settingName="globalCollectionKeywordWildcardConfig" />
 		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
 		<swa:SlatwallSetting settingName="globalDisableSearchSettings"/>
 		
 		<swa:SlatwallSetting settingName="globalS3Bucket"/>
 		<swa:SlatwallSetting settingName="globalS3AccessKey"/>
 		<swa:SlatwallSetting settingName="globalS3SecretAccessKey"/>
-		<swa:SlatwallSetting settingName="globalEntityQueueDataProcessCount"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

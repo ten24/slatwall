@@ -8,7 +8,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             var commissionDate = dateFormat( now(), "mm/yyyy" );
             order.setCommissionPeriod(commissionDate);
             getOrderService().saveOrder(order);
-        }catch(dateError){
+        }catch(any dateError){
             logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate#");	
         }
     }
