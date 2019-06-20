@@ -70,6 +70,11 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="urlTitle" hb_populateEnabled="public" ormtype="string";
 	
+	property name="verifiedByIntegrationFlag" hb_populateEnabled="false" ormtype="boolean";
+	property name="IntegrationVerificationErrorMessage" hb_populateEnabled="public" ormtype="string";
+	property name="verificationCacheKey" ormtype="string" hb_auditable="false";
+	property name="verificationJson" ormtype="string" hb_auditable="false";
+	
 	//Calculated Properties
 	property name="calculatedAddressName" ormtype="string" length="1024"; 
 	
@@ -93,12 +98,6 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="addressName" persistent="false" type="string";
 	
 	// ==================== START: Logical Methods =========================
-		//CUSTOM PROPERTIES BEGIN
-
- property name="street3Address" ormtype="string";
- property name="street4Address" ormtype="string";
- property name="addressValidationStatus" ormtype="string";
- property name="addressSequence" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getAddressMatchFlag( required any address ) {
 		if(
 			nullReplace(getCountryCode(),"") != nullReplace(arguments.address.getCountryCode(),"")
@@ -125,6 +124,10 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public any function copyAddress( saveNewAddress=true ) {
 		return getService("addressService").copyAddress( this, arguments.saveNewAddress );
+	}
+	
+	public boolean function getVerifiedByIntegrationFlag(){
+		return !isNull(variables.verifiedByIntegrationFlag) ? variables.verifiedByIntegrationFlag : false;
 	}
 	
 	public string function getFullAddress(string delimiter = ", ") {

@@ -232,6 +232,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 					'isSearchable':false,
 					'isExportable':true
 				});
+				variables.excludedOrdersCollection.addFilter(propertyIdentifier='orderID',value='null',hidden=false);
 			}
 		}
 		return variables.excludedOrdersCollection;

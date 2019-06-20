@@ -54,29 +54,49 @@ Notes:
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
 <cfparam name="rc.edit" type="boolean">
 
-
-    <sw-add-sku-price-modal-launcher>
-        <a href="#" title="Add Price" class="pull-right btn btn-primary" data-target="#">
-            <i class="fa fa-plus"></i> Add Sku Price
-        </a>
-    </sw-add-sku-price-modal-launcher>
-
     <cfoutput>
 
         <cfset local.includedSkuPricesCollection = $.slatwall.getService('HibachiService').getSkuPriceCollectionList() />
         <cfset local.includedSkuPricesCollection.setDisplayProperties('sku.skuCode,currencyCode,price',{'isVisible': true, 'isSearchable': true, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('personalVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('taxableAmount','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('commissionableVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailCommission','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('productPackVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
-        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailValueVolume','',{'isVisible': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('personalVolume','Personal Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('taxableAmount','Taxable Amount',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('commissionableVolume','Commissionable Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailCommission','Retail Commission',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('productPackVolume','Product Pack Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('retailValueVolume','Retail Value Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('skuPriceID', 'Sku Price ID', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('sku.skuID', '', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('promotionReward.promotionRewardID', '', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('activeFlag', '', {'isVisible': false, 'isSearchable': false}, true) />
+        <cfset local.includedSkuPricesCollection.addFilter('promotionReward.promotionRewardID', rc.promotionReward.getPromotionRewardID()) />
+       
+        <cfset local.collectionConfig = getHibachiScope().getService('HibachiUtilityService').hibachiHTMLEditFormat(local.includedSkuPricesCollection.getCollectionConfig()) />
+        <cfset local.includedSkusCollectionConfig = getHibachiScope().getService('HibachiUtilityService').hibachiHTMLEditFormat(rc.promotionReward.getIncludedSkusCollection().getCollectionConfig()) />
+        
+        <div class="pull-right">
+            <sw-action-caller
+                    data-event="EDIT_SKUPRICE"
+                    data-payload="undefined"
+                    data-class="btn btn-primary btn-md"
+                    data-icon="plus"
+                    data-text="Add Sku Price"
+                    data-iconOnly="false">
                 
-        <hb:HibachiListingDisplay 
-            collectionList="#local.includedSkuPricesCollection#" 
-            collectionConfigFieldName="includedSkuPricesCollectionConfig" 
-            edit="#rc.edit#" 
-            recordDeleteEvent="REMOVE_PROMOTIONSKUPRICE"
-            displaytype="plainTitle"/>
+            </sw-action-caller>
+        </div>
+        
+        <hb:HibachiListingDisplay collectionList="#local.includedSkuPricesCollection#"
+                                  recordEditEvent="EDIT_SKUPRICE"
+                                  recordDeleteEvent="DELETE_SKUPRICE"
+                                  recordActions="[{
+                                                    'event' : 'SAVE_SKUPRICE',
+                                                    'icon' : 'floppy-disk',
+                                                    'iconOnly' : true
+                                                }]"
+                                  listingID="pricingListing" />
+        
+        <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>
+        <sw-sku-price-modal data-promotion-reward-id="#rc.promotionreward.getPromotionRewardID()#"
+                            data-sku-collection-config="#local.includedSkusCollectionConfig#">
+        </sw-sku-price-modal>
     </cfoutput>
