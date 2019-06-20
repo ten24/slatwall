@@ -58,7 +58,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="personalVolumeDiscountAmount" />
         <hb:HibachiListingColumn propertyIdentifier="taxableAmountDiscountAmount" />
         <hb:HibachiListingColumn propertyIdentifier="commissionableVolumeDiscountAmount" />
-        <hb:HibachiListingColumn propertyIdentifier="sponsorVolumeDiscountAmount" />
+        <hb:HibachiListingColumn propertyIdentifier="retailCommissionDiscountAmount" />
         <hb:HibachiListingColumn propertyIdentifier="productPackVolumeDiscountAmount" />
         <hb:HibachiListingColumn propertyIdentifier="retailValueVolumeDiscountAmount" />
 	</hb:HibachiListingDisplay>

@@ -3,38 +3,38 @@ component {
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
     property name="commissionableVolumeSubtotal" persistent="false";
-    property name="sponsorVolumeSubtotal" persistent="false";
+    property name="retailCommissionSubtotal" persistent="false";
     property name="productPackVolumeSubtotal" persistent="false";
     property name="retailValueVolumeSubtotal" persistent="false";
     property name="personalVolumeSubtotalAfterItemDiscounts" persistent="false";
     property name="taxableAmountSubtotalAfterItemDiscounts" persistent="false";
     property name="commissionableVolumeSubtotalAfterItemDiscounts" persistent="false";
-    property name="sponsorVolumeSubtotalAfterItemDiscounts" persistent="false";
+    property name="retailCommissionSubtotalAfterItemDiscounts" persistent="false";
     property name="productPackVolumeSubtotalAfterItemDiscounts" persistent="false";
     property name="retailValueVolumeSubtotalAfterItemDiscounts" persistent="false";
     property name="personalVolumeTotal" persistent="false";
     property name="taxableAmountTotal" persistent="false";
     property name="commissionableVolumeTotal" persistent="false";
-    property name="sponsorVolumeTotal" persistent="false";
+    property name="retailCommissionTotal" persistent="false";
     property name="productPackVolumeTotal" persistent="false";
     property name="retailValueVolumeTotal" persistent="false";
     
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal";
     property name="calculatedTaxableAmountSubtotal" ormtype="big_decimal";
     property name="calculatedCommissionableVolumeSubtotal" ormtype="big_decimal";
-    property name="calculatedSponsorVolumeSubtotal" ormtype="big_decimal";
+    property name="calculatedRetailCommissionSubtotal" ormtype="big_decimal";
     property name="calculatedProductPackVolumeSubtotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeSubtotal" ormtype="big_decimal";
     property name="calculatedPersonalVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
     property name="calculatedTaxableAmountSubtotalAfterItemDiscounts" ormtype="big_decimal";
     property name="calculatedCommissionableVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
-    property name="calculatedSponsorVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
+    property name="calculatedRetailCommissionSubtotalAfterItemDiscounts" ormtype="big_decimal";
     property name="calculatedProductPackVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
     property name="calculatedPersonalVolumeTotal" ormtype="big_decimal";
     property name="calculatedTaxableAmountTotal" ormtype="big_decimal";
     property name="calculatedCommissionableVolumeTotal" ormtype="big_decimal";
-    property name="calculatedSponsorVolumeTotal" ormtype="big_decimal";
+    property name="calculatedRetailCommissionTotal" ormtype="big_decimal";
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
     
@@ -48,8 +48,8 @@ component {
     public numeric function getCommissionableVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('commissionableVolume');
     }
-    public numeric function getSponsorVolumeSubtotal(){
-        return getCustomPriceFieldSubtotal('sponsorVolume');
+    public numeric function getRetailCommissionSubtotal(){
+        return getCustomPriceFieldSubtotal('retailCommission');
     }
     public numeric function getProductPackVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('productPackVolume');
@@ -66,8 +66,8 @@ component {
     public numeric function getCommissionableVolumeSubtotalAfterItemDiscounts(){
         return getCustomPriceFieldSubtotalAfterItemDiscounts('commissionableVolume');
     }
-    public numeric function getSponsorVolumeSubtotalAfterItemDiscounts(){
-        return getCustomPriceFieldSubtotalAfterItemDiscounts('sponsorVolume');
+    public numeric function getRetailCommissionSubtotalAfterItemDiscounts(){
+        return getCustomPriceFieldSubtotalAfterItemDiscounts('retailCommission');
     }
     public numeric function getProductPackVolumeSubtotalAfterItemDiscounts(){
         return getCustomPriceFieldSubtotalAfterItemDiscounts('productPackVolume');
@@ -84,8 +84,8 @@ component {
     public numeric function getCommissionableVolumeTotal(){
         return getCustomPriceFieldTotal('commissionableVolume');
     }
-    public numeric function getSponsorVolumeTotal(){
-        return getCustomPriceFieldTotal('sponsorVolume');
+    public numeric function getRetailCommissionTotal(){
+        return getCustomPriceFieldTotal('retailCommission');
     }
     public numeric function getProductPackVolumeTotal(){
         return getCustomPriceFieldTotal('productPackVolume');
@@ -102,8 +102,8 @@ component {
     public numeric function getCommissionableVolumeDiscountTotal(){
         return getCustomDiscountTotal('commissionableVolume');
     }
-    public numeric function getSponsorVolumeDiscountTotal(){
-        return getCustomDiscountTotal('sponsorVolume');
+    public numeric function getRetailCommissionDiscountTotal(){
+        return getCustomDiscountTotal('retailCommission');
     }
     public numeric function getProductPackVolumeDiscountTotal(){
         return getCustomDiscountTotal('productPackVolume');
@@ -163,5 +163,9 @@ component {
 	public numeric function getCustomPriceFieldTotal(customPriceField) {
 		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(customPriceField)  - getCustomDiscountTotal(customPriceField)));
 	}
-    
+	
+	public boolean function isNotPaid() {
+		return getPaymentAmountDue() > 0;
+	}
+
 }

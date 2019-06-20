@@ -1,0 +1,8 @@
+{
+
+	"properties":{
+		
+		"orderStatusType":[{"contexts":"edit","method":"isNotClosed"},{"contexts":"edit","method":"isNotPaid"}]
+		
+	}
+}

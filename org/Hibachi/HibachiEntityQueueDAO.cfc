@@ -101,7 +101,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	} 
 	
-	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
+	public void function insertEntityQueue(required string baseID, required string baseObject, required string entityQueueType){
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
 		queryService.addParam(name='entityQueueType',value='#arguments.entityQueueType#',CFSQLTYPE="CF_SQL_STRING");

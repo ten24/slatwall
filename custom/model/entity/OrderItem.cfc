@@ -2,85 +2,74 @@ component {
     property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
     property name="commissionableVolume" ormtype="big_decimal";
-    property name="sponsorVolume" ormtype="big_decimal";
+    property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
     
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";
     property name="extendedCommissionableVolume" persistent="false";
-    property name="extendedSponsorVolume" persistent="false";
+    property name="extendedRetailCommission" persistent="false";
     property name="extendedProductPackVolume" persistent="false";
     property name="extendedRetailValueVolume" persistent="false";
     property name="extendedPersonalVolumeAfterDiscount" persistent="false";
     property name="extendedTaxableAmountAfterDiscount" persistent="false";
     property name="extendedCommissionableVolumeAfterDiscount" persistent="false";
-    property name="extendedSponsorVolumeAfterDiscount" persistent="false";
+    property name="extendedRetailCommissionAfterDiscount" persistent="false";
     property name="extendedProductPackVolumeAfterDiscount" persistent="false";
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
     
+    property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
+    property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
+    property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
+    property name="calculatedExtendedRetailCommission" ormtype="big_decimal";
+    property name="calculatedExtendedProductPackVolume" ormtype="big_decimal";
+    property name="calculatedExtendedRetailValueVolume" ormtype="big_decimal";
+    property name="calculatedExtendedPersonalVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedTaxableAmountAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedCommissionableVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
+    
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
-            var personalVolume = getSku().getPersonalVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(personalVolume)){
-                personalVolume = 0;
-            }
-            variables.personalVolume = personalVolume;
+            variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
         }
         return variables.personalVolume;
     }
     
     public any function getTaxableAmount(){
        if(!structKeyExists(variables,'taxableAmount')){
-            var taxableAmount = getSku().getTaxableAmountByCurrencyCode(this.getCurrencyCode());
-            if(isNull(taxableAmount)){
-                taxableAmount = 0;
-            }
-            variables.taxableAmount = taxableAmount;
+            variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
         }
         return variables.taxableAmount;
     }
     
     public any function getCommissionableVolume(){
         if(!structKeyExists(variables,'commissionableVolume')){
-            var commissionableVolume = getSku().getCommissionableVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(commissionableVolume)){
-                commissionableVolume = 0;
-            }
-            variables.commissionableVolume = commissionableVolume;
+            variables.commissionableVolume = getCustomPriceFieldAmount('commissionableVolume');
         }
         return variables.commissionableVolume;
     }
     
-    public any function getSponsorVolume(){
-        if(!structKeyExists(variables,'sponsorVolume')){
-            var sponsorVolume = getSku().getSponsorVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(sponsorVolume)){
-                sponsorVolume = 0;
-            }
-            variables.sponsorVolume = sponsorVolume;
+    public any function getRetailCommission(){
+        if(!structKeyExists(variables,'retailCommission')){
+            variables.retailCommission = getCustomPriceFieldAmount('retailCommission');
         }
-        return variables.sponsorVolume;
+        return variables.retailCommission;
     }
     
     public any function getProductPackVolume(){
         if(!structKeyExists(variables,'productPackVolume')){
-            var productPackVolume = getSku().getProductPackVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(productPackVolume)){
-                productPackVolume = 0;
-            }
-            variables.productPackVolume = productPackVolume;
+            variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
         }
         return variables.productPackVolume;
     }
     
     public any function getRetailValueVolume(){
         if(!structKeyExists(variables,'retailValueVolume')){
-            var retailValueVolume = getSku().getRetailValueVolumeByCurrencyCode(this.getCurrencyCode());
-            if(isNull(retailValueVolume)){
-                retailValueVolume = 0;
-            }
-            variables.retailValueVolume = retailValueVolume;
+            variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
         }
         return variables.retailValueVolume;
     }
@@ -97,8 +86,8 @@ component {
         return getCustomDiscountAmount('commissionableVolume');
     }
     
-    public any function getSponsorVolumeDiscountAmount(){
-        return getCustomDiscountAmount('sponsorVolume');
+    public any function getRetailCommissionDiscountAmount(){
+        return getCustomDiscountAmount('retailCommission');
     }
     
     public any function getProductPackVolumeDiscountAmount(){
@@ -121,8 +110,8 @@ component {
         return getCustomExtendedPrice('commissionableVolume');
     }
     
-    public any function getExtendedSponsorVolume(){
-        return getCustomExtendedPrice('sponsorVolume');
+    public any function getExtendedRetailCommission(){
+        return getCustomExtendedPrice('retailCommission');
     }
     
     public any function getExtendedProductPackVolume(){
@@ -145,8 +134,8 @@ component {
         return getCustomExtendedPriceAfterDiscount('commissionableVolume');
     }
     
-    public any function getExtendedSponsorVolumeAfterDiscount(){
-        return getCustomExtendedPriceAfterDiscount('sponsorVolume');
+    public any function getExtendedRetailCommissionAfterDiscount(){
+        return getCustomExtendedPriceAfterDiscount('retailCommission');
     }
     
     public any function getExtendedProductPackVolumeAfterDiscount(){
@@ -155,6 +144,14 @@ component {
     
     public any function getExtendedRetailValueVolumeAfterDiscount(){
         return getCustomExtendedPriceAfterDiscount('retailValueVolume');
+    }
+    
+    private numeric function getCustomPriceFieldAmount(required string priceField){
+        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode());
+        if(isNull(personalVolume)){
+            amount = 0;
+        }
+        return amount;
     }
     
     public numeric function getCustomDiscountAmount(required string priceField, boolean forceCalculationFlag = true) {
@@ -173,6 +170,7 @@ component {
 		return discountAmount;
 	}
 
+    
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#priceField#')){
 			var price = 0;

@@ -21,8 +21,8 @@ component {
         return this.getCustomPriceByCurrencyCode('commissionableVolume',this.getCurrencyCode());
     }
     
-    public any function getSponsorVolumeByCurrencyCode(required string currencyCode){
-        return this.getCustomPriceByCurrencyCode('sponsorVolume',this.getCurrencyCode());
+    public any function getRetailCommissionByCurrencyCode(required string currencyCode){
+        return this.getCustomPriceByCurrencyCode('retailCommission',this.getCurrencyCode());
     }
     
     public any function getProductPackVolumeByCurrencyCode(required string currencyCode){

@@ -25,6 +25,7 @@
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
 
 	<!--- Admin Actions --->
+	<cfparam name="attributes.recordActions" type="string" default="" />
 	<cfparam name="attributes.recordEditEvent" type="string" default="" />
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
 	<cfparam name="attributes.recordEditActionProperty"type="string" default="" />
@@ -150,6 +151,7 @@
 				</cfif> 	
 					
 				data-has-search="true"
+				data-actions="#attributes.recordActions#"
 				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
 				<cfif len(attributes.recordEditIcon)>
