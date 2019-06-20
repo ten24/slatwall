@@ -155,9 +155,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 
-<<<<<<< HEAD
-
-=======
 			//CUSTOM PROPERTIES BEGIN
 
  property name="hyperWalletAcct" ormtype="string";
@@ -190,7 +187,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";//CUSTOM PROPERTIES END
->>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);

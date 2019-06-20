@@ -3427,12 +3427,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 
-<<<<<<< HEAD
-		if(!found){
-			arrayAppend(variables.totalAvgAggregates,column);
-		}
-=======
->>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
+
 	}
 
 
@@ -3450,11 +3445,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 	}
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 	public string function getColumnAlias(required struct column){
 
 		if(structKeyExists(column,'attributeID')){

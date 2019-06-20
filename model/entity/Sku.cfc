@@ -218,9 +218,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
-<<<<<<< HEAD
-
-=======
 		//CUSTOM PROPERTIES BEGIN
 property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
@@ -231,7 +228,6 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";//CUSTOM PROPERTIES END
->>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
