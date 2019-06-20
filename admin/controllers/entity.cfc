@@ -384,6 +384,16 @@ private void function populateWithAddressVerification(required struct rc){
 		arguments.rc.entityActionDetails.createAction="admin:entity.createOrder";
 		getFW().setView("admin:entity.listorder");
 	}
+	
+	// Order (Wish Lists)
+	public void function listWishList(required struct rc) {
+		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
+
+		arguments.rc.orderTemplateCollectionList.addFilter('orderTemplateType.systemCode','ottWishList','IN');
+		arguments.rc.orderTemplateCollectionList.addOrderBy('createdDateTime|DESC');
+
+		getFW().setView("admin:entity.listwishlist");
+	}
 
 	// Order Payment
 	public any function createorderpayment( required struct rc ) {
