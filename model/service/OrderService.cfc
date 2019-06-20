@@ -1185,14 +1185,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var canPlaceOrder = false;
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+	
+		/* We create a soft reference here because we can't reinflate the orderTemplate on the other side of the thread 
+		 * because this object contains unpersisted changes that this method seeks to validate. 
+		 */
+		var orderTemplateSoftReference = createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate);
+	
 		
+		/* Because we need to flush and then delete the order we run this logic in a thread so the flush does not persist 
+		 * unvalidated changes in the order template.
+		 */
+
 		thread name="#threadName#" 
-			   orderTemplate="#createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate)#"
+			   orderTemplateSoftReference="#orderTemplateSoftReference#"
 			   action="run" 
 		{	
 
 
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplate.get(), false);  
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplateSoftReference.get(), false);  
 			transientOrder = this.saveOrder(transientOrder);
 			
 			ormFlush();
@@ -1208,13 +1218,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}
 
-		ThreadJoin(threadName);
+		threadJoin(threadName);
 
-		if(StructKeyExists(evaluate(threadName), "ERROR")){
-			canPlaceOrder = false;
-			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#');
-		} else {
+		if(!structKeyExists(evaluate(threadName), "ERROR")){
 			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
+		} else {
+			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#');
 		} 
 		
 		return canPlaceOrder;
