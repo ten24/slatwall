@@ -361,7 +361,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ================================ PUBLIC META INFO ==========================================
 	
 	public struct function getEntityPermissionDetails() {
-		
 		// First check to see if this is cached
 		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
 			
@@ -433,7 +432,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Update the cached value to be used in the future
 			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
-			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
+			
 			
 		}
 		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
@@ -457,7 +456,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				
 			} // End Subsytem Loop
 			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
-			getService('HibachiJsonService').createPermissionJson('action',allPermissions);
+			
 		}
 		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
 	}

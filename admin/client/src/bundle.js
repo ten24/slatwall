@@ -64,15 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-<<<<<<< HEAD
-<<<<<<< HEAD
-/******/ 	return __webpack_require__(__webpack_require__.s = 916);
-=======
-/******/ 	return __webpack_require__(__webpack_require__.s = 880);
->>>>>>> 820b72cea3... saving work
-=======
-/******/ 	return __webpack_require__(__webpack_require__.s = 881);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/******/ 	return __webpack_require__(__webpack_require__.s = 918);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,11 +74,7 @@ var hibachi =
 "use strict";
 
 var root_1 = __webpack_require__(11);
-<<<<<<< HEAD
 var toSubscriber_1 = __webpack_require__(611);
-=======
-var toSubscriber_1 = __webpack_require__(600);
->>>>>>> 820b72cea3... saving work
 var observable_1 = __webpack_require__(37);
 var pipe_1 = __webpack_require__(60);
 /**
@@ -1538,7 +1526,6 @@ exports.Observable = Observable;
     function createDate (y, m, d, h, M, s, ms) {
         // can't just apply() to create a date:
         // https://stackoverflow.com/q/181348
-<<<<<<< HEAD
         var date;
         // the date constructor remaps years 0-99 to 1900-1999
         if (y < 100 && y >= 0) {
@@ -1551,19 +1538,10 @@ exports.Observable = Observable;
             date = new Date(y, m, d, h, M, s, ms);
         }
 
-=======
-        var date = new Date(y, m, d, h, M, s, ms);
-
-        // the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
-            date.setFullYear(y);
-        }
->>>>>>> 820b72cea3... saving work
         return date;
     }
 
     function createUTCDate (y) {
-<<<<<<< HEAD
         var date;
         // the Date.UTC function remaps years 0-99 to 1900-1999
         if (y < 100 && y >= 0) {
@@ -1578,14 +1556,6 @@ exports.Observable = Observable;
             date = new Date(Date.UTC.apply(null, arguments));
         }
 
-=======
-        var date = new Date(Date.UTC.apply(null, arguments));
-
-        // the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
-            date.setUTCFullYear(y);
-        }
->>>>>>> 820b72cea3... saving work
         return date;
     }
 
@@ -1687,11 +1657,7 @@ exports.Observable = Observable;
 
     var defaultLocaleWeek = {
         dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
         doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
     };
 
     function localeFirstDayOfWeek () {
@@ -1800,7 +1766,6 @@ exports.Observable = Observable;
     }
 
     // LOCALES
-<<<<<<< HEAD
     function shiftWeekdays (ws, n) {
         return ws.slice(n, 7).concat(ws.slice(0, n));
     }
@@ -1811,37 +1776,18 @@ exports.Observable = Observable;
             this._weekdays[(m && m !== true && this._weekdays.isFormat.test(format)) ? 'format' : 'standalone'];
         return (m === true) ? shiftWeekdays(weekdays, this._week.dow)
             : (m) ? weekdays[m.day()] : weekdays;
-=======
-
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m, format) {
-        if (!m) {
-            return isArray(this._weekdays) ? this._weekdays :
-                this._weekdays['standalone'];
-        }
-        return isArray(this._weekdays) ? this._weekdays[m.day()] :
-            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
->>>>>>> 820b72cea3... saving work
     }
 
     var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
     function localeWeekdaysShort (m) {
-<<<<<<< HEAD
         return (m === true) ? shiftWeekdays(this._weekdaysShort, this._week.dow)
             : (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
-=======
-        return (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
->>>>>>> 820b72cea3... saving work
     }
 
     var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
     function localeWeekdaysMin (m) {
-<<<<<<< HEAD
         return (m === true) ? shiftWeekdays(this._weekdaysMin, this._week.dow)
             : (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
-=======
-        return (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
->>>>>>> 820b72cea3... saving work
     }
 
     function handleStrictParse$1(weekdayName, format, strict) {
@@ -2288,11 +2234,7 @@ exports.Observable = Observable;
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-<<<<<<< HEAD
                 __webpack_require__(316)("./" + name);
-=======
-                __webpack_require__(305)("./" + name);
->>>>>>> 820b72cea3... saving work
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -2594,21 +2536,13 @@ exports.Observable = Observable;
                     weekdayOverflow = true;
                 }
             } else if (w.e != null) {
-<<<<<<< HEAD
                 // local weekday -- counting starts from beginning of week
-=======
-                // local weekday -- counting starts from begining of week
->>>>>>> 820b72cea3... saving work
                 weekday = w.e + dow;
                 if (w.e < 0 || w.e > 6) {
                     weekdayOverflow = true;
                 }
             } else {
-<<<<<<< HEAD
                 // default to beginning of week
-=======
-                // default to begining of week
->>>>>>> 820b72cea3... saving work
                 weekday = dow;
             }
         }
@@ -3202,11 +3136,7 @@ exports.Observable = Observable;
             years = normalizedInput.year || 0,
             quarters = normalizedInput.quarter || 0,
             months = normalizedInput.month || 0,
-<<<<<<< HEAD
             weeks = normalizedInput.week || normalizedInput.isoWeek || 0,
-=======
-            weeks = normalizedInput.week || 0,
->>>>>>> 820b72cea3... saving work
             days = normalizedInput.day || 0,
             hours = normalizedInput.hour || 0,
             minutes = normalizedInput.minute || 0,
@@ -3510,11 +3440,7 @@ exports.Observable = Observable;
                 ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
             };
         } else if (!!(match = isoRegex.exec(input))) {
-<<<<<<< HEAD
             sign = (match[1] === '-') ? -1 : 1;
-=======
-            sign = (match[1] === '-') ? -1 : (match[1] === '+') ? 1 : 1;
->>>>>>> 820b72cea3... saving work
             duration = {
                 y : parseIso(match[2], sign),
                 M : parseIso(match[3], sign),
@@ -3556,11 +3482,7 @@ exports.Observable = Observable;
     }
 
     function positiveMomentsDifference(base, other) {
-<<<<<<< HEAD
         var res = {};
-=======
-        var res = {milliseconds: 0, months: 0};
->>>>>>> 820b72cea3... saving work
 
         res.months = other.month() - base.month() +
             (other.year() - base.year()) * 12;
@@ -3669,11 +3591,7 @@ exports.Observable = Observable;
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
-<<<<<<< HEAD
         units = normalizeUnits(units) || 'millisecond';
-=======
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
->>>>>>> 820b72cea3... saving work
         if (units === 'millisecond') {
             return this.valueOf() > localInput.valueOf();
         } else {
@@ -3686,11 +3604,7 @@ exports.Observable = Observable;
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
-<<<<<<< HEAD
         units = normalizeUnits(units) || 'millisecond';
-=======
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
->>>>>>> 820b72cea3... saving work
         if (units === 'millisecond') {
             return this.valueOf() < localInput.valueOf();
         } else {
@@ -3699,7 +3613,6 @@ exports.Observable = Observable;
     }
 
     function isBetween (from, to, units, inclusivity) {
-<<<<<<< HEAD
         var localFrom = isMoment(from) ? from : createLocal(from),
             localTo = isMoment(to) ? to : createLocal(to);
         if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) {
@@ -3708,11 +3621,6 @@ exports.Observable = Observable;
         inclusivity = inclusivity || '()';
         return (inclusivity[0] === '(' ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) &&
             (inclusivity[1] === ')' ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
-=======
-        inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
-            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
->>>>>>> 820b72cea3... saving work
     }
 
     function isSame (input, units) {
@@ -3721,11 +3629,7 @@ exports.Observable = Observable;
         if (!(this.isValid() && localInput.isValid())) {
             return false;
         }
-<<<<<<< HEAD
         units = normalizeUnits(units) || 'millisecond';
-=======
-        units = normalizeUnits(units || 'millisecond');
->>>>>>> 820b72cea3... saving work
         if (units === 'millisecond') {
             return this.valueOf() === localInput.valueOf();
         } else {
@@ -3735,19 +3639,11 @@ exports.Observable = Observable;
     }
 
     function isSameOrAfter (input, units) {
-<<<<<<< HEAD
         return this.isSame(input, units) || this.isAfter(input, units);
     }
 
     function isSameOrBefore (input, units) {
         return this.isSame(input, units) || this.isBefore(input, units);
-=======
-        return this.isSame(input, units) || this.isAfter(input,units);
-    }
-
-    function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input,units);
->>>>>>> 820b72cea3... saving work
     }
 
     function diff (input, units, asFloat) {
@@ -3924,7 +3820,6 @@ exports.Observable = Observable;
         return this._locale;
     }
 
-<<<<<<< HEAD
     var MS_PER_SECOND = 1000;
     var MS_PER_MINUTE = 60 * MS_PER_SECOND;
     var MS_PER_HOUR = 60 * MS_PER_MINUTE;
@@ -4000,54 +3895,10 @@ exports.Observable = Observable;
 
         this._d.setTime(time);
         hooks.updateOffset(this, true);
-=======
-    function startOf (units) {
-        units = normalizeUnits(units);
-        // the following switch intentionally omits break keywords
-        // to utilize falling through the cases.
-        switch (units) {
-            case 'year':
-                this.month(0);
-                /* falls through */
-            case 'quarter':
-            case 'month':
-                this.date(1);
-                /* falls through */
-            case 'week':
-            case 'isoWeek':
-            case 'day':
-            case 'date':
-                this.hours(0);
-                /* falls through */
-            case 'hour':
-                this.minutes(0);
-                /* falls through */
-            case 'minute':
-                this.seconds(0);
-                /* falls through */
-            case 'second':
-                this.milliseconds(0);
-        }
-
-        // weeks are a special case
-        if (units === 'week') {
-            this.weekday(0);
-        }
-        if (units === 'isoWeek') {
-            this.isoWeekday(1);
-        }
-
-        // quarters are also special
-        if (units === 'quarter') {
-            this.month(Math.floor(this.month() / 3) * 3);
-        }
-
->>>>>>> 820b72cea3... saving work
         return this;
     }
 
     function endOf (units) {
-<<<<<<< HEAD
         var time;
         units = normalizeUnits(units);
         if (units === undefined || units === 'millisecond' || !this.isValid()) {
@@ -4093,19 +3944,6 @@ exports.Observable = Observable;
         this._d.setTime(time);
         hooks.updateOffset(this, true);
         return this;
-=======
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond') {
-            return this;
-        }
-
-        // 'date' is an alias for 'day', so it should be considered as such.
-        if (units === 'date') {
-            units = 'day';
-        }
-
-        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
->>>>>>> 820b72cea3... saving work
     }
 
     function valueOf () {
@@ -4811,7 +4649,6 @@ exports.Observable = Observable;
 
         units = normalizeUnits(units);
 
-<<<<<<< HEAD
         if (units === 'month' || units === 'quarter' || units === 'year') {
             days = this._days + milliseconds / 864e5;
             months = this._months + daysToMonths(days);
@@ -4820,12 +4657,6 @@ exports.Observable = Observable;
                 case 'quarter': return months / 3;
                 case 'year':    return months / 12;
             }
-=======
-        if (units === 'month' || units === 'year') {
-            days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToMonths(days);
-            return units === 'month' ? months : months / 12;
->>>>>>> 820b72cea3... saving work
         } else {
             // handle milliseconds separately because of floating point math errors (issue #1867)
             days = this._days + Math.round(monthsToDays(this._months));
@@ -4868,10 +4699,7 @@ exports.Observable = Observable;
     var asDays         = makeAs('d');
     var asWeeks        = makeAs('w');
     var asMonths       = makeAs('M');
-<<<<<<< HEAD
     var asQuarters     = makeAs('Q');
-=======
->>>>>>> 820b72cea3... saving work
     var asYears        = makeAs('y');
 
     function clone$1 () {
@@ -5063,10 +4891,7 @@ exports.Observable = Observable;
     proto$2.asDays         = asDays;
     proto$2.asWeeks        = asWeeks;
     proto$2.asMonths       = asMonths;
-<<<<<<< HEAD
     proto$2.asQuarters     = asQuarters;
-=======
->>>>>>> 820b72cea3... saving work
     proto$2.asYears        = asYears;
     proto$2.valueOf        = valueOf$1;
     proto$2._bubble        = bubble;
@@ -5111,11 +4936,7 @@ exports.Observable = Observable;
     // Side effect imports
 
 
-<<<<<<< HEAD
     hooks.version = '2.24.0';
-=======
-    hooks.version = '2.22.2';
->>>>>>> 820b72cea3... saving work
 
     setHookCallback(createLocal);
 
@@ -5156,11 +4977,7 @@ exports.Observable = Observable;
         TIME: 'HH:mm',                                  // <input type="time" />
         TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
         TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
-<<<<<<< HEAD
         WEEK: 'GGGG-[W]WW',                             // <input type="week" />
-=======
-        WEEK: 'YYYY-[W]WW',                             // <input type="week" />
->>>>>>> 820b72cea3... saving work
         MONTH: 'YYYY-MM'                                // <input type="month" />
     };
 
@@ -5168,15 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(915)(module)))
-=======
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(879)(module)))
->>>>>>> 820b72cea3... saving work
-=======
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(880)(module)))
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(917)(module)))
 
 /***/ }),
 /* 2 */
@@ -5191,11 +5000,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var isFunction_1 = __webpack_require__(42);
 var Subscription_1 = __webpack_require__(7);
-<<<<<<< HEAD
 var Observer_1 = __webpack_require__(194);
-=======
-var Observer_1 = __webpack_require__(190);
->>>>>>> 820b72cea3... saving work
 var rxSubscriber_1 = __webpack_require__(38);
 /**
  * Implements the {@link Observer} interface and extends the
@@ -5502,21 +5307,12 @@ exports.OuterSubscriber = OuterSubscriber;
 "use strict";
 
 var root_1 = __webpack_require__(11);
-<<<<<<< HEAD
 var isArrayLike_1 = __webpack_require__(291);
 var isPromise_1 = __webpack_require__(293);
 var isObject_1 = __webpack_require__(292);
 var Observable_1 = __webpack_require__(0);
 var iterator_1 = __webpack_require__(26);
 var InnerSubscriber_1 = __webpack_require__(318);
-=======
-var isArrayLike_1 = __webpack_require__(287);
-var isPromise_1 = __webpack_require__(289);
-var isObject_1 = __webpack_require__(288);
-var Observable_1 = __webpack_require__(0);
-var iterator_1 = __webpack_require__(26);
-var InnerSubscriber_1 = __webpack_require__(307);
->>>>>>> 820b72cea3... saving work
 var observable_1 = __webpack_require__(37);
 function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
     var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
@@ -5651,38 +5447,37 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-<<<<<<< HEAD
-var hibachiinterceptor_1 = __webpack_require__(817);
+var hibachiinterceptor_1 = __webpack_require__(818);
 //constant
-var hibachipathbuilder_1 = __webpack_require__(818);
+var hibachipathbuilder_1 = __webpack_require__(819);
 //services
 var cacheservice_1 = __webpack_require__(810);
-var publicservice_1 = __webpack_require__(829);
+var publicservice_1 = __webpack_require__(830);
 var accountservice_1 = __webpack_require__(809);
 var accountaddressservice_1 = __webpack_require__(808);
 var cartservice_1 = __webpack_require__(811);
 var draggableservice_1 = __webpack_require__(812);
-var utilityservice_1 = __webpack_require__(836);
-var selectionservice_1 = __webpack_require__(833);
-var observerservice_1 = __webpack_require__(826);
-var orderservice_1 = __webpack_require__(828);
-var orderpaymentservice_1 = __webpack_require__(827);
+var utilityservice_1 = __webpack_require__(837);
+var selectionservice_1 = __webpack_require__(834);
+var observerservice_1 = __webpack_require__(827);
+var orderservice_1 = __webpack_require__(829);
+var orderpaymentservice_1 = __webpack_require__(828);
 var formservice_1 = __webpack_require__(816);
 var filterservice_1 = __webpack_require__(815);
 var expandableservice_1 = __webpack_require__(814);
-var metadataservice_1 = __webpack_require__(825);
-var rbkeyservice_1 = __webpack_require__(830);
-var typeaheadservice_1 = __webpack_require__(835);
-var hibachiservice_1 = __webpack_require__(820);
-var historyservice_1 = __webpack_require__(823);
-var localstorageservice_1 = __webpack_require__(824);
-var hibachiservicedecorator_1 = __webpack_require__(821);
-var hibachiscope_1 = __webpack_require__(819);
-var requestservice_1 = __webpack_require__(831);
-var scopeservice_1 = __webpack_require__(832);
-var skuservice_1 = __webpack_require__(834);
-var hibachivalidationservice_1 = __webpack_require__(822);
+var hibachiauthenticationservice_1 = __webpack_require__(817);
+var metadataservice_1 = __webpack_require__(826);
+var rbkeyservice_1 = __webpack_require__(831);
+var typeaheadservice_1 = __webpack_require__(836);
+var hibachiservice_1 = __webpack_require__(821);
+var historyservice_1 = __webpack_require__(824);
+var localstorageservice_1 = __webpack_require__(825);
+var hibachiservicedecorator_1 = __webpack_require__(822);
+var hibachiscope_1 = __webpack_require__(820);
+var requestservice_1 = __webpack_require__(832);
+var scopeservice_1 = __webpack_require__(833);
+var skuservice_1 = __webpack_require__(835);
+var hibachivalidationservice_1 = __webpack_require__(823);
 var entityservice_1 = __webpack_require__(813);
 //controllers
 var globalsearch_1 = __webpack_require__(787);
@@ -5739,95 +5534,6 @@ var swsortable_1 = __webpack_require__(778);
 var sworderbycontrols_1 = __webpack_require__(773);
 var alert_module_1 = __webpack_require__(300);
 var dialog_module_1 = __webpack_require__(304);
-=======
-var hibachiinterceptor_1 = __webpack_require__(781);
-=======
-var hibachiinterceptor_1 = __webpack_require__(782);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
-//constant
-var hibachipathbuilder_1 = __webpack_require__(783);
-//services
-var cacheservice_1 = __webpack_require__(774);
-var publicservice_1 = __webpack_require__(794);
-var accountservice_1 = __webpack_require__(773);
-var accountaddressservice_1 = __webpack_require__(772);
-var cartservice_1 = __webpack_require__(775);
-var draggableservice_1 = __webpack_require__(776);
-var utilityservice_1 = __webpack_require__(801);
-var selectionservice_1 = __webpack_require__(798);
-var observerservice_1 = __webpack_require__(791);
-var orderservice_1 = __webpack_require__(793);
-var orderpaymentservice_1 = __webpack_require__(792);
-var formservice_1 = __webpack_require__(780);
-var filterservice_1 = __webpack_require__(779);
-var expandableservice_1 = __webpack_require__(778);
-var hibachiauthenticationservice_1 = __webpack_require__(781);
-var metadataservice_1 = __webpack_require__(790);
-var rbkeyservice_1 = __webpack_require__(795);
-var typeaheadservice_1 = __webpack_require__(800);
-var hibachiservice_1 = __webpack_require__(785);
-var historyservice_1 = __webpack_require__(788);
-var localstorageservice_1 = __webpack_require__(789);
-var hibachiservicedecorator_1 = __webpack_require__(786);
-var hibachiscope_1 = __webpack_require__(784);
-var requestservice_1 = __webpack_require__(796);
-var scopeservice_1 = __webpack_require__(797);
-var skuservice_1 = __webpack_require__(799);
-var hibachivalidationservice_1 = __webpack_require__(787);
-var entityservice_1 = __webpack_require__(777);
-//controllers
-var globalsearch_1 = __webpack_require__(752);
-//filters
-var percentage_1 = __webpack_require__(756);
-var entityrbkey_1 = __webpack_require__(755);
-var swtrim_1 = __webpack_require__(757);
-var swunique_1 = __webpack_require__(758);
-var datefilter_1 = __webpack_require__(753);
-var datereporting_1 = __webpack_require__(754);
-//directives
-//  components
-var swactioncaller_1 = __webpack_require__(713);
-var swtypeaheadsearch_1 = __webpack_require__(750);
-var swtypeaheadinputfield_1 = __webpack_require__(747);
-var swtypeaheadmultiselect_1 = __webpack_require__(748);
-var swtypeaheadsearchlineitem_1 = __webpack_require__(751);
-var swtypeaheadremoveselection_1 = __webpack_require__(749);
-var swcollectionconfig_1 = __webpack_require__(717);
-var swcollectionfilter_1 = __webpack_require__(718);
-var swcollectionorderby_1 = __webpack_require__(719);
-var swcollectioncolumn_1 = __webpack_require__(716);
-var swactioncallerdropdown_1 = __webpack_require__(714);
-var swcolumnsorter_1 = __webpack_require__(720);
-var swconfirm_1 = __webpack_require__(721);
-var swdraggable_1 = __webpack_require__(723);
-var swdraggablecontainer_1 = __webpack_require__(724);
-var swentityactionbar_1 = __webpack_require__(725);
-var swentityactionbarbuttongroup_1 = __webpack_require__(726);
-var swexpandablerecord_1 = __webpack_require__(727);
-var swexpiringsessionnotifier_1 = __webpack_require__(728);
-var swgravatar_1 = __webpack_require__(730);
-var swlogin_1 = __webpack_require__(733);
-var swmodallauncher_1 = __webpack_require__(734);
-var swmodalwindow_1 = __webpack_require__(735);
-var swnumbersonly_1 = __webpack_require__(736);
-var swloading_1 = __webpack_require__(732);
-var swscrolltrigger_1 = __webpack_require__(741);
-var swtabgroup_1 = __webpack_require__(745);
-var swtabcontent_1 = __webpack_require__(744);
-var swtooltip_1 = __webpack_require__(746);
-var swrbkey_1 = __webpack_require__(740);
-var swoptions_1 = __webpack_require__(737);
-var swselection_1 = __webpack_require__(742);
-var swclickoutside_1 = __webpack_require__(715);
-var swdirective_1 = __webpack_require__(722);
-var swexportaction_1 = __webpack_require__(729);
-var swhref_1 = __webpack_require__(731);
-var swprocesscaller_1 = __webpack_require__(739);
-var swsortable_1 = __webpack_require__(743);
-var sworderbycontrols_1 = __webpack_require__(738);
-var alert_module_1 = __webpack_require__(293);
-var dialog_module_1 = __webpack_require__(297);
->>>>>>> 820b72cea3... saving work
 var coremodule = angular.module('hibachi.core', [
     //Angular Modules
     'ngAnimate',
@@ -5962,14 +5668,9 @@ var coremodule = angular.module('hibachi.core', [
     .service('entityService', entityservice_1.EntityService)
     //controllers
     .controller('globalSearch', globalsearch_1.GlobalSearchController)
-<<<<<<< HEAD
     //filters
     .filter('dateFilter', ['$filter', datefilter_1.DateFilter.Factory])
     .filter('swcurrency', ['$sce', '$log', '$hibachi', '$filter', swcurrency_1.SWCurrency.Factory])
-=======
-    //filters 
-    .filter('dateFilter', ['$filter', datefilter_1.DateFilter.Factory])
->>>>>>> 820b72cea3... saving work
     .filter('swdatereporting', ['$filter', datereporting_1.DateReporting.Factory])
     .filter('percentage', [percentage_1.PercentageFilter.Factory])
     .filter('trim', [swtrim_1.SWTrim.Factory])
@@ -5990,11 +5691,8 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swActionCallerDropdown', swactioncallerdropdown_1.SWActionCallerDropdown.Factory())
     .directive('swColumnSorter', swcolumnsorter_1.SWColumnSorter.Factory())
     .directive('swConfirm', swconfirm_1.SWConfirm.Factory())
-<<<<<<< HEAD
     .directive('swCurrencyFormatter', swcurrencyformatter_1.SWCurrencyFormatter.Factory())
     .directive('swDatePicker', swdatepicker_1.SWDatePicker.Factory())
-=======
->>>>>>> 820b72cea3... saving work
     .directive('swEntityActionBar', swentityactionbar_1.SWEntityActionBar.Factory())
     .directive('swEntityActionBarButtonGroup', swentityactionbarbuttongroup_1.SWEntityActionBarButtonGroup.Factory())
     .directive('swExpandableRecord', swexpandablerecord_1.SWExpandableRecord.Factory())
@@ -6019,11 +5717,7 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swExportAction', swexportaction_1.SWExportAction.Factory())
     .directive('swHref', swhref_1.SWHref.Factory())
     .directive('swProcessCaller', swprocesscaller_1.SWProcessCaller.Factory())
-<<<<<<< HEAD
     .directive('swSortable', swsortable_1.SWSortable.Factory())
-=======
-    .directive('sw:sortable', swsortable_1.SWSortable.Factory())
->>>>>>> 820b72cea3... saving work
     .directive('swOrderByControls', sworderbycontrols_1.SWOrderByControls.Factory());
 exports.coremodule = coremodule;
 
@@ -6035,19 +5729,11 @@ exports.coremodule = coremodule;
 "use strict";
 
 var isArray_1 = __webpack_require__(13);
-<<<<<<< HEAD
 var isObject_1 = __webpack_require__(292);
 var isFunction_1 = __webpack_require__(42);
 var tryCatch_1 = __webpack_require__(10);
 var errorObject_1 = __webpack_require__(9);
 var UnsubscriptionError_1 = __webpack_require__(288);
-=======
-var isObject_1 = __webpack_require__(288);
-var isFunction_1 = __webpack_require__(42);
-var tryCatch_1 = __webpack_require__(10);
-var errorObject_1 = __webpack_require__(9);
-var UnsubscriptionError_1 = __webpack_require__(284);
->>>>>>> 820b72cea3... saving work
 /**
  * Represents a disposable resource, such as the execution of an Observable. A
  * Subscription has one important method, `unsubscribe`, that takes no argument
@@ -6250,11 +5936,7 @@ var Observable_1 = __webpack_require__(0);
 var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(7);
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
-<<<<<<< HEAD
 var SubjectSubscription_1 = __webpack_require__(195);
-=======
-var SubjectSubscription_1 = __webpack_require__(191);
->>>>>>> 820b72cea3... saving work
 var rxSubscriber_1 = __webpack_require__(38);
 /**
  * @class SubjectSubscriber<T>
@@ -6517,15 +6199,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-<<<<<<< HEAD
 var baseobject_1 = __webpack_require__(302);
 var Entities = __webpack_require__(799);
 var Processes = __webpack_require__(805);
-=======
-var baseobject_1 = __webpack_require__(295);
-var Entities = __webpack_require__(763);
-var Processes = __webpack_require__(769);
->>>>>>> 820b72cea3... saving work
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -6816,11 +6492,7 @@ exports.EmptyObservable = EmptyObservable;
 
 "use strict";
 
-<<<<<<< HEAD
 var ConnectableObservable_1 = __webpack_require__(196);
-=======
-var ConnectableObservable_1 = __webpack_require__(192);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the results of invoking a specified selector on items
@@ -7052,13 +6724,8 @@ exports.Notification = Notification;
 "use strict";
 
 var isScheduler_1 = __webpack_require__(12);
-<<<<<<< HEAD
 var of_1 = __webpack_require__(201);
 var from_1 = __webpack_require__(200);
-=======
-var of_1 = __webpack_require__(197);
-var from_1 = __webpack_require__(196);
->>>>>>> 820b72cea3... saving work
 var concatAll_1 = __webpack_require__(47);
 /* tslint:enable:max-line-length */
 /**
@@ -7528,11 +7195,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var root_1 = __webpack_require__(11);
-<<<<<<< HEAD
 var Action_1 = __webpack_require__(592);
-=======
-var Action_1 = __webpack_require__(581);
->>>>>>> 820b72cea3... saving work
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -7679,11 +7342,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-<<<<<<< HEAD
 var Scheduler_1 = __webpack_require__(320);
-=======
-var Scheduler_1 = __webpack_require__(309);
->>>>>>> 820b72cea3... saving work
 var AsyncScheduler = (function (_super) {
     __extends(AsyncScheduler, _super);
     function AsyncScheduler() {
@@ -7896,19 +7555,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subject_1 = __webpack_require__(8);
-<<<<<<< HEAD
 var queue_1 = __webpack_require__(284);
 var Subscription_1 = __webpack_require__(7);
 var observeOn_1 = __webpack_require__(34);
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
 var SubjectSubscription_1 = __webpack_require__(195);
-=======
-var queue_1 = __webpack_require__(280);
-var Subscription_1 = __webpack_require__(7);
-var observeOn_1 = __webpack_require__(34);
-var ObjectUnsubscribedError_1 = __webpack_require__(40);
-var SubjectSubscription_1 = __webpack_require__(191);
->>>>>>> 820b72cea3... saving work
 /**
  * @class ReplaySubject<T>
  */
@@ -8260,11 +7911,7 @@ exports.CombineLatestSubscriber = CombineLatestSubscriber;
 "use strict";
 
 var mergeMap_1 = __webpack_require__(22);
-<<<<<<< HEAD
 var identity_1 = __webpack_require__(290);
-=======
-var identity_1 = __webpack_require__(286);
->>>>>>> 820b72cea3... saving work
 /**
  * Converts a higher-order Observable into a first-order Observable which
  * concurrently delivers all values that are emitted on the inner Observables.
@@ -9016,15 +8663,9 @@ exports.isFunction = isFunction;
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(){
-<<<<<<< HEAD
   var crypt = __webpack_require__(310),
       utf8 = __webpack_require__(65).utf8,
       isBuffer = __webpack_require__(315),
-=======
-  var crypt = __webpack_require__(303),
-      utf8 = __webpack_require__(65).utf8,
-      isBuffer = __webpack_require__(304),
->>>>>>> 820b72cea3... saving work
       bin = __webpack_require__(65).bin,
 
   // The core
@@ -10014,11 +9655,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-<<<<<<< HEAD
 var FromObservable_1 = __webpack_require__(197);
-=======
-var FromObservable_1 = __webpack_require__(193);
->>>>>>> 820b72cea3... saving work
 var isArray_1 = __webpack_require__(13);
 var OuterSubscriber_1 = __webpack_require__(3);
 var subscribeToResult_1 = __webpack_require__(4);
@@ -10726,11 +10363,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var baseobject_1 = __webpack_require__(302);
-=======
-var baseobject_1 = __webpack_require__(295);
->>>>>>> 820b72cea3... saving work
 var BaseTransient = /** @class */ (function (_super) {
     __extends(BaseTransient, _super);
     function BaseTransient($injector) {
@@ -10902,11 +10535,7 @@ exports.BaseTransient = BaseTransient;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var rxjs_1 = __webpack_require__(319);
-=======
-var rxjs_1 = __webpack_require__(308);
->>>>>>> 820b72cea3... saving work
 var IStore = /** @class */ (function () {
     //@ngInject
     function IStore(initialState, reducer, middleware) {
@@ -11144,11 +10773,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 4  // The week that contains Jan 4th is the first week of the year.
-=======
-            doy : 4  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -11211,11 +10836,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -11341,11 +10962,7 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -11408,11 +11025,7 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -11520,11 +11133,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -11726,11 +11335,7 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -11839,11 +11444,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -11979,11 +11580,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -12077,11 +11674,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -12266,11 +11859,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -12393,11 +11982,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -12664,11 +12249,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -12784,15 +12365,12 @@ module.exports = charenc;
 
     var months = 'leden_únor_březen_duben_květen_červen_červenec_srpen_září_říjen_listopad_prosinec'.split('_'),
         monthsShort = 'led_úno_bře_dub_kvě_čvn_čvc_srp_zář_říj_lis_pro'.split('_');
-<<<<<<< HEAD
 
     var monthsParse = [/^led/i, /^úno/i, /^bře/i, /^dub/i, /^kvě/i, /^(čvn|červen$|června)/i, /^(čvc|červenec|července)/i, /^srp/i, /^zář/i, /^říj/i, /^lis/i, /^pro/i];
     // NOTE: 'červen' is substring of 'červenec'; therefore 'červenec' must precede 'červen' in the regex to be fully matched.
     // Otherwise parser matches '1. červenec' as '1. červen' + 'ec'.
     var monthsRegex = /^(leden|únor|březen|duben|květen|červenec|července|červen|června|srpen|září|říjen|listopad|prosinec|led|úno|bře|dub|kvě|čvn|čvc|srp|zář|říj|lis|pro)/i;
 
-=======
->>>>>>> 820b72cea3... saving work
     function plural(n) {
         return (n > 1) && (n < 5) && (~~(n / 10) !== 1);
     }
@@ -12859,7 +12437,6 @@ module.exports = charenc;
     var cs = moment.defineLocale('cs', {
         months : months,
         monthsShort : monthsShort,
-<<<<<<< HEAD
         monthsRegex : monthsRegex,
         monthsShortRegex : monthsRegex,
         // NOTE: 'červen' is substring of 'červenec'; therefore 'červenec' must precede 'červen' in the regex to be fully matched.
@@ -12869,30 +12446,6 @@ module.exports = charenc;
         monthsParse : monthsParse,
         longMonthsParse : monthsParse,
         shortMonthsParse : monthsParse,
-=======
-        monthsParse : (function (months, monthsShort) {
-            var i, _monthsParse = [];
-            for (i = 0; i < 12; i++) {
-                // use custom parser to solve problem with July (červenec)
-                _monthsParse[i] = new RegExp('^' + months[i] + '$|^' + monthsShort[i] + '$', 'i');
-            }
-            return _monthsParse;
-        }(months, monthsShort)),
-        shortMonthsParse : (function (monthsShort) {
-            var i, _shortMonthsParse = [];
-            for (i = 0; i < 12; i++) {
-                _shortMonthsParse[i] = new RegExp('^' + monthsShort[i] + '$', 'i');
-            }
-            return _shortMonthsParse;
-        }(monthsShort)),
-        longMonthsParse : (function (months) {
-            var i, _longMonthsParse = [];
-            for (i = 0; i < 12; i++) {
-                _longMonthsParse[i] = new RegExp('^' + months[i] + '$', 'i');
-            }
-            return _longMonthsParse;
-        }(months)),
->>>>>>> 820b72cea3... saving work
         weekdays : 'neděle_pondělí_úterý_středa_čtvrtek_pátek_sobota'.split('_'),
         weekdaysShort : 'ne_po_út_st_čt_pá_so'.split('_'),
         weekdaysMin : 'ne_po_út_st_čt_pá_so'.split('_'),
@@ -13031,11 +12584,7 @@ module.exports = charenc;
         ordinal : '%d-мӗш',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -13526,11 +13075,7 @@ module.exports = charenc;
         },
         week : {
             dow : 7,  // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -13656,7 +13201,6 @@ module.exports = charenc;
 }(this, (function (moment) { 'use strict';
 
 
-<<<<<<< HEAD
     var enSG = moment.defineLocale('en-SG', {
         months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
         monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
@@ -13728,8 +13272,6 @@ module.exports = charenc;
 }(this, (function (moment) { 'use strict';
 
 
-=======
->>>>>>> 820b72cea3... saving work
     var enAu = moment.defineLocale('en-au', {
         months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
         monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
@@ -13789,11 +13331,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 94 */
-=======
-/* 93 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13860,11 +13398,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 95 */
-=======
-/* 94 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13935,11 +13469,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 96 */
-=======
-/* 95 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13960,11 +13490,7 @@ module.exports = charenc;
         longDateFormat : {
             LT : 'HH:mm',
             LTS : 'HH:mm:ss',
-<<<<<<< HEAD
             L : 'DD/MM/YYYY',
-=======
-            L : 'DD-MM-YYYY',
->>>>>>> 820b72cea3... saving work
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY HH:mm',
             LLLL : 'dddd D MMMM YYYY HH:mm'
@@ -14014,11 +13540,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 97 */
-=======
-/* 96 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14084,11 +13606,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 98 */
-=======
-/* 97 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14159,11 +13677,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 99 */
-=======
-/* 98 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14228,11 +13742,7 @@ module.exports = charenc;
         ordinal : '%da',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -14242,11 +13752,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 100 */
-=======
-/* 99 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14342,11 +13848,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 101 */
-=======
-/* 100 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14361,12 +13863,9 @@ module.exports = charenc;
     var monthsShortDot = 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
         monthsShort = 'ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic'.split('_');
 
-<<<<<<< HEAD
     var monthsParse = [/^ene/i, /^feb/i, /^mar/i, /^abr/i, /^may/i, /^jun/i, /^jul/i, /^ago/i, /^sep/i, /^oct/i, /^nov/i, /^dic/i];
     var monthsRegex = /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;
 
-=======
->>>>>>> 820b72cea3... saving work
     var esUs = moment.defineLocale('es-us', {
         months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
         monthsShort : function (m, format) {
@@ -14378,7 +13877,6 @@ module.exports = charenc;
                 return monthsShortDot[m.month()];
             }
         },
-<<<<<<< HEAD
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
         monthsStrictRegex: /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,
@@ -14386,9 +13884,6 @@ module.exports = charenc;
         monthsParse: monthsParse,
         longMonthsParse: monthsParse,
         shortMonthsParse: monthsParse,
-=======
-        monthsParseExact : true,
->>>>>>> 820b72cea3... saving work
         weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
         weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
         weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_'),
@@ -14397,15 +13892,9 @@ module.exports = charenc;
             LT : 'h:mm A',
             LTS : 'h:mm:ss A',
             L : 'MM/DD/YYYY',
-<<<<<<< HEAD
             LL : 'D [de] MMMM [de] YYYY',
             LLL : 'D [de] MMMM [de] YYYY h:mm A',
             LLLL : 'dddd, D [de] MMMM [de] YYYY h:mm A'
-=======
-            LL : 'MMMM [de] D [de] YYYY',
-            LLL : 'MMMM [de] D [de] YYYY h:mm A',
-            LLLL : 'dddd, MMMM [de] D [de] YYYY h:mm A'
->>>>>>> 820b72cea3... saving work
         },
         calendar : {
             sameDay : function () {
@@ -14445,11 +13934,7 @@ module.exports = charenc;
         ordinal : '%dº',
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -14459,11 +13944,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 102 */
-=======
-/* 101 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14559,11 +14040,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 103 */
-=======
-/* 102 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14647,11 +14124,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 104 */
-=======
-/* 103 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14711,11 +14184,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -14725,11 +14194,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 105 */
-=======
-/* 104 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14829,11 +14294,7 @@ module.exports = charenc;
         ordinal : '%dم',
         week : {
             dow : 6, // Saturday is the first day of the week.
-<<<<<<< HEAD
             doy : 12 // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12 // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -14843,11 +14304,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 106 */
-=======
-/* 105 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14960,11 +14417,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 107 */
-=======
-/* 106 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15003,21 +14456,13 @@ module.exports = charenc;
             past : '%s síðani',
             s : 'fá sekund',
             ss : '%d sekundir',
-<<<<<<< HEAD
             m : 'ein minuttur',
-=======
-            m : 'ein minutt',
->>>>>>> 820b72cea3... saving work
             mm : '%d minuttir',
             h : 'ein tími',
             hh : '%d tímar',
             d : 'ein dagur',
             dd : '%d dagar',
-<<<<<<< HEAD
             M : 'ein mánaður',
-=======
-            M : 'ein mánaði',
->>>>>>> 820b72cea3... saving work
             MM : '%d mánaðir',
             y : 'eitt ár',
             yy : '%d ár'
@@ -15036,11 +14481,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 108 */
-=======
-/* 107 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15118,11 +14559,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 109 */
-=======
-/* 108 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15204,11 +14641,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 110 */
-=======
-/* 109 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15295,11 +14728,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 111 */
-=======
-/* 110 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15378,7 +14807,6 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15461,9 +14889,6 @@ module.exports = charenc;
 
 /***/ }),
 /* 113 */
-=======
-/* 111 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15543,11 +14968,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 114 */
-=======
-/* 112 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15628,11 +15049,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 115 */
-=======
-/* 113 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15650,13 +15067,8 @@ module.exports = charenc;
             'ss': [number + ' secondanim', number + ' second'],
             'm': ['eka mintan', 'ek minute'],
             'mm': [number + ' mintanim', number + ' mintam'],
-<<<<<<< HEAD
             'h': ['eka voran', 'ek vor'],
             'hh': [number + ' voranim', number + ' voram'],
-=======
-            'h': ['eka horan', 'ek hor'],
-            'hh': [number + ' horanim', number + ' horam'],
->>>>>>> 820b72cea3... saving work
             'd': ['eka disan', 'ek dis'],
             'dd': [number + ' disanim', number + ' dis'],
             'M': ['eka mhoinean', 'ek mhoino'],
@@ -15764,11 +15176,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 116 */
-=======
-/* 114 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15886,11 +15294,7 @@ module.exports = charenc;
         },
         week: {
             dow: 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy: 6 // The week that contains Jan 6th is the first week of the year.
-=======
-            doy: 6 // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -15900,11 +15304,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 117 */
-=======
-/* 115 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16005,11 +15405,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 118 */
-=======
-/* 116 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16127,11 +15523,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -16141,11 +15533,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 119 */
-=======
-/* 117 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16293,11 +15681,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -16307,11 +15691,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 120 */
-=======
-/* 118 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16425,11 +15805,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 121 */
-=======
-/* 119 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16518,11 +15894,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -16532,11 +15904,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 122 */
-=======
-/* 120 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16612,11 +15980,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -16626,11 +15990,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 123 */
-=======
-/* 121 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16766,7 +16126,6 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16841,9 +16200,6 @@ module.exports = charenc;
 
 /***/ }),
 /* 125 */
-=======
-/* 122 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16916,11 +16272,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 126 */
-=======
-/* 123 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16933,11 +16285,7 @@ module.exports = charenc;
 
 
     var ja = moment.defineLocale('ja', {
-<<<<<<< HEAD
         months : '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
-=======
-        months : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
->>>>>>> 820b72cea3... saving work
         monthsShort : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
         weekdays : '日曜日_月曜日_火曜日_水曜日_木曜日_金曜日_土曜日'.split('_'),
         weekdaysShort : '日_月_火_水_木_金_土'.split('_'),
@@ -17020,11 +16368,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 127 */
-=======
-/* 124 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17100,11 +16444,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -17114,11 +16454,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 128 */
-=======
-/* 125 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17211,11 +16547,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 129 */
-=======
-/* 126 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17296,11 +16628,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -17310,11 +16638,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 130 */
-=======
-/* 127 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17428,11 +16752,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 131 */
-=======
-/* 128 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17552,11 +16872,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -17566,11 +16882,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 132 */
-=======
-/* 129 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17655,7 +16967,6 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17780,9 +17091,6 @@ module.exports = charenc;
 
 /***/ }),
 /* 134 */
-=======
-/* 130 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17835,13 +17143,8 @@ module.exports = charenc;
             sameDay : '[Бүгүн саат] LT',
             nextDay : '[Эртең саат] LT',
             nextWeek : 'dddd [саат] LT',
-<<<<<<< HEAD
             lastDay : '[Кечээ саат] LT',
             lastWeek : '[Өткөн аптанын] dddd [күнү] [саат] LT',
-=======
-            lastDay : '[Кече саат] LT',
-            lastWeek : '[Өткен аптанын] dddd [күнү] [саат] LT',
->>>>>>> 820b72cea3... saving work
             sameElse : 'L'
         },
         relativeTime : {
@@ -17868,11 +17171,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -17882,11 +17181,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 135 */
-=======
-/* 131 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18026,11 +17321,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 136 */
-=======
-/* 132 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18104,11 +17395,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 137 */
-=======
-/* 133 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18230,11 +17517,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 138 */
-=======
-/* 134 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18335,11 +17618,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 139 */
-=======
-/* 135 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18445,11 +17724,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -18459,11 +17734,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 140 */
-=======
-/* 136 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18531,11 +17802,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 141 */
-=======
-/* 137 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18619,11 +17886,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -18633,11 +17896,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 142 */
-=======
-/* 138 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18722,11 +17981,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 143 */
-=======
-/* 139 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18834,11 +18089,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 144 */
-=======
-/* 140 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18992,11 +18243,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -19006,11 +18253,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 145 */
-=======
-/* 141 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19086,11 +18329,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -19100,11 +18339,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 146 */
-=======
-/* 142 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19180,11 +18415,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -19194,11 +18425,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 147 */
-=======
-/* 143 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19262,11 +18489,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 148 */
-=======
-/* 144 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19353,11 +18576,7 @@ module.exports = charenc;
         },
         week: {
             dow: 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy: 4 // The week that contains Jan 4th is the first week of the year.
-=======
-            doy: 4 // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -19367,11 +18586,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 149 */
-=======
-/* 145 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19437,11 +18652,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 150 */
-=======
-/* 146 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19558,11 +18769,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -19572,11 +18779,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 151 */
-=======
-/* 147 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19592,11 +18795,7 @@ module.exports = charenc;
         monthsShortWithoutDots = 'jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec'.split('_');
 
     var monthsParse = [/^jan/i, /^feb/i, /^maart|mrt.?$/i, /^apr/i, /^mei$/i, /^jun[i.]?$/i, /^jul[i.]?$/i, /^aug/i, /^sep/i, /^okt/i, /^nov/i, /^dec/i];
-<<<<<<< HEAD
     var monthsRegex = /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
-=======
-    var monthsRegex = /^(januari|februari|maart|april|mei|april|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
->>>>>>> 820b72cea3... saving work
 
     var nlBe = moment.defineLocale('nl-be', {
         months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
@@ -19612,11 +18811,7 @@ module.exports = charenc;
 
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
-<<<<<<< HEAD
         monthsStrictRegex: /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,
-=======
-        monthsStrictRegex: /^(januari|februari|maart|mei|ju[nl]i|april|augustus|september|oktober|november|december)/i,
->>>>>>> 820b72cea3... saving work
         monthsShortStrictRegex: /^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,
 
         monthsParse : monthsParse,
@@ -19675,11 +18870,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 152 */
-=======
-/* 148 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19695,11 +18886,7 @@ module.exports = charenc;
         monthsShortWithoutDots = 'jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec'.split('_');
 
     var monthsParse = [/^jan/i, /^feb/i, /^maart|mrt.?$/i, /^apr/i, /^mei$/i, /^jun[i.]?$/i, /^jul[i.]?$/i, /^aug/i, /^sep/i, /^okt/i, /^nov/i, /^dec/i];
-<<<<<<< HEAD
     var monthsRegex = /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
-=======
-    var monthsRegex = /^(januari|februari|maart|april|mei|april|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
->>>>>>> 820b72cea3... saving work
 
     var nl = moment.defineLocale('nl', {
         months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
@@ -19715,11 +18902,7 @@ module.exports = charenc;
 
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
-<<<<<<< HEAD
         monthsStrictRegex: /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,
-=======
-        monthsStrictRegex: /^(januari|februari|maart|mei|ju[nl]i|april|augustus|september|oktober|november|december)/i,
->>>>>>> 820b72cea3... saving work
         monthsShortStrictRegex: /^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,
 
         monthsParse : monthsParse,
@@ -19778,11 +18961,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 153 */
-=======
-/* 149 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19846,11 +19025,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 154 */
-=======
-/* 150 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19888,11 +19063,7 @@ module.exports = charenc;
     };
 
     var paIn = moment.defineLocale('pa-in', {
-<<<<<<< HEAD
         // There are months name as per Nanakshahi Calendar but they are not used as rigidly in modern Punjabi.
-=======
-        // There are months name as per Nanakshahi Calender but they are not used as rigidly in modern Punjabi.
->>>>>>> 820b72cea3... saving work
         months : 'ਜਨਵਰੀ_ਫ਼ਰਵਰੀ_ਮਾਰਚ_ਅਪ੍ਰੈਲ_ਮਈ_ਜੂਨ_ਜੁਲਾਈ_ਅਗਸਤ_ਸਤੰਬਰ_ਅਕਤੂਬਰ_ਨਵੰਬਰ_ਦਸੰਬਰ'.split('_'),
         monthsShort : 'ਜਨਵਰੀ_ਫ਼ਰਵਰੀ_ਮਾਰਚ_ਅਪ੍ਰੈਲ_ਮਈ_ਜੂਨ_ਜੁਲਾਈ_ਅਗਸਤ_ਸਤੰਬਰ_ਅਕਤੂਬਰ_ਨਵੰਬਰ_ਦਸੰਬਰ'.split('_'),
         weekdays : 'ਐਤਵਾਰ_ਸੋਮਵਾਰ_ਮੰਗਲਵਾਰ_ਬੁਧਵਾਰ_ਵੀਰਵਾਰ_ਸ਼ੁੱਕਰਵਾਰ_ਸ਼ਨੀਚਰਵਾਰ'.split('_'),
@@ -19972,11 +19143,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -19986,11 +19153,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 155 */
-=======
-/* 151 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20120,11 +19283,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 156 */
-=======
-/* 152 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20137,13 +19296,8 @@ module.exports = charenc;
 
 
     var ptBr = moment.defineLocale('pt-br', {
-<<<<<<< HEAD
         months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
         monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
-=======
-        months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
-        monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
->>>>>>> 820b72cea3... saving work
         weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
         weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
         weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
@@ -20194,11 +19348,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 157 */
-=======
-/* 153 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20211,13 +19361,8 @@ module.exports = charenc;
 
 
     var pt = moment.defineLocale('pt', {
-<<<<<<< HEAD
         months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
         monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
-=======
-        months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
-        monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
->>>>>>> 820b72cea3... saving work
         weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
         weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
         weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
@@ -20272,11 +19417,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 158 */
-=======
-/* 154 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20345,11 +19486,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -20359,11 +19496,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 159 */
-=======
-/* 155 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20549,11 +19682,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 160 */
-=======
-/* 156 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20655,11 +19784,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 161 */
-=======
-/* 157 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20723,11 +19848,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 162 */
-=======
-/* 158 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20802,11 +19923,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 163 */
-=======
-/* 159 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20966,11 +20083,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 164 */
-=======
-/* 160 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20995,11 +20108,7 @@ module.exports = charenc;
                 } else if (number < 5) {
                     result += withoutSuffix || isFuture ? 'sekunde' : 'sekundah';
                 } else {
-<<<<<<< HEAD
                     result += 'sekund';
-=======
-                    result += withoutSuffix || isFuture ? 'sekund' : 'sekund';
->>>>>>> 820b72cea3... saving work
                 }
                 return result;
             case 'm':
@@ -21141,11 +20250,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -21155,11 +20260,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 165 */
-=======
-/* 161 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21231,11 +20332,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 166 */
-=======
-/* 162 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21340,11 +20437,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -21354,11 +20447,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 167 */
-=======
-/* 163 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21463,11 +20552,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -21477,11 +20562,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 168 */
-=======
-/* 164 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21573,11 +20654,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 169 */
-=======
-/* 165 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21650,11 +20727,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 170 */
-=======
-/* 166 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21707,11 +20780,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -21721,11 +20790,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 171 */
-=======
-/* 167 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21848,11 +20913,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -21862,11 +20923,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 172 */
-=======
-/* 168 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21879,13 +20936,8 @@ module.exports = charenc;
 
 
     var te = moment.defineLocale('te', {
-<<<<<<< HEAD
         months : 'జనవరి_ఫిబ్రవరి_మార్చి_ఏప్రిల్_మే_జూన్_జులై_ఆగస్టు_సెప్టెంబర్_అక్టోబర్_నవంబర్_డిసెంబర్'.split('_'),
         monthsShort : 'జన._ఫిబ్ర._మార్చి_ఏప్రి._మే_జూన్_జులై_ఆగ._సెప్._అక్టో._నవ._డిసె.'.split('_'),
-=======
-        months : 'జనవరి_ఫిబ్రవరి_మార్చి_ఏప్రిల్_మే_జూన్_జూలై_ఆగస్టు_సెప్టెంబర్_అక్టోబర్_నవంబర్_డిసెంబర్'.split('_'),
-        monthsShort : 'జన._ఫిబ్ర._మార్చి_ఏప్రి._మే_జూన్_జూలై_ఆగ._సెప్._అక్టో._నవ._డిసె.'.split('_'),
->>>>>>> 820b72cea3... saving work
         monthsParseExact : true,
         weekdays : 'ఆదివారం_సోమవారం_మంగళవారం_బుధవారం_గురువారం_శుక్రవారం_శనివారం'.split('_'),
         weekdaysShort : 'ఆది_సోమ_మంగళ_బుధ_గురు_శుక్ర_శని'.split('_'),
@@ -21954,11 +21006,7 @@ module.exports = charenc;
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-<<<<<<< HEAD
             doy : 6  // The week that contains Jan 6th is the first week of the year.
-=======
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -21968,11 +21016,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 173 */
-=======
-/* 169 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22043,11 +21087,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 174 */
-=======
-/* 170 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22167,11 +21207,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 175 */
-=======
-/* 171 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22242,11 +21278,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 176 */
-=======
-/* 172 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22312,11 +21344,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 177 */
-=======
-/* 173 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22442,11 +21470,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 178 */
-=======
-/* 174 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -22534,11 +21558,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -22548,11 +21568,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 179 */
-=======
-/* 175 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22647,11 +21663,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 180 */
-=======
-/* 176 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22703,11 +21715,7 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -22717,11 +21725,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 181 */
-=======
-/* 177 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22773,11 +21777,7 @@ module.exports = charenc;
         },
         week : {
             dow : 6, // Saturday is the first day of the week.
-<<<<<<< HEAD
             doy : 12  // The week that contains Jan 12th is the first week of the year.
-=======
-            doy : 12  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -22787,11 +21787,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 182 */
-=======
-/* 178 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -22914,11 +21910,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 183 */
-=======
-/* 179 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22960,12 +21952,9 @@ module.exports = charenc;
             'genitive': 'неділі_понеділка_вівторка_середи_четверга_п’ятниці_суботи'.split('_')
         };
 
-<<<<<<< HEAD
         if (m === true) {
             return weekdays['nominative'].slice(1, 7).concat(weekdays['nominative'].slice(0, 1));
         }
-=======
->>>>>>> 820b72cea3... saving work
         if (!m) {
             return weekdays['nominative'];
         }
@@ -23069,11 +22058,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -23083,11 +22068,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 184 */
-=======
-/* 180 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23189,11 +22170,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 185 */
-=======
-/* 181 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23245,11 +22222,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-<<<<<<< HEAD
             doy : 7  // The week that contains Jan 7th is the first week of the year.
-=======
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
->>>>>>> 820b72cea3... saving work
         }
     });
 
@@ -23259,11 +22232,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 186 */
-=======
-/* 182 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23325,11 +22294,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 187 */
-=======
-/* 183 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23412,11 +22377,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 188 */
-=======
-/* 184 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23488,11 +22449,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 189 */
-=======
-/* 185 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23556,11 +22513,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 190 */
-=======
-/* 186 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23674,11 +22627,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 191 */
-=======
-/* 187 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23785,11 +22734,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 192 */
-=======
-/* 188 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23896,11 +22841,7 @@ module.exports = charenc;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 193 */
-=======
-/* 189 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23955,11 +22896,7 @@ exports.BehaviorSubject = BehaviorSubject;
 //# sourceMappingURL=BehaviorSubject.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 194 */
-=======
-/* 190 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23973,11 +22910,7 @@ exports.empty = {
 //# sourceMappingURL=Observer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 195 */
-=======
-/* 191 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24023,11 +22956,7 @@ exports.SubjectSubscription = SubjectSubscription;
 //# sourceMappingURL=SubjectSubscription.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 196 */
-=======
-/* 192 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24204,11 +23133,7 @@ var RefCountSubscriber = (function (_super) {
 //# sourceMappingURL=ConnectableObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 197 */
-=======
-/* 193 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24219,21 +23144,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var isArray_1 = __webpack_require__(13);
-<<<<<<< HEAD
 var isArrayLike_1 = __webpack_require__(291);
 var isPromise_1 = __webpack_require__(293);
 var PromiseObservable_1 = __webpack_require__(198);
 var IteratorObservable_1 = __webpack_require__(461);
 var ArrayObservable_1 = __webpack_require__(15);
 var ArrayLikeObservable_1 = __webpack_require__(450);
-=======
-var isArrayLike_1 = __webpack_require__(287);
-var isPromise_1 = __webpack_require__(289);
-var PromiseObservable_1 = __webpack_require__(194);
-var IteratorObservable_1 = __webpack_require__(450);
-var ArrayObservable_1 = __webpack_require__(15);
-var ArrayLikeObservable_1 = __webpack_require__(439);
->>>>>>> 820b72cea3... saving work
 var iterator_1 = __webpack_require__(26);
 var Observable_1 = __webpack_require__(0);
 var observeOn_1 = __webpack_require__(34);
@@ -24345,11 +23261,7 @@ exports.FromObservable = FromObservable;
 //# sourceMappingURL=FromObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 198 */
-=======
-/* 194 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24476,11 +23388,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=PromiseObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 199 */
-=======
-/* 195 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24912,29 +23820,17 @@ exports.AjaxTimeoutError = AjaxTimeoutError;
 //# sourceMappingURL=AjaxObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 200 */
-=======
-/* 196 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var FromObservable_1 = __webpack_require__(197);
-=======
-var FromObservable_1 = __webpack_require__(193);
->>>>>>> 820b72cea3... saving work
 exports.from = FromObservable_1.FromObservable.create;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 201 */
-=======
-/* 197 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24944,39 +23840,23 @@ exports.of = ArrayObservable_1.ArrayObservable.of;
 //# sourceMappingURL=of.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 202 */
-=======
-/* 198 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var TimerObservable_1 = __webpack_require__(466);
-=======
-var TimerObservable_1 = __webpack_require__(455);
->>>>>>> 820b72cea3... saving work
 exports.timer = TimerObservable_1.TimerObservable.create;
 //# sourceMappingURL=timer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 203 */
-=======
-/* 199 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-<<<<<<< HEAD
 var timeInterval_1 = __webpack_require__(271);
-=======
-var timeInterval_1 = __webpack_require__(267);
->>>>>>> 820b72cea3... saving work
 exports.TimeInterval = timeInterval_1.TimeInterval;
 /**
  * @param scheduler
@@ -24992,22 +23872,14 @@ exports.timeInterval = timeInterval;
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 204 */
-=======
-/* 200 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var audit_1 = __webpack_require__(46);
-<<<<<<< HEAD
 var timer_1 = __webpack_require__(202);
-=======
-var timer_1 = __webpack_require__(198);
->>>>>>> 820b72cea3... saving work
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
  * value from the source Observable, then repeats this process.
@@ -25058,11 +23930,7 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 205 */
-=======
-/* 201 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25146,11 +24014,7 @@ var BufferSubscriber = (function (_super) {
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 206 */
-=======
-/* 202 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25298,11 +24162,7 @@ var BufferSkipCountSubscriber = (function (_super) {
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 207 */
-=======
-/* 203 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25509,11 +24369,7 @@ function dispatchBufferClose(arg) {
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 208 */
-=======
-/* 204 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25673,11 +24529,7 @@ var BufferToggleSubscriber = (function (_super) {
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 209 */
-=======
-/* 205 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25807,11 +24659,7 @@ var BufferWhenSubscriber = (function (_super) {
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 210 */
-=======
-/* 206 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25933,11 +24781,7 @@ var CatchSubscriber = (function (_super) {
 //# sourceMappingURL=catchError.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 211 */
-=======
-/* 207 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25950,11 +24794,7 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 212 */
-=======
-/* 208 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26023,11 +24863,7 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 213 */
-=======
-/* 209 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26097,11 +24933,7 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 214 */
-=======
-/* 210 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26218,11 +25050,7 @@ var CountSubscriber = (function (_super) {
 //# sourceMappingURL=count.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 215 */
-=======
-/* 211 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26355,11 +25183,7 @@ var DebounceSubscriber = (function (_super) {
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 216 */
-=======
-/* 212 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26481,11 +25305,7 @@ function dispatchNext(subscriber) {
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 217 */
-=======
-/* 213 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26627,11 +25447,7 @@ var DelayMessage = (function () {
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 218 */
-=======
-/* 214 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26831,11 +25647,7 @@ var SubscriptionDelaySubscriber = (function (_super) {
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 219 */
-=======
-/* 215 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26918,11 +25730,7 @@ var DeMaterializeSubscriber = (function (_super) {
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 220 */
-=======
-/* 216 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26934,11 +25742,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var OuterSubscriber_1 = __webpack_require__(3);
 var subscribeToResult_1 = __webpack_require__(4);
-<<<<<<< HEAD
 var Set_1 = __webpack_require__(608);
-=======
-var Set_1 = __webpack_require__(597);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -27052,11 +25856,7 @@ exports.DistinctSubscriber = DistinctSubscriber;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 221 */
-=======
-/* 217 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27127,11 +25927,7 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 222 */
-=======
-/* 218 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27237,11 +26033,7 @@ var ElementAtSubscriber = (function (_super) {
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 223 */
-=======
-/* 219 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27321,11 +26113,7 @@ var EverySubscriber = (function (_super) {
 //# sourceMappingURL=every.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 224 */
-=======
-/* 220 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27420,11 +26208,7 @@ var SwitchFirstSubscriber = (function (_super) {
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 225 */
-=======
-/* 221 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27568,11 +26352,7 @@ var SwitchFirstMapSubscriber = (function (_super) {
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 226 */
-=======
-/* 222 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27729,11 +26509,7 @@ exports.ExpandSubscriber = ExpandSubscriber;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 227 */
-=======
-/* 223 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27782,11 +26558,7 @@ var FinallySubscriber = (function (_super) {
 //# sourceMappingURL=finalize.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 228 */
-=======
-/* 224 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27833,11 +26605,7 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 229 */
-=======
-/* 225 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27995,11 +26763,7 @@ var FirstSubscriber = (function (_super) {
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 230 */
-=======
-/* 226 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28013,13 +26777,8 @@ var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(7);
 var Observable_1 = __webpack_require__(0);
 var Subject_1 = __webpack_require__(8);
-<<<<<<< HEAD
 var Map_1 = __webpack_require__(606);
 var FastMap_1 = __webpack_require__(604);
-=======
-var Map_1 = __webpack_require__(595);
-var FastMap_1 = __webpack_require__(593);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Groups the items emitted by an Observable according to a specified criterion,
@@ -28286,11 +27045,7 @@ var InnerRefCountSubscription = (function (_super) {
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 231 */
-=======
-/* 227 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28344,11 +27099,7 @@ var IgnoreElementsSubscriber = (function (_super) {
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 232 */
-=======
-/* 228 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28397,11 +27148,7 @@ var IsEmptySubscriber = (function (_super) {
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 233 */
-=======
-/* 229 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28526,11 +27273,7 @@ var LastSubscriber = (function (_super) {
 //# sourceMappingURL=last.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 234 */
-=======
-/* 230 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28599,11 +27342,7 @@ var MapToSubscriber = (function (_super) {
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 235 */
-=======
-/* 231 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28701,11 +27440,7 @@ var MaterializeSubscriber = (function (_super) {
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 236 */
-=======
-/* 232 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28752,11 +27487,7 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 237 */
-=======
-/* 233 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28822,11 +27553,7 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 238 */
-=======
-/* 234 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28987,11 +27714,7 @@ exports.MergeMapToSubscriber = MergeMapToSubscriber;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 239 */
-=======
-/* 235 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29126,11 +27849,7 @@ exports.MergeScanSubscriber = MergeScanSubscriber;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 240 */
-=======
-/* 236 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29177,11 +27896,7 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 241 */
-=======
-/* 237 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29264,20 +27979,12 @@ var PairwiseSubscriber = (function (_super) {
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 242 */
-=======
-/* 238 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var not_1 = __webpack_require__(610);
-=======
-var not_1 = __webpack_require__(599);
->>>>>>> 820b72cea3... saving work
 var filter_1 = __webpack_require__(51);
 /**
  * Splits the source Observable into two, one with values that satisfy a
@@ -29330,11 +28037,7 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 243 */
-=======
-/* 239 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29397,11 +28100,7 @@ function plucker(props, length) {
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 244 */
-=======
-/* 240 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29431,20 +28130,12 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 245 */
-=======
-/* 241 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var BehaviorSubject_1 = __webpack_require__(193);
-=======
-var BehaviorSubject_1 = __webpack_require__(189);
->>>>>>> 820b72cea3... saving work
 var multicast_1 = __webpack_require__(17);
 /**
  * @param value
@@ -29459,11 +28150,7 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 246 */
-=======
-/* 242 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29477,11 +28164,7 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 247 */
-=======
-/* 243 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29501,11 +28184,7 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 248 */
-=======
-/* 244 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29539,11 +28218,7 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 249 */
-=======
-/* 245 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29621,11 +28296,7 @@ var RepeatSubscriber = (function (_super) {
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 250 */
-=======
-/* 246 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29739,11 +28410,7 @@ var RepeatWhenSubscriber = (function (_super) {
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 251 */
-=======
-/* 247 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29814,11 +28481,7 @@ var RetrySubscriber = (function (_super) {
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 252 */
-=======
-/* 248 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29925,11 +28588,7 @@ var RetryWhenSubscriber = (function (_super) {
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 253 */
-=======
-/* 249 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30023,11 +28682,7 @@ var SampleSubscriber = (function (_super) {
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 254 */
-=======
-/* 250 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30124,11 +28779,7 @@ function dispatchNotification(state) {
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 255 */
-=======
-/* 251 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30298,11 +28949,7 @@ var SequenceEqualCompareToSubscriber = (function (_super) {
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 256 */
-=======
-/* 252 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30333,11 +28980,7 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 257 */
-=======
-/* 253 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30388,11 +29031,7 @@ function shareReplayOperator(bufferSize, windowTime, scheduler) {
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 258 */
-=======
-/* 254 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30491,11 +29130,7 @@ var SingleSubscriber = (function (_super) {
 //# sourceMappingURL=single.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 259 */
-=======
-/* 255 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30552,11 +29187,7 @@ var SkipSubscriber = (function (_super) {
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 260 */
-=======
-/* 256 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30655,11 +29286,7 @@ var SkipLastSubscriber = (function (_super) {
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 261 */
-=======
-/* 257 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30736,11 +29363,7 @@ var SkipUntilSubscriber = (function (_super) {
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 262 */
-=======
-/* 258 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30812,11 +29435,7 @@ var SkipWhileSubscriber = (function (_super) {
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 263 */
-=======
-/* 259 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30870,21 +29489,13 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 264 */
-=======
-/* 260 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var switchMap_1 = __webpack_require__(56);
-<<<<<<< HEAD
 var identity_1 = __webpack_require__(290);
-=======
-var identity_1 = __webpack_require__(286);
->>>>>>> 820b72cea3... saving work
 function switchAll() {
     return switchMap_1.switchMap(identity_1.identity);
 }
@@ -30892,11 +29503,7 @@ exports.switchAll = switchAll;
 //# sourceMappingURL=switchAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 265 */
-=======
-/* 261 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31027,11 +29634,7 @@ var SwitchMapToSubscriber = (function (_super) {
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 266 */
-=======
-/* 262 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31128,11 +29731,7 @@ var TakeSubscriber = (function (_super) {
 //# sourceMappingURL=take.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 267 */
-=======
-/* 263 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31213,11 +29812,7 @@ var TakeUntilSubscriber = (function (_super) {
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 268 */
-=======
-/* 264 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31315,11 +29910,7 @@ var TakeWhileSubscriber = (function (_super) {
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 269 */
-=======
-/* 265 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31438,11 +30029,7 @@ var DoSubscriber = (function (_super) {
 //# sourceMappingURL=tap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 270 */
-=======
-/* 266 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31564,11 +30151,7 @@ function dispatchNext(arg) {
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 271 */
-=======
-/* 267 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31627,11 +30210,7 @@ var TimeIntervalSubscriber = (function (_super) {
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 272 */
-=======
-/* 268 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31644,11 +30223,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var async_1 = __webpack_require__(5);
 var isDate_1 = __webpack_require__(41);
 var Subscriber_1 = __webpack_require__(2);
-<<<<<<< HEAD
 var TimeoutError_1 = __webpack_require__(287);
-=======
-var TimeoutError_1 = __webpack_require__(283);
->>>>>>> 820b72cea3... saving work
 /**
  *
  * Errors if Observable does not emit a value in given time span.
@@ -31782,11 +30357,7 @@ var TimeoutSubscriber = (function (_super) {
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 273 */
-=======
-/* 269 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31920,11 +30491,7 @@ var TimeoutWithSubscriber = (function (_super) {
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 274 */
-=======
-/* 270 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31944,11 +30511,7 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 275 */
-=======
-/* 271 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32066,11 +30629,7 @@ var WindowSubscriber = (function (_super) {
 //# sourceMappingURL=window.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 276 */
-=======
-/* 272 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32209,11 +30768,7 @@ var WindowCountSubscriber = (function (_super) {
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 277 */
-=======
-/* 273 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32382,11 +30937,7 @@ function dispatchWindowClose(state) {
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 278 */
-=======
-/* 274 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32572,11 +31123,7 @@ var WindowToggleSubscriber = (function (_super) {
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 279 */
-=======
-/* 275 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32711,11 +31258,7 @@ var WindowSubscriber = (function (_super) {
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 280 */
-=======
-/* 276 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32853,11 +31396,7 @@ var WithLatestFromSubscriber = (function (_super) {
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 281 */
-=======
-/* 277 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32870,11 +31409,7 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 282 */
-=======
-/* 278 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32993,22 +31528,13 @@ exports.VirtualAction = VirtualAction;
 //# sourceMappingURL=VirtualTimeScheduler.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 283 */
-=======
-/* 279 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var AsapAction_1 = __webpack_require__(595);
 var AsapScheduler_1 = __webpack_require__(596);
-=======
-var AsapAction_1 = __webpack_require__(584);
-var AsapScheduler_1 = __webpack_require__(585);
->>>>>>> 820b72cea3... saving work
 /**
  *
  * Asap Scheduler
@@ -33047,22 +31573,13 @@ exports.asap = new AsapScheduler_1.AsapScheduler(AsapAction_1.AsapAction);
 //# sourceMappingURL=asap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 284 */
-=======
-/* 280 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var QueueAction_1 = __webpack_require__(597);
 var QueueScheduler_1 = __webpack_require__(598);
-=======
-var QueueAction_1 = __webpack_require__(586);
-var QueueScheduler_1 = __webpack_require__(587);
->>>>>>> 820b72cea3... saving work
 /**
  *
  * Queue Scheduler
@@ -33128,11 +31645,7 @@ exports.queue = new QueueScheduler_1.QueueScheduler(QueueAction_1.QueueAction);
 //# sourceMappingURL=queue.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 285 */
-=======
-/* 281 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33149,20 +31662,12 @@ exports.SubscriptionLog = SubscriptionLog;
 //# sourceMappingURL=SubscriptionLog.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 286 */
-=======
-/* 282 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var SubscriptionLog_1 = __webpack_require__(285);
-=======
-var SubscriptionLog_1 = __webpack_require__(281);
->>>>>>> 820b72cea3... saving work
 var SubscriptionLoggable = (function () {
     function SubscriptionLoggable() {
         this.subscriptions = [];
@@ -33182,11 +31687,7 @@ exports.SubscriptionLoggable = SubscriptionLoggable;
 //# sourceMappingURL=SubscriptionLoggable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 287 */
-=======
-/* 283 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33217,11 +31718,7 @@ exports.TimeoutError = TimeoutError;
 //# sourceMappingURL=TimeoutError.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 288 */
-=======
-/* 284 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33252,11 +31749,7 @@ exports.UnsubscriptionError = UnsubscriptionError;
 //# sourceMappingURL=UnsubscriptionError.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 289 */
-=======
-/* 285 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33275,11 +31768,7 @@ exports.applyMixins = applyMixins;
 //# sourceMappingURL=applyMixins.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 290 */
-=======
-/* 286 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33291,11 +31780,7 @@ exports.identity = identity;
 //# sourceMappingURL=identity.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 291 */
-=======
-/* 287 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33304,11 +31789,7 @@ exports.isArrayLike = (function (x) { return x && typeof x.length === 'number'; 
 //# sourceMappingURL=isArrayLike.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 292 */
-=======
-/* 288 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33320,11 +31801,7 @@ exports.isObject = isObject;
 //# sourceMappingURL=isObject.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 293 */
-=======
-/* 289 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33336,11 +31813,7 @@ exports.isPromise = isPromise;
 //# sourceMappingURL=isPromise.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 294 */
-=======
-/* 290 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -33396,11 +31869,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-<<<<<<< HEAD
 __webpack_require__(612);
-=======
-__webpack_require__(601);
->>>>>>> 820b72cea3... saving work
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -33414,11 +31883,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64)))
 
 /***/ }),
-<<<<<<< HEAD
 /* 295 */
-=======
-/* 291 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33577,11 +32042,7 @@ exports.EMAIL_LIST_FAILURE = "EMAIL_LIST_FAILURE";
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 296 */
-=======
-/* 292 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33602,11 +32063,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var FluxStore = __webpack_require__(62);
-<<<<<<< HEAD
 var actions = __webpack_require__(295);
-=======
-var actions = __webpack_require__(291);
->>>>>>> 820b72cea3... saving work
 /**
  * Fulfillment List Controller
  */
@@ -34218,13 +32675,8 @@ var OrderFulfillmentService = /** @class */ (function () {
             });
         };
         /**
-<<<<<<< HEAD
        * Get Container Preset collection
        */
-=======
-        * Get Container Preset collection
-        */
->>>>>>> 820b72cea3... saving work
         this.getContainerPresetList = function () {
             _this.state.containerPresetCollection = _this.collectionConfigService.newCollectionConfig("ContainerPreset");
             _this.state.containerPresetCollection.addDisplayProperty("containerPresetID");
@@ -34465,7 +32917,6 @@ exports.OrderFulfillmentService = OrderFulfillmentService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -34474,7 +32925,7 @@ exports.OrderFulfillmentService = OrderFulfillmentService;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var swEditSkuPriceModalLauncherHTML = __webpack_require__(313);
+var swEditSkuPriceModalLauncherHTML = __webpack_require__(312);
 var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
     //@ngInject
     function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
@@ -34697,7 +33148,7 @@ exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var swPricingManagerHTML = __webpack_require__(311);
+var swPricingManagerHTML = __webpack_require__(313);
 var SWPricingManagerController = /** @class */ (function () {
     //@ngInject
     function SWPricingManagerController(collectionConfigService) {
@@ -34711,7 +33162,7 @@ var SWPricingManagerController = /** @class */ (function () {
         }, function (reason) {
         });
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
-        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,priceGroup.priceGroupCode,currencyCode");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,activeFlag,priceGroup.priceGroupName,currencyCode");
         this.skuPriceCollectionConfig.addDisplayProperty("price", "", { isEditable: true });
         this.skuPriceCollectionConfig.addDisplayProperty("minQuantity", "", { isEditable: true });
         this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "", { isEditable: true });
@@ -34775,7 +33226,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var swSkuPriceModalHTML = __webpack_require__(314);
 var SWSkuPriceModalController = /** @class */ (function () {
     //@ngInject
-    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
+    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
@@ -34784,8 +33235,11 @@ var SWSkuPriceModalController = /** @class */ (function () {
         this.observerService = observerService;
         this.skuPriceService = skuPriceService;
         this.utilityService = utilityService;
+        this.collectionConfigService = collectionConfigService;
         this.scopeService = scopeService;
         this.$scope = $scope;
+        this.$timeout = $timeout;
+        this.requestService = requestService;
         this.baseName = "j-add-sku-item-";
         this.currencyCodeEditable = false;
         this.priceGroupEditable = false;
@@ -34801,120 +33255,35 @@ var SWSkuPriceModalController = /** @class */ (function () {
             }
             _this.observerService.notify("pullBindings");
         };
-        this.initData = function (pageRecord) {
-            _this.pageRecord = pageRecord;
-            if (pageRecord) {
-                var skuPriceData = {
-                    skuPriceID: pageRecord.skuPriceID,
-                    minQuantity: pageRecord.minQuantity,
-                    maxQuantity: pageRecord.maxQuantity,
-                    currencyCode: pageRecord.currencyCode,
-                    price: pageRecord.price
-                };
-                var skuData = {
-                    skuID: pageRecord["sku_skuID"],
-                    skuCode: pageRecord["sku_skuCode"],
-                    calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
-                };
-                var priceGroupData = {
-                    priceGroupID: pageRecord["priceGroup_priceGroupID"],
-                    priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
-                };
-                //reference to form is being wiped
-                if (_this.skuPrice) {
-                    var skuPriceForms = _this.skuPrice.forms;
+        this.inlineSave = function (pageRecord) {
+            _this.initData(pageRecord);
+            var formDataToPost = {
+                entityName: 'SkuPrice',
+                entityID: pageRecord['skuPriceID'],
+                context: 'save',
+                propertyIdentifiersList: ''
+            };
+            for (var key in pageRecord) {
+                if (key.indexOf("$") > -1 || key.indexOf("skuPriceID") > -1) {
+                    continue;
                 }
-                _this.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
-                if (skuPriceForms) {
-                    _this.skuPrice.forms = skuPriceForms;
-                }
-                if (_this.sku) {
-                    var skuForms = _this.sku.forms;
-                }
-                _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
-                if (skuForms) {
-                    _this.skuPrice.forms = skuForms;
-                }
-                if (_this.priceGroup) {
-                    var priceGroupForms = _this.priceGroup.forms;
-                }
-                _this.priceGroup = _this.$hibachi.populateEntity('PriceGroup', priceGroupData);
-                if (priceGroupForms) {
-                    _this.priceGroup.forms = priceGroupForms;
-                }
-                _this.skuPriceService.getPriceGroupOptions().then(function (response) {
-                    _this.priceGroupOptions = response.records;
-                    _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
-                }).finally(function () {
-                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
-                    for (var i = 0; i < _this.priceGroupOptions.length; i++) {
-                        if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
-                            _this.selectedPriceGroup = _this.priceGroupOptions[i];
-                            console.log(_this.selectedPriceGroup);
-                        }
+                else if (key.indexOf("_") > -1) {
+                    if (key.indexOf("ID") == -1) {
+                        continue;
                     }
-                    _this.priceGroupEditable = false;
-                    if (!_this.selectedPriceGroup['priceGroupID']) {
-                        _this.priceGroupEditable = true;
-                    }
-                });
-                _this.skuPriceService.getCurrencyOptions().then(function (response) {
-                    if (response.records.length) {
-                        _this.currencyCodeOptions = [];
-                        for (var i = 0; i < response.records.length; i++) {
-                            _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
-                        }
-                        _this.currencyCodeOptions.unshift("- Select Currency Code -");
-                        _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
-                        for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
-                            if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
-                                _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
-                            }
-                        }
-                    }
-                });
-                _this.skuPrice.$$setPriceGroup(_this.priceGroup);
-                _this.skuPrice.$$setSku(_this.sku);
+                    var property = key.split("_");
+                    formDataToPost[property[0]] = {};
+                    formDataToPost[property[0]][property[1]] = pageRecord[key];
+                }
+                else {
+                    formDataToPost[key] = pageRecord[key];
+                }
             }
-            else {
-                //reference to form is being wiped
-                if (_this.skuPrice) {
-                    var skuPriceForms = _this.skuPrice.forms;
-                }
-                _this.skuPrice = _this.skuPriceService.newSkuPrice();
-                if (skuPriceForms) {
-                    _this.skuPrice.forms = skuPriceForms;
-                }
-                _this.skuPriceService.getSkuOptions(_this.productId).then(function (response) {
-                    _this.skuOptions = [];
-                    for (var i = 0; i < response.records.length; i++) {
-                        _this.skuOptions.push({ skuCode: response.records[i]['skuCode'], skuID: response.records[i]['skuID'] });
-                    }
-                }).finally(function () {
-                    if (angular.isDefined(_this.skuOptions) && _this.skuOptions.length == 1) {
-                        _this.setSelectedSku(_this.skuOptions[0]);
-                    }
-                });
-                _this.skuPriceService.getPriceGroupOptions().then(function (response) {
-                    _this.priceGroupOptions = response.records;
-                    _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
-                }).finally(function () {
-                    if (angular.isDefined(_this.priceGroupOptions) && _this.priceGroupOptions.length) {
-                        _this.selectedPriceGroup = _this.priceGroupOptions[0];
-                        _this.priceGroupEditable = true;
-                    }
-                });
-                _this.skuPriceService.getCurrencyOptions().then(function (response) {
-                    if (response.records.length) {
-                        _this.currencyCodeOptions = [];
-                        for (var i = 0; i < response.records.length; i++) {
-                            _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
-                        }
-                        _this.currencyCodeOptions.unshift("- Select Currency Code -");
-                        _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
-                    }
-                });
-            }
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            return adminRequest.promise.then(function (response) {
+                _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+            });
         };
         this.setSelectedPriceGroup = function (priceGroupData) {
             if (!priceGroupData.priceGroupID) {
@@ -34945,6 +33314,7 @@ var SWSkuPriceModalController = /** @class */ (function () {
         };
         this.$onDestroy = function () {
             _this.observerService.detachByEvent('EDIT_SKUPRICE');
+            _this.observerService.detachByEvent('SAVE_SKUPRICE');
         };
         this.save = function () {
             _this.observerService.notify("updateBindings");
@@ -34980,11 +33350,157 @@ var SWSkuPriceModalController = /** @class */ (function () {
         };
         this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.formName = "skuPriceForm" + this.utilityService.createID(16);
-        this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        if (angular.isDefined(this.productId)) {
+            this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        }
+        else if (angular.isDefined(this.promotionRewardId)) {
+            var collectionConfigStruct = angular.fromJson(this.skuCollectionConfig);
+            $timeout(function () {
+                _this.skuCollectionConfig = _this.collectionConfigService.newCollectionConfig().loadJson(collectionConfigStruct);
+            });
+        }
         //hack for listing hardcodeing id
         this.listingID = 'pricingListing';
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        this.observerService.attach(this.inlineSave, "SAVE_SKUPRICE");
     }
+    SWSkuPriceModalController.prototype.initData = function (pageRecord) {
+        var _this = this;
+        this.pageRecord = pageRecord;
+        if (pageRecord) {
+            var skuPriceData = {
+                skuPriceID: pageRecord.skuPriceID,
+                minQuantity: pageRecord.minQuantity,
+                maxQuantity: pageRecord.maxQuantity,
+                currencyCode: pageRecord.currencyCode,
+                price: pageRecord.price
+            };
+            var skuData = {
+                skuID: pageRecord["sku_skuID"],
+                skuCode: pageRecord["sku_skuCode"],
+                calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+            };
+            var promotionRewardData = {
+                promotionRewardID: pageRecord['promotionRewardID']
+            };
+            var priceGroupData = {
+                priceGroupID: pageRecord["priceGroup_priceGroupID"],
+                priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
+            };
+            //reference to form is being wiped
+            if (this.skuPrice) {
+                var skuPriceForms = this.skuPrice.forms;
+            }
+            this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+            if (skuPriceForms) {
+                this.skuPrice.forms = skuPriceForms;
+            }
+            if (this.sku) {
+                var skuForms = this.sku.forms;
+            }
+            this.sku = this.$hibachi.populateEntity('Sku', skuData);
+            if (skuForms) {
+                this.skuPrice.forms = skuForms;
+            }
+            if (this.promotionReward) {
+                var promotionRewardForms = this.promotionReward.forms;
+            }
+            this.promotionReward = this.$hibachi.populateEntity('PromotionReward', promotionRewardData);
+            if (promotionRewardForms) {
+                this.promotionReward.forms = promotionRewardForms;
+            }
+            if (this.priceGroup) {
+                var priceGroupForms = this.priceGroup.forms;
+            }
+            this.priceGroup = this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+            if (priceGroupForms) {
+                this.priceGroup.forms = priceGroupForms;
+            }
+            this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                _this.priceGroupOptions = response.records;
+                _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+            }).finally(function () {
+                _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                for (var i = 0; i < _this.priceGroupOptions.length; i++) {
+                    if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
+                        _this.selectedPriceGroup = _this.priceGroupOptions[i];
+                        console.log(_this.selectedPriceGroup);
+                    }
+                }
+                _this.priceGroupEditable = false;
+                if (!_this.selectedPriceGroup['priceGroupID']) {
+                    _this.priceGroupEditable = true;
+                }
+            });
+            this.skuPriceService.getCurrencyOptions().then(function (response) {
+                if (response.records.length) {
+                    _this.currencyCodeOptions = [];
+                    for (var i = 0; i < response.records.length; i++) {
+                        _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                    }
+                    _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                    _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                    for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
+                        if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
+                            _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
+                        }
+                    }
+                }
+            });
+            this.skuPrice.$$setPriceGroup(this.priceGroup);
+            this.skuPrice.$$setSku(this.sku);
+            this.skuPrice.$$setPromotionReward(this.promotionReward);
+        }
+        else {
+            //reference to form is being wiped
+            if (this.skuPrice) {
+                var skuPriceForms = this.skuPrice.forms;
+            }
+            this.skuPrice = this.skuPriceService.newSkuPrice();
+            if (skuPriceForms) {
+                this.skuPrice.forms = skuPriceForms;
+            }
+            if (this.promotionRewardId) {
+                if (this.promotionReward) {
+                    var promotionRewardForms = this.promotionReward.forms;
+                }
+                this.promotionReward = this.$hibachi.populateEntity('PromotionReward', { promotionRewardID: this.promotionRewardId });
+                if (promotionRewardForms) {
+                    this.promotionReward.forms = promotionRewardForms;
+                }
+                this.skuPrice.$$setPromotionReward(this.promotionReward);
+            }
+            this.skuPriceService.getSkuOptions(this.productId).then(function (response) {
+                _this.skuOptions = [];
+                for (var i = 0; i < response.records.length; i++) {
+                    _this.skuOptions.push({ skuCode: response.records[i]['skuCode'], skuID: response.records[i]['skuID'] });
+                }
+            }).finally(function () {
+                if (angular.isDefined(_this.skuOptions) && _this.skuOptions.length == 1) {
+                    _this.setSelectedSku(_this.skuOptions[0]);
+                }
+            });
+            this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                _this.priceGroupOptions = response.records;
+                _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+            }).finally(function () {
+                if (angular.isDefined(_this.priceGroupOptions) && _this.priceGroupOptions.length) {
+                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                    _this.priceGroupEditable = true;
+                }
+            });
+            this.skuPriceService.getCurrencyOptions().then(function (response) {
+                if (response.records.length) {
+                    _this.currencyCodeOptions = [];
+                    for (var i = 0; i < response.records.length; i++) {
+                        _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                    }
+                    _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                    _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                }
+            });
+        }
+    };
     return SWSkuPriceModalController;
 }());
 exports.SWSkuPriceModalController = SWSkuPriceModalController;
@@ -35008,12 +33524,14 @@ var SWSkuPriceModal = /** @class */ (function () {
             sku: "=?",
             pageRecord: "=?",
             productId: "@?",
+            promotionRewardId: "@?",
             minQuantity: "@?",
             maxQuantity: "@?",
             priceGroupId: "@?",
             currencyCode: "@?",
             eligibleCurrencyCodeList: "@?",
             defaultCurrencyOnly: "=?",
+            skuCollectionConfig: "@?",
             disableAllFieldsButPrice: "=?"
         };
         this.controller = SWSkuPriceModalController;
@@ -35048,9 +33566,6 @@ exports.SWSkuPriceModal = SWSkuPriceModal;
 
 /***/ }),
 /* 300 */
-=======
-/* 293 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35059,15 +33574,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
-<<<<<<< HEAD
 var alertcontroller_1 = __webpack_require__(705);
 //services
 var alertservice_1 = __webpack_require__(707);
-=======
-var alertcontroller_1 = __webpack_require__(672);
-//services
-var alertservice_1 = __webpack_require__(674);
->>>>>>> 820b72cea3... saving work
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -35077,11 +33586,7 @@ exports.alertmodule = alertmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 301 */
-=======
-/* 294 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35092,7 +33597,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-<<<<<<< HEAD
 var collectionconfigservice_1 = __webpack_require__(744);
 var collectionservice_1 = __webpack_require__(745);
 //controllers
@@ -35125,40 +33629,6 @@ var swfiltergroupitem_1 = __webpack_require__(735);
 var swrestrictionconfig_1 = __webpack_require__(738);
 //filters
 var aggregatefilter_1 = __webpack_require__(743);
-=======
-var collectionconfigservice_1 = __webpack_require__(711);
-var collectionservice_1 = __webpack_require__(712);
-//controllers
-var collections_1 = __webpack_require__(706);
-var createcollection_1 = __webpack_require__(708);
-var confirmationcontroller_1 = __webpack_require__(707);
-var entity_createcollection_1 = __webpack_require__(709);
-//directives
-var swcollection_1 = __webpack_require__(685);
-var swaddfilterbuttons_1 = __webpack_require__(684);
-var swdisplayoptions_1 = __webpack_require__(700);
-var swdisplayitem_1 = __webpack_require__(698);
-var swdisplayitemaggregate_1 = __webpack_require__(699);
-var swcollectiontable_1 = __webpack_require__(686);
-var swcolumnitem_1 = __webpack_require__(687);
-var swconditioncriteria_1 = __webpack_require__(688);
-var swcriteria_1 = __webpack_require__(689);
-var swcriteriaboolean_1 = __webpack_require__(690);
-var swcriteriadate_1 = __webpack_require__(691);
-var swcriteriamanytomany_1 = __webpack_require__(692);
-var swcriteriamanytoone_1 = __webpack_require__(693);
-var swcriterianumber_1 = __webpack_require__(694);
-var swcriteriaonetomany_1 = __webpack_require__(695);
-var swcriteriarelatedobject_1 = __webpack_require__(696);
-var swcriteriastring_1 = __webpack_require__(697);
-var sweditfilteritem_1 = __webpack_require__(701);
-var swfiltergroups_1 = __webpack_require__(703);
-var swfilteritem_1 = __webpack_require__(704);
-var swfiltergroupitem_1 = __webpack_require__(702);
-var swrestrictionconfig_1 = __webpack_require__(705);
-//filters
-var aggregatefilter_1 = __webpack_require__(710);
->>>>>>> 820b72cea3... saving work
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -35202,11 +33672,7 @@ exports.collectionmodule = collectionmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 302 */
-=======
-/* 295 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35241,11 +33707,7 @@ exports.BaseObject = BaseObject;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 303 */
-=======
-/* 296 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35392,11 +33854,7 @@ exports.Request = Request;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 304 */
-=======
-/* 297 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35405,21 +33863,9 @@ exports.Request = Request;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
-<<<<<<< HEAD
-<<<<<<< HEAD
-var dialogservice_1 = __webpack_require__(838);
+var dialogservice_1 = __webpack_require__(839);
 //controllers
-var pagedialog_1 = __webpack_require__(837);
-=======
-var dialogservice_1 = __webpack_require__(802);
-//controllers
-var pagedialog_1 = __webpack_require__(801);
->>>>>>> 820b72cea3... saving work
-=======
-var dialogservice_1 = __webpack_require__(803);
-//controllers
-var pagedialog_1 = __webpack_require__(802);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var pagedialog_1 = __webpack_require__(838);
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -35433,11 +33879,7 @@ exports.dialogmodule = dialogmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 305 */
-=======
-/* 298 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35454,30 +33896,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
-<<<<<<< HEAD
-<<<<<<< HEAD
-var otherwisecontroller_1 = __webpack_require__(842);
-var routercontroller_1 = __webpack_require__(843);
+var otherwisecontroller_1 = __webpack_require__(843);
+var routercontroller_1 = __webpack_require__(844);
 //directives
-var swdetailtabs_1 = __webpack_require__(840);
-var swdetail_1 = __webpack_require__(839);
-var swlist_1 = __webpack_require__(841);
-=======
-var otherwisecontroller_1 = __webpack_require__(806);
-var routercontroller_1 = __webpack_require__(807);
-//directives
-var swdetailtabs_1 = __webpack_require__(804);
-var swdetail_1 = __webpack_require__(803);
-var swlist_1 = __webpack_require__(805);
->>>>>>> 820b72cea3... saving work
-=======
-var otherwisecontroller_1 = __webpack_require__(807);
-var routercontroller_1 = __webpack_require__(808);
-//directives
-var swdetailtabs_1 = __webpack_require__(805);
-var swdetail_1 = __webpack_require__(804);
-var swlist_1 = __webpack_require__(806);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var swdetailtabs_1 = __webpack_require__(841);
+var swdetail_1 = __webpack_require__(840);
+var swlist_1 = __webpack_require__(842);
 var core_module_1 = __webpack_require__(6);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -35535,11 +33959,7 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 306 */
-=======
-/* 299 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35853,11 +34273,7 @@ exports.SWPropertyDisplay = SWPropertyDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 307 */
-=======
-/* 300 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35866,57 +34282,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-<<<<<<< HEAD
-<<<<<<< HEAD
-var workflowconditionservice_1 = __webpack_require__(914);
-var scheduleservice_1 = __webpack_require__(913);
+var workflowconditionservice_1 = __webpack_require__(916);
+var scheduleservice_1 = __webpack_require__(915);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(901);
-var swworkflowbasic_1 = __webpack_require__(903);
-var swworkflowcondition_1 = __webpack_require__(904);
-var swworkflowconditiongroupitem_1 = __webpack_require__(905);
-var swworkflowconditiongroups_1 = __webpack_require__(906);
-var swworkflowtask_1 = __webpack_require__(907);
-var swworkflowtaskactions_1 = __webpack_require__(908);
-var swworkflowtasks_1 = __webpack_require__(909);
-var swworkflowtrigger_1 = __webpack_require__(910);
-var swworkflowtriggers_1 = __webpack_require__(912);
-var swworkflowtriggerhistory_1 = __webpack_require__(911);
-var swschedulepreview_1 = __webpack_require__(902);
-=======
-var workflowconditionservice_1 = __webpack_require__(878);
-var scheduleservice_1 = __webpack_require__(877);
-//directives
-var swadmincreatesuperuser_1 = __webpack_require__(865);
-var swworkflowbasic_1 = __webpack_require__(867);
-var swworkflowcondition_1 = __webpack_require__(868);
-var swworkflowconditiongroupitem_1 = __webpack_require__(869);
-var swworkflowconditiongroups_1 = __webpack_require__(870);
-var swworkflowtask_1 = __webpack_require__(871);
-var swworkflowtaskactions_1 = __webpack_require__(872);
-var swworkflowtasks_1 = __webpack_require__(873);
-var swworkflowtrigger_1 = __webpack_require__(874);
-var swworkflowtriggers_1 = __webpack_require__(876);
-var swworkflowtriggerhistory_1 = __webpack_require__(875);
-var swschedulepreview_1 = __webpack_require__(866);
->>>>>>> 820b72cea3... saving work
-=======
-var workflowconditionservice_1 = __webpack_require__(879);
-var scheduleservice_1 = __webpack_require__(878);
-//directives
-var swadmincreatesuperuser_1 = __webpack_require__(866);
-var swworkflowbasic_1 = __webpack_require__(868);
-var swworkflowcondition_1 = __webpack_require__(869);
-var swworkflowconditiongroupitem_1 = __webpack_require__(870);
-var swworkflowconditiongroups_1 = __webpack_require__(871);
-var swworkflowtask_1 = __webpack_require__(872);
-var swworkflowtaskactions_1 = __webpack_require__(873);
-var swworkflowtasks_1 = __webpack_require__(874);
-var swworkflowtrigger_1 = __webpack_require__(875);
-var swworkflowtriggers_1 = __webpack_require__(877);
-var swworkflowtriggerhistory_1 = __webpack_require__(876);
-var swschedulepreview_1 = __webpack_require__(867);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var swadmincreatesuperuser_1 = __webpack_require__(903);
+var swworkflowbasic_1 = __webpack_require__(905);
+var swworkflowcondition_1 = __webpack_require__(906);
+var swworkflowconditiongroupitem_1 = __webpack_require__(907);
+var swworkflowconditiongroups_1 = __webpack_require__(908);
+var swworkflowtask_1 = __webpack_require__(909);
+var swworkflowtaskactions_1 = __webpack_require__(910);
+var swworkflowtasks_1 = __webpack_require__(911);
+var swworkflowtrigger_1 = __webpack_require__(912);
+var swworkflowtriggers_1 = __webpack_require__(914);
+var swworkflowtriggerhistory_1 = __webpack_require__(913);
+var swschedulepreview_1 = __webpack_require__(904);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -35942,11 +34322,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 308 */
-=======
-/* 301 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35967,13 +34343,8 @@ var __extends = (this && this.__extends) || (function () {
 /// <reference path='../typings/slatwallTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
-<<<<<<< HEAD
 var basebootstrap_1 = __webpack_require__(708);
 var slatwalladmin_module_1 = __webpack_require__(696);
-=======
-var basebootstrap_1 = __webpack_require__(675);
-var slatwalladmin_module_1 = __webpack_require__(669);
->>>>>>> 820b72cea3... saving work
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -35989,11 +34360,7 @@ module.exports = new bootstrapper();
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 309 */
-=======
-/* 302 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -50679,11 +49046,7 @@ return src;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 310 */
-=======
-/* 303 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports) {
 
 (function() {
@@ -50785,35 +49148,31 @@ return src;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 311 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <div class=\"pull-right\">\n                    <sw-action-caller\n                            data-event=\"EDIT_SKUPRICE\"\n                            data-payload=\"undefined\"\n                            data-class=\"btn btn-primary btn-md\"\n                            data-icon=\"plus\"\n                            data-text=\"Add Sku Price\"\n                            data-iconOnly=\"false\">\n                        \n                    </sw-action-caller>\n                </div>\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <sw-listing-display\n                            data-has-search=\"true\"\n                            data-is-angular-route=\"false\"\n                            data-angular-links=\"false\"\n                            data-has-action-bar=\"false\"\n                            data-base-entity-name=\"SkuPrice\"\n                            data-record-edit-event=\"EDIT_SKUPRICE\"\n                            data-record-delete-event=\"DELETE_SKUPRICE\"\n                            data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                            data-name=\"pricingListing\"\n                            data-using-personal-collection=\"true\"\n                            data-show-report=\"false\"\n                    >\n                            \n                    </sw-listing-display>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n                \n                <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>\n                \n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
+module.exports = "<sw-modal-launcher data-modal-name=\"{{swAddSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Add Sku Price Detail\" \n                   data-save-action=\"swAddSkuPriceModalLauncher.save\">\n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swAddSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swAddSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swAddSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swAddSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swAddSkuPriceModalLauncher.sku.data\" data-sku-data=\"swAddSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swAddSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swAddSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swAddSkuPriceModalLauncher.disableAllFieldsButPrice || swAddSkuPriceModalLauncher.defaultCurrencyOnly) && !swAddSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swAddSkuPriceModalLauncher.skuCollectionConfig\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swAddSkuPriceModalLauncher.selectedSku['skuCode']\"\n                                                        data-add-function=\"swAddSkuPriceModalLauncher.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swAddSkuPriceModalLauncher.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swAddSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swAddSkuPriceModalLauncher.setSelectedPriceGroup(swAddSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swAddSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
 /* 312 */
 /***/ (function(module, exports) {
 
-module.exports = "<sw-modal-launcher \n                   data-modal-name=\"{{swAddSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Add Sku Price Detail\" \n                   data-save-action=\"swAddSkuPriceModalLauncher.save\">\n    \n    <sw-modal-button>\n        <ng-transclude></ng-transclude>\n    </sw-modal-button>\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swAddSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swAddSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swAddSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swAddSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swAddSkuPriceModalLauncher.sku.data\" data-sku-data=\"swAddSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swAddSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swAddSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swAddSkuPriceModalLauncher.disableAllFieldsButPrice || swAddSkuPriceModalLauncher.defaultCurrencyOnly) && !swAddSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swAddSkuPriceModalLauncher.skuCollectionConfig\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swAddSkuPriceModalLauncher.selectedSku['skuCode']\"\n                                                        data-add-function=\"swAddSkuPriceModalLauncher.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swAddSkuPriceModalLauncher.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swAddSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swAddSkuPriceModalLauncher.setSelectedPriceGroup(swAddSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swAddSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailCommission'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailCommission\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.retailCommission\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
+module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Edit Sku Price Detail\" \n                   data-save-action=\"swEditSkuPriceModalLauncher.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 \n                 >\n            <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label  class=\"control-label\"\n                                            sw-rbKey=\"'entity.SkuPrice.currencyCode'\">\n                                        \n                                    </label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swEditSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-12\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swEditSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swEditSkuPriceModalLauncher.setSelectedPriceGroup(swEditSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        ng-disabled=\"swEditSkuPriceModalLauncher.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"text\" readonly name=\"priceGroup\" ng-if=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" ng-model=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
 /* 313 */
 /***/ (function(module, exports) {
 
-module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Edit Sku Price Detail\" \n                   data-save-action=\"swEditSkuPriceModalLauncher.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label  class=\"control-label\"\n                                            sw-rbKey=\"'entity.SkuPrice.currencyCode'\">\n                                        \n                                    </label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swEditSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-12\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swEditSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swEditSkuPriceModalLauncher.setSelectedPriceGroup(swEditSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        ng-disabled=\"swEditSkuPriceModalLauncher.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly name=\"priceGroup\" ng-if=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" ng-model=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                         <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailCommission'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailCommission\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.retailCommission\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
+module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <div class=\"pull-right\">\n                    <sw-action-caller\n                            data-event=\"EDIT_SKUPRICE\"\n                            data-payload=\"undefined\"\n                            data-class=\"btn btn-primary btn-md\"\n                            data-icon=\"plus\"\n                            data-text=\"Add Sku Price\"\n                            data-iconOnly=\"false\">\n                        \n                    </sw-action-caller>\n                </div>\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <sw-listing-display\n                            data-has-search=\"true\"\n                            data-is-angular-route=\"false\"\n                            data-angular-links=\"false\"\n                            data-has-action-bar=\"false\"\n                            data-base-entity-name=\"SkuPrice\"\n                            data-actions=\"[{\n                                'event' : 'SAVE_SKUPRICE',\n                                'icon' : 'floppy-disk',\n                                'iconOnly' : true\n                            }]\"\n                            data-record-edit-event=\"EDIT_SKUPRICE\"\n                            data-record-delete-event=\"DELETE_SKUPRICE\"\n                            data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                            data-name=\"pricingListing\"\n                            data-using-personal-collection=\"true\"\n                            data-show-report=\"false\"\n                    >\n                            \n                    </sw-listing-display>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n                \n                <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>\n                \n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
 
 /***/ }),
 /* 314 */
 /***/ (function(module, exports) {
 
-module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swSkuPriceModal.uniqueName}}\" \n                   data-title=\"Add Sku Price Detail\" \n                   data-save-action=\"swSkuPriceModal.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swSkuPriceModal.skuPrice\"\n                 name=\"{{swSkuPriceModal.formName}}\" \n                 data-object=\"swSkuPriceModal.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swSkuPriceModal.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swSkuPriceModal.sku.data\" data-sku-data=\"swSkuPriceModal.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swSkuPriceModal.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swSkuPriceModal.currencyCodeOptions track by item\"\n                                            ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.minQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.maxQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swSkuPriceModal.skuCollectionConfig\"\n                                                        data-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swSkuPriceModal.selectedSku['skuCode']\"\n                                                        data-add-function=\"swSkuPriceModal.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swSkuPriceModal.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swSkuPriceModal.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swSkuPriceModal.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailCommission'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailCommission\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailCommission\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
+module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swSkuPriceModal.uniqueName}}\" \n                   data-title=\"Sku Price - Detail\" \n                   data-save-action=\"swSkuPriceModal.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swSkuPriceModal.skuPrice\"\n                 name=\"{{swSkuPriceModal.formName}}\" \n                 data-object=\"swSkuPriceModal.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swSkuPriceModal.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swSkuPriceModal.sku.data\" data-sku-data=\"swSkuPriceModal.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swSkuPriceModal.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swSkuPriceModal.currencyCodeOptions track by item\"\n                                            ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.minQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.maxQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swSkuPriceModal.skuCollectionConfig\"\n                                                        data-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swSkuPriceModal.selectedSku['skuCode']\"\n                                                        data-add-function=\"swSkuPriceModal.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swSkuPriceModal.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swSkuPriceModal.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swSkuPriceModal.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailCommission'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailCommission\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailCommission\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            \n                            <div class=\"col-xs-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.activeFlag'\">\n                                </label>\n                                <div class=\"s-ladel-options\">\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"active\" type=\"radio\" name=\"activeFlag\" value=\"1\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"active\">Yes</label>\n                                    </div>\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"inactive\" type=\"radio\" name=\"activeFlag\" value=\"0\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"inactive\">No</label>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
 /* 315 */
-=======
-/* 304 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports) {
 
 /*!
@@ -50840,11 +49199,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 316 */
-=======
-/* 305 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -50900,7 +49255,6 @@ var map = {
 	"./dv.js": 90,
 	"./el": 91,
 	"./el.js": 91,
-<<<<<<< HEAD
 	"./en-SG": 92,
 	"./en-SG.js": 92,
 	"./en-au": 93,
@@ -51103,202 +49457,6 @@ var map = {
 	"./zh-hk.js": 191,
 	"./zh-tw": 192,
 	"./zh-tw.js": 192
-=======
-	"./en-au": 92,
-	"./en-au.js": 92,
-	"./en-ca": 93,
-	"./en-ca.js": 93,
-	"./en-gb": 94,
-	"./en-gb.js": 94,
-	"./en-ie": 95,
-	"./en-ie.js": 95,
-	"./en-il": 96,
-	"./en-il.js": 96,
-	"./en-nz": 97,
-	"./en-nz.js": 97,
-	"./eo": 98,
-	"./eo.js": 98,
-	"./es": 101,
-	"./es-do": 99,
-	"./es-do.js": 99,
-	"./es-us": 100,
-	"./es-us.js": 100,
-	"./es.js": 101,
-	"./et": 102,
-	"./et.js": 102,
-	"./eu": 103,
-	"./eu.js": 103,
-	"./fa": 104,
-	"./fa.js": 104,
-	"./fi": 105,
-	"./fi.js": 105,
-	"./fo": 106,
-	"./fo.js": 106,
-	"./fr": 109,
-	"./fr-ca": 107,
-	"./fr-ca.js": 107,
-	"./fr-ch": 108,
-	"./fr-ch.js": 108,
-	"./fr.js": 109,
-	"./fy": 110,
-	"./fy.js": 110,
-	"./gd": 111,
-	"./gd.js": 111,
-	"./gl": 112,
-	"./gl.js": 112,
-	"./gom-latn": 113,
-	"./gom-latn.js": 113,
-	"./gu": 114,
-	"./gu.js": 114,
-	"./he": 115,
-	"./he.js": 115,
-	"./hi": 116,
-	"./hi.js": 116,
-	"./hr": 117,
-	"./hr.js": 117,
-	"./hu": 118,
-	"./hu.js": 118,
-	"./hy-am": 119,
-	"./hy-am.js": 119,
-	"./id": 120,
-	"./id.js": 120,
-	"./is": 121,
-	"./is.js": 121,
-	"./it": 122,
-	"./it.js": 122,
-	"./ja": 123,
-	"./ja.js": 123,
-	"./jv": 124,
-	"./jv.js": 124,
-	"./ka": 125,
-	"./ka.js": 125,
-	"./kk": 126,
-	"./kk.js": 126,
-	"./km": 127,
-	"./km.js": 127,
-	"./kn": 128,
-	"./kn.js": 128,
-	"./ko": 129,
-	"./ko.js": 129,
-	"./ky": 130,
-	"./ky.js": 130,
-	"./lb": 131,
-	"./lb.js": 131,
-	"./lo": 132,
-	"./lo.js": 132,
-	"./lt": 133,
-	"./lt.js": 133,
-	"./lv": 134,
-	"./lv.js": 134,
-	"./me": 135,
-	"./me.js": 135,
-	"./mi": 136,
-	"./mi.js": 136,
-	"./mk": 137,
-	"./mk.js": 137,
-	"./ml": 138,
-	"./ml.js": 138,
-	"./mn": 139,
-	"./mn.js": 139,
-	"./mr": 140,
-	"./mr.js": 140,
-	"./ms": 142,
-	"./ms-my": 141,
-	"./ms-my.js": 141,
-	"./ms.js": 142,
-	"./mt": 143,
-	"./mt.js": 143,
-	"./my": 144,
-	"./my.js": 144,
-	"./nb": 145,
-	"./nb.js": 145,
-	"./ne": 146,
-	"./ne.js": 146,
-	"./nl": 148,
-	"./nl-be": 147,
-	"./nl-be.js": 147,
-	"./nl.js": 148,
-	"./nn": 149,
-	"./nn.js": 149,
-	"./pa-in": 150,
-	"./pa-in.js": 150,
-	"./pl": 151,
-	"./pl.js": 151,
-	"./pt": 153,
-	"./pt-br": 152,
-	"./pt-br.js": 152,
-	"./pt.js": 153,
-	"./ro": 154,
-	"./ro.js": 154,
-	"./ru": 155,
-	"./ru.js": 155,
-	"./sd": 156,
-	"./sd.js": 156,
-	"./se": 157,
-	"./se.js": 157,
-	"./si": 158,
-	"./si.js": 158,
-	"./sk": 159,
-	"./sk.js": 159,
-	"./sl": 160,
-	"./sl.js": 160,
-	"./sq": 161,
-	"./sq.js": 161,
-	"./sr": 163,
-	"./sr-cyrl": 162,
-	"./sr-cyrl.js": 162,
-	"./sr.js": 163,
-	"./ss": 164,
-	"./ss.js": 164,
-	"./sv": 165,
-	"./sv.js": 165,
-	"./sw": 166,
-	"./sw.js": 166,
-	"./ta": 167,
-	"./ta.js": 167,
-	"./te": 168,
-	"./te.js": 168,
-	"./tet": 169,
-	"./tet.js": 169,
-	"./tg": 170,
-	"./tg.js": 170,
-	"./th": 171,
-	"./th.js": 171,
-	"./tl-ph": 172,
-	"./tl-ph.js": 172,
-	"./tlh": 173,
-	"./tlh.js": 173,
-	"./tr": 174,
-	"./tr.js": 174,
-	"./tzl": 175,
-	"./tzl.js": 175,
-	"./tzm": 177,
-	"./tzm-latn": 176,
-	"./tzm-latn.js": 176,
-	"./tzm.js": 177,
-	"./ug-cn": 178,
-	"./ug-cn.js": 178,
-	"./uk": 179,
-	"./uk.js": 179,
-	"./ur": 180,
-	"./ur.js": 180,
-	"./uz": 182,
-	"./uz-latn": 181,
-	"./uz-latn.js": 181,
-	"./uz.js": 182,
-	"./vi": 183,
-	"./vi.js": 183,
-	"./x-pseudo": 184,
-	"./x-pseudo.js": 184,
-	"./yo": 185,
-	"./yo.js": 185,
-	"./zh-cn": 186,
-	"./zh-cn.js": 186,
-	"./zh-hk": 187,
-	"./zh-hk.js": 187,
-	"./zh-tw": 188,
-	"./zh-tw.js": 188
->>>>>>> 820b72cea3... saving work
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -51314,17 +49472,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-<<<<<<< HEAD
 webpackContext.id = 316;
 
 /***/ }),
 /* 317 */
-=======
-webpackContext.id = 305;
-
-/***/ }),
-/* 306 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -51514,11 +49665,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 318 */
-=======
-/* 307 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51560,11 +49707,7 @@ exports.InnerSubscriber = InnerSubscriber;
 //# sourceMappingURL=InnerSubscriber.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 319 */
-=======
-/* 308 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51581,24 +49724,11 @@ var Observable_1 = __webpack_require__(0);
 exports.Observable = Observable_1.Observable;
 // statics
 /* tslint:disable:no-use-before-declare */
-<<<<<<< HEAD
-=======
-__webpack_require__(310);
-__webpack_require__(311);
-__webpack_require__(312);
-__webpack_require__(313);
-__webpack_require__(314);
-__webpack_require__(317);
-__webpack_require__(318);
-__webpack_require__(319);
-__webpack_require__(320);
->>>>>>> 820b72cea3... saving work
 __webpack_require__(321);
 __webpack_require__(322);
 __webpack_require__(323);
 __webpack_require__(324);
 __webpack_require__(325);
-<<<<<<< HEAD
 __webpack_require__(328);
 __webpack_require__(329);
 __webpack_require__(330);
@@ -51625,51 +49755,16 @@ __webpack_require__(327);
 //operators
 __webpack_require__(350);
 __webpack_require__(351);
-=======
-__webpack_require__(326);
-__webpack_require__(331);
-__webpack_require__(327);
-__webpack_require__(328);
-__webpack_require__(329);
-__webpack_require__(330);
-__webpack_require__(332);
-__webpack_require__(335);
-__webpack_require__(333);
-__webpack_require__(334);
-__webpack_require__(336);
-//dom
-__webpack_require__(315);
-__webpack_require__(316);
-//operators
-__webpack_require__(339);
-__webpack_require__(340);
-__webpack_require__(341);
-__webpack_require__(342);
-__webpack_require__(343);
-__webpack_require__(344);
-__webpack_require__(345);
-__webpack_require__(346);
-__webpack_require__(347);
-__webpack_require__(348);
-__webpack_require__(349);
-__webpack_require__(350);
-__webpack_require__(351);
-__webpack_require__(357);
->>>>>>> 820b72cea3... saving work
 __webpack_require__(352);
 __webpack_require__(353);
 __webpack_require__(354);
 __webpack_require__(355);
 __webpack_require__(356);
-<<<<<<< HEAD
 __webpack_require__(357);
-=======
->>>>>>> 820b72cea3... saving work
 __webpack_require__(358);
 __webpack_require__(359);
 __webpack_require__(360);
 __webpack_require__(361);
-<<<<<<< HEAD
 __webpack_require__(362);
 __webpack_require__(368);
 __webpack_require__(363);
@@ -51677,33 +49772,14 @@ __webpack_require__(364);
 __webpack_require__(365);
 __webpack_require__(366);
 __webpack_require__(367);
-=======
-__webpack_require__(364);
-__webpack_require__(365);
-__webpack_require__(366);
-__webpack_require__(362);
-__webpack_require__(367);
-__webpack_require__(368);
->>>>>>> 820b72cea3... saving work
 __webpack_require__(369);
 __webpack_require__(370);
 __webpack_require__(371);
 __webpack_require__(372);
-<<<<<<< HEAD
 __webpack_require__(375);
 __webpack_require__(376);
 __webpack_require__(377);
 __webpack_require__(373);
-=======
-__webpack_require__(373);
-__webpack_require__(374);
-__webpack_require__(337);
-__webpack_require__(338);
-__webpack_require__(375);
-__webpack_require__(376);
-__webpack_require__(363);
-__webpack_require__(377);
->>>>>>> 820b72cea3... saving work
 __webpack_require__(378);
 __webpack_require__(379);
 __webpack_require__(380);
@@ -51712,16 +49788,11 @@ __webpack_require__(382);
 __webpack_require__(383);
 __webpack_require__(384);
 __webpack_require__(385);
-<<<<<<< HEAD
 __webpack_require__(348);
 __webpack_require__(349);
 __webpack_require__(386);
 __webpack_require__(387);
 __webpack_require__(374);
-=======
-__webpack_require__(386);
-__webpack_require__(387);
->>>>>>> 820b72cea3... saving work
 __webpack_require__(388);
 __webpack_require__(389);
 __webpack_require__(390);
@@ -51729,13 +49800,8 @@ __webpack_require__(391);
 __webpack_require__(392);
 __webpack_require__(393);
 __webpack_require__(394);
-<<<<<<< HEAD
 __webpack_require__(395);
 __webpack_require__(396);
-=======
-__webpack_require__(396);
-__webpack_require__(395);
->>>>>>> 820b72cea3... saving work
 __webpack_require__(397);
 __webpack_require__(398);
 __webpack_require__(399);
@@ -51745,13 +49811,8 @@ __webpack_require__(402);
 __webpack_require__(403);
 __webpack_require__(404);
 __webpack_require__(405);
-<<<<<<< HEAD
 __webpack_require__(407);
 __webpack_require__(406);
-=======
-__webpack_require__(406);
-__webpack_require__(407);
->>>>>>> 820b72cea3... saving work
 __webpack_require__(408);
 __webpack_require__(409);
 __webpack_require__(410);
@@ -51783,7 +49844,6 @@ __webpack_require__(435);
 __webpack_require__(436);
 __webpack_require__(437);
 __webpack_require__(438);
-<<<<<<< HEAD
 __webpack_require__(439);
 __webpack_require__(440);
 __webpack_require__(441);
@@ -51795,8 +49855,6 @@ __webpack_require__(446);
 __webpack_require__(447);
 __webpack_require__(448);
 __webpack_require__(449);
-=======
->>>>>>> 820b72cea3... saving work
 /* tslint:disable:no-unused-variable */
 var Subscription_1 = __webpack_require__(7);
 exports.Subscription = Subscription_1.Subscription;
@@ -51806,15 +49864,9 @@ var AsyncSubject_1 = __webpack_require__(29);
 exports.AsyncSubject = AsyncSubject_1.AsyncSubject;
 var ReplaySubject_1 = __webpack_require__(30);
 exports.ReplaySubject = ReplaySubject_1.ReplaySubject;
-<<<<<<< HEAD
 var BehaviorSubject_1 = __webpack_require__(193);
 exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
 var ConnectableObservable_1 = __webpack_require__(196);
-=======
-var BehaviorSubject_1 = __webpack_require__(189);
-exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
-var ConnectableObservable_1 = __webpack_require__(192);
->>>>>>> 820b72cea3... saving work
 exports.ConnectableObservable = ConnectableObservable_1.ConnectableObservable;
 var Notification_1 = __webpack_require__(19);
 exports.Notification = Notification_1.Notification;
@@ -51824,7 +49876,6 @@ var ArgumentOutOfRangeError_1 = __webpack_require__(27);
 exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError_1.ArgumentOutOfRangeError;
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
 exports.ObjectUnsubscribedError = ObjectUnsubscribedError_1.ObjectUnsubscribedError;
-<<<<<<< HEAD
 var TimeoutError_1 = __webpack_require__(287);
 exports.TimeoutError = TimeoutError_1.TimeoutError;
 var UnsubscriptionError_1 = __webpack_require__(288);
@@ -51838,27 +49889,11 @@ exports.TestScheduler = TestScheduler_1.TestScheduler;
 var VirtualTimeScheduler_1 = __webpack_require__(282);
 exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
 var AjaxObservable_1 = __webpack_require__(199);
-=======
-var TimeoutError_1 = __webpack_require__(283);
-exports.TimeoutError = TimeoutError_1.TimeoutError;
-var UnsubscriptionError_1 = __webpack_require__(284);
-exports.UnsubscriptionError = UnsubscriptionError_1.UnsubscriptionError;
-var timeInterval_1 = __webpack_require__(199);
-exports.TimeInterval = timeInterval_1.TimeInterval;
-var timestamp_1 = __webpack_require__(58);
-exports.Timestamp = timestamp_1.Timestamp;
-var TestScheduler_1 = __webpack_require__(591);
-exports.TestScheduler = TestScheduler_1.TestScheduler;
-var VirtualTimeScheduler_1 = __webpack_require__(278);
-exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
-var AjaxObservable_1 = __webpack_require__(195);
->>>>>>> 820b72cea3... saving work
 exports.AjaxResponse = AjaxObservable_1.AjaxResponse;
 exports.AjaxError = AjaxObservable_1.AjaxError;
 exports.AjaxTimeoutError = AjaxObservable_1.AjaxTimeoutError;
 var pipe_1 = __webpack_require__(60);
 exports.pipe = pipe_1.pipe;
-<<<<<<< HEAD
 var asap_1 = __webpack_require__(283);
 var async_1 = __webpack_require__(5);
 var queue_1 = __webpack_require__(284);
@@ -51867,16 +49902,6 @@ var rxSubscriber_1 = __webpack_require__(38);
 var iterator_1 = __webpack_require__(26);
 var observable_1 = __webpack_require__(37);
 var _operators = __webpack_require__(590);
-=======
-var asap_1 = __webpack_require__(279);
-var async_1 = __webpack_require__(5);
-var queue_1 = __webpack_require__(280);
-var animationFrame_1 = __webpack_require__(588);
-var rxSubscriber_1 = __webpack_require__(38);
-var iterator_1 = __webpack_require__(26);
-var observable_1 = __webpack_require__(37);
-var _operators = __webpack_require__(579);
->>>>>>> 820b72cea3... saving work
 exports.operators = _operators;
 /* tslint:enable:no-unused-variable */
 /**
@@ -51921,11 +49946,7 @@ exports.Symbol = Symbol;
 //# sourceMappingURL=Rx.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 320 */
-=======
-/* 309 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51980,68 +50001,40 @@ exports.Scheduler = Scheduler;
 //# sourceMappingURL=Scheduler.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 321 */
-=======
-/* 310 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var bindCallback_1 = __webpack_require__(468);
-=======
-var bindCallback_1 = __webpack_require__(457);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.bindCallback = bindCallback_1.bindCallback;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 322 */
-=======
-/* 311 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var bindNodeCallback_1 = __webpack_require__(469);
-=======
-var bindNodeCallback_1 = __webpack_require__(458);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.bindNodeCallback = bindNodeCallback_1.bindNodeCallback;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 323 */
-=======
-/* 312 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var combineLatest_1 = __webpack_require__(470);
-=======
-var combineLatest_1 = __webpack_require__(459);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 324 */
-=======
-/* 313 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52052,239 +50045,139 @@ Observable_1.Observable.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 325 */
-=======
-/* 314 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var defer_1 = __webpack_require__(471);
-=======
-var defer_1 = __webpack_require__(460);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.defer = defer_1.defer;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 326 */
-=======
-/* 315 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var ajax_1 = __webpack_require__(473);
-=======
-var ajax_1 = __webpack_require__(462);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.ajax = ajax_1.ajax;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 327 */
-=======
-/* 316 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var webSocket_1 = __webpack_require__(474);
-=======
-var webSocket_1 = __webpack_require__(463);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.webSocket = webSocket_1.webSocket;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 328 */
-=======
-/* 317 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var empty_1 = __webpack_require__(475);
-=======
-var empty_1 = __webpack_require__(464);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.empty = empty_1.empty;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 329 */
-=======
-/* 318 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var forkJoin_1 = __webpack_require__(476);
-=======
-var forkJoin_1 = __webpack_require__(465);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
 //# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 330 */
-=======
-/* 319 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var from_1 = __webpack_require__(200);
-=======
-var from_1 = __webpack_require__(196);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.from = from_1.from;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 331 */
-=======
-/* 320 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var fromEvent_1 = __webpack_require__(477);
-=======
-var fromEvent_1 = __webpack_require__(466);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
 //# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 332 */
-=======
-/* 321 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var fromEventPattern_1 = __webpack_require__(478);
-=======
-var fromEventPattern_1 = __webpack_require__(467);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
 //# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 333 */
-=======
-/* 322 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var fromPromise_1 = __webpack_require__(479);
-=======
-var fromPromise_1 = __webpack_require__(468);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
 //# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 334 */
-=======
-/* 323 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var generate_1 = __webpack_require__(480);
-=======
-var generate_1 = __webpack_require__(469);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.generate = generate_1.generate;
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 335 */
-=======
-/* 324 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var if_1 = __webpack_require__(481);
-=======
-var if_1 = __webpack_require__(470);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.if = if_1._if;
 //# sourceMappingURL=if.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 336 */
-=======
-/* 325 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var interval_1 = __webpack_require__(482);
-=======
-var interval_1 = __webpack_require__(471);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.interval = interval_1.interval;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 337 */
-=======
-/* 326 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52295,87 +50188,51 @@ Observable_1.Observable.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 338 */
-=======
-/* 327 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var never_1 = __webpack_require__(483);
-=======
-var never_1 = __webpack_require__(472);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.never = never_1.never;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 339 */
-=======
-/* 328 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var of_1 = __webpack_require__(201);
-=======
-var of_1 = __webpack_require__(197);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.of = of_1.of;
 //# sourceMappingURL=of.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 340 */
-=======
-/* 329 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(484);
-=======
-var onErrorResumeNext_1 = __webpack_require__(473);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 341 */
-=======
-/* 330 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var pairs_1 = __webpack_require__(485);
-=======
-var pairs_1 = __webpack_require__(474);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.pairs = pairs_1.pairs;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 342 */
-=======
-/* 331 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52386,1880 +50243,1092 @@ Observable_1.Observable.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 343 */
-=======
-/* 332 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var range_1 = __webpack_require__(486);
-=======
-var range_1 = __webpack_require__(475);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.range = range_1.range;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 344 */
-=======
-/* 333 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var throw_1 = __webpack_require__(487);
-=======
-var throw_1 = __webpack_require__(476);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.throw = throw_1._throw;
 //# sourceMappingURL=throw.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 345 */
-=======
-/* 334 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var timer_1 = __webpack_require__(202);
-=======
-var timer_1 = __webpack_require__(198);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.timer = timer_1.timer;
 //# sourceMappingURL=timer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 346 */
-=======
-/* 335 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var using_1 = __webpack_require__(488);
-=======
-var using_1 = __webpack_require__(477);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.using = using_1.using;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 347 */
-=======
-/* 336 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var zip_1 = __webpack_require__(489);
-=======
-var zip_1 = __webpack_require__(478);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.zip = zip_1.zip;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 348 */
-=======
-/* 337 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var audit_1 = __webpack_require__(490);
-=======
-var audit_1 = __webpack_require__(479);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.audit = audit_1.audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 349 */
-=======
-/* 338 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var auditTime_1 = __webpack_require__(491);
-=======
-var auditTime_1 = __webpack_require__(480);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 350 */
-=======
-/* 339 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var buffer_1 = __webpack_require__(492);
-=======
-var buffer_1 = __webpack_require__(481);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.buffer = buffer_1.buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 351 */
-=======
-/* 340 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var bufferCount_1 = __webpack_require__(493);
-=======
-var bufferCount_1 = __webpack_require__(482);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 352 */
-=======
-/* 341 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var bufferTime_1 = __webpack_require__(494);
-=======
-var bufferTime_1 = __webpack_require__(483);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 353 */
-=======
-/* 342 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var bufferToggle_1 = __webpack_require__(495);
-=======
-var bufferToggle_1 = __webpack_require__(484);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 354 */
-=======
-/* 343 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var bufferWhen_1 = __webpack_require__(496);
-=======
-var bufferWhen_1 = __webpack_require__(485);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 355 */
-=======
-/* 344 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var catch_1 = __webpack_require__(497);
-=======
-var catch_1 = __webpack_require__(486);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.catch = catch_1._catch;
 Observable_1.Observable.prototype._catch = catch_1._catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 356 */
-=======
-/* 345 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var combineAll_1 = __webpack_require__(498);
-=======
-var combineAll_1 = __webpack_require__(487);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 357 */
-=======
-/* 346 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var combineLatest_1 = __webpack_require__(499);
-=======
-var combineLatest_1 = __webpack_require__(488);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 358 */
-=======
-/* 347 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var concat_1 = __webpack_require__(500);
-=======
-var concat_1 = __webpack_require__(489);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 359 */
-=======
-/* 348 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var concatAll_1 = __webpack_require__(501);
-=======
-var concatAll_1 = __webpack_require__(490);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 360 */
-=======
-/* 349 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var concatMap_1 = __webpack_require__(502);
-=======
-var concatMap_1 = __webpack_require__(491);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 361 */
-=======
-/* 350 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(503);
-=======
-var concatMapTo_1 = __webpack_require__(492);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 362 */
-=======
-/* 351 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var count_1 = __webpack_require__(504);
-=======
-var count_1 = __webpack_require__(493);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.count = count_1.count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 363 */
-=======
-/* 352 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var debounce_1 = __webpack_require__(505);
-=======
-var debounce_1 = __webpack_require__(494);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.debounce = debounce_1.debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 364 */
-=======
-/* 353 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var debounceTime_1 = __webpack_require__(506);
-=======
-var debounceTime_1 = __webpack_require__(495);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 365 */
-=======
-/* 354 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var defaultIfEmpty_1 = __webpack_require__(507);
-=======
-var defaultIfEmpty_1 = __webpack_require__(496);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 366 */
-=======
-/* 355 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var delay_1 = __webpack_require__(508);
-=======
-var delay_1 = __webpack_require__(497);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.delay = delay_1.delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 367 */
-=======
-/* 356 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var delayWhen_1 = __webpack_require__(509);
-=======
-var delayWhen_1 = __webpack_require__(498);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 368 */
-=======
-/* 357 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var dematerialize_1 = __webpack_require__(510);
-=======
-var dematerialize_1 = __webpack_require__(499);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 369 */
-=======
-/* 358 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var distinct_1 = __webpack_require__(511);
-=======
-var distinct_1 = __webpack_require__(500);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.distinct = distinct_1.distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 370 */
-=======
-/* 359 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var distinctUntilChanged_1 = __webpack_require__(512);
-=======
-var distinctUntilChanged_1 = __webpack_require__(501);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 371 */
-=======
-/* 360 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var distinctUntilKeyChanged_1 = __webpack_require__(513);
-=======
-var distinctUntilKeyChanged_1 = __webpack_require__(502);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 372 */
-=======
-/* 361 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var do_1 = __webpack_require__(514);
-=======
-var do_1 = __webpack_require__(503);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.do = do_1._do;
 Observable_1.Observable.prototype._do = do_1._do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 373 */
-=======
-/* 362 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var elementAt_1 = __webpack_require__(515);
-=======
-var elementAt_1 = __webpack_require__(504);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 374 */
-=======
-/* 363 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var every_1 = __webpack_require__(516);
-=======
-var every_1 = __webpack_require__(505);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.every = every_1.every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 375 */
-=======
-/* 364 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var exhaust_1 = __webpack_require__(517);
-=======
-var exhaust_1 = __webpack_require__(506);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 376 */
-=======
-/* 365 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var exhaustMap_1 = __webpack_require__(518);
-=======
-var exhaustMap_1 = __webpack_require__(507);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 377 */
-=======
-/* 366 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var expand_1 = __webpack_require__(519);
-=======
-var expand_1 = __webpack_require__(508);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.expand = expand_1.expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 378 */
-=======
-/* 367 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var filter_1 = __webpack_require__(520);
-=======
-var filter_1 = __webpack_require__(509);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.filter = filter_1.filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 379 */
-=======
-/* 368 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var finally_1 = __webpack_require__(521);
-=======
-var finally_1 = __webpack_require__(510);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.finally = finally_1._finally;
 Observable_1.Observable.prototype._finally = finally_1._finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 380 */
-=======
-/* 369 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var find_1 = __webpack_require__(522);
-=======
-var find_1 = __webpack_require__(511);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.find = find_1.find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 381 */
-=======
-/* 370 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var findIndex_1 = __webpack_require__(523);
-=======
-var findIndex_1 = __webpack_require__(512);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 382 */
-=======
-/* 371 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var first_1 = __webpack_require__(524);
-=======
-var first_1 = __webpack_require__(513);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.first = first_1.first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 383 */
-=======
-/* 372 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var groupBy_1 = __webpack_require__(525);
-=======
-var groupBy_1 = __webpack_require__(514);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 384 */
-=======
-/* 373 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var ignoreElements_1 = __webpack_require__(526);
-=======
-var ignoreElements_1 = __webpack_require__(515);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 385 */
-=======
-/* 374 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var isEmpty_1 = __webpack_require__(527);
-=======
-var isEmpty_1 = __webpack_require__(516);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 386 */
-=======
-/* 375 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var last_1 = __webpack_require__(528);
-=======
-var last_1 = __webpack_require__(517);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.last = last_1.last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 387 */
-=======
-/* 376 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var let_1 = __webpack_require__(529);
-=======
-var let_1 = __webpack_require__(518);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.let = let_1.letProto;
 Observable_1.Observable.prototype.letBind = let_1.letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 388 */
-=======
-/* 377 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var map_1 = __webpack_require__(530);
-=======
-var map_1 = __webpack_require__(519);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.map = map_1.map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 389 */
-=======
-/* 378 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var mapTo_1 = __webpack_require__(531);
-=======
-var mapTo_1 = __webpack_require__(520);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 390 */
-=======
-/* 379 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var materialize_1 = __webpack_require__(532);
-=======
-var materialize_1 = __webpack_require__(521);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.materialize = materialize_1.materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 391 */
-=======
-/* 380 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var max_1 = __webpack_require__(533);
-=======
-var max_1 = __webpack_require__(522);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.max = max_1.max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 392 */
-=======
-/* 381 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var merge_1 = __webpack_require__(534);
-=======
-var merge_1 = __webpack_require__(523);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 393 */
-=======
-/* 382 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var mergeAll_1 = __webpack_require__(535);
-=======
-var mergeAll_1 = __webpack_require__(524);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 394 */
-=======
-/* 383 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var mergeMap_1 = __webpack_require__(536);
-=======
-var mergeMap_1 = __webpack_require__(525);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
 Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 395 */
-=======
-/* 384 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(537);
-=======
-var mergeMapTo_1 = __webpack_require__(526);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.flatMapTo = mergeMapTo_1.mergeMapTo;
 Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 396 */
-=======
-/* 385 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var mergeScan_1 = __webpack_require__(538);
-=======
-var mergeScan_1 = __webpack_require__(527);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 397 */
-=======
-/* 386 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var min_1 = __webpack_require__(539);
-=======
-var min_1 = __webpack_require__(528);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.min = min_1.min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 398 */
-=======
-/* 387 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var multicast_1 = __webpack_require__(540);
-=======
-var multicast_1 = __webpack_require__(529);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.multicast = multicast_1.multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 399 */
-=======
-/* 388 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var observeOn_1 = __webpack_require__(541);
-=======
-var observeOn_1 = __webpack_require__(530);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 400 */
-=======
-/* 389 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(542);
-=======
-var onErrorResumeNext_1 = __webpack_require__(531);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 401 */
-=======
-/* 390 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(543);
-=======
-var pairwise_1 = __webpack_require__(532);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 402 */
-=======
-/* 391 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var partition_1 = __webpack_require__(544);
-=======
-var partition_1 = __webpack_require__(533);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.partition = partition_1.partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 403 */
-=======
-/* 392 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var pluck_1 = __webpack_require__(545);
-=======
-var pluck_1 = __webpack_require__(534);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.pluck = pluck_1.pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 404 */
-=======
-/* 393 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var publish_1 = __webpack_require__(546);
-=======
-var publish_1 = __webpack_require__(535);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.publish = publish_1.publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 405 */
-=======
-/* 394 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var publishBehavior_1 = __webpack_require__(547);
-=======
-var publishBehavior_1 = __webpack_require__(536);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 406 */
-=======
-/* 395 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var publishLast_1 = __webpack_require__(548);
-=======
-var publishLast_1 = __webpack_require__(537);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 407 */
-=======
-/* 396 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var publishReplay_1 = __webpack_require__(549);
-=======
-var publishReplay_1 = __webpack_require__(538);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 408 */
-=======
-/* 397 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var race_1 = __webpack_require__(550);
-=======
-var race_1 = __webpack_require__(539);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 409 */
-=======
-/* 398 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var reduce_1 = __webpack_require__(551);
-=======
-var reduce_1 = __webpack_require__(540);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.reduce = reduce_1.reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 410 */
-=======
-/* 399 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var repeat_1 = __webpack_require__(552);
-=======
-var repeat_1 = __webpack_require__(541);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.repeat = repeat_1.repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 411 */
-=======
-/* 400 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var repeatWhen_1 = __webpack_require__(553);
-=======
-var repeatWhen_1 = __webpack_require__(542);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 412 */
-=======
-/* 401 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var retry_1 = __webpack_require__(554);
-=======
-var retry_1 = __webpack_require__(543);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.retry = retry_1.retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 413 */
-=======
-/* 402 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var retryWhen_1 = __webpack_require__(555);
-=======
-var retryWhen_1 = __webpack_require__(544);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 414 */
-=======
-/* 403 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var sample_1 = __webpack_require__(556);
-=======
-var sample_1 = __webpack_require__(545);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.sample = sample_1.sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 415 */
-=======
-/* 404 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var sampleTime_1 = __webpack_require__(557);
-=======
-var sampleTime_1 = __webpack_require__(546);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 416 */
-=======
-/* 405 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var scan_1 = __webpack_require__(558);
-=======
-var scan_1 = __webpack_require__(547);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.scan = scan_1.scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 417 */
-=======
-/* 406 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var sequenceEqual_1 = __webpack_require__(559);
-=======
-var sequenceEqual_1 = __webpack_require__(548);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 418 */
-=======
-/* 407 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var share_1 = __webpack_require__(560);
-=======
-var share_1 = __webpack_require__(549);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.share = share_1.share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 419 */
-=======
-/* 408 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var shareReplay_1 = __webpack_require__(561);
-=======
-var shareReplay_1 = __webpack_require__(550);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 420 */
-=======
-/* 409 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var single_1 = __webpack_require__(562);
-=======
-var single_1 = __webpack_require__(551);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.single = single_1.single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 421 */
-=======
-/* 410 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var skip_1 = __webpack_require__(563);
-=======
-var skip_1 = __webpack_require__(552);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.skip = skip_1.skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 422 */
-=======
-/* 411 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var skipLast_1 = __webpack_require__(564);
-=======
-var skipLast_1 = __webpack_require__(553);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 423 */
-=======
-/* 412 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var skipUntil_1 = __webpack_require__(565);
-=======
-var skipUntil_1 = __webpack_require__(554);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 424 */
-=======
-/* 413 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var skipWhile_1 = __webpack_require__(566);
-=======
-var skipWhile_1 = __webpack_require__(555);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 425 */
-=======
-/* 414 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var startWith_1 = __webpack_require__(567);
-=======
-var startWith_1 = __webpack_require__(556);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.startWith = startWith_1.startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 426 */
-=======
-/* 415 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var subscribeOn_1 = __webpack_require__(568);
-=======
-var subscribeOn_1 = __webpack_require__(557);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 427 */
-=======
-/* 416 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var switch_1 = __webpack_require__(569);
-=======
-var switch_1 = __webpack_require__(558);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.switch = switch_1._switch;
 Observable_1.Observable.prototype._switch = switch_1._switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 428 */
-=======
-/* 417 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var switchMap_1 = __webpack_require__(570);
-=======
-var switchMap_1 = __webpack_require__(559);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 429 */
-=======
-/* 418 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var switchMapTo_1 = __webpack_require__(571);
-=======
-var switchMapTo_1 = __webpack_require__(560);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 430 */
-=======
-/* 419 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var take_1 = __webpack_require__(572);
-=======
-var take_1 = __webpack_require__(561);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.take = take_1.take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 431 */
-=======
-/* 420 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var takeLast_1 = __webpack_require__(573);
-=======
-var takeLast_1 = __webpack_require__(562);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 432 */
-=======
-/* 421 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var takeUntil_1 = __webpack_require__(574);
-=======
-var takeUntil_1 = __webpack_require__(563);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 433 */
-=======
-/* 422 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var takeWhile_1 = __webpack_require__(575);
-=======
-var takeWhile_1 = __webpack_require__(564);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 434 */
-=======
-/* 423 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var throttle_1 = __webpack_require__(576);
-=======
-var throttle_1 = __webpack_require__(565);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.throttle = throttle_1.throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 435 */
-=======
-/* 424 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var throttleTime_1 = __webpack_require__(577);
-=======
-var throttleTime_1 = __webpack_require__(566);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.throttleTime = throttleTime_1.throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 436 */
-=======
-/* 425 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var timeInterval_1 = __webpack_require__(203);
-=======
-var timeInterval_1 = __webpack_require__(199);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.timeInterval = timeInterval_1.timeInterval;
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 437 */
-=======
-/* 426 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var timeout_1 = __webpack_require__(578);
-=======
-var timeout_1 = __webpack_require__(567);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.timeout = timeout_1.timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 438 */
-=======
-/* 427 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var timeoutWith_1 = __webpack_require__(579);
-=======
-var timeoutWith_1 = __webpack_require__(568);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 439 */
-=======
-/* 428 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var timestamp_1 = __webpack_require__(580);
-=======
-var timestamp_1 = __webpack_require__(569);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 440 */
-=======
-/* 429 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var toArray_1 = __webpack_require__(581);
-=======
-var toArray_1 = __webpack_require__(570);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 441 */
-=======
-/* 430 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports) {
 
 // HACK: does nothing, because `toPromise` now lives on the `Observable` itself.
@@ -54267,163 +51336,95 @@ Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 //# sourceMappingURL=toPromise.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 442 */
-=======
-/* 431 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var window_1 = __webpack_require__(582);
-=======
-var window_1 = __webpack_require__(571);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.window = window_1.window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 443 */
-=======
-/* 432 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var windowCount_1 = __webpack_require__(583);
-=======
-var windowCount_1 = __webpack_require__(572);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 444 */
-=======
-/* 433 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var windowTime_1 = __webpack_require__(584);
-=======
-var windowTime_1 = __webpack_require__(573);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 445 */
-=======
-/* 434 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var windowToggle_1 = __webpack_require__(585);
-=======
-var windowToggle_1 = __webpack_require__(574);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 446 */
-=======
-/* 435 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var windowWhen_1 = __webpack_require__(586);
-=======
-var windowWhen_1 = __webpack_require__(575);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 447 */
-=======
-/* 436 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var withLatestFrom_1 = __webpack_require__(587);
-=======
-var withLatestFrom_1 = __webpack_require__(576);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 448 */
-=======
-/* 437 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var zip_1 = __webpack_require__(588);
-=======
-var zip_1 = __webpack_require__(577);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.zip = zip_1.zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 449 */
-=======
-/* 438 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var zipAll_1 = __webpack_require__(589);
-=======
-var zipAll_1 = __webpack_require__(578);
->>>>>>> 820b72cea3... saving work
 Observable_1.Observable.prototype.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 450 */
-=======
-/* 439 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54499,11 +51500,7 @@ exports.ArrayLikeObservable = ArrayLikeObservable;
 //# sourceMappingURL=ArrayLikeObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 451 */
-=======
-/* 440 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54773,11 +51770,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundCallbackObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 452 */
-=======
-/* 441 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55046,11 +52039,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundNodeCallbackObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 453 */
-=======
-/* 442 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55155,11 +52144,7 @@ var DeferSubscriber = (function (_super) {
 //# sourceMappingURL=DeferObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 454 */
-=======
-/* 443 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55248,11 +52233,7 @@ exports.ErrorObservable = ErrorObservable;
 //# sourceMappingURL=ErrorObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 455 */
-=======
-/* 444 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55460,11 +52441,7 @@ var ForkJoinSubscriber = (function (_super) {
 //# sourceMappingURL=ForkJoinObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 456 */
-=======
-/* 445 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55686,11 +52663,7 @@ exports.FromEventObservable = FromEventObservable;
 //# sourceMappingURL=FromEventObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 457 */
-=======
-/* 446 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55809,11 +52782,7 @@ exports.FromEventPatternObservable = FromEventPatternObservable;
 //# sourceMappingURL=FromEventPatternObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 458 */
-=======
-/* 447 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55954,11 +52923,7 @@ exports.GenerateObservable = GenerateObservable;
 //# sourceMappingURL=GenerateObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 459 */
-=======
-/* 448 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56025,11 +52990,7 @@ var IfSubscriber = (function (_super) {
 //# sourceMappingURL=IfObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 460 */
-=======
-/* 449 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56123,11 +53084,7 @@ exports.IntervalObservable = IntervalObservable;
 //# sourceMappingURL=IntervalObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 461 */
-=======
-/* 450 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56296,11 +53253,7 @@ function sign(value) {
 //# sourceMappingURL=IteratorObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 462 */
-=======
-/* 451 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56365,11 +53318,7 @@ exports.NeverObservable = NeverObservable;
 //# sourceMappingURL=NeverObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 463 */
-=======
-/* 452 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56460,11 +53409,7 @@ exports.PairsObservable = PairsObservable;
 //# sourceMappingURL=PairsObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 464 */
-=======
-/* 453 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56566,11 +53511,7 @@ exports.RangeObservable = RangeObservable;
 //# sourceMappingURL=RangeObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 465 */
-=======
-/* 454 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56581,11 +53522,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var asap_1 = __webpack_require__(283);
-=======
-var asap_1 = __webpack_require__(279);
->>>>>>> 820b72cea3... saving work
 var isNumeric_1 = __webpack_require__(28);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -56631,11 +53568,7 @@ exports.SubscribeOnObservable = SubscribeOnObservable;
 //# sourceMappingURL=SubscribeOnObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 466 */
-=======
-/* 455 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56748,11 +53681,7 @@ exports.TimerObservable = TimerObservable;
 //# sourceMappingURL=TimerObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 467 */
-=======
-/* 456 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56819,47 +53748,27 @@ var UsingSubscriber = (function (_super) {
 //# sourceMappingURL=UsingObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 468 */
-=======
-/* 457 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var BoundCallbackObservable_1 = __webpack_require__(451);
-=======
-var BoundCallbackObservable_1 = __webpack_require__(440);
->>>>>>> 820b72cea3... saving work
 exports.bindCallback = BoundCallbackObservable_1.BoundCallbackObservable.create;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 469 */
-=======
-/* 458 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var BoundNodeCallbackObservable_1 = __webpack_require__(452);
-=======
-var BoundNodeCallbackObservable_1 = __webpack_require__(441);
->>>>>>> 820b72cea3... saving work
 exports.bindNodeCallback = BoundNodeCallbackObservable_1.BoundNodeCallbackObservable.create;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 470 */
-=======
-/* 459 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57001,29 +53910,17 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 471 */
-=======
-/* 460 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var DeferObservable_1 = __webpack_require__(453);
-=======
-var DeferObservable_1 = __webpack_require__(442);
->>>>>>> 820b72cea3... saving work
 exports.defer = DeferObservable_1.DeferObservable.create;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 472 */
-=======
-/* 461 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57041,11 +53938,7 @@ var root_1 = __webpack_require__(11);
 var ReplaySubject_1 = __webpack_require__(30);
 var tryCatch_1 = __webpack_require__(10);
 var errorObject_1 = __webpack_require__(9);
-<<<<<<< HEAD
 var assign_1 = __webpack_require__(609);
-=======
-var assign_1 = __webpack_require__(598);
->>>>>>> 820b72cea3... saving work
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -57283,47 +54176,27 @@ exports.WebSocketSubject = WebSocketSubject;
 //# sourceMappingURL=WebSocketSubject.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 473 */
-=======
-/* 462 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var AjaxObservable_1 = __webpack_require__(199);
-=======
-var AjaxObservable_1 = __webpack_require__(195);
->>>>>>> 820b72cea3... saving work
 exports.ajax = AjaxObservable_1.AjaxObservable.create;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 474 */
-=======
-/* 463 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var WebSocketSubject_1 = __webpack_require__(472);
-=======
-var WebSocketSubject_1 = __webpack_require__(461);
->>>>>>> 820b72cea3... saving work
 exports.webSocket = WebSocketSubject_1.WebSocketSubject.create;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 475 */
-=======
-/* 464 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57333,155 +54206,87 @@ exports.empty = EmptyObservable_1.EmptyObservable.create;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 476 */
-=======
-/* 465 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var ForkJoinObservable_1 = __webpack_require__(455);
-=======
-var ForkJoinObservable_1 = __webpack_require__(444);
->>>>>>> 820b72cea3... saving work
 exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
 //# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 477 */
-=======
-/* 466 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var FromEventObservable_1 = __webpack_require__(456);
-=======
-var FromEventObservable_1 = __webpack_require__(445);
->>>>>>> 820b72cea3... saving work
 exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
 //# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 478 */
-=======
-/* 467 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var FromEventPatternObservable_1 = __webpack_require__(457);
-=======
-var FromEventPatternObservable_1 = __webpack_require__(446);
->>>>>>> 820b72cea3... saving work
 exports.fromEventPattern = FromEventPatternObservable_1.FromEventPatternObservable.create;
 //# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 479 */
-=======
-/* 468 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var PromiseObservable_1 = __webpack_require__(198);
-=======
-var PromiseObservable_1 = __webpack_require__(194);
->>>>>>> 820b72cea3... saving work
 exports.fromPromise = PromiseObservable_1.PromiseObservable.create;
 //# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 480 */
-=======
-/* 469 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var GenerateObservable_1 = __webpack_require__(458);
-=======
-var GenerateObservable_1 = __webpack_require__(447);
->>>>>>> 820b72cea3... saving work
 exports.generate = GenerateObservable_1.GenerateObservable.create;
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 481 */
-=======
-/* 470 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var IfObservable_1 = __webpack_require__(459);
-=======
-var IfObservable_1 = __webpack_require__(448);
->>>>>>> 820b72cea3... saving work
 exports._if = IfObservable_1.IfObservable.create;
 //# sourceMappingURL=if.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 482 */
-=======
-/* 471 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var IntervalObservable_1 = __webpack_require__(460);
-=======
-var IntervalObservable_1 = __webpack_require__(449);
->>>>>>> 820b72cea3... saving work
 exports.interval = IntervalObservable_1.IntervalObservable.create;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 483 */
-=======
-/* 472 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var NeverObservable_1 = __webpack_require__(462);
-=======
-var NeverObservable_1 = __webpack_require__(451);
->>>>>>> 820b72cea3... saving work
 exports.never = NeverObservable_1.NeverObservable.create;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 484 */
-=======
-/* 473 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57491,83 +54296,47 @@ exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNextStatic;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 485 */
-=======
-/* 474 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var PairsObservable_1 = __webpack_require__(463);
-=======
-var PairsObservable_1 = __webpack_require__(452);
->>>>>>> 820b72cea3... saving work
 exports.pairs = PairsObservable_1.PairsObservable.create;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 486 */
-=======
-/* 475 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var RangeObservable_1 = __webpack_require__(464);
-=======
-var RangeObservable_1 = __webpack_require__(453);
->>>>>>> 820b72cea3... saving work
 exports.range = RangeObservable_1.RangeObservable.create;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 487 */
-=======
-/* 476 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var ErrorObservable_1 = __webpack_require__(454);
-=======
-var ErrorObservable_1 = __webpack_require__(443);
->>>>>>> 820b72cea3... saving work
 exports._throw = ErrorObservable_1.ErrorObservable.create;
 //# sourceMappingURL=throw.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 488 */
-=======
-/* 477 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var UsingObservable_1 = __webpack_require__(467);
-=======
-var UsingObservable_1 = __webpack_require__(456);
->>>>>>> 820b72cea3... saving work
 exports.using = UsingObservable_1.UsingObservable.create;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 489 */
-=======
-/* 478 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57577,11 +54346,7 @@ exports.zip = zip_1.zipStatic;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 490 */
-=======
-/* 479 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57634,21 +54399,13 @@ exports.audit = audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 491 */
-=======
-/* 480 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-<<<<<<< HEAD
 var auditTime_1 = __webpack_require__(204);
-=======
-var auditTime_1 = __webpack_require__(200);
->>>>>>> 820b72cea3... saving work
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
  * value from the source Observable, then repeats this process.
@@ -57699,20 +54456,12 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 492 */
-=======
-/* 481 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var buffer_1 = __webpack_require__(205);
-=======
-var buffer_1 = __webpack_require__(201);
->>>>>>> 820b72cea3... saving work
 /**
  * Buffers the source Observable values until `closingNotifier` emits.
  *
@@ -57752,20 +54501,12 @@ exports.buffer = buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 493 */
-=======
-/* 482 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var bufferCount_1 = __webpack_require__(206);
-=======
-var bufferCount_1 = __webpack_require__(202);
->>>>>>> 820b72cea3... saving work
 /**
  * Buffers the source Observable values until the size hits the maximum
  * `bufferSize` given.
@@ -57815,22 +54556,14 @@ exports.bufferCount = bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 494 */
-=======
-/* 483 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var isScheduler_1 = __webpack_require__(12);
-<<<<<<< HEAD
 var bufferTime_1 = __webpack_require__(207);
-=======
-var bufferTime_1 = __webpack_require__(203);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Buffers the source Observable values for a specific time period.
@@ -57896,20 +54629,12 @@ exports.bufferTime = bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 495 */
-=======
-/* 484 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var bufferToggle_1 = __webpack_require__(208);
-=======
-var bufferToggle_1 = __webpack_require__(204);
->>>>>>> 820b72cea3... saving work
 /**
  * Buffers the source Observable values starting from an emission from
  * `openings` and ending when the output of `closingSelector` emits.
@@ -57955,20 +54680,12 @@ exports.bufferToggle = bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 496 */
-=======
-/* 485 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var bufferWhen_1 = __webpack_require__(209);
-=======
-var bufferWhen_1 = __webpack_require__(205);
->>>>>>> 820b72cea3... saving work
 /**
  * Buffers the source Observable values, using a factory function of closing
  * Observables to determine when to close, emit, and reset the buffer.
@@ -58009,20 +54726,12 @@ exports.bufferWhen = bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 497 */
-=======
-/* 486 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var catchError_1 = __webpack_require__(210);
-=======
-var catchError_1 = __webpack_require__(206);
->>>>>>> 820b72cea3... saving work
 /**
  * Catches errors on the observable to be handled by returning a new observable or throwing an error.
  *
@@ -58089,20 +54798,12 @@ exports._catch = _catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 498 */
-=======
-/* 487 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var combineAll_1 = __webpack_require__(211);
-=======
-var combineAll_1 = __webpack_require__(207);
->>>>>>> 820b72cea3... saving work
 /**
  * Converts a higher-order Observable into a first-order Observable by waiting
  * for the outer Observable to complete, then applying {@link combineLatest}.
@@ -58150,11 +54851,7 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 499 */
-=======
-/* 488 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58215,20 +54912,12 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 500 */
-=======
-/* 489 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var concat_1 = __webpack_require__(212);
-=======
-var concat_1 = __webpack_require__(208);
->>>>>>> 820b72cea3... saving work
 var concat_2 = __webpack_require__(20);
 exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
@@ -58292,11 +54981,7 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 501 */
-=======
-/* 490 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58358,11 +55043,7 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 502 */
-=======
-/* 491 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58435,20 +55116,12 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 503 */
-=======
-/* 492 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(213);
-=======
-var concatMapTo_1 = __webpack_require__(209);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -58513,20 +55186,12 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 504 */
-=======
-/* 493 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var count_1 = __webpack_require__(214);
-=======
-var count_1 = __webpack_require__(210);
->>>>>>> 820b72cea3... saving work
 /**
  * Counts the number of emissions on the source and emits that number when the
  * source completes.
@@ -58582,20 +55247,12 @@ exports.count = count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 505 */
-=======
-/* 494 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var debounce_1 = __webpack_require__(215);
-=======
-var debounce_1 = __webpack_require__(211);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits a value from the source Observable only after a particular time span
  * determined by another Observable has passed without another source emission.
@@ -58645,21 +55302,13 @@ exports.debounce = debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 506 */
-=======
-/* 495 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-<<<<<<< HEAD
 var debounceTime_1 = __webpack_require__(216);
-=======
-var debounceTime_1 = __webpack_require__(212);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits a value from the source Observable only after a particular time span
  * has passed without another source emission.
@@ -58714,11 +55363,7 @@ exports.debounceTime = debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 507 */
-=======
-/* 496 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58763,21 +55408,13 @@ exports.defaultIfEmpty = defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 508 */
-=======
-/* 497 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-<<<<<<< HEAD
 var delay_1 = __webpack_require__(217);
-=======
-var delay_1 = __webpack_require__(213);
->>>>>>> 820b72cea3... saving work
 /**
  * Delays the emission of items from the source Observable by a given timeout or
  * until a given Date.
@@ -58825,20 +55462,12 @@ exports.delay = delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 509 */
-=======
-/* 498 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var delayWhen_1 = __webpack_require__(218);
-=======
-var delayWhen_1 = __webpack_require__(214);
->>>>>>> 820b72cea3... saving work
 /**
  * Delays the emission of items from the source Observable by a given time span
  * determined by the emissions of another Observable.
@@ -58891,20 +55520,12 @@ exports.delayWhen = delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 510 */
-=======
-/* 499 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var dematerialize_1 = __webpack_require__(219);
-=======
-var dematerialize_1 = __webpack_require__(215);
->>>>>>> 820b72cea3... saving work
 /**
  * Converts an Observable of {@link Notification} objects into the emissions
  * that they represent.
@@ -58952,20 +55573,12 @@ exports.dematerialize = dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 511 */
-=======
-/* 500 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var distinct_1 = __webpack_require__(220);
-=======
-var distinct_1 = __webpack_require__(216);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -59018,11 +55631,7 @@ exports.distinct = distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 512 */
-=======
-/* 501 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59075,20 +55684,12 @@ exports.distinctUntilChanged = distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 513 */
-=======
-/* 502 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var distinctUntilKeyChanged_1 = __webpack_require__(221);
-=======
-var distinctUntilKeyChanged_1 = __webpack_require__(217);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item,
@@ -59154,20 +55755,12 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 514 */
-=======
-/* 503 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var tap_1 = __webpack_require__(269);
-=======
-var tap_1 = __webpack_require__(265);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Perform a side effect for every emission on the source Observable, but return
@@ -59219,20 +55812,12 @@ exports._do = _do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 515 */
-=======
-/* 504 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var elementAt_1 = __webpack_require__(222);
-=======
-var elementAt_1 = __webpack_require__(218);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits the single value at the specified `index` in a sequence of emissions
  * from the source Observable.
@@ -59282,20 +55867,12 @@ exports.elementAt = elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 516 */
-=======
-/* 505 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var every_1 = __webpack_require__(223);
-=======
-var every_1 = __webpack_require__(219);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that emits whether or not every item of the source satisfies the condition specified.
  *
@@ -59317,20 +55894,12 @@ exports.every = every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 517 */
-=======
-/* 506 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var exhaust_1 = __webpack_require__(224);
-=======
-var exhaust_1 = __webpack_require__(220);
->>>>>>> 820b72cea3... saving work
 /**
  * Converts a higher-order Observable into a first-order Observable by dropping
  * inner Observables while the previous inner Observable has not yet completed.
@@ -59373,20 +55942,12 @@ exports.exhaust = exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 518 */
-=======
-/* 507 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var exhaustMap_1 = __webpack_require__(225);
-=======
-var exhaustMap_1 = __webpack_require__(221);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -59440,20 +56001,12 @@ exports.exhaustMap = exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 519 */
-=======
-/* 508 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var expand_1 = __webpack_require__(226);
-=======
-var expand_1 = __webpack_require__(222);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Recursively projects each source value to an Observable which is merged in
@@ -59510,11 +56063,7 @@ exports.expand = expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 520 */
-=======
-/* 509 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59567,20 +56116,12 @@ exports.filter = filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 521 */
-=======
-/* 510 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var finalize_1 = __webpack_require__(227);
-=======
-var finalize_1 = __webpack_require__(223);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that mirrors the source Observable, but will call a specified function when
  * the source terminates on complete or error.
@@ -59596,11 +56137,7 @@ exports._finally = _finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 522 */
-=======
-/* 511 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59647,20 +56184,12 @@ exports.find = find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 523 */
-=======
-/* 512 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var findIndex_1 = __webpack_require__(228);
-=======
-var findIndex_1 = __webpack_require__(224);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits only the index of the first value emitted by the source Observable that
  * meets some condition.
@@ -59702,20 +56231,12 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 524 */
-=======
-/* 513 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var first_1 = __webpack_require__(229);
-=======
-var first_1 = __webpack_require__(225);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits only the first value (or the first value that meets some condition)
  * emitted by the source Observable.
@@ -59772,20 +56293,12 @@ exports.first = first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 525 */
-=======
-/* 514 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var groupBy_1 = __webpack_require__(230);
-=======
-var groupBy_1 = __webpack_require__(226);
->>>>>>> 820b72cea3... saving work
 exports.GroupedObservable = groupBy_1.GroupedObservable;
 /* tslint:enable:max-line-length */
 /**
@@ -59862,20 +56375,12 @@ exports.groupBy = groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 526 */
-=======
-/* 515 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var ignoreElements_1 = __webpack_require__(231);
-=======
-var ignoreElements_1 = __webpack_require__(227);
->>>>>>> 820b72cea3... saving work
 /**
  * Ignores all items emitted by the source Observable and only passes calls of `complete` or `error`.
  *
@@ -59894,20 +56399,12 @@ exports.ignoreElements = ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 527 */
-=======
-/* 516 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var isEmpty_1 = __webpack_require__(232);
-=======
-var isEmpty_1 = __webpack_require__(228);
->>>>>>> 820b72cea3... saving work
 /**
  * If the source Observable is empty it returns an Observable that emits true, otherwise it emits false.
  *
@@ -59924,20 +56421,12 @@ exports.isEmpty = isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 528 */
-=======
-/* 517 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var last_1 = __webpack_require__(233);
-=======
-var last_1 = __webpack_require__(229);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits only the last item emitted by the source Observable.
@@ -59963,11 +56452,7 @@ exports.last = last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 529 */
-=======
-/* 518 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59985,11 +56470,7 @@ exports.letProto = letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 530 */
-=======
-/* 519 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60035,20 +56516,12 @@ exports.map = map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 531 */
-=======
-/* 520 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var mapTo_1 = __webpack_require__(234);
-=======
-var mapTo_1 = __webpack_require__(230);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits the given constant value on the output Observable every time the source
  * Observable emits a value.
@@ -60082,20 +56555,12 @@ exports.mapTo = mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 532 */
-=======
-/* 521 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var materialize_1 = __webpack_require__(235);
-=======
-var materialize_1 = __webpack_require__(231);
->>>>>>> 820b72cea3... saving work
 /**
  * Represents all of the notifications from the source Observable as `next`
  * emissions marked with their original types within {@link Notification}
@@ -60147,20 +56612,12 @@ exports.materialize = materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 533 */
-=======
-/* 522 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var max_1 = __webpack_require__(236);
-=======
-var max_1 = __webpack_require__(232);
->>>>>>> 820b72cea3... saving work
 /**
  * The Max operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the largest value.
@@ -60199,20 +56656,12 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 534 */
-=======
-/* 523 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var merge_1 = __webpack_require__(237);
-=======
-var merge_1 = __webpack_require__(233);
->>>>>>> 820b72cea3... saving work
 var merge_2 = __webpack_require__(31);
 exports.mergeStatic = merge_2.merge;
 /* tslint:enable:max-line-length */
@@ -60273,11 +56722,7 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 535 */
-=======
-/* 524 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60335,11 +56780,7 @@ exports.mergeAll = mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 536 */
-=======
-/* 525 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60412,20 +56853,12 @@ exports.mergeMap = mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 537 */
-=======
-/* 526 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(238);
-=======
-var mergeMapTo_1 = __webpack_require__(234);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -60478,20 +56911,12 @@ exports.mergeMapTo = mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 538 */
-=======
-/* 527 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var mergeScan_1 = __webpack_require__(239);
-=======
-var mergeScan_1 = __webpack_require__(235);
->>>>>>> 820b72cea3... saving work
 /**
  * Applies an accumulator function over the source Observable where the
  * accumulator function itself returns an Observable, then each intermediate
@@ -60531,20 +56956,12 @@ exports.mergeScan = mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 539 */
-=======
-/* 528 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var min_1 = __webpack_require__(240);
-=======
-var min_1 = __webpack_require__(236);
->>>>>>> 820b72cea3... saving work
 /**
  * The Min operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the smallest value.
@@ -60583,11 +57000,7 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 540 */
-=======
-/* 529 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60695,11 +57108,7 @@ exports.multicast = multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 541 */
-=======
-/* 530 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60759,11 +57168,7 @@ exports.observeOn = observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 542 */
-=======
-/* 531 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60842,20 +57247,12 @@ exports.onErrorResumeNext = onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 543 */
-=======
-/* 532 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(241);
-=======
-var pairwise_1 = __webpack_require__(237);
->>>>>>> 820b72cea3... saving work
 /**
  * Groups pairs of consecutive emissions together and emits them as an array of
  * two values.
@@ -60898,20 +57295,12 @@ exports.pairwise = pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 544 */
-=======
-/* 533 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var partition_1 = __webpack_require__(242);
-=======
-var partition_1 = __webpack_require__(238);
->>>>>>> 820b72cea3... saving work
 /**
  * Splits the source Observable into two, one with values that satisfy a
  * predicate, and another with values that don't satisfy the predicate.
@@ -60960,20 +57349,12 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 545 */
-=======
-/* 534 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var pluck_1 = __webpack_require__(243);
-=======
-var pluck_1 = __webpack_require__(239);
->>>>>>> 820b72cea3... saving work
 /**
  * Maps each source value (an object) to its specified nested property.
  *
@@ -61011,20 +57392,12 @@ exports.pluck = pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 546 */
-=======
-/* 535 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var publish_1 = __webpack_require__(244);
-=======
-var publish_1 = __webpack_require__(240);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Returns a ConnectableObservable, which is a variety of Observable that waits until its connect method is called
@@ -61046,20 +57419,12 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 547 */
-=======
-/* 536 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var publishBehavior_1 = __webpack_require__(245);
-=======
-var publishBehavior_1 = __webpack_require__(241);
->>>>>>> 820b72cea3... saving work
 /**
  * @param value
  * @return {ConnectableObservable<T>}
@@ -61073,20 +57438,12 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 548 */
-=======
-/* 537 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var publishLast_1 = __webpack_require__(246);
-=======
-var publishLast_1 = __webpack_require__(242);
->>>>>>> 820b72cea3... saving work
 /**
  * @return {ConnectableObservable<T>}
  * @method publishLast
@@ -61100,20 +57457,12 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 549 */
-=======
-/* 538 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var publishReplay_1 = __webpack_require__(247);
-=======
-var publishReplay_1 = __webpack_require__(243);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * @param bufferSize
@@ -61131,20 +57480,12 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 550 */
-=======
-/* 539 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var race_1 = __webpack_require__(248);
-=======
-var race_1 = __webpack_require__(244);
->>>>>>> 820b72cea3... saving work
 // NOTE: to support backwards compatability with 5.4.* and lower
 var race_2 = __webpack_require__(45);
 exports.raceStatic = race_2.race;
@@ -61168,11 +57509,7 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 551 */
-=======
-/* 540 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61238,20 +57575,12 @@ exports.reduce = reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 552 */
-=======
-/* 541 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var repeat_1 = __webpack_require__(249);
-=======
-var repeat_1 = __webpack_require__(245);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that repeats the stream of items emitted by the source Observable at most count times.
  *
@@ -61272,20 +57601,12 @@ exports.repeat = repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 553 */
-=======
-/* 542 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var repeatWhen_1 = __webpack_require__(250);
-=======
-var repeatWhen_1 = __webpack_require__(246);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that mirrors the source Observable with the exception of a `complete`. If the source
  * Observable calls `complete`, this method will emit to the Observable returned from `notifier`. If that Observable
@@ -61307,20 +57628,12 @@ exports.repeatWhen = repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 554 */
-=======
-/* 543 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var retry_1 = __webpack_require__(251);
-=======
-var retry_1 = __webpack_require__(247);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will resubscribe to the source Observable for a maximum of `count` resubscriptions (given
@@ -61345,20 +57658,12 @@ exports.retry = retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 555 */
-=======
-/* 544 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var retryWhen_1 = __webpack_require__(252);
-=======
-var retryWhen_1 = __webpack_require__(248);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will emit the Throwable that caused the error to the Observable returned from `notifier`.
@@ -61380,20 +57685,12 @@ exports.retryWhen = retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 556 */
-=======
-/* 545 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var sample_1 = __webpack_require__(253);
-=======
-var sample_1 = __webpack_require__(249);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits the most recently emitted value from the source Observable whenever
  * another Observable, the `notifier`, emits.
@@ -61435,21 +57732,13 @@ exports.sample = sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 557 */
-=======
-/* 546 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-<<<<<<< HEAD
 var sampleTime_1 = __webpack_require__(254);
-=======
-var sampleTime_1 = __webpack_require__(250);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits the most recently emitted value from the source Observable within
  * periodic time intervals.
@@ -61494,11 +57783,7 @@ exports.sampleTime = sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 558 */
-=======
-/* 547 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61552,20 +57837,12 @@ exports.scan = scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 559 */
-=======
-/* 548 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var sequenceEqual_1 = __webpack_require__(255);
-=======
-var sequenceEqual_1 = __webpack_require__(251);
->>>>>>> 820b72cea3... saving work
 /**
  * Compares all values of two observables in sequence using an optional comparor function
  * and returns an observable of a single boolean value representing whether or not the two sequences
@@ -61625,20 +57902,12 @@ exports.sequenceEqual = sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 560 */
-=======
-/* 549 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var share_1 = __webpack_require__(256);
-=======
-var share_1 = __webpack_require__(252);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns a new Observable that multicasts (shares) the original Observable. As long as there is at least one
  * Subscriber this Observable will be subscribed and emitting data. When all subscribers have unsubscribed it will
@@ -61663,20 +57932,12 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 561 */
-=======
-/* 550 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var shareReplay_1 = __webpack_require__(257);
-=======
-var shareReplay_1 = __webpack_require__(253);
->>>>>>> 820b72cea3... saving work
 /**
  * @method shareReplay
  * @owner Observable
@@ -61689,20 +57950,12 @@ exports.shareReplay = shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 562 */
-=======
-/* 551 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var single_1 = __webpack_require__(258);
-=======
-var single_1 = __webpack_require__(254);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that emits the single item emitted by the source Observable that matches a specified
  * predicate, if that Observable emits one such item. If the source Observable emits more than one such item or no
@@ -61726,20 +57979,12 @@ exports.single = single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 563 */
-=======
-/* 552 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var skip_1 = __webpack_require__(259);
-=======
-var skip_1 = __webpack_require__(255);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that skips the first `count` items emitted by the source Observable.
  *
@@ -61758,20 +58003,12 @@ exports.skip = skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 564 */
-=======
-/* 553 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var skipLast_1 = __webpack_require__(260);
-=======
-var skipLast_1 = __webpack_require__(256);
->>>>>>> 820b72cea3... saving work
 /**
  * Skip the last `count` values emitted by the source Observable.
  *
@@ -61811,20 +58048,12 @@ exports.skipLast = skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 565 */
-=======
-/* 554 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var skipUntil_1 = __webpack_require__(261);
-=======
-var skipUntil_1 = __webpack_require__(257);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that skips items emitted by the source Observable until a second Observable emits an item.
  *
@@ -61844,20 +58073,12 @@ exports.skipUntil = skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 566 */
-=======
-/* 555 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var skipWhile_1 = __webpack_require__(262);
-=======
-var skipWhile_1 = __webpack_require__(258);
->>>>>>> 820b72cea3... saving work
 /**
  * Returns an Observable that skips all items emitted by the source Observable as long as a specified condition holds
  * true, but emits all further source items as soon as the condition becomes false.
@@ -61877,20 +58098,12 @@ exports.skipWhile = skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 567 */
-=======
-/* 556 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var startWith_1 = __webpack_require__(263);
-=======
-var startWith_1 = __webpack_require__(259);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the items you specify as arguments before it begins to emit
@@ -61917,20 +58130,12 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 568 */
-=======
-/* 557 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var subscribeOn_1 = __webpack_require__(591);
-=======
-var subscribeOn_1 = __webpack_require__(580);
->>>>>>> 820b72cea3... saving work
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -61950,20 +58155,12 @@ exports.subscribeOn = subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 569 */
-=======
-/* 558 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var switchAll_1 = __webpack_require__(264);
-=======
-var switchAll_1 = __webpack_require__(260);
->>>>>>> 820b72cea3... saving work
 /**
  * Converts a higher-order Observable into a first-order Observable by
  * subscribing to only the most recently emitted of those inner Observables.
@@ -62013,11 +58210,7 @@ exports._switch = _switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 570 */
-=======
-/* 559 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62078,20 +58271,12 @@ exports.switchMap = switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 571 */
-=======
-/* 560 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var switchMapTo_1 = __webpack_require__(265);
-=======
-var switchMapTo_1 = __webpack_require__(261);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is flattened multiple
@@ -62142,20 +58327,12 @@ exports.switchMapTo = switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 572 */
-=======
-/* 561 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var take_1 = __webpack_require__(266);
-=======
-var take_1 = __webpack_require__(262);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits only the first `count` values emitted by the source Observable.
  *
@@ -62196,11 +58373,7 @@ exports.take = take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 573 */
-=======
-/* 562 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62249,20 +58422,12 @@ exports.takeLast = takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 574 */
-=======
-/* 563 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var takeUntil_1 = __webpack_require__(267);
-=======
-var takeUntil_1 = __webpack_require__(263);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits the values emitted by the source Observable until a `notifier`
  * Observable emits a value.
@@ -62303,20 +58468,12 @@ exports.takeUntil = takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 575 */
-=======
-/* 564 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var takeWhile_1 = __webpack_require__(268);
-=======
-var takeWhile_1 = __webpack_require__(264);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits values emitted by the source Observable so long as each value satisfies
  * the given `predicate`, and then completes as soon as this `predicate` is not
@@ -62360,11 +58517,7 @@ exports.takeWhile = takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 576 */
-=======
-/* 565 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62418,22 +58571,14 @@ exports.throttle = throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 577 */
-=======
-/* 566 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var throttle_1 = __webpack_require__(35);
-<<<<<<< HEAD
 var throttleTime_1 = __webpack_require__(270);
-=======
-var throttleTime_1 = __webpack_require__(266);
->>>>>>> 820b72cea3... saving work
 /**
  * Emits a value from the source Observable, then ignores subsequent source
  * values for `duration` milliseconds, then repeats this process.
@@ -62482,21 +58627,13 @@ exports.throttleTime = throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 578 */
-=======
-/* 567 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-<<<<<<< HEAD
 var timeout_1 = __webpack_require__(272);
-=======
-var timeout_1 = __webpack_require__(268);
->>>>>>> 820b72cea3... saving work
 /**
  *
  * Errors if Observable does not emit a value in given time span.
@@ -62570,21 +58707,13 @@ exports.timeout = timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 579 */
-=======
-/* 568 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-<<<<<<< HEAD
 var timeoutWith_1 = __webpack_require__(273);
-=======
-var timeoutWith_1 = __webpack_require__(269);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  *
@@ -62641,11 +58770,7 @@ exports.timeoutWith = timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 580 */
-=======
-/* 569 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62666,20 +58791,12 @@ exports.timestamp = timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 581 */
-=======
-/* 570 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var toArray_1 = __webpack_require__(274);
-=======
-var toArray_1 = __webpack_require__(270);
->>>>>>> 820b72cea3... saving work
 /**
  * Collects all source emissions and emits them as an array when the source completes.
  *
@@ -62710,20 +58827,12 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 582 */
-=======
-/* 571 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var window_1 = __webpack_require__(275);
-=======
-var window_1 = __webpack_require__(271);
->>>>>>> 820b72cea3... saving work
 /**
  * Branch out the source Observable values as a nested Observable whenever
  * `windowBoundaries` emits.
@@ -62767,20 +58876,12 @@ exports.window = window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 583 */
-=======
-/* 572 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var windowCount_1 = __webpack_require__(276);
-=======
-var windowCount_1 = __webpack_require__(272);
->>>>>>> 820b72cea3... saving work
 /**
  * Branch out the source Observable values as a nested Observable with each
  * nested Observable emitting at most `windowSize` values.
@@ -62837,11 +58938,7 @@ exports.windowCount = windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 584 */
-=======
-/* 573 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62849,11 +58946,7 @@ exports.windowCount = windowCount;
 var async_1 = __webpack_require__(5);
 var isNumeric_1 = __webpack_require__(28);
 var isScheduler_1 = __webpack_require__(12);
-<<<<<<< HEAD
 var windowTime_1 = __webpack_require__(277);
-=======
-var windowTime_1 = __webpack_require__(273);
->>>>>>> 820b72cea3... saving work
 function windowTime(windowTimeSpan) {
     var scheduler = async_1.async;
     var windowCreationInterval = null;
@@ -62879,20 +58972,12 @@ exports.windowTime = windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 585 */
-=======
-/* 574 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var windowToggle_1 = __webpack_require__(278);
-=======
-var windowToggle_1 = __webpack_require__(274);
->>>>>>> 820b72cea3... saving work
 /**
  * Branch out the source Observable values as a nested Observable starting from
  * an emission from `openings` and ending when the output of `closingSelector`
@@ -62941,20 +59026,12 @@ exports.windowToggle = windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 586 */
-=======
-/* 575 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var windowWhen_1 = __webpack_require__(279);
-=======
-var windowWhen_1 = __webpack_require__(275);
->>>>>>> 820b72cea3... saving work
 /**
  * Branch out the source Observable values as a nested Observable using a
  * factory function of closing Observables to determine when to start a new
@@ -63000,20 +59077,12 @@ exports.windowWhen = windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 587 */
-=======
-/* 576 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var withLatestFrom_1 = __webpack_require__(280);
-=======
-var withLatestFrom_1 = __webpack_require__(276);
->>>>>>> 820b72cea3... saving work
 /* tslint:enable:max-line-length */
 /**
  * Combines the source Observable with other Observables to create an Observable
@@ -63064,11 +59133,7 @@ exports.withLatestFrom = withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 588 */
-=======
-/* 577 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63092,20 +59157,12 @@ exports.zipProto = zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 589 */
-=======
-/* 578 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var zipAll_1 = __webpack_require__(281);
-=======
-var zipAll_1 = __webpack_require__(277);
->>>>>>> 820b72cea3... saving work
 /**
  * @param project
  * @return {Observable<R>|WebSocketSubject<T>|Observable<T>}
@@ -63119,18 +59176,13 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 590 */
-=======
-/* 579 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var audit_1 = __webpack_require__(46);
 exports.audit = audit_1.audit;
-<<<<<<< HEAD
 var auditTime_1 = __webpack_require__(204);
 exports.auditTime = auditTime_1.auditTime;
 var buffer_1 = __webpack_require__(205);
@@ -63150,33 +59202,11 @@ exports.combineAll = combineAll_1.combineAll;
 var combineLatest_1 = __webpack_require__(32);
 exports.combineLatest = combineLatest_1.combineLatest;
 var concat_1 = __webpack_require__(212);
-=======
-var auditTime_1 = __webpack_require__(200);
-exports.auditTime = auditTime_1.auditTime;
-var buffer_1 = __webpack_require__(201);
-exports.buffer = buffer_1.buffer;
-var bufferCount_1 = __webpack_require__(202);
-exports.bufferCount = bufferCount_1.bufferCount;
-var bufferTime_1 = __webpack_require__(203);
-exports.bufferTime = bufferTime_1.bufferTime;
-var bufferToggle_1 = __webpack_require__(204);
-exports.bufferToggle = bufferToggle_1.bufferToggle;
-var bufferWhen_1 = __webpack_require__(205);
-exports.bufferWhen = bufferWhen_1.bufferWhen;
-var catchError_1 = __webpack_require__(206);
-exports.catchError = catchError_1.catchError;
-var combineAll_1 = __webpack_require__(207);
-exports.combineAll = combineAll_1.combineAll;
-var combineLatest_1 = __webpack_require__(32);
-exports.combineLatest = combineLatest_1.combineLatest;
-var concat_1 = __webpack_require__(208);
->>>>>>> 820b72cea3... saving work
 exports.concat = concat_1.concat;
 var concatAll_1 = __webpack_require__(47);
 exports.concatAll = concatAll_1.concatAll;
 var concatMap_1 = __webpack_require__(48);
 exports.concatMap = concatMap_1.concatMap;
-<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(213);
 exports.concatMapTo = concatMapTo_1.concatMapTo;
 var count_1 = __webpack_require__(214);
@@ -63236,67 +59266,6 @@ exports.materialize = materialize_1.materialize;
 var max_1 = __webpack_require__(236);
 exports.max = max_1.max;
 var merge_1 = __webpack_require__(237);
-=======
-var concatMapTo_1 = __webpack_require__(209);
-exports.concatMapTo = concatMapTo_1.concatMapTo;
-var count_1 = __webpack_require__(210);
-exports.count = count_1.count;
-var debounce_1 = __webpack_require__(211);
-exports.debounce = debounce_1.debounce;
-var debounceTime_1 = __webpack_require__(212);
-exports.debounceTime = debounceTime_1.debounceTime;
-var defaultIfEmpty_1 = __webpack_require__(49);
-exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
-var delay_1 = __webpack_require__(213);
-exports.delay = delay_1.delay;
-var delayWhen_1 = __webpack_require__(214);
-exports.delayWhen = delayWhen_1.delayWhen;
-var dematerialize_1 = __webpack_require__(215);
-exports.dematerialize = dematerialize_1.dematerialize;
-var distinct_1 = __webpack_require__(216);
-exports.distinct = distinct_1.distinct;
-var distinctUntilChanged_1 = __webpack_require__(50);
-exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
-var distinctUntilKeyChanged_1 = __webpack_require__(217);
-exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
-var elementAt_1 = __webpack_require__(218);
-exports.elementAt = elementAt_1.elementAt;
-var every_1 = __webpack_require__(219);
-exports.every = every_1.every;
-var exhaust_1 = __webpack_require__(220);
-exports.exhaust = exhaust_1.exhaust;
-var exhaustMap_1 = __webpack_require__(221);
-exports.exhaustMap = exhaustMap_1.exhaustMap;
-var expand_1 = __webpack_require__(222);
-exports.expand = expand_1.expand;
-var filter_1 = __webpack_require__(51);
-exports.filter = filter_1.filter;
-var finalize_1 = __webpack_require__(223);
-exports.finalize = finalize_1.finalize;
-var find_1 = __webpack_require__(52);
-exports.find = find_1.find;
-var findIndex_1 = __webpack_require__(224);
-exports.findIndex = findIndex_1.findIndex;
-var first_1 = __webpack_require__(225);
-exports.first = first_1.first;
-var groupBy_1 = __webpack_require__(226);
-exports.groupBy = groupBy_1.groupBy;
-var ignoreElements_1 = __webpack_require__(227);
-exports.ignoreElements = ignoreElements_1.ignoreElements;
-var isEmpty_1 = __webpack_require__(228);
-exports.isEmpty = isEmpty_1.isEmpty;
-var last_1 = __webpack_require__(229);
-exports.last = last_1.last;
-var map_1 = __webpack_require__(21);
-exports.map = map_1.map;
-var mapTo_1 = __webpack_require__(230);
-exports.mapTo = mapTo_1.mapTo;
-var materialize_1 = __webpack_require__(231);
-exports.materialize = materialize_1.materialize;
-var max_1 = __webpack_require__(232);
-exports.max = max_1.max;
-var merge_1 = __webpack_require__(233);
->>>>>>> 820b72cea3... saving work
 exports.merge = merge_1.merge;
 var mergeAll_1 = __webpack_require__(33);
 exports.mergeAll = mergeAll_1.mergeAll;
@@ -63304,19 +59273,11 @@ var mergeMap_1 = __webpack_require__(22);
 exports.mergeMap = mergeMap_1.mergeMap;
 var mergeMap_2 = __webpack_require__(22);
 exports.flatMap = mergeMap_2.mergeMap;
-<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(238);
 exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
 var mergeScan_1 = __webpack_require__(239);
 exports.mergeScan = mergeScan_1.mergeScan;
 var min_1 = __webpack_require__(240);
-=======
-var mergeMapTo_1 = __webpack_require__(234);
-exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
-var mergeScan_1 = __webpack_require__(235);
-exports.mergeScan = mergeScan_1.mergeScan;
-var min_1 = __webpack_require__(236);
->>>>>>> 820b72cea3... saving work
 exports.min = min_1.min;
 var multicast_1 = __webpack_require__(17);
 exports.multicast = multicast_1.multicast;
@@ -63324,7 +59285,6 @@ var observeOn_1 = __webpack_require__(34);
 exports.observeOn = observeOn_1.observeOn;
 var onErrorResumeNext_1 = __webpack_require__(53);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
-<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(241);
 exports.pairwise = pairwise_1.pairwise;
 var partition_1 = __webpack_require__(242);
@@ -63376,59 +59336,6 @@ exports.skipUntil = skipUntil_1.skipUntil;
 var skipWhile_1 = __webpack_require__(262);
 exports.skipWhile = skipWhile_1.skipWhile;
 var startWith_1 = __webpack_require__(263);
-=======
-var pairwise_1 = __webpack_require__(237);
-exports.pairwise = pairwise_1.pairwise;
-var partition_1 = __webpack_require__(238);
-exports.partition = partition_1.partition;
-var pluck_1 = __webpack_require__(239);
-exports.pluck = pluck_1.pluck;
-var publish_1 = __webpack_require__(240);
-exports.publish = publish_1.publish;
-var publishBehavior_1 = __webpack_require__(241);
-exports.publishBehavior = publishBehavior_1.publishBehavior;
-var publishLast_1 = __webpack_require__(242);
-exports.publishLast = publishLast_1.publishLast;
-var publishReplay_1 = __webpack_require__(243);
-exports.publishReplay = publishReplay_1.publishReplay;
-var race_1 = __webpack_require__(244);
-exports.race = race_1.race;
-var reduce_1 = __webpack_require__(23);
-exports.reduce = reduce_1.reduce;
-var repeat_1 = __webpack_require__(245);
-exports.repeat = repeat_1.repeat;
-var repeatWhen_1 = __webpack_require__(246);
-exports.repeatWhen = repeatWhen_1.repeatWhen;
-var retry_1 = __webpack_require__(247);
-exports.retry = retry_1.retry;
-var retryWhen_1 = __webpack_require__(248);
-exports.retryWhen = retryWhen_1.retryWhen;
-var refCount_1 = __webpack_require__(54);
-exports.refCount = refCount_1.refCount;
-var sample_1 = __webpack_require__(249);
-exports.sample = sample_1.sample;
-var sampleTime_1 = __webpack_require__(250);
-exports.sampleTime = sampleTime_1.sampleTime;
-var scan_1 = __webpack_require__(55);
-exports.scan = scan_1.scan;
-var sequenceEqual_1 = __webpack_require__(251);
-exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
-var share_1 = __webpack_require__(252);
-exports.share = share_1.share;
-var shareReplay_1 = __webpack_require__(253);
-exports.shareReplay = shareReplay_1.shareReplay;
-var single_1 = __webpack_require__(254);
-exports.single = single_1.single;
-var skip_1 = __webpack_require__(255);
-exports.skip = skip_1.skip;
-var skipLast_1 = __webpack_require__(256);
-exports.skipLast = skipLast_1.skipLast;
-var skipUntil_1 = __webpack_require__(257);
-exports.skipUntil = skipUntil_1.skipUntil;
-var skipWhile_1 = __webpack_require__(258);
-exports.skipWhile = skipWhile_1.skipWhile;
-var startWith_1 = __webpack_require__(259);
->>>>>>> 820b72cea3... saving work
 exports.startWith = startWith_1.startWith;
 /**
  * TODO(https://github.com/ReactiveX/rxjs/issues/2900): Add back subscribeOn once it can be
@@ -63437,7 +59344,6 @@ exports.startWith = startWith_1.startWith;
  * Immediate, root, and other supporting code.
  */
 // export { subscribeOn } from './operators/subscribeOn';
-<<<<<<< HEAD
 var switchAll_1 = __webpack_require__(264);
 exports.switchAll = switchAll_1.switchAll;
 var switchMap_1 = __webpack_require__(56);
@@ -63483,71 +59389,16 @@ exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
 var zip_1 = __webpack_require__(36);
 exports.zip = zip_1.zip;
 var zipAll_1 = __webpack_require__(281);
-=======
-var switchAll_1 = __webpack_require__(260);
-exports.switchAll = switchAll_1.switchAll;
-var switchMap_1 = __webpack_require__(56);
-exports.switchMap = switchMap_1.switchMap;
-var switchMapTo_1 = __webpack_require__(261);
-exports.switchMapTo = switchMapTo_1.switchMapTo;
-var take_1 = __webpack_require__(262);
-exports.take = take_1.take;
-var takeLast_1 = __webpack_require__(57);
-exports.takeLast = takeLast_1.takeLast;
-var takeUntil_1 = __webpack_require__(263);
-exports.takeUntil = takeUntil_1.takeUntil;
-var takeWhile_1 = __webpack_require__(264);
-exports.takeWhile = takeWhile_1.takeWhile;
-var tap_1 = __webpack_require__(265);
-exports.tap = tap_1.tap;
-var throttle_1 = __webpack_require__(35);
-exports.throttle = throttle_1.throttle;
-var throttleTime_1 = __webpack_require__(266);
-exports.throttleTime = throttleTime_1.throttleTime;
-var timeInterval_1 = __webpack_require__(267);
-exports.timeInterval = timeInterval_1.timeInterval;
-var timeout_1 = __webpack_require__(268);
-exports.timeout = timeout_1.timeout;
-var timeoutWith_1 = __webpack_require__(269);
-exports.timeoutWith = timeoutWith_1.timeoutWith;
-var timestamp_1 = __webpack_require__(58);
-exports.timestamp = timestamp_1.timestamp;
-var toArray_1 = __webpack_require__(270);
-exports.toArray = toArray_1.toArray;
-var window_1 = __webpack_require__(271);
-exports.window = window_1.window;
-var windowCount_1 = __webpack_require__(272);
-exports.windowCount = windowCount_1.windowCount;
-var windowTime_1 = __webpack_require__(273);
-exports.windowTime = windowTime_1.windowTime;
-var windowToggle_1 = __webpack_require__(274);
-exports.windowToggle = windowToggle_1.windowToggle;
-var windowWhen_1 = __webpack_require__(275);
-exports.windowWhen = windowWhen_1.windowWhen;
-var withLatestFrom_1 = __webpack_require__(276);
-exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
-var zip_1 = __webpack_require__(36);
-exports.zip = zip_1.zip;
-var zipAll_1 = __webpack_require__(277);
->>>>>>> 820b72cea3... saving work
 exports.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=operators.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 591 */
-=======
-/* 580 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var SubscribeOnObservable_1 = __webpack_require__(465);
-=======
-var SubscribeOnObservable_1 = __webpack_require__(454);
->>>>>>> 820b72cea3... saving work
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -63579,11 +59430,7 @@ var SubscribeOnOperator = (function () {
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 592 */
-=======
-/* 581 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63633,11 +59480,7 @@ exports.Action = Action;
 //# sourceMappingURL=Action.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 593 */
-=======
-/* 582 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63648,11 +59491,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AsyncAction_1 = __webpack_require__(24);
-<<<<<<< HEAD
 var AnimationFrame_1 = __webpack_require__(603);
-=======
-var AnimationFrame_1 = __webpack_require__(592);
->>>>>>> 820b72cea3... saving work
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -63702,11 +59541,7 @@ exports.AnimationFrameAction = AnimationFrameAction;
 //# sourceMappingURL=AnimationFrameAction.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 594 */
-=======
-/* 583 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63749,11 +59584,7 @@ exports.AnimationFrameScheduler = AnimationFrameScheduler;
 //# sourceMappingURL=AnimationFrameScheduler.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 595 */
-=======
-/* 584 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63763,11 +59594,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-<<<<<<< HEAD
 var Immediate_1 = __webpack_require__(605);
-=======
-var Immediate_1 = __webpack_require__(594);
->>>>>>> 820b72cea3... saving work
 var AsyncAction_1 = __webpack_require__(24);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -63818,11 +59645,7 @@ exports.AsapAction = AsapAction;
 //# sourceMappingURL=AsapAction.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 596 */
-=======
-/* 585 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63865,11 +59688,7 @@ exports.AsapScheduler = AsapScheduler;
 //# sourceMappingURL=AsapScheduler.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 597 */
-=======
-/* 586 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63924,11 +59743,7 @@ exports.QueueAction = QueueAction;
 //# sourceMappingURL=QueueAction.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 598 */
-=======
-/* 587 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63950,22 +59765,13 @@ exports.QueueScheduler = QueueScheduler;
 //# sourceMappingURL=QueueScheduler.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 599 */
-=======
-/* 588 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 var AnimationFrameAction_1 = __webpack_require__(593);
 var AnimationFrameScheduler_1 = __webpack_require__(594);
-=======
-var AnimationFrameAction_1 = __webpack_require__(582);
-var AnimationFrameScheduler_1 = __webpack_require__(583);
->>>>>>> 820b72cea3... saving work
 /**
  *
  * Animation Frame Scheduler
@@ -64000,11 +59806,7 @@ exports.animationFrame = new AnimationFrameScheduler_1.AnimationFrameScheduler(A
 //# sourceMappingURL=animationFrame.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 600 */
-=======
-/* 589 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64016,13 +59818,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Subscription_1 = __webpack_require__(7);
-<<<<<<< HEAD
 var SubscriptionLoggable_1 = __webpack_require__(286);
 var applyMixins_1 = __webpack_require__(289);
-=======
-var SubscriptionLoggable_1 = __webpack_require__(282);
-var applyMixins_1 = __webpack_require__(285);
->>>>>>> 820b72cea3... saving work
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -64061,11 +59858,7 @@ applyMixins_1.applyMixins(ColdObservable, [SubscriptionLoggable_1.SubscriptionLo
 //# sourceMappingURL=ColdObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 601 */
-=======
-/* 590 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64077,13 +59870,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Subject_1 = __webpack_require__(8);
 var Subscription_1 = __webpack_require__(7);
-<<<<<<< HEAD
 var SubscriptionLoggable_1 = __webpack_require__(286);
 var applyMixins_1 = __webpack_require__(289);
-=======
-var SubscriptionLoggable_1 = __webpack_require__(282);
-var applyMixins_1 = __webpack_require__(285);
->>>>>>> 820b72cea3... saving work
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -64124,11 +59912,7 @@ applyMixins_1.applyMixins(HotObservable, [SubscriptionLoggable_1.SubscriptionLog
 //# sourceMappingURL=HotObservable.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 602 */
-=======
-/* 591 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64140,17 +59924,10 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Notification_1 = __webpack_require__(19);
-<<<<<<< HEAD
 var ColdObservable_1 = __webpack_require__(600);
 var HotObservable_1 = __webpack_require__(601);
 var SubscriptionLog_1 = __webpack_require__(285);
 var VirtualTimeScheduler_1 = __webpack_require__(282);
-=======
-var ColdObservable_1 = __webpack_require__(589);
-var HotObservable_1 = __webpack_require__(590);
-var SubscriptionLog_1 = __webpack_require__(281);
-var VirtualTimeScheduler_1 = __webpack_require__(278);
->>>>>>> 820b72cea3... saving work
 var defaultMaxFrame = 750;
 var TestScheduler = (function (_super) {
     __extends(TestScheduler, _super);
@@ -64364,11 +60141,7 @@ exports.TestScheduler = TestScheduler;
 //# sourceMappingURL=TestScheduler.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 603 */
-=======
-/* 592 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64408,11 +60181,7 @@ exports.AnimationFrame = new RequestAnimationFrameDefinition(root_1.root);
 //# sourceMappingURL=AnimationFrame.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 604 */
-=======
-/* 593 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64449,11 +60218,7 @@ exports.FastMap = FastMap;
 //# sourceMappingURL=FastMap.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 605 */
-=======
-/* 594 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64666,36 +60431,21 @@ var ImmediateDefinition = (function () {
 exports.ImmediateDefinition = ImmediateDefinition;
 exports.Immediate = new ImmediateDefinition(root_1.root);
 //# sourceMappingURL=Immediate.js.map
-<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294).clearImmediate, __webpack_require__(294).setImmediate))
 
 /***/ }),
 /* 606 */
-=======
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(290).clearImmediate, __webpack_require__(290).setImmediate))
-
-/***/ }),
-/* 595 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var root_1 = __webpack_require__(11);
-<<<<<<< HEAD
 var MapPolyfill_1 = __webpack_require__(607);
-=======
-var MapPolyfill_1 = __webpack_require__(596);
->>>>>>> 820b72cea3... saving work
 exports.Map = root_1.root.Map || (function () { return MapPolyfill_1.MapPolyfill; })();
 //# sourceMappingURL=Map.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 607 */
-=======
-/* 596 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64748,11 +60498,7 @@ exports.MapPolyfill = MapPolyfill;
 //# sourceMappingURL=MapPolyfill.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 608 */
-=======
-/* 597 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64791,11 +60537,7 @@ exports.Set = root_1.root.Set || minimalSetImpl();
 //# sourceMappingURL=Set.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 609 */
-=======
-/* 598 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64827,11 +60569,7 @@ exports.assign = getAssign(root_1.root);
 //# sourceMappingURL=assign.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 610 */
-=======
-/* 599 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64848,22 +60586,14 @@ exports.not = not;
 //# sourceMappingURL=not.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 611 */
-=======
-/* 600 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Subscriber_1 = __webpack_require__(2);
 var rxSubscriber_1 = __webpack_require__(38);
-<<<<<<< HEAD
 var Observer_1 = __webpack_require__(194);
-=======
-var Observer_1 = __webpack_require__(190);
->>>>>>> 820b72cea3... saving work
 function toSubscriber(nextOrObserver, error, complete) {
     if (nextOrObserver) {
         if (nextOrObserver instanceof Subscriber_1.Subscriber) {
@@ -64882,11 +60612,7 @@ exports.toSubscriber = toSubscriber;
 //# sourceMappingURL=toSubscriber.js.map
 
 /***/ }),
-<<<<<<< HEAD
 /* 612 */
-=======
-/* 601 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -65076,7 +60802,6 @@ exports.toSubscriber = toSubscriber;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64), __webpack_require__(317)))
 
 /***/ }),
@@ -65297,12 +61022,6 @@ exports.AddressService = AddressService;
 
 /***/ }),
 /* 618 */
-=======
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64), __webpack_require__(306)))
-
-/***/ }),
-/* 602 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65364,11 +61083,7 @@ exports.SWAssignedProducts = SWAssignedProducts;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 619 */
-=======
-/* 603 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65445,11 +61160,7 @@ exports.SWContentBasic = SWContentBasic;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 620 */
-=======
-/* 604 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65510,11 +61221,7 @@ exports.SWContentEditor = SWContentEditor;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 621 */
-=======
-/* 605 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65754,11 +61461,7 @@ exports.SWContentList = SWContentList;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 622 */
-=======
-/* 606 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65901,11 +61604,7 @@ exports.SWContentNode = SWContentNode;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 623 */
-=======
-/* 607 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66047,11 +61746,7 @@ exports.SWSiteSelector = SWSiteSelector;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 624 */
-=======
-/* 608 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66064,21 +61759,12 @@ var core_module_1 = __webpack_require__(6);
 //services
 //filters
 //directives
-<<<<<<< HEAD
 var swcontentbasic_1 = __webpack_require__(619);
 var swcontenteditor_1 = __webpack_require__(620);
 var swcontentlist_1 = __webpack_require__(621);
 var swcontentnode_1 = __webpack_require__(622);
 var swassignedproducts_1 = __webpack_require__(618);
 var swsiteselector_1 = __webpack_require__(623);
-=======
-var swcontentbasic_1 = __webpack_require__(603);
-var swcontenteditor_1 = __webpack_require__(604);
-var swcontentlist_1 = __webpack_require__(605);
-var swcontentnode_1 = __webpack_require__(606);
-var swassignedproducts_1 = __webpack_require__(602);
-var swsiteselector_1 = __webpack_require__(607);
->>>>>>> 820b72cea3... saving work
 var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('contentPartialsPath', 'content/components/')
@@ -66095,11 +61781,7 @@ exports.contentmodule = contentmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 625 */
-=======
-/* 609 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66203,11 +61885,7 @@ exports.SWFormResponseListing = SWFormResponseListing;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 626 */
-=======
-/* 610 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66219,11 +61897,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
-<<<<<<< HEAD
 var swformresponselisting_1 = __webpack_require__(625);
-=======
-var swformresponselisting_1 = __webpack_require__(609);
->>>>>>> 820b72cea3... saving work
 //models
 var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.name])
     .config([function () {
@@ -66238,11 +61912,7 @@ exports.formbuildermodule = formbuildermodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 627 */
-=======
-/* 611 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66250,11 +61920,7 @@ exports.formbuildermodule = formbuildermodule;
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var actions = __webpack_require__(295);
-=======
-var actions = __webpack_require__(291);
->>>>>>> 820b72cea3... saving work
 /**
  * Fulfillment Batch Detail Controller
  */
@@ -66479,11 +62145,7 @@ exports.SWFulfillmentBatchDetail = SWFulfillmentBatchDetail;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 628 */
-=======
-/* 612 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66494,17 +62156,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-<<<<<<< HEAD
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
 var swfulfillmentbatchdetail_1 = __webpack_require__(627);
-=======
-var orderfulfillmentservice_1 = __webpack_require__(292);
-//controllers
-//directives
-var swfulfillmentbatchdetail_1 = __webpack_require__(611);
->>>>>>> 820b72cea3... saving work
 //models 
 var fulfillmentbatchdetailmodule = angular.module('fulfillmentbatchdetail', [core_module_1.coremodule.name])
     .config([function () {
@@ -66521,11 +62176,7 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 629 */
-=======
-/* 613 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66533,11 +62184,7 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-<<<<<<< HEAD
 var giftrecipient_1 = __webpack_require__(639);
-=======
-var giftrecipient_1 = __webpack_require__(623);
->>>>>>> 820b72cea3... saving work
 var SWAddOrderItemRecipientController = /** @class */ (function () {
     //@ngInject
     function SWAddOrderItemRecipientController($hibachi, collectionConfigService, entityService, observerService) {
@@ -66696,11 +62343,7 @@ exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 630 */
-=======
-/* 614 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66779,11 +62422,7 @@ exports.SWGiftCardBalance = SWGiftCardBalance;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 631 */
-=======
-/* 615 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66842,11 +62481,7 @@ exports.SWGiftCardDetail = SWGiftCardDetail;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 632 */
-=======
-/* 616 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66976,11 +62611,7 @@ exports.SWGiftCardHistory = SWGiftCardHistory;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 633 */
-=======
-/* 617 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67040,11 +62671,7 @@ exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 634 */
-=======
-/* 618 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67085,11 +62712,7 @@ exports.SWGiftCardOverview = SWGiftCardOverview;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 635 */
-=======
-/* 619 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67135,11 +62758,7 @@ exports.SWGiftCardRecipientInfo = SWGiftCardRecipientInfo;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 636 */
-=======
-/* 620 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67247,11 +62866,7 @@ exports.SWOrderItemGiftRecipientRow = SWOrderItemGiftRecipientRow;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 637 */
-=======
-/* 621 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67297,11 +62912,7 @@ exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 638 */
-=======
-/* 622 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67312,7 +62923,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //controllers
-<<<<<<< HEAD
 var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(637);
 //directives
 var swaddorderitemgiftrecipient_1 = __webpack_require__(629);
@@ -67323,18 +62933,6 @@ var swgiftcardoverview_1 = __webpack_require__(634);
 var swgiftcardorderinfo_1 = __webpack_require__(633);
 var swgiftcardrecipientinfo_1 = __webpack_require__(635);
 var sworderitemgiftrecipientrow_1 = __webpack_require__(636);
-=======
-var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(621);
-//directives
-var swaddorderitemgiftrecipient_1 = __webpack_require__(613);
-var swgiftcardbalance_1 = __webpack_require__(614);
-var swgiftcarddetail_1 = __webpack_require__(615);
-var swgiftcardhistory_1 = __webpack_require__(616);
-var swgiftcardoverview_1 = __webpack_require__(618);
-var swgiftcardorderinfo_1 = __webpack_require__(617);
-var swgiftcardrecipientinfo_1 = __webpack_require__(619);
-var sworderitemgiftrecipientrow_1 = __webpack_require__(620);
->>>>>>> 820b72cea3... saving work
 var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -67356,11 +62954,7 @@ exports.giftcardmodule = giftcardmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 639 */
-=======
-/* 623 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67389,11 +62983,7 @@ exports.GiftRecipient = GiftRecipient;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 640 */
-=======
-/* 624 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67565,11 +63155,7 @@ exports.SWAddOptionGroup = SWAddOptionGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 641 */
-=======
-/* 625 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67645,11 +63231,7 @@ exports.SWOptionsForOptionGroup = SWOptionsForOptionGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 642 */
-=======
-/* 626 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67661,13 +63243,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
-<<<<<<< HEAD
 var swaddoptiongroup_1 = __webpack_require__(640);
 var swoptionsforoptiongroup_1 = __webpack_require__(641);
-=======
-var swaddoptiongroup_1 = __webpack_require__(624);
-var swoptionsforoptiongroup_1 = __webpack_require__(625);
->>>>>>> 820b72cea3... saving work
 var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -67682,7 +63259,6 @@ exports.optiongroupmodule = optiongroupmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 643 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -68935,9 +64511,6 @@ exports.OrderTemplateService = OrderTemplateService;
 
 /***/ }),
 /* 657 */
-=======
-/* 627 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69154,11 +64727,7 @@ exports.SWOrderDeliveryDetail = SWOrderDeliveryDetail;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 658 */
-=======
-/* 628 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69172,11 +64741,7 @@ var core_module_1 = __webpack_require__(6);
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
 //controllers
 //directives
-<<<<<<< HEAD
 var sworderdeliverydetail_1 = __webpack_require__(657);
-=======
-var sworderdeliverydetail_1 = __webpack_require__(627);
->>>>>>> 820b72cea3... saving work
 var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -69191,11 +64756,7 @@ exports.orderdeliverydetailmodule = orderdeliverydetailmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 659 */
-=======
-/* 629 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69856,11 +65417,7 @@ exports.SWOrderFulfillmentList = SWOrderFulfillmentList;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 660 */
-=======
-/* 630 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69871,17 +65428,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-<<<<<<< HEAD
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
 var sworderfulfillmentlist_1 = __webpack_require__(659);
-=======
-var orderfulfillmentservice_1 = __webpack_require__(292);
-//controllers
-//directives
-var sworderfulfillmentlist_1 = __webpack_require__(629);
->>>>>>> 820b72cea3... saving work
 //models 
 var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
     .config([function () {
@@ -69898,11 +65448,7 @@ exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 661 */
-=======
-/* 631 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70193,11 +65739,7 @@ exports.SWChildOrderItem = SWChildOrderItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 662 */
-=======
-/* 632 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70241,11 +65783,7 @@ exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 663 */
-=======
-/* 633 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70733,11 +66271,7 @@ exports.SWOrderItem = SWOrderItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 664 */
-=======
-/* 634 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70851,11 +66385,7 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 665 */
-=======
-/* 635 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71009,11 +66539,7 @@ exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 666 */
-=======
-/* 636 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71056,11 +66582,7 @@ exports.SWResizedImage = SWResizedImage;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 667 */
-=======
-/* 637 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71070,21 +66592,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(6);
 //directives
-<<<<<<< HEAD
 var swchildorderitem_1 = __webpack_require__(661);
 var sworderitem_1 = __webpack_require__(663);
 var swoishippinglabelstamp_1 = __webpack_require__(662);
 var sworderitemdetailstamp_1 = __webpack_require__(664);
 var sworderitems_1 = __webpack_require__(665);
 var swresizedimage_1 = __webpack_require__(666);
-=======
-var swchildorderitem_1 = __webpack_require__(631);
-var sworderitem_1 = __webpack_require__(633);
-var swoishippinglabelstamp_1 = __webpack_require__(632);
-var sworderitemdetailstamp_1 = __webpack_require__(634);
-var sworderitems_1 = __webpack_require__(635);
-var swresizedimage_1 = __webpack_require__(636);
->>>>>>> 820b72cea3... saving work
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -71104,11 +66617,7 @@ exports.orderitemmodule = orderitemmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 668 */
-=======
-/* 638 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71212,11 +66721,7 @@ exports.SWProductDeliveryScheduleDates = SWProductDeliveryScheduleDates;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 669 */
-=======
-/* 639 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71278,11 +66783,7 @@ exports.SWProductListingPages = SWProductListingPages;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 670 */
-=======
-/* 640 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71345,11 +66846,7 @@ exports.SWRelatedProducts = SWRelatedProducts;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 671 */
-=======
-/* 641 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71453,11 +66950,7 @@ exports.ProductCreateController = ProductCreateController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 672 */
-=======
-/* 642 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71469,21 +66962,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //controllers
-<<<<<<< HEAD
 var preprocessproduct_create_1 = __webpack_require__(671);
 //filters
 //directives
 var swproductlistingpages_1 = __webpack_require__(669);
 var swrelatedproducts_1 = __webpack_require__(670);
 var swproductdeliveryscheduledates_1 = __webpack_require__(668);
-=======
-var preprocessproduct_create_1 = __webpack_require__(641);
-//filters
-//directives
-var swproductlistingpages_1 = __webpack_require__(639);
-var swrelatedproducts_1 = __webpack_require__(640);
-var swproductdeliveryscheduledates_1 = __webpack_require__(638);
->>>>>>> 820b72cea3... saving work
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
@@ -71499,11 +66983,7 @@ exports.productmodule = productmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 673 */
-=======
-/* 643 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71848,11 +67328,7 @@ exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollection
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 674 */
-=======
-/* 644 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71874,11 +67350,7 @@ var CollectionFilterItem = /** @class */ (function () {
     return CollectionFilterItem;
 }());
 var SWProductBundleGroupController = /** @class */ (function () {
-<<<<<<< HEAD
     // @ngInject
-=======
-    //@ngInject
->>>>>>> 820b72cea3... saving work
     function SWProductBundleGroupController($log, $timeout, collectionConfigService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
         var _this = this;
         this.$log = $log;
@@ -72008,11 +67480,7 @@ var SWProductBundleGroupController = /** @class */ (function () {
     return SWProductBundleGroupController;
 }());
 var SWProductBundleGroup = /** @class */ (function () {
-<<<<<<< HEAD
     // @ngInject
-=======
-    //@ngInject
->>>>>>> 820b72cea3... saving work
     function SWProductBundleGroup(productBundlePartialsPath, slatwallPathBuilder) {
         this.productBundlePartialsPath = productBundlePartialsPath;
         this.restrict = "EA";
@@ -72046,11 +67514,7 @@ exports.SWProductBundleGroup = SWProductBundleGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 675 */
-=======
-/* 645 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72137,11 +67601,7 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 676 */
-=======
-/* 646 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72316,11 +67776,7 @@ exports.SWProductBundleGroupType = SWProductBundleGroupType;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 677 */
-=======
-/* 647 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72421,11 +67877,7 @@ exports.CreateBundleController = CreateBundleController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 678 */
-=======
-/* 648 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72436,7 +67888,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-<<<<<<< HEAD
 var productbundleservice_1 = __webpack_require__(679);
 //controllers
 var create_bundle_controller_1 = __webpack_require__(677);
@@ -72445,16 +67896,6 @@ var swproductbundlegrouptype_1 = __webpack_require__(676);
 var swproductbundlegroups_1 = __webpack_require__(675);
 var swproductbundlegroup_1 = __webpack_require__(674);
 var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(673);
-=======
-var productbundleservice_1 = __webpack_require__(649);
-//controllers
-var create_bundle_controller_1 = __webpack_require__(647);
-//directives
-var swproductbundlegrouptype_1 = __webpack_require__(646);
-var swproductbundlegroups_1 = __webpack_require__(645);
-var swproductbundlegroup_1 = __webpack_require__(644);
-var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(643);
->>>>>>> 820b72cea3... saving work
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
@@ -72473,11 +67914,7 @@ exports.productbundlemodule = productbundlemodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 679 */
-=======
-/* 649 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72563,11 +68000,7 @@ exports.ProductBundleService = ProductBundleService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 680 */
-=======
-/* 650 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72575,16 +68008,10 @@ exports.ProductBundleService = ProductBundleService;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-<<<<<<< HEAD
-var skuPriceModalLauncherHTML = __webpack_require__(312);
+var skuPriceModalLauncherHTML = __webpack_require__(311);
 var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
     //@ngInject
     function SWAddSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, $timeout) {
-=======
-var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
-    //@ngInject
-    function SWAddSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService) {
->>>>>>> 820b72cea3... saving work
         var _this = this;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
@@ -72593,15 +68020,10 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
         this.observerService = observerService;
         this.skuPriceService = skuPriceService;
         this.utilityService = utilityService;
-<<<<<<< HEAD
         this.$timeout = $timeout;
         this.baseName = "j-add-sku-item-";
         this.currencyCodeEditable = false;
         this.currencyCodeOptions = [];
-=======
-        this.baseName = "j-add-sku-item-";
-        this.currencyCodeEditable = false;
->>>>>>> 820b72cea3... saving work
         this.saveSuccess = true;
         this.updateCurrencyCodeSelector = function (args) {
             if (args != 'All') {
@@ -72615,7 +68037,6 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
         };
         this.initData = function () {
             //these are populated in the link function initially
-<<<<<<< HEAD
             _this.skuPrice = _this.skuPriceService.newSkuPrice();
             _this.observerService.notify("pullBindings");
         };
@@ -72641,85 +68062,6 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
                 _this.saveSuccess = true;
                 //hack, for whatever reason is not responding to getCollection event
                 _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
-=======
-            _this.skuPrice = _this.entityService.newEntity('SkuPrice');
-            _this.skuPrice.$$setSku(_this.sku);
-            _this.skuPrice.$$setPriceGroup(_this.priceGroup);
-            if (angular.isUndefined(_this.disableAllFieldsButPrice)) {
-                _this.disableAllFieldsButPrice = false;
-            }
-            if (angular.isUndefined(_this.defaultCurrencyOnly)) {
-                _this.defaultCurrencyOnly = false;
-            }
-            if (angular.isDefined(_this.minQuantity) && !isNaN(parseInt(_this.minQuantity))) {
-                _this.skuPrice.data.minQuantity = parseInt(_this.minQuantity);
-            }
-            if (angular.isDefined(_this.maxQuantity) && !isNaN(parseInt(_this.minQuantity))) {
-                _this.skuPrice.data.maxQuantity = parseInt(_this.maxQuantity);
-            }
-            if (angular.isUndefined(_this.currencyCodeOptions) && angular.isDefined(_this.eligibleCurrencyCodeList)) {
-                _this.currencyCodeOptions = _this.eligibleCurrencyCodeList.split(",");
-            }
-            if (_this.defaultCurrencyOnly) {
-                _this.skuPrice.data.currencyCode = "USD"; //temporarily hardcoded
-            }
-            else if (angular.isDefined(_this.currencyCode)) {
-                _this.skuPrice.data.currencyCode = _this.currencyCode;
-            }
-            else if (angular.isDefined(_this.currencyCodeOptions) && _this.currencyCodeOptions.length) {
-                _this.skuPrice.data.currencyCode = _this.currencyCodeOptions[0];
-            }
-            if (angular.isDefined(_this.priceGroupId)) {
-                _this.skuPrice.data.priceGroup_priceGroupID = _this.priceGroupId;
-            }
-            _this.observerService.notify("pullBindings");
-        };
-        this.save = function () {
-            _this.observerService.notify("updateBindings");
-            var firstSkuPriceForSku = !_this.skuPriceService.hasSkuPrices(_this.sku.data.skuID);
-            var savePromise = _this.skuPrice.$$save();
-            savePromise.then(function (response) {
-                if (firstSkuPriceForSku) {
-                    _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
-                }
-                _this.saveSuccess = true;
-                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
-                //temporarily overriding for USD need to get this setting accessable to client side
-                if (angular.isDefined(_this.listingID) &&
-                    _this.skuPrice.data.currencyCode == "USD") {
-                    var pageRecords = _this.listingService.getListingPageRecords(_this.listingID);
-                    for (var i = 0; i < pageRecords.length; i++) {
-                        if (angular.isDefined(pageRecords[i].skuID) &&
-                            pageRecords[i].skuID == _this.sku.data.skuID) {
-                            var skuPageRecord = pageRecords[i];
-                            var index = i + 1;
-                            while (index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)) {
-                                //if there is a place in the listing to insert the new sku price lets insert it
-                                if ((pageRecords[index].minQuantity <= _this.skuPrice.data.minQuantity) &&
-                                    (index + 1 < pageRecords.length && (pageRecords[index + 1].minQuantity >= _this.skuPrice.data.minQuantity ||
-                                        angular.isDefined(pageRecords[index + 1].skuID))) || index + 1 == pageRecords.length) {
-                                    _this.skuPrice.data.eligibleCurrencyCodeList = _this.currencyCodeOptions.join(",");
-                                    //spoof the page record
-                                    var skuPriceForListing = {};
-                                    for (var key in _this.skuPrice.data) {
-                                        skuPriceForListing[key] = _this.skuPrice.data[key];
-                                    }
-                                    skuPriceForListing["sku_skuID"] = _this.sku.skuID;
-                                    skuPriceForListing["sku_skuCode"] = _this.sku.skuCode;
-                                    skuPriceForListing["sku_calculatedSkuDefinition"] = _this.sku.calculatedSkuDefinition || pageRecords[index]['sku_calculatedSkuDefinition'];
-                                    _this.skuPrice.$$getPriceGroup().then(function (data) {
-                                        skuPriceForListing["priceGroup_priceGroupID"] = _this.skuPrice.priceGroup.priceGroupID;
-                                        skuPriceForListing["priceGroup_priceGroupCode"] = _this.skuPrice.priceGroup.priceGroupCode;
-                                        pageRecords.splice(index + 1, 0, skuPriceForListing);
-                                    });
-                                    break;
-                                }
-                                index++;
-                            }
-                        }
-                    }
-                }
->>>>>>> 820b72cea3... saving work
             }, function (reason) {
                 //error callback
                 _this.saveSuccess = false;
@@ -72731,13 +68073,6 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
                         }
                     }
                     _this.formService.resetForm(_this.formName);
-<<<<<<< HEAD
-=======
-                    _this.initData();
-                    // if(firstSkuPriceForSku){
-                    //     this.listingService.getCollection(this.listingID); 
-                    // }
->>>>>>> 820b72cea3... saving work
                     _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
                 }
             });
@@ -72745,7 +68080,6 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
         };
         this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.formName = "addSkuPrice" + this.utilityService.createID(16);
-<<<<<<< HEAD
         this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
         //hack for listing hardcodeing id
         this.listingID = 'pricingListing';
@@ -72777,19 +68111,12 @@ var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
             }
         });
         this.initData();
-=======
-        this.skuPrice = this.entityService.newEntity('SkuPrice');
->>>>>>> 820b72cea3... saving work
     }
     return SWAddSkuPriceModalLauncherController;
 }());
 exports.SWAddSkuPriceModalLauncherController = SWAddSkuPriceModalLauncherController;
 var SWAddSkuPriceModalLauncher = /** @class */ (function () {
     function SWAddSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
-<<<<<<< HEAD
-=======
-        var _this = this;
->>>>>>> 820b72cea3... saving work
         this.$hibachi = $hibachi;
         this.entityService = entityService;
         this.observerService = observerService;
@@ -72804,10 +68131,7 @@ var SWAddSkuPriceModalLauncher = /** @class */ (function () {
         this.bindToController = {
             sku: "=?",
             pageRecord: "=?",
-<<<<<<< HEAD
             productId: "@?",
-=======
->>>>>>> 820b72cea3... saving work
             minQuantity: "@?",
             maxQuantity: "@?",
             priceGroupId: "@?",
@@ -72821,52 +68145,12 @@ var SWAddSkuPriceModalLauncher = /** @class */ (function () {
         this.compile = function (element, attrs) {
             return {
                 pre: function ($scope, element, attrs) {
-<<<<<<< HEAD
-=======
-                    //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                    var currentScope = _this.scopeService.getRootParentScope($scope, "pageRecord");
-                    if (angular.isDefined(currentScope.pageRecord)) {
-                        $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
-                        //sku record case
-                        if (angular.isDefined(currentScope.pageRecord.skuID)) {
-                            var skuData = {
-                                skuID: currentScope.pageRecord.skuID,
-                                skuCode: currentScope.pageRecord.skuCode,
-                                skuDescription: currentScope.pageRecord.skuDescription,
-                                eligibleCurrencyCodeList: currentScope.pageRecord.eligibleCurrencyCodeList,
-                                imagePath: currentScope.pageRecord.imagePath
-                            };
-                            $scope.swAddSkuPriceModalLauncher.currencyCodeOptions = currentScope.pageRecord.eligibleCurrencyCodeList.split(",");
-                            $scope.swAddSkuPriceModalLauncher.sku = _this.$hibachi.populateEntity('Sku', skuData);
-                            $scope.swAddSkuPriceModalLauncher.priceGroup = _this.$hibachi.newEntity('PriceGroup');
-                            $scope.swAddSkuPriceModalLauncher.skuPrice = _this.entityService.newEntity('SkuPrice');
-                            $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
-                        }
-                    }
-                    else {
-                        throw ("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-                    }
-                    var listingScope = _this.scopeService.getRootParentScope($scope, "swListingDisplay");
-                    if (angular.isDefined(listingScope.swListingDisplay)) {
-                        $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
-                        $scope.swAddSkuPriceModalLauncher.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId;
-                        _this.observerService.attach($scope.swAddSkuPriceModalLauncher.updateCurrencyCodeSelector, $scope.swAddSkuPriceModalLauncher.selectCurrencyCodeEventName);
-                    }
-                    else {
-                        throw ("swAddSkuPriceModalLauncher couldn't find listing scope");
-                    }
-                    $scope.swAddSkuPriceModalLauncher.initData();
->>>>>>> 820b72cea3... saving work
                 },
                 post: function ($scope, element, attrs) {
                 }
             };
         };
-<<<<<<< HEAD
         this.template = skuPriceModalLauncherHTML;
-=======
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "addskupricemodallauncher.html";
->>>>>>> 820b72cea3... saving work
     }
     SWAddSkuPriceModalLauncher.Factory = function () {
         var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWAddSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
@@ -72887,11 +68171,7 @@ exports.SWAddSkuPriceModalLauncher = SWAddSkuPriceModalLauncher;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 681 */
-=======
-/* 651 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72970,11 +68250,7 @@ exports.SWDefaultSkuRadio = SWDefaultSkuRadio;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 682 */
-=======
-/* 652 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72993,7 +68269,6 @@ var SWDeleteSkuPriceModalLauncherController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.observerService = observerService;
         this.baseName = "j-delete-sku-item-";
-<<<<<<< HEAD
         this.init = function (pageRecord) {
             _this.pageRecord = pageRecord;
             var skuPriceData = {
@@ -73019,50 +68294,12 @@ var SWDeleteSkuPriceModalLauncherController = /** @class */ (function () {
         this.observerService.attach(this.init, "DELETE_SKUPRICE");
         //hack for listing hardcodeing id
         this.listingID = 'pricingListing';
-=======
-        this.delete = function () {
-            var priceGroupID = undefined;
-            if (_this.skuPrice.data.priceGroup) {
-                priceGroupID = _this.skuPrice.data.priceGroup.data.priceGroupID;
-            }
-            var skuPricesToDelete = _this.skuPriceService.getSkuPricesForQuantityRange(_this.skuId, _this.skuPrice.data.minQuantity, _this.skuPrice.data.maxQuantity, undefined, priceGroupID);
-            var deletePromises = [];
-            skuPricesToDelete.then(function (skuPrices) {
-                for (var i = 0; i < skuPrices.length; i++) {
-                    if (skuPrices[i].data.skuPriceID.length) {
-                        deletePromises.push(skuPrices[i].$$delete());
-                    }
-                }
-            }, function (reason) {
-                //error
-            }).finally(function () {
-                _this.$q.all(deletePromises).then(function (response) {
-                    if (angular.isDefined(_this.listingID)) {
-                        var pageRecords = _this.listingService.getListingPageRecords(_this.listingID);
-                        for (var i = 0; i < pageRecords.length; i++) {
-                            if (angular.isDefined(pageRecords[i].skuPriceID) &&
-                                _this.skuPrice.data.skuPriceID == pageRecords[i].skuPriceID) {
-                                pageRecords.splice(i, 1);
-                                break;
-                            }
-                        }
-                    }
-                });
-            });
-            return _this.$q.all(deletePromises);
-        };
-        this.uniqueName = this.baseName + this.utilityService.createID(16);
->>>>>>> 820b72cea3... saving work
     }
     return SWDeleteSkuPriceModalLauncherController;
 }());
 exports.SWDeleteSkuPriceModalLauncherController = SWDeleteSkuPriceModalLauncherController;
 var SWDeleteSkuPriceModalLauncher = /** @class */ (function () {
     function SWDeleteSkuPriceModalLauncher($hibachi, scopeService, skuPartialsPath, slatwallPathBuilder) {
-<<<<<<< HEAD
-=======
-        var _this = this;
->>>>>>> 820b72cea3... saving work
         this.$hibachi = $hibachi;
         this.scopeService = scopeService;
         this.skuPartialsPath = skuPartialsPath;
@@ -73077,36 +68314,6 @@ var SWDeleteSkuPriceModalLauncher = /** @class */ (function () {
         this.compile = function (element, attrs) {
             return {
                 pre: function ($scope, element, attrs) {
-<<<<<<< HEAD
-=======
-                    //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                    var currentScope = _this.scopeService.getRootParentScope($scope, "pageRecord");
-                    if (angular.isDefined(currentScope.pageRecord)) {
-                        $scope.swDeleteSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
-                        if (angular.isDefined(currentScope.pageRecord.sku_skuID)) {
-                            $scope.swDeleteSkuPriceModalLauncher.skuId = currentScope.pageRecord.sku_skuID;
-                        }
-                        if (angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length) {
-                            var skuPriceData = {
-                                skuPriceID: currentScope.pageRecord.skuPriceID,
-                                minQuantity: currentScope.pageRecord.minQuantity,
-                                maxQuantity: currentScope.pageRecord.maxQuantity,
-                                currencyCode: currentScope.pageRecord.currencyCode,
-                                price: currentScope.pageRecord.price
-                            };
-                            $scope.swDeleteSkuPriceModalLauncher.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
-                            var priceGroup = _this.$hibachi.populateEntity('PriceGroup', { priceGroupID: currentScope.pageRecord.priceGroup_priceGroupID });
-                            $scope.swDeleteSkuPriceModalLauncher.skuPrice.$$setPriceGroup(priceGroup);
-                        }
-                    }
-                    else {
-                        throw ("swDeleteSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-                    }
-                    var listingScope = _this.scopeService.getRootParentScope($scope, "swListingDisplay");
-                    if (angular.isDefined(listingScope.swListingDisplay)) {
-                        $scope.swDeleteSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
-                    }
->>>>>>> 820b72cea3... saving work
                 },
                 post: function ($scope, element, attrs) {
                 }
@@ -73130,242 +68337,7 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 683 */
-=======
-/* 653 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
-    //@ngInject
-    function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
-        var _this = this;
-        this.$hibachi = $hibachi;
-        this.entityService = entityService;
-        this.formService = formService;
-        this.listingService = listingService;
-        this.observerService = observerService;
-        this.skuPriceService = skuPriceService;
-        this.utilityService = utilityService;
-        this.scopeService = scopeService;
-        this.$scope = $scope;
-        this.baseName = "j-add-sku-item-";
-        this.currencyCodeEditable = false;
-        this.saveSuccess = true;
-        this.updateCurrencyCodeSelector = function (args) {
-            if (args != 'All') {
-                _this.skuPrice.data.currencyCode = args;
-                _this.currencyCodeEditable = false;
-            }
-            else {
-                _this.currencyCodeEditable = true;
-            }
-            _this.observerService.notify("pullBindings");
-        };
-        this.initData = function () {
-            //these are populated in the link function initially
-            if (angular.isUndefined(_this.disableAllFieldsButPrice)) {
-                _this.disableAllFieldsButPrice = false;
-            }
-            if (angular.isUndefined(_this.defaultCurrencyOnly)) {
-                _this.defaultCurrencyOnly = false;
-            }
-            if (angular.isDefined(_this.minQuantity) && !isNaN(parseInt(_this.minQuantity))) {
-                _this.skuPrice.data.minQuantity = parseInt(_this.minQuantity);
-            }
-            if (angular.isDefined(_this.maxQuantity) && !isNaN(parseInt(_this.minQuantity))) {
-                _this.skuPrice.data.maxQuantity = parseInt(_this.maxQuantity);
-            }
-            if (angular.isDefined(_this.priceGroupId)) {
-                _this.skuPrice.data.priceGroup.data.priceGroupId = parseInt(_this.priceGroupId);
-            }
-            if (angular.isUndefined(_this.currencyCodeOptions) && angular.isDefined(_this.eligibleCurrencyCodeList)) {
-                _this.currencyCodeOptions = _this.eligibleCurrencyCodeList.split(",");
-            }
-            if (_this.defaultCurrencyOnly) {
-                _this.skuPrice.data.currencyCode = "USD"; //temporarily hardcoded
-            }
-            else if (angular.isDefined(_this.currencyCode)) {
-                _this.skuPrice.data.currencyCode = _this.currencyCode;
-            }
-            else if (angular.isDefined(_this.currencyCodeOptions) && _this.currencyCodeOptions.length) {
-                _this.skuPrice.data.currencyCode = _this.currencyCodeOptions[0];
-            }
-            _this.observerService.notify("pullBindings");
-        };
-        this.save = function () {
-            _this.observerService.notify("updateBindings");
-            var firstSkuPriceForSku = !_this.skuPriceService.hasSkuPrices(_this.sku.data.skuID);
-            var savePromise = _this.skuPrice.$$save();
-            savePromise.then(function (response) {
-                _this.saveSuccess = true;
-                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
-                //temporarily overriding for USD need to get this setting accessable to client side
-                if (angular.isDefined(_this.listingID) &&
-                    _this.skuPrice.data.currencyCode == "USD") {
-                    var pageRecords = _this.listingService.getListingPageRecords(_this.listingID);
-                    for (var i = 0; i < pageRecords.length; i++) {
-                        if (angular.isDefined(pageRecords[i].skuID) &&
-                            pageRecords[i].skuID == _this.sku.data.skuID) {
-                            var skuPageRecord = pageRecords[i];
-                            var index = i + 1;
-                            while (index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)) {
-                                //let's find and update the sku price
-                                if (pageRecords[index].skuPriceID === _this.skuPrice.skuPriceID) {
-                                    _this.skuPrice.data.eligibleCurrencyCodeList = _this.currencyCodeOptions.join(",");
-                                    //spoof the page record
-                                    var skuPriceForListing = {};
-                                    for (var key in _this.skuPrice.data) {
-                                        skuPriceForListing[key] = _this.skuPrice.data[key];
-                                    }
-                                    skuPriceForListing["sku_skuID"] = _this.sku.skuID;
-                                    skuPriceForListing["sku_skuCode"] = _this.sku.skuCode;
-                                    skuPriceForListing["sku_calculatedSkuDefinition"] = _this.sku.calculatedSkuDefinition;
-                                    skuPriceForListing["priceGroup_priceGroupCode"] = skuPriceForListing.selectedpriceGroup.priceGroupCode;
-                                    skuPriceForListing["priceGroup_priceGroupID"] = skuPriceForListing.selectedpriceGroup.priceGroupID;
-                                    pageRecords[index] = skuPriceForListing;
-                                    break;
-                                }
-                                index++;
-                            }
-                        }
-                    }
-                }
-            }, function (reason) {
-                //error callback
-                _this.saveSuccess = false;
-            }).finally(function () {
-                if (_this.saveSuccess) {
-                    for (var key in _this.skuPrice.data) {
-                        if (key != 'sku' && key != 'currencyCode') {
-                            _this.skuPrice.data[key] = null;
-                        }
-                    }
-                    _this.formService.resetForm(_this.formName);
-                    _this.initData();
-                    if (firstSkuPriceForSku) {
-                        _this.listingService.getCollection(_this.listingID);
-                    }
-                    _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
-                }
-            });
-            return savePromise;
-        };
-        this.uniqueName = this.baseName + this.utilityService.createID(16);
-        this.formName = "editSkuPrice" + this.utilityService.createID(16);
-        //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-        var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
-        if (angular.isDefined(currentScope.pageRecord)) {
-            this.pageRecord = currentScope.pageRecord;
-            //sku record case
-            if (angular.isDefined(currentScope.pageRecord["sku_skuID"]) && angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length) {
-                var skuData = {
-                    skuID: currentScope.pageRecord["sku_skuID"],
-                    skuCode: currentScope.pageRecord["sku_skuCode"],
-                    calculatedSkuDefinition: currentScope.pageRecord["sku_calculatedSkuDefinition"]
-                };
-                var skuPriceData = {
-                    skuPriceID: currentScope.pageRecord.skuPriceID,
-                    minQuantity: currentScope.pageRecord.minQuantity,
-                    maxQuantity: currentScope.pageRecord.maxQuantity,
-                    currencyCode: currentScope.pageRecord.currencyCode,
-                    price: currentScope.pageRecord.price
-                };
-                var priceGroupData = {
-                    priceGroupID: currentScope.pageRecord["priceGroup_priceGroupID"],
-                    priceGroupCode: currentScope.pageRecord["priceGroup_priceGroupCode"]
-                };
-                this.sku = this.$hibachi.populateEntity('Sku', skuData);
-                this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
-                this.priceGroup = this.$hibachi.populateEntity('PriceGroup', priceGroupData);
-                this.skuPrice.$$setPriceGroup(this.priceGroup);
-                this.skuPrice.$$setSku(this.sku);
-                this.currencyCodeOptions = ["USD"]; //hard-coded for now
-            }
-            else {
-                return;
-            }
-        }
-        else {
-            throw ("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-        }
-        var listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-        if (angular.isDefined(listingScope.swListingDisplay)) {
-            this.listingID = listingScope.swListingDisplay.tableID;
-            this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId;
-            this.defaultCurrencyOnly = true;
-            this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
-        }
-        else {
-            throw ("swEditSkuPriceModalLauncher couldn't find listing scope");
-        }
-        this.initData();
-    }
-    return SWEditSkuPriceModalLauncherController;
-}());
-exports.SWEditSkuPriceModalLauncherController = SWEditSkuPriceModalLauncherController;
-var SWEditSkuPriceModalLauncher = /** @class */ (function () {
-    function SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
-        this.$hibachi = $hibachi;
-        this.entityService = entityService;
-        this.observerService = observerService;
-        this.scopeService = scopeService;
-        this.collectionConfigService = collectionConfigService;
-        this.skuPartialsPath = skuPartialsPath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.restrict = 'EA';
-        this.scope = {};
-        this.skuData = {};
-        this.transclude = true;
-        this.bindToController = {
-            sku: "=?",
-            pageRecord: "=?",
-            minQuantity: "@?",
-            maxQuantity: "@?",
-            priceGroupId: "@?",
-            currencyCode: "@?",
-            eligibleCurrencyCodeList: "@?",
-            defaultCurrencyOnly: "=?",
-            disableAllFieldsButPrice: "=?"
-        };
-        this.controller = SWEditSkuPriceModalLauncherController;
-        this.controllerAs = "swEditSkuPriceModalLauncher";
-        this.compile = function (element, attrs) {
-            return {
-                pre: function ($scope, element, attrs) {
-                },
-                post: function ($scope, element, attrs) {
-                }
-            };
-        };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "editskupricemodallauncher.html";
-    }
-    SWEditSkuPriceModalLauncher.Factory = function () {
-        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
-        directive.$inject = [
-            '$hibachi',
-            'entityService',
-            'observerService',
-            'scopeService',
-            'collectionConfigService',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    };
-    return SWEditSkuPriceModalLauncher;
-}());
-exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
-
-
-/***/ }),
-/* 654 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73502,75 +68474,7 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 684 */
-=======
-/* 655 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWPricingManagerController = /** @class */ (function () {
-    //@ngInject
-    function SWPricingManagerController(collectionConfigService) {
-        var _this = this;
-        this.collectionConfigService = collectionConfigService;
-        this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product");
-        this.productCollectionConfig.addFilter("productID", this.productId, "=", 'AND', true);
-        this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
-        this.productCollectionConfig.getEntity().then(function (response) {
-            _this.product = response.pageRecords[0];
-        }, function (reason) {
-        });
-    }
-    return SWPricingManagerController;
-}());
-exports.SWPricingManagerController = SWPricingManagerController;
-var SWPricingManager = /** @class */ (function () {
-    // @ngInject
-    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
-        this.$hibachi = $hibachi;
-        this.skuPartialsPath = skuPartialsPath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.restrict = 'EA';
-        this.priority = 1000;
-        this.scope = {};
-        this.bindToController = {
-            productId: "@",
-            trackInventory: "=?"
-        };
-        this.controller = SWPricingManagerController;
-        this.controllerAs = "swPricingManager";
-        this.compile = function (element, attrs) {
-            return {
-                pre: function ($scope, element, attrs) {
-                },
-                post: function ($scope, element, attrs) {
-                }
-            };
-        };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "pricingmanager.html";
-    }
-    SWPricingManager.Factory = function () {
-        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
-        directive.$inject = [
-            '$hibachi',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    };
-    return SWPricingManager;
-}());
-exports.SWPricingManager = SWPricingManager;
-
-
-/***/ }),
-/* 656 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73679,11 +68583,7 @@ exports.SWSkuCodeEdit = SWSkuCodeEdit;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 685 */
-=======
-/* 657 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73759,7 +68659,6 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 686 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -73823,9 +68722,6 @@ exports.SWSkuImage = SWSkuImage;
 
 /***/ }),
 /* 687 */
-=======
-/* 658 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74014,11 +68910,7 @@ exports.SWSkuPriceEdit = SWSkuPriceEdit;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 688 */
-=======
-/* 659 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74161,11 +69053,7 @@ exports.SWSkuPriceQuantityEdit = SWSkuPriceQuantityEdit;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 689 */
-=======
-/* 660 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74296,11 +69184,7 @@ exports.SWSkuPricesEdit = SWSkuPricesEdit;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 690 */
-=======
-/* 661 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74467,11 +69351,7 @@ exports.SWSkuStockAdjustmentModalLauncher = SWSkuStockAdjustmentModalLauncher;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 691 */
-=======
-/* 662 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74530,11 +69410,7 @@ exports.SWSkuThumbnail = SWSkuThumbnail;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 692 */
-=======
-/* 663 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74585,11 +69461,7 @@ exports.DefaultSkuService = DefaultSkuService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 693 */
-=======
-/* 664 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74733,7 +69605,6 @@ var SkuPriceService = /** @class */ (function () {
             }
             return "N/A"; //will become NaN
         };
-<<<<<<< HEAD
         this.getPriceGroupOptions = function () {
             var priceGroupOptions;
             var priceGroupCollectionConfig = _this.collectionConfigService.newCollectionConfig("PriceGroup");
@@ -74763,8 +69634,6 @@ var SkuPriceService = /** @class */ (function () {
             config.addFilter("product.productID", productID, "=");
             return config;
         };
-=======
->>>>>>> 820b72cea3... saving work
         this.createInferredSkuPriceForCurrency = function (sku, skuPrice, currencyCode) {
             var nonPersistedSkuPrice = _this.entityService.newEntity('SkuPrice');
             nonPersistedSkuPrice.$$setSku(sku);
@@ -74963,11 +69832,7 @@ exports.SkuPriceService = SkuPriceService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 694 */
-=======
-/* 665 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74978,7 +69843,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-<<<<<<< HEAD
 var defaultskuservice_1 = __webpack_require__(692);
 var skupriceservice_1 = __webpack_require__(693);
 //controllers
@@ -74998,25 +69862,6 @@ var swskucodeedit_1 = __webpack_require__(684);
 var swskupricesedit_1 = __webpack_require__(689);
 var swskupricequantityedit_1 = __webpack_require__(688);
 var swskuthumbnail_1 = __webpack_require__(691);
-=======
-var defaultskuservice_1 = __webpack_require__(663);
-var skupriceservice_1 = __webpack_require__(664);
-//controllers
-//directives
-var swpricingmanager_1 = __webpack_require__(655);
-var swimagedetailmodallauncher_1 = __webpack_require__(654);
-var swaddskupricemodallauncher_1 = __webpack_require__(650);
-var swdeleteskupricemodallauncher_1 = __webpack_require__(652);
-var sweditskupricemodallauncher_1 = __webpack_require__(653);
-var swskustockadjustmentmodallauncher_1 = __webpack_require__(661);
-var swdefaultskuradio_1 = __webpack_require__(651);
-var swskucurrencyselector_1 = __webpack_require__(657);
-var swskupriceedit_1 = __webpack_require__(658);
-var swskucodeedit_1 = __webpack_require__(656);
-var swskupricesedit_1 = __webpack_require__(660);
-var swskupricequantityedit_1 = __webpack_require__(659);
-var swskuthumbnail_1 = __webpack_require__(662);
->>>>>>> 820b72cea3... saving work
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -75032,19 +69877,13 @@ var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).c
     .directive('swAddSkuPriceModalLauncher', swaddskupricemodallauncher_1.SWAddSkuPriceModalLauncher.Factory())
     .directive('swDeleteSkuPriceModalLauncher', swdeleteskupricemodallauncher_1.SWDeleteSkuPriceModalLauncher.Factory())
     .directive('swEditSkuPriceModalLauncher', sweditskupricemodallauncher_1.SWEditSkuPriceModalLauncher.Factory())
-<<<<<<< HEAD
     .directive('swSkuPriceModal', swskupricemodal_1.SWSkuPriceModal.Factory())
-=======
->>>>>>> 820b72cea3... saving work
     .directive('swSkuStockAdjustmentModalLauncher', swskustockadjustmentmodallauncher_1.SWSkuStockAdjustmentModalLauncher.Factory())
     .directive('swDefaultSkuRadio', swdefaultskuradio_1.SWDefaultSkuRadio.Factory())
     .directive('swSkuCurrencySelector', swskucurrencyselector_1.SWSkuCurrencySelector.Factory())
     .directive('swSkuPriceEdit', swskupriceedit_1.SWSkuPriceEdit.Factory())
     .directive('swSkuCodeEdit', swskucodeedit_1.SWSkuCodeEdit.Factory())
-<<<<<<< HEAD
     .directive('swSkuImage', swskuimage_1.SWSkuImage.Factory())
-=======
->>>>>>> 820b72cea3... saving work
     .directive('swSkuPricesEdit', swskupricesedit_1.SWSkuPricesEdit.Factory())
     .directive('swSkuPriceQuantityEdit', swskupricequantityedit_1.SWSkuPriceQuantityEdit.Factory())
     .directive('swSkuThumbnail', swskuthumbnail_1.SWSkuThumbnail.Factory());
@@ -75052,138 +69891,7 @@ exports.skumodule = skumodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 695 */
-=======
-/* 666 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWCurrencyFormatter = /** @class */ (function () {
-    function SWCurrencyFormatter($filter, $timeout) {
-        var _this = this;
-        this.$filter = $filter;
-        this.$timeout = $timeout;
-        this.restrict = "A";
-        this.require = "ngModel";
-        this.scope = {
-            ngModel: '=',
-            currencyCode: '@?'
-        };
-        this.link = function ($scope, element, attrs, modelCtrl) {
-            modelCtrl.$parsers.push(function (data) {
-                var currencyFilter = _this.$filter('swcurrency');
-                if (isNaN(data)) {
-                    data = 0;
-                    modelCtrl.$setViewValue(currencyFilter(data, $scope.currencyCode, 2, false));
-                    modelCtrl.$render();
-                }
-                else {
-                    if (_this._timeoutPromise) {
-                        _this.$timeout.cancel(_this._timeoutPromise);
-                    }
-                    _this._timeoutPromise = _this.$timeout(function () {
-                        modelCtrl.$setViewValue(currencyFilter(data, $scope.currencyCode, 2, false));
-                        modelCtrl.$render();
-                    }, 1500);
-                }
-                return modelCtrl.$viewValue;
-            });
-            modelCtrl.$formatters.push(function (data) {
-                if (isNaN(data)) {
-                    data = 0;
-                }
-                var currencyFilter = _this.$filter('swcurrency');
-                modelCtrl.$setViewValue(currencyFilter(data, $scope.currencyCode, 2, false));
-                modelCtrl.$render();
-                return modelCtrl.$viewValue;
-            });
-        };
-    }
-    SWCurrencyFormatter.Factory = function () {
-        var directive = function ($filter, $timeout) { return new SWCurrencyFormatter($filter, $timeout); };
-        directive.$inject = [
-            '$filter',
-            '$timeout'
-        ];
-        return directive;
-    };
-    return SWCurrencyFormatter;
-}());
-exports.SWCurrencyFormatter = SWCurrencyFormatter;
-
-
-/***/ }),
-/* 667 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
-var SWCurrency = /** @class */ (function () {
-    function SWCurrency() {
-    }
-    //@ngInject
-    SWCurrency.Factory = function ($sce, $log, $hibachi, $filter) {
-        var data = null, serviceInvoked = false;
-        function realFilter(value, decimalPlace, returnStringFlag) {
-            if (returnStringFlag === void 0) { returnStringFlag = true; }
-            // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if (!angular.isDefined(data)) {
-                $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-                data = "$";
-            }
-            if (!value || value.toString().trim() == '') {
-                value = 0;
-            }
-            if (angular.isDefined(value)) {
-                if (angular.isDefined(decimalPlace)) {
-                    value = $filter('number')(value.toString(), decimalPlace);
-                }
-                else {
-                    value = $filter('number')(value.toString(), 2);
-                }
-            }
-            if (returnStringFlag) {
-                return data + value;
-            }
-            else {
-                return value;
-            }
-        }
-        var filterStub;
-        filterStub = function (value, currencyCode, decimalPlace, returnStringFlag) {
-            if (returnStringFlag === void 0) { returnStringFlag = true; }
-            if (data === null && returnStringFlag) {
-                if (!serviceInvoked) {
-                    serviceInvoked = true;
-                    $hibachi.getCurrencies().then(function (currencies) {
-                        var result = currencies.data;
-                        data = result[currencyCode];
-                    });
-                }
-                return "-";
-            }
-            else
-                return realFilter(value, decimalPlace, returnStringFlag);
-        };
-        filterStub.$stateful = true;
-        return filterStub;
-    };
-    return SWCurrency;
-}());
-exports.SWCurrency = SWCurrency;
-
-
-/***/ }),
-/* 668 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75217,11 +69925,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 696 */
-=======
-/* 669 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75229,9 +69933,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-var hibachi_module_1 = __webpack_require__(862);
+var hibachi_module_1 = __webpack_require__(864);
 var workflow_module_1 = __webpack_require__(307);
 var entity_module_1 = __webpack_require__(305);
 var account_module_1 = __webpack_require__(613);
@@ -75252,41 +69954,12 @@ var subscriptionusage_module_1 = __webpack_require__(698);
 var term_module_1 = __webpack_require__(701);
 //constant
 var slatwallpathbuilder_1 = __webpack_require__(695);
-=======
-var hibachi_module_1 = __webpack_require__(826);
-=======
-var hibachi_module_1 = __webpack_require__(827);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
-var workflow_module_1 = __webpack_require__(300);
-var entity_module_1 = __webpack_require__(298);
-var content_module_1 = __webpack_require__(608);
-var formbuilder_module_1 = __webpack_require__(610);
-var giftcard_module_1 = __webpack_require__(622);
-var optiongroup_module_1 = __webpack_require__(626);
-var orderitem_module_1 = __webpack_require__(637);
-var orderfulfillment_module_1 = __webpack_require__(630);
-var fulfillmentbatchdetail_module_1 = __webpack_require__(612);
-var orderdeliverydetail_module_1 = __webpack_require__(628);
-var product_module_1 = __webpack_require__(642);
-var productbundle_module_1 = __webpack_require__(648);
-var sku_module_1 = __webpack_require__(665);
-var subscriptionusage_module_1 = __webpack_require__(671);
-//constant
-var slatwallpathbuilder_1 = __webpack_require__(668);
-//directives
-var swcurrencyformatter_1 = __webpack_require__(666);
-//filters
-var swcurrency_1 = __webpack_require__(667);
->>>>>>> 820b72cea3... saving work
 var slatwalladminmodule = angular.module('slatwalladmin', [
     //custom modules
     hibachi_module_1.hibachimodule.name,
     entity_module_1.entitymodule.name,
-<<<<<<< HEAD
     account_module_1.accountmodule.name,
     address_module_1.addressmodule.name,
-=======
->>>>>>> 820b72cea3... saving work
     content_module_1.contentmodule.name,
     formbuilder_module_1.formbuildermodule.name,
     giftcard_module_1.giftcardmodule.name,
@@ -75295,18 +69968,12 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
     orderfulfillment_module_1.orderfulfillmentmodule.name,
     fulfillmentbatchdetail_module_1.fulfillmentbatchdetailmodule.name,
     orderdeliverydetail_module_1.orderdeliverydetailmodule.name,
-<<<<<<< HEAD
     order_module_1.ordermodule.name,
-=======
->>>>>>> 820b72cea3... saving work
     product_module_1.productmodule.name,
     productbundle_module_1.productbundlemodule.name,
     sku_module_1.skumodule.name,
     subscriptionusage_module_1.subscriptionusagemodule.name,
-<<<<<<< HEAD
     term_module_1.termmodule.name,
-=======
->>>>>>> 820b72cea3... saving work
     workflow_module_1.workflowmodule.name
 ])
     .constant("baseURL", $.slatwall.getConfig().baseURL)
@@ -75336,10 +70003,6 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
     }])
     //services
     //directives
-<<<<<<< HEAD
-=======
-    .directive('swCurrencyFormatter', swcurrencyformatter_1.SWCurrencyFormatter.Factory())
->>>>>>> 820b72cea3... saving work
     //controllers
     .controller('preprocessaccount_addaccountpayment', ['$scope', '$compile', function ($scope, $compile) {
         //Define the different payment types used here
@@ -75404,13 +70067,7 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
             else if ($scope.paymentType == paymentType.aptAdjustment)
                 $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
         };
-<<<<<<< HEAD
     }]);
-=======
-    }])
-    //filters
-    .filter('swcurrency', ['$sce', '$log', '$hibachi', '$filter', swcurrency_1.SWCurrency.Factory]);
->>>>>>> 820b72cea3... saving work
 exports.slatwalladminmodule = slatwalladminmodule;
 // ((): void => {
 //     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
@@ -75513,11 +70170,7 @@ exports.slatwalladminmodule = slatwalladminmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 697 */
-=======
-/* 670 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75610,11 +70263,7 @@ exports.SWScheduledDeliveriesCard = SWScheduledDeliveriesCard;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 698 */
-=======
-/* 671 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75628,11 +70277,7 @@ var core_module_1 = __webpack_require__(6);
 //controllers
 //filters
 //directives
-<<<<<<< HEAD
 var swscheduleddeliveriescard_1 = __webpack_require__(697);
-=======
-var swscheduleddeliveriescard_1 = __webpack_require__(670);
->>>>>>> 820b72cea3... saving work
 var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('subscriptionUsagePartialsPath', 'subscriptionusage/components/')
@@ -75645,7 +70290,6 @@ exports.subscriptionusagemodule = subscriptionusagemodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -75894,12 +70538,12 @@ var SWPricingManagerController = /** @class */ (function (_super) {
         var _this = _super.call(this, collectionConfigService) || this;
         _this.collectionConfigService = collectionConfigService;
         if (_this.skuPriceCollectionConfig) {
-            _this.skuPriceCollectionConfig.addDisplayProperty("personalVolume");
-            _this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount");
-            _this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume");
-            _this.skuPriceCollectionConfig.addDisplayProperty("retailCommission");
-            _this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume");
-            _this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume");
+            _this.skuPriceCollectionConfig.addDisplayProperty("personalVolume", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("retailCommission", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume", "", { isEditable: true });
         }
         return _this;
     }
@@ -75956,8 +70600,8 @@ var swskupricemodal_2 = __webpack_require__(299);
 var SWSkuPriceModalController = /** @class */ (function (_super) {
     __extends(SWSkuPriceModalController, _super);
     //@ngInject
-    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
-        var _this = _super.call(this, $hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) || this;
+    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) {
+        var _this = _super.call(this, $hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) || this;
         _this.$hibachi = $hibachi;
         _this.entityService = entityService;
         _this.formService = formService;
@@ -75965,22 +70609,29 @@ var SWSkuPriceModalController = /** @class */ (function (_super) {
         _this.observerService = observerService;
         _this.skuPriceService = skuPriceService;
         _this.utilityService = utilityService;
+        _this.collectionConfigService = collectionConfigService;
         _this.scopeService = scopeService;
         _this.$scope = $scope;
+        _this.$timeout = $timeout;
+        _this.requestService = requestService;
         _this.initData = function (pageRecord) {
-            if (angular.isDefined(_this.pageRecord)) {
-                if (angular.isDefined(_this.pageRecord.skuPriceID) && _this.pageRecord.skuPriceID.length) {
-                    _this.skuPrice.personalVolume = _this.pageRecord.personalVolume;
-                    _this.skuPrice.taxableAmount = _this.pageRecord.taxableAmount;
-                    _this.skuPrice.commissionableVolume = _this.pageRecord.commissionableVolume;
-                    _this.skuPrice.retailCommission = _this.pageRecord.retailCommission;
-                    _this.skuPrice.productPackVolume = _this.pageRecord.productPackVolume;
-                    _this.skuPrice.retailValueVolume = _this.pageRecord.retailValueVolume;
-                    _this.skuPrice.handlingFee = _this.pageRecord.handlingFee;
-                }
+            _super.prototype.initData.call(_this, pageRecord);
+            if (angular.isDefined(_this.pageRecord) && angular.isDefined(_this.pageRecord.skuPriceID) && _this.pageRecord.skuPriceID.length) {
+                _this.skuPrice.personalVolume = _this.pageRecord.personalVolume;
+                _this.skuPrice.taxableAmount = _this.pageRecord.taxableAmount;
+                _this.skuPrice.commissionableVolume = _this.pageRecord.commissionableVolume;
+                _this.skuPrice.retailCommission = _this.pageRecord.retailCommission;
+                _this.skuPrice.productPackVolume = _this.pageRecord.productPackVolume;
+                _this.skuPrice.retailValueVolume = _this.pageRecord.retailValueVolume;
+                _this.skuPrice.handlingFee = _this.pageRecord.handlingFee;
+                _this.skuPrice.activeFlag = _this.pageRecord.activeFlag;
             }
         };
-        _this.observerService.attach(_this.initData, "EDIT_SKUPRICE");
+        _this.$onDestroy = function () {
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+        };
+        _this.observerService.detachByEvent('EDIT_SKUPRICE'); // Detach core event
+        _this.observerService.attach(_this.initData, "EDIT_SKUPRICE"); // Attach custom event
         return _this;
     }
     return SWSkuPriceModalController;
@@ -76020,9 +70671,6 @@ exports.SWSkuPriceModal = SWSkuPriceModal;
 
 /***/ }),
 /* 705 */
-=======
-/* 672 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76042,11 +70690,7 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 706 */
-=======
-/* 673 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76070,11 +70714,7 @@ exports.Alert = Alert;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 707 */
-=======
-/* 674 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76083,11 +70723,7 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
-<<<<<<< HEAD
 var alert_1 = __webpack_require__(706);
-=======
-var alert_1 = __webpack_require__(673);
->>>>>>> 820b72cea3... saving work
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -76157,11 +70793,7 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 708 */
-=======
-/* 675 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76434,11 +71066,7 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 709 */
-=======
-/* 676 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76450,7 +71078,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //components
-<<<<<<< HEAD
 var swcardlayout_1 = __webpack_require__(713);
 var swcardview_1 = __webpack_require__(716);
 var swcardheader_1 = __webpack_require__(711);
@@ -76458,15 +71085,6 @@ var swcardbody_1 = __webpack_require__(710);
 var swcardicon_1 = __webpack_require__(712);
 var swcardprogressbar_1 = __webpack_require__(715);
 var swcardlistitem_1 = __webpack_require__(714);
-=======
-var swcardlayout_1 = __webpack_require__(680);
-var swcardview_1 = __webpack_require__(683);
-var swcardheader_1 = __webpack_require__(678);
-var swcardbody_1 = __webpack_require__(677);
-var swcardicon_1 = __webpack_require__(679);
-var swcardprogressbar_1 = __webpack_require__(682);
-var swcardlistitem_1 = __webpack_require__(681);
->>>>>>> 820b72cea3... saving work
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -76485,11 +71103,7 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 710 */
-=======
-/* 677 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76536,11 +71150,7 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 711 */
-=======
-/* 678 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76589,11 +71199,7 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 712 */
-=======
-/* 679 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76644,11 +71250,7 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 713 */
-=======
-/* 680 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76699,11 +71301,7 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 714 */
-=======
-/* 681 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76757,11 +71355,7 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 715 */
-=======
-/* 682 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76814,11 +71408,7 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 716 */
-=======
-/* 683 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76870,11 +71460,7 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 717 */
-=======
-/* 684 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76919,11 +71505,7 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 718 */
-=======
-/* 685 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76966,11 +71548,7 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 719 */
-=======
-/* 686 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77064,11 +71642,7 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 720 */
-=======
-/* 687 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77304,11 +71878,7 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 721 */
-=======
-/* 688 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78206,11 +72776,7 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 722 */
-=======
-/* 689 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78249,11 +72815,7 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 723 */
-=======
-/* 690 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78349,11 +72911,7 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 724 */
-=======
-/* 691 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78826,11 +73384,7 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 725 */
-=======
-/* 692 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78971,11 +73525,7 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 726 */
-=======
-/* 693 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79137,11 +73687,7 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 727 */
-=======
-/* 694 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79282,7 +73828,6 @@ var SWCriteriaNumber = /** @class */ (function () {
                 };
                 scope.selectedConditionChanged = function (selectedFilterProperty) {
                     //scope.selectedFilterProperty.criteriaValue = '';
-<<<<<<< HEAD
                     if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
                         selectedFilterProperty.showCriteriaValue = false;
                     }
@@ -79302,75 +73847,12 @@ var SWCriteriaNumber = /** @class */ (function () {
                         scope.filterItem.value = scope.filterItem.value.replace('%', '');
                     }
                 });
-=======
-                    // selectedFilterProperty.showCriteriaStart is the default input, if the criteria is not of range type
-                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
-                    }
-                    else {
-                        if (selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in') {
-                            selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
-                            scope.comparisonOperatorInAndNotInFlag = true;
-                        }
-                        else {
-                            scope.clearField();
-                            scope.comparisonOperatorInAndNotInFlag = false;
-                            selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
-                        }
-                    }
-                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
-                        //enabling the end-range input 
-                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
-                        scope.selectedFilterProperty.criteriaRangeStart = "";
-                        scope.selectedFilterProperty.criteriaRangeEnd = "";
-                    }
-                    else {
-                        //disabling the end-range input 
-                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = false;
-                    }
-                    scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
-                };
-                scope.criteriaRangeChanged = function (selectedFilterProperty) {
-                    scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
-                };
-                scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
-                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
-                    }
-                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
-                        if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
-                            selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart + "-" + selectedFilterProperty.criteriaRangeEnd;
-                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
-                        }
-                        else if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart))) {
-                            selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
-                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = ">";
-                        }
-                        else if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
-                            selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeEnd;
-                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = "<";
-                        }
-                        else {
-                            selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
-                            selectedFilterProperty.criteriaValue = "";
-                        }
-                    }
-                    else {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
-                    }
-                    scope.filterItem.value = selectedFilterProperty.criteriaValue;
-                };
->>>>>>> 820b72cea3... saving work
                 scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
                     if (angular.isDefined(selectedFilterProperty)) {
                         angular.forEach(scope.conditionOptions, function (conditionOption) {
                             if (conditionOption.display == scope.filterItem.conditionDisplay) {
                                 scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-<<<<<<< HEAD
                                 scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-=======
-                                scope.calculateCriteriaFilterPropertyValue(scope.selectedFilterProperty);
->>>>>>> 820b72cea3... saving work
                                 if (angular.isDefined(scope.selectedConditionChanged)) {
                                     scope.selectedConditionChanged(scope.selectedFilterProperty);
                                 }
@@ -79395,11 +73877,7 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 728 */
-=======
-/* 695 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79547,11 +74025,7 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 729 */
-=======
-/* 696 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79648,11 +74122,7 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 730 */
-=======
-/* 697 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79830,11 +74300,7 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 731 */
-=======
-/* 698 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79898,11 +74364,7 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 732 */
-=======
-/* 699 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79988,11 +74450,7 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 733 */
-=======
-/* 700 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80273,11 +74731,7 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 734 */
-=======
-/* 701 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80513,16 +74967,7 @@ var SWEditFilterItem = /** @class */ (function () {
                                     filterItem.attributeID = selectedFilterProperty.attributeID;
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
                                 }
-<<<<<<< HEAD
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-=======
-                                if (selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated) {
-                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated;
-                                }
-                                else {
-                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-                                }
->>>>>>> 820b72cea3... saving work
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value.toString();
@@ -80667,11 +75112,7 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 735 */
-=======
-/* 702 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80744,11 +75185,7 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 736 */
-=======
-/* 703 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80848,11 +75285,7 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 737 */
-=======
-/* 704 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80920,11 +75353,7 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 738 */
-=======
-/* 705 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80985,11 +75414,7 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 739 */
-=======
-/* 706 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81045,11 +75470,7 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 740 */
-=======
-/* 707 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81088,11 +75509,7 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 741 */
-=======
-/* 708 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81300,11 +75717,7 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 742 */
-=======
-/* 709 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81343,11 +75756,7 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 743 */
-=======
-/* 710 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81378,11 +75787,7 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 744 */
-=======
-/* 711 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81458,12 +75863,8 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-<<<<<<< HEAD
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct) {
         var _this = this;
-=======
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
->>>>>>> 820b72cea3... saving work
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -81471,17 +75872,10 @@ var CollectionConfig = /** @class */ (function () {
         if (currentPage === void 0) { currentPage = 1; }
         if (pageShow === void 0) { pageShow = 10; }
         if (keywords === void 0) { keywords = ''; }
-<<<<<<< HEAD
         if (customEndpoint === void 0) { customEndpoint = ''; }
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
-=======
-        if (allRecords === void 0) { allRecords = false; }
-        if (dirtyRead === void 0) { dirtyRead = false; }
-        if (isDistinct === void 0) { isDistinct = false; }
-        var _this = this;
->>>>>>> 820b72cea3... saving work
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -81500,10 +75894,7 @@ var CollectionConfig = /** @class */ (function () {
         this.currentPage = currentPage;
         this.pageShow = pageShow;
         this.keywords = keywords;
-<<<<<<< HEAD
         this.customEndpoint = customEndpoint;
-=======
->>>>>>> 820b72cea3... saving work
         this.allRecords = allRecords;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
@@ -81650,12 +76041,8 @@ var CollectionConfig = /** @class */ (function () {
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
-<<<<<<< HEAD
                 periodInterval: _this.periodInterval,
                 customEndpoint: _this.customEndpoint
-=======
-                periodInterval: _this.periodInterval
->>>>>>> 820b72cea3... saving work
             };
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
@@ -82146,12 +76533,9 @@ var CollectionConfig = /** @class */ (function () {
         this.getPageShow = function () {
             return _this.pageShow;
         };
-<<<<<<< HEAD
         this.getCustomEndpoint = function () {
             return _this.customEndpoint;
         };
-=======
->>>>>>> 820b72cea3... saving work
         this.setAllRecords = function (allFlag) {
             if (allFlag === void 0) { allFlag = false; }
             _this.allRecords = allFlag;
@@ -82171,13 +76555,10 @@ var CollectionConfig = /** @class */ (function () {
             _this.keywords = keyword;
             return _this;
         };
-<<<<<<< HEAD
         this.setCustomEndpoint = function (endPoint) {
             _this.customEndpoint = endPoint;
             return _this;
         };
-=======
->>>>>>> 820b72cea3... saving work
         this.setId = function (id) {
             _this.id = id;
             return _this;
@@ -82300,11 +76681,7 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 745 */
-=======
-/* 712 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82526,11 +76903,7 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 746 */
-=======
-/* 713 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82552,40 +76925,25 @@ var SWActionCallerController = /** @class */ (function () {
         this.observerService = observerService;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
-<<<<<<< HEAD
-<<<<<<< HEAD
-        this.hibachiPathBuilder = hibachiPathBuilder;
-=======
->>>>>>> 820b72cea3... saving work
-=======
         this.hibachiAuthenticationService = hibachiAuthenticationService;
->>>>>>> 3ede300d05... using client side permissions in the ui
         this.$onInit = function () {
             _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
             }
-<<<<<<< HEAD
             if (_this.event != null && _this.event.length) {
                 _this.type = 'event'; //no action url needed
             }
             else if (!_this.isAngularRoute) {
-=======
-            if (!_this.isAngularRoute) {
->>>>>>> 820b72cea3... saving work
                 _this.actionUrl = _this.$hibachi.buildUrl(_this.action, _this.queryString);
             }
             else {
                 _this.actionUrl = '#!/entity/' + _this.action + '/' + _this.queryString.split('=')[1];
             }
-<<<<<<< HEAD
             if (angular.isUndefined(_this.display)) {
                 _this.display = true;
             }
-=======
-            //            this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
->>>>>>> 820b72cea3... saving work
             _this.type = _this.type || 'link';
             if (angular.isDefined(_this.titleRbKey)) {
                 _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);
@@ -82603,42 +76961,15 @@ var SWActionCallerController = /** @class */ (function () {
                     unbindWatcher();
                 });
             }
-<<<<<<< HEAD
-=======
-            //            this.actionItem = this.getActionItem();
-            //            this.actionItemEntityName = this.getActionItemEntityName();
-            //            this.text = this.getText();
-            //            if(this.getDisabled()){
-            //                this.getDisabledText();
-            //            }else if(this.getConfirm()){
-            //                this.getConfirmText();
-            //            }
-            //
-            //            if(this.modalFullWidth && !this.getDisabled()){
-            //                this.class = this.class + " modalload-fullwidth";
-            //            }
-            //
-            //            if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-            //                this.class = this.class + " modalload";
-            //            }
-            /*need authentication lookup by api to disable
-            <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-                <cfset attributes.class &= " disabled" />
-            </cfif>
-            */
->>>>>>> 820b72cea3... saving work
             if (_this.eventListeners) {
                 for (var key in _this.eventListeners) {
                     _this.observerService.attach(_this.eventListeners[key], key);
                 }
             }
         };
-<<<<<<< HEAD
         this.emit = function () {
             _this.observerService.notify(_this.event, _this.payload);
         };
-=======
->>>>>>> 820b72cea3... saving work
         this.submit = function () {
             _this.$timeout(function () {
                 if (!_this.form) {
@@ -82787,11 +77118,6 @@ var SWActionCallerController = /** @class */ (function () {
             }
             return "";
         };
-<<<<<<< HEAD
-        this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
-            var template = angular.element(html);
-            _this.$element.parent().prepend(template);
-=======
         this.$scope = $scope;
         this.$element = $element;
         this.$timeout = $timeout;
@@ -82804,8 +77130,7 @@ var SWActionCallerController = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
             var template = angular.element(html);
-            _this.$element.parent().append(template);
->>>>>>> 820b72cea3... saving work
+            _this.$element.parent().prepend(template);
             $compile(template)($scope);
             //need to perform init after promise completes
             //this.init();
@@ -82823,14 +77148,10 @@ var SWActionCaller = /** @class */ (function () {
         this.restrict = 'EA';
         this.scope = {};
         this.bindToController = {
-<<<<<<< HEAD
             action: "@?",
             display: "=?",
             event: "@?",
             payload: "=",
-=======
-            action: "@",
->>>>>>> 820b72cea3... saving work
             text: "@",
             type: "@",
             queryString: "@",
@@ -82874,11 +77195,7 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 747 */
-=======
-/* 714 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82929,11 +77246,7 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 748 */
-=======
-/* 715 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82984,11 +77297,7 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 749 */
-=======
-/* 716 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83080,11 +77389,7 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 750 */
-=======
-/* 717 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83252,11 +77557,7 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 751 */
-=======
-/* 718 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83319,11 +77620,7 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 752 */
-=======
-/* 719 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83374,11 +77671,7 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 753 */
-=======
-/* 720 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83425,11 +77718,7 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 754 */
-=======
-/* 721 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83583,7 +77872,6 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -83717,9 +78005,6 @@ exports.SWDatePicker = SWDatePicker;
 
 /***/ }),
 /* 757 */
-=======
-/* 722 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83778,11 +78063,7 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 758 */
-=======
-/* 723 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83865,11 +78146,7 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 759 */
-=======
-/* 724 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84004,11 +78281,7 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 760 */
-=======
-/* 725 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84018,7 +78291,6 @@ exports.SWDraggableContainer = SWDraggableContainer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWEntityActionBarController = /** @class */ (function () {
     //@ngInject
-<<<<<<< HEAD
     function SWEntityActionBarController(observerService, rbkeyService) {
         var _this = this;
         this.observerService = observerService;
@@ -84083,17 +78355,6 @@ var SWEntityActionBarController = /** @class */ (function () {
             };
             _this.observerService.notify('swEntityActionBar', _this.payload);
         };
-=======
-    function SWEntityActionBarController(rbkeyService) {
-        var _this = this;
-        this.rbkeyService = rbkeyService;
-        this.init = function () {
-            if (angular.isDefined(_this.pageTitleRbKey)) {
-                _this.pageTitle = _this.rbkeyService.getRBKey(_this.pageTitleRbKey);
-            }
-        };
-        this.init();
->>>>>>> 820b72cea3... saving work
     }
     return SWEntityActionBarController;
 }());
@@ -84111,7 +78372,6 @@ var SWEntityActionBar = /** @class */ (function () {
             pageTitle: "@?",
             pageTitleRbKey: "@?",
             edit: "=",
-<<<<<<< HEAD
             entityActionDetails: "<?",
             baseQueryString: "@?",
             messages: "<?",
@@ -84145,26 +78405,6 @@ var SWEntityActionBar = /** @class */ (function () {
             processAction: "@?",
             processContext: "@?",
             processCallers: "<?"
-=======
-            /*Action Callers (top buttons)*/
-            showcancel: "=",
-            showcreate: "=",
-            showedit: "=",
-            showdelete: "=",
-            /*Basic Action Caller Overrides*/
-            createModal: "=",
-            createAction: "=",
-            createQueryString: "=",
-            backAction: "=",
-            backQueryString: "=",
-            cancelAction: "=",
-            cancelQueryString: "=",
-            deleteAction: "=",
-            deleteQueryString: "=",
-            /*Process Specific Values*/
-            processAction: "=",
-            processContext: "="
->>>>>>> 820b72cea3... saving work
         };
         this.controller = SWEntityActionBarController;
         this.controllerAs = "swEntityActionBar";
@@ -84184,11 +78424,7 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 761 */
-=======
-/* 726 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84227,11 +78463,7 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 762 */
-=======
-/* 727 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84439,11 +78671,7 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 763 */
-=======
-/* 728 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84513,11 +78741,7 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 764 */
-=======
-/* 729 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84551,11 +78775,7 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 765 */
-=======
-/* 730 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84599,11 +78819,7 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 766 */
-=======
-/* 731 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84637,11 +78853,7 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 767 */
-=======
-/* 732 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84677,11 +78889,7 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 768 */
-=======
-/* 733 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84757,11 +78965,7 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 769 */
-=======
-/* 734 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84771,27 +78975,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWModalLauncherController = /** @class */ (function () {
     // @ngInject
-<<<<<<< HEAD
     function SWModalLauncherController(observerService) {
         var _this = this;
         this.observerService = observerService;
-=======
-    function SWModalLauncherController() {
-        var _this = this;
->>>>>>> 820b72cea3... saving work
         this.hasSaveAction = false;
         this.hasCancelAction = false;
         this.hasDeleteAction = false;
         this.launchModal = function () {
-<<<<<<< HEAD
             //this.showModal is only for use with custom template
             _this.showModal = true;
             //trigger bootstrap event to show modal
             $("#" + _this.modalName).modal(_this.modalOptions);
-=======
-            //activate the necessary modal
-            _this.showModal = true;
->>>>>>> 820b72cea3... saving work
         };
         this.saveCallback = function () {
             //the passed save action must return a promise
@@ -84822,7 +79016,6 @@ var SWModalLauncherController = /** @class */ (function () {
                 _this.cancelAction()();
             }
         };
-<<<<<<< HEAD
         this.hasSaveAction = typeof this.saveAction === 'function';
         this.hasDeleteAction = typeof this.deleteAction === 'function';
         if (angular.isUndefined(this.hasCancelAction)) {
@@ -84834,8 +79027,6 @@ var SWModalLauncherController = /** @class */ (function () {
         if (angular.isUndefined(this.showExit)) {
             this.showExit = true;
         }
-=======
->>>>>>> 820b72cea3... saving work
         if (angular.isUndefined(this.showModal)) {
             this.showModal = false;
         }
@@ -84845,15 +79036,12 @@ var SWModalLauncherController = /** @class */ (function () {
         if (angular.isUndefined(this.cancelActionText)) {
             this.cancelActionText = "Cancel";
         }
-<<<<<<< HEAD
         if (angular.isUndefined(this.modalOptions)) {
             this.modalOptions = {};
         }
         if (angular.isDefined(this.launchEventName)) {
             this.observerService.attach(this.launchModal, this.launchEventName);
         }
-=======
->>>>>>> 820b72cea3... saving work
     }
     return SWModalLauncherController;
 }());
@@ -84871,7 +79059,6 @@ var SWModalLauncher = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
-<<<<<<< HEAD
             modalOptions: "<?",
             showModal: "=?",
             showExit: "=?",
@@ -84879,21 +79066,12 @@ var SWModalLauncher = /** @class */ (function () {
             modalName: "@",
             title: "@",
             saveDisabled: "=?",
-=======
-            showModal: "=?",
-            modalName: "@",
-            title: "@",
->>>>>>> 820b72cea3... saving work
             saveAction: "&?",
             deleteAction: "&?",
             cancelAction: "&?",
             saveActionText: "@?",
-<<<<<<< HEAD
             cancelActionText: "@?",
             hasCancelAction: "=?"
-=======
-            cancelActionText: "@?"
->>>>>>> 820b72cea3... saving work
         };
         this.controller = SWModalLauncherController;
         this.controllerAs = "swModalLauncher";
@@ -84928,11 +79106,7 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 770 */
-=======
-/* 735 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84943,7 +79117,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SWModalWindowController = /** @class */ (function () {
     // @ngInject
     function SWModalWindowController() {
-<<<<<<< HEAD
         var _this = this;
         this.$onInit = function () {
             _this.modalName = _this.swModalLauncher.modalName;
@@ -84959,12 +79132,6 @@ var SWModalWindowController = /** @class */ (function () {
                 throw ("You did not pass a modal title to SWModalWindowController");
             }
         };
-=======
-        if (angular.isUndefined(this.modalName)) {
-            console.warn("You did not pass a modal title to SWModalWindowController");
-            this.modalName = "";
-        }
->>>>>>> 820b72cea3... saving work
     }
     return SWModalWindowController;
 }());
@@ -84978,21 +79145,15 @@ var SWModalWindow = /** @class */ (function () {
             modalBody: "?swModalBody"
         };
         this.restrict = "EA";
-<<<<<<< HEAD
         this.require = {
             swModalLauncher: "^^swModalLauncher"
         };
-=======
->>>>>>> 820b72cea3... saving work
         this.scope = {};
         this.bindToController = {
             modalName: "@",
             title: "@",
-<<<<<<< HEAD
             showExit: "=?",
             saveDisabled: "=?",
-=======
->>>>>>> 820b72cea3... saving work
             hasSaveAction: "=?",
             saveAction: "&?",
             hasDeleteAction: "=?",
@@ -85026,11 +79187,7 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 771 */
-=======
-/* 736 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85089,11 +79246,7 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 772 */
-=======
-/* 737 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85164,11 +79317,7 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 773 */
-=======
-/* 738 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85264,10 +79413,6 @@ var SWOrderByControlsController = /** @class */ (function () {
 }());
 exports.SWOrderByControlsController = SWOrderByControlsController;
 var SWOrderByControls = /** @class */ (function () {
-<<<<<<< HEAD
-=======
-    // @ngInject
->>>>>>> 820b72cea3... saving work
     function SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.$compile = $compile;
@@ -85311,10 +79456,7 @@ var SWOrderByControls = /** @class */ (function () {
         };
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "orderbycontrols.html";
     }
-<<<<<<< HEAD
     // @ngInject
-=======
->>>>>>> 820b72cea3... saving work
     SWOrderByControls.Factory = function () {
         var directive = function ($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) { return new SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder); };
         directive.$inject = ["$compile", "scopeService", "listingService", "corePartialsPath",
@@ -85327,11 +79469,7 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 774 */
-=======
-/* 739 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85350,20 +79488,8 @@ var SWProcessCallerController = /** @class */ (function () {
         this.$scope = $scope;
         this.$element = $element;
         this.$transclude = $transclude;
-<<<<<<< HEAD
         this.type = this.type || 'link';
         this.queryString = this.queryString || '';
-=======
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.corePartialsPath = corePartialsPath;
-        this.utilityService = utilityService;
-        this.type = this.type || 'link';
-        this.queryString = this.queryString || '';
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$transclude = this.$transclude;
->>>>>>> 820b72cea3... saving work
         this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath) + "processcaller.html").then(function (html) {
             var template = angular.element(html);
             _this.$element.parent().append(template);
@@ -85372,13 +79498,10 @@ var SWProcessCallerController = /** @class */ (function () {
         if (angular.isDefined(this.titleRbKey)) {
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
         }
-<<<<<<< HEAD
         if (angular.isUndefined(this.title) && angular.isDefined(this.processContext)) {
             var entityName = this.action.split('.')[1].replace('process', '');
             this.title = this.rbkeyService.getRBKey('entity.' + entityName + '.process.' + this.processContext);
         }
-=======
->>>>>>> 820b72cea3... saving work
         if (angular.isUndefined(this.text)) {
             this.text = this.title;
         }
@@ -85431,11 +79554,7 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 775 */
-=======
-/* 740 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85479,11 +79598,7 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 776 */
-=======
-/* 741 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85575,11 +79690,7 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 777 */
-=======
-/* 742 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85676,11 +79787,7 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 778 */
-=======
-/* 743 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85737,11 +79844,7 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 779 */
-=======
-/* 744 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85829,11 +79932,7 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 780 */
-=======
-/* 745 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85944,11 +80043,7 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 781 */
-=======
-/* 746 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86030,11 +80125,7 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 782 */
-=======
-/* 747 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86053,10 +80144,6 @@ var SWTypeaheadInputFieldController = /** @class */ (function () {
         this.$rootScope = $rootScope;
         this.observerService = observerService;
         this.columns = [];
-<<<<<<< HEAD
-=======
-        this.filters = [];
->>>>>>> 820b72cea3... saving work
         this.addFunction = function (value) {
             _this.typeaheadService.typeaheadStore.dispatch({
                 "type": "TYPEAHEAD_USER_SELECTION",
@@ -86124,10 +80211,7 @@ var SWTypeaheadInputField = /** @class */ (function () {
             fieldName: "@",
             entityName: "@",
             typeaheadCollectionConfig: "=?",
-<<<<<<< HEAD
             filters: "=?",
-=======
->>>>>>> 820b72cea3... saving work
             propertiesToLoad: "@?",
             placeholderRbKey: "@?",
             propertyToShow: "@",
@@ -86158,11 +80242,7 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 783 */
-=======
-/* 748 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86305,11 +80385,7 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 784 */
-=======
-/* 749 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86385,11 +80461,7 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 785 */
-=======
-/* 750 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86772,11 +80844,7 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 786 */
-=======
-/* 751 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86798,10 +80866,7 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
         this.scope = true;
         this.bindToController = {
             propertyIdentifier: "@",
-<<<<<<< HEAD
             bindHtml: "=?",
-=======
->>>>>>> 820b72cea3... saving work
             isSearchable: "@?",
         };
         this.controller = SWTypeaheadSearchLineItemController;
@@ -86811,16 +80876,12 @@ var SWTypeaheadSearchLineItem = /** @class */ (function () {
                 pre: function (scope, element, attrs) {
                     var innerHTML = element[0].innerHTML;
                     element[0].innerHTML = '';
-<<<<<<< HEAD
                     if (!scope.swTypeaheadSearchLineItem.bindHtml) {
                         var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
                     }
                     else {
                         var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind-html="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
                     }
-=======
-                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">' + ' ' + innerHTML + '</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
->>>>>>> 820b72cea3... saving work
                     element.append(span);
                 },
                 post: function (scope, element, attrs) { }
@@ -86840,11 +80901,7 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 787 */
-=======
-/* 752 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86994,11 +81051,7 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 788 */
-=======
-/* 753 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87024,11 +81077,7 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 789 */
-=======
-/* 754 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87069,11 +81118,7 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 790 */
-=======
-/* 755 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87100,11 +81145,7 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 791 */
-=======
-/* 756 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87131,7 +81172,6 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 792 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -87197,9 +81237,6 @@ exports.SWCurrency = SWCurrency;
 
 /***/ }),
 /* 793 */
-=======
-/* 757 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87241,11 +81278,7 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 794 */
-=======
-/* 758 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87295,11 +81328,7 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 795 */
-=======
-/* 759 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87340,11 +81369,7 @@ exports.Account = Account;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 796 */
-=======
-/* 760 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87387,11 +81412,7 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 797 */
-=======
-/* 761 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87424,11 +81445,7 @@ exports.Address = Address;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 798 */
-=======
-/* 762 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87489,11 +81506,7 @@ exports.Cart = Cart;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 799 */
-=======
-/* 763 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87501,7 +81514,6 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var account_1 = __webpack_require__(795);
 exports.Account = account_1.Account;
 var address_1 = __webpack_require__(797);
@@ -87515,30 +81527,11 @@ exports.OrderPayment = orderpayment_1.OrderPayment;
 var sku_1 = __webpack_require__(802);
 exports.Sku = sku_1.Sku;
 var accountaddress_1 = __webpack_require__(796);
-=======
-var account_1 = __webpack_require__(759);
-exports.Account = account_1.Account;
-var address_1 = __webpack_require__(761);
-exports.Address = address_1.Address;
-var cart_1 = __webpack_require__(762);
-exports.Cart = cart_1.Cart;
-var orderitem_1 = __webpack_require__(764);
-exports.OrderItem = orderitem_1.OrderItem;
-var orderpayment_1 = __webpack_require__(765);
-exports.OrderPayment = orderpayment_1.OrderPayment;
-var sku_1 = __webpack_require__(766);
-exports.Sku = sku_1.Sku;
-var accountaddress_1 = __webpack_require__(760);
->>>>>>> 820b72cea3... saving work
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 800 */
-=======
-/* 764 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87571,11 +81564,7 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 801 */
-=======
-/* 765 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87592,11 +81581,7 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 802 */
-=======
-/* 766 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87636,11 +81621,7 @@ exports.Sku = Sku;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 803 */
-=======
-/* 767 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87673,11 +81654,7 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 804 */
-=======
-/* 768 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87698,11 +81675,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var baseprocess_1 = __webpack_require__(803);
-=======
-var baseprocess_1 = __webpack_require__(767);
->>>>>>> 820b72cea3... saving work
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -87716,11 +81689,7 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 805 */
-=======
-/* 769 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87728,20 +81697,12 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var order_addorderpayment_1 = __webpack_require__(804);
-=======
-var order_addorderpayment_1 = __webpack_require__(768);
->>>>>>> 820b72cea3... saving work
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 806 */
-=======
-/* 770 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87762,11 +81723,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
-<<<<<<< HEAD
 var request_1 = __webpack_require__(303);
-=======
-var request_1 = __webpack_require__(296);
->>>>>>> 820b72cea3... saving work
 var AdminRequest = /** @class */ (function (_super) {
     __extends(AdminRequest, _super);
     function AdminRequest(url, data, method, headers, $injector, observerService) {
@@ -87778,11 +81735,7 @@ var AdminRequest = /** @class */ (function (_super) {
         _this.promise.then(function (result) {
             //identify that it is an object save
             if (url.indexOf('api:main.post') != -1 && data.entityName) {
-<<<<<<< HEAD
                 var eventNameBase = data.entityName + data.context.charAt(0).toUpperCase() + data.context.slice(1);
-=======
-                var eventNameBase = data.entityName + data.context.charAt(0).toUpperCase() + data.context.slice(0);
->>>>>>> 820b72cea3... saving work
                 if (result.errors) {
                     _this.observerService.notify(eventNameBase + 'Failure', result.data);
                 }
@@ -87801,11 +81754,7 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 807 */
-=======
-/* 771 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87826,11 +81775,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
-<<<<<<< HEAD
 var request_1 = __webpack_require__(303);
-=======
-var request_1 = __webpack_require__(296);
->>>>>>> 820b72cea3... saving work
 var PublicRequest = /** @class */ (function (_super) {
     __extends(PublicRequest, _super);
     function PublicRequest(url, data, method, headers, $injector, observerService) {
@@ -87869,11 +81814,7 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 808 */
-=======
-/* 772 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87909,11 +81850,7 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 809 */
-=======
-/* 773 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87949,11 +81886,7 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 810 */
-=======
-/* 774 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88039,11 +81972,7 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 811 */
-=======
-/* 775 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88080,11 +82009,7 @@ exports.CartService = CartService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 812 */
-=======
-/* 776 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88114,11 +82039,7 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 813 */
-=======
-/* 777 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88156,11 +82077,7 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 814 */
-=======
-/* 778 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88206,11 +82123,7 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 815 */
-=======
-/* 779 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88272,11 +82185,7 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 816 */
-=======
-/* 780 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88369,11 +82278,7 @@ exports.FormService = FormService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 817 */
-=======
-/* 781 */
->>>>>>> 820b72cea3... saving work
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88796,7 +82701,7 @@ exports.HibachiAuthenticationService = HibachiAuthenticationService;
 
 
 /***/ }),
-/* 782 */
+/* 818 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89013,15 +82918,7 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 818 */
-=======
-/* 782 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 783 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 819 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89058,15 +82955,7 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 819 */
-=======
-/* 783 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 784 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 820 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89099,15 +82988,7 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 820 */
-=======
-/* 784 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 785 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 821 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89346,16 +83227,12 @@ var HibachiService = /** @class */ (function () {
                 params.processContext = options.processContext || '';
                 params.isReport = options.isReport || false;
                 params.periodInterval = options.periodInterval || "";
-<<<<<<< HEAD
                 if (angular.isDefined(options.customEndpoint) && options.customEndpoint.length) {
                     var urlString = _this.getUrlWithActionPrefix() + options.customEndpoint;
                 }
                 else {
                     var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
                 }
-=======
-                var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
->>>>>>> 820b72cea3... saving work
             }
             if (angular.isDefined(options.id)) {
                 urlString += '&entityId=' + options.id;
@@ -89592,15 +83469,7 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 821 */
-=======
-/* 785 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 786 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 822 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90385,15 +84254,7 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 822 */
-=======
-/* 786 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 787 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 823 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90682,15 +84543,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 823 */
-=======
-/* 787 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 788 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 824 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90726,15 +84579,7 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 824 */
-=======
-/* 788 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 789 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 825 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90792,15 +84637,7 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 825 */
-=======
-/* 789 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 790 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 826 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90951,15 +84788,7 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 826 */
-=======
-/* 790 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 791 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 827 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91129,15 +84958,7 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 827 */
-=======
-/* 791 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 792 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 828 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91175,15 +84996,7 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 828 */
-=======
-/* 792 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 793 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 829 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91224,15 +85037,7 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 829 */
-=======
-/* 793 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 794 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 830 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91758,10 +85563,6 @@ var PublicService = /** @class */ (function () {
         };
         /** Selects shippingAddress*/
         this.selectShippingAccountAddress = function (accountAddressID, orderFulfillmentID) {
-<<<<<<< HEAD
-=======
-            _this.observerService.notify("shippingAddressSelected", { "accountAddressID": accountAddressID });
->>>>>>> 820b72cea3... saving work
             var fulfillmentIndex = _this.cart.orderFulfillments.findIndex(function (fulfillment) { return fulfillment.orderFulfillmentID == orderFulfillmentID; });
             var oldAccountAddressID;
             if (_this.cart.orderFulfillments[fulfillmentIndex] && _this.cart.orderFulfillments[fulfillmentIndex].accountAddress) {
@@ -92667,15 +86468,7 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 830 */
-=======
-/* 794 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 795 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 831 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92787,15 +86580,7 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 831 */
-=======
-/* 795 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 796 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 832 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92803,13 +86588,8 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var adminrequest_1 = __webpack_require__(806);
 var publicrequest_1 = __webpack_require__(807);
-=======
-var adminrequest_1 = __webpack_require__(770);
-var publicrequest_1 = __webpack_require__(771);
->>>>>>> 820b72cea3... saving work
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -92839,15 +86619,7 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 832 */
-=======
-/* 796 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 797 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 833 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92884,15 +86656,7 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 833 */
-=======
-/* 797 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 798 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 834 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93018,15 +86782,7 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 834 */
-=======
-/* 798 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 799 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 835 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93064,15 +86820,7 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 835 */
-=======
-/* 799 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 800 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 836 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93312,15 +87060,7 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 836 */
-=======
-/* 800 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 801 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 837 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93799,15 +87539,7 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 837 */
-=======
-/* 801 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 802 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 838 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93833,15 +87565,7 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 838 */
-=======
-/* 802 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 803 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 839 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93885,15 +87609,7 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 839 */
-=======
-/* 803 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 804 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 840 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93968,15 +87684,7 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 840 */
-=======
-/* 804 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 805 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 841 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94007,15 +87715,7 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 841 */
-=======
-/* 805 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 806 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 842 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94062,15 +87762,7 @@ exports.SWList = SWList;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 842 */
-=======
-/* 806 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 807 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 843 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94089,15 +87781,7 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 843 */
-=======
-/* 807 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 808 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 844 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94129,15 +87813,7 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 844 */
-=======
-/* 808 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 809 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 845 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94306,15 +87982,64 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 845 */
-=======
-/* 809 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 810 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 846 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+//'use strict';
+var SWCollectionConfigAsPropertyController = /** @class */ (function () {
+    //@ngInject
+    function SWCollectionConfigAsPropertyController(collectionConfigService, utilityService, observerService) {
+        var _this = this;
+        this.collectionConfigService = collectionConfigService;
+        this.utilityService = utilityService;
+        this.observerService = observerService;
+        this.handleConfigChange = function (data) {
+            _this.inputValue = angular.toJson(data.collectionConfig);
+        };
+        this.tableID = this.utilityService.createID();
+        this.observerService.attach(this.handleConfigChange, 'swPaginationUpdate', this.tableID);
+        if (this.value) {
+            this.entityCollectionConfig = this.collectionConfigService.loadJson(this.value);
+            return;
+        }
+        this.entityCollectionConfig = this.collectionConfigService.newCollectionConfig(this.baseEntityName);
+    }
+    return SWCollectionConfigAsPropertyController;
+}());
+var SWCollectionConfigAsProperty = /** @class */ (function () {
+    // @ngInject
+    function SWCollectionConfigAsProperty(coreFormPartialsPath, hibachiPathBuilder) {
+        this.coreFormPartialsPath = coreFormPartialsPath;
+        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.restrict = 'E';
+        this.scope = {};
+        this.bindToController = {
+            baseEntityName: "=",
+            propertyName: "=",
+            value: "=?",
+        };
+        this.controller = SWCollectionConfigAsPropertyController;
+        this.controllerAs = "swCollectionConfigAsProperty";
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "collectionconfigasproperty.html";
+    }
+    SWCollectionConfigAsProperty.Factory = function () {
+        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWCollectionConfigAsProperty(coreFormPartialsPath, hibachiPathBuilder); };
+        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
+        return directive;
+    };
+    return SWCollectionConfigAsProperty;
+}());
+exports.SWCollectionConfigAsProperty = SWCollectionConfigAsProperty;
+
+
+/***/ }),
+/* 847 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94398,15 +88123,7 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 846 */
-=======
-/* 810 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 811 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 848 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94446,15 +88163,7 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 847 */
-=======
-/* 811 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 812 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 849 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94467,11 +88176,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 */
 var SWFFormController = /** @class */ (function () {
     // @ngInject
-<<<<<<< HEAD
     function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService) {
-=======
-    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService, observerService) {
->>>>>>> 820b72cea3... saving work
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
@@ -94480,10 +88185,6 @@ var SWFFormController = /** @class */ (function () {
         this.$element = $element;
         this.validationService = validationService;
         this.hibachiValidationService = hibachiValidationService;
-<<<<<<< HEAD
-=======
-        this.observerService = observerService;
->>>>>>> 820b72cea3... saving work
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
@@ -94655,15 +88356,7 @@ exports.SWFForm = SWFForm;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 848 */
-=======
-/* 812 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 813 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 850 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94765,15 +88458,7 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 849 */
-=======
-/* 813 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 814 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 851 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95096,15 +88781,7 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 850 */
-=======
-/* 814 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 815 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 852 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95384,15 +89061,7 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 851 */
-=======
-/* 815 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 816 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 853 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95440,15 +89109,7 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 852 */
-=======
-/* 816 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 817 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 854 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95491,15 +89152,7 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 853 */
-=======
-/* 817 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 818 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 855 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95619,15 +89272,7 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 854 */
-=======
-/* 818 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 819 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 856 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95695,15 +89340,7 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 855 */
-=======
-/* 819 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 820 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 857 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95793,15 +89430,7 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 856 */
-=======
-/* 820 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 821 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 858 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95822,11 +89451,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-<<<<<<< HEAD
 var swpropertydisplay_1 = __webpack_require__(306);
-=======
-var swpropertydisplay_1 = __webpack_require__(299);
->>>>>>> 820b72cea3... saving work
 var SWFPropertyDisplayController = /** @class */ (function (_super) {
     __extends(SWFPropertyDisplayController, _super);
     //@ngInject
@@ -95866,15 +89491,7 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 857 */
-=======
-/* 821 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 822 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 859 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96239,20 +89856,11 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 858 */
-=======
-/* 822 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 823 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 860 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-<<<<<<< HEAD
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -96304,104 +89912,7 @@ exports.SWIsolateChildForm = SWIsolateChildForm;
 
 
 /***/ }),
-/* 859 */
-=======
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWVerifyAddressDialogController = /** @class */ (function () {
-    //@ngInject
-    function SWVerifyAddressDialogController($timeout, $rootScope, $http, $hibachi, collectionConfigService, observerService) {
-        var _this = this;
-        this.$timeout = $timeout;
-        this.$rootScope = $rootScope;
-        this.$http = $http;
-        this.$hibachi = $hibachi;
-        this.collectionConfigService = collectionConfigService;
-        this.observerService = observerService;
-        //init 
-        this.init = function (data) {
-            _this.accountAddressID = data['accountAddressID'] || data['accountAddress.accountAddressID'];
-            if (!_this.accountAddressID) {
-                return;
-            }
-            _this.verifyAddress({ accountAddressID: _this.accountAddressID }).then(function (response) {
-                if (response.verifyAddress.suggestedAddress) {
-                    _this.suggestedAddress = response.verifyAddress.suggestedAddress;
-                }
-                else {
-                    _this.suggestedAddress = null;
-                }
-                if (!response.verifyAddress.success) {
-                    _this.showModal();
-                }
-            });
-        };
-        this.showModal = function () {
-            $('#VerifyAddressDialog').modal('show');
-        };
-        this.selectSuggestedAddress = function () {
-            return _this.$rootScope.slatwall.doAction('addEditAccountAddress', _this.suggestedAddress);
-        };
-        //mocking call to integration. Important to inject the data's account address iD into the response object for tracking
-        this.verifyAddress = function (data) {
-            return _this.$rootScope.slatwall.doAction("verifyAddress", { accountAddressID: data.accountAddressID }).then(function (response) {
-                if (response.verifyAddress.suggestedAddress) {
-                    response.verifyAddress.suggestedAddress['accountAddressID'] = data.accountAddressID;
-                }
-                return response;
-            });
-        };
-        this.cancel = function () {
-            _this.$rootScope.slatwall.deleteAccountAddress(_this.accountAddressID);
-            _this.suggestedAddress = null;
-            _this.accountAddressID = null;
-        };
-        this.observerService.attach(this.init, "shippingAddressSelected");
-        this.copy = "We Could Not Verify This Address. Please Select:";
-    }
-    return SWVerifyAddressDialogController;
-}());
-var SWVerifyAddressDialog = /** @class */ (function () {
-    //@ngInject
-    function SWVerifyAddressDialog($compile, hibachiPathBuilder) {
-        this.restrict = 'E';
-        this.scope = {};
-        this.transclude = false;
-        this.bindToController = {};
-        this.controller = SWVerifyAddressDialogController;
-        this.controllerAs = "SWVerifyAddressDialog";
-        this.templatePath = "";
-        this.templateUrl = "";
-        this.link = function (scope, element, attrs) {
-        };
-        if (!hibachiConfig) {
-            hibachiConfig = {};
-        }
-        if (!hibachiConfig.customPartialsPath) {
-            hibachiConfig.customPartialsPath = '/Slatwall/custom/client/src/form/';
-        }
-        this.templatePath = hibachiConfig.customPartialsPath;
-        this.templateUrl = hibachiConfig.customPartialsPath + 'swverifyaddressdialog.html';
-        this.$compile = $compile;
-    }
-    SWVerifyAddressDialog.Factory = function () {
-        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWVerifyAddressDialog(corePartialsPath, hibachiPathBuilder); };
-        directive.$inject = ['$compile', 'hibachiPathBuilder'];
-        return directive;
-    };
-    return SWVerifyAddressDialog;
-}());
-exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
-
-
-/***/ }),
-<<<<<<< HEAD
-/* 823 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 824 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 861 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96412,59 +89923,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(6);
 //services
-<<<<<<< HEAD
-<<<<<<< HEAD
-var fileservice_1 = __webpack_require__(860);
+var fileservice_1 = __webpack_require__(862);
 //directives
 //  components
 //form
-var swinput_1 = __webpack_require__(857);
-var swfformfield_1 = __webpack_require__(848);
-var swform_1 = __webpack_require__(849);
-var swfform_1 = __webpack_require__(847);
-var swffileinput_1 = __webpack_require__(846);
-var swformfield_1 = __webpack_require__(850);
-var swformfieldfile_1 = __webpack_require__(851);
-var swformfieldjson_1 = __webpack_require__(852);
-var swformfieldsearchselect_1 = __webpack_require__(853);
-var swformregistrar_1 = __webpack_require__(854);
-var swerrordisplay_1 = __webpack_require__(845);
-var swaddressform_1 = __webpack_require__(844);
-var swisolatechildform_1 = __webpack_require__(858);
+var swinput_1 = __webpack_require__(859);
+var swfformfield_1 = __webpack_require__(850);
+var swform_1 = __webpack_require__(851);
+var swfform_1 = __webpack_require__(849);
+var swffileinput_1 = __webpack_require__(848);
+var swformfield_1 = __webpack_require__(852);
+var swformfieldfile_1 = __webpack_require__(853);
+var swformfieldjson_1 = __webpack_require__(854);
+var swformfieldsearchselect_1 = __webpack_require__(855);
+var swformregistrar_1 = __webpack_require__(856);
+var swerrordisplay_1 = __webpack_require__(847);
+var swaddressform_1 = __webpack_require__(845);
+var swisolatechildform_1 = __webpack_require__(860);
 var swpropertydisplay_1 = __webpack_require__(306);
-var swfpropertydisplay_1 = __webpack_require__(856);
-var swformsubscriber_1 = __webpack_require__(855);
-=======
-var fileservice_1 = __webpack_require__(824);
-=======
-var fileservice_1 = __webpack_require__(825);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
-//directives
-//  components
-//form
-var swinput_1 = __webpack_require__(822);
-var swfformfield_1 = __webpack_require__(813);
-var swform_1 = __webpack_require__(814);
-var swfform_1 = __webpack_require__(812);
-var swffileinput_1 = __webpack_require__(811);
-var swformfield_1 = __webpack_require__(815);
-var swformfieldfile_1 = __webpack_require__(816);
-var swformfieldjson_1 = __webpack_require__(817);
-var swformfieldsearchselect_1 = __webpack_require__(818);
-var swformregistrar_1 = __webpack_require__(819);
-var swerrordisplay_1 = __webpack_require__(810);
-var swaddressform_1 = __webpack_require__(809);
-var swpropertydisplay_1 = __webpack_require__(299);
-<<<<<<< HEAD
-var swfpropertydisplay_1 = __webpack_require__(820);
-var swformsubscriber_1 = __webpack_require__(819);
-var swverifyaddressdialog_1 = __webpack_require__(822);
->>>>>>> 820b72cea3... saving work
-=======
-var swfpropertydisplay_1 = __webpack_require__(821);
-var swformsubscriber_1 = __webpack_require__(820);
-var swverifyaddressdialog_1 = __webpack_require__(823);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var swfpropertydisplay_1 = __webpack_require__(858);
+var swformsubscriber_1 = __webpack_require__(857);
+var swcollectionconfigasproperty_1 = __webpack_require__(846);
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -96483,27 +89962,15 @@ var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', co
     .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory(swfpropertydisplay_1.SWFPropertyDisplay, "swfpropertydisplay.html"))
     .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory(swpropertydisplay_1.SWPropertyDisplay, "propertydisplay.html"))
     .directive('swErrorDisplay', swerrordisplay_1.SWErrorDisplay.Factory())
-<<<<<<< HEAD
     .directive('swIsolateChildForm', swisolatechildform_1.SWIsolateChildForm.Factory())
     .directive('swAddressForm', swaddressform_1.SWAddressForm.Factory())
-=======
-    .directive('swAddressForm', swaddressform_1.SWAddressForm.Factory())
-    .directive('swVerifyAddressDialog', swverifyaddressdialog_1.SWVerifyAddressDialog.Factory())
->>>>>>> 820b72cea3... saving work
-    .directive('swFormSubscriber', swformsubscriber_1.SWFormSubscriber.Factory());
+    .directive('swFormSubscriber', swformsubscriber_1.SWFormSubscriber.Factory())
+    .directive('swCollectionConfigAsProperty', swcollectionconfigasproperty_1.SWCollectionConfigAsProperty.Factory());
 exports.formmodule = formmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 860 */
-=======
-/* 824 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 825 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 862 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96550,15 +90017,7 @@ exports.FileService = FileService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 861 */
-=======
-/* 825 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 826 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 863 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96668,15 +90127,7 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 862 */
-=======
-/* 826 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 827 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 864 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96685,37 +90136,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
-<<<<<<< HEAD
 var alert_module_1 = __webpack_require__(300);
 var card_module_1 = __webpack_require__(709);
 var collection_module_1 = __webpack_require__(301);
-var listing_module_1 = __webpack_require__(878);
+var listing_module_1 = __webpack_require__(880);
 var dialog_module_1 = __webpack_require__(304);
 var entity_module_1 = __webpack_require__(305);
-var pagination_module_1 = __webpack_require__(881);
-var form_module_1 = __webpack_require__(859);
-var validation_module_1 = __webpack_require__(900);
+var pagination_module_1 = __webpack_require__(883);
+var form_module_1 = __webpack_require__(861);
+var validation_module_1 = __webpack_require__(902);
 var workflow_module_1 = __webpack_require__(307);
 //directives
-var swsaveandfinish_1 = __webpack_require__(861);
-=======
-var alert_module_1 = __webpack_require__(293);
-var card_module_1 = __webpack_require__(676);
-var collection_module_1 = __webpack_require__(294);
-var listing_module_1 = __webpack_require__(843);
-var dialog_module_1 = __webpack_require__(297);
-var entity_module_1 = __webpack_require__(298);
-var pagination_module_1 = __webpack_require__(846);
-var form_module_1 = __webpack_require__(824);
-var validation_module_1 = __webpack_require__(865);
-var workflow_module_1 = __webpack_require__(300);
-//directives
-<<<<<<< HEAD
-var swsaveandfinish_1 = __webpack_require__(825);
->>>>>>> 820b72cea3... saving work
-=======
-var swsaveandfinish_1 = __webpack_require__(826);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var swsaveandfinish_1 = __webpack_require__(863);
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -96757,15 +90189,7 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 863 */
-=======
-/* 827 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 828 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 865 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96814,15 +90238,7 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 864 */
-=======
-/* 828 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 829 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 866 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96881,15 +90297,7 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 865 */
-=======
-/* 829 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 830 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 867 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97049,15 +90457,7 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 866 */
-=======
-/* 830 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 831 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 868 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97238,15 +90638,7 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 867 */
-=======
-/* 831 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 832 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 869 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97309,15 +90701,7 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 868 */
-=======
-/* 832 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 833 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 870 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97365,14 +90749,11 @@ var SWListingDisplayController = /** @class */ (function () {
         this.orderByStates = {};
         this.orderByIndices = {};
         this.pageRecordsWithManualSortOrder = {};
-<<<<<<< HEAD
         this.hasRecordAddAction = false;
         this.hasRecordDetailAction = false;
         this.hasRecordEditAction = false;
         this.recordEditIcon = 'pencil';
         this.hasRecordDeleteAction = false;
-=======
->>>>>>> 820b72cea3... saving work
         this.searching = false;
         this.selectable = false;
         this.showSearchFilters = false;
@@ -97415,12 +90796,9 @@ var SWListingDisplayController = /** @class */ (function () {
                 if (_this.columns && _this.columns.length) {
                     _this.collectionConfig.columns = _this.columns;
                 }
-<<<<<<< HEAD
                 else if (_this.listingColumns && _this.listingColumns.length) {
                     _this.columns = _this.listingColumns;
                 }
-=======
->>>>>>> 820b72cea3... saving work
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
@@ -97503,7 +90881,6 @@ var SWListingDisplayController = /** @class */ (function () {
             else {
                 _this.administrativeCount = 0;
             }
-<<<<<<< HEAD
             //Administractive Action Setup
             _this.hasRecordDetailAction = (_this.recordDetailAction && _this.recordDetailAction.length !== 0) ||
                 (_this.recordDetailEvent && _this.recordDetailEvent.length !== 0);
@@ -97526,21 +90903,6 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.adminattributes = _this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
-=======
-            if (_this.recordDetailAction && _this.recordDetailAction.length) {
-                _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('detail');
-            }
-            if (_this.recordEditAction && _this.recordEditAction.length) {
-                _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('edit');
-            }
-            if (_this.recordDeleteAction && _this.recordDeleteAction.length) {
-                _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('delete');
-            }
-            if (_this.recordAddAction && _this.recordAddAction.length) {
->>>>>>> 820b72cea3... saving work
                 _this.administrativeCount++;
                 _this.adminattributes = _this.getAdminAttributesByType('add');
             }
@@ -97608,12 +90970,9 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
             if (_this.collectionConfig) {
                 _this.collectionConfig.setEventID(_this.tableID);
-<<<<<<< HEAD
                 if (_this.customEndpoint && _this.customEndpoint.length) {
                     _this.collectionConfig.setCustomEndpoint(_this.customEndpoint);
                 }
-=======
->>>>>>> 820b72cea3... saving work
             }
             if (angular.isDefined(_this.sortableFieldName)) {
                 _this.sortableFieldName = "sorting" + _this.tableID;
@@ -97897,7 +91256,6 @@ var SWListingDisplayController = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-<<<<<<< HEAD
     SWListingDisplayController.prototype.hasAverageOrTotal = function () {
         if (this.collectionData) {
             for (var key in this.collectionData) {
@@ -97908,8 +91266,6 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
-=======
->>>>>>> 820b72cea3... saving work
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -97951,44 +91307,29 @@ var SWListingDisplay = /** @class */ (function () {
             baseEntity: "<?",
             baseEntityName: "@?",
             baseEntityId: "@?",
-<<<<<<< HEAD
             customEndpoint: "@?",
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
             recordEditEvent: "@?",
-=======
-            /*Admin Actions*/
-            actions: "<?",
-            administrativeCount: "@?",
->>>>>>> 820b72cea3... saving work
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
             recordEditQueryString: "@?",
             recordEditModal: "<?",
             recordEditDisabled: "<?",
-<<<<<<< HEAD
             recordEditIcon: "@?",
             recordDetailEvent: "@?",
-=======
->>>>>>> 820b72cea3... saving work
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
             recordDetailActionIdProperty: "@?",
             recordDetailActionIdKey: "@?",
             recordDetailQueryString: "@?",
             recordDetailModal: "<?",
-<<<<<<< HEAD
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
-=======
-            recordDeleteAction: "@?",
-            recordDeleteActionProperty: "@?",
-            recordDeleteQueryString: "@?",
->>>>>>> 820b72cea3... saving work
             recordAddAction: "@?",
             recordAddActionProperty: "@?",
             recordAddQueryString: "@?",
@@ -98010,10 +91351,7 @@ var SWListingDisplay = /** @class */ (function () {
             }
             ]
             */
-<<<<<<< HEAD
             listingColumns: '<?',
-=======
->>>>>>> 820b72cea3... saving work
             /*Hierachy Expandable*/
             parentPropertyName: "@?",
             //booleans
@@ -98091,15 +91429,7 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 869 */
-=======
-/* 833 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 834 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 871 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98121,7 +91451,6 @@ var SWListingDisplayCellController = /** @class */ (function () {
             return _this.column.aggregate && _this.column.aggregate.aggregateFunction && _this.column.aggregate.aggregateFunction.length;
         };
         this.getDirectiveTemplate = function () {
-<<<<<<< HEAD
             var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
             if (_this.column.isEditable) {
                 if (!_this.column.type) {
@@ -98140,26 +91469,13 @@ var SWListingDisplayCellController = /** @class */ (function () {
             else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
                     templateUrl = basePartialPath + 'listingdisplaycelldate.html';
-=======
-            var templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycell.html';
-            if (_this.expandable || (_this.swListingDisplay.expandable && _this.column.tdclass && _this.column.tdclass === 'primary')) {
-                templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplayselectablecellexpandable.html';
-            }
-            if (!_this.swListingDisplay.expandable || !_this.column.tdclass || _this.column.tdclass !== 'primary') {
-                if (_this.column.ormtype === 'timestamp') {
-                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycelldate.html';
->>>>>>> 820b72cea3... saving work
                 }
                 else if (_this.column.type === 'currency') {
                     if (_this.hasAggregate() && _this.pageRecord) {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
-<<<<<<< HEAD
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
-=======
-                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellcurrency.html';
->>>>>>> 820b72cea3... saving work
                 }
                 else if ([
                     "double",
@@ -98173,16 +91489,11 @@ var SWListingDisplayCellController = /** @class */ (function () {
                 }
                 else if (_this.hasAggregate()) {
                     _this.value = _this.pageRecord[_this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias)];
-<<<<<<< HEAD
                     templateUrl = basePartialPath + 'listingdisplaycellaggregate.html';
-=======
-                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellaggregate.html';
->>>>>>> 820b72cea3... saving work
                 }
             }
             return templateUrl;
         };
-<<<<<<< HEAD
         //prevent listing display edit cell from submitting the form if enter key is pressed
         this.handleKeyPress = function (keyEvent) {
             if (keyEvent.keyCode === 13) {
@@ -98195,13 +91506,6 @@ var SWListingDisplayCellController = /** @class */ (function () {
         }
         if (!this.value && this.pageRecord && this.pageRecordKey) {
             this.value = this.pageRecord[this.pageRecordKey];
-=======
-        this.hibachiPathBuilder = hibachiPathBuilder;
-        this.listingPartialPath = listingPartialPath;
-        this.$scope = $scope;
-        if (!this.value && this.pageRecord && this.column) {
-            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);
->>>>>>> 820b72cea3... saving work
         }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord);
         this.hasActionCaller = false;
@@ -98210,13 +91514,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
             this.actionCaller = {
                 action: this.column.action
             };
-<<<<<<< HEAD
             this.actionCaller.queryString = this.utilityService.replaceStringWithProperties(this.column.queryString, this.pageRecord);
-=======
-            if (this.column.queryString) {
-                this.actionCaller.queryString = this.utilityService.replaceStringWithProperties(this.column.queryString, this.pageRecord);
-            }
->>>>>>> 820b72cea3... saving work
         }
         if (this.cellView) {
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
@@ -98269,15 +91567,7 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 870 */
-=======
-/* 834 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 835 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 872 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98354,15 +91644,7 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 871 */
-=======
-/* 835 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 836 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 873 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98421,15 +91703,7 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 872 */
-=======
-/* 836 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 837 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 874 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98468,15 +91742,7 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 873 */
-=======
-/* 837 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 838 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 875 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98533,15 +91799,7 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 874 */
-=======
-/* 838 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 839 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 876 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98589,15 +91847,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 875 */
-=======
-/* 839 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 840 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 877 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98605,11 +91855,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-<<<<<<< HEAD
 var chart_js_1 = __webpack_require__(309);
-=======
-var chart_js_1 = __webpack_require__(302);
->>>>>>> 820b72cea3... saving work
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
     function SWListingReportController($filter, $scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
@@ -99106,15 +92352,7 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 876 */
-=======
-/* 840 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 841 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 878 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99178,15 +92416,7 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 877 */
-=======
-/* 841 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 842 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 879 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99255,11 +92485,7 @@ var SWListingSearchController = /** @class */ (function () {
                 delete selectedPersonalCollection[_this.swListingDisplay.baseEntityName.toLowerCase()];
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
-<<<<<<< HEAD
             window.location.reload();
-=======
-            window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
->>>>>>> 820b72cea3... saving work
         };
         this.deleteReportCollection = function (persistedCollection) {
             _this.$hibachi.saveEntity('Collection', persistedCollection.collectionID, {}, 'delete').then(function (data) {
@@ -99417,15 +92643,7 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 878 */
-=======
-/* 842 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 843 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 880 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99434,65 +92652,25 @@ exports.SWListingSearch = SWListingSearch;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-<<<<<<< HEAD
 var collection_module_1 = __webpack_require__(301);
 //services
-var listingservice_1 = __webpack_require__(879);
+var listingservice_1 = __webpack_require__(881);
 //directives
-var swlistingdisplay_1 = __webpack_require__(868);
-var swlistingreport_1 = __webpack_require__(875);
-var swlistingdisplaycell_1 = __webpack_require__(869);
-var swlistingcontrols_1 = __webpack_require__(866);
-var swlistingaggregate_1 = __webpack_require__(863);
-var swlistingcolorfilter_1 = __webpack_require__(864);
-var swlistingcolumn_1 = __webpack_require__(865);
-var swlistingdisablerule_1 = __webpack_require__(867);
-var swlistingexpandablerule_1 = __webpack_require__(870);
-var swlistingfilter_1 = __webpack_require__(871);
-var swlistingfiltergroup_1 = __webpack_require__(872);
-var swlistingorderby_1 = __webpack_require__(874);
-var swlistingrowsave_1 = __webpack_require__(876);
-var swlistingsearch_1 = __webpack_require__(877);
-var swlistingglobalsearch_1 = __webpack_require__(873);
-=======
-var collection_module_1 = __webpack_require__(294);
-//services
-var listingservice_1 = __webpack_require__(844);
-//directives
-<<<<<<< HEAD
-var swlistingdisplay_1 = __webpack_require__(832);
-var swlistingreport_1 = __webpack_require__(839);
-var swlistingdisplaycell_1 = __webpack_require__(833);
-var swlistingcontrols_1 = __webpack_require__(830);
-var swlistingaggregate_1 = __webpack_require__(827);
-var swlistingcolorfilter_1 = __webpack_require__(828);
-var swlistingcolumn_1 = __webpack_require__(829);
-var swlistingdisablerule_1 = __webpack_require__(831);
-var swlistingexpandablerule_1 = __webpack_require__(834);
-var swlistingfilter_1 = __webpack_require__(835);
-var swlistingfiltergroup_1 = __webpack_require__(836);
-var swlistingorderby_1 = __webpack_require__(838);
-var swlistingrowsave_1 = __webpack_require__(840);
-var swlistingsearch_1 = __webpack_require__(841);
-var swlistingglobalsearch_1 = __webpack_require__(837);
->>>>>>> 820b72cea3... saving work
-=======
-var swlistingdisplay_1 = __webpack_require__(833);
-var swlistingreport_1 = __webpack_require__(840);
-var swlistingdisplaycell_1 = __webpack_require__(834);
-var swlistingcontrols_1 = __webpack_require__(831);
-var swlistingaggregate_1 = __webpack_require__(828);
-var swlistingcolorfilter_1 = __webpack_require__(829);
-var swlistingcolumn_1 = __webpack_require__(830);
-var swlistingdisablerule_1 = __webpack_require__(832);
-var swlistingexpandablerule_1 = __webpack_require__(835);
-var swlistingfilter_1 = __webpack_require__(836);
-var swlistingfiltergroup_1 = __webpack_require__(837);
-var swlistingorderby_1 = __webpack_require__(839);
-var swlistingrowsave_1 = __webpack_require__(841);
-var swlistingsearch_1 = __webpack_require__(842);
-var swlistingglobalsearch_1 = __webpack_require__(838);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var swlistingdisplay_1 = __webpack_require__(870);
+var swlistingreport_1 = __webpack_require__(877);
+var swlistingdisplaycell_1 = __webpack_require__(871);
+var swlistingcontrols_1 = __webpack_require__(868);
+var swlistingaggregate_1 = __webpack_require__(865);
+var swlistingcolorfilter_1 = __webpack_require__(866);
+var swlistingcolumn_1 = __webpack_require__(867);
+var swlistingdisablerule_1 = __webpack_require__(869);
+var swlistingexpandablerule_1 = __webpack_require__(872);
+var swlistingfilter_1 = __webpack_require__(873);
+var swlistingfiltergroup_1 = __webpack_require__(874);
+var swlistingorderby_1 = __webpack_require__(876);
+var swlistingrowsave_1 = __webpack_require__(878);
+var swlistingsearch_1 = __webpack_require__(879);
+var swlistingglobalsearch_1 = __webpack_require__(875);
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -99520,15 +92698,7 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 879 */
-=======
-/* 843 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 844 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 881 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99564,10 +92734,7 @@ var ListingService = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.localStorageService = localStorageService;
         this.listingDisplays = {};
-<<<<<<< HEAD
         this.pageRecordKeys = {};
-=======
->>>>>>> 820b72cea3... saving work
         this.state = {};
         /**
          * The reducer is responsible for modifying the state of the state object into a new state for listeners.
@@ -99742,12 +92909,9 @@ var ListingService = /** @class */ (function () {
             }
         };
         this.getPageRecordKey = function (propertyIdentifier) {
-<<<<<<< HEAD
             if (_this.pageRecordKeys[propertyIdentifier] != null) {
                 return _this.pageRecordKeys[propertyIdentifier];
             }
-=======
->>>>>>> 820b72cea3... saving work
             if (propertyIdentifier) {
                 var propertyIdentifierWithoutAlias = '';
                 if (propertyIdentifier.indexOf('_') === 0) {
@@ -99763,12 +92927,8 @@ var ListingService = /** @class */ (function () {
                 else {
                     propertyIdentifierWithoutAlias = propertyIdentifier;
                 }
-<<<<<<< HEAD
                 _this.pageRecordKeys[propertyIdentifier] = _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
                 return _this.pageRecordKeys[propertyIdentifier];
-=======
-                return _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
->>>>>>> 820b72cea3... saving work
             }
             return '';
         };
@@ -99968,14 +93128,10 @@ var ListingService = /** @class */ (function () {
             if (_this.getListing(listingID).multiSlot == false) {
                 _this.$timeout(function () {
                     _this.getListing(listingID).collectionConfig.loadJson(_this.getListing(listingID).collectionData.collectionConfig);
-<<<<<<< HEAD
                     //only override columns if they were not specified programmatically (editable listing displays, with non-persistent columns)
                     if (_this.getListing(listingID).listingColumns == null) {
                         _this.getListing(listingID).columns = _this.getListing(listingID).collectionConfig.columns;
                     }
-=======
-                    _this.getListing(listingID).columns = _this.getListing(listingID).collectionConfig.columns;
->>>>>>> 820b72cea3... saving work
                 });
             }
             if (_this.getListing(listingID).paginator != null
@@ -100513,15 +93669,7 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 880 */
-=======
-/* 844 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 845 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 882 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100567,15 +93715,7 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 881 */
-=======
-/* 845 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 846 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 883 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100584,18 +93724,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
-<<<<<<< HEAD
-<<<<<<< HEAD
-var paginationservice_1 = __webpack_require__(882);
-var swpaginationbar_1 = __webpack_require__(880);
-=======
-var paginationservice_1 = __webpack_require__(846);
-var swpaginationbar_1 = __webpack_require__(844);
->>>>>>> 820b72cea3... saving work
-=======
-var paginationservice_1 = __webpack_require__(847);
-var swpaginationbar_1 = __webpack_require__(845);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var paginationservice_1 = __webpack_require__(884);
+var swpaginationbar_1 = __webpack_require__(882);
 var core_module_1 = __webpack_require__(6);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -100612,15 +93742,7 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 882 */
-=======
-/* 846 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 847 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 884 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100721,11 +93843,7 @@ var Pagination = /** @class */ (function () {
             return (_this.getPageEnd() === _this.getRecordsCount());
         };
         this.showPreviousJump = function () {
-<<<<<<< HEAD
             return (angular.isDefined(_this.getCurrentPage()) && _this.getCurrentPage() > 3);
-=======
-            return (angular.isDefined(_this.getCurrentPage()) && _this.getCurrentPage() > 4 && _this.getTotalPages() > 6);
->>>>>>> 820b72cea3... saving work
         };
         this.showNextJump = function () {
             return !!(_this.getCurrentPage() < _this.getTotalPages() - 3 && _this.getTotalPages() > 6);
@@ -100742,21 +93860,12 @@ var Pagination = /** @class */ (function () {
                     return true;
                 }
             }
-<<<<<<< HEAD
             if (_this.getCurrentPage() <= 3) {
                 if (pageNumber < 6) {
                     return true;
                 }
             }
             else {
-=======
-            if (_this.getCurrentPage() <= 4) {
-                if (pageNumber < 6 && pageNumber - _this.getCurrentPage() <= 2) { // 
-                    return true;
-                }
-            }
-            if (_this.getCurrentPage() >= 5) {
->>>>>>> 820b72cea3... saving work
                 var bottomRange = _this.getCurrentPage() - 2;
                 var topRange = _this.getCurrentPage() + 2;
                 if (pageNumber > bottomRange && pageNumber < topRange) {
@@ -100775,10 +93884,7 @@ var Pagination = /** @class */ (function () {
             }
             _this.setPageEnd(collection.pageRecordsEnd);
             _this.setTotalPages(collection.totalPages);
-<<<<<<< HEAD
             _this.currentPage = collection.currentPage;
-=======
->>>>>>> 820b72cea3... saving work
             _this.totalPagesArray = [];
             if (angular.isUndefined(_this.getCurrentPage()) || _this.getCurrentPage() < 5) {
                 var start = 1;
@@ -100834,15 +93940,7 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 883 */
-=======
-/* 847 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 848 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 885 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101231,15 +94329,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 884 */
-=======
-/* 848 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 849 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 886 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101271,15 +94361,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 885 */
-=======
-/* 849 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 850 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 887 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101312,15 +94394,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 886 */
-=======
-/* 850 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 851 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 888 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101384,15 +94458,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 887 */
-=======
-/* 851 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 852 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 889 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101422,15 +94488,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 888 */
-=======
-/* 852 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 853 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 890 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101460,15 +94518,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 889 */
-=======
-/* 853 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 854 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 891 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101502,15 +94552,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 890 */
-=======
-/* 854 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 855 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 892 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101543,15 +94585,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 891 */
-=======
-/* 855 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 856 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 893 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101585,15 +94619,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 892 */
-=======
-/* 856 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 857 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 894 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101626,15 +94652,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 893 */
-=======
-/* 857 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 858 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 895 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101664,15 +94682,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 894 */
-=======
-/* 858 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 859 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 896 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101702,15 +94712,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 895 */
-=======
-/* 859 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 860 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 897 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101741,15 +94743,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 896 */
-=======
-/* 860 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 861 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 898 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101786,15 +94780,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 897 */
-=======
-/* 861 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 862 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 899 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101827,15 +94813,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 898 */
-=======
-/* 862 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 863 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 900 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101872,15 +94850,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 899 */
-=======
-/* 863 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 864 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 901 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102037,15 +95007,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 900 */
-=======
-/* 864 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 865 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 902 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102054,66 +95016,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-<<<<<<< HEAD
-<<<<<<< HEAD
-var swvalidate_1 = __webpack_require__(883);
-var swvalidationminlength_1 = __webpack_require__(891);
-var swvalidationdatatype_1 = __webpack_require__(884);
-var swvalidationeq_1 = __webpack_require__(885);
-var swvalidationeqproperty_1 = __webpack_require__(886);
-var swvalidationgte_1 = __webpack_require__(887);
-var swvalidationlte_1 = __webpack_require__(888);
-var swvalidationmaxlength_1 = __webpack_require__(889);
-var swvalidationmaxvalue_1 = __webpack_require__(890);
-var swvalidationminvalue_1 = __webpack_require__(892);
-var swvalidationneq_1 = __webpack_require__(893);
-var swvalidationnumeric_1 = __webpack_require__(894);
-var swvalidationregex_1 = __webpack_require__(895);
-var swvalidationrequired_1 = __webpack_require__(896);
-var swvalidationunique_1 = __webpack_require__(897);
-var swvalidationuniqueornull_1 = __webpack_require__(898);
+var swvalidate_1 = __webpack_require__(885);
+var swvalidationminlength_1 = __webpack_require__(893);
+var swvalidationdatatype_1 = __webpack_require__(886);
+var swvalidationeq_1 = __webpack_require__(887);
+var swvalidationeqproperty_1 = __webpack_require__(888);
+var swvalidationgte_1 = __webpack_require__(889);
+var swvalidationlte_1 = __webpack_require__(890);
+var swvalidationmaxlength_1 = __webpack_require__(891);
+var swvalidationmaxvalue_1 = __webpack_require__(892);
+var swvalidationminvalue_1 = __webpack_require__(894);
+var swvalidationneq_1 = __webpack_require__(895);
+var swvalidationnumeric_1 = __webpack_require__(896);
+var swvalidationregex_1 = __webpack_require__(897);
+var swvalidationrequired_1 = __webpack_require__(898);
+var swvalidationunique_1 = __webpack_require__(899);
+var swvalidationuniqueornull_1 = __webpack_require__(900);
 //services
-var validationservice_1 = __webpack_require__(899);
-=======
-var swvalidate_1 = __webpack_require__(847);
-var swvalidationminlength_1 = __webpack_require__(855);
-var swvalidationdatatype_1 = __webpack_require__(848);
-var swvalidationeq_1 = __webpack_require__(849);
-var swvalidationeqproperty_1 = __webpack_require__(850);
-var swvalidationgte_1 = __webpack_require__(851);
-var swvalidationlte_1 = __webpack_require__(852);
-var swvalidationmaxlength_1 = __webpack_require__(853);
-var swvalidationmaxvalue_1 = __webpack_require__(854);
-var swvalidationminvalue_1 = __webpack_require__(856);
-var swvalidationneq_1 = __webpack_require__(857);
-var swvalidationnumeric_1 = __webpack_require__(858);
-var swvalidationregex_1 = __webpack_require__(859);
-var swvalidationrequired_1 = __webpack_require__(860);
-var swvalidationunique_1 = __webpack_require__(861);
-var swvalidationuniqueornull_1 = __webpack_require__(862);
-//services
-var validationservice_1 = __webpack_require__(863);
->>>>>>> 820b72cea3... saving work
-=======
-var swvalidate_1 = __webpack_require__(848);
-var swvalidationminlength_1 = __webpack_require__(856);
-var swvalidationdatatype_1 = __webpack_require__(849);
-var swvalidationeq_1 = __webpack_require__(850);
-var swvalidationeqproperty_1 = __webpack_require__(851);
-var swvalidationgte_1 = __webpack_require__(852);
-var swvalidationlte_1 = __webpack_require__(853);
-var swvalidationmaxlength_1 = __webpack_require__(854);
-var swvalidationmaxvalue_1 = __webpack_require__(855);
-var swvalidationminvalue_1 = __webpack_require__(857);
-var swvalidationneq_1 = __webpack_require__(858);
-var swvalidationnumeric_1 = __webpack_require__(859);
-var swvalidationregex_1 = __webpack_require__(860);
-var swvalidationrequired_1 = __webpack_require__(861);
-var swvalidationunique_1 = __webpack_require__(862);
-var swvalidationuniqueornull_1 = __webpack_require__(863);
-//services
-var validationservice_1 = __webpack_require__(864);
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+var validationservice_1 = __webpack_require__(901);
 var core_module_1 = __webpack_require__(6);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -102141,15 +95061,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 901 */
-=======
-/* 865 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 866 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 903 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102183,15 +95095,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 902 */
-=======
-/* 866 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 867 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 904 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102229,15 +95133,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 903 */
-=======
-/* 867 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 868 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 905 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102271,15 +95167,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 904 */
-=======
-/* 868 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 869 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 906 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102400,15 +95288,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 905 */
-=======
-/* 869 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 870 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 907 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102439,15 +95319,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 906 */
-=======
-/* 870 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 871 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 908 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102497,15 +95369,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 907 */
-=======
-/* 871 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 872 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 909 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102552,15 +95416,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 908 */
-=======
-/* 872 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 873 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 910 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102832,15 +95688,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 909 */
-=======
-/* 873 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 874 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 911 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103040,15 +95888,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 910 */
-=======
-/* 874 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 875 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 912 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103150,15 +95990,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 911 */
-=======
-/* 875 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 876 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 913 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103167,10 +95999,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWWorkflowTriggerHistory = /** @class */ (function () {
-<<<<<<< HEAD
     //@ngInject
-=======
->>>>>>> 820b72cea3... saving work
     function SWWorkflowTriggerHistory(workflowPartialsPath, hibachiPathBuilder, $rootScope, collectionConfigService) {
         return {
             restrict: 'A',
@@ -103207,15 +96036,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 912 */
-=======
-/* 876 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 877 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 914 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103255,11 +96076,7 @@ var SWWorkflowTriggers = /** @class */ (function () {
                 scope.updateCollection = function (collectionConfigData) {
                     if (scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig && collectionConfigData.collectionConfig.collectionConfigString) {
                         scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig.collectionConfigString);
-<<<<<<< HEAD
                         scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(collectionConfigData.collectionConfig.collectionConfigString));
-=======
-                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig.toString());
->>>>>>> 820b72cea3... saving work
                         //update the property display programatically
                         observerService.notifyById('pullBindings', 'WorkflowTriggerscheduleCollectionConfigpullBindings').then(function () {
                         });
@@ -103341,11 +96158,7 @@ var SWWorkflowTriggers = /** @class */ (function () {
                  * Saves the workflow triggers then cascade a save to the workflow object as well.
                  */
                 scope.saveWorkflowTrigger = function (context) {
-<<<<<<< HEAD
                     if (!scope.workflowTriggers.selectedTrigger.$$isPersisted() && scope.workflowTriggers.selectedTrigger.data.workflow == null) {
-=======
-                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
->>>>>>> 820b72cea3... saving work
                         scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
                     }
                     var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
@@ -103512,15 +96325,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 913 */
-=======
-/* 877 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 878 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 915 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103632,15 +96437,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 914 */
-=======
-/* 878 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 879 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 916 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103698,15 +96495,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 915 */
-=======
-/* 879 */
->>>>>>> 820b72cea3... saving work
-=======
-/* 880 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
+/* 917 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -103734,21 +96523,10 @@ module.exports = function(module) {
 
 
 /***/ }),
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* 916 */
+/* 918 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(308);
-=======
-/* 880 */
-=======
-/* 881 */
->>>>>>> bc63c9d114... saving spot setting up client side authentication
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(301);
->>>>>>> 820b72cea3... saving work
 
 
 /***/ })

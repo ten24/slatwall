@@ -101,6 +101,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	createRBJson();
     	var permissionGroupSmartlist = getService('accountService').getPermissionGroupSmartlist();
     	var permissionGroups = permissionGroupSmartList.getRecords();
+    	getService('HibachiJsonService').createPermissionJson('entity',getService('HibachiAuthenticationService').getEntityPermissionDetails());
+    	getService('HibachiJsonService').createPermissionJson('action',getService('HibachiAuthenticationService').getActionPermissionDetails());
     	for(var permissionGroup in permissionGroups){
     	    createPermissionJson(permissionGroup.getPermissionGroupID(),permissionGroup.getPermissionsByDetails(true));
     	}
@@ -112,6 +114,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(!directoryExists(systemrbpath)){
         	directoryCreate(systemrbpath);
         }
+        
         //remove meta data we already have in config.json
         if(arguments.permissionType=='entity'){
             var jsonStruct = {};
