@@ -132,7 +132,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
-	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false"; 
+	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
 	property name="address" persistent="false";
 	property name="adminIcon" persistent="false";
 	property name="adminAccountFlag" persistent="false" hb_formatType="yesno";
@@ -610,7 +610,7 @@ property name="firstFlexshipOrder" persistent="false";
 				if(len(trim(accountAddress['address_stateCode']))){
 					addressName &= accountAddress['address_stateCode'] & ', ';
 				}	
-
+				
 				var accountAddressOption = {
 					"name":  addressName & accountAddress['address_countryCode'],
 					"value": accountAddress['value']  
@@ -1072,7 +1072,7 @@ property name="firstFlexshipOrder" persistent="false";
 	public string function getSimpleRepresentation() {
 		return getFullName();
 	}
-
+	
 	public string function getSimpleRepresentationPropertyName(){
 		return 'calculatedFullName';
 	}

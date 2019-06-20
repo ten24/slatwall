@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrency" table="SwAccruementCurrency" persistent="true"  extends="HibachiEntity" cacheuse="transactional" hb_serviceName="loyaltyService" hb_permission="LoyaltyAccruement.AccruementCurrencies" hb_processContext="create" {
+component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrency" table="SwAccruementCurrency" persistent="true"  extends="HibachiEntity" cacheuse="transactional" hb_serviceName="loyaltyService" hb_permission="LoyaltyAccruement.AccruementCurrency" hb_processContext="create" {
 	
 	// Persistent Properties
 	property name="AccruementCurrencyID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -75,17 +75,17 @@ component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrenc
     // Loyalty Program Accruement (many-to-one)
 	public void function setLoyaltyAccruement(required any loyaltyAccruement) {
 		variables.loyaltyAccruement = arguments.loyaltyAccruement;
-		if(isNew() or !arguments.loyaltyAccruement.hasAccruementCurrency( this )) {
-			arrayAppend(arguments.loyaltyAccruement.getAccruementCurrencies(), this);
+		if(isNew() or !arguments.loyaltyAccruement.hasAccountLoyaltyTransaction( this )) {
+			arrayAppend(arguments.loyaltyAccruement.getAccountLoyaltyTransactions(), this);
 		}
 	}
 	public void function removeLoyaltyAccruement(any loyaltyAccruement) {
 	   if(!structKeyExists(arguments, "loyaltyAccruement")) {
 	   		arguments.loyaltyAccruement = variables.loyaltyAccruement;
 	   }
-       var index = arrayFind(arguments.loyaltyAccruement.getAccruementCurrencies(),this);
+       var index = arrayFind(arguments.loyaltyAccruement.getAccountLoyaltyTransactions(),this);
        if(index > 0) {
-           arrayDeleteAt(arguments.loyaltyAccruement.getAccruementCurrencies(), index);
+           arrayDeleteAt(arguments.loyaltyAccruement.getAccountLoyaltyTransactions(), index);
        }
        structDelete(variables,"loyaltyAccruement");
     }

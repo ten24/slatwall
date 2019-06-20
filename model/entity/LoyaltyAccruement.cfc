@@ -57,8 +57,8 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 
 	// Related Object Properties (one-to-many)
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";
-	property name="accruementCurrencies" singularname="accruementCurrency" cfc="AccruementCurrency" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" inverse="true";
-
+	property name="accruementCurrencies" singularname="accrumentCurrency" cfc="AccruementCurrency" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";
+	
 	// Related Object Properties (many-to-many - owner)
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwLoyaltyAccruBrand" fkcolumn="loyaltyAccruementID" inversejoincolumn="brandID";
 	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyAccruSku" fkcolumn="loyaltyAccruementID" inversejoincolumn="skuID";
@@ -124,15 +124,6 @@ property name="refereeFlag" ormtype="boolean" default="0";
 		arguments.accountLoyaltyTransaction.removeLoyaltyAccruement( this );
 	}
 	
-	public any function getAccruementCurrency(required string currencyCode){
-		var accruementCurrenciesList = getService("LoyaltyService").getAccruementCurrencySmartList();
-		accruementCurrenciesList.addFilter("loyaltyAccruement.loyaltyAccruementID",this.getLoyaltyAccruementID());
-		accruementCurrenciesList.addFilter("currencyCode",arguments.currencyCode);
-		accruementCurrencies = accruementCurrenciesList.getPageRecords();
-		if(arrayLen(accruementCurrencies)){
-			return accruementCurrencies[1];
-		}
-	}
 	
 	// loyalty Program (many-to-one)
 	public void function setLoyalty(required any loyalty) {
@@ -150,14 +141,6 @@ property name="refereeFlag" ormtype="boolean" default="0";
 			arrayDeleteAt(arguments.loyalty.getLoyaltyAccruements(), index);
 		}
 		structDelete(variables, "loyalty");
-	}
-	
-	public void function addAccruementCurrency(required any accruementCurrency) {
-		arguments.accruementCurrency.setLoyaltyAccruement( this );
-	}
-	
-	public void function removeAccruementCurrency(required any accruementCurrency) {
-		arguments.accruementCurrency.removeLoyaltyAccruement( this );
 	}
 	
 	// Brands (many-to-many - owner)

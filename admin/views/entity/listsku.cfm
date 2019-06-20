@@ -68,48 +68,28 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.skuSmartList#"
-			recordEditAction="admin:entity.editsku"
-			recorddetailaction="admin:entity.detailsku">
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<hb:HibachiListingColumn propertyIdentifier="listPrice" />
-		<hb:HibachiListingColumn propertyIdentifier="price" />
-		<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-	</hb:HibachiListingDisplay> --->
+    <cfset skuCollectionList = getHibachiScope().getService('skuService').getSkuCollectionList()>
+	<cfset serchableDisplayProperties = "skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS"/>
+	<cfset skuCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset skuCollectionList.addDisplayProperty( displayProperty='skuID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'Sku'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editsku"
-		record-detail-action="admin:entity.detailsku"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-		data-show-print-options="true"
-	>
-		<sw-listing-column data-property-identifier="skuID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="skuCode" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="product.productName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="product.productCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="product.productType.productTypeName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="product.brand.brandName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="listPrice" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="price" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="renewalPrice" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedSkuDefinition" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="publishedFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedQATS" ></sw-listing-column>
-	</sw-listing-display>
+    <hb:HibachiListingDisplay 
+    		collectionList="#skuCollectionList#"
+    		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+    		recordEditAction="admin:entity.edit#lcase(skuCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(skuCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>

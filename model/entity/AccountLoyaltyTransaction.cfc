@@ -41,7 +41,6 @@ component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoy
 	// Persistent Properties
 	property name="accountLoyaltyTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="accruementType" ormType="string";
-	property name="accruementEvent" ormType="string";
 	property name="redemptionType" ormType="string";
 	property name="pointsIn" ormType="integer";
 	property name="pointsOut" ormType="integer";		
