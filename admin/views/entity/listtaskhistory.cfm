@@ -50,6 +50,7 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
+
 <cfparam name="rc.taskHistorySmartList" type="any"/>
 
 <cfif !arrayLen(rc.taskHistorySmartList.getOrders())>
@@ -59,19 +60,28 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.taskHistorySmartList#" showCreate="false" />
 
-	<cfset taskHistoryCollectionList = getHibachiScope().getService('scheduleService').getTaskHistoryCollectionList()>
-	<cfset serchableDisplayProperties = "startTime,endTime,task.taskName,successFlag,response"/>
-	<cfset taskHistoryCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#taskHistoryCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+	<!--- <hb:HibachiListingDisplay smartlist="#rc.taskHistorySmartList#" >
+		<hb:HibachiListingColumn propertyidentifier="startTime" />
+		<hb:HibachiListingColumn propertyidentifier="endTime" />
+		<hb:HibachiListingColumn propertyidentifier="task.taskName" tdclass="primary" />
+		<hb:HibachiListingColumn propertyidentifier="successFlag" />
+		<hb:HibachiListingColumn propertyidentifier="response" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'TaskHistory'"
+		data-edit="false"
+		data-has-search="true"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
 	>
-	</hb:HibachiListingDisplay>
+		<sw-listing-column data-property-identifier="taskHistoryID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="startTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="endTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="task.taskName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="successFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="response" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>

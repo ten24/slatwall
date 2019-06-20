@@ -49,11 +49,12 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.fileGroupSmartList" type="any" />	
+
+<cfparam name="rc.fileGroupSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.fileGroupSmartList#"  showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.fileGroupSmartList#" showCreate="false">
 
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
@@ -61,27 +62,34 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<cfset fileGroupCollectionList = getHibachiScope().getService('fileService').getFileGroupCollectionList()>
-		<cfset serchableDisplayProperties = "fileGroupName,fileGroupCode,fileGroupDescription,fileRestrictAccessFlag,fileTrackAccessFlag"/>
-		<cfset fileGroupCollectionList.setDisplayProperties(serchableDisplayProperties, {
-			isVisible=true,
-			isSearchable=true,
-			isDeletable=true
-		})/>
-		
-		<cfset fileGroupCollectionList.addDisplayProperty(displayProperty='fileGroupID', columnConfig={
-			isVisible=false,
-			isSearchable=false,
-			isDeletable=false
-		})/>
-		
-		<hb:HibachiListingDisplay 
-			collectionList="#fileGroupCollectionList#"
-			usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-			recordEditAction="admin:entity.edit#lcase(fileGroupCollectionList.getCollectionObject())#"
-			recordDetailAction="admin:entity.detail#lcase(fileGroupCollectionList.getCollectionObject())#"
-		>
-	</hb:HibachiListingDisplay>
+	<!--- <hb:HibachiListingDisplay smartList="#rc.fileGroupSmartList#"
+							   recordDetailAction="admin:entity.detailfilegroup"
+							   recordEditAction="admin:entity.editfilegroup"
+							   >
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fileGroupName" />
+		<hb:HibachiListingColumn propertyIdentifier="fileGroupCode" />
+		<hb:HibachiListingColumn propertyIdentifier="fileGroupDescription" />
+		<hb:HibachiListingColumn propertyIdentifier="fileRestrictAccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="fileTrackAccessFlag" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'FileGroup'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editfilegroup"
+		record-detail-action="admin:entity.detailfilegroup"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="fileGroupID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileGroupName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileGroupCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileGroupDescription" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileRestrictAccessFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileTrackAccessFlag" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>

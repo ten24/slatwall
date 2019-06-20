@@ -73,10 +73,6 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
 			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
-			taxDocumentCommitType = {fieldType="select", valueOptions=[
-				{name="Commit Tax Documents When Order Closes",value="commitOnClose"},
-				{name="Commit Tax Documents Upon Delivery",value="commitOnDelivery"}
-			], defaultValue="commitOnClose"},
 			companyCode = {fieldType="text"},
 			customerUsageTypePropertyIdentifier = {fieldType="text"},
 			taxExemptNumberPropertyIdentifier = {fieldType="text"},

@@ -24,7 +24,7 @@
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
 	<cfparam name="attributes.translateAttributes" type="any" default="" />
 	<!---
-		attributes.fieldType have the following options:
+	attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
 		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		date				|	This is still just a textbox, but it adds the jQuery date picker
@@ -256,7 +256,7 @@
 				</cfif>
 			</cfoutput>
 		</cfcase>
-		<cfcase value="text,email">
+		<cfcase value="text">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
 				<cfif isStruct(attributes.translateAttributes)>

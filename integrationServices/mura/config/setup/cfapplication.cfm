@@ -5,5 +5,4 @@
 <cfset arrayAppend(this.ormSettings.cfclocation, "/Slatwall/model/entity") />
 <cfset this.customTagPaths = listAppend(this.customTagPaths, "#this.mappings["/Slatwall"]#/tags") />
 <cfset this.customTagPaths = listAppend(this.customTagPaths, "#this.mappings["/Slatwall"]#/org/Hibachi/HibachiTags") />
-<cfset this.setClientCookies=true/>
 <!---[END_SLATWALL_CONFIG]--->
