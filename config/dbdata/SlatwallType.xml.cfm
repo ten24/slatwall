@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Table tableName="SwType">
 	<Columns>
-		<column name="typeID" fieldtype="id" update="true" />
-		<column name="typeIDPath" update="true" />
-		<column name="parentTypeID" update="true" />
-		<column name="typeName" update="true" />
-		<column name="typeDescription" update="true" />
-		<column name="systemCode" update="true" />
-		<column name="sortOrder" update="true" />
-		<column name="childRequiresSystemCodeFlag" datatype="bit" update="true" />
+		<column name="typeID" fieldtype="id" />
+		<column name="typeIDPath" />
+		<column name="parentTypeID" />
+		<column name="typeName" update="false" />
+		<column name="typeDescription" update="false" />
+		<column name="systemCode" update="false" />
+		<column name="sortOrder" update="false" />
+		<column name="childRequiresSystemCodeFlag" datatype="bit" />
 	</Columns>
 	<Records>
 		<Record typeID="444df32cee42886828d43a685445e6a0" typeIDPath="444df32cee42886828d43a685445e6a0" parentTypeID="NULL" typeName="Account Payment Types" systemCode="accountPaymentType" childRequiresSystemCodeFlag="1" />
@@ -74,7 +74,7 @@
 		
 		<Record typeID="2c948084697d51bd01697d5402d40005" typeIDPath="2c948084697d51bd01697d5402d40005" parentTypeID="NULL" typeName="Order Template Types" systemCode="orderTemplateType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="2c948084697d51bd01697d5725650006" typeIDPath="2c948084697d51bd01697d5402d40005,2c948084697d51bd01697d5725650006" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Schedule Order Template" systemCode="ottSchedule" sortOrder="1"/>
-		<Record typeID="2c948084697d51bd01697d5725650007" typeIDPath="2c948084697d51bd01697d5402d40005,2c948084697d51bd01697d5725650007" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Wish List" systemCode="ottWishList" sortOrder="2"/>
+		<Record typeID="2c9280846b712d47016b75464e800014" typeIDPath="2c948084697d51bd01697d5402d40005,2c9280846b712d47016b75464e800014" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Wish List" systemCode="ottWishList" sortOrder="9"/>
 
 		<Record typeID="2c948084697d51bd01697d5996d80007" typeIDPath="2c948084697d51bd01697d5996d80007" parentTypeID="NULL" typeName="Order Template Status Types" systemCode="orderTemplateStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="2c948084697d51bd01697d9a592d0009" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9a592d0009" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Draft" systemCode="otstDraft" />
