@@ -1181,22 +1181,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
-		if(isNull(arguments.orderTemplate.getTemporaryOrder())){
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(arguments.orderTemplate, false);  
+		
+		var canPlaceOrder = false;
+
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+		
+		thread name="#threadName#" 
+			   orderTemplate="#createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate)#"
+			   action="run" 
+		{	
+
+
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplate.get(), false);  
 			transientOrder = this.saveOrder(transientOrder);
-			arguments.orderTemplate.setTemporaryOrder(transientOrder);
+			
+			ormFlush();
+ 
+			thread.canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+
+			ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()})
+			//ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where orderItem.order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()})
+
+			var deleteOk = this.deleteOrder(transientOrder); 
+
+			ormFlush(); 
+
+			this.logHibachi('we checked can place order and found #thread.canPlaceOrder# when we deleted order: #deleteOk#', true);
+		}
+
+		ThreadJoin(threadName);
+
+		if(StructKeyExists(evaluate(threadName), "ERROR")){
+			canPlaceOrder = false;
+			writeDump(evaluate(threadName));abort;
 		} else {
-			var transientOrder = arguments.orderTemplate.getTemporaryOrder(); 	
+			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
 		} 
-	
-		var canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
-
-		ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()})
-
-		var deleteOk = this.deleteOrder(transientOrder); 
-
-		this.logHibachi('we checked can place order and found #canPlaceOrder# when we deleted order: #deleteOk#', true);
-	
+		
 		return canPlaceOrder;
 	}
 
@@ -1256,18 +1277,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	public array function populateOrderItemsFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, any transientOrderFulfillment){
-		var orderTemplateItemCollectionList = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
-	
-		var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
 		
-		var fulfillmentTotal = 0;
+		var orderTemplateItems = orderTemplate.getOrderTemplateItems(); 
+
 		var transientOrderItems = []; 
 	
-		for(var orderTemplateItem in orderTemplateItemRecords){ 
+		for(var orderTemplateItem in orderTemplateItems){ 
 			var transientOrderItem = new Slatwall.model.entity.OrderItem();
-			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
-			
+			var sku = orderTemplateItem.getSku(); 		
+	
 			if(arguments.evictFromSession){	
 				ORMGetSession().evict(sku);
 				ORMGetSession().evict(transientOrderItem);
@@ -1275,7 +1293,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			transientOrderItem.setSku(sku);
 			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-			transientOrderItem.setQuantity(orderTemplateItem['quantity']);
+			transientOrderItem.setQuantity(orderTemplateItem.getQuantity());
 			
 			if(structKeyExists(arguments, "transientOrderFulfillment")){
 				transientOrderItem.setOrderFulfillment(arguments.transientOrderFulfillment);  
@@ -1595,7 +1613,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
 
 			//set payment method as credit card
-			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a')); 
+			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('2c9280846b09283e016b09d1b596000d')); 
 
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 
