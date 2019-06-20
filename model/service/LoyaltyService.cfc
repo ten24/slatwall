@@ -147,7 +147,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			{name=rbKey('define.select'), value=""},
 			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.points'), value="points"},
 			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.giftCard'), value="giftCard"},
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.promotion'), value="promotion"}
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.promotion'), value="promotion"},
 		];
 	}
 	

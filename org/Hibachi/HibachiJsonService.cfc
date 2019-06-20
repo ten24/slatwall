@@ -116,8 +116,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         	directoryCreate(customrbpath);
         }
         
-        var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
-        
         if(!directoryExists(systemrbpath)){
         	directoryCreate(systemrbpath);
         }
@@ -128,7 +126,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     				arrayAppend(directoryListing,item);
     			}
     		}
-    	}
     	
     	for(var rb in directoryListing){
     		var locale = listFirst(rb,'.');

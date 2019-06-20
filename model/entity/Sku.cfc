@@ -1962,7 +1962,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			price = this.getPrice(),
 			currencyCode = this.getCurrencyCode(),
 			skuID = this.getSkuID()
-		};
+		}
 		
 		var query = QueryExecute(sql, params);
 	}
