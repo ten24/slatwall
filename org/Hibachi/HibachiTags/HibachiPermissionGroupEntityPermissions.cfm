@@ -47,7 +47,7 @@
 					<tr>
 							<cfset request.context.permissionFormIndex++ />
 							<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='entity', entityClassName=entityName) />
-						<cfset hasProcessPermission  = attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('process', entityName, attributes.permissionGroup)/>	
+							
 						<cfif attributes.edit and not len(attributes.editEntityName)>
 							
 							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
@@ -76,8 +76,7 @@
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('read', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('update', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('delete', entityName, attributes.permissionGroup), "yesno")#</td>
-							
-							<td>#attributes.hibachiScope.formatValue(hasProcessPermission, "yesno")#</td>
+							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('process', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('report', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>
 								<cfif not attributes.edit><hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil"></cfif>

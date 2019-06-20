@@ -2,12 +2,12 @@
 	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	 
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	 
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -100,6 +100,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		}
 		
+<<<<<<< HEAD
 		// Setup Default Data from custom folder... Not called on soft reloads.
 		var customdbPath = ExpandPath("/custom/dbdata");
 		if ( !directoryExists(customdbPath) )
@@ -110,6 +111,11 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = customdbPath);
 			writeLog(file="Slatwall", text="General Log - Default Data from custom/dbdata Has Been Confirmed");
 		}
+=======
+		// Clear the setting cache so that it can be reloaded
+		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
+		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
+>>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 		
 		// Clear the setting meta cache so that it can be reloaded
         	getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');

@@ -81,13 +81,10 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 		}
 	}
 	
-	public struct function getPermissionsByDetailsJson(){
-	}
-	
-	public struct function getPermissionsByDetails(boolean excludeObjects=false) {
+	public struct function getPermissionsByDetails() {
 		
-		var cacheKey = "#getPermissionsByDetailsCacheKey()##arguments.excludeObjects#";
-		if(getService("hibachiCacheService").hasCachedValue(cacheKey)) {
+		var cacheKey = getPermissionsByDetailsCacheKey();
+		if(getService("HibachiCacheService").hasCachedValue(cacheKey)) {
 			variables.permissionsByDetails = getService("hibachiCacheService").getCachedValue(cacheKey);
 		}else{
 			
@@ -98,9 +95,6 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 				},
 				action = {
 					subsystems = {}
-				},
-				process = {
-					entities = {}
 				}
 			};
 			
@@ -114,51 +108,12 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 				// setup a local variable for the permission
 				var thisPermission = permissions[p];
 				
-				if(thisPermission.getAccessType() eq 'process'){
-					// Check to see if this is the 'core' or very top level permission
-					if(isNull(thisPermission.getEntityClassName())) {
-						if(!arguments.excludeObjects){
-							variables.permissionsByDetails.process.permission = thisPermission;
-						}else{
-							variables.permissionsByDetails.process.permission = thisPermission.getStructRepresentation();
-						}
-						
-					// Otherwise this is a context or process level permission
-					} else {
-						
-						// Make sure the default data for this entity exists
-						if(!structKeyExists(variables.permissionsByDetails.process.entities, thisPermission.getEntityClassName())) {
-							variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ] = {
-								context = {}
-							};	
-						}
-						
-						// Check if this is a context level permission
-						if(isNull(thisPermission.getProcessContext())) {
-							if(!arguments.excludeObjects){
-								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].permission = thisPermission;
-							}else{
-								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].permission = thisPermission.getStructRepresentation();
-							}
-						} else {
-							if(!arguments.excludeObjects){
-								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].context[ thisPermission.getProcessContext() ] = thisPermission;
-							}else{
-								variables.permissionsByDetails.process.entities[ thisPermission.getEntityClassName() ].context[ thisPermission.getProcessContext() ] = thisPermission.getStructRepresentation();
-							}
-						}
-					}
-				}
 				// If the permission is an 'entity' access type
-				else if(thisPermission.getAccessType() eq "entity") {
+				if(thisPermission.getAccessType() eq "entity") {
 					
 					// Check to see if this is the 'core' or very top level permission
 					if(isNull(thisPermission.getEntityClassName())) {
-						if(!excludeObjects){
-							variables.permissionsByDetails.entity.permission = thisPermission;
-						}else{
-							variables.permissionsByDetails.entity.permission = thisPermission.getStructRepresentation();
-						}
+						variables.permissionsByDetails.entity.permission = thisPermission;
 						
 					// Otherwise this is a property or entity level permission
 					} else {
@@ -172,17 +127,9 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 						
 						// Check if this is a property level permission
 						if(isNull(thisPermission.getPropertyName())) {
-							if(!arguments.excludeObjects){
-								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].permission = thisPermission;
-							}else{
-								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].permission = thisPermission.getStructRepresentation();
-							}
+							variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].permission = thisPermission;
 						} else {
-							if(!arguments.excludeObjects){
-								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].properties[ thisPermission.getPropertyName() ] = thisPermission;
-							}else{
-								variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].properties[ thisPermission.getPropertyName() ] = thisPermission.getStructRepresentation();
-							}
+							variables.permissionsByDetails.entity.entities[ thisPermission.getEntityClassName() ].properties[ thisPermission.getPropertyName() ] = thisPermission;
 						}
 					}
 				} else if (thisPermission.getAccessType() eq "action" && !isNull(thisPermission.getSubsystem())) {
@@ -201,23 +148,11 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 					}
 					
 					if(!isNull( thisPermission.getSubsystem() ) && !isNull( thisPermission.getSection()) && !isNull(thisPermission.getItem())) {
-						if(!arguments.excludeObjects){
-							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].items[ thisPermission.getItem() ] = thisPermission;	
-						}else{
-							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].items[ thisPermission.getItem() ] = thisPermission.getStructRepresentation();	
-						}
+						variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].items[ thisPermission.getItem() ] = thisPermission;	
 					} else if (!isNull( thisPermission.getSubsystem() ) && !isNull( thisPermission.getSection())) {
-						if(!arguments.excludeObjects){
-							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].permission = thisPermission;
-						}else{
-							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].permission = thisPermission.getStructRepresentation();
-						}	
+						variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].permission = thisPermission;
 					} else {
-						if(!arguments.excludeObjects){
-							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].permission = thisPermission;
-						}else{
-							variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].permission = thisPermission.getStructRepresentation();
-						}
+						variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].permission = thisPermission;
 					}
 				}
 			}
@@ -228,11 +163,10 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 		return variables.permissionsByDetails;
 	}
 	
-	public any function getPermissionByDetails(required string accessType, string entityClassName, string propertyName, string subsystem, string section, string item, string processContext) {
+	public any function getPermissionByDetails(required string accessType, string entityClassName, string propertyName, string subsystem, string section, string item) {
 		
 		// We are looking for an entity permission
 		if(arguments.accessType eq "entity") {
-			//get permission by entity name and propertyName
 			if(structKeyExists(arguments, "entityClassName") && structKeyExists(arguments, "propertyName")) {
 				if(structKeyExists(getPermissionsByDetails().entity.entities, arguments.entityClassName) && structKeyExists(getPermissionsByDetails().entity.entities[ arguments.entityClassName ].properties, arguments.propertyName)) {
 					return getPermissionsByDetails().entity.entities[ arguments.entityClassName ].properties[ arguments.propertyName ];
@@ -243,12 +177,6 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 				}
 			} else if(structKeyExists(getPermissionsByDetails().entity, "permission")) {
 				return getPermissionsByDetails().entity.permission;
-			}
-		} else if(arguments.accessType eq 'process'){
-			if(structKeyExists(arguments, "entityClassName") && structKeyExists(arguments, "processContext")){
-				if(structKeyExists(getPermissionsByDetails().process.entities, arguments.entityClassName) && structKeyExists(getPermissionsByDetails().process.entities[ arguments.entityClassName ].context, arguments.processContext)) {
-					return getPermissionsByDetails().process.entities[ arguments.entityClassName ].context[ arguments.processContext ];
-				}
 			}
 		} else if (arguments.accessType eq "action") {
 			if(structKeyExists(arguments, "subsystem") && structKeyExists(arguments, "section") && structKeyExists(arguments, "item")) {

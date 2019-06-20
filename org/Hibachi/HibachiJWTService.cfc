@@ -73,17 +73,6 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
 		payload['issuer'] = CGI['server_name'];
 		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
-		
-		//add users role so we can make decisions on frontend permissions
-		if(getHibachiScope().getAccount().getSuperUserFlag()){
-			payload['role']='superUser';	
-		}else if(getHibachiScope().getAccount().hasPermissionGroup()){
-			payload['role']="admin";
-			payload['permissionGroups']=getHibachiScope().getAccount().getPermissionGroupsCollectionList().getPrimaryIDList();
-		}else{
-			payload['role']='public';
-		}
-		
 		payload['encoding'] = "UTF-8";
 		var token = jwt.encode(payload);
 		

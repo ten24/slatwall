@@ -24,9 +24,7 @@
 				selector="input[name='deferredRevenueFlag']"  
 				loadVisable="#rc.product.getDeferredRevenueFlag()#" showValues="1"
 			>
-				<cfif !isNull(rc.product.getNextDeliveryScheduleDate())>
-					<hb:HibachiPropertyDisplay object="#rc.product.getNextDeliveryScheduleDate()#" property="deliveryScheduleDateValue" edit="false">
-				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.product#" property="nextDeliveryScheduleDate" edit="false">
 			</hb:HibachiDisplayToggle>
 			
 			

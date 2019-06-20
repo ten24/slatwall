@@ -112,11 +112,22 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
-	property name="isDeletableFlag" type="boolean" persistent="false"; 
+	property name="isDeletableFlag" type="boolean" persistent="false";
 	property name="includedSkusCollection" persistent="false";
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
+<<<<<<< HEAD
 
+=======
+		//CUSTOM PROPERTIES BEGIN
+property name="personalVolumeAmount" ormtype="big_decimal";
+    property name="taxableAmountAmount" ormtype="big_decimal";
+    property name="commissionableVolumeAmount" ormtype="big_decimal";
+    property name="retailCommissionAmount" ormtype="big_decimal";
+    property name="productPackVolumeAmount" ormtype="big_decimal";
+    property name="retailValueVolumeAmount" ormtype="big_decimal";
+    //CUSTOM PROPERTIES END
+>>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -164,6 +175,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return variables.currencyCode;
 	}
 	
+<<<<<<< HEAD
 	public numeric function getAmount(any sku, string currencyCode){
 		
 		//Get price from sku prices table for fixed amount rewards
@@ -180,6 +192,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			}
 		}
 		
+=======
+	public numeric function getAmount(){
+>>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 		if(!structKeyExists(variables,'amount')){
 			variables.amount = 0;
 		}
@@ -190,12 +205,18 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(arguments.sku.getSkuID(),this.getPromotionRewardID(),arguments.currencyCode);
 	}
 
+<<<<<<< HEAD
 	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku){
 		var amountParams = {};
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
 		}
 		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
+=======
+	public numeric function getAmountByCurrencyCode(required string currencyCode){
+		
+		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() neq 'percentageOff'){
+>>>>>>> parent of 53cef59384... Merge pull request #151 from ten24/develop-update-applied
 			//Check for explicity defined promotion reward currencies
 			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
 				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
@@ -214,7 +235,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		//Either no conversion was needed, or we couldn't find a conversion rate.
 		return getAmount(argumentCollection=amountParams);
 	}
-
+	
 	public any function getIncludedSkusCollection(){
 		if(isNull(variables.includedSkusCollection)){
 			var collectionConfig = getIncludedSkusCollectionConfig();
@@ -334,7 +355,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			arrayDeleteAt(arguments.shippingMethod.getPromotionRewards(), thatIndex);    
 		}    
 	}
-
+	
 	// Collection Skus
 	
 	public boolean function hasSkuBySkuID(required any skuID){

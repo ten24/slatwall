@@ -122,8 +122,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityUnreceived" persistent="false";
 	property name="registrants" persistent="false";
 	property name="renewalSku" persistent="false";
-	property name="skuPerformCascadeCalculateFlag" persistent="false";
-	property name="stockPerformCascadeCalculateFlag" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
@@ -133,7 +131,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
  
- 	public boolean function getQuantityHasChanged(){
+	//CUSTOM PROPERTIES BEGIN
+	property name="personalVolume" ormtype="big_decimal";
+    property name="taxableAmount" ormtype="big_decimal";
+    property name="commissionableVolume" ormtype="big_decimal";
+    property name="sponsorVolume" ormtype="big_decimal";
+    property name="productPackVolume" ormtype="big_decimal";
+    property name="retailValueVolume" ormtype="big_decimal";	//CUSTOM PROPERTIES END
+	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
 	
@@ -429,7 +434,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 		
-		if(!isNull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			for(var childOrderItem in this.getChildOrderItems()){
 				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
 			}
@@ -444,7 +449,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			var price = 0;
 		
 			//get bundle price
-			if(!isnull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 				price = getProductBundlePrice();
 			}else if(!isNull(getPrice())){
 				price = getPrice();
@@ -573,14 +578,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 
 		return variables.activeRegistrationsSmartList;
-	}
-	
-	public boolean function getSkuPerformCascadeCalculateFlag() {
-		return getOrderStatusCode() != 'ostNotPlaced';
-	}
-	
-	public boolean function getStockPerformCascadeCalculateFlag() {
-		return getOrderStatusCode() != 'ostNotPlaced';
 	}
 
 	public numeric function getTaxAmount() {

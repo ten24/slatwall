@@ -19,7 +19,6 @@
 	<cfparam name="attributes.modalFullWidth" type="boolean" default="false" />
 	<cfparam name="attributes.id" type="string" default="" />
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false"/>
-	<cfparam name="attributes.processContext" type="string" default=""/>
 	
 	
 	
@@ -107,7 +106,8 @@
 	<cfif attributes.modal && not attributes.disabled && not attributes.modalFullWidth >
 		<cfset attributes.class &= " modalload" />
 	</cfif>
-	<cfif not attributes.hibachiScope.authenticateAction(action=attributes.action,processContext=attributes.processContext)>
+	
+	<cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
 		<cfset attributes.class &= " disabled" />
 	</cfif>
 	<cfif !attributes.ignoreHTMLEditFormat>
@@ -120,7 +120,7 @@
 		<cfset authenticateAction &= '_#attributes.processContext#' />
 	</cfif>
 
-	<cfif attributes.hibachiScope.authenticateAction(action=authenticateAction,processContext=attributes.processContext) || (attributes.type eq "link" && attributes.iconOnly)>
+	<cfif attributes.hibachiScope.authenticateAction(action=authenticateAction) || (attributes.type eq "link" && attributes.iconOnly)>
 		<cfif attributes.type eq "link">
 			<cfoutput>
 				<a  title="#attributes.title#" 

@@ -996,14 +996,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			
 			var appliedPromotionCodesOrderFulfillmentCollectionList = appliedPromotionCodesCollectionList.duplicateCollection();
 			
-			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=",'OR');
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=");
 			
-			appliedPromotionCodesOrderItemCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
+			appliedPromotionCodesOrderItemCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=");
 			
-			appliedPromotionCodesOrderFulfillmentCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
-			
+			appliedPromotionCodesOrderFulfillmentCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=");
+
 			var appliedPromotionCodes = appliedPromotionCodesCollectionList.getRecords();
-			
 			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderItemCollectionList.getRecords(),true);
 			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderFulfillmentCollectionList.getRecords(),true);
 			
@@ -1295,8 +1294,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			} 
 		}
 		return totalItemQuantity; 
-	}	
-
+	}
+	
 	public array function getQualifiedPromotionRewards( boolean refresh=false ){
 		if(!structKeyExists(variables, 'qualifiedPromotionRewards') || arguments.refresh ){
 			return getService('PromotionService').getQualifiedPromotionRewardsForOrder( this );

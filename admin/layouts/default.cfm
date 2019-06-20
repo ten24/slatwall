@@ -47,6 +47,7 @@ Notes:
 
 --->
 
+
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>
@@ -242,10 +243,8 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
-									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
-									<!---deprecated--->
-									<!---<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
-									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">--->
+									<hb:HibachiActionCaller action="admin:report.deferredRevenueReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.earnedRevenueReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report" type="list">

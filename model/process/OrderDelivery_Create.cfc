@@ -69,14 +69,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="capturableAmount" hb_formatType="currency";
 
 	variables.orderDeliveryItems = [];
-	
-	public array function getContainers(){
-		if(!structKeyExists(variables,'containers')){
-			variables.containers = [];
-		}
-		return variables.containers;
-		
-	}
 
 	public array function getUndeliveredOrderItemsWithoutProvidedGiftCardCodePlaceholders() {
 		var placeholders = [];
@@ -141,7 +133,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(structKeyExists(variables,'shippingIntegration')){
 			return variables.shippingIntegration;
 		}
-
+		
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
@@ -178,7 +170,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		return orderDeliveryItemsStruct;
 	}
-	
+
 	public any function getContainerDetailsForOrderDelivery(){
 		return getService('ContainerService').getContainerDetails(this, true);		
 	}

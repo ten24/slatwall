@@ -20,7 +20,6 @@ import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
 import {FilterService} from "./services/filterservice";
 import {ExpandableService} from "./services/expandableservice";
-import {HibachiAuthenticationService} from "./services/hibachiauthenticationservice";
 
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
@@ -216,7 +215,6 @@ var coremodule = angular.module('hibachi.core',[
 .service('typeaheadService', TypeaheadService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
-.service('hibachiAuthenticationService',HibachiAuthenticationService)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
@@ -232,7 +230,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('entityService',EntityService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
-//filters 
+//filters
 .filter('dateFilter',['$filter',DateFilter.Factory])
 .filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
 .filter('swdatereporting',['$filter',DateReporting.Factory])

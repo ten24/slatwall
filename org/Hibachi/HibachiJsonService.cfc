@@ -99,154 +99,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     public void function createJson(){
     	createConfigJson();
     	createRBJson();
-    	var permissionGroupSmartlist = getService('accountService').getPermissionGroupSmartlist();
-    	var permissionGroups = permissionGroupSmartList.getRecords();
-    	for(var permissionGroup in permissionGroups){
-    	    createPermissionJson(permissionGroup.getPermissionGroupID(),permissionGroup.getPermissionsByDetails(true));
-    	}
-    }
-    
-    //permission types are entity and action
-    public void function createPermissionJson(required string permissionType,required struct permissionDetails){
-         var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/permissions";
-        if(!directoryExists(systemrbpath)){
-        	directoryCreate(systemrbpath);
-        }
-        //remove meta data we already have in config.json
-        if(arguments.permissionType=='entity'){
-            var jsonStruct = {};
-            for(var entityName in arguments.permissionDetails){
-                entityName = lcase(entityName);
-                var entityStruct = arguments.permissionDetails[entityName];
-                jsonStruct[entityName] = {};
-                for(var propertyRelationshipTypeKey in entityStruct){
-                    propertyRelationshipTypeKey=lcase(propertyRelationshipTypeKey);
-                    var propertyRelationshipTypeValue = arguments.permissionDetails[entityName][propertyRelationshipTypeKey];
-                    jsonStruct[entityName][propertyRelationshipTypeKey]={};
-                    for(var propertyName in propertyRelationshipTypeValue){
-                        propertyName = lcase(propertyName);
-                        jsonStruct[entityName][propertyRelationshipTypeKey][propertyName]=true;
-                    }
-                }
-            }
-            arguments.permissionDetails = jsonStruct;
-        }
-        //check if permission type is a permission group uuid vs a string
-        //format permission group data to lighten json
-        if(getService('HibachiUtilityService').isHibachiUUID(arguments.permissionType)){
-            var jsonStruct = {};
-            for(var permissionTypeKey in arguments.permissionDetails){
-                var permissionTypeValue = arguments.permissionDetails[permissionTypeKey];
-                if(permissionTypeKey=='action'){
-                    var jsonStruct['action']={};
-                    jsonStruct['action']['subsystems']={};
-                    for(var subsystemKey in permissionTypeValue.subsystems){
-                        jsonStruct['action']['subsystems'][subsystemKey]={};
-                        var subsystemValue = permissionTypeValue.subsystems[subsystemKey];
-                        if(structKeyExists(subsystemValue,'permission')){
-                            for(var key in subsystemValue.permission){
-                                if(structKeyExists(subsystemValue.permission,key)){
-                                    jsonStruct['action']['subsystems'][subsystemKey]['permission'][key]=subsystemValue.permission[key];
-                                }
-                            }
-                        }
-                        if(structKeyExists(subsystemValue,'sections')){
-                            for(var sectionKey in subsystemValue.sections){
-                                var sectionValue = subsystemValue.sections[sectionKey];
-                                if(structKeyExists(sectionValue,'permission')){
-                                    for(var key in sectionValue.permission){
-                                        if(structKeyExists(sectionValue.permission,key)){
-                                            jsonStruct['action']['subsystems'][subsystemKey]['sections'][sectionKey]['permission'][key]=sectionValue.permission[key];
-                                        }
-                                    }
-                                }
-                                if(structKeyExists(sectionValue,'items')){
-                                    for(var itemKey in sectionValue.items){
-                                        var itemValue = sectionValue.items[itemKey];
-                                        for(var key in itemValue){
-                                            if(structKeyExists(itemValue,key)){
-                                                jsonStruct['action']['subsystems'][subsystemKey]['sections'][sectionKey]['items'][itemKey][key]=itemValue[key];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                }else if(permissionTypeKey=='entity'){
-                    
-                    var jsonStruct['entity']={};
-                    
-                    if(structKeyExists(permissionTypeValue,'permission')){
-                        jsonStruct['entity']['permission']={};
-                        for(var key in permissionTypevalue.permission){
-                            if(structKeyExists(permissionTypevalue.permission,key)){
-                                jsonStruct['entity']['permission'][key]=permissionTypevalue.permission[key];
-                            }
-                        }
-                    }
-                    if(structKeyExists(permissionTypeValue,'entities')){
-                        for(var entityName in permissionTypeValue.entities){
-                            entityName = lcase(entityName);
-                            var entityNameValue = permissionTypeValue.entities[entityName];
-                            jsonStruct['entity']['entities'][entityName]={};
-                            if(structKeyExists(entityNameValue,'permission')){
-                                jsonStruct['entity']['entities'][entityName]['permission']={};
-                                for(var key in entityNameValue.permission){
-                                    if(structKeyExists(entityNameValue.permission,key)){
-                                        jsonStruct['entity']['entities'][entityName]['permission'][key]=entityNameValue.permission[key];
-                                    }
-                                }
-                            }
-                            if(structKeyExists(entityNameValue,'properties')){
-                                jsonStruct['entity']['entities'][entityName]['properties']={};
-                                for(var propertyNameKey in entityNameValue.properties){
-                                    propertyNameKey = lcase(propertyNameKey);
-                                    var propertyNameValue = entityNameValue.properties[propertyNameKey];
-                                    jsonStruct['entity']['entities'][entityName]['properties'][propertyNameKey]={};
-                                    for(var key in propertyNamevalue){
-                                        if(structKeyExists(propertyNameValue,key)){
-                                            jsonStruct['entity']['entities'][entityName]['properties'][propertyNameKey][key]=propertyNameValue[key];
-                                        }                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                }else if(permissionTypeKey=='process'){
-                    var jsonStruct['process']={};
-                    
-                    if(structKeyExists(permissionTypeValue,'entities')){
-                        for(var entityName in permissionTypeValue.entities){
-                            entityName = lcase(entityName);
-                            var entityNameValue = permissionTypeValue.entities[entityName];
-                            jsonStruct['process']['entities'][entityName]={};
-                            if(structKeyExists(entityNameValue,'context')){
-                                jsonStruct['process']['entities'][entityName]['context']={};
-                                for(var contextNameKey in entityNameValue.context){
-                                    contextNameKey = lcase(contextNameKey);
-                                    var contextNameValue = entityNameValue.context[contextNameKey];
-                                    jsonStruct['process']['entities'][entityName]['context'][contextNameKey]={};
-                                    for(var key in contextNameValue){
-                                        if(structKeyExists(contextNameValue,key)){
-                                            jsonStruct['process']['entities'][entityName]['context'][contextNameKey][key]=contextNameValue[key];
-                                        }                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            arguments.permissionDetails=jsonStruct;
-        }
-        
-        var json = serializeJson(arguments.permissionDetails);
-		var filePath = systemrbpath & '/#arguments.permissionType#.json';
-        fileWrite(filePath,json,'utf-8');
-        
     }
     
     public void function createRBJson(){
@@ -257,6 +109,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	}
     	
     	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/resourceBundles";
+    	
+    	var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
     	
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
@@ -294,6 +148,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var filePath = systemrbpath & '/#locale#.json';
 	        fileWrite(filePath,json,'utf-8');
     	}
+        
     }
     
     private void function formatEntity(required any entity, required any model){

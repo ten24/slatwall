@@ -60,39 +60,30 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<cfset attributeSetCollectionList = getHibachiScope().getService('attributeService').getattributeSetCollectionList()>
-	<cfset serchableDisplayProperties = "attributeSetName,attributeSetObject"/>
-	<cfset attributeSetCollectionList.setDisplayProperties(
-	serchableDisplayProperties,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset nonSerchableDisplayProperties = "globalFlag,activeFlag"/>
-	<cfset attributeSetCollectionList.addDisplayProperties(
-		nonSerchableDisplayProperties, 
-		{
-			isVisible=true,
-			isSearchable=false,
-			isDeletable=true
-		}
-	)/>
-	
-	<cfset attributeSetCollectionList.addDisplayProperty(
-	displayProperty='attributeSetID',
-	columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#attributeSetCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(attributeSetCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(attributeSetCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
+<!--- <hb:HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
+						   recordDetailAction="admin:entity.detailattributeset"
+						   recordEditAction="admin:entity.editattributeset"
+						   sortProperty="sortOrder">
+
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
+	<hb:HibachiListingColumn propertyIdentifier="attributeSetObject" />
+	<hb:HibachiListingColumn propertyIdentifier="globalFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay> --->
+
+<sw-listing-display data-using-personal-collection="true"
+	data-collection="'AttributeSet'"
+	data-edit="false"
+	data-has-search="true"
+	record-edit-action="admin:entity.editattributeset"
+	record-detail-action="admin:entity.detailattributeset"
+	data-is-angular-route="false"
+	data-angular-links="false"
+	data-has-action-bar="false"
+>
+	<sw-listing-column data-property-identifier="attributeSetID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="attributeSetName" tdclass="primary" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="attributeSetObject" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="globalFlag" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
+</sw-listing-display>

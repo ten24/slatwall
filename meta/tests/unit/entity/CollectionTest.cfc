@@ -1313,6 +1313,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
 
 		var pageRecords = myCollection.getPrimaryIDs(2);
+		
 		if(arraylen(pageRecords)){
 			assert(!structKeyExists(pageRecords[1],'failedCollection'));
 		}
@@ -2607,6 +2608,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		var pageRecords = collectionEntity.getPageRecords();
+
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
 
