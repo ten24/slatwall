@@ -67,7 +67,9 @@ class SWActionCallerController{
     }
 
     public $onInit = ():void =>{
-        this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+        if(angular.isDefined(this.action)){
+            this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+        }
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
