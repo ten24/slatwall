@@ -232,7 +232,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('entityService',EntityService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
-//filters 
+//filters
 .filter('dateFilter',['$filter',DateFilter.Factory])
 .filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
 .filter('swdatereporting',['$filter',DateReporting.Factory])

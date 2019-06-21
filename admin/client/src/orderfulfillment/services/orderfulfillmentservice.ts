@@ -136,7 +136,7 @@ class OrderFulfillmentService {
             case actions.EMAIL_LIST_REQUESTED:
                 this.getEmailList();
                 return {...this.state, action}
-            
+                
             case actions.UPDATE_BOX_DIMENSIONS:
                 this.updateBoxDimensions(action.payload.box);
                 return {...this.state, action}
@@ -148,7 +148,7 @@ class OrderFulfillmentService {
             case actions.REMOVE_BOX:
                 this.removeBox(action.payload.index);
                 return {...this.state, action}
-                
+            
             case actions.SET_DELIVERY_QUANTITIES:
                 this.setDeliveryQuantities();
                 return {...this.state, action}
@@ -238,7 +238,7 @@ class OrderFulfillmentService {
             }
         }
     }
-
+    
     /** Sets up the batch detail page including responding to listing changes. */
     public setupFulfillmentBatchDetail = () => {
         
@@ -251,7 +251,7 @@ class OrderFulfillmentService {
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
             if (update.action && update.action.type && update.action.type == actions.CURRENT_PAGE_RECORDS_SELECTED){
-                
+
                 /*  Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
                     Outer table, will need to toggle and set the floating cards to this data.
                     on the first one being selected, go to the shrink view and set the selection on there as well.*/
@@ -347,7 +347,7 @@ class OrderFulfillmentService {
             this.emitUpdateToClient();
             return;
         }
-         
+
         let data:any = {};
         //Add the order information
         data.order = {};
@@ -426,10 +426,6 @@ class OrderFulfillmentService {
         }
         
         this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then((result)=>{
-            if (result.data.errors){
-                this.state.loading=false;
-                return result;
-            }
             this.state.loading=false;
             
             if (result.orderDeliveryID != undefined && result.orderDeliveryID != ''){
@@ -498,7 +494,7 @@ class OrderFulfillmentService {
             });
         }
     }
-    
+
     
 
     /** Deletes a comment. */
@@ -521,7 +517,7 @@ class OrderFulfillmentService {
             }
         }
     }
-    
+
     public createShippingIntegrationOptions = (currentRecord)=>{
         this.$hibachi.getPropertyDisplayOptions("OrderFulfillment",{property:"ShippingIntegration",entityID:currentRecord['orderFulfillment_orderFulfillmentID']}).then(response=>{
             this.state.shippingIntegrationOptions = response.data;
@@ -592,7 +588,7 @@ class OrderFulfillmentService {
         this.state.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
         this.state.currentRecordOrderDetail.addDisplayProperty("calculatedShippingIntegrationName");
         
-        
+
         this.state.currentRecordOrderDetail.getEntity().then( (entityResults) => {
             if (entityResults['pageRecords'].length){
                 this.state.currentRecordOrderDetail = entityResults['pageRecords'][0];
@@ -709,7 +705,7 @@ class OrderFulfillmentService {
             });
      }
      
-    /**
+     /**
     * Get Container Preset collection
     */
     private getContainerPresetList = () => {
@@ -784,20 +780,17 @@ class OrderFulfillmentService {
             for(let i = 0; i < this.state.orderFulfillmentItemsCollection.length; i++){
                 skuIDs[i] = this.state.orderFulfillmentItemsCollection[i]['sku_skuID'];
             }
-           try {
-                this.$rootScope.slatwall.getResizedImageByProfileName('small',skuIDs.join(',')).then(result=>{
-                    if(!angular.isDefined(this.$rootScope.slatwall.imagePath)){
-                        this.$rootScope.slatwall.imagePath = {};
-                    }
-                    this.state.imagePath = this.$rootScope.slatwall.imagePath;
-                });
-           } catch(e){
-               console.warn("Error while trying to retrieve the image for an item", e);
-           }  
+            this.$rootScope.slatwall.getResizedImageByProfileName('small',skuIDs.join(',')).then(result=>{
+                if(!angular.isDefined(this.$rootScope.slatwall.imagePath)){
+                    this.$rootScope.slatwall.imagePath = {};
+                }
+                this.state.imagePath = this.$rootScope.slatwall.imagePath;
+            });
+            
             this.emitUpdateToClient();
         });
      }
-     
+
      /**
       * Submits delivery item quantity information
       */

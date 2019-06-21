@@ -10,6 +10,5 @@
 	</Columns>
 	<Records>
 		<Record scheduleID="a7379771019d044026ae978809e1fd3d" scheduleName="Create Subscription Order Deliveries" recuringType="daily" frequencyInterval="5" frequencyStartTime="1971-12-30 12:00:00" frequencyEndTime="1971-12-30 11:59:00" />
-		<Record scheduleID="2eebe3acaffd091c06711775fbe1d29a" scheduleName="Every Minute" recuringType="daily" frequencyInterval="1" frequencyStartTime="1971-12-30 12:00:00" frequencyEndTime="1971-12-30 11:59:00" />
 	</Records>
 </Table>

@@ -50,12 +50,12 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-    <cfset productsCollectionList = getHibachiScope().getService('productService').getProductCollectionList()>
-    <cfset productsCollectionList.addFilter('productType.productTypeIDPath',rc.productType.getProductTypeIDPath()&'%','LIKE')/>
-    
+    <cfset productsCollectionList = rc.productType.getProductsCollectionList()>
+
 	<cfset displayPropertyList = "productName,productCode,brand.brandName,activeFlag,publishedFlag,price"/>
-	
-    <cfset productsCollectionList.setDisplayProperties( displayPropertyList, {
+    <cfset productsCollectionList.setDisplayProperties(
+    		displayPropertyList,
+    		{
     			isVisible=true,
     			isSearchable=true,
     			isDeletable=true
@@ -63,7 +63,9 @@ Notes:
     	)
     />
     
-    <cfset productsCollectionList.addDisplayProperty( displayProperty='productID', columnConfig={
+    <cfset productsCollectionList.addDisplayProperty(
+    displayProperty='productID',
+    columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false

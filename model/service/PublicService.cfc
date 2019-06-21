@@ -461,13 +461,6 @@ component  accessors="true" output="false"
         }
     }
     
-   public void function verifyAddress(required data){
-        param name="data.accountAddressID" default="";
-
-        data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
-        getHibachiScope().addActionResult("verifyAddress",false);
-    }
-    
     public void function addEditAccountAddress(required data){
         if(structKeyExists(data,'accountAddressID') && len(data['accountAddressID'])){
             param name="data.countrycode" default="US";
@@ -487,7 +480,6 @@ component  accessors="true" output="false"
        	     	if (!savedAccountAddress.hasErrors()){
        	     		getDao('hibachiDao').flushOrmSession();
                     data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                    data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
        	     	}
           	}else{
               this.addErrors(data, address.getErrors());
@@ -518,8 +510,7 @@ component  accessors="true" output="false"
           getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
-                data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+            data.accountAddressID = savedAccountAddress.getAccountAddressID();
    	     	}
       	}else{
           this.addErrors(data, newAddress.getErrors());

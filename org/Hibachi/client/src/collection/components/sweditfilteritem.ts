@@ -312,11 +312,7 @@ class SWEditFilterItem{
                                     filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
                                 }
 
-                                if(selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated){
-                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated;
-                                } else {
-                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-                                }
+                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
@@ -377,7 +373,8 @@ class SWEditFilterItem{
                                             filterItem.displayValue += ((filterItem.criteriaNumberOf > 1)?'s':'')+' Ago';
                                         }
                                     }else{
-                                        filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+										var dateValueString = utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeStart) + '-' + utilityService.removeTimeOffset(selectedFilterProperty.criteriaRangeEnd);
+                                        filterItem.value = dateValueString;
                                         var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
                                         filterItem.displayValue = formattedDateValueString;
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
@@ -427,14 +424,6 @@ class SWEditFilterItem{
                         }
                         for(var siblingIndex in filterItem.$$siblingItems){
                             filterItem.$$siblingItems[siblingIndex].$$disabled = false;
-                        }
-                        
-                        if(angular.isDefined(selectedFilterProperty.aggregate)){
-                            let aggregateFunction = selectedFilterProperty.aggregate.toUpperCase();
-                            if(aggregateFunction == 'AVERAGE'){
-                                aggregateFunction = 'AVG';
-                            }
-                            filterItem.aggregate = aggregateFunction;
                         }
 
                         filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;

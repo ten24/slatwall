@@ -62,10 +62,10 @@ class SWActionCallerController{
             //need to perform init after promise completes
             //this.init();
         });
-
+        
         this.authenticateActionByAccount = this.hibachiAuthenticationService.autheticateActionByAccount;
     }
-
+    
     public $onInit = ():void =>{
         this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
 
@@ -81,7 +81,7 @@ class SWActionCallerController{
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
         }
-
+    
         if(angular.isUndefined(this.display)){
             this.display = true;
         }
@@ -96,19 +96,19 @@ class SWActionCallerController{
             this.text = this.title;
         }
 
-            if (this.type == "button"){
-                //handle submit.
-                /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
-                    if (newValue !== undefined){
-                        this.formController = newValue;
+        if (this.type == "button"){
+            //handle submit.
+            /** in order to attach the correct controller to local vm, we need a watch to bind */
+            var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
+                if (newValue !== undefined){
+                    this.formController = newValue;
 
-                    }
+                }
 
-                    unbindWatcher();
-                });
+                unbindWatcher();
+            });
 
-            }
+        }
 
         if(this.eventListeners){
             for(var key in this.eventListeners){
@@ -117,7 +117,7 @@ class SWActionCallerController{
         }
 
     }
-
+    
     public emit = () =>{
         this.observerService.notify(this.event, this.payload);
     }

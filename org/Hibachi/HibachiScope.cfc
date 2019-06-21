@@ -22,7 +22,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
-	property name="entityQueueData" type="struct";
 
 	public any function init() {
 		setORMHasErrors( false );
@@ -454,52 +453,4 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
 		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
-	
-
-	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = ''){
-		if(!structKeyExists(variables, "entityQueueData")) {
-			variables.entityQueueData = {};
-		}
-		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
-		
-		if(!structKeyExists(variables.entityQueueData, '#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#')){
-			variables.entityQueueData['#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#'] = arguments;
-			getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
-		}
-	}
-	
-	public struct function getEntityQueueData(){
-		if(!structKeyExists(variables, "entityQueueData")) {
-			variables.entityQueueData = {};
-		}
-		return variables.entityQueueData;
-		
-	}
-	
-	public void function clearEntityQueueData(){
-		var entityQueues = getEntityQueueData();
-		var entityQueueIDsToBeDeleted = '';
-		
-		for(var entityQueue in entityQueues){
-			entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueues[entityQueue]['entityQueueID']);
-		}
-		variables.entityQueueData = {};
-		getService('HibachiEntityQueueService').deleteEntityQueueItems(entityQueueIDsToBeDeleted);
-		
-	}
-	
-	public void function deleteEntityQueue(entityQueueID){
-		var entityQueues = getEntityQueueData();
-		
-		for(var entityQueue in entityQueues){
-			if(entityQueues[entityQueue]['entityQueueID'] == arguments.entityQueueID){
-				StructDelete(entityQueues, entityQueue);
-				getService('HibachiEntityQueueService').deleteEntityQueueItems(arguments.entityQueueID);
-				break;
-			}
-		}
-		
-	}
-	
-	
 }

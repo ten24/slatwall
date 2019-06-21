@@ -156,48 +156,6 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
-	
-	//Function to validate unique domain name
-	public boolean function validateDomainName()
-	{
-		if( isNull( this.getdomainNames() ) )
-		{
-			return false;
-		}
-		else{
-			var currentdomain = lcase(this.getdomainNames()); //converted to lower case
-			var dbtype = lcase(getApplicationValue('databaseType'));
-			
-			if(dbtype eq "mysql")
-			{
-				if(getDao('siteDao').validateDomainName(currentdomain, this.getsiteId()))
-				{
-					return false;
-				}
-				else{
-					return true;
-				}
-			}
-			else{
-				var allrecords = getService('siteService').getSiteCollectionList();
-				for( var key in allrecords.getRecords())
-				{
-					//using OR condition so this method can work for create / edit both while creating new site without app
-					if(isNull(this.getsiteId()) || key.siteId != this.getsiteId()) 
-					{
-						var domains = listFind(key.domainNames,currentdomain,",");
-						if(domains)
-						{
-							return false;
-						}
-					}
-				}
-				return true;
-			}
-			
-		}
-		
-	}
 
 	// ===============  END: Custom Validation Methods =====================
 

@@ -61,29 +61,29 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createroundingrule" entity="roundingrule" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-	
-	<cfset roundingRuleCollectionList = getHibachiScope().getService('roundingRuleService').getroundingRuleCollectionList()>
-	<cfset serchableDisplayProperties = "roundingRuleName,roundingRuleExpression,roundingRuleDirection"/>
-	<cfset roundingRuleCollectionList.setDisplayProperties(serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset roundingRuleCollectionList.addDisplayProperty(displayProperty='roundingRuleID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<hb:HibachiListingDisplay 
-		collectionList="#roundingRuleCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(roundingRuleCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(roundingRuleCollectionList.getCollectionObject())#"
+
+	<!--- <hb:HibachiListingDisplay smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="roundingruleName" />
+		<hb:HibachiListingColumn propertyIdentifier="roundingRuleExpression" />
+		<hb:HibachiListingColumn propertyIdentifier="roundingRuleDirection" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+		data-collection="'RoundingRule'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editroundingrule"
+		record-detail-action="admin:entity.detailroundingrule"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
 	>
-	</hb:HibachiListingDisplay>
+		<sw-listing-column data-property-identifier="roundingRuleID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="roundingRuleName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="roundingRuleExpression" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="roundingRuleDirection" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>
 

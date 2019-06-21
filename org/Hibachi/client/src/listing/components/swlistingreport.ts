@@ -36,10 +36,7 @@ class SWListingReportController {
     public swListingDisplay:any;
     public isPublic:boolean;
     public accountOwnerID:string;
-    public initchartobj:any;
-    public comparechartobj: any;
-    public chartcolors=["F78F1E","4F667E","62B7C4","173040","f15532", "ffc515", "469E52", "497350", "284030", "719499", "03A6A6", "173040", "57225B", "933B8F", "DA92AA", "634635"];
-
+    
     
     //@ngInject
     constructor(
@@ -136,12 +133,9 @@ class SWListingReportController {
         this.collectionNameSaveIsOpen = true;
     }
     
-    private assign_color = (index)=>{
-        if( (index +1) > this.chartcolors.length )
-        {
-            index = 0;
-        }
-        return '#'+this.chartcolors[index];
+    private random_rgba = ()=>{
+        let o = Math.round, r = Math.random, s = 255;
+        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
     }
     
     //decides if report comes from persisted collection or transient
@@ -309,7 +303,7 @@ class SWListingReportController {
             
         }
     }
-    
+
     public updateComparePeriod = ()=>{
         
         this.startDateCompare = new Date(this.startDateCompare);
@@ -361,21 +355,14 @@ class SWListingReportController {
 		var dates = [];
 		var datasets = [];
 		
-		
-        
 		if(ctx.is($("#myChartCompare"))){
 		    var chart = this.compareChart; 
-		    var oldchart = this.comparechartobj;
 		    this.compareReportingData=reportingData;
 		}else{
-		    var oldchart = this.initchartobj;
 		    var chart = this.chart;
 		}
 		
-		//check and destroy old chart
-		if(oldchart){
-            oldchart.destroy();
-	    }
+		
 		
 		this.reportingData.records.forEach(element=>{
 		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
@@ -386,10 +373,9 @@ class SWListingReportController {
 		    dates.push(value);
 		});
 		
-		var colorcount = 0;
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
-		        let color = this.assign_color(colorcount++);
+		        let color = this.random_rgba();
 		        let title = column.displayTitle || column.title;
 		        let metrics = [];
 		        this.reportingData.records.forEach(element=>{
@@ -413,7 +399,9 @@ class SWListingReportController {
 		    }
 		});
 		//used to clear old rendered charts before adding new ones
-		
+		if(chart!=null){
+            chart.destroy();
+        }
         chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -467,14 +455,6 @@ class SWListingReportController {
             }
         });
         chart.draw();
-        //assign chart object to global variables
-        if(ctx.is($("#myChartCompare")))
-        {
-            this.comparechartobj = chart;
-        }
-        else{
-            this.initchartobj = chart;
-        }
         this.observerService.notifyById('swListingReport_DrawChart',this.tableId,chart);
     }
     
@@ -625,10 +605,6 @@ class SWListingReport  implements ng.IDirective{
 			$event.stopPropagation();
 		    scope.swListingReport.openedCalendarEndCompare = true;
 		};
-		
-		scope.swListingReport.removeInfoWIndow = function(event) {
-		   $("#get-started-report").remove();
-        };
     }
 }
 
