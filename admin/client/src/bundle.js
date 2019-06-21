@@ -88511,6 +88511,7 @@ var SWListingDisplay = /** @class */ (function () {
             expandableOpenRoot: "<?",
             /*Searching*/
             searchText: "<?",
+            searchFilterPropertyIdentifier: "@?",
             /*Sorting*/
             sortable: "<?",
             sortableFieldName: "@?",
@@ -88538,6 +88539,7 @@ var SWListingDisplay = /** @class */ (function () {
             showTopPagination: "<?",
             showToggleDisplayOptions: "<?",
             showSearch: "<?",
+            showSearchFilterDropDown: "<?",
             showSearchFilters: "<?",
             showFilters: "<?",
             showSimpleListingControls: "<?",
@@ -89597,6 +89599,9 @@ var SWListingSearchController = /** @class */ (function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
+            if (angular.isUndefined(_this.showSearchFilterDropDown)) {
+                _this.showSearchFilterDropDown = false;
+            }
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
             _this.searchableFilterOptions = [
@@ -89767,7 +89772,11 @@ var SWListingSearchController = /** @class */ (function () {
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
             _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
             if (_this.selectedSearchFilter.value != 'All') {
-                _this.collectionConfig.addFilter('createdDateTime', _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
+                if (angular.isUndefined(_this.searchFilterPropertyIdentifier) || !_this.searchFilterPropertyIdentifier.length) {
+                    _this.searchFilterPropertyIdentifier = 'createdDateTime';
+                }
+                console.log(_this.searchFilterPropertyIdentifier);
+                _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
             }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
@@ -89808,7 +89817,9 @@ var SWListingSearch = /** @class */ (function () {
             collectionConfig: "<?",
             paginator: "=?",
             listingId: "@?",
-            showToggleSearch: "=?"
+            showToggleSearch: "=?",
+            searchFilterPropertyIdentifier: "@?",
+            showSearchFilterDropDown: "=?"
         };
         this.controller = SWListingSearchController;
         this.controllerAs = 'swListingSearch';

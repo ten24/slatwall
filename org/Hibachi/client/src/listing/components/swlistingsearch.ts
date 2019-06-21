@@ -4,6 +4,7 @@
 class SWListingSearchController {
     private selectedSearchColumn;
     private selectedSearchFilter;
+    public searchFilterPropertyIdentifier;
     private filterPropertiesList;
     private collectionConfig;
     private paginator;
@@ -13,6 +14,7 @@ class SWListingSearchController {
     private filtersClosed:boolean=true;
     private showToggleFilters:boolean;
     private showToggleDisplayOptions:boolean;
+    public showSearchFilterDropDown:boolean;
     private newFilterPosition;
     private itemInUse;
     private getCollection;
@@ -46,6 +48,11 @@ class SWListingSearchController {
         if(angular.isDefined(this.swListingDisplay.personalCollectionIdentifier)){
             this.personalCollectionIdentifier = this.swListingDisplay.personalCollectionIdentifier;
         }
+        
+        if(angular.isUndefined(this.showSearchFilterDropDown)){
+            this.showSearchFilterDropDown = false;
+        }
+        
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.swListingDisplay.collectionConfig.columns);
         
@@ -266,7 +273,11 @@ class SWListingSearchController {
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
         if(this.selectedSearchFilter.value!='All'){
-            this.collectionConfig.addFilter('createdDateTime',this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
+            if(angular.isUndefined(this.searchFilterPropertyIdentifier) || !this.searchFilterPropertyIdentifier.length){
+                this.searchFilterPropertyIdentifier='createdDateTime';
+            }
+            console.log(this.searchFilterPropertyIdentifier)
+            this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
         }
         this.swListingDisplay.collectionConfig = this.collectionConfig;
         
@@ -308,7 +319,9 @@ class SWListingSearch  implements ng.IDirective{
         collectionConfig : "<?",
         paginator : "=?",
         listingId : "@?",
-        showToggleSearch:"=?"
+        showToggleSearch:"=?",
+        searchFilterPropertyIdentifier:"@?",
+        showSearchFilterDropDown:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';
