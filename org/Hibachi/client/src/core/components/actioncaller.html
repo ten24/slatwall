@@ -1,5 +1,5 @@
 <!-- Link Not Modal -->
-<a  ng-if="swActionCaller.display && swActionCaller.type === 'link' && swActionCaller.actionAuthenticated"
+<a  ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'link' && swActionCaller.actionAuthenticated"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	target="_self" 
@@ -12,7 +12,7 @@
 </a>
 
 <!-- Link Modal -->
-<a  ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'link'"
+<a  ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'link' && swActionCaller.actionAuthenticated"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}} modalload" 
 	target="_self" 

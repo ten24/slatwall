@@ -30,6 +30,7 @@ class SWActionCallerController{
     public actionAuthenticated:boolean;
     //@ngInject
     constructor(
+        private $rootScope,
         private $scope,
         private $element,
         private $templateRequest:ng.ITemplateRequestService,
@@ -44,6 +45,7 @@ class SWActionCallerController{
         hibachiPathBuilder
         
     ){
+        this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.$element = $element;
         this.$timeout = $timeout;
@@ -67,7 +69,13 @@ class SWActionCallerController{
     }
     
     public $onInit = ():void =>{
-        this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+        
+        var unBind = this.$rootScope.$watch('slatwall.role',(newValue,oldValue)=>{
+            if(newValue){
+                this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+                unBind();
+            }
+        })
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){

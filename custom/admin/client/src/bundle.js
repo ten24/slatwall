@@ -77172,8 +77172,9 @@ exports.CollectionService = CollectionService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWActionCallerController = /** @class */ (function () {
     //@ngInject
-    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiAuthenticationService, hibachiPathBuilder) {
+    function SWActionCallerController($rootScope, $scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiAuthenticationService, hibachiPathBuilder) {
         var _this = this;
+        this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.$element = $element;
         this.$templateRequest = $templateRequest;
@@ -77186,7 +77187,12 @@ var SWActionCallerController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$onInit = function () {
-            _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
+            var unBind = _this.$rootScope.$watch('slatwall.role', function (newValue, oldValue) {
+                if (newValue) {
+                    _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
+                    unBind();
+                }
+            });
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
@@ -77377,6 +77383,7 @@ var SWActionCallerController = /** @class */ (function () {
             }
             return "";
         };
+        this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.$element = $element;
         this.$timeout = $timeout;
@@ -78590,15 +78597,12 @@ var SWEntityActionBarController = /** @class */ (function () {
             }
             _this.swProcessCallers = _this.processCallers;
             if (_this.editEvent != null) {
-                _this.editAction = '';
                 _this.observerService.attach(_this.toggleEditMode, _this.editEvent);
             }
             if (_this.cancelEvent != null) {
-                _this.cancelAction = '';
                 _this.observerService.attach(_this.toggleEditMode, _this.cancelEvent);
             }
             if (_this.saveEvent != null) {
-                _this.saveAction = '';
                 _this.observerService.attach(_this.toggleEditMode, _this.saveEvent);
             }
             _this.payload = {
