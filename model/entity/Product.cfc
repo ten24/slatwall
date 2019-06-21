@@ -457,7 +457,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					);
 				}
 				//let's make sure the default sku image always comes first
-				if(skuData['skuID'] == getDefaultSku().getSkuID()){
+				if(!isNull(getDefaultSku()) && skuData['skuID'] == getDefaultSku().getSkuID()){
 					arrayPrepend(imageGalleryArray, thisImage);
 				} else {
 					arrayAppend(imageGalleryArray, thisImage);
