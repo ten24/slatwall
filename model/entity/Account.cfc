@@ -180,10 +180,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="nextRenewDate" ormtype="string";
  property name="lastStatusDate" ormtype="string";
  property name="pickupCenter" ormtype="string";
- property name="oldDtxName1" ormtype="string";
- property name="oldDtxName2" ormtype="string";
- property name="oldDtxName3" ormtype="string";
- property name="oldDtxName4" ormtype="string";
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
@@ -390,7 +386,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 					'name': simpleRepresentation,
 					'calculatedBalanceAmount': balance,
 					'value': giftCardOption['giftCardID']
-				}
+				};
 				arrayAppend(options, optionToAdd); 
 			}
 			arrayPrepend(options, {'name': '-- #rbKey('entity.giftCard.option.select')#','value':''});

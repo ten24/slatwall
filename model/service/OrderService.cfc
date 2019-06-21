@@ -1210,8 +1210,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  
 			thread.canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
-			ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()})
-			//ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where orderItem.order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()})
+			ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
+			//ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where orderItem.order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
@@ -1257,7 +1257,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}	
 
 		if(!structKeyExists(arguments, 'transientOrder')){
-			arguments.transientOrder = this.newTransientOrderFromOrderTemplate(argumentCollection=arguments)
+			arguments.transientOrder = this.newTransientOrderFromOrderTemplate(argumentCollection=arguments);
 		}
 
 		arguments.transientOrderFulfillment.setOrder(arguments.transientOrder); 
@@ -1310,7 +1310,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(structKeyExists(arguments, "transientOrder")){
 				transientOrderItem.setOrder(arguments.transientOrder);
 			}
-			arrayAppend(transientOrderItems, transientOrderItem)
+			arrayAppend(transientOrderItems, transientOrderItem); 
 		}
 
 		return transientOrderItems; 
@@ -1438,7 +1438,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 
-		var giftCardPaymentMethod = getPaymentService().getPaymentMethod('50d8cd61009931554764385482347f3a')
+		var giftCardPaymentMethod = getPaymentService().getPaymentMethod('50d8cd61009931554764385482347f3a');
 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
 			var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
@@ -1527,7 +1527,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 		
-		return arguments.orderTemplate
+		return arguments.orderTemplate;
 	} 
 
 	public any function processOrderTemplate_updateSchedule(required any orderTemplate, required any processObject, required struct data={}){ 
