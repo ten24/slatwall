@@ -27,6 +27,9 @@ class SWCustomerAccountPaymentMethodCardController{
 	
 	public stateCodeOptions;
 	
+	public propertiesToDisplayList;
+	public propertiesToDisplay;
+	
 	public includeModal=true;
 	
 	constructor(public $hibachi,
@@ -39,6 +42,12 @@ class SWCustomerAccountPaymentMethodCardController{
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
 		
 		this.title = this.rbkeyService.rbKey('define.billing');
+		
+		if(this.propertiesToDisplayList == null){
+			this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+		}
+		
+		this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
 		
 		if(this.billingAccountAddress != null && this.accountPaymentMethod != null){
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
@@ -67,28 +76,16 @@ class SWCustomerAccountPaymentMethodCardController{
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
 		}
 		
-		if(data['fulfillmentTotal'] != null){
-			this.baseEntity.fulfillmentTotal = data['fulfillmentTotal'];
-		}
-		
-		if(data['subtotal'] != null){
-			this.baseEntity.subtotal = data['subtotal']; 
-		}
-		
-		if(data['total'] != null){
-			this.baseEntity.total = data['total'];
-		}
-		
-		if(data['orderTemplate.fulfillmentTotal'] != null){
-			this.baseEntity.fulfillmentTotal = data['orderTemplate.fulfillmentTotal'];
-		}
-		
-		if(data['orderTemplate.subtotal'] != null){
-			this.baseEntity.subtotal = data['orderTemplate.subtotal']; 
-		}
-		
-		if(data['orderTemplate.total'] != null){
-			this.baseEntity.total = data['orderTemplate.total'];
+		for(var i=0; i<this.propertiesToDisplay.length; i++){
+			var propertyIdentifier = this.propertiesToDisplay[i];
+			
+			if(data[propertyIdentifier] != null){
+				this.baseEntity[propertyIdentifier] = data[propertyIdentifier];
+			}
+			
+			if(data['orderTemplate.' + propertyIdentifier] != null){
+				this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
+			}
 		}
 	}
 }
@@ -111,6 +108,7 @@ class SWCustomerAccountPaymentMethodCard implements ng.IDirective {
 		expirationMonthOptions:"<",
 		expirationYearOptions:"<",
 		stateCodeOptions:"<",
+		propertiesToDisplayList:"@?",
 	    title:"@?"
 	};
 

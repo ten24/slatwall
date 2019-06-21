@@ -63661,23 +63661,14 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
                 _this.accountPaymentMethod = data.accountPaymentMethod;
                 _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
             }
-            if (data['fulfillmentTotal'] != null) {
-                _this.baseEntity.fulfillmentTotal = data['fulfillmentTotal'];
-            }
-            if (data['subtotal'] != null) {
-                _this.baseEntity.subtotal = data['subtotal'];
-            }
-            if (data['total'] != null) {
-                _this.baseEntity.total = data['total'];
-            }
-            if (data['orderTemplate.fulfillmentTotal'] != null) {
-                _this.baseEntity.fulfillmentTotal = data['orderTemplate.fulfillmentTotal'];
-            }
-            if (data['orderTemplate.subtotal'] != null) {
-                _this.baseEntity.subtotal = data['orderTemplate.subtotal'];
-            }
-            if (data['orderTemplate.total'] != null) {
-                _this.baseEntity.total = data['orderTemplate.total'];
+            for (var i = 0; i < _this.propertiesToDisplay.length; i++) {
+                var propertyIdentifier = _this.propertiesToDisplay[i];
+                if (data[propertyIdentifier] != null) {
+                    _this.baseEntity[propertyIdentifier] = data[propertyIdentifier];
+                }
+                if (data['orderTemplate.' + propertyIdentifier] != null) {
+                    _this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
+                }
             }
         };
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
@@ -63685,6 +63676,10 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateAddOrderTemplateItemSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
+        if (this.propertiesToDisplayList == null) {
+            this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+        }
+        this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
             this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
         }
@@ -63717,6 +63712,7 @@ var SWCustomerAccountPaymentMethodCard = /** @class */ (function () {
             expirationMonthOptions: "<",
             expirationYearOptions: "<",
             stateCodeOptions: "<",
+            propertiesToDisplayList: "@?",
             title: "@?"
         };
         this.controller = SWCustomerAccountPaymentMethodCardController;
@@ -64140,7 +64136,6 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
-        this.edit = false;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price";
@@ -64183,6 +64178,9 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.setEdit = function (payload) {
             _this.edit = payload.edit;
         };
+        if (this.edit == null) {
+            this.edit = false;
+        }
     }
     return SWOrderTemplateItemsController;
 }());
@@ -64196,7 +64194,8 @@ var SWOrderTemplateItems = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<?',
-            skuPropertiesToDisplay: '@?'
+            skuPropertiesToDisplay: '@?',
+            edit: "=?"
         };
         this.controller = SWOrderTemplateItemsController;
         this.controllerAs = "swOrderTemplateItems";

@@ -6,7 +6,7 @@ class SWOrderTemplateItemsController{
     public editOrderTemplateItemsCollection; 
     public addSkuCollection;
     
-    public edit:boolean=false;
+    public edit:boolean;
     
     public orderTemplate;
     
@@ -20,6 +20,9 @@ class SWOrderTemplateItemsController{
 	            public orderTemplateService,
 				public rbkeyService
 	){
+		if(this.edit == null){
+			this.edit = false;
+		}
 	}
 	
 	public $onInit = () =>{
@@ -87,7 +90,8 @@ class SWOrderTemplateItems implements ng.IDirective {
 	public scope = {};
 	public bindToController = {
         orderTemplate: '<?', 
-        skuPropertiesToDisplay: '@?'
+        skuPropertiesToDisplay: '@?',
+        edit:"=?"
 	};
 	public controller=SWOrderTemplateItemsController;
 	public controllerAs="swOrderTemplateItems";
