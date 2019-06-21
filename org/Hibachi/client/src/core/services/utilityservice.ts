@@ -51,6 +51,11 @@ class UtilityService extends BaseService{
      public isLowerCase = (character)=>{
         return character == character.toLowerCase()
     }
+    
+    public toCamelCase = (s)=>{
+        return s.toUpperCase().split("")[0]+s.toLowerCase().slice(1);
+;
+    }
 
     public snakeToCapitalCase = (s)=>{
         return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();}).slice(1);
@@ -387,6 +392,22 @@ class UtilityService extends BaseService{
             }
             return val;
         });
+    }
+    
+    public getCaseInsensitiveStructKey=(obj,prop)=>{
+      prop = (prop + "").toLowerCase();
+      for(var p in obj){
+         if(obj.hasOwnProperty(p) && prop == (p+ "").toLowerCase()){
+               return p;
+               break;
+          }
+       }
+    }
+    
+    public listFindNoCase = (list: string = '', value: string = '', delimiter: string = ',')=>{
+        list = list.toLowerCase();
+        value=value.toLowerCase();
+        return this.listFind(list,value,delimiter);
     }
 
     public listFind = (list: string = '', value: string = '', delimiter: string = ','): number => {

@@ -84,7 +84,8 @@ class PublicService {
         public orderService,
         public observerService,
         public appConfig,
-        public $timeout
+        public $timeout,
+        public hibachiAuthenticationService
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -106,6 +107,7 @@ class PublicService {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
+        this.hibachiAuthenticationService=hibachiAuthenticationService;
     }
 
     // public hasErrors = ()=>{
@@ -490,6 +492,10 @@ class PublicService {
             }
         }
         return true;
+    }
+    
+    public authenticateActionByAccount = (action:string,processContext:string)=>{
+        return this.hibachiAuthenticationService.authenticateActionByAccount(action,processContext);
     }
 
     public removeInvalidOrderPayments = (cart) =>{
