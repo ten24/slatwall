@@ -12,8 +12,8 @@
 										data-has-search="false"
 										data-edit="false"
 										data-record-edit-action="admin:entity.editaccruementcurrency"
+										data-record-detail-action="admin:entity.detailaccruementcurrency"
 			    						data-record-delete-action="admin:entity.deleteaccruementcurrency"
-										data-record-edit-modal="true"
 										data-is-angular-route="false"
 										data-angular-links="false">
 				

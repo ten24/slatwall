@@ -68,6 +68,9 @@ component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrenc
 		return this.getService("LoyaltyService").getRedemptionTypeOptions();
 	}
 	
+	public array function getCurrencyCodeOptions() {
+        return getService("currencyService").getCurrencyOptions();
+    }
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
@@ -96,6 +99,16 @@ component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrenc
     	accruementCurrencyList.addFilter("currencyCode",this.getCurrencyCode());
     	accruementCurrencyList.addFilter("accruementCurrencyID",this.getAccruementCurrencyID(),"!=");
     	return !accruementCurrencyList.getRecordsCount();
+    }
+    
+    public string function getSimpleRepresentation(){
+    	if(!isNull(getPointQuantity()) && getPointQuantity() > 0) {
+    		return getLoyaltyAccruement().getSimpleRepresentation() & " - Points: " & getPointQuantity();
+    	}
+    	
+    	if(!isNull(getGiftCardValue()) && getGiftCardValue() > 0) {
+    		return getLoyaltyAccruement().getSimpleRepresentation() & " - Gift Card Value: " & getGiftCardValue();
+    	}
     }
 	
 	// =============  END:  Bidirectional Helper Methods ===================

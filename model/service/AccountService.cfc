@@ -1085,7 +1085,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// If loyaltyAccruement eq 'orderClosed' as the type
 			if (loyaltyAccruement.getAccruementEvent() eq 'orderClosed') {
 
-				// If order satus is closed
+				// If order status is closed
 				if ( listFindNoCase("ostClosed",arguments.data.order.getorderStatusType().getSystemCode()) ){
 
 					// Create a new transaction
@@ -1106,8 +1106,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 		}
-
-
 
 		return arguments.accountLoyalty;
 	}
@@ -1322,7 +1320,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			return arguments.accountLoyaltyTransaction;
 		}
 		
-		var amount=0;
+		var amount;
 		
 		if (arguments.data.accruementEvent eq 'itemFulfilled') {
 			
@@ -1330,11 +1328,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		} else if (arguments.data.accruementEvent eq 'orderClosed') {
 
-			// Set up loyalty program expiration date / time based upon the expiration term
-			if( !isNull(arguments.data.loyaltyAccruement.getExpirationTerm()) ){
-			    arguments.accountLoyaltyTransaction.setExpirationDateTime( arguments.data.loyaltyAccruement.getExpirationTerm().getEndDate() );
-			}
+			amount = accruementCurrency.getPointQuantity() * arguments.data.order.getTotal();
 			
+		} else if (arguments.data.accruementEvent eq 'fulfillmentMethodUsed') {
+			
+			amount = accruementCurrency.getPointQuantity() * arguments.data.orderFulfillment.getFulFillmentCharge();
+			
+		}
+		
+		arguments.accountLoyaltyTransaction.setPointsIn(amount);
+
 		return arguments.accountLoyaltyTransaction;
 	}
 	
@@ -1358,10 +1361,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountLoyaltyTransaction;
 	}
 	
-	private any function getExistingGiftCardBySkuAndAccount(required any sku,required any account){
+	private any function getExistingGiftCardBySkuAndAccount(required any sku,required any account,required string currencyCode){
 		giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
 		giftCardCollectionList.addFilter("ownerAccount.accountID",arguments.account.getAccountID());
-		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.skuID);
+		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.getSkuID());
+		giftCardCollectionList.addFilter("currencyCode",arguments.currencyCode);
 		giftCardCollectionList.setDisplayProperties("giftCardID");
 		giftCards = giftCardCollectionList.getPageRecords();
 		if(arrayLen(giftCards)){
@@ -1376,12 +1380,12 @@ component extends="HibachiService" accessors="true" output="false" {
 			var currencyCode = arguments.data.currencyCode;
 			var sku = arguments.data.loyaltyAccruement.getGiftCardSku();
 			
-			var giftCard = getExistingGiftCardBySkuAndAccount(sku,arguments.data.account);
+			var giftCard = getExistingGiftCardBySkuAndAccount(sku,arguments.data.account,currencyCode);
 			
 			if(isNull(giftCard)){
-				
+
 				giftCard = getService("GiftCardService").newGiftCard();
-				
+
 				var createGiftCardProcessObject = giftCard.getProcessObject('create'); 
 				
 				createGiftCardProcessObject.setCurrencyCode(currencyCode);
@@ -1389,7 +1393,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				createGiftCardProcessObject.setSku(sku);
 				
 				createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
-				
+
+				createGiftCardProcessObject.setOwnerEmailAddress(arguments.data.account.getEmailAddress()); 
+
 				createGiftCardProcessObject.setCreditGiftCardFlag(false);
 		
 				giftCard = getService("GiftCardService").processGiftCard_Create(giftCard,createGiftCardProcessObject);  
@@ -1410,71 +1416,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 			if(giftCard.hasErrors()){
 				arguments.accountLoyaltyTransaction.addErrors(giftCard.getErrors());
-			} 
+			}
 			
 			getHibachiEventService().announceEvent("LoyaltyTransaction_GiftCardCredited", giftCard);
 			
 			arguments.accountLoyaltyTransaction.setGiftCard(giftCard);
-	
-			return arguments.accountLoyaltyTransaction;
-		}
-		
-		// TODO: Remove giftCard if pointsOut
-
-		return arguments.accountLoyaltyTransaction;
-	}
-	
-	public any function createPromotionLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
-		
-		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			promo = arguments.data.loyaltyAccruement.getPromotion();
-			promoCode = getService("PromotionService").NewPromotionCode();
-			promoCode.setPromotionCode(createUUID());
-			promoCode.setPromotion(promo);
-			promoCode.addAccount(arguments.data.account);
-			promoCode.setMaximumAccountUseCount(1);
-			promoCode = getService("PromotionService").savePromotionCode(promoCode);
-			promoCode.setStartDateTime(Now());
-			promo = getService("PromotionService").savePromotion(promo);
-			getHibachiEventService().announceEvent("Promotion Code Assigned to Account", promoCode);
-			arrayAppend(arguments.accountLoyaltyTransaction.getErrors(),promoCode.getErrors());
-		}
-		
-		return arguments.accountLoyaltyTransaction;
-	}
-	
-	public any function createGiftCardLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
-		
-		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			var newGiftCard = getService("GiftCardService").newGiftCard(); 
-			var createGiftCardProcessObject = newGiftCard.getProcessObject('create'); 
-			var currencyCode = arguments.data.currencyCode;
-			
-			createGiftCardProcessObject.setCurrencyCode(currencyCode);
-			
-			createGiftCardProcessObject.setSku(arguments.data.loyaltyAccruement.getGiftCardSku());
-			
-			createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
-			
-			createGiftCardProcessObject.setCreditGiftCardFlag(false);
-	
-			newGiftCard = getService("GiftCardService").processGiftCard_Create(newGiftCard,createGiftCardProcessObject);  
-	
-			var creditGiftCardProcessObject = newGiftCard.getProcessObject('addCredit');
-		
-			var accruementCurrency = arguments.data.loyaltyAccruement.getAccruementCurrency(currencyCode);
-			
-			if(isNull(accruementCurrency)){
-				return arguments.accountLoyaltyTransaction;
-			}
-	
-			creditGiftCardProcessObject.setCreditAmount(accruementCurrency.getGiftCardValue());
-	
-			newGiftCard = getService("GiftCardService").processGiftCard_addCredit(newGiftCard, creditGiftCardProcessObject);
-	
-			if(newGiftCard.hasErrors()){
-				arguments.accountLoyaltyTransaction.addErrors(newGiftCard.getErrors());
-			} 
 	
 			return arguments.accountLoyaltyTransaction;
 		}
@@ -1889,8 +1835,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().save( arguments.permissionGroup );
 			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
 			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
-			//clears cache keys on the permissiongroup Object
-			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
 		}
 
 		return arguments.permissionGroup;

@@ -49,7 +49,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
     public void function afterOrderProcess_createReturnSuccess(required any slatwallScope, required any order, required any data ={}) {
         
-        if(this.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()){
+        if(arguments.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()){
             return;
         }
         
@@ -76,7 +76,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             if(!isNull(promotionCode)){
                 promotionCode.setEndDateTime(now());
                 getService("promotionService").savePromotionCode(promotionCode);
-			    getHibachiEventService().announceEvent("ReferAFriend_PromotionCodeRevoked", promotionCode);
+			    getService("HibachiEventService").announceEvent("ReferAFriend_PromotionCodeRevoked", promotionCode);
             }
                         
             if(!isNull(giftCard)){
@@ -87,7 +87,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			    debitGiftCardProcessObject.setAllowNegativeBalanceFlag(true);
 			    giftCard = getService("GiftCardService").processGiftCard_addDebit(giftCard, debitGiftCardProcessObject);
 	            getService("giftCardService").saveGiftCard(giftCard);
-			    getHibachiEventService().announceEvent("ReferAFriend_GiftCardDebiter", giftCard);
+			    getService("HibachiEventService").announceEvent("ReferAFriend_GiftCardDebiter", giftCard);
             }
         }
     }

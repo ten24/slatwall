@@ -109,7 +109,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	}
 	
 	public any function getSku(){
-<<<<<<< HEAD
 		if(
 			!structKeyExists(variables,"sku") && structKeyExists(variables,"originalOrderItem")
 		){
@@ -118,12 +117,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		} else if(structKeyExists(variables,"sku")){
 			return variables.sku;
 		}
-=======
-		if(!structKeyExists(variables,"sku") || isNull(variables.sku)){
-			variables.sku = this.getOriginalOrderItem().getSku();
-		}
-		return variables.sku;
->>>>>>> eef811dfebea04072a64ef0ea18cccd2f93efcba
 	}
 
 	public boolean function isExpired(){
