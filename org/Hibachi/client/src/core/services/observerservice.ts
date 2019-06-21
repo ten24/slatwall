@@ -20,6 +20,7 @@ class ObserverService extends BaseService{
         private historyService, 
         private utilityService
     ){
+        
         /**
          * @ngdoc property
          * @name ObserverService#observers
@@ -28,6 +29,7 @@ class ObserverService extends BaseService{
          * @returns {object} object
          */
         super();
+        console.log('init obeserver');
         this.observers = {};
     }
     /* Declare methods */
