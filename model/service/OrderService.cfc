@@ -106,7 +106,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
 		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
-			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
+			// FIXME: Temporary disable to allow QA place order
+			//orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
 		}
 
 		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){

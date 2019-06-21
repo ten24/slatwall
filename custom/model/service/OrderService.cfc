@@ -35,7 +35,7 @@ component extends="Slatwall.model.service.OrderService" {
                 super.updateOrderStatusBySystemCode(argumentCollection=arguments);
             }
         // Return Orders
-        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getOrderType())) {
+        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
             if (arguments.systemCode == 'ostProcessing') {
                 // Order delivery items have been created but not fulfilled, need to be approved (confirmed) first
                 arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
