@@ -48,7 +48,7 @@
 
 <!-- List Not Modal -->
 
-<li ng-if="swActionCaller.display && swActionCaller.type === 'list' && swActionCaller.actionAuthenticated">
+<li ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'list' && swActionCaller.actionAuthenticated">
 	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}}" 
 		target="_self" 
@@ -59,7 +59,7 @@
 </li>
 
 <!-- List Modal -->
-<li ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'list'">
+<li ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'list' && swActionCaller.actionAuthenticated">
 	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}} modalload" 
 		target="_self"
