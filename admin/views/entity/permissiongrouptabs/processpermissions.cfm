@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,49 +45,12 @@
 
 Notes:
 
-*/
-component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
-{
-	//list of supported algorithms
-	
-	public any function newJWT(required string key){
-		return getHibachiScope().getTransient('HibachiJWT').setup(arguments.key);
-	}
-	
-	public any function getJwtByToken(required string token){
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		jwt.setTokenString(arguments.token);
-		return jwt;
-	}
-	
-	public string function createToken(){
-		//create token
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		//hard coded to 15 minutes
-		var tokenExpirationTime = 900;
-		var payload = {};
-		payload['iat'] = javaCast( "int", currentTime );
-		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
-		payload['issuer'] = CGI['server_name'];
-		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
-		
-		//add users role so we can make decisions on frontend permissions
-		if(getHibachiScope().getAccount().getSuperUserFlag()){
-			payload['role']='superUser';	
-		}else if(getHibachiScope().getAccount().hasPermissionGroup()){
-			payload['role']="admin";
-			payload['permissionGroups']=getHibachiScope().getAccount().getPermissionGroupsCollectionList().getPrimaryIDList();
-		}else{
-			payload['role']='public';
-		}
-		
-		payload['encoding'] = "UTF-8";
-		var token = jwt.encode(payload);
-		
-		return token;
-	}
-	
-}
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+<cfparam name="rc.permissionGroup" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.editEntityName" type="string" default="" />
+
+<hb:HibachiPermissionGroupProcessPermissions permissionGroup="#rc.permissionGroup#" edit="#rc.edit#" editEntityName="#rc.editEntityName#" />
