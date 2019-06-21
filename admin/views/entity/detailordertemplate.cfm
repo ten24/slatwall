@@ -57,11 +57,11 @@
 <cfset rc.processCallers = [
 	{
 		'action':'admin:entity.processOrderTemplate',
-		'processContext':'activate',
+		'processContext':'activate'
 	},	
 	{
 		'action':'admin:entity.processOrderTemplate',
-		'processContext':'createAndPlaceOrder',
+		'processContext':'createAndPlaceOrder'
 	},	
 	{
 		'action':'admin:entity.preProcessOrderTemplate',
