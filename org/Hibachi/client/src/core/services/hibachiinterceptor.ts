@@ -173,10 +173,6 @@ class HibachiInterceptor implements IInterceptor{
         	config.headers['Auth-Token'] = 'Bearer ' + this.jwtToken;
             this.getJWTDataFromToken(this.jwtToken);
         }
-        /*if (this.localStorageService.hasItem('token')) {
-            config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
-            this.getJWTDataFromToken(this.localStorageService.getItem('token'));
-        }*/
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
             this.$log.debug(config);
@@ -214,9 +210,6 @@ class HibachiInterceptor implements IInterceptor{
 
         }
 
-        /*if(response.data.hasOwnProperty('token')){
-        	this.localStorageService.setItem('token',response.data.token);
-        }*/
 		return response;
     }
     public responseError = (rejection): ng.IPromise<any> => {

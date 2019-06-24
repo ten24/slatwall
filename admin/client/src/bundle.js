@@ -79964,10 +79964,6 @@ var HibachiInterceptor = /** @class */ (function () {
                 config.headers['Auth-Token'] = 'Bearer ' + _this.jwtToken;
                 _this.getJWTDataFromToken(_this.jwtToken);
             }
-            /*if (this.localStorageService.hasItem('token')) {
-                config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
-                this.getJWTDataFromToken(this.localStorageService.getItem('token'));
-            }*/
             var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
             if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
                 _this.$log.debug(config);
@@ -80002,9 +79998,6 @@ var HibachiInterceptor = /** @class */ (function () {
                 var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
                 _this.alertService.addAlerts(alerts);
             }
-            /*if(response.data.hasOwnProperty('token')){
-                this.localStorageService.setItem('token',response.data.token);
-            }*/
             return response;
         };
         this.responseError = function (rejection) {
