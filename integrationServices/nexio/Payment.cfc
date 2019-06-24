@@ -154,7 +154,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				},
 				'data' = {
 					'paymentMethod' = 'creditCard',
-					'amount' = arguments.requestBean.getTransactionAmount(),
+					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
 					'currency' = arguments.requestBean.getTransactionCurrencyCode(),
 					'customer'= {
 						'orderNumber' = orderNumber,
@@ -302,12 +302,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    },
 			    "data": {
 			      "currency": arguments.requestBean.getTransactionCurrencyCode(),
-			      "amount": arguments.requestBean.getTransactionAmount()
+			      "amount": LSParseNumber(arguments.requestBean.getTransactionAmount())
 			    },
+			    "customer"= {
+					'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+					'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+					'billToCity' = arguments.requestBean.getBillingCity(),
+					'billToState' = arguments.requestBean.getBillingStateCode(),
+					'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+					'billToCountry' = arguments.requestBean.getBillingCountryCode()
+				},
 			    "processingOptions":{
-				    "checkFraud": setting(settingName='checkFraud', requestBean=arguments.requestBean),
-				    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
-				    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
+				    "checkFraud": (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+				    "verifyAvs": LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
+				    "verifyCvc": (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
 				    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			};	
@@ -353,12 +361,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    },
 			    "data": {
 			      "currency": arguments.requestBean.getTransactionCurrencyCode(),
-			      "amount": arguments.requestBean.getTransactionAmount()
+			      "amount": LSParseNumber(arguments.requestBean.getTransactionAmount())
 			    },
+			    "customer"= {
+					'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+					'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+					'billToCity' = arguments.requestBean.getBillingCity(),
+					'billToState' = arguments.requestBean.getBillingStateCode(),
+					'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+					'billToCountry' = arguments.requestBean.getBillingCountryCode()
+				},
 			    "processingOptions":{
-				    "checkFraud": setting(settingName='checkFraud', requestBean=arguments.requestBean),
-				    "verifyAvs": setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean),
-				    "verifyCvc": setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean),
+				    "checkFraud": (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+				    "verifyAvs": LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
+				    "verifyCvc": (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
 				    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			};	
@@ -397,7 +413,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					'token' = arguments.requestBean.getProviderToken()
 			    },
 				'data': {
-					'amount': arguments.requestBean.getTransactionAmount(),
+					'amount': LSParseNumber(arguments.requestBean.getTransactionAmount()),
 		    	},
 		    	'id': arguments.requestBean.getOriginalAuthorizationProviderTransactionID()
 			}
