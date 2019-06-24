@@ -16,7 +16,7 @@
 						<span class="s-title">#attributes.productLabelText#</span>
 					</label>
 					<div class="col-sm-8">
-						<p class="form-control-static value">#attributes.property.getProduct()#</p>
+						<p class="form-control-static value">#attributes.property.getProduct().getProductName()#</p>
 					</div>
 					<cfif attributes.edit EQ 'false'>
 	   					<input type="hidden" name="#attributes.productPropertyName#" value="#attributes.property.getProductID()#" />
