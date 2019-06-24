@@ -11,6 +11,17 @@
                 <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.displayTitle ? column.displayTitle : column.title"></a>
             </li>
         </ul>
+        
+    </div>
+    <div ng-if="swListingSearch.showSearchFilterDropDown" class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch && swListingSearch.swListingDisplay.searchText.length">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span data-ng-bind="swListingSearch.selectedSearchFilter.title"></span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li data-ng-repeat="filterOption in swListingSearch.searchableFilterOptions">
+                <a href data-ng-click="swListingSearch.selectSearchFilter(filterOption)" data-ng-bind="filterOption.displayTitle ? filterOption.displayTitle : filterOption.title"></a>
+            </li>
+        </ul>
     </div>
     <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."

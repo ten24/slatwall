@@ -1151,7 +1151,7 @@
  			return timezoneOffsetInSeconds;
 		}
 
- 		public date function getLocalServerDateTimeByUtcEpoch(number utcEpoch) {
+ 		public date function getLocalServerDateTimeByUtcEpoch(numeric utcEpoch) {
 			//XXX explaination: for "* -1"  ==> https://www.bennadel.com/blog/1595-converting-to-gmt-and-from-gmt-in-coldfusion-for-use-with-http-time-stamps.htm
 			var localEpoch = utcEpoch + getTimeZoneOffsetInSecondsWithDST() * -1 ;
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
