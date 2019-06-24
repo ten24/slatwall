@@ -74,6 +74,7 @@
 		
 		<Record typeID="2c948084697d51bd01697d5402d40005" typeIDPath="2c948084697d51bd01697d5402d40005" parentTypeID="NULL" typeName="Order Template Types" systemCode="orderTemplateType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="2c948084697d51bd01697d5725650006" typeIDPath="2c948084697d51bd01697d5402d40005,2c948084697d51bd01697d5725650006" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Schedule Order Template" systemCode="ottSchedule" sortOrder="1"/>
+		<Record typeID="2c9280846b712d47016b75464e800014" typeIDPath="2c948084697d51bd01697d5402d40005,2c9280846b712d47016b75464e800014" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Wish List" systemCode="ottWishList" sortOrder="9"/>
 
 		<Record typeID="2c948084697d51bd01697d5996d80007" typeIDPath="2c948084697d51bd01697d5996d80007" parentTypeID="NULL" typeName="Order Template Status Types" systemCode="orderTemplateStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="2c948084697d51bd01697d9a592d0009" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9a592d0009" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Draft" systemCode="otstDraft" />
