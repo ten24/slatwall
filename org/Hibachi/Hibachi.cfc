@@ -353,7 +353,10 @@ component extends="framework.one" {
 		}
 		
 		// Verify that the session is setup
-		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		if(isAPIGetRequest()){
+			getHibachiScope().setStateless(true);
+		}
+		getHibachiScope().getService("hibachiSessionService").setProperSession(getHibachiScope().getStateless());
 		
 		// CSRF / Duplicate Request Handling
 		if(structKeyExists(request, "context")){
@@ -406,7 +409,7 @@ component extends="framework.one" {
 			}
 
 		}
-
+		
 		// Call the onEveryRequest() Method for the parent Application.cfc
 		onEveryRequest();
 		if(structKeyExists(request,'context')){
@@ -993,6 +996,14 @@ component extends="framework.one" {
 		writeOutput( responseString );
 		abort;
 	}
+	
+	public boolean function isAPIRequest(){
+		return getSubSystem()=='api';
+	}
+	
+	public boolean function isAPIGetRequest(){
+		return isApiRequest() && getSection() == 'main' && getItem() == 'get';
+	}
 
 	public void function setupResponse(rc) {
 		param name="arguments.rc.ajaxRequest" default="false";
@@ -1004,7 +1015,9 @@ component extends="framework.one" {
 			getHibachiScope().setPersistSessionFlag(false);
 		}
 		
-		endHibachiLifecycle();
+		if(!isAPIGetRequest()){
+			endHibachiLifecycle();
+		}
 		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
@@ -1013,7 +1026,7 @@ component extends="framework.one" {
 		}
 
 		// Check for an API Response
-		if(arguments.rc.apiRequest) {
+		if(isAPIRequest()) {
 			renderApiResponse();
 		}
 
