@@ -49,6 +49,8 @@ class SWCustomerAccountPaymentMethodCardController{
 		
 		this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
 		
+		console.log('props to display', this.propertiesToDisplay);
+		
 		if(this.billingAccountAddress != null && this.accountPaymentMethod != null){
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
 		} else {
@@ -61,6 +63,7 @@ class SWCustomerAccountPaymentMethodCardController{
 	}
 	
 	public updateBillingInfo = (data) =>{
+		if( data == null) return;
 		
 		if( data['account.accountAddressOptions'] != null ){
 			this.accountAddressOptions = data['account.accountAddressOptions'];
@@ -87,6 +90,8 @@ class SWCustomerAccountPaymentMethodCardController{
 				this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
 			}
 		}
+		
+		console.log('props to display after billing update', this.propertiesToDisplay);
 	}
 }
 

@@ -104,12 +104,23 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="scheduledOrderDates" persistent="false";
 	property name="subtotal" persistent="false";
 	property name="total" persistent="false";
+	//CUSTOM PROPERTIES BEGIN
+property name="personalVolumeTotal" persistent="false"; 
 
-	public struct function getStructRepresentation(){ 
-		var orderTemplateStruct = super.getStructRepresentation(); 
-		orderTemplateStruct['subtotal'] = this.getSubtotal();
-		orderTemplateStruct['fulfillmentTotal'] = this.getFulfillmentTotal();
-		orderTemplateStruct['total'] = this.getTotal();
+
+//CUSTOM PROPERTIES END
+	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
+		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
+	} 
+	
+	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
+		var orderTemplateStruct = super.getStructRepresentation();
+
+		var propertiesToDisplay = listToArray(arguments.nonPersistentProperties);
+
+		for(var property in propertiesToDisplay){
+			orderTemplateStruct[property] = invokeMethod('get' & property);
+		} 
 
 		return orderTemplateStruct;  
 	} 
@@ -261,5 +272,19 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}	
+	//CUSTOM FUNCTIONS BEGIN
 
+public numeric function getPersonalVolumeTotal(){
+	
+		if(!structKeyExists(variables, 'personalVolumeTotal')){
+			variables.personalVolumeTotal = 0; 
+
+			var orderTemplateItems = this.getOrderTemplateItems();
+
+			for(var orderTemplateItem in orderTemplateItems){ 
+				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal();
+			}
+		}	
+		return variables.personalVolumeTotal; 	
+	} //CUSTOM FUNCTIONS END
 }

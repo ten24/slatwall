@@ -39,29 +39,18 @@
 			
 			<ul class="list-unstyled">
 				
-				<li>
-					<div class="row s-line-item">
-						<div class="col-xs-6 s-title" sw-rbkey="'entity.order.subtotal'"></div>
-						<div class="col-xs-6 s-value" ng-bind="swCustomerAccountPaymentMethodCard.baseEntity.subtotal | swcurrency">
-							
+				<li ng-repeat="property in swCustomerAccountPaymentMethodCard.propertiesToDisplay track by $index">
+					<div class="row s-line-item" ng-if="swCustomerAccountPaymentMethodCard.baseEntity[property] != null">
+						<div class="col-xs-6 s-title" 
+							 sw-rbkey="'entity.order.' + property">
 						</div>
-					</div>
-				</li>
-				
-				<li>
-					<div class="row s-line-item">
-						<div class="col-xs-6 s-title" sw-rbkey="'entity.order.fulfillmentTotal'"></div>
-						<div class="col-xs-6 s-value" ng-bind="swCustomerAccountPaymentMethodCard.baseEntity.fulfillmentTotal | swcurrency">
-							
+						<div class="col-xs-6 s-value" 
+							 ng-if="property === 'fulfillmentTotal' || property === 'subtotal' || property === 'total'"
+						     ng-bind="swCustomerAccountPaymentMethodCard.baseEntity[property] | swcurrency:baseEntity['currencyCode']">
 						</div>
-					</div>
-				</li>
-				
-				<li>
-					<div class="row s-line-item">
-						<div class="col-xs-6 s-title" sw-rbkey="'entity.order.total'"></div>
-						<div class="col-xs-6 s-value" ng-bind="swCustomerAccountPaymentMethodCard.baseEntity.total | swcurrency">
-							
+						<div class="col-xs-6 s-value" 
+							 ng-if="property !== 'fulfillmentTotal' && property !== 'subtotal' && property !== 'total'"
+						     ng-bind="swCustomerAccountPaymentMethodCard.baseEntity[property] | number">
 						</div>
 					</div>
 				</li>

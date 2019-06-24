@@ -29,7 +29,7 @@ class SWOrderTemplateItemsController{
 			    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
-		var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price";
+		var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
 		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
 		
 		if(this.skuPropertiesToDisplay != null){

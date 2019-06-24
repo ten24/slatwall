@@ -63650,6 +63650,8 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.paymentTitle = "Payment";
         this.includeModal = true;
         this.updateBillingInfo = function (data) {
+            if (data == null)
+                return;
             if (data['account.accountAddressOptions'] != null) {
                 _this.accountAddressOptions = data['account.accountAddressOptions'];
             }
@@ -63670,6 +63672,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
                     _this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
                 }
             }
+            console.log('props to display after billing update', _this.propertiesToDisplay);
         };
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
@@ -63680,6 +63683,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
             this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
         }
         this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
+        console.log('props to display', this.propertiesToDisplay);
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
             this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
         }
@@ -64138,7 +64142,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price";
+            var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
             var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
             if (_this.skuPropertiesToDisplay != null) {
                 var properties = _this.skuPropertiesToDisplay.split(',');
