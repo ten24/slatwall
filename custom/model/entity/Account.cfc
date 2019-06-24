@@ -8,6 +8,7 @@ component {
         orderList.addFilter("Account.accountID",this.getAccountID());
         orderList.addFilter("OrderTemplate.orderTemplateID","NULL","IS NOT");
         orderList.addOrderBy("orderCloseDateTime|ASC");
+        orderList.setPageRecordsShow(1);
         var orders = orderList.getPageRecords(formatRecords=false);
         if(!arrayIsEmpty(orders)){
             return getService("OrderService").getOrder(orders[1]['orderID']);
