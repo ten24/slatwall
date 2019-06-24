@@ -85,7 +85,7 @@ class HibachiInterceptor implements IInterceptor{
 		];
 		return eventHandler;
 	}
-
+	public jwtToken = null;
     public urlParam = null;
     public authHeader = 'Authorization';
     public authPrefix = 'Bearer ';
@@ -169,10 +169,14 @@ class HibachiInterceptor implements IInterceptor{
         }
         config.cache = true;
         config.headers = config.headers || {};
-        if (this.localStorageService.hasItem('token')) {
+        if(this.jwtToken){
+        	config.headers['Auth-Token'] = 'Bearer ' + this.jwtToken;
+            this.getJWTDataFromToken(this.jwtToken);
+        }
+        /*if (this.localStorageService.hasItem('token')) {
             config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
             this.getJWTDataFromToken(this.localStorageService.getItem('token'));
-        }
+        }*/
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
             this.$log.debug(config);
@@ -210,9 +214,9 @@ class HibachiInterceptor implements IInterceptor{
 
         }
 
-        if(response.data.hasOwnProperty('token')){
+        /*if(response.data.hasOwnProperty('token')){
         	this.localStorageService.setItem('token',response.data.token);
-        }
+        }*/
 		return response;
     }
     public responseError = (rejection): ng.IPromise<any> => {
@@ -246,7 +250,7 @@ class HibachiInterceptor implements IInterceptor{
                     	return this.authPromise = $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:IHibachiInterceptorPromise<any>)=>{
 	                        this.loginResponse=loginResponse;
 	                        if(loginResponse.status === 200){
-	                            this.localStorageService.setItem('token',loginResponse.data.token);
+	                            this.jwtToken = loginResponse.data.token;
 	                            rejection.config.headers = rejection.config.headers || {};
 	                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
 	                            this.getJWTDataFromToken(loginResponse.data.token);
@@ -264,7 +268,7 @@ class HibachiInterceptor implements IInterceptor{
                         
                         if(this.loginResponse.status === 200){
                         	
-                            this.localStorageService.setItem('token',this.loginResponse.data.token);
+                            this.jwtToken=this.loginResponse.data.token;
                             rejection.config.headers = rejection.config.headers || {};
                             rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
                             this.getJWTDataFromToken(this.loginResponse.data.token);

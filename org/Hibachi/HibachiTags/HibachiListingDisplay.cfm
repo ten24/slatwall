@@ -21,6 +21,8 @@
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
+	<cfparam name="attributes.showSearchFilterDropDown" type="boolean" default="false"/>
+	<cfparam name="attributes.searchFilterPropertyIdentifier" type="string" default="createdDateTime"/>
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -128,6 +130,10 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
+			    <cfif attributes.showSearchFilterDropDown>
+					data-show-search-filter-drop-down="#attributes.showSearchFilterDropDown#"
+					data-search-filter-property-identifier="#attributes.searchFilterPropertyIdentifier#"
+				</cfif>
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
 				</cfif>

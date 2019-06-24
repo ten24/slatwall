@@ -79916,6 +79916,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.observerService = observerService;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
+        this.jwtToken = null;
         this.urlParam = null;
         this.authHeader = 'Authorization';
         this.authPrefix = 'Bearer ';
@@ -79959,10 +79960,14 @@ var HibachiInterceptor = /** @class */ (function () {
             }
             config.cache = true;
             config.headers = config.headers || {};
-            if (_this.localStorageService.hasItem('token')) {
-                config.headers['Auth-Token'] = 'Bearer ' + _this.localStorageService.getItem('token');
-                _this.getJWTDataFromToken(_this.localStorageService.getItem('token'));
+            if (_this.jwtToken) {
+                config.headers['Auth-Token'] = 'Bearer ' + _this.jwtToken;
+                _this.getJWTDataFromToken(_this.jwtToken);
             }
+            /*if (this.localStorageService.hasItem('token')) {
+                config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
+                this.getJWTDataFromToken(this.localStorageService.getItem('token'));
+            }*/
             var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
             if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
                 _this.$log.debug(config);
@@ -79997,9 +80002,9 @@ var HibachiInterceptor = /** @class */ (function () {
                 var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
                 _this.alertService.addAlerts(alerts);
             }
-            if (response.data.hasOwnProperty('token')) {
-                _this.localStorageService.setItem('token', response.data.token);
-            }
+            /*if(response.data.hasOwnProperty('token')){
+                this.localStorageService.setItem('token',response.data.token);
+            }*/
             return response;
         };
         this.responseError = function (rejection) {
@@ -80034,7 +80039,7 @@ var HibachiInterceptor = /** @class */ (function () {
                             return _this.authPromise = $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
                                 _this.loginResponse = loginResponse;
                                 if (loginResponse.status === 200) {
-                                    _this.localStorageService.setItem('token', loginResponse.data.token);
+                                    _this.jwtToken = loginResponse.data.token;
                                     rejection.config.headers = rejection.config.headers || {};
                                     rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
                                     _this.getJWTDataFromToken(loginResponse.data.token);
@@ -80049,7 +80054,7 @@ var HibachiInterceptor = /** @class */ (function () {
                         else {
                             return _this.authPromise.then(function () {
                                 if (_this.loginResponse.status === 200) {
-                                    _this.localStorageService.setItem('token', _this.loginResponse.data.token);
+                                    _this.jwtToken = _this.loginResponse.data.token;
                                     rejection.config.headers = rejection.config.headers || {};
                                     rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.loginResponse.data.token;
                                     _this.getJWTDataFromToken(_this.loginResponse.data.token);
@@ -88511,6 +88516,7 @@ var SWListingDisplay = /** @class */ (function () {
             expandableOpenRoot: "<?",
             /*Searching*/
             searchText: "<?",
+            searchFilterPropertyIdentifier: "@?",
             /*Sorting*/
             sortable: "<?",
             sortableFieldName: "@?",
@@ -88538,6 +88544,7 @@ var SWListingDisplay = /** @class */ (function () {
             showTopPagination: "<?",
             showToggleDisplayOptions: "<?",
             showSearch: "<?",
+            showSearchFilterDropDown: "<?",
             showSearchFilters: "<?",
             showFilters: "<?",
             showSimpleListingControls: "<?",
@@ -89597,8 +89604,30 @@ var SWListingSearchController = /** @class */ (function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
+            if (angular.isUndefined(_this.showSearchFilterDropDown)) {
+                _this.showSearchFilterDropDown = false;
+            }
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
+            _this.searchableFilterOptions = [
+                {
+                    title: 'Last 3 Months',
+                    value: new Date().setMonth(new Date().getMonth() - 3)
+                },
+                {
+                    title: 'Last 6 Months',
+                    value: new Date().setMonth(new Date().getMonth() - 6)
+                },
+                {
+                    title: '1 Year Ago',
+                    value: new Date().setMonth(new Date().getMonth() - 12)
+                },
+                {
+                    title: 'All Time',
+                    value: 'All'
+                }
+            ];
+            _this.selectSearchFilter(_this.searchableFilterOptions[0]);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -89616,6 +89645,12 @@ var SWListingSearchController = /** @class */ (function () {
                 }, function (reason) {
                     throw ("swListingSearch couldn't load printTemplateOptions because: " + reason);
                 });
+            }
+        };
+        this.selectSearchFilter = function (filter) {
+            _this.selectedSearchFilter = filter;
+            if (_this.swListingDisplay.searchText) {
+                _this.search();
             }
         };
         this.selectSearchColumn = function (column) {
@@ -89740,6 +89775,14 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
+            _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+            if (_this.selectedSearchFilter.value != 'All') {
+                if (angular.isUndefined(_this.searchFilterPropertyIdentifier) || !_this.searchFilterPropertyIdentifier.length) {
+                    _this.searchFilterPropertyIdentifier = 'createdDateTime';
+                }
+                console.log(_this.searchFilterPropertyIdentifier);
+                _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
+            }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
@@ -89779,7 +89822,9 @@ var SWListingSearch = /** @class */ (function () {
             collectionConfig: "<?",
             paginator: "=?",
             listingId: "@?",
-            showToggleSearch: "=?"
+            showToggleSearch: "=?",
+            searchFilterPropertyIdentifier: "@?",
+            showSearchFilterDropDown: "=?"
         };
         this.controller = SWListingSearchController;
         this.controllerAs = 'swListingSearch';
