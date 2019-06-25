@@ -53,6 +53,9 @@ Notes:
 <cfparam name="rc.productReview" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<cfif structKeyExists(rc,'productID')>
+	<cfset rc.productReview.setProduct($.slatwall.getService('productService').getProduct(rc.productID)) />	
+</cfif>
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.productReview#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
@@ -60,9 +63,9 @@ Notes:
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				<cfif rc.edit eq true AND rc.productReview.isNew() >
-					<swa:SlatwallProductTypeahead productPropertyName="product.productID" edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"></swa:SlatwallProductTypeahead>
+					<swa:SlatwallProductTypeahead property="#rc.productReview#" productPropertyName="product.productID" edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"></swa:SlatwallProductTypeahead>
 					<cfelse>
-					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewProductName" edit="false" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
+					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewProductName" edit="false" productLabelText="#$.slatwall.rbkey('entity.product_plural')#" valueLink="?slatAction=entity.detailproduct&productID=#rc.productReview.getProduct().getProductID()#">
 					</cfif>
 					
 			
@@ -72,7 +75,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
 				<cfif rc.productReview.isNew() neq true >
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewsStatus" edit="#rc.edit#" fieldType="select" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
+					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewStatusType" edit="#rc.edit#" fieldType="select" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
 				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
