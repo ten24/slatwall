@@ -37,9 +37,15 @@ component extends="Slatwall.model.service.IntegrationService" accessors="true" {
 
             var responseBean = arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
             
+            writeDump(var="***IntegrationService responseBean");
+            writeDump(var=responseBean);
+            
             if (!responseBean.hasErrors()){
                 getAccountDAO().removeStalePaymentProviderTokens(tokens);
             }
+            
+            writeDump(var="***IntegrationService arguments.integration");
+            writeDump(var=arguments.integration);
             
         	return arguments.integration;
 
