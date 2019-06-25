@@ -18,7 +18,7 @@ component {
     }
     
     public boolean function hasAccountType(required string accountTypeList){
-        fullAccountTypeList = this.getAccountTypeList();
+        var fullAccountTypeList = this.getAccountTypeList();
         for(var accountType in arguments.accountTypeList){
             if(!listFindNoCase(fullAccountTypeList,accountType)){
                 return false;
