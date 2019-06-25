@@ -71,6 +71,7 @@ class SWActionCallerController{
             this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
         }
 
+
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = this.utilityService.isAngularRoute();

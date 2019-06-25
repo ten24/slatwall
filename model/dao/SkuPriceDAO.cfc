@@ -56,21 +56,35 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.currencyCode = :currencyCode AND sp.promotionReward is null", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 	}
 	
-	public function getPromotionRewardSkuPriceForSkuByCurrencyCode( required string skuID, required string promotionRewardID, required string currencyCode, priceGroups=getHibachiScope().getAccount().getPriceGroups() ){
-		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode AND sp.promotionReward.promotionRewardID = :promotionRewardID";
+	public function getPromotionRewardSkuPriceForSkuByCurrencyCode( required string skuID, required string promotionRewardID, required string currencyCode, numeric quantity, priceGroups=getHibachiScope().getAccount().getPriceGroups() ){
+		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND currencyCode = :currencyCode AND sp.promotionReward.promotionRewardID = :promotionRewardID";
+		var params = { 
+			skuID=arguments.skuID, 
+			currencyCode=arguments.currencyCode, 
+			promotionRewardID=arguments.promotionRewardID 
+		};
 		
+		if(structKeyExists(arguments,'quantity')){
+			hql &= ' AND (sp.minQuantity <= :quantity OR sp.minQuantity is null) AND (sp.maxQuantity >= :quantity OR sp.maxQuantity is null)';
+			params['quantity'] = arguments.quantity;
+		}else{
+			hql &= ' AND sp.minQuantity is null AND sp.maxQuantity is null';
+		}
 		if(arraylen(arguments.priceGroups)){
 			var priceGroupIDs = "";
 			for(var priceGroup in arguments.priceGroups){
 				priceGroupIDs = listAppend(priceGroupIDs,priceGroup.getPriceGroupID());
 			}
 			//get the best price
-			hql &= ' AND sp.priceGroup.priceGroupID IN (:priceGroupIDs) ORDER BY sp.price ASC';
-			return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode, promotionRewardID=arguments.promotionRewardID, priceGroupIDs=priceGroupIDs }, true,{maxresults=1} );
+			hql &= ' AND sp.priceGroup.priceGroupID IN (:priceGroupIDs)';
+			params['priceGroupIDs'] = priceGroupIDs;
 		}else{
 			hql &= ' AND sp.priceGroup is NULL';
-			return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode, promotionRewardID=arguments.promotionRewardID }, true );
 		}
+		hql &= ' ORDER BY sp.price ASC';
+
+		return ormExecuteQuery( hql, params, true, {maxresults=1});
+
 	}
 
 	public function getBaseSkuPricesForSku (required string skuID){
