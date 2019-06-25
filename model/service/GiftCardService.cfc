@@ -149,7 +149,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount(), arguments.processObject.getOrderPayment(),arguments.processObject.getAllowNegativeBalanceFlag());
 	
 		if(!isNull(arguments.processObject.getReasonForAdjustment())){
-			giftCardCreditTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
+			giftCardDebitTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
 		}
 		
 		if(!giftCardDebitTransaction.hasErrors()){

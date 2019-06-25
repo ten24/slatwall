@@ -1835,6 +1835,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().save( arguments.permissionGroup );
 			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
 			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
+			//clears cache keys on the permissiongroup Object
+			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
 		}
 
 		return arguments.permissionGroup;
