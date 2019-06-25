@@ -88,17 +88,14 @@ class SWEntityActionBarController{
         this.swProcessCallers = this.processCallers;
         
         if(this.editEvent != null){
-            this.editAction = '';
             this.observerService.attach(this.toggleEditMode, this.editEvent);
         }
         
         if(this.cancelEvent != null){
-            this.cancelAction = '';
             this.observerService.attach(this.toggleEditMode, this.cancelEvent); 
         }
         
         if(this.saveEvent != null){
-            this.saveAction = '';
             this.observerService.attach(this.toggleEditMode, this.saveEvent); 
         }
         

@@ -57,11 +57,11 @@
 <cfset rc.processCallers = [
 	{
 		'action':'admin:entity.processOrderTemplate',
-		'processContext':'activate',
+		'processContext':'activate'
 	},	
 	{
 		'action':'admin:entity.processOrderTemplate',
-		'processContext':'createAndPlaceOrder',
+		'processContext':'createAndPlaceOrder'
 	},	
 	{
 		'action':'admin:entity.preProcessOrderTemplate',
@@ -78,8 +78,11 @@
 							  data-messages="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(request.context.messages))#"
 							  data-entity-action-details="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.entityActionDetails))#" 
 							  data-page-title="#rc.orderTemplate.getSimpleRepresentation()#" 
+							  data-cancel-action="saveOrderTemplate" 
 							  data-cancel-event="cancelEditOrderTemplate"
+							  data-save-action="saveOrderTemplate" 
 							  data-save-event="saveOrderTemplate"
+							  data-edit-action="editOrderTemplate"
 							  data-edit-event="editOrderTemplate"
 							  data-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.processCallers))#"
 							  data-type="detail" 
@@ -138,6 +141,7 @@
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic.orderTemplate')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/ordertemplateitems" open="true" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/promotions" open="false" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/giftcard" open="false" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/orderhistory" open="false" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>

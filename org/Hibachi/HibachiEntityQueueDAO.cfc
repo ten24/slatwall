@@ -87,7 +87,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		sql &= "'#accountID#' as modifiedByAccountID ";
 
 		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
-		sql &= "WHERE #primaryIDPropertyName# in (:primaryIDList)"
+		sql &= "WHERE #primaryIDPropertyName# in (:primaryIDList)";
 
 		if(arguments.unique){
 			sql &= " AND #primaryIDPropertyName# not in (";
@@ -103,7 +103,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
 		var queryService = new query();
-		var sql = "INSERT INTO SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime);
 			VALUES ('#createHibachiUUID()#','#arguments.entityQueueType#','#arguments.entityName#','#arguments.entityID#',:createdDateTime,'#getHibachiScope().getAccount().getAccountID()#',
 				'#getHibachiScope().getAccount().getAccountID()#',:modifiedDatetime
 			)

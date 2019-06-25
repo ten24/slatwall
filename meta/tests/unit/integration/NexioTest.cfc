@@ -36,12 +36,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var values = {
 			selectedMerchant = '100161',
-            currencyCode = 'USD',
+            currencyCode = 'PLN',
 			testMode = true,
 			amount = 20.00,
 			expMonth = '03',
 			expYear = '20',
-			cvn = '111', // 222 to invoke Failure
+			cvn = '222', // 222 to invoke "Failure", 111 to invoke "Success"
 			cardNumber = cards[1],
 			transactionType = transactionTypes[1],
 			providerToken = '', // token_ex
@@ -70,10 +70,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setLastName("Hatcher");
 		address.setStreetAddress("16112 Cherrywood St.");
 		address.setStreet2Address("");
-		address.setCity("Omaha");
-		address.setStateCode("NE");
-		address.setPostalCode("56649"); //"49802" for AVS failure OR "56649" for AVS valid
-		address.setCountryCode("US");
+		address.setCity("WARSZAWA");
+		address.setStateCode("");
+		address.setPostalCode("49802"); //"49802" for AVS failure OR "56649" for AVS valid
+		address.setCountryCode("PL");
 		payment.setNameOnCreditCard(account.getFullName());
 		payment.setCreditCardNumber(values.cardNumber);
 		payment.setSecurityCode(values.cvn);

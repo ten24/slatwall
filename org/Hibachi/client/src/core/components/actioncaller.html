@@ -1,5 +1,5 @@
 <!-- Link Not Modal -->
-<a  ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'link'"
+<a  ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'link' && swActionCaller.actionAuthenticated"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	target="_self" 
@@ -12,7 +12,7 @@
 </a>
 
 <!-- Link Modal -->
-<a  ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'link'"
+<a  ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'link' && swActionCaller.actionAuthenticated"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}} modalload" 
 	target="_self" 
@@ -26,7 +26,8 @@
 	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>
 
-<a  ng-if="swActionCaller.display && swActionCaller.type === 'ajaxlink'"
+
+<a  ng-if="swActionCaller.display && swActionCaller.type === 'ajaxlink' && swActionCaller.actionAuthenticated"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	data-disabled="{{swActionCaller.disabledtext}}"
@@ -46,7 +47,8 @@
 </a>
 
 <!-- List Not Modal -->
-<li ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'list'">
+
+<li ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'list' && swActionCaller.actionAuthenticated">
 	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}}" 
 		target="_self" 
@@ -57,7 +59,7 @@
 </li>
 
 <!-- List Modal -->
-<li ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'list'">
+<li ng-if="swActionCaller.display && swActionCaller.modal && swActionCaller.type === 'list' && swActionCaller.actionAuthenticated">
 	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}} modalload" 
 		target="_self"
@@ -75,7 +77,7 @@
 	<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
 	<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif><cfif swActionCaller.submit>type="submit"</cfif><cfif len(swActionCaller.id)>id="#swActionCaller.id#"</cfif>>
 	-->
-<button ng-if="swActionCaller.display && swActionCaller.type ==='button'" 
+<button ng-if="swActionCaller.display && swActionCaller.type ==='button' && swActionCaller.actionAuthenticated" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-attr-title="{{swActionCaller.title}}"
 	ng-click="swActionCaller.submit()"

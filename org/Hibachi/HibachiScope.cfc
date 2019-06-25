@@ -434,8 +434,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return rbKey(argumentcollection=arguments);
 	}
 
-	public boolean function authenticateAction( required string action ) {
-		return getHibachiAuthenticationService().authenticateActionByAccount( action=arguments.action, account=getAccount() );
+	public boolean function authenticateAction( required string action,string processContext="" ) {
+		return getHibachiAuthenticationService().authenticateActionByAccount( action=arguments.action, account=getAccount(), processContext=arguments.processContext );
 	}
 
 	public boolean function authenticateEntity( required string crudType, required string entityName ) {

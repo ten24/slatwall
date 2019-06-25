@@ -995,6 +995,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public string function getOrmTypeByPropertyIdentifier(required string propertyIdentifier){
+		if(arguments.propertyIdentifier == 'id'){
+			return 'string';
+		}
 		if(!isNull(getCollectionEntityObject())){
 			return getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
 		}
@@ -2217,7 +2220,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private void function applyPermissionRecordRestrictions(){
 
 		var excludedEntities = 'Session,PermissionGroup,Permission';
-
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
@@ -2866,6 +2868,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getPredicate(required any filter){
+
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
 			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
@@ -3403,7 +3406,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function getDisableAveragesAndSumsFlag(){
 		//hack should be driven by frontend
 		if(getCollectionObject()=='SkuPrice'){
-			return true
+			return true;
 		}
 		
 		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
@@ -3426,6 +3429,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				arrayAppend(variables.totalAvgAggregates,column);
 			}
 		}
+
 
 	}
 

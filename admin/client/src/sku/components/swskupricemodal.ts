@@ -5,8 +5,10 @@ var swSkuPriceModalHTML = require("html-loader!sku/components/skupricemodal");
 class SWSkuPriceModalController{
     
     public productId:string;
+    public promotionRewardId:string;
     public pageRecord:any; 
     public sku:any;
+    public promotionReward:any;
     public skuOptions:any;
     public submittedSku:any;
     public selectedSku:any;
@@ -46,17 +48,26 @@ class SWSkuPriceModalController{
         public observerService, 
         public skuPriceService,
         public utilityService,
+        public collectionConfigService,
         public scopeService,
-        public $scope
+        public $scope,
+        public $timeout,
+        public requestService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
         this.formName = "skuPriceForm" + this.utilityService.createID(16);
-        this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        if(angular.isDefined(this.productId)){
+            this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        } else if (angular.isDefined(this.promotionRewardId)){
+            var collectionConfigStruct = angular.fromJson(this.skuCollectionConfig);
+            $timeout(()=>{
+                this.skuCollectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(collectionConfigStruct);
+            });
+        }
         //hack for listing hardcodeing id
         this.listingID = 'pricingListing';
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
         this.observerService.attach(this.inlineSave, "SAVE_SKUPRICE");
-        
     }
     
     
@@ -73,11 +84,44 @@ class SWSkuPriceModalController{
     
      public inlineSave = (pageRecord:any) =>{
         this.initData(pageRecord);
-        this.skuPrice.$$save();
+        
+        var formDataToPost:any = {
+			entityName: 'SkuPrice',
+			entityID : pageRecord['skuPriceID'],
+			context: 'save',
+			propertyIdentifiersList: ''
+		};
+		
+		for(var key in pageRecord){
+        if(key.indexOf("$") > -1 || key.indexOf("skuPriceID") > -1){
+		        continue;
+		    } else if(key.indexOf("_") > -1){
+		        if(key.indexOf("ID") == -1){
+		            continue;
+		        }
+		        var property = key.split("_");
+		        formDataToPost[property[0]] = { };
+		        formDataToPost[property[0]][property[1]] = pageRecord[key];
+		          
+		    } else {
+		        formDataToPost[key] = pageRecord[key];
+		    }
+		}
+		
+		
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		return adminRequest.promise.then(
+		    (response)=>{
+		        this.listingService.notifyListingPageRecordsUpdate(this.listingID);
+		    });
     }
 
     public initData (pageRecord?:any) {
         this.pageRecord = pageRecord;
+        
         if(pageRecord){
            let skuPriceData = {
                 skuPriceID : pageRecord.skuPriceID,
@@ -91,6 +135,10 @@ class SWSkuPriceModalController{
                 skuID : pageRecord["sku_skuID"],
                 skuCode : pageRecord["sku_skuCode"],
                 calculatedSkuDefinition : pageRecord["sku_calculatedSkuDefinition"]
+            }
+            
+            let promotionRewardData = {
+                promotionRewardID : pageRecord['promotionRewardID']
             }
             
             let priceGroupData = {
@@ -112,6 +160,14 @@ class SWSkuPriceModalController{
             this.sku = this.$hibachi.populateEntity('Sku', skuData);
             if(skuForms){
                 this.skuPrice.forms=skuForms;
+            }
+            
+            if(this.promotionReward){
+                var promotionRewardForms = this.promotionReward.forms;
+            }
+            this.promotionReward = this.$hibachi.populateEntity('PromotionReward', promotionRewardData);
+            if(promotionRewardForms){
+                this.promotionReward.forms=promotionRewardForms;
             }
             
             if(this.priceGroup){
@@ -163,6 +219,7 @@ class SWSkuPriceModalController{
             
             this.skuPrice.$$setPriceGroup(this.priceGroup);
             this.skuPrice.$$setSku(this.sku);
+            this.skuPrice.$$setPromotionReward(this.promotionReward);
             
         } else {
             //reference to form is being wiped
@@ -173,6 +230,19 @@ class SWSkuPriceModalController{
             if(skuPriceForms){
                 this.skuPrice.forms=skuPriceForms;
             }
+            
+            if(this.promotionRewardId){
+                if(this.promotionReward){
+                    var promotionRewardForms = this.promotionReward.forms;
+                }
+                this.promotionReward = this.$hibachi.populateEntity('PromotionReward', {promotionRewardID : this.promotionRewardId});
+                if(promotionRewardForms){
+                    this.promotionReward.forms=promotionRewardForms;
+                }
+                this.skuPrice.$$setPromotionReward(this.promotionReward);
+            }
+            
+            
             
             this.skuPriceService.getSkuOptions(this.productId).then(
                 (response)=>{
@@ -240,8 +310,8 @@ class SWSkuPriceModalController{
             if( (this.skuPrice.sku.currencyCode == this.skuPrice.currencyCode) &&
                 !this.skuPrice.minQuantity.trim() &&
                 !this.skuPrice.maxQuantity.trim() &&
-                !this.skuPrice.priceGroup.priceGroupID.trim() &&
-                this.skuPrice.price.trim()){
+                (!this.skuPrice.priceGroup.priceGroupID || !this.skuPrice.priceGroup.priceGroupID.trim()) &&
+                this.skuPrice.price){
                 
                 return true;
             }
@@ -312,12 +382,14 @@ class SWSkuPriceModal implements ng.IDirective{
         sku:"=?",
         pageRecord:"=?",
         productId:"@?",
+        promotionRewardId:"@?",
         minQuantity:"@?",
         maxQuantity:"@?",
         priceGroupId:"@?",
         currencyCode:"@?",
         eligibleCurrencyCodeList:"@?",
         defaultCurrencyOnly:"=?",
+        skuCollectionConfig:"@?",
         disableAllFieldsButPrice:"=?"
     };
     public controller = SWSkuPriceModalController;

@@ -60,15 +60,20 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="ownerFirstName";
 	property name="ownerLastName";
 	property name="ownerEmailAddress";
-	property name="creditGiftCardFlag";
+	property name="creditGiftCardFlag" type="boolean";
+	property name="sku" cfc="Sku";
 
 	//Overridden Getters
 	public string function getGiftCardCode(){
 		if(!isNull(getOriginalOrderItem()) && !isNull(getOriginalOrderItem().getSku()) && getOriginalOrderItem().getSku().getGiftCardAutoGenerateCodeFlag()){
 			return getService("hibachiUtilityService").generateRandomID(getOriginalOrderItem().getSku().setting('skuGiftCardCodeLength'));
-		} else {
+		} else if(!structKeyExists(variables, 'giftCardCode')) {
+			return getService("hibachiUtilityService").generateRandomID(getService('settingService').getSettingValue('skuGiftCardCodeLength'));
+		} else { 
 			return variables.giftCardCode;
 		}
+		
+		return variables.giftCardCode;
 	}
 
 	public string function getGiftCardPin(){
@@ -82,4 +87,27 @@ component output="false" accessors="true" extends="HibachiProcess"{
 		return this.getGiftCardExpirationTerm().getEndDate();
 	}
 
+	public string function getOwnerFirstName(){
+		if(!isNull(getOwnerAccount())){
+			return getOwnerAccount().getFirstName(); 
+		} else {
+			return variables.ownerFirstName;
+		} 
+	} 
+
+	public string function getOwnerLastName(){
+		if(!isNull(getOwnerAccount())){
+			return getOwnerAccount().getLastName(); 
+		} else {
+			return variables.ownerLastName;
+		} 
+	}
+
+	public string function getOwnerEmailAddress(){
+		if(!isNull(getOwnerAccount())){
+			return getOwnerAccount().getEmailAddress(); 
+		} else {
+			return variables.ownerEmailAddress;
+		} 
+	}
 }

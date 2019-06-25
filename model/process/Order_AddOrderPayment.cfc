@@ -63,6 +63,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 	property name="orderTypeCode" hb_rbKey="entity.order.orderType";
 	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
+	property name="amount" hb_populateEnabled="public" hb_formatType="currency";
 
 	// Data Properties (Inputs)
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";

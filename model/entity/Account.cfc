@@ -180,13 +180,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="nextRenewDate" ormtype="string";
  property name="lastStatusDate" ormtype="string";
  property name="pickupCenter" ormtype="string";
- property name="oldDtxName1" ormtype="string";
- property name="oldDtxName2" ormtype="string";
- property name="oldDtxName3" ormtype="string";
- property name="oldDtxName4" ormtype="string";
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
- property name="commStatusUser" ormtype="string";//CUSTOM PROPERTIES END
+ property name="commStatusUser" ormtype="string";
+ property name="accountNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -370,6 +367,46 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		giftCardSmartList.addFilter("ownerAccount.AccountID", this.getAccountID());
 
 		return giftCardSmartList;
+	}
+
+	public any function getGiftCardOptions() {
+		if(!structKeyExists(variables, "giftCardOptions")) {
+			var giftCardOptions = this.getActiveGiftCardCollectionList().getRecords();
+			var options = []; 
+			for(var giftCardOption in giftCardOptions){
+				
+				var balance = 0;
+				if(isNumeric(giftCardOption['calculatedBalanceAmount'])){
+					balance = giftCardOption['calculatedBalanceAmount'];  
+				}
+
+				var simpleRepresentation = getService('HibachiUtilityService').formatValue_currency(balance,giftCardOption); 
+				simpleRepresentation &= ' - ' & giftCardOption['ownerFirstName'] & ' ' & giftCardOption['ownerLastName']; 
+				var optionToAdd = {
+					'name': simpleRepresentation,
+					'calculatedBalanceAmount': balance,
+					'value': giftCardOption['giftCardID']
+				};
+				arrayAppend(options, optionToAdd); 
+			}
+			arrayPrepend(options, {'name': '-- #rbKey('entity.giftCard.option.select')#','value':''});
+ 
+			variables.giftCardOptions = options;  
+		} 
+		return variables.giftCardOptions;  
+	} 
+	
+	public any function getActiveGiftCardCollectionList() {
+		if(!structKeyExists(variables, "activeGiftCardCollectionList")) {
+			var giftCardCollection = getService('GiftCardService').getGiftCardCollectionList(); 
+			giftCardCollection.addFilter("ownerAccount.AccountID", this.getAccountID());
+			giftCardCollection.addFilter('activeFlag', true); 
+			giftCardCollection.addOrderBy('calculatedBalanceAmount|DESC'); 		
+
+			variables.activeGiftCardCollectionList = giftCardCollection;
+
+		} 
+		return variables.activeGiftCardCollectionList;  
 	}
 
 	public any function getOrdersPlacedCollectionList() {

@@ -4917,7 +4917,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(824)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(827)(module)))
 
 /***/ }),
 /* 2 */
@@ -6208,36 +6208,37 @@ exports.MulticastOperator = MulticastOperator;
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var hibachiinterceptor_1 = __webpack_require__(724);
+var hibachiinterceptor_1 = __webpack_require__(725);
 //constant
-var hibachipathbuilder_1 = __webpack_require__(725);
+var hibachipathbuilder_1 = __webpack_require__(726);
 //services
 var cacheservice_1 = __webpack_require__(717);
-var publicservice_1 = __webpack_require__(736);
+var publicservice_1 = __webpack_require__(737);
 var accountservice_1 = __webpack_require__(716);
 var accountaddressservice_1 = __webpack_require__(715);
 var cartservice_1 = __webpack_require__(718);
 var draggableservice_1 = __webpack_require__(719);
-var utilityservice_1 = __webpack_require__(743);
-var selectionservice_1 = __webpack_require__(740);
-var observerservice_1 = __webpack_require__(733);
-var orderservice_1 = __webpack_require__(735);
-var orderpaymentservice_1 = __webpack_require__(734);
+var utilityservice_1 = __webpack_require__(744);
+var selectionservice_1 = __webpack_require__(741);
+var observerservice_1 = __webpack_require__(734);
+var orderservice_1 = __webpack_require__(736);
+var orderpaymentservice_1 = __webpack_require__(735);
 var formservice_1 = __webpack_require__(723);
 var filterservice_1 = __webpack_require__(722);
 var expandableservice_1 = __webpack_require__(721);
-var metadataservice_1 = __webpack_require__(732);
-var rbkeyservice_1 = __webpack_require__(737);
-var typeaheadservice_1 = __webpack_require__(742);
-var hibachiservice_1 = __webpack_require__(727);
-var historyservice_1 = __webpack_require__(730);
-var localstorageservice_1 = __webpack_require__(731);
-var hibachiservicedecorator_1 = __webpack_require__(728);
-var hibachiscope_1 = __webpack_require__(726);
-var requestservice_1 = __webpack_require__(738);
-var scopeservice_1 = __webpack_require__(739);
-var skuservice_1 = __webpack_require__(741);
-var hibachivalidationservice_1 = __webpack_require__(729);
+var hibachiauthenticationservice_1 = __webpack_require__(724);
+var metadataservice_1 = __webpack_require__(733);
+var rbkeyservice_1 = __webpack_require__(738);
+var typeaheadservice_1 = __webpack_require__(743);
+var hibachiservice_1 = __webpack_require__(728);
+var historyservice_1 = __webpack_require__(731);
+var localstorageservice_1 = __webpack_require__(732);
+var hibachiservicedecorator_1 = __webpack_require__(729);
+var hibachiscope_1 = __webpack_require__(727);
+var requestservice_1 = __webpack_require__(739);
+var scopeservice_1 = __webpack_require__(740);
+var skuservice_1 = __webpack_require__(742);
+var hibachivalidationservice_1 = __webpack_require__(730);
 var entityservice_1 = __webpack_require__(720);
 //controllers
 var globalsearch_1 = __webpack_require__(694);
@@ -6412,6 +6413,7 @@ var coremodule = angular.module('hibachi.core', [
     .service('typeaheadService', typeaheadservice_1.TypeaheadService)
     .provider('$hibachi', hibachiservice_1.$Hibachi)
     .decorator('$hibachi', hibachiservicedecorator_1.HibachiServiceDecorator)
+    .service('hibachiAuthenticationService', hibachiauthenticationservice_1.HibachiAuthenticationService)
     .service('hibachiInterceptor', hibachiinterceptor_1.HibachiInterceptor.Factory())
     .service('hibachiScope', hibachiscope_1.HibachiScope)
     .service('scopeService', scopeservice_1.ScopeService)
@@ -6476,7 +6478,7 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swExportAction', swexportaction_1.SWExportAction.Factory())
     .directive('swHref', swhref_1.SWHref.Factory())
     .directive('swProcessCaller', swprocesscaller_1.SWProcessCaller.Factory())
-    .directive('sw:sortable', swsortable_1.SWSortable.Factory())
+    .directive('swSortable', swsortable_1.SWSortable.Factory())
     .directive('swOrderByControls', sworderbycontrols_1.SWOrderByControls.Factory());
 exports.coremodule = coremodule;
 
@@ -32112,9 +32114,9 @@ exports.IStore = IStore;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
-var dialogservice_1 = __webpack_require__(745);
+var dialogservice_1 = __webpack_require__(746);
 //controllers
-var pagedialog_1 = __webpack_require__(744);
+var pagedialog_1 = __webpack_require__(745);
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -32465,8 +32467,8 @@ var __extends = (this && this.__extends) || (function () {
 /// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
 var basebootstrap_1 = __webpack_require__(615);
-var hibachi_module_1 = __webpack_require__(769);
-var logger_module_1 = __webpack_require__(787);
+var hibachi_module_1 = __webpack_require__(772);
+var logger_module_1 = __webpack_require__(790);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -64105,6 +64107,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -64116,7 +64119,6 @@ var CollectionConfig = /** @class */ (function () {
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -65154,7 +65156,7 @@ exports.CollectionService = CollectionService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWActionCallerController = /** @class */ (function () {
     //@ngInject
-    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiPathBuilder) {
+    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, observerService, $hibachi, rbkeyService, hibachiAuthenticationService, hibachiPathBuilder) {
         var _this = this;
         this.$scope = $scope;
         this.$element = $element;
@@ -65166,8 +65168,9 @@ var SWActionCallerController = /** @class */ (function () {
         this.observerService = observerService;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
-        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$onInit = function () {
+            _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
                 _this.isAngularRoute = _this.utilityService.isAngularRoute();
@@ -65180,6 +65183,9 @@ var SWActionCallerController = /** @class */ (function () {
             }
             else {
                 _this.actionUrl = '#!/entity/' + _this.action + '/' + _this.queryString.split('=')[1];
+            }
+            if (angular.isUndefined(_this.display)) {
+                _this.display = true;
             }
             _this.type = _this.type || 'link';
             if (angular.isDefined(_this.titleRbKey)) {
@@ -65355,13 +65361,24 @@ var SWActionCallerController = /** @class */ (function () {
             }
             return "";
         };
+        this.$scope = $scope;
+        this.$element = $element;
+        this.$timeout = $timeout;
+        this.$templateRequest = $templateRequest;
+        this.$compile = $compile;
+        this.rbkeyService = rbkeyService;
+        this.$hibachi = $hibachi;
+        this.utilityService = utilityService;
+        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
             var template = angular.element(html);
-            _this.$element.parent().append(template);
+            _this.$element.parent().prepend(template);
             $compile(template)($scope);
             //need to perform init after promise completes
             //this.init();
         });
+        this.authenticateActionByAccount = this.hibachiAuthenticationService.autheticateActionByAccount;
     }
     return SWActionCallerController;
 }());
@@ -65375,6 +65392,7 @@ var SWActionCaller = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             action: "@?",
+            display: "=?",
             event: "@?",
             payload: "=",
             text: "@",
@@ -66516,15 +66534,70 @@ exports.SWDraggableContainer = SWDraggableContainer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWEntityActionBarController = /** @class */ (function () {
     //@ngInject
-    function SWEntityActionBarController(rbkeyService) {
+    function SWEntityActionBarController(observerService, rbkeyService) {
         var _this = this;
+        this.observerService = observerService;
         this.rbkeyService = rbkeyService;
-        this.init = function () {
+        this.$onInit = function () {
+            if (_this.edit == null) {
+                _this.edit = false;
+            }
             if (angular.isDefined(_this.pageTitleRbKey)) {
                 _this.pageTitle = _this.rbkeyService.getRBKey(_this.pageTitleRbKey);
             }
+            if (_this.entityActionDetails != null) {
+                _this.backAction = _this.entityActionDetails.backAction;
+                _this.cancelAction = _this.entityActionDetails.cancelAction;
+                _this.deleteAction = _this.entityActionDetails.deleteAction;
+                _this.editAction = _this.entityActionDetails.editAction;
+                _this.saveAction = _this.entityActionDetails.saveAction;
+            }
+            _this.cancelQueryString = _this.cancelQueryString || '';
+            _this.deleteQueryString = _this.deleteQueryString || '';
+            _this.editQueryString = _this.editQueryString || '';
+            _this.saveQueryString = _this.saveQueryString || '';
+            if (_this.baseQueryString != null) {
+                _this.cancelQueryString = _this.baseQueryString + _this.cancelQueryString;
+                _this.editQueryString = _this.baseQueryString + _this.editQueryString;
+                _this.deleteQueryString = _this.baseQueryString + _this.deleteQueryString;
+                _this.saveQueryString = _this.baseQueryString + _this.saveQueryString;
+                if (_this.processCallers != null) {
+                    for (var i = 0; i < _this.processCallers.length; i++) {
+                        if (_this.processCallers[i].queryString != null) {
+                            _this.processCallers[i].queryString = _this.baseQueryString + _this.processCallers[i].queryString;
+                        }
+                        else {
+                            _this.processCallers[i].queryString = _this.baseQueryString;
+                        }
+                    }
+                }
+            }
+            _this.swProcessCallers = _this.processCallers;
+            if (_this.editEvent != null) {
+                _this.editAction = '';
+                _this.observerService.attach(_this.toggleEditMode, _this.editEvent);
+            }
+            if (_this.cancelEvent != null) {
+                _this.cancelAction = '';
+                _this.observerService.attach(_this.toggleEditMode, _this.cancelEvent);
+            }
+            if (_this.saveEvent != null) {
+                _this.saveAction = '';
+                _this.observerService.attach(_this.toggleEditMode, _this.saveEvent);
+            }
+            _this.payload = {
+                'edit': _this.edit
+            };
+            //there should only be one action bar on a page so no id
+            _this.observerService.notify('swEntityActionBar', _this.payload);
         };
-        this.init();
+        this.toggleEditMode = function () {
+            _this.edit = !_this.edit;
+            _this.payload = {
+                'edit': _this.edit
+            };
+            _this.observerService.notify('swEntityActionBar', _this.payload);
+        };
     }
     return SWEntityActionBarController;
 }());
@@ -66542,24 +66615,39 @@ var SWEntityActionBar = /** @class */ (function () {
             pageTitle: "@?",
             pageTitleRbKey: "@?",
             edit: "=",
+            entityActionDetails: "<?",
+            baseQueryString: "@?",
+            messages: "<?",
             /*Action Callers (top buttons)*/
-            showcancel: "=",
-            showcreate: "=",
-            showedit: "=",
-            showdelete: "=",
+            showCancel: "=",
+            showCreate: "=",
+            showEdit: "=",
+            showDelete: "=",
             /*Basic Action Caller Overrides*/
+            createEvent: "@?",
             createModal: "=",
-            createAction: "=",
-            createQueryString: "=",
-            backAction: "=",
-            backQueryString: "=",
-            cancelAction: "=",
-            cancelQueryString: "=",
-            deleteAction: "=",
-            deleteQueryString: "=",
+            createAction: "@",
+            createQueryString: "@",
+            backEvent: "@?",
+            backAction: "@?",
+            backQueryString: "@?",
+            cancelEvent: "@?",
+            cancelAction: "@?",
+            cancelQueryString: "@?",
+            deleteEvent: "@?",
+            deleteAction: "@?",
+            deleteQueryString: "@?",
+            editEvent: "@?",
+            editAction: "@?",
+            editQueryString: "@?",
+            saveEvent: "@?",
+            saveAction: "@?",
+            saveQueryString: "@?",
             /*Process Specific Values*/
-            processAction: "=",
-            processContext: "="
+            processEvent: "@?",
+            processAction: "@?",
+            processContext: "@?",
+            processCallers: "<?"
         };
         this.controller = SWEntityActionBarController;
         this.controllerAs = "swEntityActionBar";
@@ -67568,7 +67656,6 @@ var SWOrderByControlsController = /** @class */ (function () {
 }());
 exports.SWOrderByControlsController = SWOrderByControlsController;
 var SWOrderByControls = /** @class */ (function () {
-    // @ngInject
     function SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) {
         var _this = this;
         this.$compile = $compile;
@@ -67612,6 +67699,7 @@ var SWOrderByControls = /** @class */ (function () {
         };
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "orderbycontrols.html";
     }
+    // @ngInject
     SWOrderByControls.Factory = function () {
         var directive = function ($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) { return new SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder); };
         directive.$inject = ["$compile", "scopeService", "listingService", "corePartialsPath",
@@ -67643,15 +67731,8 @@ var SWProcessCallerController = /** @class */ (function () {
         this.$scope = $scope;
         this.$element = $element;
         this.$transclude = $transclude;
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.corePartialsPath = corePartialsPath;
-        this.utilityService = utilityService;
         this.type = this.type || 'link';
         this.queryString = this.queryString || '';
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$transclude = this.$transclude;
         this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath) + "processcaller.html").then(function (html) {
             var template = angular.element(html);
             _this.$element.parent().append(template);
@@ -67659,6 +67740,10 @@ var SWProcessCallerController = /** @class */ (function () {
         });
         if (angular.isDefined(this.titleRbKey)) {
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+        }
+        if (angular.isUndefined(this.title) && angular.isDefined(this.processContext)) {
+            var entityName = this.action.split('.')[1].replace('process', '');
+            this.title = this.rbkeyService.getRBKey('entity.' + entityName + '.process.' + this.processContext);
         }
         if (angular.isUndefined(this.text)) {
             this.text = this.title;
@@ -68302,7 +68387,6 @@ var SWTypeaheadInputFieldController = /** @class */ (function () {
         this.$rootScope = $rootScope;
         this.observerService = observerService;
         this.columns = [];
-        this.filters = [];
         this.addFunction = function (value) {
             _this.typeaheadService.typeaheadStore.dispatch({
                 "type": "TYPEAHEAD_USER_SELECTION",
@@ -68370,6 +68454,7 @@ var SWTypeaheadInputField = /** @class */ (function () {
             fieldName: "@",
             entityName: "@",
             typeaheadCollectionConfig: "=?",
+            filters: "=?",
             propertiesToLoad: "@?",
             placeholderRbKey: "@?",
             propertyToShow: "@",
@@ -70444,9 +70529,432 @@ exports.FormService = FormService;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var HibachiAuthenticationService = /** @class */ (function () {
+    //@ngInject
+    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector, utilityService) {
+        var _this = this;
+        this.$rootScope = $rootScope;
+        this.$q = $q;
+        this.appConfig = appConfig;
+        this.$injector = $injector;
+        this.utilityService = utilityService;
+        this.isSuperUser = function () {
+            return _this.$rootScope.slatwall.role == 'superUser';
+        };
+        this.authenticateActionByAccount = function (action, processContext) {
+            var authDetails = _this.getActionAuthenticationDetailsByAccount(action, processContext);
+            return authDetails.authorizedFlag;
+        };
+        this.getActionAuthenticationDetailsByAccount = function (action, processContext) {
+            var authDetails = {
+                authorizedFlag: false,
+                superUserAccessFlag: false,
+                anyLoginAccessFlag: false,
+                anyAdminAccessFlag: false,
+                publicAccessFlag: false,
+                entityPermissionAccessFlag: false,
+                actionPermissionAccessFlag: false,
+                forbidden: false,
+                invalidToken: false,
+                timeout: false
+            };
+            if (_this.isSuperUser()) {
+                authDetails.authorizedFlag = true;
+                authDetails.superUserAccessFlag = true;
+                return authDetails;
+            }
+            var subsystemName = action.split(':')[0];
+            var sectionName = action.split(':')[1].split('.')[0];
+            if (action.split('.').length > 1) {
+                var itemName = action.split('.')[1];
+            }
+            else {
+                var itemName = 'default';
+            }
+            if ((_this.utilityService.left(itemName, 10) == 'preprocess' || _this.utilityService.left(itemName, 7) == 'process')
+                && processContext
+                && processContext.length) {
+                itemName += '_processContext';
+            }
+            var actionPermissions = _this.getActionPermissionDetails();
+            if (!actionPermissions) {
+                return false;
+            }
+            // Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
+            if (!actionPermissions[subsystemName]
+                || !actionPermissions[subsystemName].hasSecureMethods
+                || !actionPermissions[subsystemName].sections[sectionName]) {
+                authDetails.authorizedFlag = true;
+                authDetails.publicAccessFlag = true;
+                return authDetails;
+            }
+            // Check if the action is public, if public no need to worry about security
+            if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].publicMethods, itemName) != -1) {
+                authDetails.authorizedFlag = true;
+                authDetails.publicAccessFlag = true;
+                return authDetails;
+            }
+            // All these potentials require the account to be logged in, and that it matches the hibachiScope
+            if (_this.$rootScope.slatwall.account
+                && _this.$rootScope.slatwall.account.accountID
+                && _this.$rootScope.slatwall.account.accountID.length) {
+                // Check if the action is anyLogin, if so and the user is logged in, then we can return true
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].anyLoginMethods, itemName) != -1) {
+                    authDetails.authorizedFlag = true;
+                    authDetails.anyLoginAccessFlag = true;
+                    return authDetails;
+                }
+                // Look for the anyAdmin methods next to see if this is an anyAdmin method, and this user is some type of admin
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].anyAdminMethods, itemName) != -1) {
+                    authDetails.authorizedFlag = true;
+                    authDetails.anyAdminAccessFlag = true;
+                    return authDetails;
+                }
+                // Check to see if this is a defined secure method, and if so we can test it against the account
+                if (_this.utilityService.listFindNoCase(actionPermissions[subsystemName].sections[sectionName].secureMethods, itemName) != -1) {
+                    var pgOK = false;
+                    if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                        var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                        if (accountPermissionGroups) {
+                            for (var p in accountPermissionGroups) {
+                                pgOK = _this.authenticateSubsystemSectionItemActionByPermissionGroup(subsystemName, sectionName, itemName, accountPermissionGroups[p]);
+                                if (pgOK) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (pgOK) {
+                        authDetails.authorizedFlag = true;
+                        authDetails.actionPermissionAccessFlag = true;
+                    }
+                    return authDetails;
+                }
+                //start line130
+                // For process / preprocess strip out process context from item name		
+                if (itemName.split('_').length > 1) {
+                    itemName = itemName.split('_')[0];
+                }
+                // Check to see if the controller is an entity, and then verify against the entity itself
+                if (_this.getActionPermissionDetails()[subsystemName].sections[sectionName].entityController) {
+                    if (_this.utilityService.left(itemName, 6) == "create") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 6) == "detail") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("read", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 6) == "delete") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("delete", _this.utilityService.right(itemName, itemName.length - 6));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "edit") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("update", _this.utilityService.right(itemName, itemName.length - 4));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "list") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("read", _this.utilityService.right(itemName, itemName.length - 4));
+                    }
+                    else if (_this.utilityService.left(itemName, 10) == "reportlist") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("report", _this.utilityService.right(itemName, itemName.length - 10));
+                    }
+                    else if (_this.utilityService.left(itemName, 15) == "multiPreProcess") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 15));
+                    }
+                    else if (_this.utilityService.left(itemName, 12) == "multiProcess") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 12));
+                    }
+                    else if (_this.utilityService.left(itemName, 10) == "preProcess") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 10));
+                    }
+                    else if (_this.utilityService.left(itemName, 7) == "process") {
+                        authDetails.authorizedFlag = _this.authenticateProcessByAccount(processContext, _this.utilityService.right(itemName, itemName.length - 7));
+                    }
+                    else if (_this.utilityService.left(itemName, 4) == "save") {
+                        authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("create", _this.utilityService.right(itemName, itemName.length - 4));
+                        if (!authDetails.authorizedFlag) {
+                            authDetails.authorizedFlag = _this.authenticateEntityCrudByAccount("update", _this.utilityService.right(itemName, itemName.length - 4));
+                        }
+                    }
+                    if (authDetails.authorizedFlag) {
+                        authDetails.entityPermissionAccessFlag = true;
+                    }
+                }
+                //TODO: see if this applies on the client side and how
+                // Check to see if the controller is for rest, and then verify against the entity itself
+                /*if(this.getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
+                    //require a token to validate
+                    if (StructKeyExists(arguments.restInfo, "context")){
+                        var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
+                    }else{
+                        var hasProcess = false;
+                    }
+                    if(hasProcess){
+                        authDetails.authorizedFlag = true;
+                    }else if(itemName == 'get'){
+                        authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+                    }else if(itemName == 'post'){
+                        if(arguments.restInfo.context == 'get'){
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+                        }else if(arguments.restInfo.context == 'save'){
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=arguments.restInfo.entityName, account=arguments.account);
+                            if(!authDetails.authorizedFlag) {
+                                authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=arguments.restInfo.entityName, account=arguments.account);
+                            }
+                        }else{
+                            authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType=arguments.restInfo.context,entityName=arguments.restInfo.entityName,account=arguments.account);
+                        }
+                    }
+                    if(authDetails.authorizedFlag) {
+                        authDetails.entityPermissionAccessFlag = true;
+                    }else{
+                        authDetails.forbidden = true;
+                    }
+                        
+                }*/
+            }
+            return authDetails;
+        };
+        this.authenticateProcessByAccount = function (processContext, entityName) {
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                for (var i in accountPermissionGroups) {
+                    var pgOK = _this.authenticateProcessByPermissionGroup(processContext, entityName, accountPermissionGroups[i]);
+                    if (pgOK) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        this.authenticateEntityCrudByAccount = function (crudType, entityName) {
+            crudType = _this.utilityService.toCamelCase(crudType);
+            entityName = entityName.toLowerCase();
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            if (_this.$rootScope.slatwall.authInfo.permissionGroups) {
+                var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+                for (var i in accountPermissionGroups) {
+                    var pgOK = _this.authenticateEntityByPermissionGroup(crudType, entityName, accountPermissionGroups[i]);
+                    if (pgOK) {
+                        return true;
+                    }
+                }
+            }
+            // If for some reason not of the above were meet then just return false
+            return false;
+        };
+        this.authenticateProcessByPermissionGroup = function (processContext, entityName, permissionGroup) {
+            var permissions = permissionGroup;
+            var permissionDetails = _this.getEntityPermissionDetails();
+            entityName = entityName.toLowerCase();
+            processContext = processContext.toLowerCase();
+            if (!_this.authenticateEntityByPermissionGroup('Process', entityName, permissionGroup)) {
+                return false;
+            }
+            //if nothing specific then all processes are ok
+            if (!permissions.process.entities[entityName]) {
+                return true;
+            }
+            //if we find perms then what are they?
+            if (permissions.process.entities[entityName]
+                && permissions.process.entities[entityName].context[processContext]) {
+                return permissions.process.entities[entityName].context[processContext].allowProcessFlag;
+            }
+            return false;
+        };
+        this.authenticateEntityByPermissionGroup = function (crudType, entityName, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            var permissionDetails = _this.getEntityPermissionDetails();
+            // Check for entity specific values
+            if (permissions.entity.entities[entityName]
+                && permissions.entity.entities[entityName]["permission"]
+                && permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
+                if (permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            // Check for an inherited permission
+            if (permissionDetails[entityName]
+                && permissionDetails[entityName]["inheritPermissionEntityName"]) {
+                return _this.authenticateEntityByPermissionGroup(crudType, permissionDetails[entityName].inheritPermissionEntityName, permissionGroup);
+            }
+            // Check for generic permssion
+            if (permissions.entity["permission"]
+                && permissions.entity.permission["allow" + crudType + "Flag"]
+                && permissions.entity.permission["allow" + crudType + "Flag"]) {
+                return true;
+            }
+            return false;
+        };
+        this.authenticateSubsystemSectionItemActionByPermissionGroup = function (subsystem, section, item, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem].sections[section]
+                && permissions.action.subsystems[subsystem].sections[section].items[item]) {
+                return;
+                permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
+                    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag;
+            }
+            return _this.authenticateSubsystemSectionActionByPermissionGroup(subsystem = subsystem, section = section, permissionGroup = permissionGroup);
+        };
+        this.authenticateSubsystemSectionActionByPermissionGroup = function (subsystem, section, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem].sections[section]
+                && permissions.action.subsystems[subsystem].sections[section]["permission"]) {
+                if (permissions.action.subsystems[subsystem].sections[section].permission.allowActionFlag
+                    && permissions.action.subsystems[subsystem].sections[section].permission.allowActionFlag) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            return _this.authenticateSubsystemActionByPermissionGroup(subsystem = subsystem, permissionGroup = permissionGroup);
+        };
+        this.authenticateSubsystemActionByPermissionGroup = function (subsystem, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            if (permissions.action.subsystems[subsystem]
+                && permissions.action.subsystems[subsystem]["permission"]) {
+                if (permissions.action.subsystems[subsystem].permission.allowActionFlag
+                    && permissions.action.subsystems[subsystem].permission.allowActionFlag) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            return false;
+        };
+        this.getActionPermissionDetails = function () {
+            return _this.$rootScope.slatwall.authInfo.action;
+        };
+        this.getEntityPermissionDetails = function () {
+            return _this.$rootScope.slatwall.authInfo.entity;
+        };
+        this.getUserRole = function () {
+            return _this.$rootScope.slatwall.role;
+        };
+        this.getRoleBasedData = function (jwtData) {
+            switch (jwtData.role) {
+                case 'superUser':
+                    //no data is required for this role and we can assume they have access to everything
+                    break;
+                case 'admin':
+                    _this.getPublicRoleData();
+                    _this.getPermissionGroupsData(jwtData.permissionGroups);
+                    break;
+                case 'public':
+                    //only public data is required for this role and we can assume they have access to everything
+                    _this.getPublicRoleData();
+                    break;
+            }
+        };
+        this.getPublicRoleData = function () {
+            var entityPromise = _this.getEntityData();
+            var actionPromise = _this.getActionData();
+            var publicRoleDataPromises = [entityPromise, actionPromise];
+            var qPromise = _this.$q.all(publicRoleDataPromises).then(function (data) {
+                if (!_this.$rootScope.slatwall.authInfo) {
+                    _this.$rootScope.slatwall.authInfo = {};
+                }
+                _this.$rootScope.slatwall.authInfo.entity = data[0];
+                _this.$rootScope.slatwall.authInfo.action = data[1];
+            }, function (error) {
+                throw ('could not get public role data');
+            });
+            return qPromise;
+        };
+        this.getEntityData = function () {
+            var $http = _this.$injector.get('$http');
+            var deferred = _this.$q.defer();
+            $http.get(_this.appConfig.baseURL + '/custom/system/permissions/entity.json')
+                .success(function (response, status, headersGetter) {
+                deferred.resolve(response);
+            }).error(function (response, status) {
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        };
+        this.getActionData = function () {
+            var deferred = _this.$q.defer();
+            var $http = _this.$injector.get('$http');
+            $http.get(_this.appConfig.baseURL + '/custom/system/permissions/action.json')
+                .success(function (response, status, headersGetter) {
+                deferred.resolve(response);
+            }).error(function (response, status) {
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        };
+        this.getPermissionGroupsData = function (permissionGroupIDs) {
+            var permissionGroupIDArray = permissionGroupIDs.split(',');
+            var permissionGroupPromises = [];
+            for (var i in permissionGroupIDArray) {
+                var permissionGroupID = permissionGroupIDArray[i];
+                var permissionGroupPromise = _this.getPermissionGroupData(permissionGroupID);
+                permissionGroupPromises.push(permissionGroupPromise);
+            }
+            var qPromise = _this.$q.all(permissionGroupPromises).then(function (data) {
+                if (!_this.$rootScope.slatwall.authInfo) {
+                    _this.$rootScope.slatwall.authInfo = {};
+                }
+                for (var i in permissionGroupIDArray) {
+                    var permissionGroupID = permissionGroupIDArray[i];
+                    if (!_this.$rootScope.slatwall.authInfo['permissionGroups']) {
+                        _this.$rootScope.slatwall.authInfo['permissionGroups'] = {};
+                    }
+                    _this.$rootScope.slatwall.authInfo['permissionGroups'][permissionGroupID] = data[i];
+                }
+            }, function (error) {
+                throw ('could not get public role data');
+            });
+            return qPromise;
+        };
+        this.getPermissionGroupData = function (permissionGroupID) {
+            var deferred = _this.$q.defer();
+            var $http = _this.$injector.get('$http');
+            $http.get(_this.appConfig.baseURL + '/custom/system/permissions/' + permissionGroupID + '.json')
+                .success(function (response, status, headersGetter) {
+                deferred.resolve(response);
+            }).error(function (response, status) {
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        };
+    }
+    return HibachiAuthenticationService;
+}());
+exports.HibachiAuthenticationService = HibachiAuthenticationService;
+
+
+/***/ }),
+/* 725 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 var HibachiInterceptor = /** @class */ (function () {
     //@ngInject
-    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) {
+    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
         var _this = this;
         this.$location = $location;
         this.$q = $q;
@@ -70461,9 +70969,12 @@ var HibachiInterceptor = /** @class */ (function () {
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.observerService = observerService;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.urlParam = null;
         this.authHeader = 'Authorization';
         this.authPrefix = 'Bearer ';
+        this.loginResponse = null;
+        this.authPromise = null;
         this.getJWTDataFromToken = function (str) {
             // Going backwards: from bytestream, to percent-encoding, to original string.
             str = str.split('.')[1];
@@ -70479,6 +70990,14 @@ var HibachiInterceptor = /** @class */ (function () {
                     _this.$rootScope.slatwall.account = {};
                 }
                 _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+                //important to check to prevent recursion between $http and hibachinterceptor
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.hibachiAuthenticationService.getRoleBasedData(jwtData);
+                    if (jwtData.permissionGroups) {
+                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
+                    }
+                }
             }
         };
         this.request = function (config) {
@@ -70564,19 +71083,38 @@ var HibachiInterceptor = /** @class */ (function () {
                         _this.dialogService.addPageDialog(_this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
                     }
                     else if (rejection.data.messages[0].message === 'invalid_token') {
-                        return $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
-                            if (loginResponse.status === 200) {
-                                _this.localStorageService.setItem('token', loginResponse.data.token);
-                                rejection.config.headers = rejection.config.headers || {};
-                                rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-                                _this.getJWTDataFromToken(loginResponse.data.token);
-                                return $http(rejection.config).then(function (response) {
-                                    return response;
-                                });
-                            }
-                        }, function (rejection) {
-                            return rejection;
-                        });
+                        //logic to resolve all 499s in a single login call
+                        if (!_this.authPromise) {
+                            return _this.authPromise = $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
+                                _this.loginResponse = loginResponse;
+                                if (loginResponse.status === 200) {
+                                    _this.localStorageService.setItem('token', loginResponse.data.token);
+                                    rejection.config.headers = rejection.config.headers || {};
+                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+                                    _this.getJWTDataFromToken(loginResponse.data.token);
+                                    return $http(rejection.config).then(function (response) {
+                                        return response;
+                                    });
+                                }
+                            }, function (rejection) {
+                                return rejection;
+                            });
+                        }
+                        else {
+                            return _this.authPromise.then(function () {
+                                if (_this.loginResponse.status === 200) {
+                                    _this.localStorageService.setItem('token', _this.loginResponse.data.token);
+                                    rejection.config.headers = rejection.config.headers || {};
+                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.loginResponse.data.token;
+                                    _this.getJWTDataFromToken(_this.loginResponse.data.token);
+                                    return $http(rejection.config).then(function (response) {
+                                        return response;
+                                    });
+                                }
+                            }, function (rejection) {
+                                return rejection;
+                            });
+                        }
                     }
                 }
             }
@@ -70595,9 +71133,10 @@ var HibachiInterceptor = /** @class */ (function () {
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.baseUrl = appConfig.baseURL;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     HibachiInterceptor.Factory = function () {
-        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService); };
+        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
         eventHandler.$inject = [
             '$location',
             '$q',
@@ -70611,7 +71150,8 @@ var HibachiInterceptor = /** @class */ (function () {
             'dialogService',
             'utilityService',
             'hibachiPathBuilder',
-            'observerService'
+            'observerService',
+            'hibachiAuthenticationService'
         ];
         return eventHandler;
     };
@@ -70621,7 +71161,7 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
-/* 725 */
+/* 726 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70658,7 +71198,7 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
-/* 726 */
+/* 727 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70691,7 +71231,7 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
-/* 727 */
+/* 728 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71172,7 +71712,7 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
-/* 728 */
+/* 729 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71957,7 +72497,7 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
-/* 729 */
+/* 730 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72246,7 +72786,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
-/* 730 */
+/* 731 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72282,7 +72822,7 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
-/* 731 */
+/* 732 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72340,7 +72880,7 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
-/* 732 */
+/* 733 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72491,7 +73031,7 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
-/* 733 */
+/* 734 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72651,6 +73191,7 @@ var ObserverService = /** @class */ (function (_super) {
                 _this.historyService.recordHistory(event, parameters, true);
             });
         };
+        console.log('init obeserver');
         _this.observers = {};
         return _this;
     }
@@ -72660,7 +73201,7 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
-/* 734 */
+/* 735 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72698,7 +73239,7 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
-/* 735 */
+/* 736 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72739,7 +73280,7 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-/* 736 */
+/* 737 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72750,7 +73291,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
     //@ngInject
-    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout) {
+    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout, hibachiAuthenticationService) {
         var _this = this;
         this.$http = $http;
         this.$q = $q;
@@ -72766,6 +73307,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.appConfig = appConfig;
         this.$timeout = $timeout;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.requests = {};
         this.errors = {};
         this.baseActionPath = "";
@@ -73121,6 +73663,9 @@ var PublicService = /** @class */ (function () {
                 }
             }
             return true;
+        };
+        this.authenticateActionByAccount = function (action, processContext) {
+            return _this.hibachiAuthenticationService.authenticateActionByAccount(action, processContext);
         };
         this.removeInvalidOrderPayments = function (cart) {
             cart.orderPayments = cart.orderPayments.filter(function (payment) { return !payment.hasErrors; });
@@ -74147,6 +74692,7 @@ var PublicService = /** @class */ (function () {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     PublicService.prototype.getOrderFulfillmentItemList = function (fulfillmentIndex) {
         return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');
@@ -74165,7 +74711,7 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
-/* 737 */
+/* 738 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74221,11 +74767,11 @@ var RbKeyService = /** @class */ (function () {
                     return keyValue;
                 }
                 if (_this.resourceBundles[locale]) {
-                var bundle = _this.resourceBundles[locale];
-                if (angular.isDefined(bundle[key])) {
-                    //$log.debug('rbkeyfound:'+bundle[key]);
-                    return bundle[key];
-                }
+                    var bundle = _this.resourceBundles[locale];
+                    if (angular.isDefined(bundle[key])) {
+                        //$log.debug('rbkeyfound:'+bundle[key]);
+                        return bundle[key];
+                    }
                 }
                 var checkedKeysListArray = checkedKeys.split(',');
                 checkedKeysListArray.push(key + '_' + locale + '_missing');
@@ -74277,7 +74823,7 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
-/* 738 */
+/* 739 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74316,7 +74862,7 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
-/* 739 */
+/* 740 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74353,7 +74899,7 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
-/* 740 */
+/* 741 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74479,7 +75025,7 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
-/* 741 */
+/* 742 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74517,7 +75063,7 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
-/* 742 */
+/* 743 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74757,7 +75303,7 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
-/* 743 */
+/* 744 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74826,6 +75372,10 @@ var UtilityService = /** @class */ (function (_super) {
         };
         _this.isLowerCase = function (character) {
             return character == character.toLowerCase();
+        };
+        _this.toCamelCase = function (s) {
+            return s.toUpperCase().split("")[0] + s.toLowerCase().slice(1);
+            ;
         };
         _this.snakeToCapitalCase = function (s) {
             return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function (m) { return m[1].toUpperCase(); }).slice(1);
@@ -75130,6 +75680,23 @@ var UtilityService = /** @class */ (function (_super) {
                 return val;
             });
         };
+        _this.getCaseInsensitiveStructKey = function (obj, prop) {
+            prop = (prop + "").toLowerCase();
+            for (var p in obj) {
+                if (obj.hasOwnProperty(p) && prop == (p + "").toLowerCase()) {
+                    return p;
+                    break;
+                }
+            }
+        };
+        _this.listFindNoCase = function (list, value, delimiter) {
+            if (list === void 0) { list = ''; }
+            if (value === void 0) { value = ''; }
+            if (delimiter === void 0) { delimiter = ','; }
+            list = list.toLowerCase();
+            value = value.toLowerCase();
+            return _this.listFind(list, value, delimiter);
+        };
         _this.listFind = function (list, value, delimiter) {
             if (list === void 0) { list = ''; }
             if (value === void 0) { value = ''; }
@@ -75215,7 +75782,7 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-/* 744 */
+/* 745 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75241,7 +75808,7 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
-/* 745 */
+/* 746 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75285,7 +75852,7 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
-/* 746 */
+/* 747 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75360,7 +75927,7 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
-/* 747 */
+/* 748 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75391,7 +75958,7 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
-/* 748 */
+/* 749 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75438,7 +76005,7 @@ exports.SWList = SWList;
 
 
 /***/ }),
-/* 749 */
+/* 750 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75457,7 +76024,7 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
-/* 750 */
+/* 751 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75489,7 +76056,7 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
-/* 751 */
+/* 752 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75506,12 +76073,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
-var otherwisecontroller_1 = __webpack_require__(749);
-var routercontroller_1 = __webpack_require__(750);
+var otherwisecontroller_1 = __webpack_require__(750);
+var routercontroller_1 = __webpack_require__(751);
 //directives
-var swdetailtabs_1 = __webpack_require__(747);
-var swdetail_1 = __webpack_require__(746);
-var swlist_1 = __webpack_require__(748);
+var swdetailtabs_1 = __webpack_require__(748);
+var swdetail_1 = __webpack_require__(747);
+var swlist_1 = __webpack_require__(749);
 var core_module_1 = __webpack_require__(17);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -75569,7 +76136,7 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
-/* 752 */
+/* 753 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75738,7 +76305,64 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
-/* 753 */
+/* 754 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+//'use strict';
+var SWCollectionConfigAsPropertyController = /** @class */ (function () {
+    //@ngInject
+    function SWCollectionConfigAsPropertyController(collectionConfigService, utilityService, observerService) {
+        var _this = this;
+        this.collectionConfigService = collectionConfigService;
+        this.utilityService = utilityService;
+        this.observerService = observerService;
+        this.handleConfigChange = function (data) {
+            _this.inputValue = angular.toJson(data.collectionConfig);
+        };
+        this.tableID = this.utilityService.createID();
+        this.observerService.attach(this.handleConfigChange, 'swPaginationUpdate', this.tableID);
+        if (this.value) {
+            this.entityCollectionConfig = this.collectionConfigService.loadJson(this.value);
+            return;
+        }
+        this.entityCollectionConfig = this.collectionConfigService.newCollectionConfig(this.baseEntityName);
+    }
+    return SWCollectionConfigAsPropertyController;
+}());
+var SWCollectionConfigAsProperty = /** @class */ (function () {
+    // @ngInject
+    function SWCollectionConfigAsProperty(coreFormPartialsPath, hibachiPathBuilder) {
+        this.coreFormPartialsPath = coreFormPartialsPath;
+        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.restrict = 'E';
+        this.scope = {};
+        this.bindToController = {
+            baseEntityName: "=",
+            propertyName: "=",
+            value: "=?",
+        };
+        this.controller = SWCollectionConfigAsPropertyController;
+        this.controllerAs = "swCollectionConfigAsProperty";
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "collectionconfigasproperty.html";
+    }
+    SWCollectionConfigAsProperty.Factory = function () {
+        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWCollectionConfigAsProperty(coreFormPartialsPath, hibachiPathBuilder); };
+        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
+        return directive;
+    };
+    return SWCollectionConfigAsProperty;
+}());
+exports.SWCollectionConfigAsProperty = SWCollectionConfigAsProperty;
+
+
+/***/ }),
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75822,7 +76446,7 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-/* 754 */
+/* 756 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75862,7 +76486,7 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
-/* 755 */
+/* 757 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76055,7 +76679,7 @@ exports.SWFForm = SWFForm;
 
 
 /***/ }),
-/* 756 */
+/* 758 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76157,7 +76781,7 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
-/* 757 */
+/* 759 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76480,7 +77104,7 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
-/* 758 */
+/* 760 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76760,7 +77384,7 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
-/* 759 */
+/* 761 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76808,7 +77432,7 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
-/* 760 */
+/* 762 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76851,7 +77475,7 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
-/* 761 */
+/* 763 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76971,7 +77595,7 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
-/* 762 */
+/* 764 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77039,7 +77663,7 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
-/* 763 */
+/* 765 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77129,7 +77753,7 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
-/* 764 */
+/* 766 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77190,7 +77814,7 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
-/* 765 */
+/* 767 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77555,7 +78179,63 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
-/* 766 */
+/* 768 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWIsolateChildFormController = /** @class */ (function () {
+    // @ngInject
+    function SWIsolateChildFormController() {
+    }
+    return SWIsolateChildFormController;
+}());
+var SWIsolateChildForm = /** @class */ (function () {
+    // @ngInject
+    function SWIsolateChildForm(coreFormPartialsPath, hibachiPathBuilder) {
+        this.coreFormPartialsPath = coreFormPartialsPath;
+        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.restrict = "A";
+        this.require = '?form';
+        this.controller = SWIsolateChildFormController;
+        this.controllerAs = "swIsolateChildForm";
+        this.scope = {};
+        /**
+         * Binds all of our variables to the controller so we can access using this
+         */
+        this.bindToController = {};
+        /**
+        * Sets the context of this form
+        */
+        this.link = function (scope, element, attrs, formController) {
+            if (!formController) {
+                return;
+            }
+            var parentForm = formController.$$parentForm;
+            if (!parentForm) {
+                return;
+            }
+            parentForm.$removeControl(formController);
+        };
+    }
+    /**
+     * Handles injecting the partials path into this class
+     */
+    SWIsolateChildForm.Factory = function () {
+        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWIsolateChildForm(coreFormPartialsPath, hibachiPathBuilder); };
+        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
+        return directive;
+    };
+    return SWIsolateChildForm;
+}());
+exports.SWIsolateChildForm = SWIsolateChildForm;
+
+
+/***/ }),
+/* 769 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77566,25 +78246,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(17);
 //services
-var fileservice_1 = __webpack_require__(767);
+var fileservice_1 = __webpack_require__(770);
 //directives
 //  components
 //form
-var swinput_1 = __webpack_require__(765);
-var swfformfield_1 = __webpack_require__(756);
-var swform_1 = __webpack_require__(757);
-var swfform_1 = __webpack_require__(755);
-var swffileinput_1 = __webpack_require__(754);
-var swformfield_1 = __webpack_require__(758);
-var swformfieldfile_1 = __webpack_require__(759);
-var swformfieldjson_1 = __webpack_require__(760);
-var swformfieldsearchselect_1 = __webpack_require__(761);
-var swformregistrar_1 = __webpack_require__(762);
-var swerrordisplay_1 = __webpack_require__(753);
-var swaddressform_1 = __webpack_require__(752);
+var swinput_1 = __webpack_require__(767);
+var swfformfield_1 = __webpack_require__(758);
+var swform_1 = __webpack_require__(759);
+var swfform_1 = __webpack_require__(757);
+var swffileinput_1 = __webpack_require__(756);
+var swformfield_1 = __webpack_require__(760);
+var swformfieldfile_1 = __webpack_require__(761);
+var swformfieldjson_1 = __webpack_require__(762);
+var swformfieldsearchselect_1 = __webpack_require__(763);
+var swformregistrar_1 = __webpack_require__(764);
+var swerrordisplay_1 = __webpack_require__(755);
+var swaddressform_1 = __webpack_require__(753);
+var swisolatechildform_1 = __webpack_require__(768);
 var swpropertydisplay_1 = __webpack_require__(301);
-var swfpropertydisplay_1 = __webpack_require__(764);
-var swformsubscriber_1 = __webpack_require__(763);
+var swfpropertydisplay_1 = __webpack_require__(766);
+var swformsubscriber_1 = __webpack_require__(765);
+var swcollectionconfigasproperty_1 = __webpack_require__(754);
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -77603,13 +78285,15 @@ var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', co
     .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory(swfpropertydisplay_1.SWFPropertyDisplay, "swfpropertydisplay.html"))
     .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory(swpropertydisplay_1.SWPropertyDisplay, "propertydisplay.html"))
     .directive('swErrorDisplay', swerrordisplay_1.SWErrorDisplay.Factory())
+    .directive('swIsolateChildForm', swisolatechildform_1.SWIsolateChildForm.Factory())
     .directive('swAddressForm', swaddressform_1.SWAddressForm.Factory())
-    .directive('swFormSubscriber', swformsubscriber_1.SWFormSubscriber.Factory());
+    .directive('swFormSubscriber', swformsubscriber_1.SWFormSubscriber.Factory())
+    .directive('swCollectionConfigAsProperty', swcollectionconfigasproperty_1.SWCollectionConfigAsProperty.Factory());
 exports.formmodule = formmodule;
 
 
 /***/ }),
-/* 767 */
+/* 770 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77656,7 +78340,7 @@ exports.FileService = FileService;
 
 
 /***/ }),
-/* 768 */
+/* 771 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77766,7 +78450,7 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
-/* 769 */
+/* 772 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77778,15 +78462,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var alert_module_1 = __webpack_require__(61);
 var card_module_1 = __webpack_require__(616);
 var collection_module_1 = __webpack_require__(296);
-var listing_module_1 = __webpack_require__(785);
+var listing_module_1 = __webpack_require__(788);
 var dialog_module_1 = __webpack_require__(300);
-var entity_module_1 = __webpack_require__(751);
-var pagination_module_1 = __webpack_require__(789);
-var form_module_1 = __webpack_require__(766);
-var validation_module_1 = __webpack_require__(808);
-var workflow_module_1 = __webpack_require__(823);
+var entity_module_1 = __webpack_require__(752);
+var pagination_module_1 = __webpack_require__(792);
+var form_module_1 = __webpack_require__(769);
+var validation_module_1 = __webpack_require__(811);
+var workflow_module_1 = __webpack_require__(826);
 //directives
-var swsaveandfinish_1 = __webpack_require__(768);
+var swsaveandfinish_1 = __webpack_require__(771);
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -77828,7 +78512,7 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
-/* 770 */
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77877,7 +78561,7 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
-/* 771 */
+/* 774 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77936,7 +78620,7 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
-/* 772 */
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78096,7 +78780,7 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-/* 773 */
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78277,7 +78961,7 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-/* 774 */
+/* 777 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78340,7 +79024,7 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
-/* 775 */
+/* 778 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78391,6 +79075,7 @@ var SWListingDisplayController = /** @class */ (function () {
         this.hasRecordAddAction = false;
         this.hasRecordDetailAction = false;
         this.hasRecordEditAction = false;
+        this.recordEditIcon = 'pencil';
         this.hasRecordDeleteAction = false;
         this.searching = false;
         this.selectable = false;
@@ -78894,6 +79579,16 @@ var SWListingDisplayController = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    SWListingDisplayController.prototype.hasAverageOrTotal = function () {
+        if (this.collectionData) {
+            for (var key in this.collectionData) {
+                if (key.indexOf('recordsAvg') > -1 || key.indexOf('recordsTotal') > -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -78945,6 +79640,7 @@ var SWListingDisplay = /** @class */ (function () {
             recordEditQueryString: "@?",
             recordEditModal: "<?",
             recordEditDisabled: "<?",
+            recordEditIcon: "@?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
@@ -79056,7 +79752,7 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
-/* 776 */
+/* 779 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79194,7 +79890,7 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
-/* 777 */
+/* 780 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79271,7 +79967,7 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
-/* 778 */
+/* 781 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79330,7 +80026,7 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
-/* 779 */
+/* 782 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79369,7 +80065,7 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-/* 780 */
+/* 783 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79426,7 +80122,7 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
-/* 781 */
+/* 784 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79474,7 +80170,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
-/* 782 */
+/* 785 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79979,7 +80675,7 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
-/* 783 */
+/* 786 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80043,7 +80739,7 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-/* 784 */
+/* 787 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80112,7 +80808,7 @@ var SWListingSearchController = /** @class */ (function () {
                 delete selectedPersonalCollection[_this.swListingDisplay.baseEntityName.toLowerCase()];
                 _this.localStorageService.setItem('selectedPersonalCollection', angular.toJson(selectedPersonalCollection));
             }
-            window.location.href = _this.appConfig.baseURL + '?' + _this.appConfig.action + '=' + 'entity.list' + _this.swListingDisplay.baseEntityName.toLowerCase();
+            window.location.reload();
         };
         this.deleteReportCollection = function (persistedCollection) {
             _this.$hibachi.saveEntity('Collection', persistedCollection.collectionID, {}, 'delete').then(function (data) {
@@ -80270,7 +80966,7 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
-/* 785 */
+/* 788 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80281,23 +80977,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(296);
 //services
-var listingservice_1 = __webpack_require__(786);
+var listingservice_1 = __webpack_require__(789);
 //directives
-var swlistingdisplay_1 = __webpack_require__(775);
-var swlistingreport_1 = __webpack_require__(782);
-var swlistingdisplaycell_1 = __webpack_require__(776);
-var swlistingcontrols_1 = __webpack_require__(773);
-var swlistingaggregate_1 = __webpack_require__(770);
-var swlistingcolorfilter_1 = __webpack_require__(771);
-var swlistingcolumn_1 = __webpack_require__(772);
-var swlistingdisablerule_1 = __webpack_require__(774);
-var swlistingexpandablerule_1 = __webpack_require__(777);
-var swlistingfilter_1 = __webpack_require__(778);
-var swlistingfiltergroup_1 = __webpack_require__(779);
-var swlistingorderby_1 = __webpack_require__(781);
-var swlistingrowsave_1 = __webpack_require__(783);
-var swlistingsearch_1 = __webpack_require__(784);
-var swlistingglobalsearch_1 = __webpack_require__(780);
+var swlistingdisplay_1 = __webpack_require__(778);
+var swlistingreport_1 = __webpack_require__(785);
+var swlistingdisplaycell_1 = __webpack_require__(779);
+var swlistingcontrols_1 = __webpack_require__(776);
+var swlistingaggregate_1 = __webpack_require__(773);
+var swlistingcolorfilter_1 = __webpack_require__(774);
+var swlistingcolumn_1 = __webpack_require__(775);
+var swlistingdisablerule_1 = __webpack_require__(777);
+var swlistingexpandablerule_1 = __webpack_require__(780);
+var swlistingfilter_1 = __webpack_require__(781);
+var swlistingfiltergroup_1 = __webpack_require__(782);
+var swlistingorderby_1 = __webpack_require__(784);
+var swlistingrowsave_1 = __webpack_require__(786);
+var swlistingsearch_1 = __webpack_require__(787);
+var swlistingglobalsearch_1 = __webpack_require__(783);
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -80325,7 +81021,7 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
-/* 786 */
+/* 789 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80755,7 +81451,10 @@ var ListingService = /** @class */ (function () {
             if (_this.getListing(listingID).multiSlot == false) {
                 _this.$timeout(function () {
                     _this.getListing(listingID).collectionConfig.loadJson(_this.getListing(listingID).collectionData.collectionConfig);
-                    _this.getListing(listingID).columns = _this.getListing(listingID).collectionConfig.columns;
+                    //only override columns if they were not specified programmatically (editable listing displays, with non-persistent columns)
+                    if (_this.getListing(listingID).listingColumns == null) {
+                        _this.getListing(listingID).columns = _this.getListing(listingID).collectionConfig.columns;
+                    }
                 });
             }
             if (_this.getListing(listingID).paginator != null
@@ -81293,7 +81992,7 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
-/* 787 */
+/* 790 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81309,7 +82008,7 @@ exports.loggermodule = loggermodule;
 
 
 /***/ }),
-/* 788 */
+/* 791 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81355,7 +82054,7 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
-/* 789 */
+/* 792 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81364,8 +82063,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
-var paginationservice_1 = __webpack_require__(790);
-var swpaginationbar_1 = __webpack_require__(788);
+var paginationservice_1 = __webpack_require__(793);
+var swpaginationbar_1 = __webpack_require__(791);
 var core_module_1 = __webpack_require__(17);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -81382,7 +82081,7 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
-/* 790 */
+/* 793 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81524,6 +82223,7 @@ var Pagination = /** @class */ (function () {
             }
             _this.setPageEnd(collection.pageRecordsEnd);
             _this.setTotalPages(collection.totalPages);
+            _this.currentPage = collection.currentPage;
             _this.totalPagesArray = [];
             if (angular.isUndefined(_this.getCurrentPage()) || _this.getCurrentPage() < 5) {
                 var start = 1;
@@ -81579,7 +82279,7 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
-/* 791 */
+/* 794 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81968,7 +82668,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-/* 792 */
+/* 795 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82000,7 +82700,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-/* 793 */
+/* 796 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82033,7 +82733,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-/* 794 */
+/* 797 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82097,7 +82797,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-/* 795 */
+/* 798 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82127,7 +82827,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-/* 796 */
+/* 799 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82157,7 +82857,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-/* 797 */
+/* 800 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82191,7 +82891,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-/* 798 */
+/* 801 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82224,7 +82924,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-/* 799 */
+/* 802 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82258,7 +82958,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-/* 800 */
+/* 803 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82291,7 +82991,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-/* 801 */
+/* 804 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82321,7 +83021,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-/* 802 */
+/* 805 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82351,7 +83051,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-/* 803 */
+/* 806 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82382,7 +83082,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-/* 804 */
+/* 807 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82419,7 +83119,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-/* 805 */
+/* 808 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82452,7 +83152,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-/* 806 */
+/* 809 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82489,7 +83189,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-/* 807 */
+/* 810 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82646,7 +83346,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-/* 808 */
+/* 811 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82655,24 +83355,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-var swvalidate_1 = __webpack_require__(791);
-var swvalidationminlength_1 = __webpack_require__(799);
-var swvalidationdatatype_1 = __webpack_require__(792);
-var swvalidationeq_1 = __webpack_require__(793);
-var swvalidationeqproperty_1 = __webpack_require__(794);
-var swvalidationgte_1 = __webpack_require__(795);
-var swvalidationlte_1 = __webpack_require__(796);
-var swvalidationmaxlength_1 = __webpack_require__(797);
-var swvalidationmaxvalue_1 = __webpack_require__(798);
-var swvalidationminvalue_1 = __webpack_require__(800);
-var swvalidationneq_1 = __webpack_require__(801);
-var swvalidationnumeric_1 = __webpack_require__(802);
-var swvalidationregex_1 = __webpack_require__(803);
-var swvalidationrequired_1 = __webpack_require__(804);
-var swvalidationunique_1 = __webpack_require__(805);
-var swvalidationuniqueornull_1 = __webpack_require__(806);
+var swvalidate_1 = __webpack_require__(794);
+var swvalidationminlength_1 = __webpack_require__(802);
+var swvalidationdatatype_1 = __webpack_require__(795);
+var swvalidationeq_1 = __webpack_require__(796);
+var swvalidationeqproperty_1 = __webpack_require__(797);
+var swvalidationgte_1 = __webpack_require__(798);
+var swvalidationlte_1 = __webpack_require__(799);
+var swvalidationmaxlength_1 = __webpack_require__(800);
+var swvalidationmaxvalue_1 = __webpack_require__(801);
+var swvalidationminvalue_1 = __webpack_require__(803);
+var swvalidationneq_1 = __webpack_require__(804);
+var swvalidationnumeric_1 = __webpack_require__(805);
+var swvalidationregex_1 = __webpack_require__(806);
+var swvalidationrequired_1 = __webpack_require__(807);
+var swvalidationunique_1 = __webpack_require__(808);
+var swvalidationuniqueornull_1 = __webpack_require__(809);
 //services
-var validationservice_1 = __webpack_require__(807);
+var validationservice_1 = __webpack_require__(810);
 var core_module_1 = __webpack_require__(17);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -82700,7 +83400,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-/* 809 */
+/* 812 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82734,7 +83434,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 810 */
+/* 813 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82772,7 +83472,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 811 */
+/* 814 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82806,7 +83506,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 812 */
+/* 815 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82927,7 +83627,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 813 */
+/* 816 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82958,7 +83658,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 814 */
+/* 817 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83008,7 +83708,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 815 */
+/* 818 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83055,7 +83755,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 816 */
+/* 819 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83327,7 +84027,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 817 */
+/* 820 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83527,7 +84227,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 818 */
+/* 821 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83629,7 +84329,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 819 */
+/* 822 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83638,6 +84338,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWWorkflowTriggerHistory = /** @class */ (function () {
+    //@ngInject
     function SWWorkflowTriggerHistory(workflowPartialsPath, hibachiPathBuilder, $rootScope, collectionConfigService) {
         return {
             restrict: 'A',
@@ -83674,7 +84375,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 820 */
+/* 823 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83714,7 +84415,7 @@ var SWWorkflowTriggers = /** @class */ (function () {
                 scope.updateCollection = function (collectionConfigData) {
                     if (scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig && collectionConfigData.collectionConfig.collectionConfigString) {
                         scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig.collectionConfigString);
-                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig.toString());
+                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(collectionConfigData.collectionConfig.collectionConfigString));
                         //update the property display programatically
                         observerService.notifyById('pullBindings', 'WorkflowTriggerscheduleCollectionConfigpullBindings').then(function () {
                         });
@@ -83796,7 +84497,7 @@ var SWWorkflowTriggers = /** @class */ (function () {
                  * Saves the workflow triggers then cascade a save to the workflow object as well.
                  */
                 scope.saveWorkflowTrigger = function (context) {
-                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
+                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted() && scope.workflowTriggers.selectedTrigger.data.workflow == null) {
                         scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
                     }
                     var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
@@ -83963,7 +84664,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 821 */
+/* 824 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84075,7 +84776,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 822 */
+/* 825 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84133,7 +84834,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 823 */
+/* 826 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84142,21 +84843,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(822);
-var scheduleservice_1 = __webpack_require__(821);
+var workflowconditionservice_1 = __webpack_require__(825);
+var scheduleservice_1 = __webpack_require__(824);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(809);
-var swworkflowbasic_1 = __webpack_require__(811);
-var swworkflowcondition_1 = __webpack_require__(812);
-var swworkflowconditiongroupitem_1 = __webpack_require__(813);
-var swworkflowconditiongroups_1 = __webpack_require__(814);
-var swworkflowtask_1 = __webpack_require__(815);
-var swworkflowtaskactions_1 = __webpack_require__(816);
-var swworkflowtasks_1 = __webpack_require__(817);
-var swworkflowtrigger_1 = __webpack_require__(818);
-var swworkflowtriggers_1 = __webpack_require__(820);
-var swworkflowtriggerhistory_1 = __webpack_require__(819);
-var swschedulepreview_1 = __webpack_require__(810);
+var swadmincreatesuperuser_1 = __webpack_require__(812);
+var swworkflowbasic_1 = __webpack_require__(814);
+var swworkflowcondition_1 = __webpack_require__(815);
+var swworkflowconditiongroupitem_1 = __webpack_require__(816);
+var swworkflowconditiongroups_1 = __webpack_require__(817);
+var swworkflowtask_1 = __webpack_require__(818);
+var swworkflowtaskactions_1 = __webpack_require__(819);
+var swworkflowtasks_1 = __webpack_require__(820);
+var swworkflowtrigger_1 = __webpack_require__(821);
+var swworkflowtriggers_1 = __webpack_require__(823);
+var swworkflowtriggerhistory_1 = __webpack_require__(822);
+var swschedulepreview_1 = __webpack_require__(813);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -84182,7 +84883,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-/* 824 */
+/* 827 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -84210,9 +84911,6 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 825 */,
-/* 826 */,
-/* 827 */,
 /* 828 */,
 /* 829 */,
 /* 830 */,
@@ -84225,11 +84923,14 @@ module.exports = function(module) {
 /* 837 */,
 /* 838 */,
 /* 839 */,
-/* 840 */
+/* 840 */,
+/* 841 */,
+/* 842 */,
+/* 843 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(303);
 
 
 /***/ })
-],[840]);
+],[843]);

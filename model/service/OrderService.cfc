@@ -106,7 +106,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
 		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
-			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
+			// FIXME: Temporary disable to allow QA place order
+			//orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
 		}
 
 		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
@@ -902,7 +903,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
-            	if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
+            	
+				if(arguments.processMethod.getAmount()){
+					newOrderPayment.setAmount(arguments.processMethod.getAmount());
+				} else if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
 					newOrderPayment.setAmount(arguments.order.getPaymentAmountDue());
@@ -1165,7 +1169,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    local.tx = local.ormSession.beginTransaction();
 
 		try{
-			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge() 
+			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
 		} catch (any e) {
 			//if we have any error we probably don't have the required data for returning the total
 			var fulfillmentCharge = 0; 
@@ -1177,58 +1181,139 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return fulfillmentCharge; 
 	}
 
-	//order transient helper methods
-	public any function newTransientOrderFromOrderTemplate(required any orderTemplate){
-		var transientOrder = new Slatwall.model.entity.Order();
-		ORMGetSession().evict(transientOrder);
-		transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		return transientOrder;
-	}
+	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
+		
+		var canPlaceOrder = false;
 
-	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate){
-		var transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
-		
-		ORMGetSession().evict(transientOrderFulfillment);
-		
-		transientOrderFulfillment.setOrder(this.newTransientOrderFromOrderTemplate(arguments.orderTemplate)); 
-		transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
-		transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
-		
-		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
-		ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
-		ORMGetSession().evict(arguments.orderTemplate.getShippingAddress());
-
-		var orderTemplateItemCollectionList = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 	
-		var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
-		
-		var fulfillmentTotal = 0;
-		var orderFulfillmentItems = []; 
+		/* We create a soft reference here because we can't reinflate the orderTemplate on the other side of the thread 
+		 * because this object contains unpersisted changes that this method seeks to validate. 
+		 */
+		var orderTemplateSoftReference = createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate);
 	
-		for(var orderTemplateItem in orderTemplateItemRecords){ 
-			var transientOrderItem = new Slatwall.model.entity.OrderItem();
-			var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
-			
-			ORMGetSession().evict(sku);
-			ORMGetSession().evict(transientOrderItem);
-			
-			transientOrderItem.setSku(sku);
-			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-			transientOrderItem.setQuantity(orderTemplateItem['quantity']);
+		
+		/* Because we need to flush and then delete the order we run this logic in a thread so the flush does not persist 
+		 * unvalidated changes in the order template.
+		 */
 
-			transientOrderFulfillment.addOrderFulfillmentItem(transientOrderItem);  
+		thread name="#threadName#" 
+			   orderTemplateSoftReference="#orderTemplateSoftReference#"
+			   action="run" 
+		{	
+
+
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplateSoftReference.get(), false);  
+			transientOrder = this.saveOrder(transientOrder);
+			
+			ormFlush();
+ 
+			thread.canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+
+			ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
+			//ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where orderItem.order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
+
+			var deleteOk = this.deleteOrder(transientOrder); 
+
+			ormFlush(); 
+
 		}
 
-		transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod(), false);  	
-		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(transientOrderFulfillment, false);
+		threadJoin(threadName);
 
-		for(var shippingMethodOption in transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
-			ORMGetSession().evict(shippingMethodOption);
+		if(!structKeyExists(evaluate(threadName), "ERROR")){
+			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
+		} else {
+			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#');
+		} 
+		
+		return canPlaceOrder;
+	}
+
+	//order transient helper methods
+	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
+		
+		arguments.transientOrder = new Slatwall.model.entity.Order();
+		
+		if(arguments.evictFromSession){	
+			ORMGetSession().evict(arguments.transientOrder);
+		}
+		
+		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+
+		arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
+	
+		this.populateOrderItemsFromOrderTemplate(argumentCollection=arguments);
+		
+		return arguments.transientOrder;
+	}
+
+	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder){
+		
+		arguments.transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+	
+		if(arguments.evictFromSession){	
+			ORMGetSession().evict(arguments.transientOrderFulfillment);
 		}	
 
-		return transientOrderFulfillment; 
+		if(!structKeyExists(arguments, 'transientOrder')){
+			arguments.transientOrder = this.newTransientOrderFromOrderTemplate(argumentCollection=arguments);
+		}
+
+		arguments.transientOrderFulfillment.setOrder(arguments.transientOrder); 
+		arguments.transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		arguments.transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
+		arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
+		
+		if(arguments.evictFromSession){	
+			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
+			ORMGetSession().evict(arguments.orderTemplate.getShippingAddress());
+		}
+
+		this.populateOrderItemsFromOrderTemplate(argumentCollection=arguments);
+
+		arguments.transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod(), false);  	
+		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(arguments.transientOrderFulfillment, false);
+
+		if(arguments.evictFromSession){	
+			for(var shippingMethodOption in arguments.transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
+				ORMGetSession().evict(shippingMethodOption);
+			}	
+		}
+		return arguments.transientOrderFulfillment; 
+	}
+
+
+	public array function populateOrderItemsFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, any transientOrderFulfillment){
+		
+		var orderTemplateItems = orderTemplate.getOrderTemplateItems(); 
+
+		var transientOrderItems = []; 
+	
+		for(var orderTemplateItem in orderTemplateItems){ 
+			var transientOrderItem = new Slatwall.model.entity.OrderItem();
+			var sku = orderTemplateItem.getSku(); 		
+	
+			if(arguments.evictFromSession){	
+				ORMGetSession().evict(sku);
+				ORMGetSession().evict(transientOrderItem);
+			}
+
+			transientOrderItem.setSku(sku);
+			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+			transientOrderItem.setQuantity(orderTemplateItem.getQuantity());
+			
+			if(structKeyExists(arguments, "transientOrderFulfillment")){
+				transientOrderItem.setOrderFulfillment(arguments.transientOrderFulfillment);  
+			}
+			if(structKeyExists(arguments, "transientOrder")){
+				transientOrderItem.setOrder(arguments.transientOrder);
+			}
+			arrayAppend(transientOrderItems, transientOrderItem); 
+		}
+
+		return transientOrderItems; 
 	}
 
 	//order template process methods	
@@ -1349,10 +1434,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
 	
 			arguments.orderTemplate = this.processOrderTemplate_removePromotionCode(arguments.orderTemplate, processOrderTemplateRemovePromotionCode);  
-		} 
+		}
+
+		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
+
+		var giftCardPaymentMethod = getPaymentService().getPaymentMethod('50d8cd61009931554764385482347f3a');
+
+		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
+			var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
+			processOrderAddOrderPayment.setGiftCardID(orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID());
+			processOrderAddOrderPayment.setAmount(orderTemplateAppliedGiftCard.getAmountToApply());
+
+			newOrderPayment = this.newOrderPayment(); 
+			newOrderPayment.setPaymentMethod(giftCardPaymentMethod);
+			
+			processOrderAddOrderPayment.setNewOrderPayment(newOrderPayment); 
+
+			newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+
+		}  
+		
+		arguments.orderTemplate = this.processOrderTemplate_removeAppliedGiftCards(arguments.orderTemplate);  
+		
 
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
-		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID())	
+		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
 		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
 
 		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
@@ -1401,6 +1507,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return arguments.orderTemplate; 	
+	} 
+
+	public any function saveOrderTemplateItem(required any orderTemplateItem, struct data={}){
+		arguments.orderTemplateItem = super.saveOrderTemplateItem(arguments.orderTemplateItem, arguments.data);
+		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate(); 
+		if(!isNull(orderTemplate)){
+			orderTemplate = this.saveOrderTemplate(orderTemplate); 
+			if(orderTemplate.hasErrors()){
+				arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
+			} 
+		}
+		return arguments.orderTemplateItem;
+	}  
+
+	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
+			
+		arguments.orderTemplate.removeOrderTemplateItem(arguments.processObject.getOrderTemplateItem()); 		
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+		
+		return arguments.orderTemplate;
 	} 
 
 	public any function processOrderTemplate_updateSchedule(required any orderTemplate, required any processObject, required struct data={}){ 
@@ -1507,7 +1634,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate; 
-	} 
+	}
+
+	public any function processOrderTemplate_applyGiftCard (required any orderTemplate, required any processObject, struct data={}){ 
+	
+		var newOrderTemplateAppliedGiftCard = this.newOrderTemplateAppliedGiftCard(); 
+
+		newOrderTemplateAppliedGiftCard.setGiftCard(processObject.getGiftCard()); 
+		newOrderTemplateAppliedGiftCard.setAmountToApply(processObject.getAmountToApply());  
+
+		newOrderTemplateAppliedGiftCard	= this.saveOrderTemplateAppliedGiftCard(newOrderTemplateAppliedGiftCard); 
+
+		if(!newOrderTemplateAppliedGiftCard.hasErrors()){
+			arguments.orderTemplate.addOrderTemplateAppliedGiftCard(newOrderTemplateAppliedGiftCard); 
+			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		} else {
+			arguments.orderTemplate.addErrors(newOrderTemplateAppliedGiftCard.getErrors()); 
+		}
+		
+		return arguments.orderTemplate; 	
+	}
+
+	public any function processOrderTemplate_removeAppliedGiftCards (required any orderTemplate, any processObject, struct data={}){
+	
+		var appliedGiftCardsCount = arguments.orderTemplate.getOrderTemplateAppliedGiftCardsCount(); 
+		var appliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards();
+
+		for(var i=appliedGiftCardsCount; i>0; i--){
+			arguments.orderTemplate.removeOrderTemplateAppliedGiftCard(appliedGiftCards[i]); 
+		} 
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate; 	
+	}   
 	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
@@ -2180,7 +2341,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}	// END OF LOCK
-
+		if(order.hasErrors()){
+			getHibachiScope().setORMHasErrors( true );
+		}
 		return arguments.order;
 	}
 
@@ -2528,6 +2691,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+			
+			updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 		    	if(arguments.order.getPaymentAmountDue() != 0){
@@ -2539,6 +2704,79 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}
 		return arguments.order;
+	}
+	
+	// hint: Distributes the order-level discount amount total proportionally to all order items and if necessary handle any remainder due to uneven division
+	private void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
+		
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: START");
+		logHibachi("order['orderID']: #arguments.order.getOrderID()#");
+		logHibachi("order['orderAmounts.orderSubtotalAfterItemDiscounts']: #arguments.order.getSubtotalAfterItemDiscounts()#");
+		logHibachi("order['orderAmounts.orderDiscountAmountTotal']: #arguments.order.getOrderDiscountAmountTotal()#");
+		
+		// Allocate the order-level discount amount total in appropriate proportions to all order items and if necessary handle any remainder due to uneven division
+		var actualAllocatedAmountTotal = 0;
+		var actualAllocatedAmountAsPercentage = 0;
+		var orderItemCount = 0;
+		for (var orderItem in arguments.order.getOrderItems()) {
+			orderItemCount++;
+			
+			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
+			var currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();
+			
+			// Approximate amount to allocate (rounded to nearest penny)
+		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;
+		    
+		    var actualAllocatedAmountTotaUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
+		    
+		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
+		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * arguments.order.getOrderDiscountAmountTotal();
+			
+			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
+			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears
+			// NOTE: If instead we deferred handling the discrepancy the likelihood that a noticeable discrepancy will need to be offset on the final order item increases as the number of order items increases on an order.
+		    var currentDiscrepancyAmount =  actualAllocatedAmountTotaUnadjusted - expectedAllocatedAmountTotal;
+		    
+		    // If there is a discrepancy greater than 1/2 cent let's deal with it now, adjust the allocation amount by rounding up or down to nearest cent
+		    if (abs(currentDiscrepancyAmount) >= .005) {
+		    	// Need to decrease the allocation amount by a cent to prevent over allocating
+		        if (currentDiscrepancyAmount > 0) {
+		            currentOrderItemAllocationAmount = (ceiling(currentOrderItemAllocationAmount * 100) - 1) / 100;
+		            
+		        // Need to increase the allocation by a cent to prevent under allocating 
+		        } else if (currentDiscrepancyAmount < 0) {
+		            currentOrderItemAllocationAmount = (floor(currentOrderItemAllocationAmount * 100) + 1) / 100;
+		        }
+		    }
+		    
+		    // Update the actuals to retain maximum precision
+		    actualAllocatedAmountTotal += currentOrderItemAllocationAmount;
+		    actualAllocatedAmountAsPercentage += currentOrderItemAmountAsPercentage;
+		    
+		    // Finally update the order item
+		    orderItem.setAllocatedOrderDiscountAmount(currentOrderItemAllocationAmount);
+		    
+		    // Collect details for debugging/logging
+		    logHibachi("orderItem[#orderItemCount#]: Start");
+		    logHibachi("orderItem[#orderItemCount#]['extendedPriceAfterOrderItemDiscount']: #orderItem.getExtendedPriceAfterDiscount()#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAmountAsPercentage']: #currentOrderItemAmountAsPercentage * 100#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmount']: #round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100#");
+		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmountAdjusted']: #currentOrderItemAllocationAmount#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.expectedAllocatedAmountTotal']: #expectedAllocatedAmountTotal#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotaUnadjusted']: #actualAllocatedAmountTotaUnadjusted#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.currentDiscrepancyAmount']: #currentDiscrepancyAmount#");
+		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountAsPercentage']: #actualAllocatedAmountAsPercentage  * 100#");
+		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
+		}
+		
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");
+		
+		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
+		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderDiscountAmountTotal()) != 0) {
+			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.", true);
+		}
+
 	}
 
 	public numeric function getAmountToBeCapturedByCaptureAuthorizationPayments(required any orderDelivery, required any processObject){

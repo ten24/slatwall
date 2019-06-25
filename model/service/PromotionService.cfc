@@ -195,6 +195,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function processOrderItemRewards(required any order, required any promotionPeriodQualifications, required any promotionRewardUsageDetails, required any orderItemQualifiedDiscounts, required any promotionReward){
+
 		// Loop over all the orderItems
 		for(var orderItem in arguments.order.getOrderItems()) {
 			// Verify that this is an item being sold
@@ -227,20 +228,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
 							if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
-
 								// Calculate based on price, which could be a priceGroup price
-								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity,orderItem.getCurrencyCode());
+								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku());
 
 							} else {
-
 								// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
-								var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity);
+								var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku());
 
 								// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
 								var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())));
 
 							}
-
 							// If the discountAmount is gt 0 then we can add the details in order to the potential orderItem discounts
 							if(discountAmount > 0) {
 
@@ -320,7 +318,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											
 			//Now add the order item to the modified entities to recalculate.
 			getHibachiScope().addModifiedEntity(orderItem);
-
 		} // End Order Item For Loop
 	}
 
@@ -395,7 +392,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
  		
  		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity(),'md5');
-		
+ 		
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
 
@@ -418,7 +415,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Loop over all Potential Discounts that require qualifications
 				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 				var orderRewards = false;
-	
+
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
 					// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
@@ -428,13 +425,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
 						promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order);
 					}
-	
+
 					// If this promotion period is ok to apply based on general useCount
 					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
 						// =============== Order Item Reward ==============
 						if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
+
 							processOrderItemRewards(arguments.order, promotionPeriodQualifications, promotionRewardUsageDetails, orderItemQualifiedDiscounts, reward);
-	
+							
 						// =============== Fulfillment Reward ======================
 						} else if (!orderRewards and reward.getRewardType() eq "fulfillment" ) {
 							processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
@@ -447,17 +445,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 					// This forces the loop to repeat looking for "order" discounts
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
+						// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
+						removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
+		
+						// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
+						applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 						pr = 0;
 						orderRewards = true;
 					}
 	
 				} // END of PromotionReward Loop
 	
-				// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-				removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-
-				// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-				applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 	
 			} // END of Sale or Exchange Loop
 	
@@ -466,7 +464,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// TODO [issue #1766]: In the future allow for return Items to have negative promotions applied.  This isn't import right now because you can determine how much you would like to refund ordersItems
 			}
 		}
-
 	}
 
 	private void function applyPromotionToOrderFulfillment(required any orderFulfillment, required any promotion, required numeric discountAmount){
@@ -864,36 +861,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return reward.hasOrderItemSku(arguments.orderItem);
 	}
 
-	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode) {
+	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, any sku) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));
 
-		if(structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)){
-			switch(reward.getAmountType()) {
-				case "percentageOff" :
-					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (reward.getAmountByCurrencyCode(arguments.currencyCode)/100)));
-					break;
-				case "amountOff" :
-					discountAmountPreRounding = reward.getAmountByCurrencyCode(arguments.currencyCode) * quantity;
-					break;
-				case "amount" :
-					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - reward.getAmountByCurrencyCode(arguments.currencyCode)) * arguments.quantity));
-					break;
-			}
+		var amountMethod = 'getAmount';
+		var amountParams = {
+			quantity:arguments.quantity
+		};
 
-		}else{
+		if(structKeyExists(arguments,'currencyCode') && len(arguments.currencyCode)){
+			amountMethod &= 'ByCurrencyCode';
+			amountParams['currencyCode'] = arguments.currencyCode;
+		}
+		if(structKeyExists(arguments,'sku')){
+			amountParams['sku'] = arguments.sku;
+		}
+		
+		var rewardAmount = arguments.reward.invokeMethod(amountMethod,amountParams);
+		if(!isNull(rewardAmount)){
 			switch(reward.getAmountType()) {
 				case "percentageOff" :
-					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (reward.getAmount()/100)));
+					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (rewardAmount/100)));
 					break;
 				case "amountOff" :
-					discountAmountPreRounding = reward.getAmount() * quantity;
+					discountAmountPreRounding = rewardAmount * quantity;
 					break;
 				case "amount" :
-					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - reward.getAmount()) * arguments.quantity));
+					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - rewardAmount) * arguments.quantity));
 					break;
-			}
+	        }
+		}else{
+			discountAmountPreRounding = 0;
 		}
 
 		if(!isNull(reward.getRoundingRule())) {
@@ -959,7 +959,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			var skuPriceDetails = getPriceDetailsForPromoRewards(
 														promoRewards=activePromotionRewardsWithSkuCollection,
-														skuID=sku.getSkuID(),
+														sku=sku,
 														originalPrice=originalPrice,
 														currencyCode=arguments.currencyCode);
 			structAppend(priceDetails,{'#sku.getSkuID()#':skuPriceDetails});
@@ -973,7 +973,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
-														skuID=arguments.orderItem.getSkuID(),
+														sku=arguments.orderItem.getSku(),
 														originalPrice=originalPrice,
 														currencyCode=currencyCode );
 
@@ -981,7 +981,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public struct function getPriceDetailsForPromoRewards(required array promoRewards, 
-															required string skuID,
+															required any sku,
 															required string originalPrice,
 															string currencyCode = ''){
 		var priceDetails = {
@@ -994,11 +994,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		};
 		var discountAmount = 0;
 		for( var promoReward in promoRewards ){
-			if( promoReward.hasSkuBySkuID( arguments.skuID ) ){
+			if( promoReward.hasSkuBySkuID( arguments.sku.getSkuID() ) ){
 				var promoDiscountAmount = getDiscountAmount( promoReward, 
 															originalPrice, 
 															1,
-															currencyCode);
+															currencyCode,
+															arguments.sku);
 				if(promoDiscountAmount > discountAmount){
 					discountAmount = promoDiscountAmount;
 					priceDetails.promotionID = promoReward.getPromotionPeriod().getPromotion().getPromotionID();
