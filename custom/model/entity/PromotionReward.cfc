@@ -97,7 +97,7 @@ component {
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku){
+    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku, numeric quantity){
 		var amountParams = {
 		    'customPriceField':arguments.customPriceField
 		};
@@ -118,14 +118,14 @@ component {
 		return getCustomAmount(argumentCollection=amountParams);
 	}
 	
-	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode){
+	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode, numeric quantity){
 
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
 			if(!structKeyExists(arguments,'currencyCode')){
 				arguments.currencyCode = getCurrencyCode();
 			}
-			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,arguments.currencyCode);
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(argumentCollection=arguments);
 			if(!isNull(skuPrice)){
 				return skuPrice.invokeMethod('get#customPriceField#');
 			}

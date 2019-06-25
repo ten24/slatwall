@@ -105,7 +105,9 @@ component extends="Slatwall.model.service.PromotionService" {
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));
 
 		var amountMethod = '';
-		var amountParams = {};
+		var amountParams = {
+			quantity:arguments.quantity
+		};
 		if(structKeyExists(arguments,'customPriceField')){
 			amountMethod &= 'get#arguments.customPriceField#Amount';
 		}else{
