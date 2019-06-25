@@ -1,0 +1,10 @@
+{
+	"conditions":{
+		"activeOrderTemplate": {
+			"statusCode": { "eq":"otstActive" }
+		}
+	},
+	"properties":{
+		"canPlaceOrderFlag" : [{"contexts":"save", "conditions":"activeOrderTemplate", "eq":true}]
+	}
+}

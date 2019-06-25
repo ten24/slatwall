@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,24 +45,53 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiProcess" {
+	
+	// Injected Entity
+	property name="account";	
+	
+	// Lazy / Injected Objects
+	
+	// New Properties
 
-<cfparam name="rc.product" type="any" />
+	// Data Properties (ID's)
+	
+	// Data Properties (Inputs)
+	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
+	property name="giftCardAmount";
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
 
-<hb:HibachiListingDisplay smartList="#rc.product.getProductReviewsSmartList()#"
-                            createAction="admin:entity.createProductReview"
-                            createQueryString="?productID=#rc.product.getProductID()#"
-                            createModal="true"
-						   recorddetailaction="admin:entity.detailproductreview"
-						   recorddetailmodal="true"
-						   recordeditaction="admin:entity.editproductreview"
-						   recordeditmodal="true">
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
-	<hb:HibachiListingColumn propertyIdentifier="rating" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
-	<hb:HibachiListingColumn propertyIdentifier="productReviewStatusType.typeName" />
-	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	public array function getCurrencyCodeOptions() {
+		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
+		if (ArrayLen(currencyCodeOptions) GT 1) {
+			arrayPrepend(currencyCodeOptions, {value="", name="Select Currency"});
+		}
+		return currencyCodeOptions;
+	}	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================	
+}

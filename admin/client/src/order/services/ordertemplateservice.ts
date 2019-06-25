@@ -18,10 +18,11 @@ export class OrderTemplateService {
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
         this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
         this.observerService.attach(this.deleteOrderTemplateItem, 'deleteOrderTemplateItem');
-        this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode')
+        this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateAddOrderTemplateItemSuccess');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateItemDeleteSuccess');
-        this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateAddPromotionCodeSuccess')
+        this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateRemoveOrderTemplateItemSuccess');
+        this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateAddPromotionCodeSuccess');
         this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateRemovePromotionCodeSuccess');
     }
     
@@ -118,10 +119,11 @@ export class OrderTemplateService {
     
     public deleteOrderTemplateItem = (state) =>{
          var formDataToPost:any = {
-			entityID: state.orderTemplateItemID,
-			entityName: 'OrderTemplateItem',
-			context: 'delete',
-			propertyIdentifiersList: 'fulfillmentTotal,subtotal,total',
+			entityID: this.orderTemplateID,
+			entityName: 'OrderTemplate',
+			orderTemplateItemID: state.orderTemplateItemID,
+			context: 'removeOrderTemplateItem',
+			propertyIdentifiersList: 'fulfillmentTotal,subtotal,total'
 		};
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');

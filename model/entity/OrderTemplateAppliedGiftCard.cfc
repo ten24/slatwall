@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,29 +45,20 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component displayname="OrderTemplateAppliedGiftCard" entityname="SlatwallOrderTemplateAppliedGiftCard" table="SwOrderTemplateAppliedGiftCard" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel" {
 
-<cfset rc.orderTemplateCollectionList.setDisplayProperties('orderTemplateName,account.calculatedFullName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime',{isVisible=true,isSearchable=true,isDeletable=true}) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=true,isDeletable=true} ) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateStatusType.typeName",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateStatusType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
-<cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.systemCode', 'ottSchedule') />
+	// Persistent Properties
+	property name="orderTemplateAppliedGiftCardID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	
+	property name="amountToApply" ormtype="big_decimal" hb_formatType="currency";
+	
+	property name="giftCard" cfc="GiftCard" fieldtype="many-to-one" fkcolumn="giftCardID";
+	property name="orderTemplate" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID";
 
-<cfoutput>
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
-
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessordertemplate" entity="OrderTemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-
-	<hb:HibachiListingDisplay 
-		collectionList="#rc.orderTemplateCollectionlist#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.editordertemplate"
-		recordDetailAction="admin:entity.detailordertemplate"
-	>
-	</hb:HibachiListingDisplay>
-</cfoutput>
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+}

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,24 +45,16 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfparam name="rc.product" type="any" />
+	// Injected Entity
+	property name="orderTemplate";
+	property name="orderTemplateItem";
 
-<hb:HibachiListingDisplay smartList="#rc.product.getProductReviewsSmartList()#"
-                            createAction="admin:entity.createProductReview"
-                            createQueryString="?productID=#rc.product.getProductID()#"
-                            createModal="true"
-						   recorddetailaction="admin:entity.detailproductreview"
-						   recorddetailmodal="true"
-						   recordeditaction="admin:entity.editproductreview"
-						   recordeditmodal="true">
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
-	<hb:HibachiListingColumn propertyIdentifier="rating" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
-	<hb:HibachiListingColumn propertyIdentifier="productReviewStatusType.typeName" />
-	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
+	property name="orderTemplateItemID";
+
+	public any function getOrderTemplateItem(){
+		return getService('OrderService').getOrderTemplateItem(getOrderTemplateItemID());
+	}
+}
