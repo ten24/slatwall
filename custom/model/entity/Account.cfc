@@ -7,6 +7,8 @@ component {
         orderList.setDisplayProperties("orderID");
         orderList.addFilter("Account.accountID",this.getAccountID());
         orderList.addFilter("OrderTemplate.orderTemplateID","NULL","IS NOT");
+        orderList.addFilter("OrderTemplate.orderTemplateType.systemCode","ottSchedule");
+        orderList.addFilter("orderStatusType.systemCode","ostNotPlaced","!=");
         orderList.addOrderBy("orderCloseDateTime|ASC");
         orderList.setPageRecordsShow(1);
         var orders = orderList.getPageRecords(formatRecords=false);
