@@ -156,7 +156,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 
 			//CUSTOM PROPERTIES BEGIN
-
+property name="enrollmentDate" ormtype="dateTime"
  property name="hyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
