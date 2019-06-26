@@ -126,6 +126,7 @@ class SWListingDisplayController{
     public personalCollectionIdentifier:string;
     public persistedReportCollections:any;
     public customEndpoint: string;
+    public hideUnfilteredResults:boolean;
     //@ngInject
     constructor(
         public $scope,
@@ -304,34 +305,38 @@ class SWListingDisplayController{
     }
     
     public getCollectionByPagination = (state) =>{
-        if(state.type){
-            switch(state.type){
-                case 'setCurrentPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'nextPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'prevPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'setPageShow':
-                    this.collectionConfig.currentPage = 1;
-                    this.collectionConfig.setPageShow(state.payload);
-                    break;
+        
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            if(state.type){
+                switch(state.type){
+                    case 'setCurrentPage':
+                        this.collectionConfig.currentPage = state.payload;
+                        break;
+                    case 'nextPage':
+                        this.collectionConfig.currentPage = state.payload;
+                        break;
+                    case 'prevPage':
+                        this.collectionConfig.currentPage = state.payload;
+                        break;
+                    case 'setPageShow':
+                        this.collectionConfig.currentPage = 1;
+                        this.collectionConfig.setPageShow(state.payload);
+                        break;
+                }
+                if(this.collectionId){
+                
+                    this.collectionConfig.baseEntityNameType = 'Collection';
+                    this.collectionConfig.id = this.collectionId;
+                }
+                this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+                    this.collectionData = data;
+                    this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
+                });
+    
             }
-            if(this.collectionId){
-            
-                this.collectionConfig.baseEntityNameType = 'Collection';
-                this.collectionConfig.id = this.collectionId;
-            }
-            this.getCollection = this.collectionConfig.getEntity().then((data)=>{
-                this.collectionData = data;
-                this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
-            });
-
+        }else{
+            this.collectionData = null;
         }
-
     }
 
     private setupCollectionPromise=()=>{
@@ -345,8 +350,11 @@ class SWListingDisplayController{
         var getCollectionEventID = this.tableID;
 
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
-
-        this.listingService.getCollection(this.tableID);
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            this.listingService.getCollection(this.tableID);
+        }else{
+            this.collectionData = null;
+        }
     }
 
     private getCollectionObserver=(param)=> {
@@ -357,11 +365,16 @@ class SWListingDisplayController{
         }
         
         this.collectionData = undefined;
-        this.$timeout(
-            ()=>{
-                this.getCollection();
-            }
-        );
+        
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            this.$timeout(
+                ()=>{
+                    this.getCollection();
+                }
+            );
+        }else{
+            this.collectionData = null;
+        }
     };
 
     private initializeState = () =>{
@@ -593,6 +606,13 @@ class SWListingDisplayController{
             });    
         }
         return false;
+    }
+    
+    private configHasFilters = (collectionConfig) =>{
+        return collectionConfig.filterGroups 
+            && collectionConfig.filterGroups.length
+            && collectionConfig.filterGroups[0].filterGroup
+            && collectionConfig.filterGroups[0].filterGroup.length
     }
 
     public columnOrderByIndex = (column) =>{
@@ -894,7 +914,8 @@ class SWListingDisplay implements ng.IDirective{
             hasSearch:"<?",
             hasActionBar:"<?",
             multiSlot:"=?",
-            customListingControls:"<?"
+            customListingControls:"<?",
+            hideUnfilteredResults:"<?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
