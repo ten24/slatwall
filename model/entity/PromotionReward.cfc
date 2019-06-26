@@ -117,16 +117,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
     
-	
-	//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    
-   //CUSTOM PROPERTIES END
+
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -258,7 +249,6 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
 				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
 				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
-				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 		}
 		return variables.excludedSkusCollection;
@@ -394,6 +384,22 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 
 	public boolean function isDeletable() {
 		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
+	}
+	
+	public void function setIncludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.includedSkusCollectionConfig = arguments.collectionConfig;	
+		}else{
+			writeDump(collectionConfigStruct);abort;
+		}
+	}
+	
+	public void function setExcludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.excludedSkusCollectionConfig = arguments.collectionConfig;	
+		}
 	}
 	
 	// ==================  END:  Overridden Methods ========================
@@ -605,5 +611,5 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	}
 	
 	// =================  END: Deprecated Methods   ========================	
-
+	
 }
