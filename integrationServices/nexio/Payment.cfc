@@ -635,23 +635,23 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 	
 		// ---> Comment Out:
-		var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
-		if (!directoryExists(logPath)){
-			directoryCreate(logPath);
-		}
-		var timeSufix = getTickCount() & createHibachiUUID(); 
+		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
+		// if (!directoryExists(logPath)){
+		// 	directoryCreate(logPath);
+		// }
+		// var timeSufix = getTickCount() & createHibachiUUID(); 
 		
-		var httpRequestData = {
-			'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-			'apiUrl'=apiUrl,
-			'username' = username,
-			'password' = password,
-			'httpContentTypeHeader' = 'application/json',
-			'publicKey' = getPublicKey(arguments.requestBean),
-			'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-		};
+		// var httpRequestData = {
+		// 	'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
+		// 	'apiUrl'=apiUrl,
+		// 	'username' = username,
+		// 	'password' = password,
+		// 	'httpContentTypeHeader' = 'application/json',
+		// 	'publicKey' = getPublicKey(arguments.requestBean),
+		// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
+		// };
 
-		fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+		// fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 		// Comment Out: <---
 		
 		// Make HTTP request to endpoint
@@ -689,7 +689,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					responseData = deserializeJSON(httpResponse.fileContent);
 					
 					// ---> Comment Out:
-					fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
+					// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 					// Comment Out: <---
 	
 					
@@ -715,7 +715,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
 				// ---> Comment Out:
-				fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
+				// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 				// Comment Out: <---
 			}
 			
