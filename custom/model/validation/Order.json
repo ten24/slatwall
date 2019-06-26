@@ -2,7 +2,7 @@
 
 	"properties":{
 		
-		"orderStatusType":[{"contexts":"edit","method":"isNotClosed"},{"contexts":"edit","method":"isNotPaid"}]
+		"orderStatusType":[{"contexts":"edit","method":"isNotClosed"}]
 		
 	}
 }

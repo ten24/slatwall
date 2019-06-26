@@ -25,7 +25,6 @@
 	    <Record printTemplateID="664420a897d9b354a38f5932b7ed2723" printTemplateName="Invoice (Order Delivery)" printTemplateObject="orderDelivery" printTemplateFile="invoicedelivery.cfm" />
 	    <Record printTemplateID="903bc1972ed908e58a90468e5180ed01" printTemplateName="POD (Fulfillment Batch)" printTemplateObject="FulfillmentBatch" printTemplateFile="batchpod.cfm" />
 	    <Record printTemplateID="2160ccfa9b5139012fcd5c4705813917" printTemplateName="Pick List (Fulfillment Batch)" printTemplateObject="FulfillmentBatch" printTemplateFile="batchpicklist.cfm" />
-	    <Record printTemplateID="335d676742a8307d3fff57e53dc3b1d0" printTemplateName="Sku Barcode (Sku Detail)" printTemplateObject="Sku" printTemplateFile="skubarcode.cfm" />
 
 	</Records>
 </Table>

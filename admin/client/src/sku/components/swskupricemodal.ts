@@ -310,8 +310,8 @@ class SWSkuPriceModalController{
             if( (this.skuPrice.sku.currencyCode == this.skuPrice.currencyCode) &&
                 !this.skuPrice.minQuantity.trim() &&
                 !this.skuPrice.maxQuantity.trim() &&
-                !this.skuPrice.priceGroup.priceGroupID.trim() &&
-                this.skuPrice.price.trim()){
+                (!this.skuPrice.priceGroup.priceGroupID || !this.skuPrice.priceGroup.priceGroupID.trim()) &&
+                this.skuPrice.price){
                 
                 return true;
             }

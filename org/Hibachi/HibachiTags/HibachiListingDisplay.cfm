@@ -22,7 +22,6 @@
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
-	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordActions" type="string" default="" />
@@ -96,7 +95,7 @@
 	<cfparam name="attributes.exportAction" type="string" default="" />
 	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 	<cfparam name="attributes.personalCollectionIdentifier" type="string" default="" />
-	<cfparam name="attributes.personalCollectionKey" type="string" default="" />
+
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
@@ -107,7 +106,6 @@
 			<cfif len(attributes.collectionConfigJson)>
 				<cfset JSON = attributes.collectionConfigJson />
 			<cfelse> 	
-				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums />
 				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
 			</cfif> 
 			
@@ -126,11 +124,6 @@
 				>
 				</span>
 			</cfif>
-			
-			<cfif !len(attributes.personalCollectionKey)>
-				<cfset personalCollectionKey = hash(serializeJson(attributes.collectionList.getCollectionConfigStruct()))/>
-			</cfif>
-			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-title="'#attributes.title#'"
@@ -138,9 +131,6 @@
 			    data-collection-config="#scopeVariableID#"
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
-				</cfif>
-				<cfif len(attributes.personalCollectionKey)>
-					data-personal-collection-key="#attributes.personalCollectionKey#"
 				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
@@ -173,7 +163,7 @@
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
-	 			data-using-personal-collection="#attributes.usingPersonalCollection#"
+				data-using-personal-collection="#attributes.usingPersonalCollection#"
 				<cfif len(attributes.listingColumns)>
 					data-listing-columns="#attributes.listingColumns#"
 				</cfif> 

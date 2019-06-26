@@ -49,6 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
 <cfparam name="rc.productReviewSmartList" type="any" />
 <cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
@@ -89,7 +90,7 @@ Notes:
 		<sw-listing-column data-property-identifier="product.defaultSku.price" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="productReviewsStatus.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="productReviewStatusType.typeName" ></sw-listing-column>
 	</sw-listing-display>--->
 	<cfset displayPropertyList = "reviewTitle,reviewerName,rating,product.productName,product.defaultSku.price,createdDateTime"/>
 	<cfset rc.productReviewCollectionList.setDisplayProperties(
@@ -101,7 +102,7 @@ Notes:
 		}
 	)/>
 
-	<cfset rc.productReviewCollectionList.addDisplayProperty(displayProperty='productReviewsStatus.typeName',title="#getHibachiScope().rbKey('entity.ProductReview.productReviewsStatus')#",columnConfig={
+	<cfset rc.productReviewCollectionList.addDisplayProperty(displayProperty='productReviewStatusType.typeName',title="#getHibachiScope().rbKey('entity.ProductReview.productReviewStatusType')#",columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true

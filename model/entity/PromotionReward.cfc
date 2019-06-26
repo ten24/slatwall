@@ -112,11 +112,21 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
-	property name="isDeletableFlag" type="boolean" persistent="false"; 
+	property name="isDeletableFlag" type="boolean" persistent="false";
 	property name="includedSkusCollection" persistent="false";
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
-
+    
+	
+	//CUSTOM PROPERTIES BEGIN
+property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    
+   //CUSTOM PROPERTIES END
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -164,16 +174,14 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return variables.currencyCode;
 	}
 	
-	public numeric function getAmount(any sku, string currencyCode){
+	public numeric function getAmount(any sku, string currencyCode, numeric quantity){
 		
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
-			if(structKeyExists(arguments,'currencyCode')){
-				var currencyCode = arguments.currencyCode;
-			}else{
-				var currencyCode = getCurrencyCode();
+			if(!structKeyExists(arguments,'currencyCode')){
+				arguments.currencyCode = getCurrencyCode();
 			}
-			var skuPrice = getSkuPriceBySkuAndCurrencyCode(arguments.sku,currencyCode);
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(argumentCollection=arguments);
 			
 			if(!isNull(skuPrice)){
 				return skuPrice.getPrice();
@@ -186,12 +194,24 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return variables.amount;
 	}
 
-	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode){
-		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(arguments.sku.getSkuID(),this.getPromotionRewardID(),arguments.currencyCode);
+	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity){
+		var daoArguments = {
+			skuID:arguments.sku.getSkuID(),
+			promotionRewardID:this.getPromotionRewardID(),
+			currencyCode:arguments.currencyCode
+		};
+		if(!isNull(arguments.quantity)){
+			daoArguments.quantity = arguments.quantity;
+		}
+
+		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(argumentCollection=daoArguments);
 	}
 
-	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku){
+	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku, numeric quantity){
 		var amountParams = {};
+		if(structKeyExists(arguments,'quantity')){
+			amountParams['quantity'] = arguments.quantity;
+		}
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
 		}
@@ -214,7 +234,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		//Either no conversion was needed, or we couldn't find a conversion rate.
 		return getAmount(argumentCollection=amountParams);
 	}
-
+	
 	public any function getIncludedSkusCollection(){
 		if(isNull(variables.includedSkusCollection)){
 			var collectionConfig = getIncludedSkusCollectionConfig();
@@ -334,7 +354,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			arrayDeleteAt(arguments.shippingMethod.getPromotionRewards(), thatIndex);    
 		}    
 	}
-
+	
 	// Collection Skus
 	
 	public boolean function hasSkuBySkuID(required any skuID){
@@ -585,5 +605,5 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	}
 	
 	// =================  END: Deprecated Methods   ========================	
-		
+
 }

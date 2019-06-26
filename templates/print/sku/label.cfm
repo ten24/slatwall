@@ -3,7 +3,7 @@
 <cfparam name="sku" type="any" />
 
 <cfoutput>
-	<script src="#request.slatwallScope.getBaseURL()#/assets/js/JsBarcode.all.min.js"></script>
+	<script src="#request.slatwallScope.getBaseURL()#/custom/js/JsBarcode.all.min.js"></script>
 	<style> 
 		body { 
 			width: 2in;

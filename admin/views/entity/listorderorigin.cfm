@@ -49,6 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
 <cfparam name="rc.orderOriginSmartList" type="any" />
 
 <cfoutput>
@@ -61,28 +62,34 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-    <cfset orderOriginCollectionList = getHibachiScope().getService('settingService').getorderOriginCollectionList()>
-	<cfset serchableDisplayProperties = "orderOriginType,orderOriginName,activeFlag"/>
-	<cfset orderOriginCollectionList.setDisplayProperties( serchableDisplayProperties, {
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset orderOriginCollectionList.addDisplayProperty( displayProperty='orderOriginID', columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
+	<!--- <hb:HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
+			recordEditAction="admin:entity.editorderorigin"
+			recordEditQueryString="redirectAction=admin:entity.listorderorigin"
+			recordDeleteAction="admin:entity.deleteorderorigin"
+			recordEditModal="true">
 
-    <hb:HibachiListingDisplay 
-    		collectionList="#orderOriginCollectionList#"
-    		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-    		recordEditAction="admin:entity.edit#lcase(orderOriginCollectionList.getCollectionObject())#"
-    		recordDetailAction="admin:entity.detail#lcase(orderOriginCollectionList.getCollectionObject())#"
-    	>
-    </hb:HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderOriginName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderOriginType" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display data-using-personal-collection="true"
+	    data-collection="'OrderOrigin'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editorderorigin"
+	    record-edit-query-string="redirectAction=admin:entity.listorderorigin"
+	    record-detail-action="admin:entity.detailorderorigin"
+	    record-detail-modal="true"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="orderOriginID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="orderOriginName" tdclass="primary" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="orderOriginType" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
+	</sw-listing-display>
 
 </cfoutput>
 

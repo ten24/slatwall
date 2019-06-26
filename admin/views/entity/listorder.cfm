@@ -49,9 +49,13 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
+<cfparam name="rc.orderSmartList" type="any" />
+
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
 
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
@@ -80,8 +84,10 @@ Notes:
 	
 	<cfset displayPropertyList = ""/>
 	<cfset searchableDisplayPropertyList = "" />
+	<cfset searchFilterPropertyIdentifier="createdDateTime"/>
 	<cfif rc.slatAction eq "admin:entity.listorder">
 		<cfset displayPropertyList &= "orderOpenDateTime,"/>
+		<cfset searchFilterPropertyIdentifier = "orderOpenDateTime"/>
 		
 	<cfelse>
 	</cfif>
@@ -133,6 +139,8 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
 		usingPersonalCollection="true"
+		showSearchFilterDropDown="true"
+		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(rc.orderCollectionlist.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.orderCollectionlist.getCollectionObject())#"

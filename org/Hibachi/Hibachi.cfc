@@ -24,7 +24,7 @@ component extends="framework.one" {
 	// =============== configFramework
 
 	// Defaults
- 
+
 	// FW1 Setup
 	variables.framework=structNew();
 	variables.framework.applicationKey = 'Hibachi';
@@ -138,16 +138,11 @@ component extends="framework.one" {
 	}
 	
 
-	public string function getDatasource(){
-		return this.datasource.name;
-	}
-	
-
 	// =============== configMappings
 
 	// Defaults
 	this.mappings[ "/#variables.framework.applicationKey#" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/org/Hibachi/", "");
-	this.mappings[ '/framework' ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & 'framework';
+	this.mappings[ '/framework' ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & '/framework';
 
 	// Allow For Application Config
 	try{include "../../config/configMappings.cfm";}catch(any e){}
@@ -395,7 +390,7 @@ component extends="framework.one" {
 			//get token by stripping prefix
 			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
 			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
+			
 			if(jwt.verify()){
 
 				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
@@ -629,7 +624,6 @@ component extends="framework.one" {
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
 		createHibachiScope();
-
 		if(
 			(
 				hasReloadKey()
@@ -640,8 +634,6 @@ component extends="framework.one" {
 
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
-			
-
 			// If not, lock the application until this is finished
 			lock scope="Application" timeout="2400"  {
 
@@ -855,7 +847,7 @@ component extends="framework.one" {
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 						
 						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
-						
+					
 						if(!variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup){	
 							getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
 						}
@@ -875,7 +867,7 @@ component extends="framework.one" {
 					// ========================== END: FULL UPDATE ==============================
 
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
-					onFirstRequestPostUpdate();	
+					onFirstRequestPostUpdate();
 					//verify that any property changes to audit and auditarchive mirror each other
 					getBeanFactory().getBean('HibachiAuditService').verifyIntegrity();
 
@@ -1082,35 +1074,13 @@ component extends="framework.one" {
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
 		}
-		
 		if(!getHibachiScope().getORMHasErrors()) {
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
 
-		
-
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
-		
-		//Process request entity queue
-		var entityQueueData = getHibachiScope().getEntityQueueData();
-		var entityQueueDataLength = structCount(entityQueueData);
-		if(entityQueueDataLength > 0){
-			
-			var entityQueueArray = [];
-			var currentIndex = 1;
-			var limit = getHibachiScope().setting('globalEntityQueueDataProcessCount');
-			for(var i in entityQueueData){
-				if(limit > 0 && limit >= currentIndex){
-					break;
-				}
-				arrayAppend(entityQueueArray, entityQueueData[i]);
-				currentIndex++;
-			}
-			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
-		}
 		getHibachiScope().getProfiler().logProfiler();
-		
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed

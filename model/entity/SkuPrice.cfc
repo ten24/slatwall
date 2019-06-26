@@ -80,7 +80,8 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	// Non-Persistent Properties
 	property name="hasValidQuantityConfiguration" persistent="false"; 
  	
- 	public boolean function hasValidQuantityConfiguration(){
+
+	public boolean function hasValidQuantityConfiguration(){
  		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
 			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
 				return false; 
@@ -94,7 +95,8 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
  	public boolean function isDefaultSkuPrice(){
  		return isNull(getMinQuantity()) 
  			&& isNull(getMaxQuantity()) 
- 			&& isNull(getPriceGroup()) 
+ 			&& isNull(getPriceGroup())
+ 			&& isNull(getPromotionReward())
  			&& (getSku().getCurrencyCode() == getCurrencyCode())
  		;
  	}

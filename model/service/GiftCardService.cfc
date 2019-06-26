@@ -58,7 +58,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 	public any function processGiftCard_create(required any giftCard, required any processObject){
-
 		if(isNull(arguments.giftCard)){
 			arguments.giftCard = this.newGiftCard();
 		}
@@ -76,6 +75,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(!isNull(arguments.processObject.getOriginalOrderItem())){
 			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
+		}
+		
+		if( !isNull(arguments.processObject.getSku()) ){
+			arguments.giftCard.setSku(arguments.processObject.getSku());
 		}
 
         if(!isNull(arguments.processObject.getOrderItemGiftRecipient())){
@@ -104,18 +107,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//is it time to credit the card
 		if(arguments.processObject.getCreditGiftCardFlag()){
-		    var amountToRedeem = arguments.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount(userDefinedPrice=arguments.giftCard.getOriginalOrderItem().getPrice());
+		    var amountToRedeem = arguments.giftCard.getSku().getRedemptionAmount(userDefinedPrice=arguments.giftCard.getPrice());
 			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, amountToRedeem, arguments.processObject.getOrderPayments()[1]);
+		
+			if(!giftCardCreditTransaction.hasErrors()){
+	            arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+			} else {
+				arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
+			}
+			
 		}
 
 		arguments.giftCard.setIssuedDate(now());
-
-		if(!giftCardCreditTransaction.hasErrors()){
-            		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
-		} else {
-			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
-		}
-
 
 		return arguments.giftCard;
 

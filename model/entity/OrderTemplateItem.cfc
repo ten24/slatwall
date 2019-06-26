@@ -55,7 +55,24 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
 
-	// Order Template (many-to-one)
+	property name="total" persistent="false"; 
+
+	// Order Template (many-to-one)	//CUSTOM PROPERTIES BEGIN
+property name="personalVolumeTotal" persistent="false"; 
+	
+//CUSTOM PROPERTIES END
+
+	public numeric function getTotal(){
+		if(!structKeyExists(variables, 'total')){
+			variables.total = 0; 
+
+			if(!isNull(getSku()) && !isNull(getQuantity())){
+				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode(), getQuantity());
+			} 	
+		}
+		return variables.total;
+	} 
+
 	public void function setOrderTemplate(required any orderTemplate) {
 		variables.orderTemplate = arguments.orderTemplate;
 		if(isNew() or !arguments.orderTemplate.hasOrderTemplateItem( this )) {
@@ -71,5 +88,19 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 			arrayDeleteAt(arguments.orderTemplate.getOrderTemplateItems(), index);
 		}
 		structDelete(variables, "orderTemplate");
-	}	
+	}		//CUSTOM FUNCTIONS BEGIN
+
+public numeric function getPersonalVolumeTotal(){
+		if(!structKeyExists(variables, 'personalVolumeTotal')){
+			variables.personalVolumeTotal = 0; 
+			
+			if( !isNull(this.getSku()) && 
+				!isNull(this.getSku().getPersonalVolume()) && 
+				!isNull(this.getQuantity())
+			){
+				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() & this.getQuantity()); 
+			}	
+		}
+		return variables.personalVolumeTotal; 	
+	} //CUSTOM FUNCTIONS END
 }

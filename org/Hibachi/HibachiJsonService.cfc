@@ -101,6 +101,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	createRBJson();
     	var permissionGroupSmartlist = getService('accountService').getPermissionGroupSmartlist();
     	var permissionGroups = permissionGroupSmartList.getRecords();
+    	getService('HibachiJsonService').createPermissionJson('entity',getService('HibachiAuthenticationService').getEntityPermissionDetails());
+    	getService('HibachiJsonService').createPermissionJson('action',getService('HibachiAuthenticationService').getActionPermissionDetails());
     	for(var permissionGroup in permissionGroups){
     	    createPermissionJson(permissionGroup.getPermissionGroupID(),permissionGroup.getPermissionsByDetails(true));
     	}
@@ -112,6 +114,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(!directoryExists(systemrbpath)){
         	directoryCreate(systemrbpath);
         }
+        
         //remove meta data we already have in config.json
         if(arguments.permissionType=='entity'){
             var jsonStruct = {};
@@ -258,11 +261,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	
     	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/resourceBundles";
     	
+    	var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
+    	
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
         }
-        
-        var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
         
         if(!directoryExists(systemrbpath)){
         	directoryCreate(systemrbpath);
@@ -275,7 +278,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     			}
     		}
     	}
-    	
     	for(var rb in directoryListing){
     		var locale = listFirst(rb,'.');
     		var resourceBundle = getService('HibachiRBService').getResourceBundle(locale);
@@ -294,6 +296,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var filePath = systemrbpath & '/#locale#.json';
 	        fileWrite(filePath,json,'utf-8');
     	}
+        
     }
     
     private void function formatEntity(required any entity, required any model){
