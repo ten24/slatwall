@@ -51,7 +51,6 @@ Notes:
 <cfparam name="rc.site" type="any" />
 
 <cfoutput>
-	<cfthrow> 
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="siteAvailableLocales" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
