@@ -92,19 +92,24 @@ Notes:
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
 			
-			<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
-										property="scheduleOrderNextPlaceDateTime" 
-										edit="#rc.edit#" 
-										fieldType="text" 
-										fieldAttributes="sw-date-picker 
-														ng-model=""scheduleOrderNextPlaceDateTime""
-														data-end-day-of-the-month=""26""
-														data-end-date=""endDate""
-														autocomplete=""off""">
-
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
-
+			<!---<cfdump var="#rc.processObject.getOrderTemplate()#" top=3 abort=true />--->
+			
+			<!--- Visible for Order Templates Only --->
+			<hb:HibachiDisplayToggle selector="select[name=orderTemplateTypeID]" showValues="ottSchedule" loadVisable="#!isNull(rc.processObject.getOrderTemplate().getOrderTemplateType()) and (rc.processObject.getOrderTemplate().getOrderTemplateType().getSystemCode() neq 'ottWishList')#">
+				<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" 
+											property="scheduleOrderNextPlaceDateTime" 
+											edit="#rc.edit#" 
+											fieldType="text" 
+											fieldAttributes="sw-date-picker 
+															ng-model=""scheduleOrderNextPlaceDateTime""
+															data-end-day-of-the-month=""26""
+															data-end-date=""endDate""
+															autocomplete=""off""">
+	
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
+			</hb:HibachiDisplayToggle>
+			
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </hb:HibachiEntityProcessForm>

@@ -57,11 +57,16 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+		<!--- Create --->
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiProcessCaller action="admin:entity.preprocessordertemplate" entity="OrderTemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderTemplateCollectionlist#"
 		usingPersonalCollection="true"
+		recordEditAction="admin:entity.editordertemplate"
 		recordDetailAction="admin:entity.detailordertemplate"
 	>
 	</hb:HibachiListingDisplay>
