@@ -645,7 +645,7 @@ class SWListingDisplayController{
             } else {
                 //multiCollectionConfig logic
             }
-            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
+            $('body').append('<form action="' + this.getExportAction() + '" method="post" id="formExport"></form>');
             $('#formExport')
                 .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig).replace(/'/g,'&#39;') + "' />")
                 .submit()
