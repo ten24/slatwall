@@ -16,8 +16,8 @@ component extends="Slatwall.model.service.IntegrationService" accessors="true" {
     		    var accountPaymentRecords = accountPaymentMethodCollection.getRecords(); 
                 
                 for(var accountPaymentRecord in accountPaymentRecords) {
-    		        if(len(accountPaymentRecord.providerToken)){
-    		            arrayAppend(tokens,accountPaymentRecord.providerToken);
+    		        if(len(accountPaymentRecord['providerToken'])){
+    		            arrayAppend(tokens,accountPaymentRecord['providerToken']);
     		        }
     		    }
             }
@@ -29,23 +29,17 @@ component extends="Slatwall.model.service.IntegrationService" accessors="true" {
     		    var orderPaymentRecords = orderPaymentMethodCollection.getRecords(); 
                 
                 for(var orderPaymentRecord in orderPaymentRecords) {
-    		        if(len(orderPaymentRecord.providerToken)){
-    		            arrayAppend(tokens,orderPaymentRecord.providerToken);
+    		        if(len(orderPaymentRecord['providerToken'])){
+    		            arrayAppend(tokens,orderPaymentRecord['providerToken']);
     		        }
     		    }
             }
 
             var responseBean = arguments.integration.getIntegrationCFC('payment').sendRequestToDeleteTokens(tokens);
             
-            writeDump(var="***IntegrationService responseBean");
-            writeDump(var=responseBean);
-            
             if (!responseBean.hasErrors()){
                 getAccountDAO().removeStalePaymentProviderTokens(tokens);
             }
-            
-            writeDump(var="***IntegrationService arguments.integration");
-            writeDump(var=arguments.integration);
             
         	return arguments.integration;
 
