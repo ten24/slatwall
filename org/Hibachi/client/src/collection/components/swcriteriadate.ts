@@ -113,6 +113,46 @@ class SWCriteriaDate{
 				    			}
 				    		},
 				    		{
+				    			display:"Last Week to Current Day",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lwtc',
+				    				measureTypeDisplay:'Weeks',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
+				    			display:"Last Month to Current Day",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lmtc',
+				    				measureTypeDisplay:'Months',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
+				    			display:"Last Quarter to Current Day",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lqtc',
+				    				measureTypeDisplay:'Quarters',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
+				    			display:"Last Year to Current Day",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lytc',
+				    				measureTypeDisplay:'Years',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
 				    			display:"Last N Hour(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
@@ -366,8 +406,16 @@ class SWCriteriaDate{
 		  								var firstDayOfWeek = Date.today().last().monday();
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
 		  								break;
+		  							case 'lwtc':
+		  								var lastweekstart = Date.today().last().week().sunday();
+		  								selectedFilterProperty.criteriaRangeStart = lastweekstart.getTime();
+		  								break;
 		  							case 'm':
 		  								var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
+					  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
+		  								break;
+		  							case 'lmtc':
+		  								var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
 					  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
 		  								break;
 		  							case 'q':
@@ -377,9 +425,20 @@ class SWCriteriaDate{
 		  								var firstDayOfQuarter = new Date(year,quarterMonth,1);
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
 		  								break;
+		  							case 'lqtc':
+		  								var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+										var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+									 	lastXQuartersAgo.add(-3).months();
+									 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
+		  								break;
 		  							case 'y':
 		  								var year = Date.parse('today').toString('yyyy');
 		  								var firstDayOfYear = new Date(year,0,1);
+		  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
+		  								break;
+		  							case 'lytc':
+		  								var lastyear = Date.parse('today').last().year().toString('yyyy');
+		  								var firstDayOfYear = new Date(lastyear,0,1);
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
 		  								break;
 		  						}
