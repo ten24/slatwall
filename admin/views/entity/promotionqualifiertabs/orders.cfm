@@ -54,9 +54,21 @@ Notes:
 
 <cfoutput>
 	<div class="col-md-6">
-        <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getIncludedOrdersCollection()#" title="Included Orders" collectionConfigFieldName="includedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+        <hb:HibachiListingDisplay 
+            collectionList="#rc.promotionQualifier.getIncludedOrdersCollection()#" 
+            title="Included Orders"
+            collectionConfigFieldName="includedOrdersCollectionConfig" 
+            edit="#rc.edit#" 
+            displaytype="plainTitle"
+            showSimpleListingControls="false"/>
 	</div>
 	<div class="col-md-6">
-	    <hb:HibachiListingDisplay collectionList="#rc.promotionQualifier.getExcludedOrdersCollection()#" title="Excluded Orders" collectionConfigFieldName="excludedOrdersCollectionConfig" edit="#rc.edit#" displaytype="plainTitle" />
+	    <hb:HibachiListingDisplay 
+	        collectionList="#rc.promotionQualifier.getExcludedOrdersCollection()#" 
+	        title="Excluded Orders" 
+	        collectionConfigFieldName="excludedOrdersCollectionConfig" 
+	        edit="#rc.edit#" 
+	        displaytype="plainTitle"
+	        showSimpleListingControls="false"/>
 	</div>
 </cfoutput>

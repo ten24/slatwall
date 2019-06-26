@@ -61,7 +61,8 @@ Notes:
             title="Included Skus" 
             collectionConfigFieldName="includedSkusCollectionConfig" 
             edit="#rc.edit#" 
-            displaytype="plainTitle"/>
+            displaytype="plainTitle"
+            showSimpleListingControls="false"/>
 	</div>
 	<div class="col-md-6">
 	    <hb:HibachiListingDisplay 
@@ -69,6 +70,7 @@ Notes:
 	        title="Excluded Skus" 
 	        collectionConfigFieldName="excludedSkusCollectionConfig" 
 	        edit="#rc.edit#" 
-            displaytype="plainTitle" />
+            displaytype="plainTitle"
+            showSimpleListingControls="false"/>
 	</div>
 </cfoutput>
