@@ -91067,6 +91067,9 @@ var SWListingDisplayController = /** @class */ (function () {
                 else if (_this.listingColumns && _this.listingColumns.length) {
                     _this.columns = _this.listingColumns;
                 }
+                else if (_this.collectionConfig.columns && _this.collectionConfig.columns.length) {
+                    _this.columns = _this.collectionConfig.columns;
+                }
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);

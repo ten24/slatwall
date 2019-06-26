@@ -284,6 +284,8 @@ class SWListingDisplayController{
                 this.collectionConfig.columns = this.columns;
             } else if (this.listingColumns && this.listingColumns.length){
                 this.columns = this.listingColumns;
+            } else if (this.collectionConfig.columns && this.collectionConfig.columns.length){
+                this.columns = this.collectionConfig.columns;
             }
             
             //setup selectable
@@ -328,6 +330,7 @@ class SWListingDisplayController{
                     this.collectionConfig.baseEntityNameType = 'Collection';
                     this.collectionConfig.id = this.collectionId;
                 }
+
                 this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                     this.collectionData = data;
                     this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);

@@ -62,7 +62,8 @@ Notes:
             collectionConfigFieldName="includedSkusCollectionConfig" 
             edit="#rc.edit#" 
             displaytype="plainTitle"
-            showSimpleListingControls="false"/>
+            showSimpleListingControls="false"
+            hideUnfilteredResults="true"/>
 	</div>
 	<div class="col-md-6">
 	    <hb:HibachiListingDisplay 
@@ -71,6 +72,7 @@ Notes:
 	        collectionConfigFieldName="excludedSkusCollectionConfig" 
 	        edit="#rc.edit#" 
             displaytype="plainTitle"
-            showSimpleListingControls="false"/>
+            showSimpleListingControls="false"
+            hideUnfilteredResults="true"/>
 	</div>
 </cfoutput>
