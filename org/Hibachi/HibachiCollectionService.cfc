@@ -1533,6 +1533,18 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 	}
 
+	public boolean function collectionConfigStructHasFilter( required struct collectionConfigStruct ){
+		if(structKeyExists(collectionConfigStruct,'filterGroups') 
+			&& !isnull(collectionConfigStruct['filterGroups']) 
+			&& arraylen(collectionConfigStruct['filterGroups'])
+			&& structKeyExists(collectionConfigStruct['filterGroups'][1],'filterGroup')
+			&& arraylen(collectionConfigStruct['filterGroups'][1]['filterGroup'])){
+			
+			return true;
+			
+		}
+		return false;
+	}
 
 	// =====================  END: Logical Methods ============================
 
