@@ -49,20 +49,22 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.product" type="any" />
 
-<hb:HibachiListingDisplay smartList="#rc.product.getProductReviewsSmartList()#"
-                            createAction="admin:entity.createProductReview"
-                            createQueryString="?productID=#rc.product.getProductID()#"
-                            createModal="true"
-						   recorddetailaction="admin:entity.detailproductreview"
-						   recorddetailmodal="true"
-						   recordeditaction="admin:entity.editproductreview"
-						   recordeditmodal="true">
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
-	<hb:HibachiListingColumn propertyIdentifier="rating" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
-	<hb:HibachiListingColumn propertyIdentifier="productReviewStatusType.typeName" />
-	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
+<cfparam name="rc.account" type="any">
+<cfparam name="rc.processObject" type="any">
+<cfparam name="rc.edit" type="boolean">
+
+
+<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
+
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardAmount" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+
+</hb:HibachiEntityProcessForm> 

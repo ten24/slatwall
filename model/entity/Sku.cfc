@@ -1954,7 +1954,9 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 					AND 
 						maxQuantity IS NULL 
 					AND 
-						priceGroupID IS NULL 
+						priceGroupID IS NULL
+					AND
+						promotionRewardID IS NULL
 					AND 
 						currencyCode = :currencyCode 
 					AND 

@@ -70,12 +70,16 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 
+	//order created for applying promos ahead of scheduled order placement
+	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
+	
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
 
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
 
 	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 	property name="orderTemplateScheduleDateChangeReasons" singularname="orderTemplateScheduleDateChangeReason" cfc="OrderTemplateScheduleDateChangeReason" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
+	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="orderTemplateID";
 
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
 	
@@ -93,21 +97,44 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	property name="fulfillmentTotal" persistent="false";
+	property name="canPlaceOrderFlag" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
 	property name="subtotal" persistent="false";
 	property name="total" persistent="false";
+	//CUSTOM PROPERTIES BEGIN
+property name="personalVolumeTotal" persistent="false"; 
 
-	public struct function getStructRepresentation(){ 
-		var orderTemplateStruct = super.getStructRepresentation(); 
-		orderTemplateStruct['subtotal'] = this.getSubtotal();
-		orderTemplateStruct['fulfillmentTotal'] = this.getFulfillmentTotal();
-		orderTemplateStruct['total'] = this.getTotal();
+
+//CUSTOM PROPERTIES END
+	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
+		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
+	} 
+	
+	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
+		var orderTemplateStruct = super.getStructRepresentation();
+
+		var propertiesToDisplay = listToArray(arguments.nonPersistentProperties);
+
+		for(var property in propertiesToDisplay){
+			orderTemplateStruct[property] = invokeMethod('get' & property);
+		} 
 
 		return orderTemplateStruct;  
-	}  
+	} 
+
+	public string function getStatusCode() {
+		return getOrderTemplateStatusType().getSystemCode();
+	}
+
+	public boolean function getCanPlaceOrderFlag(){
+		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
+			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this); 
+		} 
+		return variables.canPlaceOrderFlag;
+	} 
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
@@ -137,7 +164,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		return this.getSubtotal() + this.getFulfillmentTotal(); 
 	} 
 
-	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
@@ -245,5 +272,19 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}	
+	//CUSTOM FUNCTIONS BEGIN
 
+public numeric function getPersonalVolumeTotal(){
+	
+		if(!structKeyExists(variables, 'personalVolumeTotal')){
+			variables.personalVolumeTotal = 0; 
+
+			var orderTemplateItems = this.getOrderTemplateItems();
+
+			for(var orderTemplateItem in orderTemplateItems){ 
+				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal();
+			}
+		}	
+		return variables.personalVolumeTotal; 	
+	} //CUSTOM FUNCTIONS END
 }

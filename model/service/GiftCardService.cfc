@@ -120,7 +120,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.giftCard.setIssuedDate(now());
 
-
 		return arguments.giftCard;
 
 	}

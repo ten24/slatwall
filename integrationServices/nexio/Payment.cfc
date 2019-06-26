@@ -149,8 +149,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				'processingOptions' = {
 					'checkFraud' = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
 					'verifyCvc' = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-					'verboseResponse' = true
+					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean))
 				},
 				'data' = {
 					'paymentMethod' = 'creditCard',
@@ -228,7 +227,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 
 				// Extract data and set as part of the responseBean
 				if (!responseBean.hasErrors()) {
-					
 					arguments.responseBean.setProviderTransactionID(arguments.requestBean.getOriginalProviderTransactionID());
 					arguments.responseBean.setProviderToken(responseData.token.token);
 					arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
@@ -298,7 +296,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	"expirationMonth": arguments.requestBean.getExpirationMonth(),
 			    	"expirationYear": arguments.requestBean.getExpirationYear(),
 			    	"cardHolderName": arguments.requestBean.getNameOnCreditCard(),
-			    	"lastFour": arguments.requestBean.getCreditCardLastFour()
+			    	"lastFour": arguments.requestBean.getCreditCardLastFour(),
+			    	"cardType": arguments.requestBean.getCreditCardType()
 			    },
 			    "data": {
 			      "currency": arguments.requestBean.getTransactionCurrencyCode(),
@@ -334,7 +333,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				if (!isNull(responseData.gatewayResponse.batchRef)){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
@@ -346,6 +347,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	}
 	
 	private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
+		// writedump(var="*** arguments.requestBean");
+		// writedump(var=arguments.requestBean);
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
 			var requestData = {
@@ -357,20 +360,21 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	"expirationMonth": arguments.requestBean.getExpirationMonth(),
 			    	"expirationYear": arguments.requestBean.getExpirationYear(),
 			    	"cardHolderName": arguments.requestBean.getNameOnCreditCard(),
-			    	"lastFour": arguments.requestBean.getCreditCardLastFour()
+			    	"lastFour": arguments.requestBean.getCreditCardLastFour(),
+			    	"cardType": arguments.requestBean.getCreditCardType()
 			    },
 			    "data": {
-			      "currency": arguments.requestBean.getTransactionCurrencyCode(),
-			      "amount": LSParseNumber(arguments.requestBean.getTransactionAmount())
+			    	"currency": arguments.requestBean.getTransactionCurrencyCode(),
+			    	"amount": LSParseNumber(arguments.requestBean.getTransactionAmount()),
+					"customer"= {
+						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+						'billToCity' = arguments.requestBean.getBillingCity(),
+						'billToState' = arguments.requestBean.getBillingStateCode(),
+						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+						'billToCountry' = arguments.requestBean.getBillingCountryCode()
+					}
 			    },
-			    "customer"= {
-					'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-					'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-					'billToCity' = arguments.requestBean.getBillingCity(),
-					'billToState' = arguments.requestBean.getBillingStateCode(),
-					'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-					'billToCountry' = arguments.requestBean.getBillingCountryCode()
-				},
 			    "processingOptions":{
 				    "checkFraud": (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
 				    "verifyAvs": LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
@@ -378,6 +382,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			};	
+			
+			// writedump(var="*** responseData");
+			// writedump(var=sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData), abort=true);
 
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
 			
@@ -394,7 +401,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				if (!isNull(responseData.gatewayResponse.batchRef)){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
@@ -433,7 +442,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				if (!isNull(responseData.gatewayResponse.batchRef)){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 			}
@@ -470,7 +481,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				if (!isNull(responseData.gatewayResponse.batchRef)){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 			}
 		} else {
@@ -508,8 +521,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	// 			arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
 	// 			arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 	// 			arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
-	// 			arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-	// 			arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+	// 			if (!isNull(responseData.gatewayResponse.batchRef)){
+					// arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+	// 			}
+				// arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 	// 			arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.message", message="#responseData.gatewayResponse.message#");
 	// 		}
 	// 	} else {
@@ -560,23 +575,23 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 	
 		// ---> Comment Out:
-		var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
-		if (!directoryExists(logPath)){
-			directoryCreate(logPath);
-		}
-		var timeSufix = getTickCount() & createHibachiUUID(); 
+		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
+		// if (!directoryExists(logPath)){
+		// 	directoryCreate(logPath);
+		// }
+		// var timeSufix = getTickCount() & createHibachiUUID(); 
 		
-		var httpRequestData = {
-			'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-			'apiUrl'=apiUrl,
-			'username' = username,
-			'password' = password,
-			'httpContentTypeHeader' = 'application/json',
-			'publicKey' = getPublicKey(arguments.requestBean),
-			'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-		};
+		// var httpRequestData = {
+		// 	'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
+		// 	'apiUrl'=apiUrl,
+		// 	'username' = username,
+		// 	'password' = password,
+		// 	'httpContentTypeHeader' = 'application/json',
+		// 	'publicKey' = getPublicKey(arguments.requestBean),
+		// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
+		// };
 
-		fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
+		// fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
 		// Comment Out: <---
 		
 		// Make HTTP request to endpoint
@@ -614,7 +629,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					responseData = deserializeJSON(httpResponse.fileContent);
 					
 					// ---> Comment Out:
-					fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
+					// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 					// Comment Out: <---
 	
 					
@@ -640,7 +655,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				responseData = deserializeJSON(httpResponse.fileContent);
 				
 				// ---> Comment Out:
-				fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
+				// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 				// Comment Out: <---
 			}
 			

@@ -43,12 +43,13 @@
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.orderTemplate" type="any" />
 
+<cfset orderTemplateTotalProperties = "fulfillmentTotal,personalVolumeTotal,subtotal,total" />
 <cfset defaultCountryCode = 'US' />
 <cfset stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
@@ -130,8 +131,9 @@
 														data-expiration-month-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationMonthOptions()))#"
 														data-expiration-year-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationYearOptions()))#"
 														data-base-entity-name="OrderTemplate" 
-														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation(orderTemplateTotalProperties)#"
 														data-default-country-code="US"
+														data-properties-to-display-list="#orderTemplateTotalProperties#"
 														>
 				</sw-customer-account-payment-method-card>
 			</div>		

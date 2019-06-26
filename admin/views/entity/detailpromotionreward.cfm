@@ -101,7 +101,7 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			</cfif>
 			<cfif rc.rewardType neq "canPlaceOrder">
-				<cfif rc.amountType neq 'percentage'>
+				<cfif rc.amountType neq 'percentageOff'>
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
 				</cfif>
 				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>

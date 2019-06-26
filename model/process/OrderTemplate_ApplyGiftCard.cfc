@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,29 +45,19 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfset rc.orderTemplateCollectionList.setDisplayProperties('orderTemplateName,account.calculatedFullName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime',{isVisible=true,isSearchable=true,isDeletable=true}) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=true,isDeletable=true} ) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateStatusType.typeName",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateStatusType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
-<cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.systemCode', 'ottSchedule') />
+	property name="orderTemplate"; 
 
-<cfoutput>
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	property name="amountToApply";
+	property name="giftCardID";
 
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessordertemplate" entity="OrderTemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
+	property name="giftCard"; 
 
-	<hb:HibachiListingDisplay 
-		collectionList="#rc.orderTemplateCollectionlist#"
-		usingPersonalCollection="true"
-		recordEditAction="admin:entity.editordertemplate"
-		recordDetailAction="admin:entity.detailordertemplate"
-	>
-	</hb:HibachiListingDisplay>
-</cfoutput>
+	public any function getGiftCard(){
+		if(structKeyExists(variables, 'giftCardID')){ 
+			return getService('GiftCardService').getGiftCard(variables.giftCardID); 
+		} 
+	} 	
+}

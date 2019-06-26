@@ -1229,7 +1229,7 @@ public any function getPersonalVolume(){
     
     private numeric function getCustomPriceFieldAmount(required string priceField){
         var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode());
-        if(isNull(personalVolume)){
+        if(isNull(amount)){
             amount = 0;
         }
         return amount;
