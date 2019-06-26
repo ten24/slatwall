@@ -1,0 +1,7 @@
+{
+	"conditions":{
+	},
+	"properties":{
+		"account":	[{"contexts":"create","conditions":"scheduleOrderTemplate","method":"customerCanCreateFlag"}] 	
+	}
+}

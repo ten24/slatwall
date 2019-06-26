@@ -2,9 +2,14 @@
 	"conditions":{
 		"activeOrderTemplate": {
 			"statusCode": { "eq":"otstActive" }
-		}
+		},
+		"scheduleOrderTemplate": {
+			"typeCode": { "eq":"ottSchedule" }
+		}	
 	},
 	"properties":{
-		"canPlaceOrderFlag" : [{"contexts":"save", "conditions":"activeOrderTemplate", "eq":true}]
+		"account":			  [{"contexts":"save","required":true}],
+		"canPlaceOrderFlag" : [{"contexts":"save","conditions":"activeOrderTemplate", "eq":true}],
+		"orderTemplateType": [{"contexts":"save","required":true}]
 	}
 }

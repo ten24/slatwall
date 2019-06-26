@@ -103,10 +103,12 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
 	property name="subtotal" persistent="false";
+	property name="statusCode" persistent="false";
+	property name="typeCode" persistent="false";
 	property name="total" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeTotal" persistent="false"; 
-
+property name="customerCanCreateFlag" persistent="false";
+	property name="personalVolumeTotal" persistent="false"; 
 
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
@@ -128,7 +130,9 @@ property name="personalVolumeTotal" persistent="false";
 	public string function getStatusCode() {
 		return getOrderTemplateStatusType().getSystemCode();
 	}
-
+	public string function getTypeCode() {
+		return getOrderTemplateType().getSystemCode();
+	}
 	public boolean function getCanPlaceOrderFlag(){
 		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
 			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this); 
@@ -274,7 +278,20 @@ property name="personalVolumeTotal" persistent="false";
 	}	
 	//CUSTOM FUNCTIONS BEGIN
 
-public numeric function getPersonalVolumeTotal(){
+public boolean function getCustomerCanCreateFlag(){
+			
+		if(!structKeyExists(variables, "customerCanCreateFlag")){
+			variables.customerCanCreateFlag = true;
+			if(!isNull(getSite()) && !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner'){
+				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().getSettingValue('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
+				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
+			} 
+		}
+
+		return variables.customerCanCreateFlag; 
+	} 
+
+	public numeric function getPersonalVolumeTotal(){
 	
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
 			variables.personalVolumeTotal = 0; 
