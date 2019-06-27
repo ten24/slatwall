@@ -60,29 +60,25 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<!--- <hb:HibachiListingDisplay smartList="#rc.vendorSmartList#"
-						   recordEditAction="admin:entity.editvendor"
-						   recordDetailAction="admin:entity.detailvendor">
+<cfset vendorCollectionList = getHibachiScope().getService('vendorService').getVendorCollectionList()>
+<cfset serchableDisplayProperties = "vendorName,accountNumber,vendorWebsite,primaryEmailAddress.emailAddress"/>
+<cfset vendorCollectionList.setDisplayProperties(serchableDisplayProperties, {
+	isVisible=true,
+	isSearchable=true,
+	isDeletable=true
+})/>
 
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendorName" search="true" />
-	<hb:HibachiListingColumn propertyIdentifier="accountNumber" search="true" />
-	<hb:HibachiListingColumn propertyIdentifier="vendorWebsite" search="true" />
-	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" search="true" />
-</hb:HibachiListingDisplay> --->
+<cfset vendorCollectionList.addDisplayProperty(displayProperty='vendorID', columnConfig={
+	isVisible=false,
+	isSearchable=false,
+	isDeletable=false
+})/>
 
-<sw-listing-display data-using-personal-collection="true"
-		data-collection="'Vendor'"
-		data-edit="false"
-		data-has-search="true"
-		data-record-edit-action="admin:entity.editvendor"
-		data-record-detail-action="admin:entity.detailvendor"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-					>
-	<sw-listing-column data-property-identifier="vendorID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="vendorName" search="true" tdclass="primary" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="accountNumber" search="true" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="vendorWebsite" search="true" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" search="true" ></sw-listing-column>
-</sw-listing-display>
+<hb:HibachiListingDisplay 
+	collectionList="#vendorCollectionList#"
+	usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+	recordEditAction="admin:entity.edit#lcase(vendorCollectionList.getCollectionObject())#"
+	recordDetailAction="admin:entity.detail#lcase(vendorCollectionList.getCollectionObject())#"
+>
+</hb:HibachiListingDisplay>
