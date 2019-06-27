@@ -113,6 +113,46 @@ class SWCriteriaDate{
 				    			}
 				    		},
 				    		{
+				    			display:"Last Full Week",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lw',
+				    				measureTypeDisplay:'Weeks',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
+				    			display:"Last Full Month",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lm',
+				    				behavior:'toDate',
+				    				measureTypeDisplay:'Months'
+				    			}
+				    		},
+				    		{
+				    			display:"Last Full Quarter",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lq',
+				    				behavior:'toDate',
+				    				measureTypeDisplay:'Quarters'
+				    			}
+				    		},
+				    		{
+				    			display:"Last Full Year",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'ly',
+				    				behavior:'toDate',
+				    				measureTypeDisplay:'Years'
+				    			}
+				    		},
+				    		{
 				    			display:"Last N Hour(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
@@ -167,7 +207,43 @@ class SWCriteriaDate{
 				    				measureTypeDisplay:'Years'
 				    			}
 				    		},
+				    		{
+				    			display:"More Than N Day(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'d',
+				    				measureTypeDisplay:'Days'
+				    			}
+				    		},
+				    		{
+				    			display:"More Than N Week(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'w',
+				    				measureTypeDisplay:'Weeks'
 
+ 				    			}
+				    		},
+				    		{
+				    			display:"More Than N Month(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'m',
+				    				measureTypeDisplay:'Months'
+				    			}
+				    		},
+				    		{
+				    			display:"More Than N Year(s) Ago",
+				    			comparisonOperator:	"<",
+				    			dateInfo:{
+				    				type:'exactDate',
+				    				measureType:'y',
+				    				measureTypeDisplay:'Years'
+				    			}
+				    		},
                             {
                                 display:"Exact N Day(s) Ago",
                                 comparisonOperator:	"between",
@@ -330,9 +406,21 @@ class SWCriteriaDate{
 		  								var firstDayOfWeek = Date.today().last().monday();
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
 		  								break;
+		  							case 'lw':
+		  								var lastweekstart = Date.today().last().week().sunday();
+		  								var lastweekend = Date.today().last().saturday();
+		  								selectedFilterProperty.criteriaRangeStart = lastweekstart.getTime();
+		  								selectedFilterProperty.criteriaRangeEnd = lastweekend.getTime();
+		  								break;
 		  							case 'm':
 		  								var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
 					  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
+		  								break;
+		  							case 'lm':
+		  								var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
+					  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
+					  					var lastDayOfMonth = Date.today().last().month().moveToLastDayOfMonth();
+					  					selectedFilterProperty.criteriaRangeEnd = lastDayOfMonth.getTime();
 		  								break;
 		  							case 'q':
 		  								var month = Date.parse('today').toString('MM');
@@ -341,10 +429,28 @@ class SWCriteriaDate{
 		  								var firstDayOfQuarter = new Date(year,quarterMonth,1);
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
 		  								break;
+		  							case 'lq':
+		  								var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+										var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+										var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
+										lastDayOfPreviousQuarter.setHours(23,59,59,999);
+										selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
+		
+										var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+									 	lastXQuartersAgo.add(-3).months();
+									 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
+									 break;
 		  							case 'y':
 		  								var year = Date.parse('today').toString('yyyy');
 		  								var firstDayOfYear = new Date(year,0,1);
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
+		  								break;
+		  							case 'ly':
+		  								var lastyear = Date.parse('today').last().year().toString('yyyy');
+		  								var firstDayOfYear = new Date(lastyear,0,1);
+		  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
+		  								var lastDayOfYear = new Date(lastyear,11,31);
+		  								selectedFilterProperty.criteriaRangeEnd = lastDayOfYear.getTime();
 		  								break;
 		  						}
 
@@ -432,7 +538,7 @@ class SWCriteriaDate{
 								 lastDayOfPreviousQuarter.setHours(23,59,59,999);
 								 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
 
-								 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+								var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
 							 	lastXQuartersAgo.add(-(measureCount * 3)).months();
 							 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
 
@@ -477,15 +583,9 @@ class SWCriteriaDate{
 								&& scope.filterItem.value.length
 								){
 									var dateRangeArray = scope.filterItem.value.split("-");
- 
-                                    var rangeStart = new Date(parseInt(dateRangeArray[0])).toUTCString();
-                                    rangeStart = rangeStart.split(' ').slice(0, 5).join(' ');
 
-                                    var rangeEnd = new Date(parseInt(dateRangeArray[1])).toUTCString();
-                                    rangeEnd = rangeEnd.split(' ').slice(0, 5).join(' ');
-
-									scope.selectedFilterProperty.criteriaRangeStart = rangeStart;
-									scope.selectedFilterProperty.criteriaRangeEnd = rangeEnd;
+									scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
+									scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
 								}
 
 								if(angular.isDefined(scope.selectedConditionChanged)){
@@ -495,8 +595,8 @@ class SWCriteriaDate{
 					  });
 				  }else{
 					  scope.selectedFilterProperty.criteriaValue = '';
-					  scope.selectedFilterProperty.criteriaRangeStart = '';
-					  scope.selectedFilterProperty.criteriaRangeEnd = '';
+					  scope.selectedFilterProperty.criteriaRangeStart = new Date().setHours(0,0,0,0);
+					  scope.selectedFilterProperty.criteriaRangeEnd = new Date().setHours(11,59,59,999);
 				  }
 
 			}

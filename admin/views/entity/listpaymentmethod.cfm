@@ -89,6 +89,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#paymentMethodCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(paymentMethodCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(paymentMethodCollectionList.getCollectionObject())#"
 	>

@@ -78,6 +78,7 @@ Notes:
     <hb:HibachiListingDisplay 
     		collectionList="#orderOriginCollectionList#"
     		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
     		recordEditAction="admin:entity.edit#lcase(orderOriginCollectionList.getCollectionObject())#"
     		recordDetailAction="admin:entity.detail#lcase(orderOriginCollectionList.getCollectionObject())#"
     	>
