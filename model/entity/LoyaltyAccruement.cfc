@@ -103,9 +103,9 @@ property name="refereeFlag" ormtype="boolean" default="0";
 		return this.getService("LoyaltyService").getPointTypeOptions();
 	}
 	
-	public string function getOptionalTargetAccountConfig(encodeForHTML=false){
+	public string function getOptionalTargetAccountConfig(encodeForHTMLFlag=false){
 		if(structKeyExists(variables,"optionalTargetAccountConfig")){
-			if(encodeForHTML){
+			if(encodeForHTMLFlag){
 				return getService("HibachiUtilityService").hibachiHTMLEditFormat(variables.optionalTargetAccountConfig);
 			}
 			return variables.optionalTargetAccountConfig;
