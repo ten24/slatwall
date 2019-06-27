@@ -2,13 +2,12 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
     public void function afterOrderProcess_updateStatusSuccess(required any slatwallScope, required any order, required any data ={}) {
-        if(arguments.order.getStatusCode() != "ostClosed"){
-            return;
-        }
+        // if(arguments.order.getStatusCode() != "ostClosed"){
+        //     return;
+        // }
         
         if(
-            //price group code for VIP
-            !arguments.order.getAccount().getOwnerAccount().hasAccountType("3") ||
+            !arguments.order.getAccount().getOwnerAccount().getAccountType() == "VIP" ||
             !arguments.order.getVIPEnrollmentOrderFlag()
         ){
             return;
@@ -19,7 +18,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         
         var accrList = arguments.slatwallScope.getService("LoyaltyService").getLoyaltyAccruementCollectionList();
         
-        accrList.setDisplayProperties("loyaltyAccruementID");
+        accrList.setDisplayProperties("loyaltyAccruementID,");
         accrList.addFilter("loyalty.referAFriendFlag",true);
         accrList.addFilter("loyalty.activeFlag",true);
         accrList.addFilter("activeFlag",true);
@@ -31,7 +30,6 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             if(accruement.getRefereeFlag()){
                 account = referee;
             }
-            
     		var newAccountLoyalty = getService("AccountService").newAccountLoyalty();
     
     		newAccountLoyalty.setAccount( account );
@@ -39,11 +37,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     		newAccountLoyalty.setAccountLoyaltyNumber( getService("AccountService").getNewAccountLoyaltyNumber( accruement.getLoyalty().getLoyaltyID() ));
     
     		newAccountLoyalty = getService("AccountService").saveAccountLoyalty( newAccountLoyalty );
-    
     		if(!newAccountLoyalty.hasErrors()) {
-    			newAccountLoyalty = getService("AccountService").processAccountLoyalty(newAccountLoyalty, {order=arguments.order}, 'orderClosed');
+    			newAccountLoyalty = getService("AccountService").processAccountLoyalty(newAccountLoyalty, {order=arguments.order,loyaltyAccruement=accruement}, 'referAFriend');
     		}
-    		
         }
     }
     public void function afterOrderProcess_createReturnSuccess(required any slatwallScope, required any order, required any data ={}) {

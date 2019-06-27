@@ -1466,7 +1466,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		this.RedeemLoyaltyRedemptions(arguments.data.accountLoyalty);
 		
 		arguments.data.account = arguments.data.accountLoyalty.getAccount();
-		
+
 		switch(arguments.data.loyaltyAccruement.getAccruementType()){
 			case "points":
 				arguments.accountLoyaltyTransaction = this.createPointsLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);

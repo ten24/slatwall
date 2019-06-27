@@ -79,6 +79,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.loyaltyAccruement;	
 	}
 	
+	public any function deleteLoyalty(required any loyalty){
+		accruements = loyalty.getLoyaltyAccruements();
+		for (var accruement in accruements){
+			getDAO("LoyaltyDAO").removeAccruementCurrencies(accruement.getLoyaltyAccruementID());
+		}
+		return delete(arguments.loyalty);	
+	}
+	
 	public any function processLoyaltyAccruement_addPointsPerCurrencyUnit(required any loyaltyAccruement, required struct data) {
 		
 		accruementCurrency = this.newAccruementCurrency();
