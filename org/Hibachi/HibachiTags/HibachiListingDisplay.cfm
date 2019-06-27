@@ -21,7 +21,9 @@
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
-
+    <cfparam name="attributes.showToggleDisplayOptions" type="any" default="false"/>
+    <cfparam name="attributes.showFilters" type="boolean" default="false"/>
+    
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
 	<cfparam name="attributes.recordEditActionProperty"type="string" default="" />
@@ -139,6 +141,8 @@
 				data-angular-links="false"
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
 				data-show-export="#attributes.showExport#"
+				data-show-toggle-display-options="#attributes.showToggleDisplayOptions#"
+				data-show-filters="#attributes.showFilters#"
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
