@@ -2,9 +2,10 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
     public void function afterOrderProcess_updateStatusSuccess(required any slatwallScope, required any order, required any data ={}) {
-        // if(arguments.order.getStatusCode() != "ostClosed"){
-        //     return;
-        // }
+       
+        if(arguments.order.getStatusCode() != "ostClosed"){
+            return;
+        }
         
         if(
             !arguments.order.getAccount().getOwnerAccount().getAccountType() == "VIP" ||
