@@ -67,7 +67,7 @@ property name="personalVolumeTotal" persistent="false";
 			variables.total = 0; 
 
 			if(!isNull(getSku()) && !isNull(getQuantity())){
-				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode(), getQuantity())
+				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode(), getQuantity());
 			} 	
 		}
 		return variables.total;

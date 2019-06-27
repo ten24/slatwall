@@ -49,9 +49,13 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
+<cfparam name="rc.orderSmartList" type="any" />
+
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
 
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
@@ -79,28 +83,65 @@ Notes:
 	</hb:HibachiListingDisplay> --->
 	
 	<cfset displayPropertyList = ""/>
+	<cfset searchableDisplayPropertyList = "" />
+	<cfset searchFilterPropertyIdentifier="createdDateTime"/>
 	<cfif rc.slatAction eq "admin:entity.listorder">
-		<cfset displayPropertyList &= "orderNumber,orderOpenDateTime,"/>	
+		<cfset displayPropertyList &= "orderOpenDateTime,"/>
+		<cfset searchFilterPropertyIdentifier = "orderOpenDateTime"/>
+		
+	<cfelse>
 	</cfif>
-	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.company,orderOrigin.orderOriginName,createdDateTime,calculatedTotal'/>
+	<cfset displayPropertyList &= 'createdDateTime,calculatedTotal'/>
+
 	<cfset rc.orderCollectionList.setDisplayProperties(
 		displayPropertyList,
 		{
 			isVisible=true,
-			isSearchable=true,
+			isSearchable=false,
 			isDeletable=true
 		}
 	)/>
-	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderType.typeName",title="#getHibachiScope().rbkey('entity.order.orderType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
-	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderStatusType.typeName",title="#getHibachiScope().rbkey('entity.order.orderStatusType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
+	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderType.typeName",title="#getHibachiScope().rbkey('entity.order.orderType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
+	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderStatusType.typeName",title="#getHibachiScope().rbkey('entity.order.orderStatusType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
 	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='orderID',columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
 	})/>
+	<!--- Searchables --->
+	<cfif rc.slatAction eq "admin:entity.listorder">
+		<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='orderNumber',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	</cfif>
+	
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.firstName',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.lastName',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.company',columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	},prepend=true)/>
+
+
+	<!--- Searchables --->
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
 		usingPersonalCollection="true"
+		showSearchFilterDropDown="true"
+		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(rc.orderCollectionlist.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.orderCollectionlist.getCollectionObject())#"
 	>
