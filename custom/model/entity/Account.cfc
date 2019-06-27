@@ -1,22 +1,7 @@
 component {
     property name="firstFlexshipOrder" persistent="false";
     property name="accountTypeList" persistent="false";
-    
-    public any function getFirstFlexshipOrder(){
-        var orderList = getService("OrderService").getOrderCollectionList();
-        orderList.setDisplayProperties("orderID");
-        orderList.addFilter("Account.accountID",this.getAccountID());
-        orderList.addFilter("OrderTemplate.orderTemplateID","NULL","IS NOT");
-        orderList.addFilter("OrderTemplate.orderTemplateType.systemCode","ottSchedule");
-        orderList.addFilter("orderStatusType.systemCode","ostNotPlaced","!=");
-        orderList.addOrderBy("orderCloseDateTime|ASC");
-        orderList.setPageRecordsShow(1);
-        var orders = orderList.getPageRecords(formatRecords=false);
-        if(!arrayIsEmpty(orders)){
-            return getService("OrderService").getOrder(orders[1]['orderID']);
-        }
-    }
-    
+
     public boolean function hasAccountType(required string accountTypeList){
         var fullAccountTypeList = this.getAccountTypeList();
         for(var accountType in arguments.accountTypeList){

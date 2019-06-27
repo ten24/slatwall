@@ -2,15 +2,14 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
     public void function afterOrderProcess_updateStatusSuccess(required any slatwallScope, required any order, required any data ={}) {
-
-        if(arguments.order.getStatusCode() != "osClosed"){
+        if(arguments.order.getStatusCode() != "ostClosed"){
             return;
         }
         
         if(
-            !arguments.order.getAccount().getOwnerAccount().hasAccountType("vip") ||
-            !arguments.order.getAccount().hasAccountType("vip") ||
-            arguments.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()
+            //price group code for VIP
+            !arguments.order.getAccount().getOwnerAccount().hasAccountType("3") ||
+            !arguments.order.getVIPEnrollmentOrderFlag()
         ){
             return;
         }
@@ -48,11 +47,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         }
     }
     public void function afterOrderProcess_createReturnSuccess(required any slatwallScope, required any order, required any data ={}) {
-        
-        if(arguments.order.getAccount().getFirstFlexshipOrder().getOrderID() != arguments.order.getOrderID()){
+        if(!arguments.order.getVIPEnrollmentOrderFlag()){
             return;
         }
-        
         var referee = arguments.order.getAccount();
         var referer = referee.getOwnerAccount();
         
