@@ -91364,6 +91364,9 @@ var SWListingDisplayController = /** @class */ (function () {
                 else if (_this.listingColumns && _this.listingColumns.length) {
                     _this.columns = _this.listingColumns;
                 }
+                else if (_this.collectionConfig.columns && _this.collectionConfig.columns.length) {
+                    _this.columns = _this.collectionConfig.columns;
+                }
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
@@ -91379,30 +91382,35 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.observerService.attach(_this.getCollectionByPagination, 'swPaginationAction', _this.tableID);
         };
         this.getCollectionByPagination = function (state) {
-            if (state.type) {
-                switch (state.type) {
-                    case 'setCurrentPage':
-                        _this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'nextPage':
-                        _this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'prevPage':
-                        _this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'setPageShow':
-                        _this.collectionConfig.currentPage = 1;
-                        _this.collectionConfig.setPageShow(state.payload);
-                        break;
+            if (!_this.hideUnfilteredResults || _this.searchText || _this.configHasFilters(_this.collectionConfig)) {
+                if (state.type) {
+                    switch (state.type) {
+                        case 'setCurrentPage':
+                            _this.collectionConfig.currentPage = state.payload;
+                            break;
+                        case 'nextPage':
+                            _this.collectionConfig.currentPage = state.payload;
+                            break;
+                        case 'prevPage':
+                            _this.collectionConfig.currentPage = state.payload;
+                            break;
+                        case 'setPageShow':
+                            _this.collectionConfig.currentPage = 1;
+                            _this.collectionConfig.setPageShow(state.payload);
+                            break;
+                    }
+                    if (_this.collectionId) {
+                        _this.collectionConfig.baseEntityNameType = 'Collection';
+                        _this.collectionConfig.id = _this.collectionId;
+                    }
+                    _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
+                        _this.collectionData = data;
+                        _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
+                    });
                 }
-                if (_this.collectionId) {
-                    _this.collectionConfig.baseEntityNameType = 'Collection';
-                    _this.collectionConfig.id = _this.collectionId;
-                }
-                _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
-                    _this.collectionData = data;
-                    _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
-                });
+            }
+            else {
+                _this.collectionData = null;
             }
         };
         this.setupCollectionPromise = function () {
@@ -91412,7 +91420,12 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.paginator.getCollection = _this.getCollection;
             var getCollectionEventID = _this.tableID;
             //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
-            _this.listingService.getCollection(_this.tableID);
+            if (!_this.hideUnfilteredResults || _this.searchText || _this.configHasFilters(_this.collectionConfig)) {
+                _this.listingService.getCollection(_this.tableID);
+            }
+            else {
+                _this.collectionData = null;
+            }
         };
         this.getCollectionObserver = function (param) {
             if (angular.isString(param.collectionConfig)) {
@@ -91422,9 +91435,14 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.collectionConfig = param.collectionConfig;
             }
             _this.collectionData = undefined;
-            _this.$timeout(function () {
-                _this.getCollection();
-            });
+            if (!_this.hideUnfilteredResults || _this.searchText || _this.configHasFilters(_this.collectionConfig)) {
+                _this.$timeout(function () {
+                    _this.getCollection();
+                });
+            }
+            else {
+                _this.collectionData = null;
+            }
         };
         this.initializeState = function () {
             if (_this.name != null) {
@@ -91612,6 +91630,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 }, 0);
             }
             return false;
+        };
+        this.configHasFilters = function (collectionConfig) {
+            return collectionConfig.filterGroups
+                && collectionConfig.filterGroups.length
+                && collectionConfig.filterGroups[0].filterGroup
+                && collectionConfig.filterGroups[0].filterGroup.length;
         };
         this.columnOrderByIndex = function (column) {
             return _this.listingService.columnOrderByIndex(_this.tableID, column);
@@ -91969,7 +91993,8 @@ var SWListingDisplay = /** @class */ (function () {
             hasSearch: "<?",
             hasActionBar: "<?",
             multiSlot: "=?",
-            customListingControls: "<?"
+            customListingControls: "<?",
+            hideUnfilteredResults: "<?"
         };
         this.controller = SWListingDisplayController;
         this.controllerAs = "swListingDisplay";
