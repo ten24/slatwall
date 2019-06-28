@@ -108,6 +108,12 @@ component {
 			amountParams['account'] = arguments.account;
 		}
 		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
+		    //Check for explicity defined promotion reward currencies
+			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
+				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
+					return variables.promotionRewardCurrencies[i].invokeMethod('get#customPriceField#Amount');
+				}
+			}
 			//Check for defined conversion rate 
 			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
 			if(!isNull(currencyRate)) {
