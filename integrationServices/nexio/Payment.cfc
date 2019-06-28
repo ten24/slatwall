@@ -346,73 +346,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 	}
 	
-	// private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
-	// 	// writedump(var=numberFormat(arguments.requestBean.getExpirationMonth(),0), abort=true);
-	// 	// Request Data
-	// 	if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
-	// 		var requestData = {
-	// 			'isAuthOnly': false,
-	// 			'tokenex':{
-	// 				'token' = arguments.requestBean.getProviderToken()
-	// 		    },
-	// 		    'id': arguments.requestBean.getOriginalAuthorizationProviderTransactionID(),
-	// 		    'card':{
-	// 		    	'expirationMonth' = LSParseNumber(arguments.requestBean.getExpirationMonth()),
-	// 				'expirationYear' = LSParseNumber(arguments.requestBean.getExpirationYear()), 
-	// 		    	'cardHolderName': arguments.requestBean.getNameOnCreditCard(),
-	// 		    	'lastFour': arguments.requestBean.getCreditCardLastFour(),
-	// 		    	'cardType': arguments.requestBean.getCreditCardType()
-	// 		    },
-	// 		    'data': {
-	// 		    	'amount': LSParseNumber(arguments.requestBean.getTransactionAmount()),
-	// 		    	'currency': arguments.requestBean.getTransactionCurrencyCode(),
-	// 				'customer'= {
-	// 					'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-	// 					'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-	// 					'billToCity' = arguments.requestBean.getBillingCity(),
-	// 					'billToState' = arguments.requestBean.getBillingStateCode(),
-	// 					'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-	// 					'billToCountry' = arguments.requestBean.getBillingCountryCode()
-	// 				}
-	// 		    },
-	// 		    'processingOptions':{
-	// 			    'checkFraud': (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
-	// 			    'verifyAvs': LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-	// 			    'verifyCvc': (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-	// 			    'merchantID': setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
-	// 		    }
-	// 		};	
-	// 		responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-			
-	// 		// Response Data
-	// 		if (!responseBean.hasErrors()) {
-	// 			arguments.responseBean.setProviderToken(requestData.tokenex.token);
-	// 			arguments.responseBean.setProviderTransactionID(responseData.id);
-	// 			arguments.responseBean.setAuthorizationCode(responseData.authCode);
-	// 			arguments.responseBean.setAmountReceived(responseData.amount);
-	// 			arguments.responseBean.setAmountAuthorized(responseData.data.amount);
-				
-	// 			arguments.responseBean.addMessage(messageName='nexio.transactionDate', message='#responseData.transactionDate#');
-	// 			arguments.responseBean.addMessage(messageName='nexio.transactionStatus', message='#responseData.transactionStatus#');
-	// 			arguments.responseBean.addMessage(messageName='nexio.transactionType', message='#responseData.transactionType#');
-	// 			arguments.responseBean.addMessage(messageName='nexio.transactionCurrency', message='#responseData.currency#');
-	// 			arguments.responseBean.addMessage(messageName='nexio.gatewayResponse.result', message='#responseData.gatewayResponse.result#');
-	// 			if (!isNull(responseData.gatewayResponse.batchRef)){
-	// 				arguments.responseBean.addMessage(messageName='nexio.gatewayResponse.batchRef', message='#responseData.gatewayResponse.batchRef#');
-	// 			}
-	// 			arguments.responseBean.addMessage(messageName='nexio.gatewayResponse.refNumber', message='#responseData.gatewayResponse.refNumber#');
-	// 			arguments.responseBean.addMessage(messageName='nexio.gatewayResponse.gatewayName', message='#responseData.gatewayResponse.gatewayName#');
-	// 			arguments.responseBean.addMessage(messageName='nexio.cardNumber', message='#responseData.card.cardNumber#');
-	// 		}
-	// 	} else {
-	// 		responseBean.addError('Processing error', 'Error attempting to authorize and charge. Review providerToken.');
-	// 		// throw('Error attempting to authorize and charge. Review providerToken.');
-	// 	}
-	// }
-	
 	private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
-		// writedump(var="*** arguments.requestBean");
-		// writedump(var=arguments.requestBean);
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
 			var requestData = {
