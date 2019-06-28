@@ -27,7 +27,8 @@ component extends="Slatwall.model.service.PromotionService" {
 			            price=orderItem.invokeMethod('get#customPriceField#'),
 			            quantity=orderItem.getQuantity(),
 			            customPriceField=customPriceField,
-			            sku=orderItem.getSku()
+			            sku=orderItem.getSku(),
+			            account=arguments.order.getAccount()
 			        };
 
 	        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=getCustomDiscountAmount(argumentCollection=args)});
@@ -99,7 +100,7 @@ component extends="Slatwall.model.service.PromotionService" {
 
 	}
 	
-	private numeric function getCustomDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, string customPriceField, any sku) {
+	private numeric function getCustomDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, string customPriceField, any sku, any account) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));
@@ -119,6 +120,9 @@ component extends="Slatwall.model.service.PromotionService" {
 		}
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
+		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
 		}
 		
 		var rewardAmount = arguments.reward.invokeMethod(amountMethod,amountParams);

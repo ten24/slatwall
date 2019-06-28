@@ -97,12 +97,15 @@ component {
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku, numeric quantity){
+    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku, numeric quantity, any account){
 		var amountParams = {
 		    'customPriceField':arguments.customPriceField
 		};
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
+		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
 		}
 		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
 			//Check for defined conversion rate 
@@ -118,7 +121,7 @@ component {
 		return getCustomAmount(argumentCollection=amountParams);
 	}
 	
-	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode, numeric quantity){
+	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode, numeric quantity, any account){
 
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
