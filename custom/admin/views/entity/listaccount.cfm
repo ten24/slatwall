@@ -46,8 +46,8 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
 <cfparam name="rc.accountSmartList" type="any" />
@@ -65,7 +65,7 @@ Notes:
 
     <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
-	<cfset serchableDisplayProperties = "firstName,lastName,primaryEmailAddress.emailAddress,company"/>
+	<cfset serchableDisplayProperties = "firstName,lastName,company"/>
 	<cfset accountCollectionList.setDisplayProperties(
 	serchableDisplayProperties,
 	{

@@ -659,6 +659,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 	}
+	
+	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
+
+		var displayProperties = listToArray(arguments.displayPropertiesList);
+		for(var displayProperty in displayProperties){
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
+		}
+	}
 
 	public void function addGroupBy(required string groupByAlias){
 		var collectionConfig = this.getCollectionConfigStruct();
