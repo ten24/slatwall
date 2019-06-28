@@ -137,11 +137,10 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	}
 
 	// Image File Methods
-	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
+	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="", string size) {
 		var resizedImagePath = "";
-		
 		// If the image can't be found default to a missing image
-		if(!fileExists(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath))) {
+		if(!fileExists(expandPath(arguments.imagePath))) {
 			
 			//look if the path was supplied
 			if(structKeyExists(arguments, "missingImagePath") && fileExists(expandPath(arguments.missingImagePath))) {
@@ -149,10 +148,8 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
-			} else if (
-				!isNull(getSiteService().getCurrentRequestSite()) 
-				&& !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))
-			) {
+			} else if (!isNull(getSiteService().getCurrentRequestSite()) && !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))) {
+                
                 arguments.imagePath = getSiteService().getCurrentRequestSite().setting('siteMissingImagePath');
 			
 			//check the custom location
@@ -174,6 +171,21 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			
 		}
 
+		if(structKeyExists(arguments, "size") && !structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")){
+			switch(arguments.size){
+				case "m": case "medium":
+		            arguments.height = getSettingService().getSettingValue("productImageMediumHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageMediumWidth");
+		            break;
+		        case "l": case "large":
+		            arguments.height = getSettingService().getSettingValue("productImageLargeHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageLargeWidth");
+		            break;
+		        default:
+		            arguments.height = getSettingService().getSettingValue("productImageSmallHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageSmallWidth");
+			}
+		}
 		// if no width and height is passed in, display the original image
 		if(!structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")) {
 
@@ -236,7 +248,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			// Figure out the image extension
 			var imageExt = listLast(arguments.imagePath,".");
 
-			var cacheDirectory = replaceNoCase(replaceNoCase(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath), '\', '/', 'all'), listLast(arguments.imagePath, "/"), "cache/");
+			var cacheDirectory = replaceNoCase(replaceNoCase(expandPath(arguments.imagePath), '\', '/', 'all'), listLast(arguments.imagePath, "/"), "cache/");
 
 			if(!directoryExists(cacheDirectory)) {
 				directoryCreate(cacheDirectory);
@@ -245,24 +257,23 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			var resizedImagePath = replaceNoCase(replaceNoCase(arguments.imagePath, listLast(arguments.imagePath, "/\"), "cache/#listLast(arguments.imagePath, "/\")#"),".#imageExt#","#imageNameSuffix#.#imageExt#");
 
 			// Make sure that if a cached images exists that it is newer than the original
-			if(fileExists(getHibachiUtilityService().hibachiExpandPath(resizedImagePath))) {
+			if(fileExists(expandPath(resizedImagePath))) {
 
-				var originalFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
-				var resizedFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
+				var originalFileObject = createObject("java","java.io.File").init(expandPath(arguments.imagePath));
+				var resizedFileObject = createObject("java","java.io.File").init(expandPath(resizedImagePath));
 
-
-				if(originalFileObject.lastModified > resizedFileObject.lastModified) {
-					fileDelete(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
+				if(originalFileObject.lastModified() > resizedFileObject.lastModified()) {
+					fileDelete(expandPath(resizedImagePath));
 				}
 			}
 
-			if(!fileExists(getHibachiUtilityService().hibachiExpandPath(resizedImagePath))) {
+			if(!fileExists(expandPath(resizedImagePath))) {
 
 				// wrap image functions in a try-catch in case the image uploaded is "problematic" for CF to work with
 				try{
 
 					// Read the Image
-					var img = imageRead(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
+					var img = imageRead(expandPath(arguments.imagePath));
 
 					// If the method is scale
 					if(listFindNoCase("scale", arguments.resizeMethod)) {
@@ -354,24 +365,12 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 
 					// Write the image to the disk
-					imageWrite(img,getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
-					//Give public permission to s3 object
-					if(getHibachiUtilityService().isS3Path(resizedImagePath)){
-						StoreSetACL(getHibachiUtilityService().hibachiExpandPath(resizedImagePath), [{group="all", permission="read"}]);
-					}
+					imageWrite(img,expandPath(resizedImagePath));
 				} catch(any e) {
 					// log the error
 					logHibachiException(e);
 				}
 			}
-		}
-
-		if(getHibachiUtilityService().isS3Path(resizedImagePath)){
-			var globalAssetsImageBaseURL = getHibachiScope().setting('globalAssetsImageBaseURL');
-			if(!len(globalAssetsImageBaseURL)){
-				globalAssetsImageBaseURL = 'https://s3.amazonaws.com';
-			}
-			resizedImagePath = globalAssetsImageBaseURL & '/' & listLast(resizedImagePath, '@');
 		}
 		return resizedImagePath;
 	}
