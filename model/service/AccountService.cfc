@@ -1366,6 +1366,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		giftCardCollectionList.addFilter("ownerAccount.accountID",arguments.account.getAccountID());
 		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.getSkuID());
 		giftCardCollectionList.addFilter("currencyCode",arguments.currencyCode);
+		giftCardCollectionList.getPageRecordsShow(1);
 		giftCardCollectionList.setDisplayProperties("giftCardID");
 		giftCards = giftCardCollectionList.getPageRecords();
 		if(arrayLen(giftCards)){
