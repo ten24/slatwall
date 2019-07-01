@@ -76,6 +76,7 @@
 
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
+	<cfparam name="attributes.hideUnfilteredResults" type="boolean" default="false" /> <!--- If true, collection will only show records when filtered or searched --->
 
 	<!--- ThisTag Variables used just inside --->
 	<cfparam name="thistag.columns" type="array" default="#arrayNew(1)#" />
@@ -178,6 +179,9 @@
 				</cfif>
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
+			    </cfif>
+			    <cfif attributes.hideUnfilteredResults >
+			    	hide-unfiltered-results="true"
 			    </cfif>
 			>
 			</sw-listing-display>
