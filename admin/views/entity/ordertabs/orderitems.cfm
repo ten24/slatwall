@@ -53,12 +53,28 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<!--- Order Items Detail--->
-	<sw-order-items
-		data-order-id="#rc.order.getOrderID()#"
-		data-base-url="#getHibachiScope().getBaseImageURL()#/product/default/"	
-	>
-	</sw-order-items>
+	<!--- Order item collection list --->
+	<cfset orderItemCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList()>
+	<cfset orderItemCollectionList.addFilter("order.orderID", "#rc.order.getOrderID()#","=")>
+	<cfset serchableDisplayProperties = "order.orderNumber,order.orderStatusType.typeName,order.orderOpenDateTime,sku.product.calculatedTitle,price,quantity,extendedPrice,calculatedExtendedPersonalVolume,calculatedExtendedCommissionableVolume"/>
+	<cfset orderItemCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='orderItemID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#orderItemCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(orderItemCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#">
+	</hb:HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
