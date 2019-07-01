@@ -10,7 +10,7 @@ component {
 				!isNull(this.getSku().getPersonalVolume()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() & this.getQuantity()); 
+				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() * this.getQuantity()); 
 			}	
 		}
 		return variables.personalVolumeTotal; 	
