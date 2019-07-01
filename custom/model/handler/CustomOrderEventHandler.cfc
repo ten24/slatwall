@@ -3,9 +3,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
     public void function afterOrderProcess_updateStatusSuccess(required any slatwallScope, required any order, required any data ={}) {
        
-        if(arguments.order.getStatusCode() != "ostClosed"){
-            return;
-        }
+        // if(arguments.order.getStatusCode() != "ostClosed"){
+        //     return;
+        // }
         
         if(
             !arguments.order.getAccount().getOwnerAccount().getAccountType() == "VIP" ||
@@ -24,6 +24,10 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         accrList.addFilter("loyalty.activeFlag",true);
         accrList.addFilter("activeFlag",true);
         
+        // if accruementCurrencies.CurrencyCode == order.currencyCode OR order.currencyCode INLIST accruement.currencyCodeList
+        accrList.addFilter(propertyIdentifier="accruementCurrencies.currencyCode",value=arguments.order.getCurrencyCode(),comparisonOperator="=",logicalOperator="OR",filterGroupAlias="CurrencyFilters");
+        accrList.addFilter(propertyIdentifier="currencyCodeList",value=arguments.order.getCurrencyCode(),comparisonOperator="IN",logicalOperator="OR",filterGroupAlias="CurrencyFilters");
+
         var accruements = accrList.getRecords();
         for(var accruement in accruements){
             accruement = arguments.slatwallScope.getService("LoyaltyService").getLoyaltyAccruement(accruement['loyaltyAccruementID']);
