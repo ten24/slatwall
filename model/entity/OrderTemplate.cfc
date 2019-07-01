@@ -105,7 +105,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="subtotal" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="typeCode" persistent="false";
-	property name="total" persistent="false";
+	property name="total" persistent="false" hb_formatType="currency";
 	//CUSTOM PROPERTIES BEGIN
 property name="customerCanCreateFlag" persistent="false";
 	property name="personalVolumeTotal" persistent="false"; 
@@ -158,7 +158,7 @@ property name="customerCanCreateFlag" persistent="false";
 
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
 				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
-				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode(), orderTemplateItem['quantity']); 	
+				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode())*orderTemplateItem['quantity']; 	
 			} 
 		}
 		return variables.subtotal; 
