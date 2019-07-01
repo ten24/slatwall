@@ -111,7 +111,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					
 				}catch(any e){
 					entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
-					logHibachi(serializeJson(e),true);
+					logHibachi(serializeJson(e),false);
 				}
 			}
 			if(listLen(entityQueueIDsToBeDeleted)){
