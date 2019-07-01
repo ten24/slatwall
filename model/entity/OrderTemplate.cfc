@@ -57,8 +57,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="currencyCode" ormtype="string" length="3";
 
-	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
-	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID";
+	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateTypeID";
+	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateStatusTypeID";
 	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID" hb_formFieldType="select";
 
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -135,10 +135,24 @@ property name="customerCanCreateFlag" persistent="false";
 	}
 	public boolean function getCanPlaceOrderFlag(){
 		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
-			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this); 
+			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this);
 		} 
 		return variables.canPlaceOrderFlag;
-	} 
+	}
+	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
+		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
+			variables.canPlaceFutureScheduleOrderFlag = true;
+			
+			if(
+				!getSettingValue('orderTemplateCanPlaceFutureScheduleDateFlag') && 
+				!isNull(getHibachiScope().getAccount()) && 
+				getHibachiScope().getAccount().getAdminAccountFlag()
+			){
+				variables.canPlaceFutureScheduleOrderFlag = dateCompare(getScheduleOrderNextPlaceDateTime(), now()) > -1; 
+			} 
+		}
+		return variables.canPlaceFutureScheduleOrderFlag;
+	}  
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){

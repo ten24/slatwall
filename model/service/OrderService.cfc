@@ -1197,7 +1197,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		 * unvalidated changes in the order template.
 		 */
 
-		thread name="#threadName#" 
+		thread name="#threadName#"
 			   orderTemplateSoftReference="#orderTemplateSoftReference#"
 			   action="run" 
 		{	
@@ -1215,8 +1215,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			ormFlush(); 
+			this.logHibachi('can delete order #deleteOk#', true);
 
+			if(deleteOk){
+				ormFlush(); 
+			} else { 
+				this.logHibachi('cannot delete order #serializeJson(transientOrder.getErrors())#', true);
+			} 
 		}
 
 		threadJoin(threadName);
@@ -1224,7 +1229,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!structKeyExists(evaluate(threadName), "ERROR")){
 			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
 		} else {
-			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#');
+			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
 		
 		return canPlaceOrder;
