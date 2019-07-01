@@ -60,18 +60,6 @@
 				<hb:HibachiPropertyDisplay object="#rc.order.getAssignedAccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.order.getAssignedAccount().getAccountID()#" title="#$.slatwall.rbKey('entity.order.assignedAccount')#">
 			</cfif>
 			
-			<!--- Volume fields --->
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeSubtotal" edit="false" />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxableAmountSubtotal" edit="false"  />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="productPackVolumeSubtotal" edit="false"  />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="retailValueVolumeSubtotal" edit="false"  />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeSubtotalAfterItemDiscounts" edit="false"  />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxableAmountSubtotalAfterItemDiscounts" edit="false"  />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeTotal" edit="false"  />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="false"  />	
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="productPackVolumeTotal" edit="false"  />	
-		
-			
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divclass="col-md-6">
 
@@ -86,6 +74,9 @@
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeSubtotal" edit="false" displayType="table"/>
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeSubtotal" edit="false" displayType="table" />
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="retailCommissionSubtotal" edit="false"  displayType="table"/>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
