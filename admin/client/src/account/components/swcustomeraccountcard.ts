@@ -11,6 +11,12 @@ class SWCustomerAccountCardController{
     public emailTitle:string="Customer Email";
     public phoneTitle:string="Customer Phone";
 
+	public baseEntityName:string;
+	public baseEntity; 
+	public baseEntityPropertiesToDisplayList;
+	public baseEntityPropertiesToDisplay=[]; 
+
+	public baseEntityRbKeys = {}; 
 
 	constructor(public $hibachi,
 				public rbkeyService
@@ -20,6 +26,19 @@ class SWCustomerAccountCardController{
 		this.phoneTitle = rbkeyService.rbKey('entity.AccountPhoneNumber.phoneNumber');
 		
 		this.detailAccountLink = $hibachi.buildUrl('admin:entity.detailaccount','accountID=' + this.account.accountID);
+		
+	
+		if(this.baseEntityPropertiesToDisplayList != null){
+			this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.split(',');
+			
+			for(var i=0; i<this.baseEntityPropertiesToDisplay.length; i++){
+				if(this.baseEntityPropertiesToDisplay[i].split('_') === 1){
+					this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = 'entity.' + this.baseEntityName + '.' + this.baseEntityPropertiesToDisplay[i];
+				} else {
+					this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = 'entity.' + this.baseEntityPropertiesToDisplay[i].split('_').join('.');		
+				}
+			}
+		}
 	}
 
 }
@@ -31,6 +50,9 @@ class SWCustomerAccountCard implements ng.IDirective {
 	public scope = {};
 	public bindToController = {
 		account:"<",
+		baseEntityName:"<?",
+		baseEntity:"<?",
+		baseEntityPropertiesToDisplayList:"@?",
 	    title:"@?"
 	};
 	public controller=SWCustomerAccountCardController;

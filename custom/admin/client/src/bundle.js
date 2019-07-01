@@ -60842,10 +60842,23 @@ var SWCustomerAccountCardController = /** @class */ (function () {
         this.fullNameTitle = "Customer Account";
         this.emailTitle = "Customer Email";
         this.phoneTitle = "Customer Phone";
+        this.baseEntityPropertiesToDisplay = [];
+        this.baseEntityRbKeys = {};
         this.fullNameTitle = rbkeyService.rbKey('entity.account.calculatedFullName');
         this.emailTitle = rbkeyService.rbKey('entity.AccountEmailAddress.emailAddress');
         this.phoneTitle = rbkeyService.rbKey('entity.AccountPhoneNumber.phoneNumber');
         this.detailAccountLink = $hibachi.buildUrl('admin:entity.detailaccount', 'accountID=' + this.account.accountID);
+        if (this.baseEntityPropertiesToDisplayList != null) {
+            this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.split(',');
+            for (var i = 0; i < this.baseEntityPropertiesToDisplay.length; i++) {
+                if (this.baseEntityPropertiesToDisplay[i].split('_') === 1) {
+                    this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = 'entity.' + this.baseEntityName + '.' + this.baseEntityPropertiesToDisplay[i];
+                }
+                else {
+                    this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = 'entity.' + this.baseEntityPropertiesToDisplay[i].split('_').join('.');
+                }
+            }
+        }
     }
     return SWCustomerAccountCardController;
 }());
@@ -60858,6 +60871,9 @@ var SWCustomerAccountCard = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             account: "<",
+            baseEntityName: "<?",
+            baseEntity: "<?",
+            baseEntityPropertiesToDisplayList: "@?",
             title: "@?"
         };
         this.controller = SWCustomerAccountCardController;
@@ -76126,7 +76142,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -76138,6 +76153,7 @@ var CollectionConfig = /** @class */ (function () {
         if (allRecords === void 0) { allRecords = false; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;

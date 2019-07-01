@@ -168,7 +168,7 @@ property name="customerCanCreateFlag" persistent="false";
 		return this.getSubtotal() + this.getFulfillmentTotal(); 
 	} 
 
-	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
