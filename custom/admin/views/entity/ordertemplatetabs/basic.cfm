@@ -57,18 +57,4 @@
 
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
-	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-		
-			<div class="col-md-2">
-				<label class="control-label">PV</label>
-				<p class="form-control-static">#rc.orderItem.getPersonalVolume()#</p>
-			</div>
-			<div class="col-md-2">
-				<label class="control-label">PC</label>
-				<p class="form-control-static">#rc.orderItem.getCommissionableVolume()#</p>
-			</div> 
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
 </cfoutput>
