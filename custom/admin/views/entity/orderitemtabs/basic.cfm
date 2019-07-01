@@ -24,16 +24,15 @@
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="price" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantity" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="currencyCode" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="currencyCode" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="personalVolume" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="commissionableVolume" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="productPackVolume" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="retailValueVolume" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPersonalVolume" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedTaxableAmount" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedCommissionableVolume" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedProductPackVolume" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedRetailValueVolume" edit="false" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="personalVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="commissionableVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="productPackVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="retailValueVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPersonalVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedTaxableAmount" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedCommissionableVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedProductPackVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedRetailValueVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
 		</hb:HibachiPropertyList>
 		
 		<hb:HibachiPropertyList divclass="col-md-6">
