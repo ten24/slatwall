@@ -1127,6 +1127,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			getHibachiScope().addModifiedEntity( this );
 		}catch(any e){
 			logHibachi('preInsert fail:'&serializeJson(e),false);
+			writedump(e);abort;
 		}
 	}
 	
@@ -1205,6 +1206,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			getHibachiScope().addModifiedEntity( this );
 		}catch(any e){
 			logHibachi('Preupdate Faile:'&serializeJson(e),false);
+			writedump(e);abort;
 		}
 
 	}
