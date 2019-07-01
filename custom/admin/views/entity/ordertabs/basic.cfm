@@ -9,6 +9,7 @@
 		<hb:HibachiPropertyList divclass="col-md-6">
 
 			<!--- Account --->
+			
 			<cfif rc.edit>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="account" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
 			<cfelseif !isNull(rc.order.getAccount()) && rc.order.getAccount().getOrganizationFlag()>
@@ -59,20 +60,17 @@
 				<hb:HibachiPropertyDisplay object="#rc.order.getAssignedAccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.order.getAssignedAccount().getAccountID()#" title="#$.slatwall.rbKey('entity.order.assignedAccount')#">
 			</cfif>
 			
-			<hb:HibachiPropertyTable>
-				<!--- Volume fields --->
-				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.volume')#" />
-				
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeSubtotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="taxableAmountSubtotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="productPackVolumeSubtotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="retailValueVolumeSubtotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeSubtotalAfterItemDiscounts" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="taxableAmountSubtotalAfterItemDiscounts" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="productPackVolumeTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-			</hb:HibachiPropertyTable>
+			<!--- Volume fields --->
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeSubtotal" edit="false" />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxableAmountSubtotal" edit="false"  />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="productPackVolumeSubtotal" edit="false"  />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="retailValueVolumeSubtotal" edit="false"  />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeSubtotalAfterItemDiscounts" edit="false"  />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxableAmountSubtotalAfterItemDiscounts" edit="false"  />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeTotal" edit="false"  />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="false"  />	
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="productPackVolumeTotal" edit="false"  />	
+		
 			
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divclass="col-md-6">
