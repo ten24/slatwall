@@ -113,9 +113,49 @@ class SWCriteriaDate{
 				    			}
 				    		},
 				    		{
-				    			display:"Last Full Week",
+				    			display:"Last Week to Current Day",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lwtc',
+				    				measureTypeDisplay:'Weeks',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
+				    			display:"Last Month to Current Day",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lmtc',
+				    				measureTypeDisplay:'Months',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
+				    			display:"Last Quarter to Current Day",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lqtc',
+				    				measureTypeDisplay:'Quarters',
+				    				behavior:'toDate',
+				    			}
+				    		},
+				    		{
+				    			display:"Last Year to Current Day",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lytc',
+				    				measureTypeDisplay:'Years',
+				    				behavior:'toDate',
+				    			},
+				    		},
+				    		{
+			    				display:"Last Full Week",
+			    				comparisonOperator:	"between",
+			    				dateInfo:{
 				    				type:'calculation',
 				    				measureType:'lw',
 				    				measureTypeDisplay:'Weeks',
@@ -406,6 +446,10 @@ class SWCriteriaDate{
 		  								var firstDayOfWeek = Date.today().last().monday();
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
 		  								break;
+		  							case 'lwtc':
+		  								var lastweekstart = Date.today().last().week().sunday();
+		  								selectedFilterProperty.criteriaRangeStart = lastweekstart.getTime();
+		  								break;
 		  							case 'lw':
 		  								var lastweekstart = Date.today().last().week().sunday();
 		  								var lastweekend = Date.today().last().saturday();
@@ -416,6 +460,10 @@ class SWCriteriaDate{
 		  								var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
 					  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
 		  								break;
+		  							case 'lmtc':
+		  								var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
+					  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
+					  					break;
 		  							case 'lm':
 		  								var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
 					  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
@@ -429,6 +477,12 @@ class SWCriteriaDate{
 		  								var firstDayOfQuarter = new Date(year,quarterMonth,1);
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
 		  								break;
+		  							case 'lqtc':
+		  								var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+										var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+									 	lastXQuartersAgo.add(-3).months();
+									 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
+		  								break;
 		  							case 'lq':
 		  								var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
 										var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
@@ -439,10 +493,15 @@ class SWCriteriaDate{
 										var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
 									 	lastXQuartersAgo.add(-3).months();
 									 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-									 break;
+									 	break;
 		  							case 'y':
 		  								var year = Date.parse('today').toString('yyyy');
 		  								var firstDayOfYear = new Date(year,0,1);
+		  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
+		  								break;
+		  							case 'lytc':
+		  								var lastyear = Date.parse('today').last().year().toString('yyyy');
+		  								var firstDayOfYear = new Date(lastyear,0,1);
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
 		  								break;
 		  							case 'ly':
