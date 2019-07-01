@@ -55,6 +55,13 @@ component  extends="HibachiService" accessors="true" {
 	public string function getSharedAssetsPath(){
 		return variables.sharedAssetsPath;
 	}
+	
+	public any function getSiteBySiteCode(required string siteCode){
+		var existingSiteCodes = getSiteCodes();
+		if(listFindNoCase(existingSiteCodes, arguments.siteCode)){
+			super.getSiteBySiteCode(argumentCollection=arguments);
+		}
+	}
 	//deprecated please use hibachiscope
 	public any function getCurrentRequestSite() {
 		return getHibachiScope().getCurrentRequestSite();
