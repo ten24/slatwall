@@ -50,6 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="orderDAO";
 	property name="productDAO";
+	property name="promotionDAO";
 
 	property name="accountService";
 	property name="addressService";
@@ -1197,6 +1198,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		 * unvalidated changes in the order template.
 		 */
 
+		
 		thread name="#threadName#"
 			   orderTemplateSoftReference="#orderTemplateSoftReference#"
 			   action="run" 
@@ -1210,28 +1212,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  
 			thread.canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
-			ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
-			//ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where orderItem.order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
+			//getPromotionDAO().deletePromotionAppliedToOrderItemByOrderID(transientOrder.getOrderID()); 			
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('can delete order #deleteOk#', true);
+			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#', true);
 
-			if(deleteOk){
-				ormFlush(); 
-			} else { 
+			if(!deleteOk){
 				this.logHibachi('cannot delete order #serializeJson(transientOrder.getErrors())#', true);
 			} 
 		}
 
 		threadJoin(threadName);
-
 		if(!structKeyExists(evaluate(threadName), "ERROR")){
 			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
 		} else {
 			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
-		
 		return canPlaceOrder;
 	}
 
