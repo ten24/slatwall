@@ -113,7 +113,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         		
 			if(isNull(variables.currentRequestSite)){
 				var domain = getCurrentDomain();
-				variables.currentRequestSite = getDAO('siteDAO').getSiteByDomainName(domain);
+				variables.currentRequestSite = getService('siteService').getSiteByDomainName(domain);
 				setCurrentRequestSitePathType('domain');	
 			}else{
 				setCurrentRequestSitePathType('sitecode');
