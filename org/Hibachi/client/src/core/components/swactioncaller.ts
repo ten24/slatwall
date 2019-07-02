@@ -98,6 +98,10 @@ class SWActionCallerController{
             this.display = true;
         }
         
+        if(angular.isUndefined(this.displayConfirm)){
+            this.displayConfirm = false;
+        }
+        
         this.type = this.type || 'link';
         
         if(angular.isDefined(this.titleRbKey)){
