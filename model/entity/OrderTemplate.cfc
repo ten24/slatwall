@@ -128,11 +128,15 @@ property name="customerCanCreateFlag" persistent="false";
 	} 
 
 	public string function getStatusCode() {
-		return getOrderTemplateStatusType().getSystemCode();
+		if(!isNull(getOrderTemplateStatusType())){
+			return getOrderTemplateStatusType().getSystemCode();
+		}
 	}
 	
 	public string function getTypeCode() {
-		return getOrderTemplateType().getSystemCode();
+		if(!isNull(getOrderTemplateType())){
+			return getOrderTemplateType().getSystemCode();
+		}
 	}
 	
 	public boolean function getCanPlaceOrderFlag(){
