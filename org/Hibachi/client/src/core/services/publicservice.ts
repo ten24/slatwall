@@ -664,6 +664,8 @@ class PublicService {
     /** Selects shippingAddress*/
     public selectShippingAccountAddress = (accountAddressID,orderFulfillmentID)=>{
         
+        this.observerService.notify("shippingAddressSelected",{"accountAddressID":accountAddressID});
+        
         let fulfillmentIndex = this.cart.orderFulfillments.findIndex(fulfillment => fulfillment.orderFulfillmentID == orderFulfillmentID);
         let oldAccountAddressID;
         
@@ -778,7 +780,7 @@ class PublicService {
             if(!angular.isDefined(this.imagePath)){
                 this.imagePath = {};
             }
-            if (result.resizedImagePaths){
+            if (result && result.resizedImagePaths){
                 for(var skuID in result.resizedImagePaths){
                     this.imagePath[skuID] = result.resizedImagePaths[skuID]
                 }

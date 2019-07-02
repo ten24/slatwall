@@ -155,7 +155,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(required any currentDateTime, required string productsScheduledForDelivery){
 		//find all order items that require delivery based on the term
 		var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
-		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
+		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount,orderItem.sku.product.nextDeliveryScheduleDate.deliveryScheduleDateID');
 		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
 		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',arguments.productsScheduledForDelivery,'IN');
 		//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
@@ -175,13 +175,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
 			//subscription order item data for creating 
 			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(arguments.currentDateTime,productsScheduledForDelivery);
-			
 			//create a delivery for each subscription Order Item 
 			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
 				//insert a single subscriptionOrderDeliveryItem if we haven't completed delivering all the items in the subscription
 				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
 					getOrderDao().insertSubscriptionOrderDeliveryItem(
-						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],subscriptionOrderItemRecord['orderItem_calculatedTaxAmount']
+						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),
+						1,
+						subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],
+						subscriptionOrderItemRecord['orderItem_calculatedTaxAmount'],
+						subscriptionOrderItemRecord['orderItem_sku_product_nextDeliveryScheduleDate_deliveryScheduleDateID']
 					);
 				}
 			}
@@ -192,7 +195,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
 				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
-				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
+				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateID,deliveryScheduleDateValue');
 				deliveryScheduleDateCollectionList.addFilter('product.productID',productsScheduledForDeliveryRecord['productID']);
 				
 				//if start in current period flag is set then get the closest previous date in the past otherwise closest in the future
@@ -210,7 +213,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords(formatRecords=false);
 				
 				if(arrayLen(deliveryScheduleDateRecords)){
-					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']));
+					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateID']));
 				}
 			}
 		}
@@ -3011,7 +3014,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
 				}
 			}
-
+			
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(
@@ -3028,7 +3031,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			} else {
 				
-				if(!arrayLen(arguments.processObject.getContainers())){
+				if(!isNull(arguments.processObject.getContainers()) && !arrayLen(arguments.processObject.getContainers())){
 					// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
 					arguments.orderDelivery = addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 				}else{
@@ -3062,7 +3065,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
-			
 			// Clean up if not needed
 			if (!arrayLen(arguments.data.giftCardCodes)) {
 				structDelete(arguments.data, 'giftCardCodes');
@@ -4182,6 +4184,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
+				
+				//verify address
+				arguments.orderFulfillment.setVerifiedShippingAddressFlag( arguments.orderFulfillment.getShippingAddress().getVerifiedByIntegrationFlag() );
 			}
 		}
 

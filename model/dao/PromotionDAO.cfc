@@ -265,20 +265,17 @@ Notes:
 	<cffunction name="getPromotionCodeUseCount" returntype="numeric" access="public">
 		<cfargument name="promotionCode" required="true" type="any" />
 
-		<cfset var results = ormExecuteQuery("SELECT count(o.orderID) as count FROM
-					SlatwallPromotionCode pc
-				  INNER JOIN
-				  	pc.orders o
-				WHERE
-					o.orderStatusType.systemCode != :ostNotPlaced
-				  AND
-				  	pc.promotionCodeID = :promotionCodeID
-					", {
-						ostNotPlaced = "ostNotPlaced",
-						promotionCodeID = arguments.promotionCode.getPromotionCodeID()
-				}) />
+		<cftransaction isolation="read_uncommitted">
+			<cfquery name="local.results">
+			SELECT count(swOrder.orderID) as count
+			FROM SwOrderPromotionCode 
+			INNER JOIN SwOrder on SwOrderPromotionCode.orderID=SwOrder.orderID AND SwOrder.orderNumber is not null
+			WHERE SwOrderPromotionCode.promotionCodeID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionCode.getPromotionCodeID()#">
 
-		<cfreturn results[1] />
+			</cfquery>
+		</cftransaction>
+
+		<cfreturn local.results.count />
 
 	</cffunction>
 

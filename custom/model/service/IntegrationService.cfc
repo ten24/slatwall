@@ -16,8 +16,8 @@ component extends="Slatwall.model.service.IntegrationService" accessors="true" {
     		    var accountPaymentRecords = accountPaymentMethodCollection.getRecords(); 
                 
                 for(var accountPaymentRecord in accountPaymentRecords) {
-    		        if(len(accountPaymentRecord.providerToken)){
-    		            arrayAppend(tokens,accountPaymentRecord.providerToken);
+    		        if(len(accountPaymentRecord['providerToken'])){
+    		            arrayAppend(tokens,accountPaymentRecord['providerToken']);
     		        }
     		    }
             }
@@ -29,8 +29,8 @@ component extends="Slatwall.model.service.IntegrationService" accessors="true" {
     		    var orderPaymentRecords = orderPaymentMethodCollection.getRecords(); 
                 
                 for(var orderPaymentRecord in orderPaymentRecords) {
-    		        if(len(orderPaymentRecord.providerToken)){
-    		            arrayAppend(tokens,orderPaymentRecord.providerToken);
+    		        if(len(orderPaymentRecord['providerToken'])){
+    		            arrayAppend(tokens,orderPaymentRecord['providerToken']);
     		        }
     		    }
             }
