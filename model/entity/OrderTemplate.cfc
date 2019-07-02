@@ -98,6 +98,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
+	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
@@ -147,13 +148,12 @@ property name="customerCanCreateFlag" persistent="false";
 	}
 	
 	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
-		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
+		if(!structKeyExists(variables, 'canPlaceFutureScheduleOrderFlag')){
 			variables.canPlaceFutureScheduleOrderFlag = true;
-			
 			if(
-				!getSettingValue('orderTemplateCanPlaceFutureScheduleDateFlag') && 
+				!setting('orderTemplateCanPlaceFutureScheduleDateFlag') && 
 				!isNull(getHibachiScope().getAccount()) && 
-				getHibachiScope().getAccount().getAdminAccountFlag()
+				getHibachiScope().getAccount().getAdminAccountFlag()	
 			){
 				variables.canPlaceFutureScheduleOrderFlag = dateCompare(now(), getScheduleOrderNextPlaceDateTime()) > -1; 
 			} 
