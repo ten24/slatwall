@@ -14,9 +14,8 @@
 <cfif $.slatwall.content().getUrlTitle() EQ "order">
 	<h3>Order ###order.getOrderNumber()#</h3>
 <cfelse>
-    <h3>Quote ###order.getOrderNumber()#</h3>
+    <h3>Quote Details</h3>
 </cfif>
-
 
         <!--- Address & Payment Indo --->
 	    <div class="row">
@@ -215,11 +214,7 @@
     	        		AND local.orderItem.getSku().getProduct().getActiveFlag() EQ true
     	        		AND local.orderItem.getSku().getProduct().getPublishedFlag() EQ true>
         	        		<div class="col-xl-2 col-lg-12 mt-2">
-<<<<<<< HEAD
-        	        		    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary"><i class="fa fa-shopping-cart"></i> Reorder</a>
-=======
-        	        		    <a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary"><i class="fa fa-print"></i> Reorder</a>
->>>>>>> aa221085d54a2cdd25f30aea887630566c49b983
+        	        			<a href="/shopping-cart/?slatAction=public:cart.change&orderID=#order.getOrderID()#&abandonedCart=true&utm_source=abandonedCart&utm_medium=email&utm_campaign=Abandoned%20Cart%201%20Day" class="btn btn-secondary"><i class="fa fa-shopping-cart"></i> Reorder</a>
         	        		</div>
     	        		</cfif>
     	        	</div>
@@ -250,12 +245,26 @@
             			</cfif>
             			<p>Tax:
             			    <span class="pull-right">#order.getFormattedValue('calculatedTaxTotal')#</span>
-            			</p>			
+            			</p>
             			<hr />				
             			<p>Total:
             			    <span class="pull-right">#order.getFormattedValue('calculatedTotal')#</span>
             			</p>
-            			
+            			<cfif order.getPaymentAmountReceivedTotal() GT 0>
+	            			<p>Received:
+	            			    <span class="pull-right">(#order.getFormattedValue('paymentAmountReceivedTotal')#)</span>
+	            			</p>
+            			</cfif>
+            			<cfif order.getPaymentAmountCreditedTotal() GT 0>
+	            			<p>Credited:
+	            			    <span class="pull-right">(#order.getFormattedValue('paymentAmountCreditedTotal')#)</span>
+	            			</p>
+            			</cfif>
+            			<cfif order.getCalculatedTotal() NEQ order.getPaymentAmountDue()>
+	            			<p>Balance Due:
+	            			    <span class="pull-right">#order.getFormattedValue('paymentAmountDue')#</span>
+	            			</p>
+            			</cfif>
             			<cfif $.slatwall.content().getUrlTitle() EQ "order">
             			    <a href="javascript:window.print();" class="btn btn-primary"><i class="fa fa-print"></i> Print Order</a>
             			<cfelse>
