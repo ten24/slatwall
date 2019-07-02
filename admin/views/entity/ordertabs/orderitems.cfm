@@ -73,6 +73,8 @@ Notes:
 		collectionList="#orderItemCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(orderItemCollectionList.getCollectionObject())#"
+		recordDeleteAction="admin:entity.deleteOrderItem&sRedirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#"
+		recordDeleteActionProperty="orderItemID"
 		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#">
 	</hb:HibachiListingDisplay>
 	
