@@ -19,18 +19,23 @@ component extends="Slatwall.model.service.PromotionService" {
 				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
 				newAppliedPromotion.setOrderItem( orderItem );
 				newAppliedPromotion.setDiscountAmount( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
-			    
 			    //Custom price fields
 			    for(var customPriceField in variables.customPriceFields){
-			        var args = {
-			            reward=promotionReward,
-			            price=orderItem.invokeMethod('get#customPriceField#'),
-			            quantity=orderItem.getQuantity(),
-			            customPriceField=customPriceField,
-			            sku=orderItem.getSku()
-			        };
-
-	        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=getCustomDiscountAmount(argumentCollection=args)});
+					
+					if(promotionReward.getAmountType() == 'amountOff'){
+						var rewardAmount = getProportionalRewardAmount(newAppliedPromotion.getDiscountAmount(), orderItem.getPrice(),orderItem.invokeMethod('get#customPriceField#'));
+					}else{
+				        var args = {
+				            reward=promotionReward,
+				            price=orderItem.invokeMethod('get#customPriceField#'),
+				            quantity=orderItem.getQuantity(),
+				            customPriceField=customPriceField,
+				            sku=orderItem.getSku(),
+				            account=arguments.order.getAccount()
+				        };
+				        var rewardAmount = getCustomDiscountAmount(argumentCollection=args);
+					}
+	        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=rewardAmount});
 			    }
 				//making sure calculated props run
 				getHibachiScope().addModifiedEntity(orderItem);
@@ -59,10 +64,15 @@ component extends="Slatwall.model.service.PromotionService" {
 		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, order.getCurrencyCode());
 
 		var customDiscountAmountStruct = {};
-		for(var customPriceField in customPriceFields){
+		for(var customPriceField in variables.customPriceFields){
 			var totalCustomDiscountableAmount = arguments.order.invokeMethod('get#customPriceField#SubtotalAfterItemDiscounts');
 			if(!isNull(totalCustomDiscountableAmount)){
-				customDiscountAmountStruct[customPriceField] = getCustomDiscountAmount(arguments.promotionReward, totalCustomDiscountableAmount, 1, order.getCurrencyCode(),customPriceField);
+				if(arguments.promotionReward.getAmountType() == 'amountOff'){
+					var rewardAmount = getProportionalRewardAmount( discountAmount, totalDiscountableAmount, totalCustomDiscountableAmount );
+				}else{
+					var rewardAmount = getCustomDiscountAmount(arguments.promotionReward, totalCustomDiscountableAmount, 1, order.getCurrencyCode(),customPriceField);
+				}
+				customDiscountAmountStruct[customPriceField] = rewardAmount;
 			}
 		}
 		var addNew = false;
@@ -94,12 +104,12 @@ component extends="Slatwall.model.service.PromotionService" {
 
 		// Add the new appliedPromotion
 		if(addNew) {
-			applyPromotionToOrder(arguments.order,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount);
+			applyPromotionToOrder(arguments.order,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount,customDiscountAmountStruct);
 		}
 
 	}
 	
-	private numeric function getCustomDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, string customPriceField, any sku) {
+	private numeric function getCustomDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, string customPriceField, any sku, any account) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));
@@ -108,17 +118,24 @@ component extends="Slatwall.model.service.PromotionService" {
 		var amountParams = {
 			quantity:arguments.quantity
 		};
-		if(structKeyExists(arguments,'customPriceField')){
-			amountMethod &= 'get#arguments.customPriceField#Amount';
+		if(reward.getAmountType() != "amountOff"){
+			if(structKeyExists(arguments,'customPriceField')){
+				amountMethod &= 'get#arguments.customPriceField#Amount';
+			}else{
+				amountMethod &= 'getAmount';
+			}
+			if(structKeyExists(arguments,'currencyCode') && len(arguments.currencyCode)){
+				amountMethod &= 'ByCurrencyCode';
+				amountParams['currencyCode'] = arguments.currencyCode;
+			}
+			if(structKeyExists(arguments,'sku')){
+				amountParams['sku'] = arguments.sku;
+			}
+			if(structKeyExists(arguments,'account')){
+				amountParams['account'] = arguments.account;
+			}
 		}else{
-			amountMethod &= 'getAmount';
-		}
-		if(structKeyExists(arguments,'currencyCode') && len(arguments.currencyCode)){
-			amountMethod &= 'ByCurrencyCode';
-			amountParams['currencyCode'] = arguments.currencyCode;
-		}
-		if(structKeyExists(arguments,'sku')){
-			amountParams['sku'] = arguments.sku;
+			
 		}
 		
 		var rewardAmount = arguments.reward.invokeMethod(amountMethod,amountParams);
@@ -153,4 +170,11 @@ component extends="Slatwall.model.service.PromotionService" {
 		return numberFormat(discountAmount, "0.00");
 	}
     
+    private numeric function getProportionalRewardAmount( required numeric priceDiscountAmount, required numeric price, numeric customPrice ){
+    	if(!isNull(arguments.customPrice) && arguments.customPrice != 0){
+    		var discountAmount = arguments.priceDiscountAmount * arguments.customPrice / arguments.price;
+    		return numberFormat(discountAmount, "0.00");
+    	}
+    	return 0;
+    }
 }

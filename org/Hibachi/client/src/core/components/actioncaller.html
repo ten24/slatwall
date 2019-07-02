@@ -1,3 +1,6 @@
+<!--
+<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
+-->
 <!-- Link Not Modal -->
 <a  ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'link' && swActionCaller.actionAuthenticated"
 	ng-attr-title="{{swActionCaller.title}}" 
@@ -38,6 +41,10 @@
 	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>
 
+<!--
+		<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
+		<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif>
+		-->
 <a ng-if="swActionCaller.display && swActionCaller.type === 'event'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 

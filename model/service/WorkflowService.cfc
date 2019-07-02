@@ -380,17 +380,20 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
-					var processData = {'1'=arguments.entity};
-					
+					var processData = {
+						'1'=arguments.entity,
+						'2' = arguments.data
+					};
 					if(arguments.entity.hasProcessObject(processContext)){
-						processData['2'] = arguments.entity.getProcessObject(processContext);
+						processData['3'] = arguments.entity.getProcessObject(processContext);
 					}
-					var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
 					
+					var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
 					if(!processMethod.hasErrors()) {
 						actionSuccess = true;
 					}
 				}else{
+					
 					var entityService = getServiceByEntityName( entityName=arguments.workflowTaskAction.getWorkflowTask().getWorkflow().getWorkflowObject());
 					var processData = {};
 					try{
@@ -467,22 +470,21 @@ component extends="HibachiService" accessors="true" output="false" {
 					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
 				)
 			){
+				
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 					if(!isNull(workflowTaskAction.getUpdateData()) && !isNull(workflowTaskAction.getActionType())){
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
-							
 							if(!structKeyExists(arguments.data,'collectionData')){
 								arguments.data.collectionData = {};
 							}
-							
 							//Execute ACTION
 							if(structKeyExists(arguments.data,'entity')){
 								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType(), arguments.data.collectionData);
 							}else{
-								var actionSuccess = executeTaskAction(workflowTaskAction, javacast('null',''), data.workflowTrigger.getTriggerType());
+								var actionSuccess = executeTaskAction(workflowTaskAction, javacast('null',''), data.workflowTrigger.getTriggerType(), arguments.data.collectionData);
 							}
 
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
@@ -666,6 +668,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.comparisonOperator;
 	}	
+	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
 		
 		getHibachiDAO().flushORMSession();
