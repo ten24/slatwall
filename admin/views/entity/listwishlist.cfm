@@ -46,8 +46,8 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 <cfset rc.orderTemplateCollectionList.setDisplayProperties() />
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='orderTemplateName', title="Wish List Name", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
