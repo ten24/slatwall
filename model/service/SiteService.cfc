@@ -78,8 +78,7 @@ component  extends="HibachiService" accessors="true" {
 			} else { 
 				getHibachiCacheService().setCachedValue(cacheKey, site.getSiteID());  
 			} 	
-	
-			return site; 
+
 		} 
 		var cachedSiteID = getHibachiCacheService().getCachedValue(cacheKey);
 
