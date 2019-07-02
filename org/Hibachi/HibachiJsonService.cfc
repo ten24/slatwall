@@ -253,50 +253,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     }
     
     public void function createRBJson(){
-    	var rbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/config/resourceBundles";
-    	var directorylisting = [];
-    	if(DirectoryExists(rbpath)){
-    		directorylisting = directorylist(rbpath,false,"name","*.properties");
-    	}
-    	
-    	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/resourceBundles";
-    	
-    	var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
-    	
-    	if(!directoryExists(customrbpath)){
-        	directoryCreate(customrbpath);
+        var rbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/config/resourceBundles";
+        var directorylisting = [];
+        if(DirectoryExists(rbpath)){
+            directorylisting = directorylist(rbpath,false,"name","*.properties");
         }
+
+        var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/resourceBundles";
+
+        if(!directoryExists(customrbpath)){
+            directoryCreate(customrbpath);
+        }
+        
+        var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/resourceBundles";
         
         if(!directoryExists(systemrbpath)){
-        	directoryCreate(systemrbpath);
+            directoryCreate(systemrbpath);
         }
-    	if(DirectoryExists(customrbpath)){
-    		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
-    		for(var item in customDirectoryListing){
-    			if(!ArrayFind(directoryListing,item)){
-    				arrayAppend(directoryListing,item);
-    			}
-    		}
-    	}
-    	for(var rb in directoryListing){
-    		var locale = listFirst(rb,'.');
-    		var resourceBundle = getService('HibachiRBService').getResourceBundle(locale);
-    		
-	        var data = {};
-	        //cache RB for 1 day or until a reload
-	        //lcase all the resourceBundle keys so we can have consistent casing for the js
-	        for(var key in resourceBundle){
-		    key = REReplace(trim(key), '[^\x00-\x7F]', '', "ALL");
-	            if(!len(key)){
-	                continue;
-	            }
-	            data[lcase(key)] = resourceBundle[key];
-	        }
-	        var json = serializeJson(data);
-			var filePath = systemrbpath & '/#locale#.json';
-	        fileWrite(filePath,json,'utf-8');
-    	}
+
         
+        var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
+        for(var item in customDirectoryListing){
+            if(!ArrayFind(directoryListing,item)){
+                arrayAppend(directoryListing,item);
+            }
+        }
+
+        for(var rb in directoryListing){
+            var locale = listFirst(rb,'.');
+            var resourceBundle = getService('HibachiRBService').getResourceBundle(locale);
+
+            var data = {};
+            //cache RB for 1 day or until a reload
+            //lcase all the resourceBundle keys so we can have consistent casing for the js
+            for(var key in resourceBundle){
+                key = REReplace(trim(key), '[^\x00-\x7F]', '', "ALL");
+                if(!len(key)){
+                    continue;
+                }
+                data[lcase(key)] = resourceBundle[key];
+            }
+            var json = serializeJson(data);
+            var filePath = systemrbpath & '/#locale#.json';
+            fileWrite(filePath,json,'utf-8');
+        }
     }
     
     private void function formatEntity(required any entity, required any model){

@@ -66,11 +66,15 @@ component extends="HibachiDAO" {
 		); 
 	}
 
+	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
+		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{maxresults=1});
+	}
+	
 	public any function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
 		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
 			return false;
 		}
-		
+
 		return  ORMExecuteQuery('
 			SELECT si.settingsExpired 
 			FROM #getApplicationKey()#ServerInstance si 
@@ -78,10 +82,6 @@ component extends="HibachiDAO" {
 			{serverInstanceKey=arguments.serverInstanceKey},
 			true
 		); 
-	}
-	
-	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
-		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{maxresults=1});
 	}
 
 	public void function updateServerInstanceCache(required any serverInstance){
