@@ -95,7 +95,7 @@ class SWConfirm{
             noText 					= swRbKey + startTag + noText + endTag;
 
             parsedKeyString 	= templateString.replace(confirmKey, confirmText)
-                                                                    .replace(messageText, messageText)
+                                                                    .replace(messageKey, messageText)
                                                                     .replace(noKey, noText)
                                                                     .replace(yesKey, yesText);
 

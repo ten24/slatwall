@@ -3,6 +3,7 @@
 
 class SWActionCallerController{
     public type:string;
+    public displayConfirm:boolean;
     public confirm:any;
     public display:boolean;
     public modal:boolean;
@@ -293,6 +294,7 @@ class SWActionCaller implements ng.IDirective{
     public bindToController:any={
         action:"@?",
         display:"=?",
+        displayConfirm:"=?",
         event:"@?",
         payload: "=",
         text:"@",

@@ -77572,6 +77572,7 @@ var SWActionCaller = /** @class */ (function () {
         this.bindToController = {
             action: "@?",
             display: "=?",
+            displayConfirm: "=?",
             event: "@?",
             payload: "=",
             text: "@",
@@ -78220,7 +78221,7 @@ var SWConfirm = /** @class */ (function () {
                 yesText = swRbKey + startTag + yesText + endTag;
                 noText = swRbKey + startTag + noText + endTag;
                 parsedKeyString = templateString.replace(confirmKey, confirmText)
-                    .replace(messageText, messageText)
+                    .replace(messageKey, messageText)
                     .replace(noKey, noText)
                     .replace(yesKey, yesText);
                 $log.debug(finishedString);
