@@ -79964,8 +79964,8 @@ var HibachiInterceptor = /** @class */ (function () {
             config.cache = true;
             config.headers = config.headers || {};
             if (_this.hibachiAuthenticationService.jwtToken) {
-                config.headers['Auth-Token'] = 'Bearer ' + _this.jwtToken;
-                _this.getJWTDataFromToken(_this.jwtToken);
+                config.headers['Auth-Token'] = 'Bearer ' + _this.hibachiAuthenticationService.jwtToken;
+                _this.getJWTDataFromToken(_this.hibachiAuthenticationService.jwtToken);
             }
             var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
             if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
