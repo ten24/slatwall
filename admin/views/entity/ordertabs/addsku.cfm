@@ -52,9 +52,14 @@ Notes:
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" default="oitSale"/>
-<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />
+<!---<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />--->
 
 <cfoutput>
+	
+	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-sku-properties-to-display="personalVolume,commissionableVolume"></sw-add-order-items-by-sku>
+	
+	
+	<!---
 	<hb:HibachiListingDisplay smartList="#local.addOrderItemSkuOptionsSmartList#"
 							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
@@ -80,5 +85,5 @@ Notes:
 		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay>--->
 </cfoutput>
