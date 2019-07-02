@@ -77365,6 +77365,9 @@ var SWActionCallerController = /** @class */ (function () {
             if (angular.isUndefined(_this.display)) {
                 _this.display = true;
             }
+            if (angular.isUndefined(_this.displayConfirm)) {
+                _this.displayConfirm = false;
+            }
             _this.type = _this.type || 'link';
             if (angular.isDefined(_this.titleRbKey)) {
                 _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);

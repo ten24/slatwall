@@ -8,7 +8,7 @@ component {
 		if(!structKeyExists(variables, "customerCanCreateFlag")){
 			variables.customerCanCreateFlag = true;
 			if(!isNull(getSite()) && !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner'){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().getSettingValue('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
+				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
 				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
 			} 
 		}
