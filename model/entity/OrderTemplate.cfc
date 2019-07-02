@@ -130,15 +130,18 @@ property name="customerCanCreateFlag" persistent="false";
 	public string function getStatusCode() {
 		return getOrderTemplateStatusType().getSystemCode();
 	}
+	
 	public string function getTypeCode() {
 		return getOrderTemplateType().getSystemCode();
 	}
+	
 	public boolean function getCanPlaceOrderFlag(){
 		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
 			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this);
 		} 
 		return variables.canPlaceOrderFlag;
 	}
+	
 	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
 		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
 			variables.canPlaceFutureScheduleOrderFlag = true;
@@ -148,7 +151,7 @@ property name="customerCanCreateFlag" persistent="false";
 				!isNull(getHibachiScope().getAccount()) && 
 				getHibachiScope().getAccount().getAdminAccountFlag()
 			){
-				variables.canPlaceFutureScheduleOrderFlag = dateCompare(getScheduleOrderNextPlaceDateTime(), now()) > -1; 
+				variables.canPlaceFutureScheduleOrderFlag = dateCompare(now(), getScheduleOrderNextPlaceDateTime()) > -1; 
 			} 
 		}
 		return variables.canPlaceFutureScheduleOrderFlag;

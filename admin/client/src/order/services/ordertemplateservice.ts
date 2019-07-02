@@ -3,6 +3,8 @@
 export class OrderTemplateService { 
 
     public orderTemplateID:string; 
+	public orderTemplatePropertyIdentifierList = 'fulfillmentTotal,subtotal,total';
+	public orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
 
     //@ngInject
     constructor(public $http,
@@ -45,6 +47,20 @@ export class OrderTemplateService {
     public refreshOrderTemplatePromotionListing = () =>{
     	this.refreshListing('orderTemplatePromotions');
     }
+    
+    public setOrderTemplatePropertyIdentifierList = (orderTemplatePropertyIdentifierList:string) =>{
+    	this.orderTemplatePropertyIdentifierList = this.setOrderTemplateItemPropertyIdentifierList(orderTemplatePropertyIdentifierList);
+    }
+    
+    public setOrderTemplateItemPropertyIdentifierList = (orderTemplatePropertyIdentifierList:string) =>{
+    	var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
+    	this.orderTemplateItemPropertyIdentifierList = '';
+    	for(var i=0; i<propsToAdd.length; i++){
+    		this.orderTemplateItemPropertyIdentifierList += propsToAdd[1];
+    		if(i + 1 !== propsToAdd.length) this.orderTemplateItemPropertyIdentifierList += ',';
+    	}
+    	return orderTemplatePropertyIdentifierList; 
+    }
  
     public addOrderTemplateItem = (state) =>{
         
@@ -52,7 +68,7 @@ export class OrderTemplateService {
 			entityID: this.orderTemplateID,
 			entityName: 'OrderTemplate',
 			context: 'addOrderTemplateItem',
-			propertyIdentifiersList: 'fulfillmentTotal,personalVolumeTotal,subtotal,total',
+			propertyIdentifiersList: this.orderTemplatePropertyIdentifierList,
 			skuID: state.skuID,
 			quantity: state.quantity
 		};
@@ -76,7 +92,7 @@ export class OrderTemplateService {
 			entityID: state.orderTemplateItemID,
 			entityName: 'OrderTemplateItem',
 			context: 'save',
-			propertyIdentifiersList: 'orderTemplate.fulfillmentTotal,orderTemplate.personalVolumeTotal,orderTemplate.subtotal,orderTemplate.total',
+			propertyIdentifiersList: this.orderTemplateItemPropertyIdentifierList,
 			quantity: state.quantity
 		};
 		
@@ -99,7 +115,7 @@ export class OrderTemplateService {
 			entityID: this.orderTemplateID,
 			entityName: 'OrderTemplate',
 			context: 'removePromotionCode',
-			propertyIdentifiersList: 'fulfillmentTotal,personalVolumeTotal,subtotal,total',
+			propertyIdentifiersList: this.orderTemplatePropertyIdentifierList,
 			promotionCodeID: state.promotionCodeID
 		};
 		
@@ -123,7 +139,7 @@ export class OrderTemplateService {
 			entityName: 'OrderTemplate',
 			orderTemplateItemID: state.orderTemplateItemID,
 			context: 'removeOrderTemplateItem',
-			propertyIdentifiersList: 'fulfillmentTotal,personalVolumeTotal,subtotal,total'
+			propertyIdentifiersList: this.orderTemplatePropertyIdentifierList
 		};
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');

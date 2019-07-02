@@ -13,6 +13,7 @@ class SWOrderTemplateItemsController{
     public skuColumns; 
     
     public skuPropertiesToDisplay:string;
+    public additionalOrderTemplateItemPropertiesToDisplay:string;
 
 	constructor(public $hibachi,
 	            public collectionConfigService, 
@@ -34,13 +35,20 @@ class SWOrderTemplateItemsController{
 		
 		if(this.skuPropertiesToDisplay != null){
 			var properties = this.skuPropertiesToDisplay.split(',');
-			
 			for(var i=0; i<properties.length; i++){
 				orderTemplateDisplayProperties += ",sku." + properties[i]; 
 				skuDisplayProperties += ',' + properties[i];
 			}
-			
 		}
+		
+		if(this.additionalOrderTemplateItemPropertiesToDisplay != null){
+			var properties = this.additionalOrderTemplateItemPropertiesToDisplay.split(',');
+			for(var i=0; i<properties.length; i++){
+				orderTemplateDisplayProperties += "," + properties[i];	
+			}
+		}
+		
+		
 	    
         this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
         this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
@@ -91,6 +99,7 @@ class SWOrderTemplateItems implements ng.IDirective {
 	public bindToController = {
         orderTemplate: '<?', 
         skuPropertiesToDisplay: '@?',
+        additionalOrderTemplateItemPropertiesToDisplay: '@?',
         edit:"=?"
 	};
 	public controller=SWOrderTemplateItemsController;

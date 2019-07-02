@@ -63657,10 +63657,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
-    function SWCustomerAccountPaymentMethodCardController($hibachi, observerService, rbkeyService) {
+    function SWCustomerAccountPaymentMethodCardController($hibachi, observerService, orderTemplateService, rbkeyService) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
@@ -63697,6 +63698,9 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.propertiesToDisplayList == null) {
             this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+        }
+        else {
+            this.orderTemplateService.setOrderTemplatePropertyIdentifierList(this.propertiesToDisplayList);
         }
         this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
         console.log('props to display', this.propertiesToDisplay);
@@ -64167,6 +64171,12 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                     skuDisplayProperties += ',' + properties[i];
                 }
             }
+            if (_this.additionalOrderTemplateItemPropertiesToDisplay != null) {
+                var properties = _this.additionalOrderTemplateItemPropertiesToDisplay.split(',');
+                for (var i = 0; i < properties.length; i++) {
+                    orderTemplateDisplayProperties += "," + properties[i];
+                }
+            }
             _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
             _this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
@@ -64215,6 +64225,7 @@ var SWOrderTemplateItems = /** @class */ (function () {
         this.bindToController = {
             orderTemplate: '<?',
             skuPropertiesToDisplay: '@?',
+            additionalOrderTemplateItemPropertiesToDisplay: '@?',
             edit: "=?"
         };
         this.controller = SWOrderTemplateItemsController;
@@ -64610,6 +64621,8 @@ var OrderTemplateService = /** @class */ (function () {
         this.observerService = observerService;
         this.requestService = requestService;
         this.utilityService = utilityService;
+        this.orderTemplatePropertyIdentifierList = 'fulfillmentTotal,subtotal,total';
+        this.orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
         this.setOrderTemplateID = function (orderTemplateID) {
             _this.orderTemplateID = orderTemplateID;
         };
@@ -64626,12 +64639,25 @@ var OrderTemplateService = /** @class */ (function () {
         this.refreshOrderTemplatePromotionListing = function () {
             _this.refreshListing('orderTemplatePromotions');
         };
+        this.setOrderTemplatePropertyIdentifierList = function (orderTemplatePropertyIdentifierList) {
+            _this.orderTemplatePropertyIdentifierList = _this.setOrderTemplateItemPropertyIdentifierList(orderTemplatePropertyIdentifierList);
+        };
+        this.setOrderTemplateItemPropertyIdentifierList = function (orderTemplatePropertyIdentifierList) {
+            var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
+            _this.orderTemplateItemPropertyIdentifierList = '';
+            for (var i = 0; i < propsToAdd.length; i++) {
+                _this.orderTemplateItemPropertyIdentifierList += propsToAdd[1];
+                if (i + 1 !== propsToAdd.length)
+                    _this.orderTemplateItemPropertyIdentifierList += ',';
+            }
+            return orderTemplatePropertyIdentifierList;
+        };
         this.addOrderTemplateItem = function (state) {
             var formDataToPost = {
                 entityID: _this.orderTemplateID,
                 entityName: 'OrderTemplate',
                 context: 'addOrderTemplateItem',
-                propertyIdentifiersList: 'fulfillmentTotal,personalVolumeTotal,subtotal,total',
+                propertyIdentifiersList: _this.orderTemplatePropertyIdentifierList,
                 skuID: state.skuID,
                 quantity: state.quantity
             };
@@ -64646,7 +64672,7 @@ var OrderTemplateService = /** @class */ (function () {
                 entityID: state.orderTemplateItemID,
                 entityName: 'OrderTemplateItem',
                 context: 'save',
-                propertyIdentifiersList: 'orderTemplate.fulfillmentTotal,orderTemplate.personalVolumeTotal,orderTemplate.subtotal,orderTemplate.total',
+                propertyIdentifiersList: _this.orderTemplateItemPropertyIdentifierList,
                 quantity: state.quantity
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
@@ -64660,7 +64686,7 @@ var OrderTemplateService = /** @class */ (function () {
                 entityID: _this.orderTemplateID,
                 entityName: 'OrderTemplate',
                 context: 'removePromotionCode',
-                propertyIdentifiersList: 'fulfillmentTotal,personalVolumeTotal,subtotal,total',
+                propertyIdentifiersList: _this.orderTemplatePropertyIdentifierList,
                 promotionCodeID: state.promotionCodeID
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
@@ -64675,7 +64701,7 @@ var OrderTemplateService = /** @class */ (function () {
                 entityName: 'OrderTemplate',
                 orderTemplateItemID: state.orderTemplateItemID,
                 context: 'removeOrderTemplateItem',
-                propertyIdentifiersList: 'fulfillmentTotal,personalVolumeTotal,subtotal,total'
+                propertyIdentifiersList: _this.orderTemplatePropertyIdentifierList
             };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);

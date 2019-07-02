@@ -34,6 +34,7 @@ class SWCustomerAccountPaymentMethodCardController{
 	
 	constructor(public $hibachi,
 				public observerService,
+				public orderTemplateService, 
 				public rbkeyService
 	){
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
@@ -45,6 +46,8 @@ class SWCustomerAccountPaymentMethodCardController{
 		
 		if(this.propertiesToDisplayList == null){
 			this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+		} else {
+			this.orderTemplateService.setOrderTemplatePropertyIdentifierList(this.propertiesToDisplayList);
 		}
 		
 		this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
