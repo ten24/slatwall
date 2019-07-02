@@ -1216,14 +1216,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#', true);
+			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
-			if(!deleteOk){
-				this.logHibachi('cannot delete order #serializeJson(transientOrder.getErrors())#', true);
-			} 
+			ormFlush();//persist changes independently 
 		}
 
+		//join thread so we can return synchronously
 		threadJoin(threadName);
+		
 		if(!structKeyExists(evaluate(threadName), "ERROR")){
 			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
 		} else {
