@@ -79477,13 +79477,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector, utilityService) {
+    function HibachiAuthenticationService($rootScope, $q, $window, appConfig, $injector, utilityService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$q = $q;
+        this.$window = $window;
         this.appConfig = appConfig;
         this.$injector = $injector;
         this.utilityService = utilityService;
+        this.getJWTDataFromToken = function (str) {
+            // Going backwards: from bytestream, to percent-encoding, to original string.
+            str = str.split('.')[1];
+            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            var jwtData = angular.fromJson(decodedString);
+            var now = +new Date();
+            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
+            now = +nowString;
+            if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
+                if (!_this.$rootScope.slatwall.account) {
+                    _this.$rootScope.slatwall.account = {};
+                }
+                _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+                //important to check to prevent recursion between $http and hibachinterceptor
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.getRoleBasedData(jwtData);
+                    if (jwtData.permissionGroups) {
+                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
+                    }
+                }
+            }
+        };
         this.isSuperUser = function () {
             return _this.$rootScope.slatwall.role == 'superUser';
         };
@@ -79916,36 +79942,13 @@ var HibachiInterceptor = /** @class */ (function () {
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.observerService = observerService;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
-        this.jwtToken = null;
         this.urlParam = null;
         this.authHeader = 'Authorization';
         this.authPrefix = 'Bearer ';
         this.loginResponse = null;
         this.authPromise = null;
         this.getJWTDataFromToken = function (str) {
-            // Going backwards: from bytestream, to percent-encoding, to original string.
-            str = str.split('.')[1];
-            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            var jwtData = angular.fromJson(decodedString);
-            var now = +new Date();
-            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
-            now = +nowString;
-            if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
-                if (!_this.$rootScope.slatwall.account) {
-                    _this.$rootScope.slatwall.account = {};
-                }
-                _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
-                //important to check to prevent recursion between $http and hibachinterceptor
-                if (!_this.$rootScope.slatwall.role) {
-                    _this.$rootScope.slatwall.role = jwtData.role;
-                    _this.hibachiAuthenticationService.getRoleBasedData(jwtData);
-                    if (jwtData.permissionGroups) {
-                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
-                    }
-                }
-            }
+            _this.hibachiAuthenticationService.getJWTDataFromToken(str);
         };
         this.request = function (config) {
             _this.$log.debug('request');
@@ -79960,7 +79963,7 @@ var HibachiInterceptor = /** @class */ (function () {
             }
             config.cache = true;
             config.headers = config.headers || {};
-            if (_this.jwtToken) {
+            if (_this.hibachiAuthenticationService.jwtToken) {
                 config.headers['Auth-Token'] = 'Bearer ' + _this.jwtToken;
                 _this.getJWTDataFromToken(_this.jwtToken);
             }
@@ -80032,7 +80035,7 @@ var HibachiInterceptor = /** @class */ (function () {
                             return _this.authPromise = $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
                                 _this.loginResponse = loginResponse;
                                 if (loginResponse.status === 200) {
-                                    _this.jwtToken = loginResponse.data.token;
+                                    _this.hibachiAuthenticationService.jwtToken = loginResponse.data.token;
                                     rejection.config.headers = rejection.config.headers || {};
                                     rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
                                     _this.getJWTDataFromToken(loginResponse.data.token);
