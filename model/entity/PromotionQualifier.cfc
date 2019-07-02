@@ -151,7 +151,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
 				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
 				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
-				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 		}
 		return variables.excludedSkusCollection;
@@ -232,7 +231,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 					'isSearchable':false,
 					'isExportable':true
 				});
-				variables.excludedOrdersCollection.addFilter(propertyIdentifier='orderID',value='null',hidden=false);
 			}
 		}
 		return variables.excludedOrdersCollection;
@@ -343,6 +341,34 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	public boolean function isDeletable() {
 		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
+	}
+	
+	public void function setIncludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.includedSkusCollectionConfig = arguments.collectionConfig;	
+		}
+	}
+	
+	public void function setExcludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.excludedSkusCollectionConfig = arguments.collectionConfig;	
+		}
+	}
+	
+	public void function setIncludedOrdersCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.includedOrdersCollectionConfig = arguments.collectionConfig;	
+		}
+	}
+	
+	public void function setExcludedOrdersCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.excludedOrdersCollectionConfig = arguments.collectionConfig;	
+		}
 	}
 	
 	// ==================  END:  Overridden Methods ========================

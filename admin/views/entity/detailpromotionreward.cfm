@@ -114,7 +114,10 @@ Notes:
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
 				</cfif>
-				<hb:HibachiEntityDetailItem property="eligiblePriceGroups" />
+				<!--- Do not show eligible price group tabs for sku-based rewards when using fixed pricing --->
+				<cfif !( listFindNoCase("merchandise,subscription,contentaccess",rc.rewardType) && rc.amountType == 'amount' ) >
+					<hb:HibachiEntityDetailItem property="eligiblePriceGroups" />
+				</cfif>
 			</cfif>
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
