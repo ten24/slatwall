@@ -117,7 +117,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
     
-
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -165,7 +164,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return variables.currencyCode;
 	}
 	
-	public numeric function getAmount(any sku, string currencyCode, numeric quantity){
+	public numeric function getAmount(any sku, string currencyCode, numeric quantity, any account){
 		
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
@@ -173,7 +172,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 				arguments.currencyCode = getCurrencyCode();
 			}
 			var skuPrice = getSkuPriceBySkuAndCurrencyCode(argumentCollection=arguments);
-			
+
 			if(!isNull(skuPrice)){
 				return skuPrice.getPrice();
 			}
@@ -185,7 +184,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return variables.amount;
 	}
 
-	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity){
+	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity, any account){
 		var daoArguments = {
 			skuID:arguments.sku.getSkuID(),
 			promotionRewardID:this.getPromotionRewardID(),
@@ -194,17 +193,23 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		if(!isNull(arguments.quantity)){
 			daoArguments.quantity = arguments.quantity;
 		}
+		if(!isNull(arguments.account)){
+			daoArguments.account = arguments.account;
+		}
 
 		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(argumentCollection=daoArguments);
 	}
 
-	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku, numeric quantity){
+	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku, numeric quantity, any account){
 		var amountParams = {};
 		if(structKeyExists(arguments,'quantity')){
 			amountParams['quantity'] = arguments.quantity;
 		}
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
+		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
 		}
 		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
 			//Check for explicity defined promotion reward currencies
@@ -390,8 +395,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
 		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
 			variables.includedSkusCollectionConfig = arguments.collectionConfig;	
-		}else{
-			writeDump(collectionConfigStruct);abort;
 		}
 	}
 	
@@ -611,5 +614,5 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	}
 	
 	// =================  END: Deprecated Methods   ========================	
-	
+
 }
