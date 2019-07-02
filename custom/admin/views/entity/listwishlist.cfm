@@ -54,7 +54,7 @@ Notes:
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='account.calculatedFullName', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='account.primaryEmailAddress.emailAddress', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='createdDateTime', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=true,isDeletable=true} ) />
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=false,isDeletable=false} ) />
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">
