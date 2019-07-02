@@ -29,7 +29,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="maximumUsePerQualification" edit="#rc.edit#" />
 				</cfif>
 			</cfif>
-			<cfif !isNull(rc.promotionReward.getAmountType()) AND rc.promotionreward.getAmountType() NEQ 'amount'>
+			<cfif !isNull(rc.promotionReward.getAmountType()) AND rc.promotionreward.getAmountType() EQ 'percentageOff'>
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="personalVolumeAmount" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="taxableAmountAmount" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="commissionableVolumeAmount" edit="#rc.edit#" />

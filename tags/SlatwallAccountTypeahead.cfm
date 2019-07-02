@@ -57,6 +57,7 @@ Notes:
 				data-field-name="#attributes.fieldName#"
 				data-property-to-save="accountID"
 				data-property-to-show="calculatedFullName"
+				data-properties-to-search="calculatedFullName,company,primaryEmailAddress.emailAddress"
 				data-properties-to-load="accountID,calculatedFullName,company,calculatedAdminIcon,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber"
 				data-show-add-button="false"
 				data-show-view-button="false"
