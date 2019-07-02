@@ -35,21 +35,40 @@
     of the program, but you are not obligated to do so.
 Notes:
 */
+component extends='Slatwall.model.service.HibachiService' persistent='false' accessors='true' output='false' {
 
+	// ===================== START: Logical Methods ===========================
 
-component accessors='true' output='false' displayname='InfoTrax' extends='Slatwall.org.Hibachi.HibachiObject' {
-	// Variables Saved in this application scope, but not set by end user
-	property name='infoTraxService' type='any' persistent='false';
-
-	public any function init() {
+	private any function getIntegration(){
 	    
-		setInfoTraxService( getService('InfoTraxService') );
+		if( !structKeyExists(variables,'integration') ){
+			variables.integration = getService('integrationService').getIntegrationByIntegrationPackage( 'infotrax' );
+		}
 		
-		return this;
-	}
-
-	public any function testIntegration() {
-
+		return variables.integration;
 	}
 	
+	
+	// =====================  END: Logical Methods ============================
+
+	// ===================== START: DAO Passthrough ===========================
+
+	// ===================== START: DAO Passthrough ===========================
+
+	// ===================== START: Process Methods ===========================
+
+	// =====================  END: Process Methods ============================
+
+	// ====================== START: Save Overrides ===========================
+
+	// ======================  END: Save Overrides ============================
+
+	// ==================== START: Smart List Overrides =======================
+
+	// ====================  END: Smart List Overrides ========================
+
+	// ====================== START: Get Overrides ============================
+
+	// ======================  END: Get Overrides =============================
+
 }

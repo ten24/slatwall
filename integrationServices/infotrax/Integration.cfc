@@ -41,36 +41,42 @@
     of the program, but you are not obligated to do so.
 Notes:
 */
-component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
+component accessors='true' output='false' implements='Slatwall.integrationServices.IntegrationInterface' extends='Slatwall.integrationServices.BaseIntegration' {
 	
-	property name="infoTraxService" type="any";
+	property name='infoTraxService' type='any';
 	
-	public array function getEventHandlers(){
-		return ['Slatwall.integrationServices.infotrax.model.handler.InfoTraxHandler'];
+	public array function getEventHandlers() {
+		
+		return [ 'Slatwall.integrationServices.infotrax.model.handler.InfoTraxHandler' ];
 	}
 	
 	public any function init() {
-		if(getHibachiScope().hasService('infoTraxService')){
-			setInfoTraxService(getHibachiScope().getService('infoTraxService'));
-			getHibachiScope().getService('infoTraxService').setIntegrationCFC(this);
+		
+		if( getHibachiScope().hasService('infoTraxService') ){
+			setInfoTraxService( getHibachiScope().getService('infoTraxService') );
+			getHibachiScope().getService('infoTraxService').setIntegrationCFC( this );
 		}
+		
 		return this;
 	}
 	
 	public string function getIntegrationTypes() {
-		return "data";
+		
+		return 'data';
 	}
 	
 	public string function getDisplayName() {
-		return "InfoTrax";
+		
+		return 'InfoTrax';
 	}
 
 	public struct function getSettings() {
 		
 		var settings = {
-			userName = {fieldType="text"},
-			password = {fieldType="password"}
+			userName = { fieldType = 'text' },
+			password = { fieldType = 'password' }
 		};
+		
 		return settings;
 	}
 	
