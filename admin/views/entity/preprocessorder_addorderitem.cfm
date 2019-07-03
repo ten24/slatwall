@@ -56,12 +56,12 @@ Notes:
 
 <cfoutput>
 
-	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.processObject.getCurrencyCode())#">
 
 		<hb:HibachiEntityActionBar type="preprocess" backAction="admin:entity.editorder" backQueryString="orderID=#rc.order.getOrderID()#" object="#rc.order#">
 		</hb:HibachiEntityActionBar>
 			<span <cfif rc.processObject.getSku().isGiftCardSku()>ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl" id="ngController"</cfif>>
-				<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
+				<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.processObject.getCurrencyCode())>
 					<hb:HibachiPropertyRow>
 						<hb:HibachiPropertyList>
 							<!--- Add the SkuID & orderItemTypeSystemCode --->

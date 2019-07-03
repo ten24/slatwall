@@ -80586,7 +80586,16 @@ var SWTypeaheadInputFieldController = /** @class */ (function () {
             throw ("You must select a property to save for the input field directive");
         }
         if (angular.isDefined(this.propertiesToLoad)) {
-            this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            if (this.propertiesToSearch && this.propertiesToSearch.length) {
+                var propertiesToLoad = this.propertiesToLoad.split(',');
+                for (var _i = 0, propertiesToLoad_1 = propertiesToLoad; _i < propertiesToLoad_1.length; _i++) {
+                    var propertyToLoad = propertiesToLoad_1[_i];
+                    this.typeaheadCollectionConfig.addDisplayProperty(propertyToLoad, undefined, { isSearchable: this.propertiesToSearch.split(',').indexOf(propertyToLoad) > -1 });
+                }
+            }
+            else {
+                this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            }
         }
         angular.forEach(this.columns, function (column) {
             _this.typeaheadCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
@@ -80619,6 +80628,7 @@ var SWTypeaheadInputField = /** @class */ (function () {
             typeaheadCollectionConfig: "=?",
             filters: "=?",
             propertiesToLoad: "@?",
+            propertiesToSearch: "@?",
             placeholderRbKey: "@?",
             propertyToShow: "@",
             propertyToSave: "@",
