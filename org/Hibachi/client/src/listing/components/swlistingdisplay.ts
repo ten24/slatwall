@@ -149,9 +149,6 @@ class SWListingDisplayController{
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
-        if(angular.isUndefined(this.personalCollectionKey)){
-            this.personalCollectionKey = this.baseEntityName.toLowerCase();
-        }
         
         if(angular.isUndefined(this.usingPersonalCollection)){
             this.usingPersonalCollection=false;
@@ -199,6 +196,10 @@ class SWListingDisplayController{
                 )
             )
         ){
+            if(angular.isUndefined(this.personalCollectionKey)){
+                this.personalCollectionKey = this.baseEntityName.toLowerCase();
+            }
+            
             var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
            
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
