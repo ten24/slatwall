@@ -463,7 +463,9 @@ component extends="HibachiService" accessors="true" {
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
-
+		for(var sku in arguments.product.getSkus()){
+			getHibachiScope().addModifiedEntity(sku);
+		}
 		return arguments.product;
 	}
 
