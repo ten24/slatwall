@@ -46,7 +46,7 @@ class SWCustomerAccountCard implements ng.IDirective {
 	public scope = {};
 	public bindToController = {
 		account:"<",
-		baseEntityName:"<?",
+		baseEntityName:"@?",
 		baseEntity:"<?",
 		baseEntityPropertiesToDisplayList:"@?",
 	    title:"@?"

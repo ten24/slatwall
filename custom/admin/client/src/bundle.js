@@ -60875,7 +60875,7 @@ var SWCustomerAccountCard = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             account: "<",
-            baseEntityName: "<?",
+            baseEntityName: "@?",
             baseEntity: "<?",
             baseEntityPropertiesToDisplayList: "@?",
             title: "@?"
