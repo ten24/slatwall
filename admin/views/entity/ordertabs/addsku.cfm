@@ -55,35 +55,17 @@ Notes:
 <!---<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />--->
 
 <cfoutput>
+	<cfset orderFulfillmentID = "new">
+	<cfif !isNull(rc.order.getOrderFulfillments())>
+		<cfset orderFulfillments = rc.order.getOrderFulfillments()>
+		<cfloop index="orderFulfillment" array="#orderFulfillments#">
+			<cfif !isNull(orderFulfillment.getOrderFulfillmentID())>
+				<cfset orderFulfillmentID = orderFulfillment.getOrderFulfillmentID()>
+				<cfbreak>
+			</cfif>
+		</cfloop>
+	</cfif>
 	
-	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-sku-properties-to-display="personalVolume,commissionableVolume"></sw-add-order-items-by-sku>
+	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-sku-properties-to-display="personalVolume,commissionableVolume" data-order-fulfillment-id="'#orderFulfillmentID#'"></sw-add-order-items-by-sku>
 	
-	
-	<!---
-	<hb:HibachiListingDisplay smartList="#local.addOrderItemSkuOptionsSmartList#"
-							  recordProcessAction="admin:entity.processOrder"
-							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
-							  recordProcessContext="addOrderItem"
-							  recordProcessEntity="#rc.order#"
-							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#"
-							  tableClass="addSku">
-		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
-		<cfif NOT isNull(rc.order.getDefaultStockLocation()) >
-			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" tdClass="calculatedQATS" methodIdentifier='{"METHODNAME":"getQuantity","METHODARGUMENTS":{"QUANTITYTYPE":"QATS","LOCATIONID":"#rc.order.getDefaultStockLocation().getLocationID()#"}}' />
-		<cfelse>
-			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" tdClass="calculatedQATS" />
-		</cfif>
-		<cfif NOT isNull(rc.order.getDefaultStockLocation()) AND rc.order.getDefaultStockLocation().hasChildren()>
-			<hb:HibachiListingColumn processObjectProperty="locationID" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" fieldClass="span2" />
-		</cfif>
-		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
-		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
-		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-	</hb:HibachiListingDisplay>--->
 </cfoutput>
