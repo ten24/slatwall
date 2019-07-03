@@ -56,7 +56,7 @@ export class OrderTemplateService {
     	var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
     	this.orderTemplateItemPropertyIdentifierList = '';
     	for(var i=0; i<propsToAdd.length; i++){
-    		this.orderTemplateItemPropertyIdentifierList += propsToAdd[1];
+    		this.orderTemplateItemPropertyIdentifierList += propsToAdd[i];
     		if(i + 1 !== propsToAdd.length) this.orderTemplateItemPropertyIdentifierList += ',';
     	}
     	return orderTemplatePropertyIdentifierList; 

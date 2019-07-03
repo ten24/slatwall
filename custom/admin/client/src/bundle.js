@@ -64655,7 +64655,7 @@ var OrderTemplateService = /** @class */ (function () {
             var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
             _this.orderTemplateItemPropertyIdentifierList = '';
             for (var i = 0; i < propsToAdd.length; i++) {
-                _this.orderTemplateItemPropertyIdentifierList += propsToAdd[1];
+                _this.orderTemplateItemPropertyIdentifierList += propsToAdd[i];
                 if (i + 1 !== propsToAdd.length)
                     _this.orderTemplateItemPropertyIdentifierList += ',';
             }
