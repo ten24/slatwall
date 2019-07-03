@@ -462,6 +462,27 @@ class HibachiService{
 		}
 		return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 	}
+	
+	//this cannot live in rbkeyService because it creates a circular dependency
+	getRBKeyFromPropertyIdentifier = (baseEntityName, propertyIdentifier) =>{
+		//strip alias if it exists and convert everything to be periods
+		if(propertyIdentifier.charAt(0) === '_'){
+			propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.'); 
+		}
+		
+		//if we're dealing with collection response property identfier sku_skuCode
+		if(propertyIdentifier.split('_').length > 0){
+			propertyIdentifier = propertyIdentifier.replace('_','.');
+		}
+		
+		var lastEntityName = this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier)
+	
+		var propertyIdentfierParts = propertyIdentifier.split('.');
+		
+		var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length-1];
+		
+		return 'entity.' + lastEntityName + '.' + lastProperty;
+	}
 
 	saveEntity= (entityName,id,params,context) => {
 

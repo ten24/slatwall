@@ -60860,12 +60860,7 @@ var SWCustomerAccountCardController = /** @class */ (function () {
         if (this.baseEntityPropertiesToDisplayList != null) {
             this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.split(',');
             for (var i = 0; i < this.baseEntityPropertiesToDisplay.length; i++) {
-                if (this.baseEntityPropertiesToDisplay[i].split('_').length === 1) {
-                    this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = 'entity.' + this.baseEntityName + '.' + this.baseEntityPropertiesToDisplay[i];
-                }
-                else {
-                    this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = 'entity.' + this.baseEntityPropertiesToDisplay[i].split('_').join('.');
-                }
+                this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = this.$hibachi.getRBKeyFromPropertyIdentifier(this.baseEntityName, this.baseEntityPropertiesToDisplay[i]);
             }
         }
     }
@@ -63698,7 +63693,6 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
                     _this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
                 }
             }
-            console.log('props to display after billing update', _this.propertiesToDisplay);
         };
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
@@ -63712,7 +63706,6 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
             this.orderTemplateService.setOrderTemplatePropertyIdentifierList(this.propertiesToDisplayList);
         }
         this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
-        console.log('props to display', this.propertiesToDisplay);
         if (this.billingAccountAddress != null && this.accountPaymentMethod != null) {
             this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
         }
@@ -64181,10 +64174,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                 }
             }
             if (_this.additionalOrderTemplateItemPropertiesToDisplay != null) {
-                var properties = _this.additionalOrderTemplateItemPropertiesToDisplay.split(',');
-                for (var i = 0; i < properties.length; i++) {
-                    orderTemplateDisplayProperties += "," + properties[i];
-                }
+                orderTemplateDisplayProperties += "," + _this.additionalOrderTemplateItemPropertiesToDisplay;
             }
             _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
             _this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
@@ -83832,6 +83822,21 @@ var HibachiService = /** @class */ (function () {
                 return metaData.$$getRBKey('processObject.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
             }
             return metaData.$$getRBKey('object.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
+        };
+        //this cannot live in rbkeyService because it creates a circular dependency
+        this.getRBKeyFromPropertyIdentifier = function (baseEntityName, propertyIdentifier) {
+            //strip alias if it exists and convert everything to be periods
+            if (propertyIdentifier.charAt(0) === '_') {
+                propertyIdentifier = _this.utilityService.listRest(propertyIdentifier.replace(/_/g, '.'), '.');
+            }
+            //if we're dealing with collection response property identfier sku_skuCode
+            if (propertyIdentifier.split('_').length > 0) {
+                propertyIdentifier = propertyIdentifier.replace('_', '.');
+            }
+            var lastEntityName = _this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier);
+            var propertyIdentfierParts = propertyIdentifier.split('.');
+            var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length - 1];
+            return 'entity.' + lastEntityName + '.' + lastProperty;
         };
         this.saveEntity = function (entityName, id, params, context) {
             var urlString = _this.getUrlWithActionPrefix() + 'api:main.post';
