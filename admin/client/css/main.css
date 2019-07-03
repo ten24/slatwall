@@ -6841,7 +6841,7 @@ sw-sku-thumbnail .thumbnail .caption {
   opacity: 0;
 }
 .s-toggle-switch input:focus,
-.s-toggle-switch .btn {
+.s-toggle-switch .btn, .s-search-wrapper button:focus, .s-search-wrapper span:focus {
   outline-style: none !important;
   outline: 0 !important;
   box-shadow: none !important;
