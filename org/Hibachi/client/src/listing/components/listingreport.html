@@ -138,8 +138,15 @@
                     </div>
                 </div><!-- end of .col -->
                 
+                <div class="col save-callout">
+                    <div class ="Malert alert alert-warning">
+                           <span><i class="fas fa-exclamation-triangle save-icon Mfade-in"></i><span>Report Changed 
+                    </div>
+                </div>
+                
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
+            	         
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         >
@@ -159,6 +166,7 @@
                                         font-size: 12px;
                                         padding: 0px 5px;"
                                     >
+                                   
                                     <a class="btn btn-xs btn-success s-action-btn"
                                         ng-click="swListingReport.saveReportCollection(swListingReport.collectionName)">
                                         save
