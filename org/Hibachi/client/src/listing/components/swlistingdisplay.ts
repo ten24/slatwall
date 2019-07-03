@@ -31,7 +31,7 @@ class SWListingDisplayController{
     }
     set columns(newArray: Array<any>) {
         this._columns = newArray;
-        this.columnCount = this._columns.length;
+        this.columnCount = this._columns ? this._columns.length : 0;
     }
     
     public columnCount;

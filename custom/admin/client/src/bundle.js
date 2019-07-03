@@ -73465,6 +73465,16 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Not Defined",
                                 comparisonOperator: "is",
                                 value: "null"
+                            },
+                            {
+                                display: "Past",
+                                comparison: "<=",
+                                value: "now()"
+                            },
+                            {
+                                display: "Future",
+                                comparison: ">=",
+                                value: "now()"
                             }
                         ];
                     }
@@ -91310,6 +91320,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SWListingDisplayController = /** @class */ (function () {
     //@ngInject
     function SWListingDisplayController($scope, $rootScope, $transclude, $timeout, $q, $hibachi, utilityService, collectionConfigService, listingService, paginationService, selectionService, observerService, rbkeyService, localStorageService) {
+        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
+        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
+        //     return;
+        // }
         var _this = this;
         this.$scope = $scope;
         this.$rootScope = $rootScope;
@@ -91804,13 +91818,6 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.persistedReportCollections = data.records;
             });
         };
-        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
-        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
-        //     return;
-        // }
-        if (angular.isUndefined(this.personalCollectionKey)) {
-            this.personalCollectionKey = this.baseEntityName.toLowerCase();
-        }
         if (angular.isUndefined(this.usingPersonalCollection)) {
             this.usingPersonalCollection = false;
         }
@@ -91842,6 +91849,9 @@ var SWListingDisplayController = /** @class */ (function () {
             && (angular.isUndefined(this.personalCollectionIdentifier)
                 || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'])
                     && this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))) {
+            if (angular.isUndefined(this.personalCollectionKey)) {
+                this.personalCollectionKey = this.baseEntityName.toLowerCase();
+            }
             var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
             // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
