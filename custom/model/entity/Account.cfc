@@ -1,3 +1,3 @@
 component {
-	property name="enrollmentDate" ormtype="dateTime"
+	property name="enrollmentDate" ormtype="timestamp"
 } 
