@@ -117,6 +117,9 @@ class SWAddOrderItemsBySkuController{
 				$('#adminModal').modal();
 				// show modal
 				(window as any).renderModal(parsedHtml);
+			}else{
+				console.log("Reloading the page");
+				(window as any).location.reload();
 			}
 		}) // JSON-string from `response.json()` call
 		.catch(error => console.error(error));
