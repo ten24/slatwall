@@ -144,16 +144,16 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			variables.locationPathName = "";
 			
 			//Add each of the parents in the chain to the string.
-			var parentLocation = this.getParentLocation();
-			while (!isNull(parentLocation)){
-				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "#chr(187)#");
-				if(isNull(parentLocation.getParentLocation())){
+			var currentParentLocation = getParentLocation();
+			while (!isNull(currentParentLocation)){
+				variables.locationPathName = listAppend(variables.locationPathName, currentParentLocation.getLocationName(), "#chr(187)#");
+				if(isNull(currentParentLocation.getParentLocation())){
 					break;
 				}
-				parentLocation = parentLocation.getParentLocation();
+				currentParentLocation = currentParentLocation.getParentLocation();
 			}
 			//Add this location name to the end.
-			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "#chr(187)#");
+			variables.locationPathName = listAppend(variables.locationPathName, getLocationName(), "#chr(187)#");
 			variables.locationPathName = rereplace(variables.locationPathName,'#chr(187)#',' #chr(187)# ','all');
 		}
 		
@@ -269,7 +269,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
-
 		if(!isNull(getCalculatedLocationPathName())){
 			return getCalculatedLocationPathName();
 		}else{
@@ -282,13 +281,11 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	// =================== START: ORM Event Hooks  =========================
 	public void function preInsert(){
 		setLocationIDPath( buildIDPathList( "parentLocation" ) );
-		setCalculatedLocationPathName( getLocationPathName() );
 		super.preInsert();
 	}
 	
 	public void function preUpdate(struct oldData){
 		setLocationIDPath( buildIDPathList( "parentLocation" ) );
-		setCalculatedLocationPathName( getLocationPathName() );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	

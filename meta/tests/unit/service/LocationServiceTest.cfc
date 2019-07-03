@@ -62,6 +62,41 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getLocationOptions_returns_location_options() {
 		assertTrue(arrayLen(variables.service.getLocationOptions()),"Ensure we get results from getLocationOptions without passing a location.");
 	}
+	/**
+	* @test
+	*/
+	public void function saveLocation_test(){
+	    var locationData = {
+	        locationID="",
+	        activeFlag=1,
+	        locationName="something"&createUUID(),
+	        locationCode="something"&createUUID(),
+	        currencyCode='AED',
+	        parentLocation={
+	            locationID=""
+	        }
+	    };
+	    var locationEntity = CreateTestEntity('Location',{});
+	    locationEntity.populate(locationData);
+	    assert(isNull(locationEntity.getParentLocation()));
+
+
+        var locationData2 = {
+	        locationID="",
+	        activeFlag=1,
+	        locationName="something"&createUUID(),
+	        locationCode="something"&createUUID(),
+	        currencyCode='AED',
+	        parentLocation={
+	            locationID="",
+	            locationName='test'
+	        }
+	    };
+	    var locationEntity2 = CreateTestEntity('Location',{});
+	    locationEntity2.populate(locationData2);
+	    assert(!isNull(locationEntity2.getParentLocation()));
+	    assertEquals(locationEntity2.getParentLocation().getLocationName(),'test');
+	}
 
 
 }
