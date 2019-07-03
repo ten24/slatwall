@@ -42,13 +42,8 @@ class SWOrderTemplateItemsController{
 		}
 		
 		if(this.additionalOrderTemplateItemPropertiesToDisplay != null){
-			var properties = this.additionalOrderTemplateItemPropertiesToDisplay.split(',');
-			for(var i=0; i<properties.length; i++){
-				orderTemplateDisplayProperties += "," + properties[i];	
-			}
+			orderTemplateDisplayProperties += "," + this.additionalOrderTemplateItemPropertiesToDisplay;
 		}
-		
-		
 	    
         this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
         this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
