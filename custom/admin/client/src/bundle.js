@@ -63658,17 +63658,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     skuDisplayProperties += ',' + properties[i];
                 }
             }
-            /*this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-            this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-            this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-            
-            this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            this.editOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-            this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-            this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true,isSearchable:false,isDeletable:false,isEditable:true});
-            this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-            */
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
@@ -63696,19 +63685,29 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             });
             _this.observerService.attach(_this.addOrderItemListener, "addOrderItem");
         };
-        //https://monat.ten24dev.com/Slatwall/?slatAction=entity.processOrder&skuID=b68a31f46a784f6481d3db588d29ce43&orderItemTypeSystemCode=oitSale&processContext=addorderitem&orderID=2c9280846b9b4295016badd0d6c70034
         this.addOrderItemListener = function (payload) {
-            console.log("Add Order Item Listener Called", _this.order, payload);
-            _this.$hibachi.$http.post("/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&orderItemTypeSystemCode=oitSale&processContext=addorderitem&orderID=" + _this.order + "&quantity=" + payload.quantity + "&ajaxrequest=1&preProcessDisplayedFlag=1", {})
-                .then(function (response) {
-                var status = response.status;
-                var data = response.data;
-                console.log(status, data);
-            }, function (response) {
-                var data = response.data || 'Request failed';
-                var status = response.status;
-                console.log(status, data);
-            });
+            //figure out if we need to show this modal or not.
+            console.log("Add Order Item Listener Called", _this.order, payload, _this.orderFulfillmentId);
+            //need to display a modal with the add order item preprocess method.
+            var typeSystemCode = 'oitSale';
+            var orderFulfilmentID = _this.orderFulfillmentId;
+            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + typeSystemCode + "&processContext=addorderitem&ajaxRequest=1";
+            if (orderFulfilmentID && orderFulfilmentID != "new") {
+                url = url + "&preProcessDisplayedFlag=1";
+            }
+            var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
+            _this.postData(url, data)
+                .then(function (data) {
+                console.log(data);
+                if (data.preProcessView) {
+                    //populate a modal with the template data...
+                    var parsedHtml = $.parseHTML(data.preProcessView);
+                    $('#adminModal').modal();
+                    // show modal
+                    window.renderModal(parsedHtml);
+                }
+            }) // JSON-string from `response.json()` call
+                .catch(function (error) { return console.error(error); });
         };
         this.setEdit = function (payload) {
             _this.edit = payload.edit;
@@ -63717,6 +63716,25 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             this.edit = false;
         }
     }
+    SWAddOrderItemsBySkuController.prototype.postData = function (url, data) {
+        if (url === void 0) { url = ''; }
+        if (data === void 0) { data = {}; }
+        console.log("Posting data");
+        return fetch(url, {
+            method: 'post',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'X-Hibachi-AJAX',
+            },
+            redirect: 'follow',
+            referrer: 'no-referrer',
+            body: JSON.stringify(data),
+        })
+            .then(function (response) { return response.json(); }); // parses JSON response into native JavaScript objects 
+    };
+    ;
     return SWAddOrderItemsBySkuController;
 }());
 var SWAddOrderItemsBySku = /** @class */ (function () {
@@ -63729,6 +63747,7 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             order: '<?',
+            orderFulfillmentId: '<?',
             skuPropertiesToDisplay: '@?',
             edit: "=?"
         };
