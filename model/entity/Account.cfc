@@ -154,9 +154,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
-
-			//CUSTOM PROPERTIES BEGIN
-
+	//CUSTOM PROPERTIES BEGIN
+	property name="enrollmentDate" ormtype="timestamp"
  property name="hyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
@@ -183,7 +182,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
- property name="accountNumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="accountNumber" ormtype="string";	//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);

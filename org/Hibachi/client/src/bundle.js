@@ -64191,7 +64191,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -64204,6 +64203,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -65295,6 +65295,9 @@ var SWActionCallerController = /** @class */ (function () {
             if (angular.isUndefined(_this.display)) {
                 _this.display = true;
             }
+            if (angular.isUndefined(_this.displayConfirm)) {
+                _this.displayConfirm = false;
+            }
             _this.type = _this.type || 'link';
             if (angular.isDefined(_this.titleRbKey)) {
                 _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);
@@ -65502,6 +65505,7 @@ var SWActionCaller = /** @class */ (function () {
         this.bindToController = {
             action: "@?",
             display: "=?",
+            displayConfirm: "=?",
             event: "@?",
             payload: "=",
             text: "@",
@@ -66150,7 +66154,7 @@ var SWConfirm = /** @class */ (function () {
                 yesText = swRbKey + startTag + yesText + endTag;
                 noText = swRbKey + startTag + noText + endTag;
                 parsedKeyString = templateString.replace(confirmKey, confirmText)
-                    .replace(messageText, messageText)
+                    .replace(messageKey, messageText)
                     .replace(noKey, noText)
                     .replace(yesKey, yesText);
                 $log.debug(finishedString);
@@ -68530,7 +68534,16 @@ var SWTypeaheadInputFieldController = /** @class */ (function () {
             throw ("You must select a property to save for the input field directive");
         }
         if (angular.isDefined(this.propertiesToLoad)) {
-            this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            if (this.propertiesToSearch && this.propertiesToSearch.length) {
+                var propertiesToLoad = this.propertiesToLoad.split(',');
+                for (var _i = 0, propertiesToLoad_1 = propertiesToLoad; _i < propertiesToLoad_1.length; _i++) {
+                    var propertyToLoad = propertiesToLoad_1[_i];
+                    this.typeaheadCollectionConfig.addDisplayProperty(propertyToLoad, undefined, { isSearchable: this.propertiesToSearch.split(',').indexOf(propertyToLoad) > -1 });
+                }
+            }
+            else {
+                this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            }
         }
         angular.forEach(this.columns, function (column) {
             _this.typeaheadCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
@@ -68563,6 +68576,7 @@ var SWTypeaheadInputField = /** @class */ (function () {
             typeaheadCollectionConfig: "=?",
             filters: "=?",
             propertiesToLoad: "@?",
+            propertiesToSearch: "@?",
             placeholderRbKey: "@?",
             propertyToShow: "@",
             propertyToSave: "@",
@@ -74901,6 +74915,29 @@ var RbKeyService = /** @class */ (function () {
         this.getRBLoaded = function () {
             return _this._loadedResourceBundle;
         };
+        /*
+        public $hibachi,
+        public utilityService
+        
+        getRBKeyForPropertyIdentifier = (baseEntityName, propertyIdentifier) =>{
+            //strip alias if it exists and convert everything to be periods
+            if(propertyIdentifier.charAt(0) === '_'){
+                propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.');
+            }
+            
+            //if we're dealing with collection response property identfier sku_skuCode
+            if(propertyIdentifier.split('_').length > 0){
+                propertyIdentifier = propertyIdentifier.replace('_','.');
+            }
+            
+            var lastEntityName = this.$hibachi.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier)
+        
+            var propertyIdentfierParts = propertyIdentifier.split('.');
+            
+            var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length-1];
+            
+            return 'entity.' + lastEntityName + '.' + lastProperty;
+        }*/
         this.rbKey = function (key, replaceStringData) {
             ////$log.debug('rbkey');
             ////$log.debug(key);
@@ -79388,6 +79425,9 @@ var SWListingDisplayController = /** @class */ (function () {
                 else if (_this.listingColumns && _this.listingColumns.length) {
                     _this.columns = _this.listingColumns;
                 }
+                else if (_this.collectionConfig.columns && _this.collectionConfig.columns.length) {
+                    _this.columns = _this.collectionConfig.columns;
+                }
                 //setup selectable
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
@@ -79403,30 +79443,35 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.observerService.attach(_this.getCollectionByPagination, 'swPaginationAction', _this.tableID);
         };
         this.getCollectionByPagination = function (state) {
-            if (state.type) {
-                switch (state.type) {
-                    case 'setCurrentPage':
-                        _this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'nextPage':
-                        _this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'prevPage':
-                        _this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'setPageShow':
-                        _this.collectionConfig.currentPage = 1;
-                        _this.collectionConfig.setPageShow(state.payload);
-                        break;
+            if (!_this.hideUnfilteredResults || _this.searchText || _this.configHasFilters(_this.collectionConfig)) {
+                if (state.type) {
+                    switch (state.type) {
+                        case 'setCurrentPage':
+                            _this.collectionConfig.currentPage = state.payload;
+                            break;
+                        case 'nextPage':
+                            _this.collectionConfig.currentPage = state.payload;
+                            break;
+                        case 'prevPage':
+                            _this.collectionConfig.currentPage = state.payload;
+                            break;
+                        case 'setPageShow':
+                            _this.collectionConfig.currentPage = 1;
+                            _this.collectionConfig.setPageShow(state.payload);
+                            break;
+                    }
+                    if (_this.collectionId) {
+                        _this.collectionConfig.baseEntityNameType = 'Collection';
+                        _this.collectionConfig.id = _this.collectionId;
+                    }
+                    _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
+                        _this.collectionData = data;
+                        _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
+                    });
                 }
-                if (_this.collectionId) {
-                    _this.collectionConfig.baseEntityNameType = 'Collection';
-                    _this.collectionConfig.id = _this.collectionId;
-                }
-                _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
-                    _this.collectionData = data;
-                    _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
-                });
+            }
+            else {
+                _this.collectionData = null;
             }
         };
         this.setupCollectionPromise = function () {
@@ -79436,7 +79481,12 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.paginator.getCollection = _this.getCollection;
             var getCollectionEventID = _this.tableID;
             //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
-            _this.listingService.getCollection(_this.tableID);
+            if (!_this.hideUnfilteredResults || _this.searchText || _this.configHasFilters(_this.collectionConfig)) {
+                _this.listingService.getCollection(_this.tableID);
+            }
+            else {
+                _this.collectionData = null;
+            }
         };
         this.getCollectionObserver = function (param) {
             if (angular.isString(param.collectionConfig)) {
@@ -79446,9 +79496,14 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.collectionConfig = param.collectionConfig;
             }
             _this.collectionData = undefined;
-            _this.$timeout(function () {
-                _this.getCollection();
-            });
+            if (!_this.hideUnfilteredResults || _this.searchText || _this.configHasFilters(_this.collectionConfig)) {
+                _this.$timeout(function () {
+                    _this.getCollection();
+                });
+            }
+            else {
+                _this.collectionData = null;
+            }
         };
         this.initializeState = function () {
             if (_this.name != null) {
@@ -79636,6 +79691,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 }, 0);
             }
             return false;
+        };
+        this.configHasFilters = function (collectionConfig) {
+            return collectionConfig.filterGroups
+                && collectionConfig.filterGroups.length
+                && collectionConfig.filterGroups[0].filterGroup
+                && collectionConfig.filterGroups[0].filterGroup.length;
         };
         this.columnOrderByIndex = function (column) {
             return _this.listingService.columnOrderByIndex(_this.tableID, column);
@@ -79993,7 +80054,8 @@ var SWListingDisplay = /** @class */ (function () {
             hasSearch: "<?",
             hasActionBar: "<?",
             multiSlot: "=?",
-            customListingControls: "<?"
+            customListingControls: "<?",
+            hideUnfilteredResults: "<?"
         };
         this.controller = SWListingDisplayController;
         this.controllerAs = "swListingDisplay";

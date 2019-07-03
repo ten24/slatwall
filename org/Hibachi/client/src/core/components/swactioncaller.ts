@@ -3,6 +3,7 @@
 
 class SWActionCallerController{
     public type:string;
+    public displayConfirm:boolean;
     public confirm:any;
     public display:boolean;
     public modal:boolean;
@@ -95,6 +96,10 @@ class SWActionCallerController{
     
         if(angular.isUndefined(this.display)){
             this.display = true;
+        }
+        
+        if(angular.isUndefined(this.displayConfirm)){
+            this.displayConfirm = false;
         }
         
         this.type = this.type || 'link';
@@ -293,6 +298,7 @@ class SWActionCaller implements ng.IDirective{
     public bindToController:any={
         action:"@?",
         display:"=?",
+        displayConfirm:"=?",
         event:"@?",
         payload: "=",
         text:"@",

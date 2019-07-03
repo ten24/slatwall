@@ -49,13 +49,10 @@ Notes:
 component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem" table="SwOrderTemplateItem" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="" {
 
 	property name="orderTemplateItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-
 	property name="quantity" ormtype="integer";
-
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
-
-	property name="total" persistent="false"; 
+	property name="total" persistent="false" hb_formatType="currency"; 
 
 	// Order Template (many-to-one)	//CUSTOM PROPERTIES BEGIN
 property name="personalVolumeTotal" persistent="false"; 
@@ -65,11 +62,12 @@ property name="personalVolumeTotal" persistent="false";
 	public numeric function getTotal(){
 		if(!structKeyExists(variables, 'total')){
 			variables.total = 0; 
-
+			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
-				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode(), getQuantity());
+				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode())*getQuantity();
 			} 	
 		}
+		
 		return variables.total;
 	} 
 
@@ -98,7 +96,7 @@ public numeric function getPersonalVolumeTotal(){
 				!isNull(this.getSku().getPersonalVolume()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() & this.getQuantity()); 
+				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() * this.getQuantity()); 
 			}	
 		}
 		return variables.personalVolumeTotal; 	
