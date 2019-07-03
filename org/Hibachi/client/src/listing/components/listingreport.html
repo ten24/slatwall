@@ -142,6 +142,13 @@
                     </div>
                 </div><!-- end of .col -->
                 
+
+                <div class="col save-callout">
+                    <div class ="Malert alert alert-warning">
+                           <span><i class="fas fa-exclamation-triangle save-icon Mfade-in"></i><span>Report Changed 
+                    </div>
+                </div>
+
                 
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
@@ -192,9 +199,10 @@
             </ol>
         </div>
     </div>
+   
+    	<div id="chartContainer">
+            <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
+            <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
 
-	<div id="chartContainer">
-        <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
-        <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
     </div>
 </div>

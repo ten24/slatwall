@@ -1013,6 +1013,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public string function getOrmTypeByPropertyIdentifier(required string propertyIdentifier){
+		if(arguments.propertyIdentifier == 'id'){
+			return 'string';
+		}
 		if(!isNull(getCollectionEntityObject())){
 			return getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
 		}
@@ -2243,7 +2246,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private void function applyPermissionRecordRestrictions(){
 
 		var excludedEntities = 'Session,PermissionGroup,Permission';
-
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
@@ -3101,10 +3103,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getPredicate(required any filter){
 		
-		if(!structkeyExists(arguments.filter,"ormtype")) { //TODO we shouldn't be having this check, instead we should be throwing error.
-			// arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(ListLast(arguments.filter.propertyIdentifier, "."));
-			arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier));
-			
+		if(!structkeyExists(arguments.filter,"ormtype")) { 
+			arguments.filter['ormtype'] = getOrmTypeByPropertyIdentifier(convertAliasToPropertyIdentifier(getPropertyIdentifierAlias(arguments.filter.propertyIdentifier)));
 		}
 
 		var predicate = '';
@@ -4037,7 +4037,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						structDelete(currentFilter, "logicalOperator");
 					}
 				}
-
+				
+				currentFilter['ormtype'] = column.ormtype;
+				
 				arrayAppend(postFilterGroup['filterGroup'],currentFilter);
 
 				columnIndex++;
