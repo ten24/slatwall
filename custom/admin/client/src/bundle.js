@@ -63706,6 +63706,10 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     // show modal
                     window.renderModal(parsedHtml);
                 }
+                else {
+                    console.log("Reloading the page");
+                    window.location.reload();
+                }
             }) // JSON-string from `response.json()` call
                 .catch(function (error) { return console.error(error); });
         };
