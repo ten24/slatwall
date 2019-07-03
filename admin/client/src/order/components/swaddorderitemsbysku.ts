@@ -8,6 +8,8 @@ class SWAddOrderItemsBySkuController{
     
     public order;
     
+    public orderFulfillmentId:string;
+    
     public skuColumns; 
     
     public skuPropertiesToDisplay:string;
@@ -38,17 +40,6 @@ class SWAddOrderItemsBySkuController{
 			
 		}
 	    
-        /*this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-        
-        this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.editOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true,isSearchable:false,isDeletable:false,isEditable:true});
-        this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-        */
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
         this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
@@ -83,20 +74,53 @@ class SWAddOrderItemsBySkuController{
 	    this.observerService.attach(this.addOrderItemListener, "addOrderItem");
         
 	}
-	//https://monat.ten24dev.com/Slatwall/?slatAction=entity.processOrder&skuID=b68a31f46a784f6481d3db588d29ce43&orderItemTypeSystemCode=oitSale&processContext=addorderitem&orderID=2c9280846b9b4295016badd0d6c70034
+	
+	public postData(url = '', data = {}) {
+		console.log("Posting data");
+	    return fetch(url, {
+	        method: 'post',
+	        mode: 'cors', // no-cors, cors, *same-origin
+	        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+	        credentials: 'same-origin', // include, *same-origin, omit
+	        headers: {
+	            'Content-Type': 'X-Hibachi-AJAX',
+	            // 'Content-Type': 'application/x-www-form-urlencoded',
+	        },
+	        redirect: 'follow', // manual, *follow, error
+	        referrer: 'no-referrer', // no-referrer, *client
+	        body: JSON.stringify(data), // body data type must match "Content-Type" header
+	    })
+    	.then(response => response.json()); // parses JSON response into native JavaScript objects 
+	};
+	
 	public addOrderItemListener = (payload)=> {
-		console.log( "Add Order Item Listener Called", this.order, payload );
-		this.$hibachi.$http.post(`/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&orderItemTypeSystemCode=oitSale&processContext=addorderitem&orderID=${this.order}&quantity=${payload.quantity}&ajaxrequest=1&preProcessDisplayedFlag=1`, {})
-		.then(function(response) {
-          var status = response.status;
-          var data = response.data;
-          console.log( status, data );
-        }, function(response) {
-          var data = response.data || 'Request failed';
-          var status = response.status;
-          console.log( status, data );
-      });
+		//figure out if we need to show this modal or not.
+		console.log( "Add Order Item Listener Called", this.order, payload, this.orderFulfillmentId );
 		
+		//need to display a modal with the add order item preprocess method.
+		var typeSystemCode = 'oitSale';
+		var orderFulfilmentID = this.orderFulfillmentId;
+		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&orderID=${this.order}&orderItemTypeSystemCode=${typeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
+		
+		if (orderFulfilmentID && orderFulfilmentID != "new"){
+			url = url+"&preProcessDisplayedFlag=1";
+		}
+		
+		var data = { orderFulfillmentID: orderFulfilmentID, quantity:payload.quantity, price: payload.price };
+		
+		this.postData(url, data)
+		.then(data => {
+			console.log(data);
+			if (data.preProcessView){
+				//populate a modal with the template data...
+	        	var parsedHtml:any = $.parseHTML( data.preProcessView );
+				$('#adminModal').modal();
+				// show modal
+				(window as any).renderModal(parsedHtml);
+			}
+		}) // JSON-string from `response.json()` call
+		.catch(error => console.error(error));
+	
 	}
 	
 	public setEdit = (payload)=>{
@@ -112,6 +136,7 @@ class SWAddOrderItemsBySku implements ng.IDirective {
 	public scope = {};
 	public bindToController = {
         order: '<?', 
+        orderFulfillmentId: '<?',
         skuPropertiesToDisplay: '@?',
         edit:"=?"
 	};
