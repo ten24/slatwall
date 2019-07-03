@@ -60860,7 +60860,7 @@ var SWCustomerAccountCardController = /** @class */ (function () {
         if (this.baseEntityPropertiesToDisplayList != null) {
             this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.split(',');
             for (var i = 0; i < this.baseEntityPropertiesToDisplay.length; i++) {
-                if (this.baseEntityPropertiesToDisplay[i].split('_') === 1) {
+                if (this.baseEntityPropertiesToDisplay[i].split('_').length === 1) {
                     this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = 'entity.' + this.baseEntityName + '.' + this.baseEntityPropertiesToDisplay[i];
                 }
                 else {
