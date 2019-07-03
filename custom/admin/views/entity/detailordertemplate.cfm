@@ -93,7 +93,10 @@
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-3">
 				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
-											data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
+										  data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'
+										  data-base-entity-name="OrderTemplate"
+										  data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+										  data-base-entity-properties-to-display-list="site_siteName,currencyCode">
 				</sw-customer-account-card> 
 			</div>
 
