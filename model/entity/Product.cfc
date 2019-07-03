@@ -152,7 +152,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
+		//CUSTOM PROPERTIES BEGIN
 	
+ property name="extensionColor" ormtype="string" hb_formFieldType="select";
+ property name="pantsStyle" ormtype="string" hb_formFieldType="select";	//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -457,7 +460,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					);
 				}
 				//let's make sure the default sku image always comes first
-				if(skuData['skuID'] == getDefaultSku().getSkuID()){
+				if(!isNull(getDefaultSku()) && skuData['skuID'] == getDefaultSku().getSkuID()){
 					arrayPrepend(imageGalleryArray, thisImage);
 				} else {
 					arrayAppend(imageGalleryArray, thisImage);

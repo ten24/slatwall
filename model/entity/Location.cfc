@@ -58,7 +58,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	// Related Object Properties (Many-to-One)
 	property name="currencyCode" ormtype="string" length="3" hb_formFieldType="select";
 	property name="primaryAddress" cfc="LocationAddress" fieldtype="many-to-one" fkcolumn="locationAddressID";
-	property name="parentLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="parentLocationID";
+	property name="parentLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="parentLocationID" hb_formFieldType="select";
 	
 	// Related Object Properties (One-to-Many)
 	property name="stocks" singularname="stock" cfc="Stock" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true" lazy="extra"   ;
@@ -118,6 +118,10 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		} else {
 			return getService("locationService").newLocationAddress();
 		}
+	}
+	
+	public array function getParentLocationOptions(){
+		return getService('locationService').getLocationParentOptions();
 	}
 	
 	//get top level locations 
