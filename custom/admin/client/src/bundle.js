@@ -73468,12 +73468,12 @@ var SWCriteriaDate = /** @class */ (function () {
                             },
                             {
                                 display: "Past",
-                                comparison: "<=",
+                                comparisonOperator: "<=",
                                 value: "now()"
                             },
                             {
                                 display: "Future",
-                                comparison: ">=",
+                                comparisonOperator: ">=",
                                 value: "now()"
                             }
                         ];
@@ -91886,7 +91886,7 @@ var SWListingDisplayController = /** @class */ (function () {
         },
         set: function (newArray) {
             this._columns = newArray;
-            this.columnCount = this._columns.length;
+            this.columnCount = this._columns ? this._columns.length : 0;
         },
         enumerable: true,
         configurable: true
