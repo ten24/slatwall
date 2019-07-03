@@ -52,7 +52,9 @@ Notes:
 <cfset rc.orderTemplateCollectionList.setDisplayProperties('orderTemplateName,account.calculatedFullName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,scheduleOrderNextPlaceDateTime',{isVisible=true,isSearchable=true,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=true,isDeletable=true} ) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateStatusType.typeName",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateStatusType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
-<cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.systemCode', 'ottSchedule') />
+<!--- ottSchedule, using ID to improve performance --->
+<cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.typeID', '2c948084697d51bd01697d5725650006') />
+<cfset rc.orderTemplateCollectionList.setOrderBy('createdDateTime|asc')/>
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">
@@ -68,6 +70,7 @@ Notes:
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.editordertemplate"
 		recordDetailAction="admin:entity.detailordertemplate"
+		enableAveragesAndSums="false"
 	>
 	</hb:HibachiListingDisplay>
 </cfoutput>
