@@ -1342,12 +1342,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function createPromotionLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
-		
-		if(listFindNoCase(arguments.data.loyaltyAccruement.getCurrencyCodeList(),arguments.data.currencyCode) < 1){
-			arguments.accountLoyaltyTransaction.addError("createPromotionLoyaltyTransaction","Currency Code not supported by loyalty accruement");
-			return arguments.accountLoyaltyTransaction;
-		}
-		if(arguments.data.pointAdjustmentType == "pointsIn" && .){
+		if(arguments.data.pointAdjustmentType == "pointsIn"){
 			promo = arguments.data.loyaltyAccruement.getPromotion();
 			promoCode = getService("PromotionService").NewPromotionCode();
 			promoCode.setPromotionCode(createUUID());

@@ -85,6 +85,12 @@ Notes:
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/giftcardvaluebycurrency" />
 			
 				</cfif>
+				
+				<cfif rc.loyaltyAccruement.getAccruementType() == 'promotion' >
+					
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/promotionEligibleCurrencies" />
+			
+				</cfif>
 
 
 				<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>

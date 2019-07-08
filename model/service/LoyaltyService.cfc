@@ -79,6 +79,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.loyaltyAccruement;	
 	}
 	
+	public any function processLoyaltyAccruement_addPromotionEligibleCurrency(required any loyaltyAccruement, required struct data) {
+		
+		accruementCurrency = this.newAccruementCurrency();
+		
+		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		accruementCurrency.setLoyaltyAccruement(arguments.loyaltyAccruement);
+
+		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
+		
+		if(accruementCurrency.hasErrors()){
+			arguments.loyaltyAccruement.addErrors(accruementCurrency.getErrors());
+		}
+		
+		return arguments.loyaltyAccruement;	
+	}
+	
 	public any function deleteLoyalty(required any loyalty){
 		accruements = loyalty.getLoyaltyAccruements();
 		for (var accruement in accruements){

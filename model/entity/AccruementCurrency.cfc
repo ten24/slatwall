@@ -97,7 +97,7 @@ component displayname="AccruementCurrency" entityname="SlatwallAccruementCurrenc
     	accruementCurrencyList = getService("LoyaltyService").getAccruementCurrencyCollectionList();
     	accruementCurrencyList.setDisplayProperties("accruementCurrencyID");
     	accruementCurrencyList.addFilter("currencyCode",this.getCurrencyCode());
-    	accruementCurrencyList.addFilter("accruementCurrencyID",this.getAccruementCurrencyID(),"!=");
+    	accruementCurrencyList.addFilter("loyaltyAccruement.loyaltyAccruementID",this.getLoyaltyAccruement().getLoyaltyAccruementID());
     	return !accruementCurrencyList.getRecordsCount();
     }
     

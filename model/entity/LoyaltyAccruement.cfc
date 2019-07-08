@@ -47,8 +47,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	property name="pointType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="pointQuantity" ormType="integer";
 	property name="activeFlag" ormtype="boolean" default="1";
-	property name="currencyCodeList" ormtype="string";
-	
+
 	// Related Object Properties (many-to-one)
 	property name="loyalty" cfc="Loyalty" fieldtype="many-to-one" fkcolumn="loyaltyID";
 	property name="expirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="expirationTermID" hb_optionsNullRBKey="define.never";
