@@ -62,6 +62,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
 	property name="paymentProcessingInProgressFlag" ormtype="boolean" default="false";
+	property name="paymentTryCount" ormtype="integer" default="0";
 	property name="orderCanceledDateTime" ormtype="timestamp";
 	property name="orderNotes" ormtype="text";
 	
