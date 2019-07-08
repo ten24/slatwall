@@ -34,42 +34,42 @@ component {
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
-            variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
+            variables.personalVolume = getSku().getPersonalVolume();
         }
         return variables.personalVolume;
     }
     
     public any function getTaxableAmount(){
        if(!structKeyExists(variables,'taxableAmount')){
-            variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
+            variables.taxableAmount = getSku().getTaxableAmount();
         }
         return variables.taxableAmount;
     }
     
     public any function getCommissionableVolume(){
         if(!structKeyExists(variables,'commissionableVolume')){
-            variables.commissionableVolume = getCustomPriceFieldAmount('commissionableVolume');
+            variables.commissionableVolume = getSku().getCommissionableVolume();
         }
         return variables.commissionableVolume;
     }
     
     public any function getRetailCommission(){
         if(!structKeyExists(variables,'retailCommission')){
-            variables.retailCommission = getCustomPriceFieldAmount('retailCommission');
+            variables.retailCommission = getSku().getRetailCommission();
         }
         return variables.retailCommission;
     }
     
     public any function getProductPackVolume(){
         if(!structKeyExists(variables,'productPackVolume')){
-            variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
+            variables.productPackVolume = getSku().getProductPackVolume();
         }
         return variables.productPackVolume;
     }
     
     public any function getRetailValueVolume(){
         if(!structKeyExists(variables,'retailValueVolume')){
-            variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
+            variables.retailValueVolume = getSku().getRetailValueVolume();
         }
         return variables.retailValueVolume;
     }
@@ -170,16 +170,18 @@ component {
 		return discountAmount;
 	}
 
-    
 	public numeric function getCustomExtendedPrice(required string priceField) {
+	   
 		if(!structKeyExists(variables,'extended#priceField#')){
 			var price = 0;
-		
+		    
 			if(!isNull(this.invokeMethod('get#priceField#'))){
 				price = this.invokeMethod('get#priceField#');
 			}
 			variables['extended#priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
+		
 		}
+		logHibachi("Custom Extended #pricefield# - Extended Value #variables['extended#priceField#']#");
 		return variables['extended#priceField#'];
 	}
 	
