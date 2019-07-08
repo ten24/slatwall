@@ -1394,7 +1394,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
 	
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate; 
 		} 
@@ -1430,7 +1430,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 
 			if(newOrder.hasErrors()){
-				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding order items', true);
 				arguments.orderTemplate.clearHibachiErrors();
 				return arguments.orderTemplate; 
 			}
@@ -1471,7 +1471,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.orderTemplate = this.processOrderTemplate_removeAppliedGiftCards(arguments.orderTemplate);  
 		
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}
 
+		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
+		newOrder = this.processOrder_placeOrder(newOrder);
+	
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when placing order', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}	
+		
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
 		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
 		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
@@ -1481,19 +1495,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+			//set Payment Declined status?
+			writeDump(orderPayment.getErrors()); abort;
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
 
-		newOrder = this.processOrder_placeOrder(newOrder);
+		getOrderDAO().turnOnPaymentProcessingFlag(newOrder.getOrderID()); 
 		
-		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
-			arguments.orderTemplate.clearHibachiErrors();
-			return arguments.orderTemplate;
+		var orderPayments = newOrder.getOrderPayments(); 
+	
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getStatusCode() == 'opstActive') {
+				
+				var processData = {
+					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(),
+					amount = orderPayment.getAmount()
+				};	
+
+				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+
+				if(orderPayment.hasErrors()){
+					newOrder.setPaymentTryCount(1);
+					newOrder.setPaymentLastRetryDatetime(now());
+				} 
+			}
 		}
 
+		newOrder.setPaymentProcessingInProgressFlag(false); 
+
+		newOrder = this.saveOrder(newOrder); 
+
+		if(newOrder.hasErrors()){
+			//set Payment Declined status?
+			writeDump(newOrder.getErrors()); abort;
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment');
+			arguments.orderTemplate.clearHibachiErrors();
+		}
 
 		return arguments.orderTemplate; 
 	}
@@ -2228,7 +2267,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 							//Sets the payment processing flag
-							var orderDAO = getDAO("OrderDao");
+							var orderDAO = getOrderDAO();
 							orderDAO.turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
 							
 							if(order.hasErrors()){
@@ -2790,7 +2829,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
 		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderDiscountAmountTotal()) != 0) {
-			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.", true);
+			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.");
 		}
 
 	}
@@ -3817,7 +3856,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// If the paymentTransaction has errors, then add those errors to the orderPayment itself
 				if(paymentTransaction.hasError('runTransaction')) {
-					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'));
 				} else {
 					val(getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived()));
 				}
@@ -3849,7 +3888,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
             // If the paymentTransaction has errors, then add those errors to the orderPayment itself
 			if(paymentTransaction.hasError('runTransaction')) {
-				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'));
 			} else {
                 if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){
                     if(paymentTransaction.getAmountReceived() gt 0){
@@ -3967,7 +4006,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}else{
 				arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 			}
-		}
+		} 
 		return arguments.orderPayment;
 	}
 
