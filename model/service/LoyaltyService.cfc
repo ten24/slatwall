@@ -97,7 +97,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function deleteLoyalty(required any loyalty){
-		accruements = loyalty.getLoyaltyAccruements();
+		var accruements = loyalty.getLoyaltyAccruements();
 		for (var accruement in accruements){
 			getDAO("LoyaltyDAO").removeAccruementCurrencies(accruement.getLoyaltyAccruementID());
 		}
