@@ -1361,7 +1361,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	private any function getExistingGiftCardBySkuAndAccount(required any sku,required any account,required string currencyCode){
-		giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
+		var giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
 		giftCardCollectionList.addFilter("ownerAccount.accountID",arguments.account.getAccountID());
 		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.getSkuID());
 		giftCardCollectionList.addFilter("currencyCode",arguments.currencyCode);
