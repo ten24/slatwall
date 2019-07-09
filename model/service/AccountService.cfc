@@ -1344,7 +1344,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function createPromotionLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
 			promo = arguments.data.loyaltyAccruement.getPromotion();
-			promoCode = getService("PromotionService").NewPromotionCode();
+			var promoCode = getService("PromotionService").NewPromotionCode();
 			promoCode.setPromotionCode(createUUID());
 			promoCode.setPromotion(promo);
 			promoCode.addAccount(arguments.data.account);
