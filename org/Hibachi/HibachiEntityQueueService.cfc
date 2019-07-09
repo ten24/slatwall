@@ -99,7 +99,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			
 				var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
 				var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
-				if(isNull(entity) || !len(arguments.entityQueue.getProcessMethod())){
+				if(isNull(entity) || !len(entityQueue['processMethod'])){
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 					continue;
 				}
