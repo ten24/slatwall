@@ -18,7 +18,7 @@ component {
     property name="retailCommissionTotal" persistent="false";
     property name="productPackVolumeTotal" persistent="false";
     property name="retailValueVolumeTotal" persistent="false";
-    property name="VIPEnrollmentOrderFlag" persistent="false";
+    property name="VipEnrollmentOrderFlag" persistent="false";
     
     property name="calculatedVIPEnrollmentOrderFlag" ormtype="boolean";
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal";
