@@ -2990,6 +2990,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//convert unix timestamp
 			if(isNumeric(arguments.filter.value)){
 				range.rangStartValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			} else if(arguments.filter.value == 'now()' ){
+				range.rangStartValue = now();
 			} else {
 				range.rangStartValue = arguments.filter.value;
 			}
@@ -2998,6 +3000,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			if(isNumeric(arguments.filter.value)){
 				range.rangeEndValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			} else if(arguments.filter.value == 'now()' ){
+				range.rangeEndValue = now();
 			}else{
 				range.rangeEndValue = arguments.filter.value;
 			}
@@ -3028,10 +3032,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		} else if(!isNull(rangeEndParamID)) {
 			dateRangePredicate = ":#rangeEndParamID#";
 		}
-		
+	
 		return dateRangePredicate;
 	}
 	
+
 	private string function getNumericRangePredicate(required any filter){
 		var numericRangePredicate = "";
 	
