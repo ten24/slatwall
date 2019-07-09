@@ -9,7 +9,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         
         if(
             !arguments.order.getAccount().getOwnerAccount().getAccountType() == "VIP" ||
-            !arguments.order.getVIPEnrollmentOrderFlag()
+            !arguments.order.getVipEnrollmentOrderFlag()
         ){
             return;
         }
