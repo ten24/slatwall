@@ -89,7 +89,6 @@
 						</sw-typeahead-input-field>
 					</div>
 				</div>
-				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="currencyCodeList" fieldtype="multiselect" edit="true" valueOptions="#$.slatwall.getService('currencyService').getCurrencyOptions()#"/>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </hb:HibachiEntityDetailForm>

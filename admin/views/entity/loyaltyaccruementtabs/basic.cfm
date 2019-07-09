@@ -32,7 +32,6 @@
 			<!--- TYPE - PROMOTION --->
 			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'promotion' >
 				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement.getPromotion()#" property="promotionName" edit="false" />
-				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="currencyCodeList" fieldtype="multiselect" edit="#rc.edit#" valueOptions="#$.slatwall.getService('currencyService').getCurrencyOptions()#"/>
 			</cfif>
 			
 		</hb:HibachiPropertyList>
