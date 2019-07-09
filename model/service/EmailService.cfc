@@ -238,7 +238,9 @@ Notes:
 
 	public void function generateAndSendFromEntityAndEmailTemplateID( required any entity, required any emailTemplateID ) {
 		var emailTemplate = getTemplateService().getEmailTemplate( arguments.emailTemplateID);
-		this.generateAndSendFromEntityAndEmailTemplate(arguments.entity, emailTemplate);
+		if (!isNull(emailTemplate)){
+			this.generateAndSendFromEntityAndEmailTemplate(arguments.entity, emailTemplate);
+		}
 	}
 
 	</cfscript>
