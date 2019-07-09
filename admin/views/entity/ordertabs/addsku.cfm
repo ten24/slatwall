@@ -66,6 +66,6 @@ Notes:
 		</cfloop>
 	</cfif>
 	
-	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-sku-properties-to-display="personalVolume,commissionableVolume" data-order-fulfillment-id="'#orderFulfillmentID#'"></sw-add-order-items-by-sku>
+	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-sku-properties-to-display="personalVolume,commissionableVolume" data-order-fulfillment-id="'#orderFulfillmentID#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#"></sw-add-order-items-by-sku>
 	
 </cfoutput>
