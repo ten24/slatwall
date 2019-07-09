@@ -63699,15 +63699,31 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     'isVisible': true
                 });
             }
+            //if we have an order fulfillment, then display the dropdown
+            if (_this.orderFulfillmentId != 'new' && _this.orderFulfillmentId != '') {
+                _this.skuColumns.push({
+                    'title': _this.rbkeyService.rbKey('define.orderFulfillment'),
+                    'propertyIdentifier': 'orderFulfillmentID',
+                    'type': 'select',
+                    'defaultValue': 1,
+                    'options': [
+                        { "name": _this.simpleRepresentation || "Order Fulfillment", "value": _this.orderFulfillmentId, "selected": "selected" },
+                        { "name": "New", "value": "new" }
+                    ],
+                    'isCollectionColumn': false,
+                    'isEditable': true,
+                    'isVisible': true
+                });
+            }
             _this.observerService.attach(_this.addOrderItemListener, "addOrderItem");
         };
         this.addOrderItemListener = function (payload) {
             //figure out if we need to show this modal or not.
             console.log("Add Order Item Listener Called", _this.order, payload, _this.orderFulfillmentId);
             //need to display a modal with the add order item preprocess method.
-            var typeSystemCode = (payload.orderItemTypeSystemCode.value) || "oitSale";
-            var orderFulfilmentID = _this.orderFulfillmentId;
-            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + typeSystemCode + "&processContext=addorderitem&ajaxRequest=1";
+            var orderItemTypeSystemCode = (payload.orderItemTypeSystemCode.value) || "oitSale";
+            var orderFulfilmentID = payload.orderFulfillmentID || _this.orderFulfillmentId;
+            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
@@ -63739,7 +63755,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
     SWAddOrderItemsBySkuController.prototype.postData = function (url, data) {
         if (url === void 0) { url = ''; }
         if (data === void 0) { data = {}; }
-        console.log("Posting data");
         return fetch(url, {
             method: 'post',
             mode: 'cors',
@@ -63768,6 +63783,8 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
         this.bindToController = {
             order: '<?',
             orderFulfillmentId: '<?',
+            simpleRepresentation: '<?',
+            returnOrderId: '<?',
             skuPropertiesToDisplay: '@?',
             edit: "=?",
             exchangeOrderFlag: "=?"
