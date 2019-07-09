@@ -63683,13 +63683,29 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                 'isEditable': true,
                 'isVisible': true
             });
+            //if this is an exchange order, add a dropdown...
+            if (_this.exchangeOrderFlag) {
+                _this.skuColumns.push({
+                    'title': _this.rbkeyService.rbKey('define.orderItemType'),
+                    'propertyIdentifier': 'orderItemTypeSystemCode',
+                    'type': 'select',
+                    'defaultValue': 1,
+                    'options': [
+                        { "name": "Sale Item", "value": "oitSale", "selected": "selected" },
+                        { "name": "Return Item", "value": "oitReturn" }
+                    ],
+                    'isCollectionColumn': false,
+                    'isEditable': true,
+                    'isVisible': true
+                });
+            }
             _this.observerService.attach(_this.addOrderItemListener, "addOrderItem");
         };
         this.addOrderItemListener = function (payload) {
             //figure out if we need to show this modal or not.
             console.log("Add Order Item Listener Called", _this.order, payload, _this.orderFulfillmentId);
             //need to display a modal with the add order item preprocess method.
-            var typeSystemCode = 'oitSale';
+            var typeSystemCode = (payload.orderItemTypeSystemCode.value) || "oitSale";
             var orderFulfilmentID = _this.orderFulfillmentId;
             var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + typeSystemCode + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
@@ -63753,7 +63769,8 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
             order: '<?',
             orderFulfillmentId: '<?',
             skuPropertiesToDisplay: '@?',
-            edit: "=?"
+            edit: "=?",
+            exchangeOrderFlag: "=?"
         };
         this.controller = SWAddOrderItemsBySkuController;
         this.controllerAs = "swAddOrderItemsBySku";
@@ -91894,13 +91911,19 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.getDirectiveTemplate = function () {
             var basePartialPath = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath);
             if (_this.column.isEditable) {
+                //sets a default
                 if (!_this.column.type) {
                     _this.column.type = 'text';
                 }
                 if (_this.column.defaultValue) {
                     _this.pageRecord[_this.column.propertyIdentifier] = _this.column.defaultValue;
                 }
-                return basePartialPath + 'listingdisplaycelledit.html';
+                if (_this.column.type == "select") {
+                    return basePartialPath + 'listingdisplaycelleditselect.html';
+                }
+                else {
+                    return basePartialPath + 'listingdisplaycelledit.html';
+                }
             }
             var templateUrl = basePartialPath + 'listingdisplaycell.html';
             var listingDisplayIsExpandableAndPrimaryColumn = (_this.swListingDisplay.expandable && _this.column.tdclass && _this.column.tdclass === 'primary');
