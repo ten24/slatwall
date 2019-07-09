@@ -141,8 +141,8 @@ class SWAddOrderItemsBySkuController{
 		console.log( "Add Order Item Listener Called", this.order, payload, this.orderFulfillmentId );
 		
 		//need to display a modal with the add order item preprocess method.
-		var orderItemTypeSystemCode = (payload.orderItemTypeSystemCode.value) || "oitSale";
-		var orderFulfilmentID = payload.orderFulfillmentID || this.orderFulfillmentId;
+		var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
+		var orderFulfilmentID = payload.orderFulfillmentID.value || this.orderFulfillmentId;
 		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
 		
 		if (orderFulfilmentID && orderFulfilmentID != "new"){
