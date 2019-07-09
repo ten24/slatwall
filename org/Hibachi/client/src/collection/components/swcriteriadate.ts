@@ -267,6 +267,16 @@ class SWCriteriaDate{
 								display:"Not Defined",
 								comparisonOperator:"is",
 								value:"null"
+							},
+							{
+								display:"Past",
+								comparisonOperator: "<=",
+								value:"now()"
+							},
+							{
+								display:"Future",
+								comparisonOperator: ">=",
+								value:"now()"
 							}
 				    	];
 				    }else if(type === 'condition'){

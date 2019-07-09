@@ -49,19 +49,15 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfset rc.orderTemplateCollectionList.setDisplayProperties('orderTemplateName,account.calculatedFullName,account.primaryEmailAddress.emailAddress',{isVisible=true,isSearchable=true,isDeletable=true}) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperties('createdDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperties('calculatedTotal',{isVisible=true,isSearchable=false,isDeletable=true}) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperties('scheduleOrderNextPlaceDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=false,isDeletable=true} ) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateStatusType.typeName",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateStatusType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
-<!--- ottSchedule, using ID to improve performance --->
-<cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.typeID', '2c948084697d51bd01697d5725650006') />
-<cfset rc.orderTemplateCollectionList.setOrderBy('createdDateTime|asc')/>
+<cfset rc.orderTemplateCollectionList.setDisplayProperties() />
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='orderTemplateName', title="Wish List Name", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='account.calculatedFullName', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='account.primaryEmailAddress.emailAddress', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='createdDateTime', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=false,isDeletable=false} ) />
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">
-
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
 			<hb:HibachiProcessCaller action="admin:entity.preprocessordertemplate" entity="OrderTemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
@@ -72,8 +68,7 @@ Notes:
 		collectionList="#rc.orderTemplateCollectionlist#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.editordertemplate"
-		recordDetailAction="admin:entity.detailordertemplate"
-		enableAveragesAndSums="false"
+		recordDetailAction="admin:entity.detailwishlist"
 	>
 	</hb:HibachiListingDisplay>
 </cfoutput>
