@@ -1343,8 +1343,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function createPromotionLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			promo = arguments.data.loyaltyAccruement.getPromotion();
-			promoCode = getService("PromotionService").NewPromotionCode();
+			var promo = arguments.data.loyaltyAccruement.getPromotion();
+			var promoCode = getService("PromotionService").NewPromotionCode();
 			promoCode.setPromotionCode(createUUID());
 			promoCode.setPromotion(promo);
 			promoCode.addAccount(arguments.data.account);
@@ -1361,7 +1361,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	private any function getExistingGiftCardBySkuAndAccount(required any sku,required any account,required string currencyCode){
-		giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
+		var giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
 		giftCardCollectionList.addFilter("ownerAccount.accountID",arguments.account.getAccountID());
 		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.getSkuID());
 		giftCardCollectionList.addFilter("currencyCode",arguments.currencyCode);

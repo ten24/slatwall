@@ -81,7 +81,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processLoyaltyAccruement_addPromotionEligibleCurrency(required any loyaltyAccruement, required struct data) {
 		
-		accruementCurrency = this.newAccruementCurrency();
+		var accruementCurrency = this.newAccruementCurrency();
 		
 		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
 		
