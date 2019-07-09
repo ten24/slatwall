@@ -12,6 +12,10 @@ class SWAddOrderItemsBySkuController{
     
     public orderFulfillmentId:string;
     
+    public simpleRepresentation:string;
+    
+    public returnOrderId:string;
+    
     public skuColumns; 
     
     public skuPropertiesToDisplay:string;
@@ -91,12 +95,31 @@ class SWAddOrderItemsBySkuController{
 	        	});
 	    }
 	    
+	    //if we have an order fulfillment, then display the dropdown
+	    if (this.orderFulfillmentId != 'new' && this.orderFulfillmentId != ''){
+	    	this.skuColumns.push(
+	    		{
+	            'title': this.rbkeyService.rbKey('define.orderFulfillment'),
+            	'propertyIdentifier':'orderFulfillmentID',
+            	'type':'select',
+            	'defaultValue':1,
+            	'options': [
+            		{"name": this.simpleRepresentation||"Order Fulfillment", "value": this.orderFulfillmentId, "selected": "selected"},
+            		{"name": "New", "value":"new"}
+            	],
+            	'isCollectionColumn':false,
+            	'isEditable':true,
+            	'isVisible':true
+	        	});
+	    }
+	    
+	    
 	    this.observerService.attach(this.addOrderItemListener, "addOrderItem");
         
 	}
 	
 	public postData(url = '', data = {}) {
-		console.log("Posting data");
+		
 	    return fetch(url, {
 	        method: 'post',
 	        mode: 'cors', // no-cors, cors, *same-origin
@@ -118,9 +141,9 @@ class SWAddOrderItemsBySkuController{
 		console.log( "Add Order Item Listener Called", this.order, payload, this.orderFulfillmentId );
 		
 		//need to display a modal with the add order item preprocess method.
-		var typeSystemCode = (payload.orderItemTypeSystemCode.value) || "oitSale";
-		var orderFulfilmentID = this.orderFulfillmentId;
-		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&orderID=${this.order}&orderItemTypeSystemCode=${typeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
+		var orderItemTypeSystemCode = (payload.orderItemTypeSystemCode.value) || "oitSale";
+		var orderFulfilmentID = payload.orderFulfillmentID || this.orderFulfillmentId;
+		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
 		
 		if (orderFulfilmentID && orderFulfilmentID != "new"){
 			url = url+"&preProcessDisplayedFlag=1";
@@ -160,6 +183,8 @@ class SWAddOrderItemsBySku implements ng.IDirective {
 	public bindToController = {
         order: '<?', 
         orderFulfillmentId: '<?',
+        simpleRepresentation: '<?',
+        returnOrderId: '<?',
         skuPropertiesToDisplay: '@?',
         edit:"=?",
         exchangeOrderFlag:"=?"
