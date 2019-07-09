@@ -1496,7 +1496,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(newOrder.hasErrors()){
 			//set Payment Declined status?
-			writeDump(orderPayment.getErrors()); abort;
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
@@ -1511,14 +1510,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				var processData = {
 					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(),
-					amount = orderPayment.getAmount()
+					amount = orderPayment.getAmount(),
+					setOrderPaymentInvalidOnFailedTransactionFlag = false
 				};	
 
 				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
 
 				if(orderPayment.hasErrors()){
 					newOrder.setPaymentTryCount(1);
-					newOrder.setPaymentLastRetryDatetime(now());
+					newOrder.setPaymentLastRetryDateTime(now());
 				} 
 			}
 		}
@@ -1529,7 +1529,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(newOrder.hasErrors()){
 			//set Payment Declined status?
-			writeDump(newOrder.getErrors()); abort;
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment');
 			arguments.orderTemplate.clearHibachiErrors();
 		}
@@ -3907,7 +3906,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// If this order payment has errors & has never had and amount Authorized, Received or Credited... then we can set it as invalid
-		if(arguments.orderPayment.hasErrors() && arguments.orderPayment.getAmountAuthorized() == 0 && arguments.orderPayment.getAmountReceived() == 0 && arguments.orderPayment.getAmountCredited() == 0 ) {
+		if( arguments.processObject.getSetOrderPaymentInvalidOnFailedTransactionFlag() && 
+			arguments.orderPayment.hasErrors() && 
+			arguments.orderPayment.getAmountAuthorized() == 0 && 
+			arguments.orderPayment.getAmountReceived() == 0 && 
+			arguments.orderPayment.getAmountCredited() == 0 
+		) {
 			arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstInvalid') );
 		} else {
 			arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstActive') );
@@ -3924,6 +3928,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderPayment;
 
 	}
+
+	public any function processOrder_retryPayment(required any order, required any processObject, struct data){
+
+		var orderPayments = arguments.order.getOrderPayments(); 	
+
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getStatusCode() == 'opstActive') {
+				
+				var processData = {
+					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(),
+					amount = orderPayment.getAmount()
+				};	
+
+				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+
+				if(orderPayment.hasErrors()){
+					var currentTryCount = newOrder.getPaymentTryCount(); 
+					newOrder.setPaymentTryCount(currentTryCount + 1);
+					newOrder.setPaymentLastRetryDateTime(now());
+				} 
+			}
+		}		
+
+		return arguments.order; 
+	} 
 
 	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment, struct data) {
 
