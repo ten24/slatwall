@@ -50,15 +50,15 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 		return [ 'Slatwall.integrationServices.infotrax.model.handler.InfoTraxHandler' ];
 	}
 	
-	public any function init() {
+	// public any function init() {
 		
-		if( getHibachiScope().hasService('infoTraxService') ){
-			setInfoTraxService( getHibachiScope().getService('infoTraxService') );
-			getHibachiScope().getService('infoTraxService').setIntegrationCFC( this );
-		}
+	// 	if( getHibachiScope().hasService('infoTraxService') ){
+	// 		setInfoTraxService( getHibachiScope().getService('infoTraxService') );
+	// 		getHibachiScope().getService('infoTraxService').setIntegrationCFC( this );
+	// 	}
 		
-		return this;
-	}
+	// 	return this;
+	// }
 	
 	public string function getIntegrationTypes() {
 		
