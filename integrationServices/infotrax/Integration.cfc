@@ -50,16 +50,6 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 		return [ 'Slatwall.integrationServices.infotrax.model.handler.InfoTraxHandler' ];
 	}
 	
-	// public any function init() {
-		
-	// 	if( getHibachiScope().hasService('infoTraxService') ){
-	// 		setInfoTraxService( getHibachiScope().getService('infoTraxService') );
-	// 		getHibachiScope().getService('infoTraxService').setIntegrationCFC( this );
-	// 	}
-		
-	// 	return this;
-	// }
-	
 	public string function getIntegrationTypes() {
 		
 		return 'data';
@@ -73,8 +63,12 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 	public struct function getSettings() {
 		
 		var settings = {
-			userName = { fieldType = 'text' },
+			apikey = { fieldType = 'text' },
+			username = { fieldType = 'text' },
 			password = { fieldType = 'password' }
+			liveModeFlag = { fieldType="yesno", defaultValue="0" },
+			liveURL = { fieldType="text" },
+			testURL = { fieldType="text", defaultValue="https://dev-monat-dts.myvoffice.com/monaticepre/index.cfm" }
 		};
 		
 		return settings;
