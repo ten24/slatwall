@@ -170,7 +170,7 @@ component {
 		return getPaymentAmountDue() > 0;
 	}
 	
-	public boolean function getVIPEnrollmentOrderFlag(){
+	public boolean function getVipEnrollmentOrderFlag(){
 	    orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
