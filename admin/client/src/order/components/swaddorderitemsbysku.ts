@@ -6,6 +6,8 @@ class SWAddOrderItemsBySkuController{
     
     public edit:boolean;
     
+    public exchangeOrderFlag:boolean;
+    
     public order;
     
     public orderFulfillmentId:string;
@@ -71,6 +73,24 @@ class SWAddOrderItemsBySkuController{
 	        }
 	    );
 	    
+	    //if this is an exchange order, add a dropdown...
+	    if (this.exchangeOrderFlag){
+	    	this.skuColumns.push(
+	    		{
+	            'title': this.rbkeyService.rbKey('define.orderItemType'),
+            	'propertyIdentifier':'orderItemTypeSystemCode',
+            	'type':'select',
+            	'defaultValue':1,
+            	'options': [
+            		{"name": "Sale Item", "value": "oitSale", "selected": "selected"},
+            		{"name": "Return Item", "value":"oitReturn"}
+            	],
+            	'isCollectionColumn':false,
+            	'isEditable':true,
+            	'isVisible':true
+	        	});
+	    }
+	    
 	    this.observerService.attach(this.addOrderItemListener, "addOrderItem");
         
 	}
@@ -98,7 +118,7 @@ class SWAddOrderItemsBySkuController{
 		console.log( "Add Order Item Listener Called", this.order, payload, this.orderFulfillmentId );
 		
 		//need to display a modal with the add order item preprocess method.
-		var typeSystemCode = 'oitSale';
+		var typeSystemCode = (payload.orderItemTypeSystemCode.value) || "oitSale";
 		var orderFulfilmentID = this.orderFulfillmentId;
 		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&orderID=${this.order}&orderItemTypeSystemCode=${typeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
 		
@@ -141,7 +161,8 @@ class SWAddOrderItemsBySku implements ng.IDirective {
         order: '<?', 
         orderFulfillmentId: '<?',
         skuPropertiesToDisplay: '@?',
-        edit:"=?"
+        edit:"=?",
+        exchangeOrderFlag:"=?"
 	};
 	public controller=SWAddOrderItemsBySkuController;
 	public controllerAs="swAddOrderItemsBySku";
