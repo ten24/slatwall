@@ -50,6 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="orderDAO";
 	property name="productDAO";
+	property name="promotionDAO";
 
 	property name="accountService";
 	property name="addressService";
@@ -1200,7 +1201,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		 * unvalidated changes in the order template.
 		 */
 
-		thread name="#threadName#" 
+		
+		thread name="#threadName#"
 			   orderTemplateSoftReference="#orderTemplateSoftReference#"
 			   action="run" 
 		{	
@@ -1213,23 +1215,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  
 			thread.canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
-			ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
-			//ormExecuteQuery("DELETE FROM SlatwallPromotionApplied where orderItem.order.orderID=:transientOrderID", {transientOrderID=transientOrder.getOrderID()});
+			//getPromotionDAO().deletePromotionAppliedToOrderItemByOrderID(transientOrder.getOrderID()); 			
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			ormFlush(); 
+			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
+			ormFlush();//persist changes independently 
 		}
 
+		//join thread so we can return synchronously
 		threadJoin(threadName);
-
+		
 		if(!structKeyExists(evaluate(threadName), "ERROR")){
 			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
 		} else {
-			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#');
+			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
-		
 		return canPlaceOrder;
 	}
 
@@ -1243,6 +1245,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		arguments.transientOrder.setAccount(arguments.orderTemplate.getAccount()); 
+
+		if(arguments.evictFromSession){	
+			ORMGetSession().evict(arguments.transientOrder.getAccount());
+		}
 
 		arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
 	
@@ -1369,7 +1376,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, required any processObject, required struct data={}){
 
-		//check if order template has an active status
+		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
+
+		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 
 		var newOrder = this.newOrder(); 
 
@@ -1384,7 +1394,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
 	
 		if(newOrder.hasErrors()){
-			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate; 
 		} 
 
@@ -1419,7 +1430,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 
 			if(newOrder.hasErrors()){
-				arguments.orderTemplate.addErrors(newOrder.getErrors());
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+				arguments.orderTemplate.clearHibachiErrors();
 				return arguments.orderTemplate; 
 			}
 		} 		
@@ -1469,18 +1481,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
 		if(newOrder.hasErrors()){
-			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
 
 		newOrder = this.processOrder_placeOrder(newOrder);
 		
 		if(newOrder.hasErrors()){
-			arguments.orderTemplate.addErrors(newOrder.getErrors());
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
 
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime()));
 
 		return arguments.orderTemplate; 
 	}

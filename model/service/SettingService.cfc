@@ -308,6 +308,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
 
 			//Order Template
+			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateEligibleTerms = {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="Term"

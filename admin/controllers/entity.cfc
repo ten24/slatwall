@@ -324,7 +324,10 @@ private void function populateWithAddressVerification(required struct rc){
 			getFW().setView("admin:entity.ajax");
 
 			rc.templatePath = "./#rc.viewPath#.cfm";
-
+			if( fileExists('/Slatwall/custom/admin/views/entity/#rc.viewPath#.cfm')){ 
+				//relative path from admin/entity/ajax.cfm
+				rc.templatePath = '../../../custom/admin/views/entity/#rc.viewPath#.cfm'; 
+			}
 		}
 	}
 	

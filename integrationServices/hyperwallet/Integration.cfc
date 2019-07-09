@@ -1,5 +1,5 @@
-<!---
-     Slatwall - An Open Source eCommerce Platform
+/*
+    Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
@@ -25,27 +25,60 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
- 	- You also meet the terms and conditions of the license of each 
+	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
 	  any part of the application 
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
- 	You may copy and distribute the modified version of this program that meets 
+	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
 	GNU GPL requires distribution of source code.
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
- Notes:
- --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-<cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="orderTemplateEligibleTerms" />
-		<swa:slatwallSetting settingName="orderTemplateCanPlaceFutureScheduleDateFlag" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+Notes:
+	
+	HyperWallet Documentation: https://portal.hyperwallet.com/docs
+	Tutorials: https://portal.hyperwallet.com/api/tutorial
+	Live Tester: 
+	Sandbox Dashboard: https://portal.hyperwallet.com/
+*/
+
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+	
+	public any function init() {
+		return this; 
+	}
+	
+	public string function getIntegrationTypes() {
+		return "payment";
+	}
+	
+	public string function getDisplayName() {
+		return "HyperWallet";
+	}
+
+	public struct function getSettings() {
+		var settings = {
+			apiUrlLive = {fieldType="text", defaultValue="https://api.hyperwallet.com"},
+			apiUrlTest = {fieldType="text", defaultValue="https://uat-api.paylution.com"},
+			issuerIdLive = {fieldType="text"},
+			issuerIdTest = {fieldType="text"},
+			passwordLive = {fieldType="password", encryptValue=true},
+			passwordTest = {fieldType="password", encryptValue=true},
+			testMode = {fieldType="yesno", defaultValue="1"},
+			usernameLive = {fieldType="text"},
+			usernameTest = {fieldType="text"}
+		};
+		
+		return settings;
+	}
+
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return false;
+	}
+
+}

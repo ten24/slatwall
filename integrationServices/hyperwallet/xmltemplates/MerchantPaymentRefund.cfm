@@ -1,5 +1,5 @@
 <!---
-     Slatwall - An Open Source eCommerce Platform
+    Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
@@ -25,27 +25,31 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
- 	- You also meet the terms and conditions of the license of each 
+	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
 	  any part of the application 
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
- 	You may copy and distribute the modified version of this program that meets 
+	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
 	GNU GPL requires distribution of source code.
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
- Notes:
- --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+Notes:
+--->
+<?xml version="1.0" encoding="UTF-8"?>
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="orderTemplateEligibleTerms" />
-		<swa:slatwallSetting settingName="orderTemplateCanPlaceFutureScheduleDateFlag" />
-	</swa:SlatwallSettingTable>
+    <transaction>
+        <merchantPaymentRefund>
+            <!---<amount>15.00</amount>
+            <txnId>25438</txnId>
+            <merchantTxnId>Txn12345</merchantTxnId>
+            <messageToPayer>Refunding payment, out of stock</messageToPayer>
+            <ccNotifyRefunder>false</ccNotifyRefunder>--->
+        </merchantPaymentRefund>
+    </transaction> 
 </cfoutput>

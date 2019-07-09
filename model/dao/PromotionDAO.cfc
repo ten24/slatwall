@@ -314,5 +314,13 @@ Notes:
 		<cfreturn ormExecuteQuery("SELECT pc FROM SlatwallPromotionCode pc WHERE #comparisonValue# = ?", [lcase(arguments.promotionCode)], true) />
 	</cffunction>
 
-
+	<cffunction name="deletePromotionAppliedToOrderItemByOrderID" returntype="void" access="public">
+		<cfargument name="orderID" required="true" type="string" />
+		<cfquery name="local.deletePromotionAppliedToOrderItemByOrderID">
+			delete pa from swpromotionapplied pa 
+			left join sworderitem oi on pa.orderItemID=oi.orderItemID
+			left join sworder o on oi.orderID = o.orderID
+			where o.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+		</cfquery> 
+	</cffunction> 
 </cfcomponent>
