@@ -65,30 +65,20 @@ Notes:
 
     <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
-	<cfset serchableDisplayProperties = "firstName,lastName,company"/>
+	<cfset searchableDisplayProperties = "firstName,lastName,company,userName,primaryEmailAddress.emailAddress,sponsorIDNumber"/>
 	<cfset accountCollectionList.setDisplayProperties(
-	serchableDisplayProperties,
+	searchableDisplayProperties,
 	{
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
 	})/>
-	
-	<cfset nonSerchableDisplayProperties = "calculatedGuestAccountFlag,organizationFlag"/>
-	<cfset accountCollectionList.addDisplayProperties(
-		nonSerchableDisplayProperties, 
-		{
-			isVisible=true,
-			isSearchable=false,
-			isDeletable=true
-		}
-	)/>
 
 	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='accountID',
 	columnConfig={
-		isVisible=false,
-		isSearchable=false,
+		isVisible=true,
+		isSearchable=true,
 		isDeletable=false
 	})/>
 	
