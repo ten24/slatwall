@@ -63739,8 +63739,10 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     window.renderModal(parsedHtml);
                 }
                 else {
-                    console.log("Reloading the page");
-                    window.location.reload();
+                    console.log("Reloading the listing display");
+                    //notify the orderitem listing that it needs to refresh itself...
+                    _this.observerService.notify("refreshOrderItemListing", {});
+                    //(window as any).location.reload();
                 }
             }) // JSON-string from `response.json()` call
                 .catch(function (error) { return console.error(error); });
@@ -91208,11 +91210,88 @@ var SWListingDisplayController = /** @class */ (function () {
         this.selectable = false;
         this.showSearchFilters = false;
         this.sortable = false;
+        this.refreshListingDisplay = function () {
+            console.log("Heard: Refreshing the listing display");
+            _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
+                _this.collectionData = data;
+                _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
+            });
+        };
+        /**
+         * I pulled the ctor logic into its own method so we can reinintialize the
+         * collection on demand (refresh).
+         **/
+        this.initListingDisplay = function ($q, $rootScope, initial) {
+            //setup a listener for refreshing this listing based on a refrsh event string 
+            if (_this.refreshEvent && initial) {
+                console.log("Setting a refresh event to listen for. ", _this.refreshEvent);
+                _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (angular.isUndefined(_this.usingPersonalCollection)) {
+                _this.usingPersonalCollection = false;
+            }
+            if (angular.isUndefined(_this.showExport)) {
+                _this.showExport = true;
+            }
+            if (angular.isUndefined(_this.showFilters)) {
+                _this.showFilters = true;
+            }
+            //promises to determine which set of logic will run
+            _this.multipleCollectionDeffered = $q.defer();
+            _this.multipleCollectionPromise = _this.multipleCollectionDeffered.promise;
+            _this.singleCollectionDeferred = $q.defer();
+            _this.singleCollectionPromise = _this.singleCollectionDeferred.promise;
+            if (angular.isDefined(_this.collection) && angular.isString(_this.collection)) {
+                //not sure why we have two properties for this
+                _this.baseEntityName = _this.collection;
+                _this.collectionObject = _this.collection;
+                _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
+                _this.$timeout(function () {
+                    _this.collection = _this.collectionConfig;
+                    _this.columns = _this.collectionConfig.columns;
+                });
+                _this.multipleCollectionDeffered.reject();
+            }
+            if ((_this.baseEntityName)
+                && (_this.usingPersonalCollection
+                    && _this.listingService.hasPersonalCollectionSelected(_this.baseEntityName))
+                && (angular.isUndefined(_this.personalCollectionIdentifier)
+                    || (angular.isDefined(_this.localStorageService.getItem('selectedPersonalCollection')[_this.baseEntityName.toLowerCase()]['collectionDescription'])
+                        && _this.localStorageService.getItem('selectedPersonalCollection')[_this.baseEntityName.toLowerCase()]['collectionDescription'] == _this.personalCollectionIdentifier))) {
+                var personalCollection = _this.listingService.getPersonalCollectionByBaseEntityName(_this.baseEntityName);
+                // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
+                var originalMultiSlotValue = angular.copy(_this.multiSlot);
+                _this.multiSlot = false;
+                personalCollection.getEntity().then(function (data) {
+                    if (data.pageRecords.length) {
+                        _this.collectionConfig = _this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
+                        _this.collectionConfig.setCurrentPage(1); //even if the saved collection config has a current page, we want to be on page 1 here
+                        _this.collectionObject = _this.baseEntityName;
+                        _this.$timeout(function () {
+                            _this.collection = _this.collectionConfig;
+                            _this.columns = _this.collectionConfig.columns;
+                        });
+                    }
+                    else {
+                        _this.multiSlot = originalMultiSlotValue;
+                    }
+                    _this.processCollection();
+                });
+            }
+            else {
+                $rootScope.hibachiScope.selectedPersonalCollection = undefined;
+                _this.processCollection();
+            }
+            if (!_this.reportAction && _this.baseEntityName) {
+                _this.reportAction = 'entity.reportlist' + _this.baseEntityName.toLowerCase();
+            }
+        };
         this.processCollection = function () {
             _this.initializeState();
             if (angular.isDefined(_this.collectionPromise)) {
                 _this.hasCollectionPromise = true;
                 _this.multipleCollectionDeffered.reject();
+                console.log("Reject");
             }
             if (_this.collectionConfig != null) {
                 _this.multipleCollectionDeffered.reject();
@@ -91656,68 +91735,7 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.persistedReportCollections = data.records;
             });
         };
-        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
-        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
-        //     return;
-        // }
-        if (angular.isUndefined(this.usingPersonalCollection)) {
-            this.usingPersonalCollection = false;
-        }
-        if (angular.isUndefined(this.showExport)) {
-            this.showExport = true;
-        }
-        if (angular.isUndefined(this.showFilters)) {
-            this.showFilters = true;
-        }
-        //promises to determine which set of logic will run
-        this.multipleCollectionDeffered = $q.defer();
-        this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
-        this.singleCollectionDeferred = $q.defer();
-        this.singleCollectionPromise = this.singleCollectionDeferred.promise;
-        if (angular.isDefined(this.collection) && angular.isString(this.collection)) {
-            //not sure why we have two properties for this
-            this.baseEntityName = this.collection;
-            this.collectionObject = this.collection;
-            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-            this.$timeout(function () {
-                _this.collection = _this.collectionConfig;
-                _this.columns = _this.collectionConfig.columns;
-            });
-            this.multipleCollectionDeffered.reject();
-        }
-        if ((this.baseEntityName)
-            && (this.usingPersonalCollection
-                && this.listingService.hasPersonalCollectionSelected(this.baseEntityName))
-            && (angular.isUndefined(this.personalCollectionIdentifier)
-                || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'])
-                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))) {
-            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
-            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
-            var originalMultiSlotValue = angular.copy(this.multiSlot);
-            this.multiSlot = false;
-            personalCollection.getEntity().then(function (data) {
-                if (data.pageRecords.length) {
-                    _this.collectionConfig = _this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
-                    _this.collectionConfig.setCurrentPage(1); //even if the saved collection config has a current page, we want to be on page 1 here
-                    _this.collectionObject = _this.baseEntityName;
-                    _this.$timeout(function () {
-                        _this.collection = _this.collectionConfig;
-                        _this.columns = _this.collectionConfig.columns;
-                    });
-                }
-                else {
-                    _this.multiSlot = originalMultiSlotValue;
-                }
-                _this.processCollection();
-            });
-        }
-        else {
-            $rootScope.hibachiScope.selectedPersonalCollection = undefined;
-            this.processCollection();
-        }
-        if (!this.reportAction && this.baseEntityName) {
-            this.reportAction = 'entity.reportlist' + this.baseEntityName.toLowerCase();
-        }
+        this.initListingDisplay($q, $rootScope, true);
     }
     Object.defineProperty(SWListingDisplayController.prototype, "columns", {
         get: function () {
@@ -91875,7 +91893,8 @@ var SWListingDisplay = /** @class */ (function () {
             hasActionBar: "<?",
             multiSlot: "=?",
             customListingControls: "<?",
-            hideUnfilteredResults: "<?"
+            hideUnfilteredResults: "<?",
+            refreshEvent: "@?"
         };
         this.controller = SWListingDisplayController;
         this.controllerAs = "swListingDisplay";
