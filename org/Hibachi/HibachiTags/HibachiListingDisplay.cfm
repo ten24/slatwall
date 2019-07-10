@@ -22,7 +22,8 @@
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
-
+	<cfparam name="attributes.refreshEvent" type="string" default="" />
+	
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordActions" type="string" default="" />
 	<cfparam name="attributes.recordEditEvent" type="string" default="" />
@@ -170,6 +171,9 @@
 				</cfif> 
 	 			<cfif len(attributes.personalCollectionIdentifier)>
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
+ 				</cfif>
+ 				<cfif len(attributes.refreshEvent)>
+ 					data-refresh-event="#attributes.refreshEvent#" 
  				</cfif>
 			    <cfif len(attributes.multiselectFieldName)>
 				  data-multiselectable="true"
