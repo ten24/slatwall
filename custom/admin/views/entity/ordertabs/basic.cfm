@@ -100,6 +100,11 @@
 				<cfif rc.order.hasGiftCardOrderPaymentAmount()>
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountDueAfterGiftCards" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 				</cfif>
+
+				<cfif rc.order.getPaymentAmountDue() GT 0>	
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentTryCount" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentLastRetryDateTime" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
+				</cfif> 
 			</hb:HibachiPropertyTable>
 
 		</hb:HibachiPropertyList>

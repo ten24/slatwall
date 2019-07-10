@@ -1517,6 +1517,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
 
 				if(orderPayment.hasErrors()){
+					orderPayment.clearHibachiErrors(); 
+					newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
 					newOrder.setPaymentTryCount(1);
 					newOrder.setPaymentLastRetryDateTime(now());
 				} 
@@ -1527,11 +1529,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		newOrder = this.saveOrder(newOrder); 
 
-		if(newOrder.hasErrors()){
-			//set Payment Declined status?
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment');
-			arguments.orderTemplate.clearHibachiErrors();
+		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
+			newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
+			newOrder.setPaymentTryCount(1);
+			newOrder.setPaymentLastRetryDateTime(now());
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
+			newOrder.clearHibachiErrors();
 		}
+			
+		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
 		return arguments.orderTemplate; 
 	}
@@ -3938,18 +3944,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				var processData = {
 					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(),
-					amount = orderPayment.getAmount()
+					amount = orderPayment.getAmount(), 
+					setOrderPaymentInvalidOnFailedTransactionFlag = false
 				};	
 
 				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
 
-				if(orderPayment.hasErrors()){
-					var currentTryCount = newOrder.getPaymentTryCount(); 
-					newOrder.setPaymentTryCount(currentTryCount + 1);
-					newOrder.setPaymentLastRetryDateTime(now());
+				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
+					arguments.order.clearHibachiErrors(); 
+					orderPayment.clearHibachiErrors();
+					getHibachiScope().setORMHasErrors(false)	
+ 
+					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
+					arguments.order.setPaymentTryCount(currentTryCount);
+					arguments.order.setPaymentLastRetryDateTime(now());
 				} 
 			}
-		}		
+		}	
+		arguments.order = this.saveOrder(arguments.order);	
 
 		return arguments.order; 
 	} 
