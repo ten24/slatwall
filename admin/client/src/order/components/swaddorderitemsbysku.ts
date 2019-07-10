@@ -161,8 +161,10 @@ class SWAddOrderItemsBySkuController{
 				// show modal
 				(window as any).renderModal(parsedHtml);
 			}else{
-				console.log("Reloading the page");
-				(window as any).location.reload();
+				console.log("Reloading the listing display");
+				//notify the orderitem listing that it needs to refresh itself...
+				this.observerService.notify("refreshOrderItemListing", {});
+				//(window as any).location.reload();
 			}
 		}) // JSON-string from `response.json()` call
 		.catch(error => console.error(error));
