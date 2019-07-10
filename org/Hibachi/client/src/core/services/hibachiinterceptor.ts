@@ -46,6 +46,7 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig:string,
+			token:string,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -61,6 +62,7 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig,
+			token,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -77,6 +79,7 @@ class HibachiInterceptor implements IInterceptor{
 			'localStorageService',
 			'alertService',
 			'appConfig',
+			'token',
 			'dialogService',
 			'utilityService',
             'hibachiPathBuilder',
@@ -102,6 +105,7 @@ class HibachiInterceptor implements IInterceptor{
 		public localStorageService,
 		public alertService,
 		public appConfig:any,
+		public token:string,
 		public dialogService,
         public utilityService,
         public hibachiPathBuilder,
@@ -118,6 +122,7 @@ class HibachiInterceptor implements IInterceptor{
 		this.localStorageService = localStorageService;
 		this.alertService = alertService;
 		this.appConfig = appConfig;
+		this.token = token;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -125,8 +130,8 @@ class HibachiInterceptor implements IInterceptor{
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     
-    public getJWTDataFromToken = (str):void =>{
-	    this.hibachiAuthenticationService.getJWTDataFromToken(str);
+    public getJWTDataFromToken = ():void =>{
+	    this.hibachiAuthenticationService.getJWTDataFromToken(this.token);
 	}
 	
     
@@ -146,9 +151,9 @@ class HibachiInterceptor implements IInterceptor{
         }
         config.cache = true;
         config.headers = config.headers || {};
-        if(this.hibachiAuthenticationService.jwtToken){
-        	config.headers['Auth-Token'] = 'Bearer ' + this.hibachiAuthenticationService.jwtToken;
-            this.getJWTDataFromToken(this.hibachiAuthenticationService.jwtToken);
+        if(this.token){
+        	config.headers['Auth-Token'] = 'Bearer ' + this.token;
+            this.getJWTDataFromToken();
         }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
@@ -223,7 +228,8 @@ class HibachiInterceptor implements IInterceptor{
 	                            this.hibachiAuthenticationService.jwtToken = loginResponse.data.token;
 	                            rejection.config.headers = rejection.config.headers || {};
 	                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-	                            this.getJWTDataFromToken(loginResponse.data.token);
+	                            this.token = loginResponse.data.token;
+	                            this.getJWTDataFromToken();
 	                            return $http(rejection.config).then(function(response) {
 	                               return response;
 	                            });
@@ -238,10 +244,10 @@ class HibachiInterceptor implements IInterceptor{
                         
                         if(this.loginResponse.status === 200){
                         	
-                            this.jwtToken=this.loginResponse.data.token;
                             rejection.config.headers = rejection.config.headers || {};
                             rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
-                            this.getJWTDataFromToken(this.loginResponse.data.token);
+                            this.token=this.loginResponse.data.token;
+                            this.getJWTDataFromToken();
                             
                             return $http(rejection.config).then(function(response) {
                                return response;

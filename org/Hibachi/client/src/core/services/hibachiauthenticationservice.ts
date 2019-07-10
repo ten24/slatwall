@@ -9,7 +9,8 @@ class HibachiAuthenticationService{
        public $window,
        public appConfig,
        public $injector,
-       public utilityService
+       public utilityService,
+       public token
     ){
         
     }
@@ -47,6 +48,9 @@ class HibachiAuthenticationService{
     }
     
     public authenticateActionByAccount=(action:string,processContext:string)=>{
+    	if(!this.$rootScope.slatwall.authInfo){
+    		this.getJWTDataFromToken(this.token);
+    	}
         var authDetails:any = this.getActionAuthenticationDetailsByAccount(action,processContext);
         return authDetails.authorizedFlag;
     }
