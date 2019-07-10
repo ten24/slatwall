@@ -69,13 +69,16 @@ Notes:
 		isDeletable=false
 	})/>
 	
+	<!--- The order item listing has a refreshOrderItemListing event that it will listen for to refresh
+	      this listing, notify that event  using the observer service --->
 	<hb:HibachiListingDisplay 
 		collectionList="#orderItemCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(orderItemCollectionList.getCollectionObject())#"
 		recordDeleteAction="admin:entity.deleteOrderItem&sRedirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#"
 		recordDeleteActionProperty="orderItemID"
-		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#">
+		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#"
+		refreshEvent="refreshOrderItemListing">
 	</hb:HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
