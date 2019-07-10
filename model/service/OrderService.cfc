@@ -1686,6 +1686,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 
+			if(accountPaymentMethod.hasErrors()){
+				arguments.orderTemplate.addErrors(accountPaymentMethod.getErrors());
+			}
+
 			arguments.orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
 			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
@@ -1696,7 +1700,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!arguments.orderTemplate.hasErrors()){
 			var orderCollectionList = this.getOrderCollectionList();
 			orderCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID());
-			orderCollectionList.addFilter('orderStatusType.systemCode', 'ostProcessingPaymentDeclined');
+			orderCollectionList.addFilter('orderStatusType.typeID', '2c9280846bd1f0d8016bd217dc1d002e');//payment declined status
 			orderCollectionList.setOrderBy('createdDateTime|DESC'); 
 		
 			var orders = orderCollectionList.getPageRecords();
