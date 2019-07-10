@@ -358,9 +358,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return variables.session;
 	}
 	
-	public any function setSesion(any sessionValue){
-		variables.session=arguments.sessionValue;
-	}
 
 	public any function getAccount() {
 		return getSession().getAccount();
