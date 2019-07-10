@@ -359,7 +359,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
 		arguments.order.updateCalculatedProperties(true);
+		//Save before flushing 
+		if(arguments.order.getNewFlag()){
+			getService('hibachiService').saveOrder(arguments.order);
+		}
+
 		getHibachiScope().flushOrmSession();
+
 		if(arguments.order.isOrderPaidFor()){
 			return;
 		}
@@ -390,8 +396,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getPickupLocation().getLocationID());
  			}
  		}
- 		
- 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getAccount().getAccountID(),'md5');
+ 		var accountID = '';
+ 		if(!isNull(arguments.order.getAccount())){
+ 			accountID = arguments.order.getAccount().getAccountID();
+ 		}
+ 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
  		
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);

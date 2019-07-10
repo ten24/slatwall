@@ -46,49 +46,29 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.accountSmartList" type="any" />
+<cfset rc.orderTemplateCollectionList.setDisplayProperties() />
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='orderTemplateName', title="Wish List Name", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='account.calculatedFullName', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='account.primaryEmailAddress.emailAddress', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty='createdDateTime', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=false,isDeletable=false} ) />
 
 <cfoutput>
-
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
-
-	<!--- Create --->
+	<hb:HibachiEntityActionBar type="listing" showCreate="false">
+		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessordertemplate" entity="OrderTemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-
-    <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
-
-	<cfset searchableDisplayProperties = "firstName,lastName,company,userName,primaryEmailAddress.emailAddress,sponsorIDNumber"/>
-	<cfset accountCollectionList.setDisplayProperties(
-	searchableDisplayProperties,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='accountID',
-	columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=false
-	})/>
-	
 	<hb:HibachiListingDisplay 
-		collectionList="#accountCollectionList#"
+		collectionList="#rc.orderTemplateCollectionlist#"
 		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(accountCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(accountCollectionList.getCollectionObject())#"
+		recordEditAction="admin:entity.editordertemplate"
+		recordDetailAction="admin:entity.detailwishlist"
 	>
 	</hb:HibachiListingDisplay>
-
 </cfoutput>
