@@ -109,6 +109,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="total" persistent="false" hb_formatType="currency";
 	//CUSTOM PROPERTIES BEGIN
 property name="customerCanCreateFlag" persistent="false";
+	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 
 //CUSTOM PROPERTIES END
@@ -189,7 +190,7 @@ property name="customerCanCreateFlag" persistent="false";
 		return this.getSubtotal() + this.getFulfillmentTotal(); 
 	} 
 
-	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
@@ -324,5 +325,18 @@ public boolean function getCustomerCanCreateFlag(){
 			}
 		}	
 		return variables.personalVolumeTotal; 	
-	} //CUSTOM FUNCTIONS END
+	}
+
+	public numeric function getCommissionableVolumeTotal(){
+		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
+			variables.commissionableVolumeTotal = 0; 
+
+			var orderTemplateItems = this.getOrderTemplateItems();
+
+			for(var orderTemplateItem in orderTemplateItems){ 
+				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal();
+			}
+		}	
+		return variables.commissionableVolumeTotal;
+	}  //CUSTOM FUNCTIONS END
 }
