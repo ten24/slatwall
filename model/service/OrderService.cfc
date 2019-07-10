@@ -1682,7 +1682,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
 
 			//set payment method as credit card
-			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('2c9280846b09283e016b09d1b596000d')); 
+			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
 
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 
