@@ -83,15 +83,6 @@ Notes:
 		isDeletable=false
 	})/>
 	<cfset rc.categoryCollectionList.addDisplayAggregate('childCategories','COUNT','childCategoriesCount')/>
-	<sw-action-caller
-            data-action="admin:entity.listcategory"
-            data-event=""
-            data-class="btn btn-default btn-xs"
-            data-icon="eye-open"
-            data-iconOnly="true"
-    >
-
-                                    </sw-action-caller>
 	<hb:HibachiListingDisplay collectionList="#rc.categoryCollectionList#"
 		recordEditAction="admin:entity.edit#lcase(rc.categoryCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.categoryCollectionList.getCollectionObject())#"
