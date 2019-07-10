@@ -50,6 +50,7 @@ class SWAddOrderItemsBySkuController{
         this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
+        this.addSkuCollection.addDisplayProperty('calculatedQATS','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
