@@ -3961,6 +3961,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var orderPayments = arguments.order.getOrderPayments(); 	
 
+		getOrderDAO().turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
+		
 		for(var orderPayment in orderPayments) {
 			if(orderPayment.getStatusCode() == 'opstActive') {
 				
@@ -3983,6 +3985,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} 
 			}
 		}	
+		
+		arguments.order.setPaymentProcessingInProgressFlag(false); 
+		
 		arguments.order = this.saveOrder(arguments.order);	
 
 		return arguments.order; 
