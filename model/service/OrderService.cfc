@@ -1669,9 +1669,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress = getAccountService().saveAccountAddress(accountAddress);
 
 
-			orderTemplate.setBillingAccountAddress(accountAddress);
+			arguments.orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
-			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
+			arguments.orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
 		} 	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
@@ -1682,16 +1682,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
 
 			//set payment method as credit card
-			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a')); 
+			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('2c9280846b09283e016b09d1b596000d')); 
 
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 
-			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+			arguments.orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
-			orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
+			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
 		} 
-
+		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		if(!arguments.orderTemplate.hasErrors()){
+			var orderCollectionList = this.getOrderCollectionList();
+			orderCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID());
+			orderCollectionList.addFilter('orderStatusType.systemCode', 'ostProcessingPaymentDeclined');
+			orderCollectionList.setOrderBy('createdDateTime|DESC'); 
+		
+			var orders = orderCollectionList.getPageRecords();
+	
+			if(!arrayIsEmpty(orders)){
+				
+				var orderToRetry = this.getOrder(orders[1]['orderID']);
+				
+				var processOrderAddOrderPayment = orderToRetry.getProcessObject('addOrderPayment');
+				processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
+				processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
+
+				orderToRetry = this.processOrder_addOrderPayment(orderToRetry, processOrderAddOrderPayment); 
+				orderToRetry = this.processOrder(orderToRetry, {}, 'retryPayment');	
+			}
+		}
+
 
 		return arguments.orderTemplate; 
 	}
@@ -2834,7 +2856,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
 		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderDiscountAmountTotal()) != 0) {
-			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.");
+			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.", true);
 		}
 
 	}
@@ -3861,7 +3883,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// If the paymentTransaction has errors, then add those errors to the orderPayment itself
 				if(paymentTransaction.hasError('runTransaction')) {
-					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'));
+					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
 					val(getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived()));
 				}
@@ -3893,7 +3915,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
             // If the paymentTransaction has errors, then add those errors to the orderPayment itself
 			if(paymentTransaction.hasError('runTransaction')) {
-				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'));
+				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			} else {
                 if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){
                     if(paymentTransaction.getAmountReceived() gt 0){
