@@ -144,7 +144,7 @@ class SWAddOrderItemsBySkuController{
 		//need to display a modal with the add order item preprocess method.
 		var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
 		var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (this.orderFulfillmentId?this.orderFulfillmentId :"new");
-		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
+		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&price=${payload.price}&quantity=${payload.quantity}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
 		
 		if (orderFulfilmentID && orderFulfilmentID != "new"){
 			url = url+"&preProcessDisplayedFlag=1";
@@ -154,7 +154,7 @@ class SWAddOrderItemsBySkuController{
 		
 		this.postData(url, data)
 		.then(data => {
-			console.log(data);
+			
 			if (data.preProcessView){
 				//populate a modal with the template data...
 	        	var parsedHtml:any = $.parseHTML( data.preProcessView );
@@ -162,7 +162,6 @@ class SWAddOrderItemsBySkuController{
 				// show modal
 				(window as any).renderModal(parsedHtml);
 			}else{
-				console.log("Reloading the listing display");
 				//notify the orderitem listing that it needs to refresh itself...
 				this.observerService.notify("refreshOrderItemListing", {});
 				//(window as any).location.reload();
