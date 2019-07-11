@@ -60,7 +60,7 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
-	property name="productReviewsStatus" cfc="Type" fieldtype="many-to-one" fkcolumn="productReviewsStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=productReviewsStatusType&orderBy=sortOrder";
+	property name="productReviewsStatus" cfc="Type" fieldtype="many-to-one" fkcolumn="productReviewsStatusTypeID" hb_formFieldType="select" hb_optionsSmartListData="f:parentType.systemCode=productReviewsStatusType&orderBy=sortOrder";
 	
 	// Related Object Properties (one-to-many)
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
