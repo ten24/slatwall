@@ -56,6 +56,7 @@ Notes:
 
 <cfoutput>
 	<cfset orderFulfillmentID = "new">
+	<cfset simpleRepresentation = "">
 	<cfif !isNull(rc.order.getOrderFulfillments())>
 		<cfset orderFulfillments = rc.order.getOrderFulfillments()>
 		<cfloop index="orderFulfillment" array="#orderFulfillments#">
