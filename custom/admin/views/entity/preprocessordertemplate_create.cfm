@@ -93,9 +93,10 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
 			
 			<!--- Not Visible for Wish Lists --->
-			
-			<!--- <hb:HibachiDisplayToggle selector="select[name=orderTemplateTypeID]" showValues="ottSchedule" loadVisable="#!isNull(rc.processObject.getOrderTemplate().getOrderTemplateType()) and (rc.processObject.getOrderTemplate().getOrderTemplateType().getSystemCode() neq 'ottWishList')#">
+			<hb:HibachiDisplayToggle selector="select[name=orderTemplateTypeID]" showValues="ottSchedule" loadVisable="#!isNull(rc.processObject.getOrderTemplate().getOrderTemplateType()) and (rc.processObject.getOrderTemplate().getOrderTemplateType().getSystemCode() neq 'ottWishList')#">
+				
 				<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
+				
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 											property="scheduleOrderNextPlaceDateTime" 
 											edit="#rc.edit#" 
@@ -107,9 +108,10 @@ Notes:
 															autocomplete=""off""">
 	
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
-			</hb:HibachiDisplayToggle> --->
 			
-			<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
+			</hb:HibachiDisplayToggle>
+			
+			<!---
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="scheduleOrderNextPlaceDateTime" 
 										edit="#rc.edit#" 
@@ -126,6 +128,7 @@ Notes:
 										fieldtype="select" 
 										edit="#rc.edit#" 
 										fieldAttributes="ng-if="orderTemplateType.value === "2c948084697d51bd01697d5725650006""">
+			--->
 			<!--- Not Visible for Wish Lists --->
 			
 		</hb:HibachiPropertyList>

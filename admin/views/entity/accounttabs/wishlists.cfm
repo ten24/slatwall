@@ -23,4 +23,13 @@
 			</hb:HibachiListingDisplay>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
+	<hb:HibachiActionCaller 
+		action="admin:entity.preprocessordertemplate" 
+		entity="OrderTemplate" 
+		class="btn btn-default" 
+		icon="plus" 
+		querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" 
+		modal=true 
+	/>
+	
 </cfoutput>
