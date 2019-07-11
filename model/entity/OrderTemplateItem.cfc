@@ -55,8 +55,9 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="total" persistent="false" hb_formatType="currency"; 
 
 	// Order Template (many-to-one)	//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeTotal" persistent="false"; 
-	
+property name="commissionableVolumeTotal" persistent="false"; 
+	property name="personalVolumeTotal" persistent="false"; 
+
 //CUSTOM PROPERTIES END
 
 	public numeric function getTotal(){
@@ -88,7 +89,21 @@ property name="personalVolumeTotal" persistent="false";
 		structDelete(variables, "orderTemplate");
 	}		//CUSTOM FUNCTIONS BEGIN
 
-public numeric function getPersonalVolumeTotal(){
+public numeric function getCommissionVolumeTotal(){
+		if(!structKeyExists(variables, 'commissionVolumeTotal')){
+			variables.commissionVolumeTotal = 0; 
+			
+			if( !isNull(this.getSku()) && 
+				!isNull(this.getSku().getcommissionVolume()) && 
+				!isNull(this.getQuantity())
+			){
+				variables.commissionVolumeTotal += (this.getSku().getCommissionVolume() * this.getQuantity()); 
+			}	
+		}
+		return variables.commissionVolumeTotal; 	
+	}	
+
+	public numeric function getPersonalVolumeTotal(){
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
 			variables.personalVolumeTotal = 0; 
 			
