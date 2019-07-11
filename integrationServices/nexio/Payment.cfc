@@ -382,12 +382,16 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			};	
 
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-			
+		
+	
 			// Response Data
 			if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
 				arguments.responseBean.setProviderTransactionID(responseData.id);
-				arguments.responseBean.setAuthorizationCode(responseData.authCode);
+				if(structKeyExists(responseData, 'authCode')){
+					arguments.responseBean.setAuthorizationCode(responseData.authCode);
+				}
+				
 				arguments.responseBean.setAmountReceived(responseData.amount);
 				arguments.responseBean.setAmountAuthorized(responseData.data.amount);
 				
@@ -395,14 +399,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+				if( structKeyExists(responseData.gatewayResponse, 'result') ){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
+				}
 				if (!isNull(responseData.gatewayResponse.batchRef)){
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
 				}
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+				if( structKeyExists(responseData.gatewayResponse, 'refNumber') ){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
-			}
+			
+			
+			} 
 		} else {
 			responseBean.addError("Processing error", "Error attempting to authorize and charge. Review providerToken.");
 			// throw('Error attempting to authorize and charge. Review providerToken.');

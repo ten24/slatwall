@@ -277,6 +277,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return returnList;
 	}
 
+	public array function getActivePaymentMethodOptions() {
+		var paymentMethodCollection =  this.getPaymentMethodCollectionList();
+		paymentMethodCollection.setDisplayProperties('paymentMethodName|name,paymentMethodID|value')
+		paymentMethodCollection.addFilter('activeFlag', true);
+		return paymentMethodCollection.getRecords();
+	} 
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

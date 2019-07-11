@@ -49,7 +49,7 @@
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.orderTemplate" type="any" />
 
-<cfset orderTemplateTotalProperties = "fulfillmentTotal,personalVolumeTotal,subtotal,total" />
+<cfset orderTemplateTotalProperties = "fulfillmentTotal,commissionableVolumeTotal,personalVolumeTotal,subtotal,total" />
 <cfset defaultCountryCode = 'US' />
 <cfset stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
@@ -96,7 +96,7 @@
 										  data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'
 										  data-base-entity-name="OrderTemplate"
 										  data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
-										  data-base-entity-properties-to-display-list="site_siteName,currencyCode">
+										  data-base-entity-properties-to-display-list="site_siteName,currencyCode,account.accountNumber">
 				</sw-customer-account-card> 
 			</div>
 
