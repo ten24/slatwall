@@ -63724,14 +63724,13 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
             var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
             _this.postData(url, data)
                 .then(function (data) {
-                console.log(data);
                 if (data.preProcessView) {
                     //populate a modal with the template data...
                     var parsedHtml = $.parseHTML(data.preProcessView);
@@ -63740,7 +63739,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     window.renderModal(parsedHtml);
                 }
                 else {
-                    console.log("Reloading the listing display");
                     //notify the orderitem listing that it needs to refresh itself...
                     _this.observerService.notify("refreshOrderItemListing", {});
                     //(window as any).location.reload();
