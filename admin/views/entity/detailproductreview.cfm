@@ -72,7 +72,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
 				<cfif rc.productReview.isNew() neq true >
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewsStatus" edit="#rc.edit#" hb_formFieldType="select" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewsStatus" edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
 				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
