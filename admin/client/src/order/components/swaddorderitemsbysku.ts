@@ -163,7 +163,14 @@ class SWAddOrderItemsBySkuController{
 				(window as any).renderModal(parsedHtml);
 			}else{
 				//notify the orderitem listing that it needs to refresh itself...
+				//get the new persisted values...
 				this.observerService.notify("refreshOrderItemListing", {});
+				
+				//now get the order values because we updated them and pass along to anything listening...
+				this.$hibachi.getEntity("Order", this.order).then((data)=>{
+		    		this.observerService.notify(`refreshOrder${this.order}`, data);
+		        });
+			
 				//(window as any).location.reload();
 			}
 		}) // JSON-string from `response.json()` call
