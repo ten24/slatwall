@@ -1480,9 +1480,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var filterGroupCount = arraylen(selectedFilterGroup);
 			for(var i=filterGroupCount; i >= 1; i--){
 				var filter = selectedFilterGroup[i];
+				
 				var isRemovable = true;
-				if(structKeyExists(arguments,'propertyIdentifier')){
-
+				if(!isNull(filter) && structKeyExists(arguments,'propertyIdentifier') && structKeyExists(filter, "propertyIdentifier")){
 					if(getPropertyIdentifierAlias(filter.propertyIdentifier) != getPropertyIdentifierAlias(arguments.propertyIdentifier)){
 						isRemovable = false;
 					}
@@ -1500,7 +1500,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				}
 
-				if(structKeyExists(arguments,'value')){
+				if(!isNull(filter.value) && structKeyExists(arguments,'value')){
 					if(filter.value != arguments.value){
 						isRemovable = false;
 					}
