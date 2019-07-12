@@ -2396,7 +2396,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}  else {
 				
-				if(!isNull(arguments.processObject.getContainers()) && !arrayLen(arguments.processObject.getContainers())){
+				if(isNull(arguments.processObject.getContainers()) || !arrayLen(arguments.processObject.getContainers())){
 					// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
 					arguments.orderDelivery = addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 				}else{
