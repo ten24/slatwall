@@ -167,5 +167,4 @@ component {
 	public boolean function isNotPaid() {
 		return getPaymentAmountDue() > 0;
 	}
-
 }
