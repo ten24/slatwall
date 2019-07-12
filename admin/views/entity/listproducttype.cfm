@@ -74,20 +74,20 @@ Notes:
 
 	<cfset rc.productTypeCollectionList.addFilter(propertyIdentifier='parentProductType', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.productTypeCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true"
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true
 	})/>
 	<cfset rc.productTypeCollectionList.addDisplayProperty(displayProperty='productTypeName',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true",
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true,
 		tdclass="primary"
 	},prepend=true)/>
 	<cfset rc.productTypeCollectionList.addDisplayProperty(displayProperty='productTypeID',columnConfig={
-		isSearchable="false",
-		isVisible="false",
-		isDeletable="false"
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
 	})/>
 	<cfset rc.productTypeCollectionList.addDisplayAggregate('childProductTypes','COUNT','childProductTypesCount')/>
 	
@@ -96,6 +96,7 @@ Notes:
 		recordEditAction="admin:entity.edit#lcase(rc.productTypeCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.productTypeCollectionList.getCollectionObject())#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 	>
 	</hb:HibachiListingDisplay>
 

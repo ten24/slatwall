@@ -370,6 +370,16 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			e.preventDefault();
 			jQuery('#adminConfirm .modal-body').html( jQuery(this).data('confirm') );
 			jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
+			if(jQuery(this).is('a')){		
+	                jQuery('#adminConfirm .btn-primary').unbind('click');		
+	                jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );		
+            }else if(jQuery(this).attr('type') == 'submit'){		
+                var _that = this;		
+                jQuery('#adminConfirm .btn-primary').click(function() {		
+                    jQuery(this).attr("disabled", true);		
+                    jQuery(_that).closest("form").submit();		
+                });		
+            }
 			jQuery('#adminConfirm').modal();
 		});
 		jQuery('body').on('click', '.btn-disabled', function(e){	

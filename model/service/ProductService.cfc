@@ -463,7 +463,9 @@ component extends="HibachiService" accessors="true" {
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
-
+		for(var sku in arguments.product.getSkus()){
+			getHibachiScope().addModifiedEntity(sku);
+		}
 		return arguments.product;
 	}
 
@@ -1186,8 +1188,8 @@ component extends="HibachiService" accessors="true" {
 		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver',0,'>');
 		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
 		
-		productCollectionList.addFilter('nextDeliveryScheduleDate',arguments.dateTime,'<','OR','','nextDeliveryScheduleDateFilterGroup');
-		productCollectionList.addFilter('nextDeliveryScheduleDate','NULL','IS','OR','','nextDeliveryScheduleDateFilterGroup');
+		productCollectionList.addFilter('nextDeliveryScheduleDate.deliveryScheduleDateValue',arguments.dateTime,'<','OR','','nextDeliveryScheduleDateFilterGroup');
+		productCollectionList.addFilter('nextDeliveryScheduleDate.deliveryScheduleDateValue','NULL','IS','OR','','nextDeliveryScheduleDateFilterGroup');
 		
 		return productCollectionList;
 	}

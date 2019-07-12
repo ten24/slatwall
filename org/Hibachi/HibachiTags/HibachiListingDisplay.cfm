@@ -21,6 +21,10 @@
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
+	<cfparam name="attributes.showToggleDisplayOptions" type="any" default="true"/>
+    <cfparam name="attributes.showFilters" type="boolean" default="true"/>
+    <cfparam name="attributes.showSearchFilterDropDown" type="boolean" default="false"/>
+	<cfparam name="attributes.searchFilterPropertyIdentifier" type="string" default="createdDateTime"/>
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -88,7 +92,7 @@
 	<cfparam name="attributes.exportAction" type="string" default="" />
 	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 	<cfparam name="attributes.personalCollectionIdentifier" type="string" default="" />
-
+	<cfparam name="attributes.personalCollectionKey" type="string" default="" />
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
@@ -118,13 +122,25 @@
 				>
 				</span>
 			</cfif>
+			
+			<cfif !len(attributes.personalCollectionKey)>
+				<cfset personalCollectionKey = hash(serializeJson(attributes.collectionList.getCollectionConfigStruct()))/>
+			</cfif>
+			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
+			    <cfif attributes.showSearchFilterDropDown>
+					data-show-search-filter-drop-down="#attributes.showSearchFilterDropDown#"
+					data-search-filter-property-identifier="#attributes.searchFilterPropertyIdentifier#"
+				</cfif>
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
+				</cfif>
+				<cfif len(attributes.personalCollectionKey)>
+					data-personal-collection-key="#attributes.personalCollectionKey#"
 				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
@@ -139,6 +155,8 @@
 				data-angular-links="false"
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
 				data-show-export="#attributes.showExport#"
+				data-show-toggle-display-options="#attributes.showToggleDisplayOptions#"
+				data-show-filters="#attributes.showFilters#"
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
