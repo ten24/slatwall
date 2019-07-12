@@ -1225,7 +1225,11 @@ component extends="HibachiService" accessors="true" {
 		if(!arguments.productReview.hasErrors()){
 			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
 		}
-		
+		// setting up default status as Unapproved
+		if(isNull(arguments.productReview.getProductReviewsStatus()))
+		{
+			arguments.productReview.setProductReviewsStatus(getService('typeService').getTypeByTypeID('f0558da55e9f48f7bbd0eb4c95d6b378'));
+		}
 		return arguments.productReview;
 		
 	}
