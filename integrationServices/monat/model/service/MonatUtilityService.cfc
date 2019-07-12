@@ -13,12 +13,12 @@ component extends="Slatwall.model.service.HibachiService" {
             'mura-uk'='Europe',
             'mura-ca'='North America',
             'mura-default'='North America'
-        }
+        };
         var languageMap = {
             'en'='English',
             'fr'='French',
             'es'='Spanish'
-        }
+        };
         var sites = getService('siteService').getSiteSmartList().getRecords();
         for(var site in sites){
             var siteCode = site.getSiteCode();
