@@ -45,7 +45,7 @@
 
 Notes:
 
-*/
+*
 component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" description="All top level information about a product and serves as the grouping for skus where price and inventory is managed" {
 
 	// Persistent Properties
@@ -445,6 +445,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				thisImage.name = getTitle();
 				thisImage.description = getProductDescription();
 				thisImage.resizedImagePaths = [];
+				thisImage.modifiedDateTime = getModifiedDateTime();
+
 				var resizeSizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizeSizesCount; s++) {
 
@@ -493,6 +495,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
+				thisImage.modifiedDateTime = getModifiedDateTime();
 		
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
