@@ -493,6 +493,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
+				thisImage.modifiedDateTime = getModifiedDateTime();
 		
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
