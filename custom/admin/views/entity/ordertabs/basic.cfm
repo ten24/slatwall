@@ -6,6 +6,9 @@
 
 <cfoutput>
 	<cfset local.jsonRepresentation = rc.order.getJsonRepresentation()>
+	<cfset local.OrderJSON = rereplace(local.jsonRepresentation,"'","\'",'all')/>
+	<cfset OrderJSON = rereplace(OrderJSON, '"',"'",'all') />
+	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divclass="col-md-6">
 
@@ -68,32 +71,26 @@
 			<hb:HibachiPropertyTable>
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.overview')#" />
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="orderStatusType" edit="false" displayType="table">
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
 				<cfif !isNull(rc.order.getOrderOpenDateTime())>
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOpenDateTime" edit="false" displayType="table">
 				</cfif>
 				<cfif !isNull(rc.order.getOrderCloseDateTime())>
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
 				</cfif>
+				<hb:HibachiPropertyTableBreak header="Totals" />
 			</hb:HibachiPropertyTable>
 		
-		
-			
 			<div class="table-responsive" style="border: 1px dotted ##e6e6e6; border-top: none">
-				<cfset OrderJSON = rereplace(local.jsonRepresentation,"'","\'",'all')/>
-				<cfset OrderJSON = rereplace(OrderJSON, '"',"'",'all') />
-				
-				<sw-simple-property-display object="#OrderJSON#" property="currencyCode" title="Currency Code" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedPersonalVolumeSubtotal" currency-flag="true" title="Personal Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeSubtotal" currency-flag="true" title="Commissionable Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedSubTotal" title="Subtotal" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" currency-flag="true" title="Fulfillment Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" currency-flag="true" title="Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedTotal" currency-flag="true" title="Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedTotal" default="#rc.order.getTotal()#" currency-flag="true" title="Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 			</div>
-					
-		
-				
+			
 			<hb:HibachiPropertyTable>	
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.status')#" />
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="estimatedFulfillmentDateTime" edit="#rc.edit#" displayType="table"  />
@@ -108,13 +105,16 @@
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="referencingPaymentAmountCreditedTotal" edit="false" displayType="table">
 				</cfif>
 				
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountDue" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
-
+				<!---<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountDue" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">--->
 				<cfif rc.order.hasGiftCardOrderPaymentAmount()>
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountDueAfterGiftCards" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 				</cfif>
 			</hb:HibachiPropertyTable>
-
+			
+			<div class="table-responsive">
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedPaymentAmountDue" default="#rc.order.getPaymentAmountDue()#" currency-flag="true" title="Payment Amount Due" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+			</div>
+			
 		</hb:HibachiPropertyList>
 
 	</hb:HibachiPropertyRow>
