@@ -284,6 +284,7 @@ class HibachiService{
 			} else {
 				var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
 			}
+			params.enableAveragesAndSums = options.enableAveragesAndSums || false;
 		}
 
 		if(angular.isDefined(options.id)) {
@@ -378,6 +379,56 @@ class HibachiService{
 
 		return request.promise;
 	};
+	
+	convertAliasToPropertyIdentifier=(entityName:string,entityAlias:string,propertyIdentifierWithAlias:string):string=>{
+		//handle legacy alias that is in Account.firstName format instead of _account.firstName
+		var slicedvalue = propertyIdentifierWithAlias.slice(0,entityAlias.length);
+		if(slicedvalue == entityAlias){
+			propertyIdentifierWithAlias = propertyIdentifierWithAlias.slice(entityAlias.length);
+			propertyIdentifierWithAlias = propertyIdentifierWithAlias.split('_').join('.');
+			if(propertyIdentifierWithAlias.charAt(0)==='.'){
+				propertyIdentifierWithAlias=propertyIdentifierWithAlias.slice(1);
+			}
+		}
+		return propertyIdentifierWithAlias;
+ 	}
+
+	hasToManyByEntityNameAndPropertyIdentifier = ( entityName:string,entityAlias:string, propertyIdentifier:string ):boolean=> {
+		if(!propertyIdentifier){
+			return false;
+		}
+		if(entityAlias){
+			if(propertyIdentifier){
+				propertyIdentifier = this.convertAliasToPropertyIdentifier(entityName,entityAlias,propertyIdentifier);
+			}
+		}
+		var propertyIdentifierArray = propertyIdentifier.split('.');
+		if(propertyIdentifierArray.length >= 1){
+			var propertiesStruct = this.getEntityMetaData(entityName);
+			var currentProperty = propertyIdentifierArray.shift(); 
+
+			if(propertiesStruct[currentProperty].fieldtype
+				&& (
+					propertiesStruct[currentProperty].fieldtype == 'one-to-many'
+					|| propertiesStruct[currentProperty].fieldtype == 'many-to-many'
+				)
+			){
+				return true;	
+			}
+			if(
+				!propertiesStruct[currentProperty]
+			){
+				throw("The Property Identifier "+propertyIdentifier+" is invalid for the entity "+entityName);
+			}
+			if(propertiesStruct[currentProperty].cfc){
+				var currentEntityName = propertiesStruct[currentProperty].cfc;
+				var currentPropertyIdentifier = propertyIdentifierArray.join('.');
+				return this.hasToManyByEntityNameAndPropertyIdentifier(currentEntityName,undefined,currentPropertyIdentifier);
+			}
+		}
+		return false;
+
+	}
 
 	public getPropertyTitle=(propertyName,metaData)=>{
 		var propertyMetaData = metaData[propertyName];
@@ -410,6 +461,27 @@ class HibachiService{
 
 		}
 		return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+	}
+	
+	//this cannot live in rbkeyService because it creates a circular dependency
+	getRBKeyFromPropertyIdentifier = (baseEntityName, propertyIdentifier) =>{
+		//strip alias if it exists and convert everything to be periods
+		if(propertyIdentifier.charAt(0) === '_'){
+			propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.'); 
+		}
+		
+		//if we're dealing with collection response property identfier sku_skuCode
+		if(propertyIdentifier.split('_').length > 0){
+			propertyIdentifier = propertyIdentifier.replace('_','.');
+		}
+		
+		var lastEntityName = this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier)
+	
+		var propertyIdentfierParts = propertyIdentifier.split('.');
+		
+		var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length-1];
+		
+		return 'entity.' + lastEntityName + '.' + lastProperty;
 	}
 
 	saveEntity= (entityName,id,params,context) => {

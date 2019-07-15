@@ -56,12 +56,12 @@ Notes:
 
 <cfoutput>
 
-	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.processObject.getCurrencyCode())#">
 
 		<hb:HibachiEntityActionBar type="preprocess" backAction="admin:entity.editorder" backQueryString="orderID=#rc.order.getOrderID()#" object="#rc.order#">
 		</hb:HibachiEntityActionBar>
 			<span <cfif rc.processObject.getSku().isGiftCardSku()>ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl" id="ngController"</cfif>>
-				<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
+				<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.processObject.getCurrencyCode())>
 					<hb:HibachiPropertyRow>
 						<hb:HibachiPropertyList>
 							<!--- Add the SkuID & orderItemTypeSystemCode --->
@@ -199,7 +199,7 @@ Notes:
 									<h5>#attributeSet.getAttributeSetName()#</h5>
 									<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
 								</cfif>
-							</cfloop>
+							</cfloop> 
 
 							<!--- Order Fulfillment --->
 							<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
@@ -297,7 +297,7 @@ Notes:
 												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
 											</span>
 										</cfloop>
-										<span ng-if="shippingAccountAddressID == ''">
+										
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">

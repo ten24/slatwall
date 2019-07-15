@@ -63,7 +63,7 @@ Notes:
 		<cfset var whiteListedDomains = getHibachiScope().setting('globalWhiteListedEmailDomains') />
 		<cfset var emailTestDomain = getHibachiScope().setting('globalTestingEmailDomain') />
 		<cfloop list="#arguments.emailAddresses#" index="local.emailAddress">
-			<cfif listFindNoCase(listLast(local.emailAddress, '@'), whiteListedDomains)>
+			<cfif listFindNoCase(whiteListedDomains, listLast(local.emailAddress, '@'))>
 				<cfset finalEmailAddresses = listAppend(finalEmailAddresses, local.emailAddress) />
 			<cfelseif len(emailTestDomain)>
 				<cfset local.emailAddress = listFirst(local.emailAddress, '@') & '@' & emailTestDomain />
@@ -90,7 +90,7 @@ Notes:
 		<cfset cfmailAttributes["charset"] = "utf-8" />
 		<cfset cfmailAttributes["spoolEnable"] = arguments.async />
 
-		<cfif structKeyExists(arguments, 'emailTemplate') && !isNull(arguments.emailTemplate) && len(arguments.emailTemplate.setting('emailSMTPServer'))>
+		<cfif structKeyExists(arguments, 'emailTemplate') AND !isNull(arguments.emailTemplate) AND len(arguments.emailTemplate.setting('emailSMTPServer'))>
 			<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
 			<cfset cfmailAttributes["port"] = arguments.emailTemplate.setting('emailSMTPPort') />
 			<cfset cfmailAttributes["useSSL"] = arguments.emailTemplate.setting('emailSMTPUseSSL') />
@@ -103,7 +103,7 @@ Notes:
 		<cfset var success = true />
 		<cftry>
 			<!--- Send Multipart E-mail --->
-			<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
+			<cfif len(arguments.email.getEmailBodyHTML()) AND len(arguments.email.getEmailBodyText()) AND len(cfmailAttributes["to"])>
 				<cfmail attributeCollection="#cfmailAttributes#">
 					<cfif !isNull(arguments.email.getRelatedObject())>
 						<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
@@ -123,7 +123,7 @@ Notes:
 					</cfmailpart>
 				</cfmail>
 			<!--- Send HTML Only E-mail --->
-			<cfelseif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailTo())>
+			<cfelseif len(arguments.email.getEmailBodyHTML()) AND len(cfmailAttributes["to"])>
 
 				<cfset cfmailAttributes["type"] = "text/html" />
 
@@ -141,7 +141,7 @@ Notes:
 					<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
 				</cfmail>
 			<!--- Send Text Only E-mail --->
-			<cfelseif len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
+			<cfelseif len(arguments.email.getEmailBodyText()) AND len(cfmailAttributes["to"])>
 
 				<cfset cfmailAttributes["type"] = "text/plain" />
 
@@ -238,7 +238,9 @@ Notes:
 
 	public void function generateAndSendFromEntityAndEmailTemplateID( required any entity, required any emailTemplateID ) {
 		var emailTemplate = getTemplateService().getEmailTemplate( arguments.emailTemplateID);
-		this.generateAndSendFromEntityAndEmailTemplate(arguments.entity, emailTemplate);
+		if (!isNull(emailTemplate)){
+			this.generateAndSendFromEntityAndEmailTemplate(arguments.entity, emailTemplate);
+		}
 	}
 
 	</cfscript>

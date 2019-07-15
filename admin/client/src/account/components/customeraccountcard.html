@@ -31,7 +31,12 @@
 					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.account.primaryPhoneNumber_phoneNumber"></div>
 				</div>
 			</li>
-	
+			<li ng-repeat="property in swCustomerAccountCard.baseEntityPropertiesToDisplay track by $index">
+				<div class="row s-line-item">
+					<div class="col-xs-6 s-title" sw-rbkey="swCustomerAccountCard.baseEntityRbKeys[property]"></div>
+					<div class="col-xs-6 s-value" ng-bind="swCustomerAccountCard.baseEntity[property]"></div>
+				</div>
+			</li>
 		</ul>
 	</content>
 </div>

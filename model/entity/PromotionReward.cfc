@@ -117,16 +117,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
     
-	
-	//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    
-   //CUSTOM PROPERTIES END
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -174,7 +164,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		return variables.currencyCode;
 	}
 	
-	public numeric function getAmount(any sku, string currencyCode, numeric quantity){
+	public numeric function getAmount(any sku, string currencyCode, numeric quantity, any account){
 		
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
@@ -182,7 +172,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 				arguments.currencyCode = getCurrencyCode();
 			}
 			var skuPrice = getSkuPriceBySkuAndCurrencyCode(argumentCollection=arguments);
-			
+
 			if(!isNull(skuPrice)){
 				return skuPrice.getPrice();
 			}
@@ -194,7 +184,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		return variables.amount;
 	}
 
-	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity){
+	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity, any account){
 		var daoArguments = {
 			skuID:arguments.sku.getSkuID(),
 			promotionRewardID:this.getPromotionRewardID(),
@@ -203,17 +193,23 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		if(!isNull(arguments.quantity)){
 			daoArguments.quantity = arguments.quantity;
 		}
+		if(!isNull(arguments.account)){
+			daoArguments.account = arguments.account;
+		}
 
 		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(argumentCollection=daoArguments);
 	}
 
-	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku, numeric quantity){
+	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku, numeric quantity, any account){
 		var amountParams = {};
 		if(structKeyExists(arguments,'quantity')){
 			amountParams['quantity'] = arguments.quantity;
 		}
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
+		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
 		}
 		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
 			//Check for explicity defined promotion reward currencies
@@ -258,7 +254,6 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
 				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
 				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
-				variables.excludedSkusCollection.addFilter(propertyIdentifier='skuID',value='null',hidden=false);
 			}
 		}
 		return variables.excludedSkusCollection;
@@ -394,6 +389,20 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 
 	public boolean function isDeletable() {
 		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
+	}
+	
+	public void function setIncludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.includedSkusCollectionConfig = arguments.collectionConfig;	
+		}
+	}
+	
+	public void function setExcludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.excludedSkusCollectionConfig = arguments.collectionConfig;	
+		}
 	}
 	
 	// ==================  END:  Overridden Methods ========================

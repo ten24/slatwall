@@ -49,27 +49,26 @@ Notes:
 component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem" table="SwOrderTemplateItem" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="" {
 
 	property name="orderTemplateItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-
 	property name="quantity" ormtype="integer";
-
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
-
-	property name="total" persistent="false"; 
+	property name="total" persistent="false" hb_formatType="currency"; 
 
 	// Order Template (many-to-one)	//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeTotal" persistent="false"; 
-	
+property name="commissionableVolumeTotal" persistent="false"; 
+	property name="personalVolumeTotal" persistent="false"; 
+
 //CUSTOM PROPERTIES END
 
 	public numeric function getTotal(){
 		if(!structKeyExists(variables, 'total')){
 			variables.total = 0; 
-
+			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
-				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode(), getQuantity());
+				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode())*getQuantity();
 			} 	
 		}
+		
 		return variables.total;
 	} 
 
@@ -90,7 +89,21 @@ property name="personalVolumeTotal" persistent="false";
 		structDelete(variables, "orderTemplate");
 	}		//CUSTOM FUNCTIONS BEGIN
 
-public numeric function getPersonalVolumeTotal(){
+public numeric function getCommissionVolumeTotal(){
+		if(!structKeyExists(variables, 'commissionVolumeTotal')){
+			variables.commissionVolumeTotal = 0; 
+			
+			if( !isNull(this.getSku()) && 
+				!isNull(this.getSku().getcommissionVolume()) && 
+				!isNull(this.getQuantity())
+			){
+				variables.commissionVolumeTotal += (this.getSku().getCommissionVolume() * this.getQuantity()); 
+			}	
+		}
+		return variables.commissionVolumeTotal; 	
+	}	
+
+	public numeric function getPersonalVolumeTotal(){
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
 			variables.personalVolumeTotal = 0; 
 			
@@ -98,7 +111,7 @@ public numeric function getPersonalVolumeTotal(){
 				!isNull(this.getSku().getPersonalVolume()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() & this.getQuantity()); 
+				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() * this.getQuantity()); 
 			}	
 		}
 		return variables.personalVolumeTotal; 	

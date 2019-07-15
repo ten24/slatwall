@@ -3,6 +3,7 @@
 
 class SWActionCallerController{
     public type:string;
+    public displayConfirm:boolean;
     public confirm:any;
     public display:boolean;
     public modal:boolean;
@@ -21,6 +22,7 @@ class SWActionCallerController{
     public hibachiPathBuilder:any;
     
     public eventListeners:any;
+    public eventListenerId:string;
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
@@ -56,7 +58,6 @@ class SWActionCallerController{
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
-
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
             this.$element.parent().prepend(template);
@@ -97,6 +98,10 @@ class SWActionCallerController{
             this.display = true;
         }
         
+        if(angular.isUndefined(this.displayConfirm)){
+            this.displayConfirm = false;
+        }
+        
         this.type = this.type || 'link';
         
         if(angular.isDefined(this.titleRbKey)){
@@ -123,7 +128,20 @@ class SWActionCallerController{
 
         if(this.eventListeners){
             for(var key in this.eventListeners){
-                this.observerService.attach(this.eventListeners[key], key)
+                let callback = this.eventListeners[key];
+                // if you want to use an internal method passed into this directive as a string
+                if(typeof callback !== "function"){ 
+                    callback = this[this.eventListeners[key]];
+                }
+                // in case you want to attach by id
+                if(this.eventListenerId){
+                    this.observerService.attach(callback, key, this.eventListenerId);
+                    this.$scope.$on('$destroy',()=>{
+                        this.observerService.detachById(this.eventListenerId);
+                    });
+                    continue;
+                }
+                this.observerService.attach(callback, key);
             }
         }
 
@@ -246,6 +264,18 @@ class SWActionCallerController{
             return false;
         }
     }
+    
+    public setDisabled = (disableFlag:boolean) =>{
+        this.disabled = disableFlag;
+    }
+    
+    public setDisplayTrue = () =>{
+        this.display = true;
+    }
+    
+    public setDisplayFalse = () =>{
+        this.display = false;
+    }
 
     public getDisabledText = ():string =>{
         if(this.getDisabled()){
@@ -292,7 +322,8 @@ class SWActionCaller implements ng.IDirective{
     public scope:any={};
     public bindToController:any={
         action:"@?",
-        display:"=?",
+        display:"<?",
+        displayConfirm:"=?",
         event:"@?",
         payload: "=",
         text:"@",
@@ -312,7 +343,8 @@ class SWActionCaller implements ng.IDirective{
         modalFullWidth:"=",
         id:"@",
         isAngularRoute:"=?",
-        eventListeners:'=?'
+        eventListeners:'=?',
+        eventListenerId:'@?'
     };
     public require={formController:"^?swForm",form:"^?form"};
     public controller=SWActionCallerController;

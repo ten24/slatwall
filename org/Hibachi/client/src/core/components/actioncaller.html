@@ -1,3 +1,6 @@
+<!--
+<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
+-->
 <!-- Link Not Modal -->
 <a  ng-if="swActionCaller.display && !swActionCaller.modal && swActionCaller.type === 'link' && swActionCaller.actionAuthenticated"
 	ng-attr-title="{{swActionCaller.title}}" 
@@ -38,10 +41,28 @@
 	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>
 
-<a ng-if="swActionCaller.display && swActionCaller.type === 'event'"
-	ng-attr-title="{{swActionCaller.title}}" 
+<!--
+		<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
+		<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif>
+		-->
+<a ng-if="swActionCaller.display && !swActionCaller.displayConfirm && swActionCaller.type === 'event'"
+	ng-attr-title="{{swActionCaller.title}}"
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-click="swActionCaller.emit()"
+	>
+	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
+</a>
+
+<a ng-if="swActionCaller.display && swActionCaller.displayConfirm && swActionCaller.type === 'event'"
+	ng-attr-title="{{swActionCaller.title}}"
+	ng-attr-class="{{swActionCaller.class}}" 
+	sw-confirm
+	data-use-rb-key=true
+	data-yes-text="define.yes"
+	data-no-text="define.no"
+	data-confirm-text="define.confirm"
+	data-message-text="define.delete.message"
+	data-callback="swActionCaller.emit()"
 	>
 	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i> {{swActionCaller.text}}
 </a>

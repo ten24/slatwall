@@ -54,6 +54,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="amount";
 	property name="transactionType" hb_formFieldType="select";
+
+	property name="setOrderPaymentInvalidOnFailedTransactionFlag" default="true"; 
 	
 	// Option Properties
 	property name="transactionTypeOptions";

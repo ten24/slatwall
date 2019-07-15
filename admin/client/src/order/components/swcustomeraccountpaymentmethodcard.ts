@@ -34,6 +34,7 @@ class SWCustomerAccountPaymentMethodCardController{
 	
 	constructor(public $hibachi,
 				public observerService,
+				public orderTemplateService, 
 				public rbkeyService
 	){
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
@@ -45,11 +46,11 @@ class SWCustomerAccountPaymentMethodCardController{
 		
 		if(this.propertiesToDisplayList == null){
 			this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+		} else {
+			this.orderTemplateService.setOrderTemplatePropertyIdentifierList(this.propertiesToDisplayList);
 		}
 		
 		this.propertiesToDisplay = this.propertiesToDisplayList.split(',');
-		
-		console.log('props to display', this.propertiesToDisplay);
 		
 		if(this.billingAccountAddress != null && this.accountPaymentMethod != null){
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title; 
@@ -90,8 +91,6 @@ class SWCustomerAccountPaymentMethodCardController{
 				this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
 			}
 		}
-		
-		console.log('props to display after billing update', this.propertiesToDisplay);
 	}
 }
 

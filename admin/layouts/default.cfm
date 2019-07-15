@@ -146,6 +146,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listordertemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
 									<li class="divider"></li>
@@ -242,8 +243,10 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
-									<hb:HibachiActionCaller action="admin:report.deferredRevenueReport" type="list">
-									<hb:HibachiActionCaller action="admin:report.earnedRevenueReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
+									<!---deprecated--->
+									<!---<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
+									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">--->
 									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report" type="list">
