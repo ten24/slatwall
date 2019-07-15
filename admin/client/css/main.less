@@ -1800,7 +1800,7 @@ a[data-toggle="collapse"] {text-decoration: none;}
 .s-search .s-search-options button {.border-radius(0);width:100%;vertical-align:top;text-align:left;padding: 8px 20px;line-height: 1.42857143;border:0px;}
 .s-add-bundle-type .collapse form .form-group button {width:100%;}
 
-.s-table-inner-nav .s-search .form-control:focus {border: 1px solid @black-20;border-left: 0px;}
+.s-table-inner-nav .s-search .form-control:focus {border: 1px solid @black-20;}
 .s-add-content > button {.border-radius(0);width:100%;vertical-align:top;text-align:left;padding: 8px 20px;line-height: 1.42857143;border:0px;border-right: 1px solid @black-10;border-left: 1px solid @black-10;}
 
 .s-batch-options {background-color: @white;-moz-box-shadow: inset 0 0 2px @black-10;-webkit-box-shadow: inset 0 0 2px @black-10;box-shadow: inset 0 0 2px @black-10;}
@@ -4237,6 +4237,65 @@ table.s-detail-content-table tbody tr.s-done {
 .tooltip-inner { white-space:nowrap; max-width:none; }
 .tooltip.bottom .tooltip-arrow { left: 1rem !important; }
 .tooltip.right{ position: absolute; display: inline-block;}
+
+
+	#navTabs-Container { padding:2em 1em; }
+	
+	#navTabs-Container .nav-tabs{
+	  padding-left:0;
+	  border-bottom:0;
+	}
+	
+	#navTabs-Container ul .tab-selector{
+	  background-color:#b7b7b7;
+	  margin:0 1px;
+	  color:#ffffff;
+	  font-size: 14px;
+	  padding: 0 1em;
+	  border-top:4px solid #b7b7b7;
+	}
+	
+	#navTabs-Container .tab-selector.active{
+	  background-color:#ffffff;
+	  color:#000000;
+	  border-color:#f38631;
+	}
+	
+	.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+	  border:0;
+	}
+	
+	#navTabs-Container ul li a{
+	  border-radius: 0;
+	  color:inherit;
+	}
+	
+	#navTabs-Container .tab-content{
+	  background-color:#ffffff;
+	}
+	
+	#navTabs-Container .tab-content ul li {
+	  color:#666666;
+	  line-height: 2em;
+	  font-weight:600;
+	}
+	
+	#navTabs-Container .tab-content ul li span{
+	  color:#a2a2a2;
+	  font-weight:400;
+	}
+
+	.Mcard-wrapper { padding:1em; }
+	.Mcard { background-color:#ffffff; }
+	.Mcard-body { display: flex; align-items: flex-end; justify-content: space-between; padding: .75em 1em;}
+	
+	.Mcard-body h1 {
+	    color: #666666;
+	    display: inline;
+	    vertical-align: sub;
+	    font-weight: 500;
+	    line-height: 0;
+	}
 
 
 

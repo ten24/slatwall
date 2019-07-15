@@ -88,9 +88,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			authDetails.publicAccessFlag = true;
 			return authDetails;
 		}
-		
 		// All these potentials require the account to be logged in, and that it matches the hibachiScope
-		if(getHibachiScope().getLoggedInFlag() && arguments.account.getAccountID() == getHibachiScope().getAccount().getAccountID()) {
+		if(getHibachiScope().getStateless() || (getHibachiScope().getLoggedInFlag() && arguments.account.getAccountID() == getHibachiScope().getAccount().getAccountID())) {
 			
 			// Check if the action is anyLogin, if so and the user is logged in, then we can return true
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyLoginMethods, itemName) && getHibachiScope().getLoggedInFlag()) {

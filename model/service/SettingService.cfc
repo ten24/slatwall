@@ -846,10 +846,15 @@ component extends="HibachiService" output="false" accessors="true" {
 				arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
 			}
 		}
-
+		var globalSettingPrefix = 'global';
 		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
-		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+		if(
+			structKeyExists(arguments, "object") 
+			&& arguments.object.isPersistent() 
+			&& !arguments.object.getNewFlag()
+			&& left(arguments.settingName,len(globalSettingPrefix)) != globalSettingPrefix
+		) {
 			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
 		}
 		if(structKeyExists(arguments, "filterEntities")) {
