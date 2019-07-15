@@ -353,7 +353,10 @@ component extends="framework.one" {
 		}
 		
 		// Verify that the session is setup
-		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		if(isAPIGetRequest()){
+			getHibachiScope().setStateless(true);
+		}
+		getHibachiScope().getService("hibachiSessionService").setProperSession(getHibachiScope().getStateless());
 		
 		// CSRF / Duplicate Request Handling
 		if(structKeyExists(request, "context")){
@@ -389,7 +392,6 @@ component extends="framework.one" {
 
 		//check if we have the authorization header
 		if(len(AuthToken)){
-
 			var authorizationHeader = AuthToken;
 			var prefix = 'Bearer ';
 			//get token by stripping prefix
@@ -397,16 +399,14 @@ component extends="framework.one" {
 			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
 			
 			if(jwt.verify()){
-
 				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
 				if(!isNull(jwtAccount)){
 					jwtAccount.setJwtToken(jwt);
 					getHibachiScope().getSession().setAccount( jwtAccount );
 				}
 			}
-
 		}
-
+		
 		// Call the onEveryRequest() Method for the parent Application.cfc
 		onEveryRequest();
 		if(structKeyExists(request,'context')){
@@ -499,14 +499,15 @@ component extends="framework.one" {
 			authenticationArguments.processContext = lCase(request.context.processContext);
 		}
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(argumentCollection = authenticationArguments);
-		
 		// Get the hibachiConfig out of the application scope in case any changes were made to it
 		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
 
 		if(
 			!authorizationDetails.authorizedFlag
+			&& !getHibachiScope().getStateless()
 		) {
+			
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 
@@ -981,7 +982,6 @@ component extends="framework.one" {
 		//leaving a note here in case we ever wish to support XML for api responses
 		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/json'){
 			responseString = serializeJSON(request.context.apiResponse.content);
-
 			// If running CF9 we need to fix strings that were improperly cast to numbers
 			if(left(server.coldFusion.productVersion, 1) eq 9) {
 				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
@@ -992,6 +992,14 @@ component extends="framework.one" {
 		}
 		writeOutput( responseString );
 		abort;
+	}
+	
+	public boolean function isAPIRequest(){
+		return getSubSystem()=='api';
+	}
+	
+	public boolean function isAPIGetRequest(){
+		return isApiRequest() && getSection() == 'main' && getItem() == 'get';
 	}
 
 	public void function setupResponse(rc) {
@@ -1004,7 +1012,9 @@ component extends="framework.one" {
 			getHibachiScope().setPersistSessionFlag(false);
 		}
 		
-		endHibachiLifecycle();
+		if(!isAPIGetRequest()){
+			endHibachiLifecycle();
+		}
 		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
@@ -1013,7 +1023,7 @@ component extends="framework.one" {
 		}
 
 		// Check for an API Response
-		if(arguments.rc.apiRequest) {
+		if(isAPIRequest()) {
 			renderApiResponse();
 		}
 

@@ -1061,6 +1061,11 @@ component extends="HibachiService" accessors="true" {
  				if(getHibachiUtilityService().isS3Path(fullFilePath)){
  					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
  				}
+				
+				arguments.product.setModifiedDateTime(now());
+ 				arguments.product.setModifiedByAccount(getHibachiScope().getAccount());
+ 				arguments.product = saveProduct(arguments.product);
+
  			}
 
 		} catch(any e) {
