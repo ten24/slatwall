@@ -90391,6 +90391,14 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
             // get the value from the object
             _this.object = JSON.parse(_this.object);
             _this.value = _this.object[_this.property];
+            //sets a default if there is no value and we have one...
+            if (!_this.value && _this.default) {
+                _this.value = _this.default;
+            }
+            //sets a default width for the value 
+            if (!_this.displayWidth) {
+                _this.displayWidth = "110";
+            }
             //attach the refresh listener.
             if (_this.refreshEvent) {
                 _this.observerService.attach(_this.refresh, _this.refreshEvent);
@@ -90425,7 +90433,9 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             object: "@?",
             displayType: "@?",
             currencyFlag: "@?",
-            refreshEvent: "@?"
+            refreshEvent: "@?",
+            displayWidth: "@?",
+            default: "@?"
         };
         this.controller = SWSimplePropertyDisplayController;
         this.controllerAs = "swSimplePropertyDisplay";
