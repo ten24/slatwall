@@ -10,6 +10,7 @@ class SWSimplePropertyDisplayController {
     public displayType:string;
     public currencyFlag:string;
     public refreshEvent:string;
+    public default:string;
     public formattedFlag:boolean=false;
     
     //@ngInject
@@ -27,7 +28,10 @@ class SWSimplePropertyDisplayController {
 	    // get the value from the object
 	    this.object = JSON.parse( this.object );
 	    this.value = this.object[this.property];
-	    
+	    //sets a default if there is no value and we have one...
+	    if (!this.value && this.default){
+	        this.value = this.default;
+	    }
 	    //attach the refresh listener.
         if (this.refreshEvent){
 	        this.observerService.attach(this.refresh, this.refreshEvent);
@@ -60,7 +64,8 @@ class SWSimplePropertyDisplay implements ng.IDirective{
         object:"@?",
         displayType:"@?",
         currencyFlag:"@?",
-        refreshEvent: "@?"
+        refreshEvent: "@?",
+        default: "@?"
         
     };
     
