@@ -1141,7 +1141,7 @@ property name="enrollmentDate" ormtype="timestamp";
 		//CUSTOM FUNCTIONS BEGIN
 
 public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
-		if(structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
+		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
 			var orderCollection = getService('OrderService').getOrderCollectionList(); 
 			orderCollection.addFilter('account.accountID', getAccountID());
 			orderCollection.addFilter('orderTemplate.orderTemplateID','NULL','is not');
