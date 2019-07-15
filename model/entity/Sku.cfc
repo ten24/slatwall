@@ -618,7 +618,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
 		}
-		
+
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 			if(!structKeyExists(variables,cacheKey)){
@@ -630,7 +630,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 					}
 					ArraySort(prices, "numeric","asc");
 					variables[cacheKey]= prices[1];
-				} 
+				}
 				
 				if(structKeyExists(variables,cacheKey)){
 					return variables[cacheKey];
