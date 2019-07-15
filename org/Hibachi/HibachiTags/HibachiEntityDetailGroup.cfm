@@ -202,18 +202,11 @@
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
 												</cfif>
 												<cfif attributes.object.hasProperty('modifiedByAccount')>
-													<cfif !isNull(attributes.object.getModifiedByAccount()) 
-													AND attributes.object.hasProperty('calculatedFullName')
-													AND (attributes.object.getCalculatedFullName() NEQ attributes.object.getModifiedByAccount().getFullName())>
-														<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.modifiedByAccount')#" object="#attributes.object.getModifiedByAccount()#" property="fullNameWithPermissionGroups" />
-													<cfelse>
-														<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" object="#attributes.object#" property="modifiedByAccount" />
-												 	</cfif>
+													<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.modifiedByAccount')#" object="#attributes.object.getModifiedByAccount()#" property="fullNameWithPermissionGroups" />
 												</cfif>
 											</hb:HibachiPropertyList>
 
 											<hb:HibachiTimeline object="#attributes.object#" />
-
 									</div>
 								</cfoutput>
 							</content><!--- s-body-box --->
