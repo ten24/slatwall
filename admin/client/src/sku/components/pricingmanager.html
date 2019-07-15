@@ -149,7 +149,13 @@
                             data-actions="[{
                                 'event' : 'SAVE_SKUPRICE',
                                 'icon' : 'floppy-disk',
-                                'iconOnly' : true
+                                'iconOnly' : true,
+                                'display' : false,
+                                'eventListeners' : {
+                                    'cellModified' : 'setDisplayTrue',
+                                    'rowSaved' : 'setDisplayFalse'
+                                },
+                                'useEventListenerId' : true
                             }]"
                             data-record-edit-event="EDIT_SKUPRICE"
                             data-record-delete-event="DELETE_SKUPRICE"
