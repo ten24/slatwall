@@ -25,7 +25,8 @@ class SWListingDisplayCellController{
         public hibachiPathBuilder,
         public listingService, 
         public utilityService,
-        public $scope
+        public $scope,
+        public observerService
     ){
         
         if(!this.pageRecordKey && this.column){
@@ -140,6 +141,13 @@ class SWListingDisplayCellController{
             keyEvent.preventDefault();
             keyEvent.stopPropagation();
         }
+        
+        this.cellModified();
+    }
+    
+    // announce cell has been modified
+    public cellModified = () =>{
+        this.observerService.notifyById("cellModified", this.pageRecord.$$hashKey, this.pageRecord);
     }
 }
 

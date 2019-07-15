@@ -345,7 +345,8 @@
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="addAction"></div>
                                 </span>
-
+                                
+                                <!-- Custom -->
                                 <sw-action-caller
                                         ng-repeat="action in swListingDisplay.actions"
                                         data-action="{{action.action}}"
@@ -357,6 +358,9 @@
                                         data-iconOnly="{{action.iconOnly}}"
                                         data-confirm="action.confirm"
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
+                                        data-event-listener-id="{{(action.useEventListenerId)? pageRecord.$$hashKey : ''}}"
+                                        data-event-listeners="action.eventListeners"
+                                        data-display="action.display"
                                 >
                                 </sw-action-caller>
                             </td>

@@ -116,6 +116,7 @@ class SWSkuPriceModalController{
 		return adminRequest.promise.then(
 		    (response)=>{
 		        this.listingService.notifyListingPageRecordsUpdate(this.listingID);
+		        this.observerService.notifyById("rowSaved", this.pageRecord.$$hashKey, this.pageRecord);
 		    });
     }
 

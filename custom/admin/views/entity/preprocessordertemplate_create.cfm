@@ -84,13 +84,30 @@ Notes:
 
 			<hr> 
 
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="ng-model='orderTemplateTypeID'">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" edit="#rc.edit#">
 
 			<hr>
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
+			
+			<!--- Not Visible for Wish Lists --->
+			
+			<!--- <hb:HibachiDisplayToggle selector="select[name=orderTemplateTypeID]" showValues="ottSchedule" loadVisable="#!isNull(rc.processObject.getOrderTemplate().getOrderTemplateType()) and (rc.processObject.getOrderTemplate().getOrderTemplateType().getSystemCode() neq 'ottWishList')#">
+				<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" 
+											property="scheduleOrderNextPlaceDateTime" 
+											edit="#rc.edit#" 
+											fieldType="text" 
+											fieldAttributes="sw-date-picker 
+															ng-model=""scheduleOrderNextPlaceDateTime""
+															data-end-day-of-the-month=""26""
+															data-end-date=""endDate""
+															autocomplete=""off""">
+	
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
+			</hb:HibachiDisplayToggle> --->
 			
 			<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
@@ -99,12 +116,18 @@ Notes:
 										fieldType="text" 
 										fieldAttributes="sw-date-picker 
 														ng-model=""scheduleOrderNextPlaceDateTime""
+														ng-if="orderTemplateTypeID === "Wish List""
 														data-end-day-of-the-month=""26""
 														data-end-date=""endDate""
 														autocomplete=""off""">
 
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
-
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
+										property="frequencyTermID" 
+										fieldtype="select" 
+										edit="#rc.edit#" 
+										fieldAttributes="ng-if="orderTemplateType.value === "2c948084697d51bd01697d5725650006""">
+			<!--- Not Visible for Wish Lists --->
+			
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </hb:HibachiEntityProcessForm>
