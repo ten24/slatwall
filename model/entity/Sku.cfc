@@ -2048,23 +2048,20 @@ public any function getPersonalVolumeByCurrencyCode(required string currencyCode
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-				var prices = [];
-				for(var i=1; i <= arrayLen(skuPriceResults); i++){
-					ArrayAppend(prices, {price=skuPriceResults[i].price,'#customPriceField#'=skuPriceResults[i][customPriceField]});
-				}
+				
 				var sortFunction = function(a,b){
-				    if(a.price < b.price){ return -1;}
-				    else if (a.price > b.price){ return 1; }
+				    if(a['price'] < b['price']){ return -1;}
+				    else if (a['price'] > b['price']){ return 1; }
 				    else{ return 0; }
 					
 				};
-				ArraySort(prices, 
+				ArraySort(skuPriceResults, 
 				sortFunction
 				);
-				variables[cacheKey]= prices[1];
+				variables[cacheKey]= skuPriceResults[1];
 			} 
 
-			if(structKeyExists(variables,cacheKey)){
+			if(structKeyExists(variables,cacheKey) && structKeyExists(variables[cacheKey],customPriceField)){
 				return variables[cacheKey][customPriceField];
 			}
 			
@@ -2076,7 +2073,7 @@ public any function getPersonalVolumeByCurrencyCode(required string currencyCode
 		}
         
 		if(structKeyExists(variables,cacheKey)){
-		    if(isStruct(variables[cacheKey])){
+		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
 		        return variables[cacheKey][customPriceField];
 		    }
 			return variables[cacheKey];
