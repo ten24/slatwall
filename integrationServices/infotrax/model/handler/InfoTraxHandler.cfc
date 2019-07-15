@@ -10,23 +10,26 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	
 	
 	public void function onEvent(required any eventName, required struct eventData={}){
-		
-		//Only focus on entity events
-		if(!structKeyExists(arguments,'entity')){
-			return;
+		try{
+			//Only focus on entity events
+			if(!structKeyExists(arguments,'entity')){
+				return;
+			}
+	
+			if(!getService('infoTraxService').isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), eventName)){
+				return;
+			}
+			
+			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+				baseID = arguments.entity.getPrimaryIDValue(),
+				baseObject = arguments.entity.getClassName(),
+				processMethod = 'push',
+				entityQueueData = { 'event' = eventName },
+				integrationID = getIntegration().getIntegrationID()
+			);
+		}catch( any e){
+			//error
 		}
-
-		if(!getService('infoTraxService').isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), eventName)){
-			return;
-		}
-		
-		getDAO('HibachiEntityQueueDAO').insertEntityQueue(
-			baseID = arguments.entity.getPrimaryIDValue(),
-			baseObject = arguments.entity.getClassName(),
-			processMethod = 'push',
-			entityQueueData = {},
-			integrationID = getIntegration().getIntegrationID()
-		);
 	}
 	
 }

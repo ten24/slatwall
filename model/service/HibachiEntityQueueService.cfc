@@ -71,34 +71,6 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 		this.deleteEntityQueue(entityQueue);
 	}
 
-	public any function processEntityQueue_executeQueue(required any entityQueue, any processObject) {
-		//call process from Queued Entity
-		var entityService = getServiceByEntityName( entityName=arguments.entityQueue.getBaseObject());
-		var processContext = arguments.entityQueue.getProcessMethod();
-		var entity = entityService.invokeMethod("get#arguments.entityQueue.getBaseObject()#", {1=arguments.entityQueue.getBaseID()});
-		if(isNull(entity)){
-			return entityQueue;
-		}
-		var processData = {'1'=entity};
-
-		if(!isNull(processContext) && entity.hasProcessObject(processContext)){
-			processData['2'] = entity.getProcessObject(processContext);
-		}
-
-		try{
-			var processMethod = entityService.invokeMethod("process#arguments.entityQueue.getBaseObject()#_#arguments.entityQueue.getProcessMethod()#", processData);
-			if(!isNull(entityQueue.getLogHistoryFlag()) && entityQueue.getLogHistoryFlag()){
-				addQueueHistoryAndDeleteQueue(entityQueue, true);
-			}
-		}catch(any e){
-			if(!isNull(entityQueue.getLogHistoryFlag()) && entityQueue.getLogHistoryFlag()){
-				addQueueHistoryAndDeleteQueue(entityQueue, false);
-			}
-			rethrow;
-		}
-
-		return entityQueue;
-	}
 
 	// =====================  END: Process Methods ============================
 	

@@ -86,6 +86,28 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	
 	
+	
+
+	public any function push(required any entity, any data ={}){
+		
+		switch (arguments.entity.getClassName()) {
+			case 'Account':
+				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);
+				break;
+			case 'Order':
+				arguments.data.DTSArguments = convertSwOrderToIceTransaction(arguments.entity);
+				break;
+			default:
+				return;
+		}
+		writedump('Yo'); abort;
+		getIntegration().getIntegrationCFC('data').pushDataFromQueue(argumentCollection=arguments);
+	}
+
+	
+	
+	
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
