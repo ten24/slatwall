@@ -11,6 +11,7 @@ class SWSimplePropertyDisplayController {
     public currencyFlag:string;
     public refreshEvent:string;
     public default:string;
+    public displayWidth:string;
     public formattedFlag:boolean=false;
     
     //@ngInject
@@ -31,6 +32,11 @@ class SWSimplePropertyDisplayController {
 	    //sets a default if there is no value and we have one...
 	    if (!this.value && this.default){
 	        this.value = this.default;
+	    }
+	    
+	    //sets a default width for the value 
+	    if (!this.displayWidth){
+	        this.displayWidth="110";
 	    }
 	    //attach the refresh listener.
         if (this.refreshEvent){
@@ -65,6 +71,7 @@ class SWSimplePropertyDisplay implements ng.IDirective{
         displayType:"@?",
         currencyFlag:"@?",
         refreshEvent: "@?",
+        displayWidth: "@?",
         default: "@?"
         
     };
