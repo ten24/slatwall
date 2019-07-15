@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,20 +45,10 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-<cfparam name="rc.site" type="any" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
+	
+	// Injected Entity
+	property name="order";
 
-<cfoutput>
-	<swa:SlatwallSettingTable>
-    <swa:SlatwallSetting settingName="siteAvailableLocales" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteDefaultAccountPaymentMethod" settingObject="#rc.site#" />	
-		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" /> 
-		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteMissingImagePath" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+}

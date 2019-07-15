@@ -1,6 +1,7 @@
 component {
 
 	property name="customerCanCreateFlag" persistent="false";
+	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 
 	public boolean function getCustomerCanCreateFlag(){
@@ -28,5 +29,18 @@ component {
 			}
 		}	
 		return variables.personalVolumeTotal; 	
-	} 
+	}
+
+	public numeric function getCommissionableVolumeTotal(){
+		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
+			variables.commissionableVolumeTotal = 0; 
+
+			var orderTemplateItems = this.getOrderTemplateItems();
+
+			for(var orderTemplateItem in orderTemplateItems){ 
+				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal();
+			}
+		}	
+		return variables.commissionableVolumeTotal;
+	}  
 }
