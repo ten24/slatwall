@@ -65,6 +65,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	property name="accountCreateIPAddress" ormtype="string";
+	
+	property name="governmentIdentificationNumberEncrypted" ormtype="string" hb_auditable="false" column="governmentIdNumberEncrypted";
+	property name="governmentIdentificationLastFour" ormtype="string" column="governmentIdLastFour";
 
 	//calucluated property
 	property name="calculatedAdminIcon" ormtype="string";
@@ -154,6 +157,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
+	
+	property name="governmentIdentificationNumber" persistent="false";
+	
 	//CUSTOM PROPERTIES BEGIN
 property name="enrollmentDate" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
@@ -1114,6 +1120,18 @@ property name="enrollmentDate" ormtype="timestamp";
 	public string function getSimpleRepresentationPropertyName(){
 		return 'calculatedFullName';
 	}
+	
+	public void function setGovernmentIdentificationNumber(required string governmentIdentificationNumber) {
+		if(len(arguments.governmentIdentificationNumber)) {
+			variables.governmentIdentificationNumber = arguments.governmentIdentificationNumber;
+			setGovernmentIdentificationNumberLastFour( right(variables.governmentIdentificationNumber, 4) );
+			setupEncryptedProperties();
+		} else {
+			structDelete(variables, "governmentIdentificationNumber");
+			setGovernmentIdentificationNumberLastFour(javaCast("null", ""));
+			setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
+		}
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1141,7 +1159,7 @@ property name="enrollmentDate" ormtype="timestamp";
 		//CUSTOM FUNCTIONS BEGIN
 
 public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
-		if(structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
+		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
 			var orderCollection = getService('OrderService').getOrderCollectionList(); 
 			orderCollection.addFilter('account.accountID', getAccountID());
 			orderCollection.addFilter('orderTemplate.orderTemplateID','NULL','is not');

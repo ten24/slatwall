@@ -74,6 +74,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		if( structKeyExists(arguments, 'jsessionid') ){
 			requestURL &= ';jsessionid=' & arguments.jsessionid;
 		}
+		
 		requestURL &= '?format=JSON';
 		requestURL &= '&apikey=' & setting('apikey');
 		requestURL &= '&service=' & arguments.service;
@@ -87,9 +88,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		
 		var rawRequest = httpRequest.send().getPrefix();
-
 		var response = deserializeJson(rawRequest.fileContent);
-
 		
 		if( structKeyExists(response, 'errors') && arrayLen(response.errors) ){
 			var errorMessages = '';
@@ -102,7 +101,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		
 		
-		if(structKeyExists(response, 'ERRORCODE')){
+		if( structKeyExists(response, 'ERRORCODE') ){
 			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
 		}
 		
@@ -111,7 +110,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	
 	public string function getSessionToken(){
 		
-		if(!structKeyExists(variables, 'sessionToken')){
+		if( !structKeyExists(variables, 'sessionToken') ){
 			
 			var response = postRequest('Session.login',{
 				'dtsuserid' = setting('username'),
@@ -124,25 +123,52 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		return variables.sessionToken;
 	}
 	
-	public void function pushDistributor(required any entity, struct data ={}){
-		
-		switch (arguments.data.event) {
-			case 'afterAccountSaveSuccess':
-				structDelete(arguments.data.DTSArguments, 'referralId')
-				var iceResponse = updateDistributor(arguments.data.DTSArguments);
-				writedump(iceResponse); abort;
-				break;
-		}
-	}
+	public void function pushDistributor(required any account, struct data ={}){
 	
-	public void function pushTransaction(required any entity, struct data ={}){
-		switch (arguments.data.event) {
-			case 'afterOrderSaveSuccess':
-				// code
+		var iceResponse = {};
+		
+		switch ( arguments.data.event ) {
+			
+			case 'afterAccountEnrollSuccess':
+				iceResponse = createDistributor(arguments.data.DTSArguments);
 				break;
 			
+			case 'afterAccountSaveSuccess':
+				iceResponse = updateDistributor(arguments.data.DTSArguments);
+				break;
+				
 			default:
-				// code
+				return;
+		}
+		
+		if(structKeyExists(iceResponse, 'returnserialnumber')){
+			
+		}
+		//TODO: Update lastSyncedDateTime, Update Sesitive Data
+		writedump(iceResponse); abort;
+		
+	}
+	
+	public void function pushTransaction(required any order, struct data ={}){
+		
+		var iceResponse = {};
+		
+		switch ( arguments.data.event ) {
+			
+			case 'afterOrderProcess_placeorderSuccess':
+				iceResponse = createTransaction(arguments.data.DTSArguments);
+				break;
+				
+			case 'afterOrderSaveSuccess':
+				iceResponse = createTransaction(arguments.data.DTSArguments);
+				break;
+				
+			case 'afterOrderProcess_cancelOrder':
+				iceResponse = deleteTransaction(arguments.data.DTSArguments);
+				break
+				
+			default:
+				return;
 		}
 	}
 	
@@ -152,6 +178,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	}
 	
 	public struct function updateDistributor(required struct DTSArguments){
+		structDelete(arguments.DTSArguments, 'referralId')
 		return postRequest('ICEDistributor.update', arguments.DTSArguments, getSessionToken());
 	}
 	

@@ -56,7 +56,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			var qualifiersFilePath = expandPath('/Slatwall')&'/integrationServices/infotrax/config/qualifiers/infoTraxQualifier.json';
 			variables.qualifiers = deserializeJson(fileRead(qualifiersFilePath));
 		}
-		return variables.qualifiers
+		return variables.qualifiers;
 	}
 	
 	public boolean function isEntityQualified(required string entityName, required string baseID, required string event){
@@ -64,11 +64,23 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.entityName);
 		var qualifiers = getQualifiers();
 		
-		if(!structKeyExists(qualifiers, event)){
+		if( !structKeyExists(qualifiers, event) ){
 			return false;
 		}
 		
-		if(!structKeyExists(qualifiers[event], 'filters') ||  !arrayLen(qualifiers[event]['filters'])){
+		if( !structKeyExists(qualifiers[event], 'filters') ){
+			return true;
+		}
+		
+		var filters = [];
+		
+		if( isSimpleValue( qualifiers[event]['filters'] && structKeyExists( qualifiers['filters'], qualifiers[event]['filters'] ) ) ){
+			filters = qualifiers['filters'][qualifiers[event]['filters']];
+		}else if( isArray( qualifiers[event]['filters'] ) ){
+			filters = qualifiers[event]['filters'];
+		}
+		
+		if(!arrayLen(filters)){
 			return true;
 		}
 		
@@ -76,7 +88,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		entityCollectionList.addFilter("#primaryIDPropertyName#", arguments.baseID);
 		
 		//TODO: Support filter groups
-		for(var filter in entityMapping.filters){
+		for( var filter in filters ){
 			entityCollectionList.addFilter(argumentCollection=filter);
 		}
 		
@@ -86,8 +98,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	private string function formatDistibutorName(required any account){
 		var distributorName = '';
-		if(len(arguments.account.getLastName())){
-			distributorName &= '#arguments.account.getLastName()#, '
+		if( len(arguments.account.getLastName()) ){
+			distributorName &= '#arguments.account.getLastName()#, ';
 		}
 		
 		distributorName &= '#arguments.account.getFirstName()#';
@@ -121,7 +133,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 	
 	private string function formatTransactionSource(required any order){
-		if(isNull(arguments.order.getOrderOrigin())){
+		if( isNull(arguments.order.getOrderOrigin()) ){
 			return '900';
 		}
 		
@@ -149,29 +161,29 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function convertSwAccountToIceDistributor(required any account){
 		var distributorData = { 
 			'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
-			'distId' = arguments.account.getAccountNumber(), //Slatwall will be master
-			'name' = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
-			'distType' = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
-			'entryDate' = dateFormat(arguments.account.getCreatedDateTime(), "yyyymmdd"),//Date the member was entered into the system (YYYYMMDD)
-			'entryTime' = timeFormat(arguments.account.getCreatedDateTime(), "hhmmss00"),//Time member was entered into the system (HHMMSSNN)
-			'country' = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//Member country(ISO Format) e.g. USA
-			'address1' = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60),//Member Street Address
-			'address2' = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
-			'city' = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
-			'state' = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
-			'postalCode' = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
-			'email' = left(arguments.account.getEmailAddress(), 60),
-			'birthDate' = dateFormat(arguments.account.getDOB(), "yyyymmdd"),//Member Birthday YYYYMMDD
-			'renewalDate' = dateFormat(arguments.account.getLastRenewDate(), "yyyymmdd"),//Renewal Date (YYYYMMDD)
-			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
+			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
+			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
+			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
+			'entryDate'   = dateFormat(arguments.account.getCreatedDateTime(), "yyyymmdd"),//Date the member was entered into the system (YYYYMMDD)
+			'entryTime'   = timeFormat(arguments.account.getCreatedDateTime(), "hhmmss00"),//Time member was entered into the system (HHMMSSNN)
+			'country'     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//Member country(ISO Format) e.g. USA
+			'address1'    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60),//Member Street Address
+			'address2'    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
+			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
+			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
+			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
+			'email'       = left(arguments.account.getEmailAddress(), 60),
+			'birthDate'   = dateFormat(arguments.account.getDOB(), "yyyymmdd"),//Member Birthday YYYYMMDD
+			'renewalDate' = dateFormat(arguments.account.getRenewDate(), "yyyymmdd"),//Renewal Date (YYYYMMDD)
+			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
 		
-		if(len(arguments.account.getGovernmentIDNumber())){
+		if( len(arguments.account.getGovernmentIDNumber()) ){
 			distributorData['governmentId'] = arguments.account.getGovernmentIDNumber();//Government ID (Only necessary if using ICE for payout)
 			distributorData['governmetIdFormat'] = 'SSN';//A single numerical representation of what type of governmentId is being saved. This will all depend on how the settings are set in ICE. (0-Country Default, 1-Business ID)
 		}
 		
-		if(len(arguments.account.getPhoneNumber())){
+		if( len(arguments.account.getPhoneNumber()) ){
 			distributorData['homePhone'] = left(formatNumbersOnly(arguments.account.getPhoneNumber()), 20);//Home Phone (NNNNNNNNNN)
 		}
 		
@@ -190,7 +202,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'transactionType' = 'I',//Type of ICE transactionusually “I” or “C”.
 			'country' = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
 			'salesVolume' = arguments.order.getPersonalVolumeTotal(),//Total Sales Volume of the order(999999999.99)
-			'qualifyingVolume'=arguments.order.getRetailCommissionTotal(),//Total Qualifying Volume of the order
+			'qualifyingVolume'=arguments.order.getPersonalVolumeTotal(),//Total Qualifying Volume of the order
 			'taxableVolume' = arguments.order.getTaxableAmountTotal(),//Total Taxable Volume of the order
 			'commissionVolume' = arguments.order.getCommissionableVolumeTotal(),//Total Commissionable Volume of the order
 			'transactionSource'= formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
@@ -198,12 +210,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			//'periodDate' = ''//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
 		
-		if(arguments.order.getCreateByAccount().getAccountID() != arguments.order.getAccountID() && arguments.order.getCreateByAccount().getAdminAccountFlag()){
+		if( arguments.order.getCreateByAccount().getAccountID() != arguments.order.getAccountID() && arguments.order.getCreateByAccount().getAdminAccountFlag() ){
 			transactionData['salesPersonId'] = arguments.order.getCreateByAccount().getAccountID();//ID of person who sold order to Customer. This is only used on customer related transactions.Commission check–using ID to represent where volume was attributed at time of order entry.
 			transactionData['entryInitials'] = formatAccountInitials(arguments.order.getCreateByAccount());//Initials of user entering the transaction
 		}
 		
-		if(transactionData['orderType'] == 'C'){
+		if( transactionData['orderType'] == 'C' ){
 			transactionData['originalRecordNumber']= arguments.order.getReferencedOrder().getOrderNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
 		}
 		
@@ -214,11 +226,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 	public any function push(required any entity, any data ={}){
 		
-		if(!structKeyExists(arguments.data, 'event')){
+		if( !structKeyExists(arguments.data, 'event') ){
 			return;
 		}
 		
-		switch (arguments.entity.getClassName()) {
+		switch ( arguments.entity.getClassName() ) {
 			case 'Account':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);
 				getIntegration().getIntegrationCFC('data').pushDistributor(argumentCollection=arguments);

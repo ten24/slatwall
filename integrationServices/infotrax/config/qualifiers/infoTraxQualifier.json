@@ -1,5 +1,44 @@
 {
-    "afterAccountSaveSuccess" : {
-        "filters": []
-    }
+	"filters" : {
+		"validAccount" : [
+			{
+				"propertyIdentifier":"accountNumber",
+				"comparisonOperator":"is not",
+				"value":"null"
+			},
+			{
+				"propertyIdentifier":"ownerAccount",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null",
+			},{
+				"propertyIdentifier":"accountType",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
+			},{
+				"propertyIdentifier":"renewalDate",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
+			}
+		]
+	},
+	"afterAccountSaveSuccess" : {
+		"filters": "validAccount"
+	},
+	"afterAccountEnrollSuccess" : {
+		"filters": "validAccount"
+	},
+	"afterOrderSaveSuccess" : {
+		"filters" : []
+	},
+	"afterOrderProcess_placeOrderSuccess" : {
+		"filters" : []
+	},
+	"afterOrderProcess_updateOrderAmountsSuccess" : {
+		"filters" : []
+	},
+	
+	
 }
