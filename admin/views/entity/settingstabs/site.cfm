@@ -51,7 +51,8 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
-    <swa:SlatwallSetting settingName="siteAvailableLocales" />
+		<swa:SlatwallSetting settingName="siteAvailableLocales" />
+		<swa:SlatwallSetting settingName="siteDefaultAccountPaymentMethod" />	
 		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
 		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
 		<swa:SlatwallSetting settingName="siteOrderOrigin" />

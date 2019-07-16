@@ -1394,7 +1394,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
 	
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate; 
 		} 
@@ -1430,7 +1430,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 
 			if(newOrder.hasErrors()){
-				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding order items', true);
 				arguments.orderTemplate.clearHibachiErrors();
 				return arguments.orderTemplate; 
 			}
@@ -1471,7 +1471,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.orderTemplate = this.processOrderTemplate_removeAppliedGiftCards(arguments.orderTemplate);  
 		
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}
 
+		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
+		newOrder = this.processOrder_placeOrder(newOrder);
+	
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when placing order', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}	
+		
 		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
 		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
 		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
@@ -1481,19 +1495,49 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
+			//set Payment Declined status?
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
 
-		newOrder = this.processOrder_placeOrder(newOrder);
+		getOrderDAO().turnOnPaymentProcessingFlag(newOrder.getOrderID()); 
 		
-		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order');
-			arguments.orderTemplate.clearHibachiErrors();
-			return arguments.orderTemplate;
+		var orderPayments = newOrder.getOrderPayments(); 
+	
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getStatusCode() == 'opstActive') {
+				
+				var processData = {
+					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(),
+					amount = orderPayment.getAmount(),
+					setOrderPaymentInvalidOnFailedTransactionFlag = false
+				};	
+
+				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+
+				if(orderPayment.hasErrors()){
+					orderPayment.clearHibachiErrors(); 
+					newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
+					newOrder.setPaymentTryCount(1);
+					newOrder.setPaymentLastRetryDateTime(now());
+				} 
+			}
 		}
 
+		newOrder.setPaymentProcessingInProgressFlag(false); 
+
+		newOrder = this.saveOrder(newOrder); 
+
+		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
+			newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
+			newOrder.setPaymentTryCount(1);
+			newOrder.setPaymentLastRetryDateTime(now());
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
+			newOrder.clearHibachiErrors();
+		}
+			
+		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
 		return arguments.orderTemplate; 
 	}
@@ -1625,9 +1669,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress = getAccountService().saveAccountAddress(accountAddress);
 
 
-			orderTemplate.setBillingAccountAddress(accountAddress);
+			arguments.orderTemplate.setBillingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getBillingAccountAddress())) {  
-			orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
+			arguments.orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
 		} 	
 
 		if(!isNull(processObject.getNewAccountPaymentMethod())){
@@ -1638,16 +1682,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
 
 			//set payment method as credit card
-			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a')); 
+			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
 
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 
-			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
-		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
-			orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
-		} 
+			if(accountPaymentMethod.hasErrors()){
+				arguments.orderTemplate.addErrors(accountPaymentMethod.getErrors());
+			}
 
+			arguments.orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
+			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
+		} 
+		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		if(!arguments.orderTemplate.hasErrors()){
+			var orderCollectionList = this.getOrderCollectionList();
+			orderCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID());
+			orderCollectionList.addFilter('orderStatusType.typeID', '2c9280846bd1f0d8016bd217dc1d002e');//payment declined status
+			orderCollectionList.setOrderBy('createdDateTime|DESC'); 
+		
+			var orders = orderCollectionList.getPageRecords();
+	
+			if(!arrayIsEmpty(orders)){
+				
+				var orderToRetry = this.getOrder(orders[1]['orderID']);
+				
+				var processOrderAddOrderPayment = orderToRetry.getProcessObject('addOrderPayment');
+				processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
+				processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
+
+				orderToRetry = this.processOrder_addOrderPayment(orderToRetry, processOrderAddOrderPayment); 
+				orderToRetry = this.processOrder(orderToRetry, {}, 'retryPayment');	
+			}
+		}
+
 
 		return arguments.orderTemplate; 
 	}
@@ -2228,7 +2298,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 							//Sets the payment processing flag
-							var orderDAO = getDAO("OrderDao");
+							var orderDAO = getOrderDAO();
 							orderDAO.turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
 							
 							if(order.hasErrors()){
@@ -3868,7 +3938,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// If this order payment has errors & has never had and amount Authorized, Received or Credited... then we can set it as invalid
-		if(arguments.orderPayment.hasErrors() && arguments.orderPayment.getAmountAuthorized() == 0 && arguments.orderPayment.getAmountReceived() == 0 && arguments.orderPayment.getAmountCredited() == 0 ) {
+		if( arguments.processObject.getSetOrderPaymentInvalidOnFailedTransactionFlag() && 
+			arguments.orderPayment.hasErrors() && 
+			arguments.orderPayment.getAmountAuthorized() == 0 && 
+			arguments.orderPayment.getAmountReceived() == 0 && 
+			arguments.orderPayment.getAmountCredited() == 0 
+		) {
 			arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstInvalid') );
 		} else {
 			arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstActive') );
@@ -3885,6 +3960,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderPayment;
 
 	}
+
+	public any function processOrder_retryPayment(required any order, required any processObject, struct data){
+
+		var orderPayments = arguments.order.getOrderPayments(); 	
+
+		getOrderDAO().turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
+		
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getStatusCode() == 'opstActive') {
+				
+				var processData = {
+					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(),
+					amount = orderPayment.getAmount(), 
+					setOrderPaymentInvalidOnFailedTransactionFlag = false
+				};	
+
+				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+
+				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
+					arguments.order.clearHibachiErrors(); 
+					orderPayment.clearHibachiErrors();
+					getHibachiScope().setORMHasErrors(false)	
+ 
+					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
+					arguments.order.setPaymentTryCount(currentTryCount);
+					arguments.order.setPaymentLastRetryDateTime(now());
+				} 
+			}
+		}	
+		
+		arguments.order.setPaymentProcessingInProgressFlag(false); 
+		
+		arguments.order = this.saveOrder(arguments.order);	
+
+		return arguments.order; 
+	} 
 
 	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment, struct data) {
 
@@ -3967,7 +4078,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}else{
 				arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 			}
-		}
+		} 
 		return arguments.orderPayment;
 	}
 

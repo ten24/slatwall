@@ -70,6 +70,7 @@
 		<Record typeID="444df2b7d7dcce8a3aa485f80264ac3a" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b7d7dcce8a3aa485f80264ac3a" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="On Hold" systemCode="ostOnHold" sortOrder="4" />
 		<Record typeID="444df2b8b98441f8e8fc6b5b4266548c" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b8b98441f8e8fc6b5b4266548c" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Closed" systemCode="ostClosed" sortOrder="5" />
 		<Record typeID="444df2b90f62f72711eb5b3c90848e7e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b90f62f72711eb5b3c90848e7e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Canceled" systemCode="ostCanceled" sortOrder="6" />
+		<Record typeID="2c9280846bd1f0d8016bd217dc1d002e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9280846bd1f0d8016bd217dc1d002e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Processing - Payment Declined" systemCode="ostProcessing" sortOrder="7" />
 
 		
 		<Record typeID="2c948084697d51bd01697d5402d40005" typeIDPath="2c948084697d51bd01697d5402d40005" parentTypeID="NULL" typeName="Order Template Types" systemCode="orderTemplateType" childRequiresSystemCodeFlag="1" />

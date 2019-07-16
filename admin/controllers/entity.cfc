@@ -387,7 +387,38 @@ private void function populateWithAddressVerification(required struct rc){
 		arguments.rc.entityActionDetails.createAction="admin:entity.createOrder";
 		getFW().setView("admin:entity.listorder");
 	}
+	
+	// Order (Wish Lists)
+	public void function listWishList(required struct rc) {
+		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
 
+		arguments.rc.orderTemplateCollectionList.addFilter('orderTemplateType.systemCode','ottWishList','IN');
+		arguments.rc.orderTemplateCollectionList.addOrderBy('createdDateTime|DESC');
+
+		getFW().setView("admin:entity.listwishlist");
+	}
+	
+	public void function accountWishListsTab(required struct rc){
+		genericDetailMethod(entityName="OrderTemplate", rc=arguments.rc);
+		if(!isNull(rc.orderTemplate) && rc.orderTemplate.orderTemplateType.getSystemCode() eq "ottWishList") {
+			rc.entityActionDetails.listAction = "admin:entity.listwishlist";
+			rc.entityActionDetails.backAction = "admin:entity.listwishlist";
+		}
+		
+		getFW().setView("admin:entity.listordertemplate");
+	}
+	
+	public void function detailWishList(required struct rc) {
+		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
+		
+		param name="rc.orderTemplateID" type="string" default="";
+	
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+		rc.edit = true;
+		
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
 	// Order Payment
 	public any function createorderpayment( required struct rc ) {
 		param name="rc.orderID" type="string" default="";

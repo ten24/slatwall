@@ -84,6 +84,7 @@ Notes:
 			<hr> 
 
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="ng-model='orderTemplateTypeID'">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" edit="#rc.edit#">
 

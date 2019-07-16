@@ -2954,8 +2954,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		return rangeStruct;
 	}
-	
-	
+		
 	private struct function formatDateRange(required any dateRange){ //XXX date-format dd/mm/yyyy-dd/mm/yyyy
 		var rangeStruct = StructNew();
 		
@@ -2963,9 +2962,46 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var fromTemp = listToArray(tempRangeArr[1], "/");
 		var toTemp   = listToArray(tempRangeArr[2], "/");
 
-		if(!structKeyExists(filter,"value")){
-			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
-				filter.value = filter.displayValue;
+		var tempDateFrom = CreateDate(fromTemp[3], fromTemp[1], fromTemp[2]); //yyyy,dd,mm
+		var tempDateTo   = CreateDate(toTemp[3], toTemp[1], toTemp[2]);
+		
+		rangeStruct.rangStartValue = dateFormat(tempDateFrom,"yyyy-mm-dd");
+		rangeStruct.rangeEndValue = dateFormat(tempDateTo,"yyyy-mm-dd");
+		
+		return rangeStruct;
+	}
+	
+	private string function getDateRangePredicate(required any filter){
+		var dateRangePredicate = "";
+		var range = StructNew();
+		
+		if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
+			
+			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.measureCriteria, arguments.filter.measureType);
+		
+		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
+			
+			if(listLen(arguments.filter.value,'/') > 1) { // if it's a date range dd/mm/yyyy-dd/mm/yyyy
+				range = formatDateRange(arguments.filter.value);
+			} else { // otherwise it should be an epoch range
+				range = makeLocalDateRangeFromEpochRange(arguments.filter.value);
+			}
+		} else if(listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
+			//convert unix timestamp
+			if(isNumeric(arguments.filter.value)){
+				range.rangStartValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			} else if(arguments.filter.value == 'now()' ){
+				range.rangStartValue = now();
+			} else {
+				range.rangStartValue = arguments.filter.value;
+			}
+					
+		} else if(listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)) {
+			
+			if(isNumeric(arguments.filter.value)){
+				range.rangeEndValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			} else if(arguments.filter.value == 'now()' ){
+				range.rangeEndValue = now();
 			}else{
 				range.rangeEndValue = arguments.filter.value;
 			}
@@ -2996,10 +3032,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		} else if(!isNull(rangeEndParamID)) {
 			dateRangePredicate = ":#rangeEndParamID#";
 		}
-		
+	
 		return dateRangePredicate;
 	}
 	
+
 	private string function getNumericRangePredicate(required any filter){
 		var numericRangePredicate = "";
 	
