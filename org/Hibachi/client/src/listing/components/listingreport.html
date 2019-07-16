@@ -3,10 +3,10 @@
     <div class="alert alert-error" ng-show="swListingReport.hasMetric==false">You must have an aggregate column to render the report</div>
     
     <div class="flex flex-space-between">
-        <div class="col">
-            <div class="flex flex-col-left">
+        <div class="col ">
+            <div class="flex flex-col-left ">
     	
-            	<div class="col">
+            	<div class="col mBorder">
             		<div style="margin-bottom:5px;">
             		    <label>Dimensions</label>
             			<select 
@@ -23,7 +23,7 @@
             		</div>
             	</div>
             	
-        		<div class="col">
+        		<div class="col mBorder">
         		
         			<div class="flex flex-cal">
             			<div class="col-cal">
@@ -64,10 +64,12 @@
                                 </span>
                             </p>
                             <a href="##" id="hibachi-report-enable-compare" class="btn-text pull-right">+ Compare Dates</a>
+
                         </div>
                         
                         <input type="hidden" name="reportCompareFlag" value="0">
                 		<div id="hibachi-report-compare-date" class="hide flex compare">
+                		   <span class="icon-wrapper"><i class="fas fa-exchange-alt fa-2x"></i> </span> 
                 		    <span><i class="fa fa-arrows-h" style="margin-top: 30px;padding-left: 10px;font-size: 17px;"></i></span>
                 			<div class="col-cal">
                                 <p class="input-group s-datepicker">
@@ -106,7 +108,12 @@
                                         <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEndCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
                                 </p>
+                                     <a href="##" id="hibachi-report-disable-compare" class="btn-text pull-right"> X</a>
                             </div>
+                            
+                		</div>
+                		<div>
+                		   <button type="button" ng-click="swListingReport.updatePeriod()" class="btn btn-default btn-sm btn-cal small-ml" ><i class="glyphicon glyphicon-refresh"></i></button>
                 		</div>
                     </div><!-- end of .flex-cal -->
                     
@@ -118,7 +125,7 @@
         <div class="col">
             <div class="flex flex-col-right">
             	
-            	<div class="col">
+            	<div class="col mPush-down">
                     <!--- <select 
             		    ng-model="swListingReport.selectedPeriodInterval"
             			ng-options="periodInterval as periodInterval.value for periodInterval in swListingReport.periodIntervals track by periodInterval.value"
@@ -137,8 +144,17 @@
                     </div>
                 </div><!-- end of .col -->
                 
+
+                <div class="col save-callout">
+                    <div class ="Malert alert alert-warning">
+                           <span><i class="fas fa-exclamation-triangle save-icon Mfade-in"></i><span>Report Changed 
+                    </div>
+                </div>
+
+                
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
+            	         
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         >
@@ -158,6 +174,7 @@
                                         font-size: 12px;
                                         padding: 0px 5px;"
                                     >
+                                   
                                     <a class="btn btn-xs btn-success s-action-btn"
                                         ng-click="swListingReport.saveReportCollection(swListingReport.collectionName)">
                                         save
@@ -172,8 +189,8 @@
     	</div><!-- end of .col -->
     </div><!-- end of .flex -->
     
-    <div id="get-started-report">
-        <button type="button" class="close" aria-label="Close">
+    <div id="get-started-report" ng-hide="swListingReport.hasMetric==true">
+        <button type="button" class="close" aria-label="Close" ng-click="swListingReport.removeInfoWIndow($event);" >
           <span aria-hidden="true">&times;</span>
         </button>
         <div class="text">
@@ -184,10 +201,10 @@
             </ol>
         </div>
     </div>
+   
+    	<div id="chartContainer">
+            <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
+            <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
 
-	
-	<div id="chartContainer">
-        <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
-        <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
     </div>
 </div>

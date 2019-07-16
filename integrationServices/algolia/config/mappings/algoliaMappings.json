@@ -1,0 +1,12 @@
+[
+	
+	{
+		"slatwallEntity": "Product",
+		"remoteIndex": "product",
+		"mapping": [
+			{
+				"slatwallPropertyIdentifier": "productName"
+			}
+		]
+	}
+]
