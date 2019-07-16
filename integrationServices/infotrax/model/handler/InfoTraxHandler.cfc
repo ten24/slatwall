@@ -1,4 +1,4 @@
-component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
+component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	private any function getIntegration(){
 		if(!structKeyExists(variables,'integration')){
@@ -21,11 +21,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			}
 			
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
-				baseID = arguments.entity.getPrimaryIDValue(),
-				baseObject = arguments.entity.getClassName(),
-				processMethod = 'push',
+				baseID          = arguments.entity.getPrimaryIDValue(),
+				baseObject      = arguments.entity.getClassName(),
+				processMethod   = 'push',
 				entityQueueData = { 'event' = eventName },
-				integrationID = getIntegration().getIntegrationID()
+				integrationID   = getIntegration().getIntegrationID()
 			);
 		}catch( any e){
 			//error

@@ -52,14 +52,14 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 		}
-		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
 	
 	// @hint helper function to return the integration entity that this belongs to
 	public any function getIntegration() {
-		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
+		return getService('integrationService').getIntegrationByIntegrationPackage(getPackageName());
 	}
 
 	// @hint helper function to return the packagename of this integration
@@ -69,7 +69,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	
 	private struct function postRequest(required string service, required struct requestData, string jsessionid){
 		
-		var requestURL = setting('liveModeFlag') ? setting("liveURL") : setting("testURL");
+		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		
 		if( structKeyExists(arguments, 'jsessionid') ){
 			requestURL &= ';jsessionid=' & arguments.jsessionid;
@@ -80,11 +80,11 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		requestURL &= '&service=' & arguments.service;
 		
 		var httpRequest = new http();
-		httpRequest.setMethod("POST");
+		httpRequest.setMethod('POST');
 		httpRequest.setUrl( requestURL );
 		
 		for(var key in requestData){
-			httpRequest.addParam(type="formfield",name="#key#",value="#requestData[key]#");
+			httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
 		}
 		
 		var rawRequest = httpRequest.send().getPrefix();
@@ -143,7 +143,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			arguments.account.setLastSyncedDateTime(now());
-			arguments.account.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
+			arguments.account.setGovernmentIdentificationNumberEncrypted(javaCast('null', ''));
 		}
 		
 	}

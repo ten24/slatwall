@@ -37,7 +37,7 @@ Notes:
 */
 component extends='Slatwall.model.service.HibachiService' persistent='false' accessors='true' output='false' {
 
-	property name="qualifiers" type="struct";
+	property name='qualifiers' type='struct';
 	// ===================== START: Logical Methods ===========================
 
 	private any function getIntegration(){
@@ -85,7 +85,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		var entityCollectionList = invokeMethod('get#arguments.entityName#CollectionList');
-		entityCollectionList.addFilter("#primaryIDPropertyName#", arguments.baseID);
+		entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
 		
 		//TODO: Support filter groups
 		for( var filter in filters ){
@@ -165,8 +165,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
 			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
-			'entryDate'   = dateFormat(arguments.account.getCreatedDateTime(), "yyyymmdd"),//Date the member was entered into the system (YYYYMMDD)
-			'entryTime'   = timeFormat(arguments.account.getCreatedDateTime(), "hhmmss00"),//Time member was entered into the system (HHMMSSNN)
+			'entryDate'   = dateFormat(arguments.account.getCreatedDateTime(), 'yyyymmdd'),//Date the member was entered into the system (YYYYMMDD)
+			'entryTime'   = timeFormat(arguments.account.getCreatedDateTime(), 'hhmmss00'),//Time member was entered into the system (HHMMSSNN)
 			'country'     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//Member country(ISO Format) e.g. USA
 			'address1'    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60),//Member Street Address
 			'address2'    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
@@ -174,8 +174,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
-			'birthDate'   = dateFormat(arguments.account.getDOB(), "yyyymmdd"),//Member Birthday YYYYMMDD
-			'renewalDate' = dateFormat(arguments.account.getRenewDate(), "yyyymmdd"),//Renewal Date (YYYYMMDD)
+			'birthDate'   = dateFormat(arguments.account.getDOB(), 'yyyymmdd'),//Member Birthday YYYYMMDD
+			'renewalDate' = dateFormat(arguments.account.getRenewDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
 			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
 		
@@ -196,8 +196,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function convertSwOrderToIceTransaction(required any order){
 		var transactionData = { 
 			'distId'            = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
-			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), "yyyymmdd"), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
-			'entryTime'         = timeFormat(arguments.order.getOrderOpenDateTime(), "hhmmss00"),
+			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymmdd'), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
+			'entryTime'         = timeFormat(arguments.order.getOrderOpenDateTime(), 'hhmmss00'),
 			'transactionNumber' = arguments.order.getOrderNumber(),//Company transaction number.
 			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
 			'transactionType'   = 'I',//Type of ICE transactionusually “I” or “C”.
