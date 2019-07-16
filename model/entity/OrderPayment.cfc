@@ -70,7 +70,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
     property name="giftCardPaymentProcessedFlag" hb_populateEnabled="public" ormType="boolean" default="false";
 
-
+	// for chase integration
+	property name="orderPayment" ormtype="string";
+	property name="transactionCurrencyCode" ormtype="string";
+	property name="chaseProviderToken" ormType="string";
+	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";

@@ -99,7 +99,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			"physical",
 			"location",
 			"integration",
-			"order"
+			"order",
+			"transaction",
+			"live",
+			"primary"
 		];
 	}
 
@@ -161,7 +164,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
 			brandMetaDescriptionString = {fieldType="textarea", defaultValue="${brandName}"},
 			brandMetaKeywordsString = {fieldType="textarea", defaultValue="${brandName}"},
-
+			
+			// Chase Integration 
+			transactionDivisionNumber = {fieldType="text"},
+			liveModeFlag = {fieldType="yesno", defaultValue="0"},
+			primaryLiveURL = {fieldType="text", defaultValue="https://netconnectka1.chasepaymentech.com/NetConnect/controller"},
+			
 			// Content
 			contentRestrictAccessFlag = {fieldType="yesno",defaultValue=0},
 			contentRequirePurchaseFlag = {fieldType="yesno",defaultValue=0},
@@ -846,15 +854,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
 			}
 		}
-		var globalSettingPrefix = 'global';
+
 		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
-		if(
-			structKeyExists(arguments, "object") 
-			&& arguments.object.isPersistent() 
-			&& !arguments.object.getNewFlag()
-			&& left(arguments.settingName,len(globalSettingPrefix)) != globalSettingPrefix
-		) {
+		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
 		}
 		if(structKeyExists(arguments, "filterEntities")) {
