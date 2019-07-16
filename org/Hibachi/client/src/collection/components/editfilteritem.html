@@ -4,7 +4,7 @@
         <!--<i class="fa fa-times" data-ng-click="cancelFilterItem()" ></i>-->
     </a>
     <div class="row">
-        <h4><span data-sw-rbkey="'admin.editfilteritem.definefilter'" style="color:#fff;"></span>:
+        <h4 data-ng-if="simple"><span data-sw-rbkey="'admin.editfilteritem.definefilter'" style="color:#fff;"></span>:
             <span data-ng-repeat="breadCrumb in filterItem.breadCrumbs">
 	        	<span data-ng-if="filterItem.breadCrumbs.length - 1 !== $index" data-ng-click="selectBreadCrumb($index)" style="color:#fff;">
                     {{breadCrumb.rbKey}}
