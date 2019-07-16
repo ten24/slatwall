@@ -58,6 +58,16 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="removeWishListFromAllSessions" access="public" returntype="void" output="false">
+		<cfargument name="orderTemplateID" type="string" required="true" />
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE SwSession SET orderTemplateID = null WHERE orderTemplateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="turnOnPaymentProcessingFlag" access="public" returntype="void" output="false">
 		<cfargument name="orderID" type="string" required="true" />
 		

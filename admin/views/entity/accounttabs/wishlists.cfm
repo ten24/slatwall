@@ -24,7 +24,7 @@
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	<hb:HibachiActionCaller 
-		action="admin:entity.preprocessordertemplate" 
+		action="admin:entity.preprocessordertemplate_createwishlist" 
 		entity="OrderTemplate" 
 		class="btn btn-default" 
 		icon="plus" 

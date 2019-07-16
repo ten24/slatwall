@@ -55,21 +55,7 @@
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
 
-<cfset rc.processCallers = [
-	{
-		'action':'admin:entity.processOrderTemplate',
-		'processContext':'activate'
-	},	
-	{
-		'action':'admin:entity.processOrderTemplate',
-		'processContext':'createAndPlaceOrder'
-	},	
-	{
-		'action':'admin:entity.preProcessOrderTemplate',
-		'processContext':'cancel',
-		'modal' : true 
-	} 
-] />
+<cfset rc.processCallers = [] />
 
 
 <cfoutput>

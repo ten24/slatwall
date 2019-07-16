@@ -5,13 +5,18 @@
 		},
 		"scheduleOrderTemplate": {
 			"typeCode": { "eq":"ottSchedule" }
-		}	
+		},
+		"deleteWishList": {
+			"typeCode": { "eq":"ottWishList" }
+		}
 	},
 	"properties":{
 		"account":							[{"contexts":"save","required":true}],
 		"canPlaceOrderFlag" :				[{"contexts":"save","conditions":"activeOrderTemplate", "eq":true}],
 		"canPlaceFutureScheduleOrderFlag":  [{"contexts":"createAndPlaceOrder","eq":true }],	
 		"orderTemplateType":				[{"contexts":"save","required":true}],
-		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}]
+		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
+		"statusCode":						[{"contexts":"delete","conditions":"deleteWishList", "required":true}],
+		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}]
 	}
 }
