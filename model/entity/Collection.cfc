@@ -1499,8 +1499,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			if(!structKeyExists(arguments,'filterGroup')){
 				selectedFilterGroup = getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup;
-			} else { 
-				selectedFilterGroup = arguments.filterGroup;
 			} 
 		
 			var filterGroupCount = arraylen(selectedFilterGroup);
@@ -1547,8 +1545,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				if(!structKeyExists(arguments,'filterGroup')){
 					getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup = selectedFilterGroup;
-				} else { 
-					arguments.filterGroup = selectedFilterGroup; 
 				} 
 			}
 		}
