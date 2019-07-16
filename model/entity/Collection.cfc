@@ -395,7 +395,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return alias;
 	}
 
-	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, required string filterGroupLogicalOperator="AND"){
+	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, string filterGroupLogicalOperator="AND"){
  		if(!hasFilterGroupByFilterGroupAlias(arguments.filterGroupAlias)){
  			variables.filterGroupAliasMap[filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
  		}
@@ -1483,14 +1483,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		string comparisonOperator,
 		string logicalOperator,
 		array filterGroup,
-		numeric filterGroupIndex=1
+		numeric filterGroupIndex=1,
+		string filterGroupAlias
 	) {
 		//first do we have filters?
 		if(arraylen(variables.collectionConfigStruct['filterGroups'])){
 			//filterGroupName is used to navigate a filtergroup path. If not specified we can assume there is only the base filterGroup.
 			var selectedFilterGroup = [];
 
-			if(isNull(arguments.filterGroupIndex)){
+			if(!isNull(arguments.filterGroupAlias)){
+				arguments.filterGroupIndex = getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias); 
+			} else if(isNull(arguments.filterGroupIndex)){
 				arguments.filterGroupIndex=1;
 			}
 
@@ -1503,24 +1506,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var filterGroupCount = arraylen(selectedFilterGroup);
 			for(var i=filterGroupCount; i >= 1; i--){
 
-				//handle filter group within filter group
-				if(structKeyExists(selectedFilterGroup[i], 'filterGroup') && !arrayIsEmpty(selectedFilterGroup[i]['filterGroup'])){
-					var newArguments = {
-						'filterGroup':selectedFilterGroup[i]['filterGroup']
-					}; 
-					if(structKeyExists(arguments,'propertyIdentifier')){
-						newArguments['propertyIdentifier'] = arguments.propertyIdentifier;
-					}
-					if(structKeyExists(arguments,'value')){
-						newArguments['value'] = arguments.value;
-					}
-					if(structKeyExists(arguments,'comparisonOperator')){
-						newArguments['comparisonOperator'] = arguments.comparisonOperator;
-					}
-					if(structKeyExists(arguments,'logicalOperator')){
-						newArguments['logicalOperator'] = arguments.logicalOperator;
-					}
-					this.removeFilter(argumentCollection=newArguments); 	
+				//skip if it's a filter group 
+				if(structKeyExists(selectedFilterGroup[i], 'filterGroup')){
 					continue; 
 				}
 
