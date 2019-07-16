@@ -156,6 +156,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="enrollmentDate" ormtype="timestamp";
+	property name="accountType" ormtype="string";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 
@@ -173,7 +174,6 @@ property name="enrollmentDate" ormtype="timestamp";
  property name="spouseName" ormtype="string";
  property name="driverLicense" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
- property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="governmentIDNumber" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="productPack" ormtype="string";

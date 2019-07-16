@@ -1,5 +1,6 @@
 component {
 	property name="enrollmentDate" ormtype="timestamp";
+	property name="accountType" ormtype="string";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 
