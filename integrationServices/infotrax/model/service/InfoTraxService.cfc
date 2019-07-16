@@ -98,6 +98,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	private string function formatDistibutorName(required any account){
 		var distributorName = '';
+		
 		if( len(arguments.account.getLastName()) ){
 			distributorName &= '#arguments.account.getLastName()#, ';
 		}
@@ -114,8 +115,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	private string function formatDistributorType(required string accountType){
 		var mapping = {
 			'MarketPartner' = 'D',
-			'VIP' = 'P',
-			'Customer' = 'C'
+			'VIP'           = 'P',
+			'Customer'      = 'C'
 		};
 		
 		return mapping[accountType];
@@ -123,11 +124,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	private string function formatOrderType(required any orderType){
 		var mapping = {
-			'otSalesOrder' = 'W',
+			'otSalesOrder'  = 'W',
+			'otReturnOrder' = 'C'
 			//'retail' = 'R',
 			//'otExchangeOrder' = 'X',
 			//'replacement' = 'R',
-			'otReturnOrder' = 'C'
 		};
 		return mapping[orderType];
 	}
@@ -138,8 +139,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		var mapping = {
-			'web' = '903',
-			'phone' = '100',
+			'web'      = '903',
+			'phone'    = '100',
 			'internet' = '900'
 		};
 		return mapping[arguments.order.getOrderOrigin().getOrderOriginType()];
@@ -180,7 +181,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		if( len(arguments.account.getGovernmentIDNumber()) ){
 			distributorData['governmentId'] = arguments.account.getGovernmentIDNumber();//Government ID (Only necessary if using ICE for payout)
-			distributorData['governmetIdFormat'] = 'SSN';//A single numerical representation of what type of governmentId is being saved. This will all depend on how the settings are set in ICE. (0-Country Default, 1-Business ID)
+			distributorData['governmetIdFormat'] = '1';//A single numerical representation of what type of governmentId is being saved. This will all depend on how the settings are set in ICE. (0-Country Default, 1-Business ID)
 		}
 		
 		if( len(arguments.account.getPhoneNumber()) ){
@@ -194,19 +195,19 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	public any function convertSwOrderToIceTransaction(required any order){
 		var transactionData = { 
-			'distId' = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
-			'transactionDate' = dateFormat(arguments.order.getOrderOpenDateTime(), "yyyymmdd"), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
-			'entryTime' = timeFormat(arguments.order.getOrderOpenDateTime(), "hhmmss00"),
+			'distId'            = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
+			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), "yyyymmdd"), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
+			'entryTime'         = timeFormat(arguments.order.getOrderOpenDateTime(), "hhmmss00"),
 			'transactionNumber' = arguments.order.getOrderNumber(),//Company transaction number.
-			'firstOrder' = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
-			'transactionType' = 'I',//Type of ICE transactionusually “I” or “C”.
-			'country' = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
-			'salesVolume' = arguments.order.getPersonalVolumeTotal(),//Total Sales Volume of the order(999999999.99)
-			'qualifyingVolume'=arguments.order.getPersonalVolumeTotal(),//Total Qualifying Volume of the order
-			'taxableVolume' = arguments.order.getTaxableAmountTotal(),//Total Taxable Volume of the order
-			'commissionVolume' = arguments.order.getCommissionableVolumeTotal(),//Total Commissionable Volume of the order
-			'transactionSource'= formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
-			'orderType'= formatOrderType(arguments.order.getOrderType().getSystemCode())//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
+			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
+			'transactionType'   = 'I',//Type of ICE transactionusually “I” or “C”.
+			'country'           = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
+			'salesVolume'       = arguments.order.getPersonalVolumeTotal(),//Total Sales Volume of the order(999999999.99)
+			'qualifyingVolume'  = arguments.order.getPersonalVolumeTotal(),//Total Qualifying Volume of the order
+			'taxableVolume'     = arguments.order.getTaxableAmountTotal(),//Total Taxable Volume of the order
+			'commissionVolume'  = arguments.order.getCommissionableVolumeTotal(),//Total Commissionable Volume of the order
+			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
+			'orderType'         = formatOrderType(arguments.order.getOrderType().getSystemCode())//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
 			//'periodDate' = ''//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
 		
@@ -216,7 +217,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		if( transactionData['orderType'] == 'C' ){
-			transactionData['originalRecordNumber']= arguments.order.getReferencedOrder().getOrderNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
+			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getOrderNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
 		}
 		
 		return transactionData;
@@ -231,16 +232,16 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		switch ( arguments.entity.getClassName() ) {
+			
 			case 'Account':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);
 				getIntegration().getIntegrationCFC('data').pushDistributor(argumentCollection=arguments);
 				break;
+				
 			case 'Order':
 				arguments.data.DTSArguments = convertSwOrderToIceTransaction(arguments.entity);
 				getIntegration().getIntegrationCFC('data').pushTransaction(argumentCollection=arguments);
 				break;
-			default:
-				return;
 		}
 	
 	}
