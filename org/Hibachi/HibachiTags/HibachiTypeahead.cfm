@@ -1,9 +1,19 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
-	<cfparam name="attributes.entityName" type="string" />
-	<cfparam name="attributes.propertyName" type="string" />
+	<cfparam name="attributes.collectionlist"/>
+	
+	<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
+	<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
+	
+	<!---escape apostraphe boi--->
+	<cfset JSON = rereplace(JSON,"'","\'",'all')/>
+	<!---convert double quotes to single--->
+	<cfset JSON = rereplace(JSON,'"',"'",'all')/>
+	
+	<cfparam name="attributes.entityName" type="string" default="#attributes.collectionlist.getCollectionObject()#"/>
 	<cfparam name="attributes.labelText" type="string" default="#attributes.hibachiScope.rbkey('entity.#attributes.entityName#_plural')#"/>					
+	<cfparam name="attributes.propertyName" type="string" default="#attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(attributes.entityName)#"/>
 	<cfparam name="attributes.labelClass" type="string" default="control-label col-sm-4"/>
 	<cfparam name="attributes.edit" type="boolean" default="false"/>				<!---IE rc.edit value --->
 	<cfparam name="attributes.rbKey" type="string" default="entity.#attributes.entityName#" />		
@@ -12,24 +22,8 @@
 	<cfparam name="attributes.propertyToSave" default="#attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(attributes.entityName)#"/>
 	<cfparam name="attributes.propertyToShow" default="#attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(attributes.entityName)#"/>
 	<cfparam name="attributes.orderbylist" default="#attributes.propertyToShow#|ASC"/>
-	<cfparam name="attributes.collectionlist" default="#attributes.hibachiScope.getService('hibachiService').invokeMethod('get#attributes.entityName#CollectionList')#"/>
-	<cfparam name="attributes.collectionConfigJson" type="string" default=""/>
 	<cfparam name="attributes.propertyToLoad" type="string" default="#attributes.propertyToSave#,#attributes.propertyToShow#"/>
-	<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
-	
-	
-	<cfif len(attributes.collectionConfigJson)>
-		<cfset JSON = attributes.collectionConfigJson />
-	<cfelseif structKeyExists(attributes,'collectionlist')> 	
-		<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
-	</cfif> 
-	
-	<!---escape apostraphe boi--->
-	<cfset JSON = rereplace(JSON,"'","\'",'all')/>
-	<!---convert double quotes to single--->
-	<cfset JSON = rereplace(JSON,'"',"'",'all')/>
-	
-	
+	<cfparam name="attributes.fieldName" type="string" default="#attributes.propertyName#"/>
 	
 	<cfoutput>
 	<!--- Generic  Typeahead --->
@@ -73,7 +67,7 @@
 				        data-multiselect-mode="false"
 				        data-filter-flag="true"
 				        data-selected-format-string="#attributes.selectedFormatString#"
-				        data-field-name="#attributes.propertyName#"
+				        data-field-name="#attributes.fieldName#"
 				        data-initial-entity-id="#initialEntityID#"
 				        data-max-records="#attributes.maxrecords#"
 				        data-order-by-list="#attributes.orderbylist#"
