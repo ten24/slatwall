@@ -162,6 +162,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productDirections" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="hairConcernType" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 
+
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();

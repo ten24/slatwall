@@ -75,7 +75,16 @@
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
+				
+				<!--- Display summarized fulfillment charge if no handling fees --->
+				<cfif not rc.order.getFulfillmentHandlingFeeTotal()>
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
+				<!--- Display fulfillment charge broken down by handling fees and delivery charges --->
+				<cfelse>
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentChargeTotalBeforeHandlingFees" edit="false" displayType="table">
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentHandlingFeeTotal" edit="false" displayType="table">
+				</cfif>
+				
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.status')#" />
