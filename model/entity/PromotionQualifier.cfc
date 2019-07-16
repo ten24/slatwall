@@ -297,9 +297,10 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(skuCollection)){
 			return false;
 		}
-		skuCollection.addFilter('skuID',arguments.skuID,'=');
-		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
-		skuCollection.removeFilter('skuID',arguments.skuID);
+		skuCollection.setPageRecordsShow(1);
+		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
+		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(refresh=true));
+		skuCollection.removeFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
 		return hasSku;
 	}
 	
@@ -313,9 +314,10 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(orderCollection)){
 			return false;
 		}
-		orderCollection.addFilter('orderID',arguments.orderID,'=');
-		var hasOrder = arrayLen(orderCollection.getRecords(refresh=true));
-		orderCollection.removeFilter('orderID',arguments.orderID);
+		orderCollection.setPageRecordsShow(1); 
+		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
+		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
+		orderCollection.removeFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
 		return hasOrder;
 	}
 	
