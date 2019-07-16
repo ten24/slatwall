@@ -57,6 +57,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 				deleteEntityQueueItems(arguments.entityQueue.getEntityQueueID());
 			}catch(any e){
+				rethrow;
 				if(!isNull(entityQueue.getLogHistoryFlag()) && entityQueue.getLogHistoryFlag()){
 					addQueueHistory(entityQueue, false);
 				}
@@ -128,6 +129,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 					ormflush();
 				}catch(any e){
+					rethrow;
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
 				}
 			}
