@@ -2408,29 +2408,56 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							HQL = 'SELECT DISTINCT(#entityAlias#) ' & getHQL(excludeGroupBy=true);
 
 							HQLParams = getHQLParams();
-							var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+							
+							//build the scrollable query.
+							var scrollableSession = ormGetSessionFactory().openSession(); //use the new session but scroll results.
+							var cacheMode = createObject("java","org.hibernate.CacheMode");
+	    					var scrollMode = createObject("java","org.hibernate.ScrollMode");
+	    					var query = scrollableSession.createQuery(HQL)
+	    					.setCacheMode(cacheMode.IGNORE)
+	    					.setFirstResult(getPageRecordsStart()-1)
+	    					.setMaxResults(getPageRecordsShow())
+	    					.setReadOnly(true)
+							.setFetchSize(getPageRecordsShow());
+							
+							//Add all of the params.
+							for (var param in HQLParams){
+								query.setParameter(param, HQLParams[param]);
+							}
+							
+							// Set the pagination info.
+							var entities = query.scroll(scrollMode.FORWARD_ONLY);
 							var columns = getCollectionConfigStruct()["columns"];
-
-							for(var entity in entities){
-								var pageRecord = {};
-								for(var column in columns){
-									var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
-									if(left(propertyIdentifier,1) == '.'){
-										propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+							
+							try{
+								while(entities.next()){
+									var entity = entities.get(0);
+									var pageRecord = {};
+									for(var column in columns){
+										var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
+										if(left(propertyIdentifier,1) == '.'){
+											propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+										}
+	
+										if(structKeyExists(column,'setting') && column.setting == true){
+											propertyIdentifier = ListRest(column.propertyIdentifier,'.');
+											pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
+										}else{
+											pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier);
+										}
 									}
-
-									if(structKeyExists(column,'setting') && column.setting == true){
-										propertyIdentifier = ListRest(column.propertyIdentifier,'.');
-										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
-									}else{
-										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier);
+									arrayAppend(variables.pageRecords,pageRecord);
+	
+									if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
+										var processObject = entity.getProcessObject(this.getProcessContext());
+										arrayAppend(variables.processObjectArray,processObject);
 									}
 								}
-								arrayAppend(variables.pageRecords,pageRecord);
-
-								if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
-									var processObject = entity.getProcessObject(this.getProcessContext());
-									arrayAppend(variables.processObjectArray,processObject);
+							}catch(var ormError){
+								throw(ormError);
+							}finally{
+								if (scrollableSession.isOpen()){
+									scrollableSession.close();
 								}
 							}
 						}else{
