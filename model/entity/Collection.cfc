@@ -1486,7 +1486,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		numeric filterGroupIndex=1
 	) {
 		//first do we have filters?
-		if(arraylen(collectionConfigStruct['filterGroups'])){
+		if(arraylen(variables.collectionConfigStruct['filterGroups'])){
 			//filterGroupName is used to navigate a filtergroup path. If not specified we can assume there is only the base filterGroup.
 			var selectedFilterGroup = [];
 
@@ -1496,14 +1496,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			if(!structKeyExists(arguments,'filterGroup')){
 				selectedFilterGroup = getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup;
-			}
-
+			} else { 
+				selectedFilterGroup = arguments.filterGroup;
+			} 
+		
 			var filterGroupCount = arraylen(selectedFilterGroup);
 			for(var i=filterGroupCount; i >= 1; i--){
+
+				//handle filter group within filter group
+				if(structKeyExists(selectedFilterGroup[i], 'filterGroup') && !arrayIsEmpty(selectedFilterGroup[i]['filterGroup'])){
+					var newArguments = {
+						'filterGroup':selectedFilterGroup[i]['filterGroup']
+					}; 
+					if(structKeyExists(arguments,'propertyIdentifier')){
+						newArguments['propertyIdentifier'] = arguments.propertyIdentifier;
+					}
+					if(structKeyExists(arguments,'value')){
+						newArguments['value'] = arguments.value;
+					}
+					if(structKeyExists(arguments,'comparisonOperator')){
+						newArguments['comparisonOperator'] = arguments.comparisonOperator;
+					}
+					if(structKeyExists(arguments,'logicalOperator')){
+						newArguments['logicalOperator'] = arguments.logicalOperator;
+					}
+					this.removeFilter(argumentCollection=newArguments); 	
+					continue; 
+				}
+
 				var filter = selectedFilterGroup[i];
 				var isRemovable = true;
 				if(structKeyExists(arguments,'propertyIdentifier')){
-
 					if(getPropertyIdentifierAlias(filter.propertyIdentifier) != getPropertyIdentifierAlias(arguments.propertyIdentifier)){
 						isRemovable = false;
 					}
@@ -1537,7 +1560,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				if(!structKeyExists(arguments,'filterGroup')){
 					getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup = selectedFilterGroup;
-				}
+				} else { 
+					arguments.filterGroup = selectedFilterGroup; 
+				} 
 			}
 		}
 	}
