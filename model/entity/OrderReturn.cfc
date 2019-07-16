@@ -71,6 +71,16 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwO
 	
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public numeric function getQuantityUnReceived() {
+		var qtyUnreceived = 0;
+
+		for ( var returnItem in getOrderReturnItems() ){
+			qtyUnreceived += returnItem.getQuantityUnReceived();
+		}
+
+		return qtyUnreceived;
+
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		

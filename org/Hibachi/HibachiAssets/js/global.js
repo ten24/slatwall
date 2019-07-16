@@ -370,6 +370,16 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			e.preventDefault();
 			jQuery('#adminConfirm .modal-body').html( jQuery(this).data('confirm') );
 			jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
+			if(jQuery(this).is('a')){		
+	                jQuery('#adminConfirm .btn-primary').unbind('click');		
+	                jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );		
+            }else if(jQuery(this).attr('type') == 'submit'){		
+                var _that = this;		
+                jQuery('#adminConfirm .btn-primary').click(function() {		
+                    jQuery(this).attr("disabled", true);		
+                    jQuery(_that).closest("form").submit();		
+                });		
+            }
 			jQuery('#adminConfirm').modal();
 		});
 		jQuery('body').on('click', '.btn-disabled', function(e){	
@@ -842,6 +852,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		});
 		jQuery('.hibachi-permission-checkbox:checked').change();
 	
+		jQuery('body').on('lazyLoadComplete',function(){
+			jQuery('.hibachi-permission-checkbox').each(function() {
+				if(jQuery(this).attr('checked')=='checked'){
+					updatePermissionCheckboxDisplay( jQuery(this) );
+				}
+			});
+		});
 	
 		// Report Hooks ============================================
 	
@@ -1870,10 +1887,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				AngularHelper.Compile($('#'+tabID),htmlToCompile);
 				//jquery should work
 				initUIElements($('#'+tabID));
+				$('body').trigger('lazyLoadComplete');
 			});
 		}
-		
-		
 	}
 	/**
 	 * AngularHelper : Contains methods that help using angular without being in the scope of an angular controller or directive

@@ -392,11 +392,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		var availablePropertyList = getAvailableAccountPropertyList();
 
-		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
-
 		if(structKeyExists(getService('accountService'), "getCustomAvailableProperties")){
 			availablePropertyList = listAppend(availablePropertyList, getService('accountService').getCustomAvailableProperties());
 		}
+		
+		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 
 		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
 			arguments.propertyList = availablePropertyList;

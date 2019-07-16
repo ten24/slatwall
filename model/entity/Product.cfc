@@ -60,7 +60,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 	property name="deferredRevenueFlag" ormtype="boolean" description="This field identifies a product as having deferred revenue";
-	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
 	property name="startInCurrentPeriodFlag" ormtype="boolean" default="0";
  
 	// Calculated Properties
@@ -75,7 +74,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
-
+	property name="nextDeliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="many-to-one" fkcolumn="nextDeliveryScheduleDateID";
+	
 	// Related Object Properties (one-to-many)
 	property name="listingPages" singularname="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -153,19 +153,19 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
 		//CUSTOM PROPERTIES BEGIN
-		
-		//CUSTOM PROPERTIES END
-
+	
+ property name="extensionColor" ormtype="string" hb_formFieldType="select";
+ property name="pantsStyle" ormtype="string" hb_formFieldType="select";	//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
-			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();
-			deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
-			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue|ASC');
-			deliveryScheduleDateCollectionList.setPageRecordsShow(1);
-			var deliveryScheduleDateValueRecords = deliveryScheduleDateCollectionList.getPageRecords();
+			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
 			
-			if(arrayLen(deliveryScheduleDateValueRecords)){
-				variables.nextDeliveryScheduleDate=deliveryScheduleDateValueRecords[1]['deliveryScheduleDateValue'];
+			deliveryScheduleDateSmartList.addOrder('deliveryScheduleDateValue');
+			deliveryScheduleDateSmartList.setPageRecordsShow(1);
+			var deliveryScheduleDate= deliveryScheduleDateSmartList.getPageRecords();
+			
+			if(arrayLen(deliveryScheduleDate)){
+				variables.nextDeliveryScheduleDate=deliveryScheduleDate[1];
 			}
 			
 		}
@@ -448,6 +448,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				thisImage.name = getTitle();
 				thisImage.description = getProductDescription();
 				thisImage.resizedImagePaths = [];
+				thisImage.modifiedDateTime = getModifiedDateTime();
+
 				var resizeSizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizeSizesCount; s++) {
 
@@ -460,7 +462,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					);
 				}
 				//let's make sure the default sku image always comes first
-				if(skuData['skuID'] == getDefaultSku().getSkuID()){
+				if(!isNull(getDefaultSku()) && skuData['skuID'] == getDefaultSku().getSkuID()){
 					arrayPrepend(imageGalleryArray, thisImage);
 				} else {
 					arrayAppend(imageGalleryArray, thisImage);
@@ -496,6 +498,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
+				thisImage.modifiedDateTime = getModifiedDateTime();
 		
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {

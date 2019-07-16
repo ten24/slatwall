@@ -62,35 +62,43 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
-							   recordEditAction="admin:entity.editaccount"
-							   recordDetailAction="admin:entity.detailaccount">
 
-		<hb:HibachiListingColumn propertyIdentifier="firstName" />
-		<hb:HibachiListingColumn propertyIdentifier="lastName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
+    <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
-	</hb:HibachiListingDisplay> --->
+	<cfset serchableDisplayProperties = "firstName,lastName,primaryEmailAddress.emailAddress,company"/>
+	<cfset accountCollectionList.setDisplayProperties(
+	serchableDisplayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset nonSerchableDisplayProperties = "calculatedGuestAccountFlag,organizationFlag"/>
+	<cfset accountCollectionList.addDisplayProperties(
+		nonSerchableDisplayProperties, 
+		{
+			isVisible=true,
+			isSearchable=false,
+			isDeletable=true
+		}
+	)/>
 
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'Account'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editaccount"
-			data-record-detail-action="admin:entity.detailaccount"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="accountID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="company" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
-	</sw-listing-display>
+	<cfset accountCollectionList.addDisplayProperty(
+	displayProperty='accountID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#accountCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(accountCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(accountCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

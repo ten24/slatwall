@@ -22,6 +22,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
+	property name="entityQueueData" type="struct";
+	property name="stateless" type="boolean";
 
 	public any function init() {
 		setORMHasErrors( false );
@@ -31,6 +33,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
 		setSessionFoundExtendedPSIDCookieFlag( false );
+		setStateless(false);
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
 		setFailureActions( [] );
@@ -38,6 +41,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setModifiedEntities( [] );
 
 		return super.init();
+	}
+
+	public void function setStateless(boolean statelessValue=false){
+		variables.stateless = arguments.statelessValue;
+	}
+	public boolean function getStateless(){
+		return variables.stateless;
 	}
 
 	//get the users personal collection options
@@ -340,11 +350,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	// ==================== SESSION / ACCOUNT SETUP ===========================
 
 	public any function getSession() {
+		
 		if(!structKeyExists(variables, "session")) {
-			getService("hibachiSessionService").setProperSession();
+			
+			getService("hibachiSessionService").setProperSession(getStateless());
 		}
 		return variables.session;
 	}
+	
 
 	public any function getAccount() {
 		return getSession().getAccount();
@@ -434,8 +447,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return rbKey(argumentcollection=arguments);
 	}
 
-	public boolean function authenticateAction( required string action ) {
-		return getHibachiAuthenticationService().authenticateActionByAccount( action=arguments.action, account=getAccount() );
+	public boolean function authenticateAction( required string action,string processContext="" ) {
+		return getHibachiAuthenticationService().authenticateActionByAccount( action=arguments.action, account=getAccount(), processContext=arguments.processContext );
 	}
 
 	public boolean function authenticateEntity( required string crudType, required string entityName ) {
@@ -453,4 +466,52 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
 		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
+	
+
+	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = ''){
+		if(!structKeyExists(variables, "entityQueueData")) {
+			variables.entityQueueData = {};
+		}
+		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
+		
+		if(!structKeyExists(variables.entityQueueData, '#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#')){
+			variables.entityQueueData['#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#'] = arguments;
+			getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
+		}
+	}
+	
+	public struct function getEntityQueueData(){
+		if(!structKeyExists(variables, "entityQueueData")) {
+			variables.entityQueueData = {};
+		}
+		return variables.entityQueueData;
+		
+	}
+	
+	public void function clearEntityQueueData(){
+		var entityQueues = getEntityQueueData();
+		var entityQueueIDsToBeDeleted = '';
+		
+		for(var entityQueue in entityQueues){
+			entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueues[entityQueue]['entityQueueID']);
+		}
+		variables.entityQueueData = {};
+		getService('HibachiEntityQueueService').deleteEntityQueueItems(entityQueueIDsToBeDeleted);
+		
+	}
+	
+	public void function deleteEntityQueue(entityQueueID){
+		var entityQueues = getEntityQueueData();
+		
+		for(var entityQueue in entityQueues){
+			if(entityQueues[entityQueue]['entityQueueID'] == arguments.entityQueueID){
+				StructDelete(entityQueues, entityQueue);
+				getService('HibachiEntityQueueService').deleteEntityQueueItems(arguments.entityQueueID);
+				break;
+			}
+		}
+		
+	}
+	
+	
 }

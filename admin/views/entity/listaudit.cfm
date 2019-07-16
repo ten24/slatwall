@@ -72,24 +72,29 @@ Notes:
 
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display data-using-personal-collection="true"
-	data-collection="'Audit'"
-	data-edit="false"
-	data-has-search="true"
-	record-detail-action="admin:entity.preprocessaudit"
-	record-detail-query-string="processContext=rollback"
-	record-detail-model="true"
-	data-is-angular-route="false"
-	data-angular-links="false"
-	data-has-action-bar="false"
->
-	<sw-listing-column data-property-identifier="auditID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="auditDateTime" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="sessionAccountFullName" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="sessionAccountEmailAddress" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="auditType" filter="true" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="title" tdclass="primary" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="baseObject" ></sw-listing-column>
-	<sw-listing-column data-property-identifier="baseID" ></sw-listing-column>
-
-</sw-listing-display>
+<cfset auditCollectionList = getHibachiScope().getService('hibachiAuditService').getAuditCollectionList()>
+	<cfset displayProperties = "auditDateTime,sessionAccountFullName,sessionAccountEmailAddress,auditType,title,baseObject,baseID"/>
+	<cfset auditCollectionList.setDisplayProperties(
+	displayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset auditCollectionList.addDisplayProperty(
+	displayProperty='auditID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+		<hb:HibachiListingDisplay 
+		collectionList="#auditCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(auditCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(auditCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>

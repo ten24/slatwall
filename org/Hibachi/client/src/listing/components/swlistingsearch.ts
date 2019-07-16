@@ -3,6 +3,8 @@
 
 class SWListingSearchController {
     private selectedSearchColumn;
+    private selectedSearchFilter;
+    public searchFilterPropertyIdentifier;
     private filterPropertiesList;
     private collectionConfig;
     private paginator;
@@ -12,13 +14,15 @@ class SWListingSearchController {
     private filtersClosed:boolean=true;
     private showToggleFilters:boolean;
     private showToggleDisplayOptions:boolean;
+    public showSearchFilterDropDown:boolean;
     private newFilterPosition;
     private itemInUse;
     private getCollection;
     private listingId;
     public swListingDisplay:any;
     public searchableOptions;
-    public swListingControls;
+    public searchableFilterOptions;
+    public swListingControls:any;
     public hasPersonalCollections:boolean=false;
     public personalCollections:any;
     public selectedPersonalCollection:any;
@@ -44,8 +48,34 @@ class SWListingSearchController {
         if(angular.isDefined(this.swListingDisplay.personalCollectionIdentifier)){
             this.personalCollectionIdentifier = this.swListingDisplay.personalCollectionIdentifier;
         }
+        
+        if(angular.isUndefined(this.showSearchFilterDropDown)){
+            this.showSearchFilterDropDown = false;
+        }
+        
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.swListingDisplay.collectionConfig.columns);
+        
+        this.searchableFilterOptions = [
+            {
+                title:'Last 3 Months',
+                value:new Date().setMonth(new Date().getMonth()-3)
+            },
+            {
+                title:'Last 6 Months',
+                value:new Date().setMonth(new Date().getMonth()-6)
+            },
+            {
+                title:'1 Year Ago',
+                value:new Date().setMonth(new Date().getMonth()-12)
+            },
+            {
+                title:'All Time',
+                value:'All'
+            }
+        ];
+        
+        this.selectSearchFilter(this.searchableFilterOptions[0]);
         this.selectedSearchColumn={title:'All'};
 
         this.configureSearchableColumns(this.selectedSearchColumn);
@@ -73,6 +103,13 @@ class SWListingSearchController {
             );
         }
     }
+    
+    public selectSearchFilter = (filter?)=>{
+        this.selectedSearchFilter = filter;
+        if(this.swListingDisplay.searchText){
+            this.search();
+        }
+    }
 
     public selectSearchColumn = (column?)=>{
         this.selectedSearchColumn = column;
@@ -88,14 +125,14 @@ class SWListingSearchController {
         }
         var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
         if(personalCollection){
-            selectedPersonalCollection[personalCollection.collectionObject.toLowerCase()] = personalCollection;
+            selectedPersonalCollection[this.swListingDisplay.personalCollectionKey] = personalCollection;
             this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
         }else{
-            delete selectedPersonalCollection[this.swListingDisplay.baseEntityName.toLowerCase()];
+            delete selectedPersonalCollection[this.swListingDisplay.personalCollectionKey];
 
             this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
         }
-        window.location.href = this.appConfig.baseURL+'?'+this.appConfig.action+'='+'entity.list'+this.swListingDisplay.baseEntityName.toLowerCase();
+        window.location.reload();
     }
     
     public deleteReportCollection = (persistedCollection)=>{
@@ -120,7 +157,7 @@ class SWListingSearchController {
         ).then((data)=>{
             if(this.localStorageService.hasItem('selectedPersonalCollection')){
                 const selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
-                const currentSelectedPersonalCollection = selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()];
+                const currentSelectedPersonalCollection = selectedPersonalCollection[this.swListingDisplay.personalCollectionKey];
                 if(currentSelectedPersonalCollection){
                     const currentSelectedPersonalCollectionID = currentSelectedPersonalCollection.collectionID;
                     if(personalCollection.collectionID === currentSelectedPersonalCollectionID){
@@ -136,17 +173,17 @@ class SWListingSearchController {
     public savePersonalCollection=(collectionName?)=>{
         if(
             this.localStorageService.hasItem('selectedPersonalCollection') &&
-            this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] &&
+            this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.personalCollectionKey] &&
             (angular.isUndefined(this.personalCollectionIdentifier) ||
-            (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription']) &&
-            this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))
+            (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.personalCollectionKey]['collectionDescription']) &&
+            this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))
         ){
             var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
-            if(selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]){
+            if(selectedPersonalCollection[this.swListingDisplay.personalCollectionKey]){
 
                 this.$hibachi.saveEntity(
                     'Collection',
-                    selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()].collectionID,
+                    selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
                     {
                         'accountOwner.accountID':this.$rootScope.slatwall.account.accountID,
                         'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString
@@ -184,7 +221,7 @@ class SWListingSearchController {
                 }
                 var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
 
-                selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
+                selectedPersonalCollection[this.swListingDisplay.personalCollectionKey] = {
                     collectionID:data.data.collectionID,
                     collectionObject:data.data.collectionObject,
                     collectionName:data.data.collectionName,
@@ -234,15 +271,22 @@ class SWListingSearchController {
         }
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
-
+        this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+        if(this.selectedSearchFilter.value!='All'){
+            if(angular.isUndefined(this.searchFilterPropertyIdentifier) || !this.searchFilterPropertyIdentifier.length){
+                this.searchFilterPropertyIdentifier='createdDateTime';
+            }
+            console.log(this.searchFilterPropertyIdentifier)
+            this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
+        }
         this.swListingDisplay.collectionConfig = this.collectionConfig;
-
+        
+        
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
     };
 
     private configureSearchableColumns=(column)=>{
-
         var searchableColumn = "";
         if(column.propertyIdentifier){
             searchableColumn = column.propertyIdentifier;
@@ -275,7 +319,9 @@ class SWListingSearch  implements ng.IDirective{
         collectionConfig : "<?",
         paginator : "=?",
         listingId : "@?",
-        showToggleSearch:"=?"
+        showToggleSearch:"=?",
+        searchFilterPropertyIdentifier:"@?",
+        showSearchFilterDropDown:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';
