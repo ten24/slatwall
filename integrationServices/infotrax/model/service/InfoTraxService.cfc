@@ -179,8 +179,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
 		
-		if( len(arguments.account.getGovernmentIDNumber()) ){
-			distributorData['governmentId'] = arguments.account.getGovernmentIDNumber();//Government ID (Only necessary if using ICE for payout)
+		if( len(arguments.account.getGovernmentIdentificationNumber()) ){
+			distributorData['governmentId'] = arguments.account.getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
 			distributorData['governmetIdFormat'] = '1';//A single numerical representation of what type of governmentId is being saved. This will all depend on how the settings are set in ICE. (0-Country Default, 1-Business ID)
 		}
 		

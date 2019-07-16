@@ -142,10 +142,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
-			
+			arguments.account.setLastSyncedDateTime(now());
+			arguments.account.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
 		}
-		//TODO: Update lastSyncedDateTime, Update Sesitive Data
-		writedump(iceResponse); abort;
 		
 	}
 	
@@ -166,7 +165,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_cancelOrder':
 				iceResponse = deleteTransaction(arguments.data.DTSArguments);
 				break
-				
 			default:
 				return;
 		}

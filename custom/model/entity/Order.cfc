@@ -38,6 +38,8 @@ component {
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
     
+    property name="lastSyncedDateTime" ormtype="timestamp";
+    
     
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
