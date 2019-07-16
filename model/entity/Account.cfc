@@ -173,7 +173,6 @@ property name="enrollmentDate" ormtype="timestamp";
  property name="spouseName" ormtype="string";
  property name="driverLicense" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
- property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="governmentIDNumber" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="productPack" ormtype="string";
@@ -1141,7 +1140,7 @@ property name="enrollmentDate" ormtype="timestamp";
 		//CUSTOM FUNCTIONS BEGIN
 
 public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
-		if(structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
+		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
 			var orderCollection = getService('OrderService').getOrderCollectionList(); 
 			orderCollection.addFilter('account.accountID', getAccountID());
 			orderCollection.addFilter('orderTemplate.orderTemplateID','NULL','is not');
