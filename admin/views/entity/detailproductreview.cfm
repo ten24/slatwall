@@ -61,9 +61,19 @@ Notes:
 			<hb:HibachiPropertyList>
 				<cfif rc.edit eq true AND rc.productReview.isNew() >
 					<swa:SlatwallProductTypeahead productPropertyName="product.productID" edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"></swa:SlatwallProductTypeahead>
-					<cfelse>
+					<cfset productCollectionList=getHibachiScope().getService('productService').getProductCollectionList()/>
+					<cfset productCollectionList.setDisplayProperties('productID',{isVisible=false,isSearchable=false})/>
+					<cfset productCollectionList.addDisplayProperties('productName',{isVisible=true,isSearchable=true})/>
+					<cfset productCollectionList.addFilter('activeFlag',1)/>
+					<hb:HibachiTypeahead 
+						entityName="Product" 
+						propertyName="product.productID" 
+						edit="#rc.edit#" 
+						collectionEntity="#productCollectionList#"
+					></hb:HibachiTypeahead>
+				<cfelse>
 					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewProductName" edit="false" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
-					</cfif>
+				</cfif>
 					
 			
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">

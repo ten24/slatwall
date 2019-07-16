@@ -70805,6 +70805,15 @@ var SWCriteriaBoolean = /** @class */ (function () {
                         }
                     }
                 });
+                scope.booleanfilterPropertyChanged = function (selectedFilterProperty) {
+                    scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+                };
+                scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
+                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+                    }
+                    scope.filterItem.value = selectedFilterProperty.criteriaValue;
+                };
             }
         };
     }
