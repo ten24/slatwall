@@ -68,13 +68,13 @@ component accessors="true" output="false" extends="HibachiService" {
 
 					//not necessarily a processMethod
 					var method = entityQueue['processMethod']; 
-					var hasProcessContext = left(method, 7) == 'process' || listLen(method, '_') > 1;
 					var hasEntityQueueData = structKeyExists(entityQueue, 'entityQueueData') && isJSON(entityQueue['entityQueueData']); 
 					var entityQueueData = {};
 					if(hasEntityQueueData){
 						entityQueueData = deserializeJson(entityQueue['entityQueueData']); 
 					}
 	
+					var hasProcessContext = left(method, 7) == 'process' || listLen(method, '_') > 1;
 					var processContext = ''; 
 					var methodData = entityQueueData;  	
 		
