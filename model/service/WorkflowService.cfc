@@ -380,20 +380,13 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
-					var processData = {
-						'1'=arguments.entity,
-						'2' = arguments.data
-					};
-					if(arguments.entity.hasProcessObject(processContext)){
-						processData['3'] = arguments.entity.getProcessObject(processContext);
-					}
+
+					arguments.entity = entityService.process(arguments.entity, arguments.data, processContext);
 					
-					var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
-					if(!processMethod.hasErrors()) {
+					if(!arguments.entity.hasErrors()) {
 						actionSuccess = true;
 					}
 				}else{
-					
 					var entityService = getServiceByEntityName( entityName=arguments.workflowTaskAction.getWorkflowTask().getWorkflow().getWorkflowObject());
 					var processData = {};
 					try{
@@ -408,7 +401,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			case 'processByQueue' :
 				if(structKeyExists(arguments.data, 'collectionData')){
 					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
-					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName); 
+					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
+					logHibachi('primaryIDsToBeQueued #listLen(primaryIDsToQueue)# vs #arrayLen(arguments.data.collectionData)#',true) 
 					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
 					actionSucess = true; 
 				} else { 
@@ -470,16 +464,17 @@ component extends="HibachiService" accessors="true" output="false" {
 					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
 				)
 			){
-				
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 					if(!isNull(workflowTaskAction.getUpdateData()) && !isNull(workflowTaskAction.getActionType())){
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
+							
 							if(!structKeyExists(arguments.data,'collectionData')){
 								arguments.data.collectionData = {};
 							}
+							
 							//Execute ACTION
 							if(structKeyExists(arguments.data,'entity')){
 								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType(), arguments.data.collectionData);

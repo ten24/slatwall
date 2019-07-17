@@ -18,6 +18,18 @@ component accessors="true" output="false" extends="HibachiService" {
 		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 	}
 
+	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
+	//entry point will always be from workflow which should pass collectionData  
+	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
+		if(structKeyExists(arguments.data, 'collectionData')){
+			this.processEntityQueueArray(arguments.data.collectionData); 
+		} else if(!entityQueue.getNewFlag()){
+			var entityQueueArray = [ arguments.entityQueue.getStructRepresentation() ];
+			this.processEntityQueueArray(entityQueueArray); 
+		} 
+		return arguments.entityQueue;
+	}
+	
 	private any function getServiceForEntityQueue(required struct entityQueue){ 
 		
 		var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
@@ -37,7 +49,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	} 
 
 	//handles process case / validates returns true if method was invoked
-	private boolean  function invokeMethodForService(required struct entityQueue, required any entity, required any service){
+	private boolean function invokeMethodOrProcessForService(required struct entityQueue, required any entity, required any service){
 		
 		var entityValidToInvoke = true; //it may not be a processContext
 
@@ -52,34 +64,28 @@ component accessors="true" output="false" extends="HibachiService" {
 
 		var hasProcessContext = left(method, 7) == 'process' || listLen(method, '_') > 1;
 		var processContext = ''; 
-		var methodData = entityQueueData;  	
 
 		if(hasProcessContext){
 			processContext = listLast(method, '_');//listlast to equate processEntity_processContext & processContext
-			entityValidToInvoke = getHibachiValidationService().validate(entity, processContext, false);//don't set errors
-
+			
+			var hibachiErrors = getHibachiValidationService().validate(entity, processContext, false);//don't set errors on object
+			entityValidToInvoke = hibachiErrors.hasErrors();
+			//set validation errors on entity queue for tracking purposes? 	
+			
 			if(entityValidToInvoke){
 				entityService.process(entity, entityQueueData, processContext); 	
 			} 
 		} else if(entityValidToInvoke) {
-			methodData = { '1'=entity };
+			var methodData = { '1'=entity };
 			if(hasEntityQueueData){
 				methodData['2'] = entityQueueData;
 			}	
 			entityService.invokeMethod("#entityQueue['processMethod']#", methodData);
 		}
 		
-		return entityValidForMethod;
+		return entityValidToInvoke;
 	} 
-
-	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
-		if(structKeyExists(arguments.data, 'collectionData')){
-			this.processEntityQueueArray(arguments.data.collectionData); 
-		} else if(!entityQueue.getNewFlag()){
-			this.processEntityQueueArray([arguments.entityQueue.getStructRepresentation()]); 
-		} 
-		return arguments.entityQueue;
-	} 
+ 
 
 	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
 			
@@ -116,7 +122,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						continue;
 					}
 
-					var entityMethodInvoked = invokeMethodForService(entityQueue, entity, entityService);  
+					var entityMethodInvoked = invokeMethodOrProcessForService(entityQueue, entity, entityService);  
 					
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 				
