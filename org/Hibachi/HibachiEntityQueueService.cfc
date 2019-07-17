@@ -72,6 +72,15 @@ component accessors="true" output="false" extends="HibachiService" {
 		return entityValidForMethod;
 	} 
 
+	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
+		if(structKeyExists(arguments.data, 'collectionData')){
+			this.processEntityQueueArray(arguments.data.collectionData); 
+		} else if(!entityQueue.getNewFlag()){
+			this.processEntityQueueArray([arguments.entityQueue.getStructRepresentation()]); 
+		} 
+		return arguments.entityQueue;
+	} 
+
 	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
 			
 		if(!arraylen(arguments.entityQueueArray)){
