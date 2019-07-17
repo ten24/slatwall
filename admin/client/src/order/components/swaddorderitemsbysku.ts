@@ -12,6 +12,10 @@ class SWAddOrderItemsBySkuController{
     
     public orderFulfillmentId:string;
     
+    public accountId:string;
+    
+    public currencyCode:string;
+    
     public simpleRepresentation:string;
     
     public returnOrderId:string;
@@ -35,7 +39,7 @@ class SWAddOrderItemsBySkuController{
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
 		//var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
-		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price,personalVolumeByCurrencyCode";
+		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
 		
 		if(this.skuPropertiesToDisplay != null){
 			var properties = this.skuPropertiesToDisplay.split(',');
@@ -51,6 +55,8 @@ class SWAddOrderItemsBySkuController{
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
         this.addSkuCollection.addDisplayProperty('qats','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
+        this.addSkuCollection.addDisplayProperty('personalVolumeByCurrencyCode','Personal Volume',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}});
+        this.addSkuCollection.addDisplayProperty('commissionableVolumeByCurrencyCode','Personal Volume',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}});
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
@@ -192,6 +198,8 @@ class SWAddOrderItemsBySku implements ng.IDirective {
 	public bindToController = {
         order: '<?', 
         orderFulfillmentId: '<?',
+        accountId: '<?',
+        currencyCode: '<?',
         simpleRepresentation: '<?',
         returnOrderId: '<?',
         skuPropertiesToDisplay: '@?',
