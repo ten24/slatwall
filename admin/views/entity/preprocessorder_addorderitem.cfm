@@ -249,7 +249,7 @@ Notes:
 										<cfif not isNull(rc.processObject.getPickupLocationID())>
 											<cfset selectedLocationID = rc.processObject.getPickupLocationID() />
 										</cfif>
-
+										
 										<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="pickupLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
 										
 									</hb:HibachiDisplayToggle>

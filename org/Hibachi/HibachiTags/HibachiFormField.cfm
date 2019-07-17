@@ -281,29 +281,19 @@
 					}
 					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
 				</cfscript>
-				
-				<sw-typeahead-input-field
-					data-entity-name="#propertyMetaData.cfc#"
-			        data-property-to-save="#primaryIDName#"
-			        data-property-to-show="#simpleRepresentationName#"
-			        data-properties-to-load="#primaryIDName#,#simpleRepresentationName#"
-			        data-show-add-button="true"
-			        data-show-view-button="true"
-			        data-placeholder-rb-key="#propertynamerbkey#"
-			        data-placeholder-text="Search #propertynamerbkey#"
-			        data-multiselect-mode="false"
-			        data-filter-flag="false"
-			        data-selected-format-string="##"
-			        data-field-name="#attributes.fieldName#"
-			        data-initial-entity-id="#attributes.value#"
-			        data-max-records="20"
-			        data-order-by-list="#simpleRepresentationName#|ASC">
-			
-
-
-					<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
-	
-				</sw-typeahead-input-field>
+				<!---location type ahead collection--->
+				<cfset entityCollectionList=attributes.hibachiScope.getService('hibachiService').invokeMethod('get#propertyMetaData.cfc#CollectionList')/>
+				<cfset entityCollectionList.setDisplayProperties('#primaryIDName#',{isVisible=false,isSearchable=false})/>
+				<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
+				<hb:HibachiTypeahead 
+					edit="#attributes.edit#" 
+					collectionList="#entityCollectionList#"
+					fieldName="#attributes.fieldName#"
+					labelText=""
+					placeholder="Search #propertynamerbkey#"
+					initialEntityID="#attributes.value#"
+					data-max-records="20"
+				></hb:HibachiTypeahead>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="typeahead">

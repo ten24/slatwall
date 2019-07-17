@@ -15,7 +15,8 @@
 	<cfparam name="attributes.labelText" type="string" default="#attributes.hibachiScope.rbkey('entity.#attributes.entityName#_plural')#"/>					
 	<cfparam name="attributes.propertyName" type="string" default="#attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(attributes.entityName)#"/>
 	<cfparam name="attributes.labelClass" type="string" default="control-label col-sm-4"/>
-	<cfparam name="attributes.edit" type="boolean" default="false"/>				<!---IE rc.edit value --->
+	<cfparam name="attributes.placeHolder" type="string" default="Search #attributes.labelText#"/>
+	<cfparam name="attributes.edit" type="boolean" default="false"/>				
 	<cfparam name="attributes.rbKey" type="string" default="entity.#attributes.entityName#" />		
 	<cfparam name="attributes.selectedFormatString" type="string" default="#attributes.entityName# >> ${#attributes.propertyName#}"/><!--- example: products >> ${productName} --->
 	<cfparam name="attributes.maxrecords" type="string" default="25" />
@@ -24,6 +25,7 @@
 	<cfparam name="attributes.orderbylist" default="#attributes.propertyToShow#|ASC"/>
 	<cfparam name="attributes.propertyToLoad" type="string" default="#attributes.propertyToSave#,#attributes.propertyToShow#"/>
 	<cfparam name="attributes.fieldName" type="string" default="#attributes.propertyName#"/>
+	<cfparam name="attributes.initialEntityID" type="string" default=""/>
 	
 	<cfoutput>
 	<!--- Generic  Typeahead --->
@@ -47,14 +49,8 @@
 			<label for="#attributes.propertyName#" class="control-label col-sm-4">
 				<span class="s-title">#attributes.labelText#</span>
 			</label>
-			<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
+			<div class="col-sm-12" style="padding-left:10px;padding-right:0px">
 				<!--- Generic Configured product --->
-				<cfif !isNull(attributes.property) && !isNull(attributes.property.getProductID())>
-					<cfset initialEntityID = "#attributes.property.getProductID()#">
-				</cfif>
-				<cfif isNull(initialEntityID)>
-					<cfset initialEntityID = "">
-				</cfif>
 				<sw-typeahead-input-field
 						data-entity-name="#attributes.entityName#"
 				        data-property-to-save="#attributes.propertyToSave#"
@@ -63,12 +59,12 @@
 				        data-show-add-button="true"
 				        data-show-view-button="true"
 				        data-placeholder-rb-key="#attributes.rbKey#"
-				        data-placeholder-text="Search #attributes.labelText#"
+				        data-placeholder-text="Search #attributes.placeholder#"
 				        data-multiselect-mode="false"
 				        data-filter-flag="true"
 				        data-selected-format-string="#attributes.selectedFormatString#"
 				        data-field-name="#attributes.fieldName#"
-				        data-initial-entity-id="#initialEntityID#"
+			        	data-initial-entity-id="#attributes.initialEntityID#"
 				        data-max-records="#attributes.maxrecords#"
 				        data-order-by-list="#attributes.orderbylist#"
 						data-typeaheadCollectionConfig="#scopeVariableID#.collectionConfigString"       

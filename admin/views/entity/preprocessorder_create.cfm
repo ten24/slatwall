@@ -89,7 +89,18 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderOriginID" edit="#rc.edit#">
-			<swa:SlatwallLocationTypeahead locationPropertyName="defaultStockLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" edit="true" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
+			<!---location type ahead collection--->
+			<cfset locationCollectionList=getHibachiScope().getService('locationService').getLocationCollectionList()/>
+			<cfset locationCollectionList.setDisplayProperties('locationID',{isVisible=false,isSearchable=false})/>
+			<cfset locationCollectionList.addDisplayProperties('locationName',{isVisible=true,isSearchable=true})/>
+			<cfset locationCollectionList.addFilter('activeFlag',1)/>
+			<cfset locationCollectionList.addFilter('parentLocation',"NULL",'!=')/>
+			<hb:HibachiTypeahead 
+				edit="#rc.edit#" 
+				collectionList="#locationCollectionList#"
+				fieldName="defaultStockLocationID"
+				labelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#"
+			></hb:HibachiTypeahead>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	
