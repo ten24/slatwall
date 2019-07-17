@@ -1,6 +1,5 @@
 component accessors="true" output="false" extends="HibachiService" {
 	
-	property name="hibachiValidationService" type="any";
 	property name="hibachiEntityQueueDAO" type="any";
 	
 
@@ -32,42 +31,47 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
-			var entityQueueIDsToBeUpdated = '';
 			
 			for(var entityQueue in arguments.entityQueueArray){
 			
 				var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
 				var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
-				var processContext = listLast(entityQueue['processMethod'], '_');
-				var entityValidForContext = getHibachiValidationService().validate(entity, processContext, false); 
-				this.logHibachi('entityValidForContext? #entityValidForContext#',true);
-				if(isNull(entity) || !entityValidForContext){
+				if(isNull(entity) || !len(entityQueue['processMethod'])){
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 					continue;
 				}
-	
-				var processData = {}; 
+				var processContextIndex = '2';
+				var processData = { '1'=entity };
+				
 				if(isJSON(entityQueue['entityQueueData'])){
-					processData = deserializeJSON(entityQueue['entityQueueData']);
+					processData['2'] = deserializeJSON(entityQueue['entityQueueData']);
+					processContextIndex = '3';
+				}
+	
+				if(len(entityQueue['processMethod']) && entity.hasProcessObject(entityQueue['processMethod'])){
+					processData[processContextIndex] = entity.getProcessObject(entityQueue['processMethod']);
 				}
 				
 				try{
-					entityService.process(entity, processData, processContext);
+					if(structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']))){
+						getService("#entityQueue['integration_integrationPackage']#Service").invokeMethod("#entityQueue['processMethod']#", processData);
+					}else if(structKeyExists(entityQueue, "integrationID") && !isNull(entityQueue['integrationID']) && len(trim(entityQueue['integrationID']))) { 
+						var integration = getService("IntegrationService").getIntegrationByIntegrationID(entityQueue['integrationID']);
+						entityQueue['integration_integrationPackage'] = integration.getIntegrationPackage();
+						getService("#entityQueue['integration_integrationPackage']#Service").invokeMethod("#entityQueue['processMethod']#", processData);
+					}else{
+						entityService.invokeMethod("#entityQueue['processMethod']#", processData);
+					}
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 					ormflush();
 				}catch(any e){
-					rethrow; 
-					entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
+					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
 				}
 			}
 			if(listLen(entityQueueIDsToBeDeleted)){
 				deleteEntityQueueItems(entityQueueIDsToBeDeleted);
 			}
-			if(listLen(entityQueueIDsToBeUpdated)){
-				updateModifiedDateTime(entityQueueIDsToBeUpdated);
-			}
-			
-			
+
 		}
 	}
 	
