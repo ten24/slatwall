@@ -14,7 +14,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			// this block executes only & only if it is a print/bundle Subscription
 			var requestBean = new Slatwall.model.transient.payment.CreditCardTransactionRequestBean();  // Request Bean Object initiation
 			var order = arguments.orderPayment.getOrder(); // initiating the Order object.
-			var orderPayment = arguments.orderPayment.getOrderPayment(); // initiating an object of orderPayment.
+			var orderPayment = arguments.orderPayment; // initiating an object of orderPayment.
 			var account = arguments.orderPayment.getOrder().getAccount(); // initiating an object of Accounts.
 			// if credit card is Null exit.
 			if(isNull(orderPayment.getCreditCardNumber()))
