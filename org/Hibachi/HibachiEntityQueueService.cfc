@@ -29,7 +29,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		} 
 		return arguments.entityQueue;
 	}
-	
+
+	//attempts to find integration service otherwise gets service by entity name	
 	private any function getServiceForEntityQueue(required struct entityQueue){ 
 		
 		var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
@@ -48,8 +49,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getServiceByEntityName( entityName=entityQueue['baseObject'] ); 
 	} 
 
-	//handles process case / validates returns true if method was invoked
-	private boolean function invokeMethodOrProcessForService(required struct entityQueue, required any entity, required any service){
+	//handles process method case & validates for context otherwise calls method on service returns true if method was invoked
+	private boolean function invokeMethodOrProcessOnService(required struct entityQueue, required any entity, required any service){
 		
 		var entityValidToInvoke = true; //it may not be a processContext
 
@@ -122,7 +123,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						continue;
 					}
 
-					var entityMethodInvoked = invokeMethodOrProcessForService(entityQueue, entity, entityService);  
+					var entityMethodInvoked = invokeMethodOrProcessOnService(entityQueue, entity, entityService);  
 					
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 				
