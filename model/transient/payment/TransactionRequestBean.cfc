@@ -65,8 +65,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="expirationYear" type="numeric";
 	property name="securityCode" type="string";
 	property name="providerToken" type="string";
-	property name="chaseProviderToken" type="string";
-	
 	// Account Info
 	property name="accountFirstName" type="string";   
 	property name="accountLastName" type="string";   

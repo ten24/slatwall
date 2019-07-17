@@ -69,11 +69,6 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="providerToken" ormType="string";
 	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
     property name="giftCardPaymentProcessedFlag" hb_populateEnabled="public" ormType="boolean" default="false";
-
-	// for chase integration
-	property name="orderPayment" ormtype="string";
-	property name="transactionCurrencyCode" ormtype="string";
-	property name="chaseProviderToken" ormType="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
@@ -142,7 +137,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
 	property name="maximumPaymentMethodPaymentAmount" persistent="false";
 
+		//CUSTOM PROPERTIES BEGIN
 	
+		//CUSTOM PROPERTIES END
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived()) && getPaymentTransactions()[i].getAmountReceived() > 0 && !isNull(getPaymentTransactions()[i].getProviderTransactionID()) && len(getPaymentTransactions()[i].getProviderTransactionID())) {

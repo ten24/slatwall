@@ -311,31 +311,28 @@ component accessors="true" output="false" displayname="Chase" implements="Slatwa
 	
 	public any function testIntegration() {
 		var requestBean = new Slatwall.model.transient.payment.CreditCardTransactionRequestBean();
+		var orderPayment = new Slatwall.model.entity.orderPayment();
 		var testAccount = getHibachiScope().getAccount();
-		getService('hibachiEventService').announceEvent('testingChase',{});
-		// requestBean.setTransactionType('authorize');
-		// requestBean.setTransactionType('generateToken');
-		// requestBean.setTransactionCurrencyCode("USD");
-		// requestBean.setOrderShortReferenceID('112345');
-		// requestBean.setCreditCardNumber('4112344112344113');
-		// requestBean.setCreditCardType('Visa');
-		// requestBean.setSecurityCode('123');
-		// requestBean.setExpirationMonth('01');
-		// requestBean.setExpirationYear(year(now())+1);
-		// requestBean.setTransactionAmount(42.10);
-		// requestBean.setAccountFirstName(testAccount.getFirstName());
-		// requestBean.setAccountLastName(testAccount.getLastName());
-		// requestBean.setBillingCity("Worcester");
-		// requestBean.setBillingStateCode("MA");
-		// requestBean.setBillingCountryCode("US");
-		// requestBean.setBillingStreetAddress("20 Franklin Street");
-		// requestBean.setBillingPostalCode("01604");
-		// var response = processCreditCard(requestBean); 
-		// // writeDump(response);
-		// // abort;
-		// return response;
+		requestBean.setTransactionType('generateToken');
+		requestBean.setTransactionCurrencyCode("USD");
+		requestBean.setOrderShortReferenceID('112345');
+		requestBean.setCreditCardNumber('4112344112344113');
+		requestBean.setCreditCardType('Visa');
+		requestBean.setSecurityCode('123');
+		requestBean.setExpirationMonth('01');
+		requestBean.setExpirationYear(year(now())+1);
+		requestBean.setTransactionAmount(42.10);
+		requestBean.setAccountFirstName(testAccount.getFirstName());
+		requestBean.setAccountLastName(testAccount.getLastName());
+		requestBean.setBillingCity("Worcester");
+		requestBean.setBillingStateCode("MA");
+		requestBean.setBillingCountryCode("US");
+		requestBean.setBillingStreetAddress("20 Franklin Street");
+		requestBean.setBillingPostalCode("01604");
+		var integration = new Slatwall.integrationServices.chase.Payment();
+		var response = integration.processCreditCard(requestBean);
+		writeDump(response);abort;
+		orderPayment.setChaseProviderToken(response.getProviderToken());
+		return response;
 	}
-
-
-	
 }
