@@ -381,6 +381,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
 
+					//process will determine whether we need to inflate a process object or pass data directly
 					arguments.entity = entityService.process(arguments.entity, arguments.data, processContext);
 					
 					if(!arguments.entity.hasErrors()) {
