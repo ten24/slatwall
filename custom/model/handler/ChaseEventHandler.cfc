@@ -4,8 +4,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			var orderID = arguments.orderPayment.getOrder().getOrderID();  // getOrderId()
 			var orderItemCollectionList = getService('orderService').getOrderItemCollectionList(); // get collection list
 			orderItemCollectionList.addFilter("order.orderID",orderID); // filtering by orderID
-			orderItemCollectionList.addFilter("sku.product.productType.productTypeName","print subscription", "=", "AND", "", "subscriptionfilters"); // filtering for subscription
-			orderItemCollectionList.addFilter("sku.product.productType.productTypeName","bundle subscription", "=", "OR", "", "subscriptionfilters"); // filtering for subscription
+			orderItemCollectionList.addFilter("sku.product.productType.systemCode","printSubscription", "=", "AND", "", "subscriptionfilters"); // filtering for subscription
+			orderItemCollectionList.addFilter("sku.product.productType.systemCode","bundleSubscription", "=", "OR", "", "subscriptionfilters"); // filtering for subscription
 			if(orderItemCollectionList.getRecordsCount()==0)
 			{
 			// if it's no records exists in a printSubscription or bundleSubscription then just return.
