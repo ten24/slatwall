@@ -2389,7 +2389,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 		}else{
-			try{
+			//try{
 
 				if( !structKeyExists(variables, "pageRecords")) {
 
@@ -2443,7 +2443,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 											propertyIdentifier = ListRest(column.propertyIdentifier,'.');
 											pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
 										}else{
-											pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier);
+											if (!isNull(column.arguments)){
+												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
+											}else{
+												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier);
+											}
 										}
 									}
 									arrayAppend(variables.pageRecords,pageRecord);
@@ -2489,7 +2493,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 				}
-			}
+			/*}
 			catch(any e){
 				if(isNull(HQL)){ 
 					var HQL = '';
@@ -2498,7 +2502,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.pageRecords = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
-			}
+			}*/
 
 		}
 
