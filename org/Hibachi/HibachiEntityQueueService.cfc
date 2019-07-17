@@ -37,7 +37,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				try{
 					var noMethod = !structKeyExists(entityQueue, 'processMethod') || 
 									isNull(entityQueue['processMethod'] || 
-								!len(entityQueue['processMethod'];  
+								    !len(entityQueue['processMethod']);  
 
 					if(noMethod) { 
 						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
