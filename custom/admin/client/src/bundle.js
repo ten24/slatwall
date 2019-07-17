@@ -63663,6 +63663,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('personalVolumeByCurrencyCode', 'Personal Volume', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false, persistent: false, arguments: { 'currencyCode': _this.currencyCode, 'accountID': _this.accountId } });
             _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
@@ -63789,6 +63790,8 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
         this.bindToController = {
             order: '<?',
             orderFulfillmentId: '<?',
+            accountId: '<?',
+            currencyCode: '<?',
             simpleRepresentation: '<?',
             returnOrderId: '<?',
             skuPropertiesToDisplay: '@?',
