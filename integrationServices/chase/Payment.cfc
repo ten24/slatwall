@@ -331,7 +331,6 @@ component accessors="true" output="false" displayname="Chase" implements="Slatwa
 		requestBean.setBillingPostalCode("01604");
 		var integration = new Slatwall.integrationServices.chase.Payment();
 		var response = integration.processCreditCard(requestBean);
-		writeDump(response);abort;
 		orderPayment.setChaseProviderToken(response.getProviderToken());
 		return response;
 	}
