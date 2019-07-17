@@ -306,6 +306,8 @@ component accessors="true" output="false" displayname="Chase" implements="Slatwa
 		
 		response.setAmountByTransactionType(requestBean.getTransactionType(),amount);
 		
+		response.setData(data);
+		
 		return response;
 	}
 	
