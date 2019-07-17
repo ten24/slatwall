@@ -18,6 +18,60 @@ component accessors="true" output="false" extends="HibachiService" {
 		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 	}
 
+	private any function getServiceForEntityQueue(required struct entityQueue){ 
+		
+		var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
+		var hasIntegration = structKeyExists(entityQueue, "integrationID") && !isNull(entityQueue['integrationID']) && len(trim(entityQueue['integrationID'])) 			
+
+		if(hasIntegration || hasIntegrationPackageService){
+			
+			if(!hasIntegrationPackageService) { 
+				var integration = getService("IntegrationService").getIntegrationByIntegrationID(entityQueue['integrationID']);
+				entityQueue['integration_integrationPackage'] = integration.getIntegrationPackage();
+			}  				
+			
+			return getService("#entityQueue['integration_integrationPackage']#Service")
+		}	
+	
+		return getServiceByEntityName( entityName=entityQueue['baseObject'] ); 
+	} 
+
+	//handles process case / validates returns true if method was invoked
+	private boolean  function invokeMethodForService(required struct entityQueue, required any entity, required any service){
+		
+		var entityValidToInvoke = true; //it may not be a processContext
+
+		//not necessarily a processMethod
+		var method = entityQueue['processMethod']; 
+		
+		var hasEntityQueueData = structKeyExists(entityQueue, 'entityQueueData') && isJSON(entityQueue['entityQueueData']); 
+		var entityQueueData = {};
+		if(hasEntityQueueData){
+			entityQueueData = deserializeJson(entityQueue['entityQueueData']); 
+		}
+
+		var hasProcessContext = left(method, 7) == 'process' || listLen(method, '_') > 1;
+		var processContext = ''; 
+		var methodData = entityQueueData;  	
+
+		if(hasProcessContext){
+			processContext = listLast(method, '_');//listlast to equate processEntity_processContext & processContext
+			entityValidToInvoke = getHibachiValidationService().validate(entity, processContext, false);//don't set errors
+
+			if(entityValidToInvoke){
+				entityService.process(entity, entityQueueData, processContext); 	
+			} 
+		} else if(entityValidToInvoke) {
+			methodData = { '1'=entity };
+			if(hasEntityQueueData){
+				methodData['2'] = entityQueueData;
+			}	
+			entityService.invokeMethod("#entityQueue['processMethod']#", methodData);
+		}
+		
+		return entityValidForMethod;
+	} 
+
 	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
 			
 		if(!arraylen(arguments.entityQueueArray)){
@@ -44,60 +98,22 @@ component accessors="true" output="false" extends="HibachiService" {
 						continue;
 					}
 				
-					var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
-					var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
-					var hasIntegration = structKeyExists(entityQueue, "integrationID") && !isNull(entityQueue['integrationID']) && len(trim(entityQueue['integrationID'])) 			
-
-					if(hasIntegration || hasIntegrationPackageService){
-						
-						if(!hasIntegrationPackageService) { 
-							var integration = getService("IntegrationService").getIntegrationByIntegrationID(entityQueue['integrationID']);
-							entityQueue['integration_integrationPackage'] = integration.getIntegrationPackage();
-						}  				
-						
-						entityService = getService("#entityQueue['integration_integrationPackage']#Service")
-					}
+					var entityService = getServiceForEntityQueue(entityQueue);
 
 					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
+					
 					if(isNull(entity)){
 						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 						continue;
 					}
 
-					var entityValidForMethod = true; //it may not be a processContext
-
-					//not necessarily a processMethod
-					var method = entityQueue['processMethod']; 
-					var hasEntityQueueData = structKeyExists(entityQueue, 'entityQueueData') && isJSON(entityQueue['entityQueueData']); 
-					var entityQueueData = {};
-					if(hasEntityQueueData){
-						entityQueueData = deserializeJson(entityQueue['entityQueueData']); 
-					}
-	
-					var hasProcessContext = left(method, 7) == 'process' || listLen(method, '_') > 1;
-					var processContext = ''; 
-					var methodData = entityQueueData;  	
-		
-					if(hasProcessContext){
-						processContext = listLast(method, '_');//listlast to equate processEntity_processContext & processContext
-						
-						if(entity.hasProcessObject(processContext)){
-							entityValidForMethod = getHibachiValidationService().validate(entity, processContext, false);//don't set errors
-						} else { 
-							entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-							continue;
-						}
-			
-					} else if(entityValidForMethod) {
-						methodData = { '1'=entity };
-						if(hasEntityQueueData){
-							methodData['2'] = entityQueueData;
-						}	
-						entityService.invokeMethod("#entityQueue['processMethod']#", methodData);
-					} 
+					var entityMethodInvoked = invokeMethodForService(entityQueue, entity, entityService);  
 					
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-					ormflush();
+				
+					if(entityMethodInvoked){
+						ormflush();
+					} 
 				}catch(any e){
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
 				}
