@@ -1,5 +1,6 @@
 component accessors="true" output="false" extends="HibachiService" {
 	
+	property name="hibachiValidationService" type="any";
 	property name="hibachiEntityQueueDAO" type="any";
 	
 
