@@ -436,10 +436,10 @@ class CollectionConfig {
             if(angular.isDefined(options['isKeywordColumn'])){
                 isKeywordColumn = options['isKeywordColumn']
             }
-             if(angular.isDefined(options['isOnlyKeywordColumn'])){
+            if(angular.isDefined(options['isOnlyKeywordColumn'])){
                 isOnlyKeywordColumn = options['isOnlyKeywordColumn']
             }
-
+            
             if(angular.isDefined(lastEntity.metaData[lastProperty])){
                 persistent = lastEntity.metaData[lastProperty].persistent;
             }
