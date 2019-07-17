@@ -403,7 +403,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(structKeyExists(arguments.data, 'collectionData')){
 					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
 					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
-					logHibachi('primaryIDsToBeQueued #listLen(primaryIDsToQueue)# vs #arrayLen(arguments.data.collectionData)#',true) 
 					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
 					actionSucess = true; 
 				} else { 
