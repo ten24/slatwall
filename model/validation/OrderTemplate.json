@@ -10,9 +10,11 @@
 	"properties":{
 		"account":							[{"contexts":"save","required":true}],
 		"accountPaymentMethod":				[{"contexts":"save,createAndPlaceOrder","conditions":"activeOrderTemplate", "required":true}],
+		"billingAccountAddress":			[{"contexts":"createAndPlaceOrder","required":true}],
 		"canPlaceOrderFlag" :				[{"contexts":"save","conditions":"activeOrderTemplate,scheduleOrderTemplate", "eq":true}],
 		"canPlaceFutureScheduleOrderFlag":  [{"contexts":"createAndPlaceOrder","conditions":"scheduleOrderTemplate" ,"eq":true }],	
 		"orderTemplateType":				[{"contexts":"save","required":true}],
+		"shippingAccountAddress":			[{"contexts":"createAndPlaceOrder","required":true}],
 		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
 		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}]
 	}
