@@ -70,18 +70,22 @@ component accessors="true" output="false" extends="HibachiService" {
 			processContext = listLast(method, '_');//listlast to equate processEntity_processContext & processContext
 			
 			var hibachiErrors = getHibachiValidationService().validate(entity, processContext, false);//don't set errors on object
-			entityValidToInvoke = hibachiErrors.hasErrors();
+			entityValidToInvoke = !hibachiErrors.hasErrors();
 			//set validation errors on entity queue for tracking purposes? 	
 			
 			if(entityValidToInvoke){
-				entityService.process(entity, entityQueueData, processContext); 	
-			} 
+				arguments.entity = 	arguments.service.process(arguments.entity, entityQueueData, processContext); 	
+				entityValidToInvoke = !arguments.entity.hasErrors();
+				if(!entityValidToInvoke){
+					this.logHibachi('entity queue encountered errors after invoking process #serializeJson(arguments.entity.getErrors())#',true);
+				} 
+			}   
 		} else if(entityValidToInvoke) {
 			var methodData = { '1'=entity };
 			if(hasEntityQueueData){
 				methodData['2'] = entityQueueData;
 			}	
-			entityService.invokeMethod("#entityQueue['processMethod']#", methodData);
+			arguments.service.invokeMethod("#entityQueue['processMethod']#", methodData);
 		}
 		
 		return entityValidToInvoke;
@@ -89,7 +93,6 @@ component accessors="true" output="false" extends="HibachiService" {
  
 
 	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
-			
 		if(!arraylen(arguments.entityQueueArray)){
 			return;
 		}
