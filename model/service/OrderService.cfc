@@ -4487,16 +4487,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Delete Overrides ==========================
 
-	public any function deleteOrderTemplate( required any order ) {
+	public any function deleteOrderTemplate( required any orderTemplate ) {
 
-		if(arguments.orderTemplate.getOrderTemplateTypeID() != getTypeService().getTypeBySystemCode('ottWishList').getTypeID()) {
+		if(arguments.orderTemplate.getTypeCode() === 'ottWishList') {
 
-			// If the order is the order in this session, then set this sessions order to null
+			// If the orderTemplate is the orderTemplate in this session, then set this sessions order to null
 			if(arguments.orderTemplate.getOrderTemplateID() eq getHibachiScope().getSession().getOrderTemplate().getOrderTemplateID()) {
 				getHibachiScope().getSession().setOrderTemplate( javaCast("null", "") );
 			}
 
-			getOrderDAO().removeWishListFromAllSessions( orderTemplateID=arguments.orderTemplate.getOrderTemplateID() );
+			// getOrderDAO().removeWishListFromAllSessions( orderTemplateID=arguments.orderTemplate.getOrderTemplateID() );
 
 			return delete( arguments.orderTemplate );
 		}

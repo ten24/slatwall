@@ -16,6 +16,6 @@
 		"canPlaceFutureScheduleOrderFlag":  [{"contexts":"createAndPlaceOrder","eq":true }],	
 		"orderTemplateType":				[{"contexts":"save","required":true}],
 		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
-		"statusCode":						[{"contexts":"delete","conditions":"deleteWishList", "required":true}],
 		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}]
+	}
 }
