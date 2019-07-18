@@ -86,6 +86,12 @@ class SWListingReportController {
     
     
     public saveReportCollection = (collectionName?)=>{
+        //Prevent saving report if no aggregate column is selected
+        if(!this.hasMetric) 
+        {
+            this.hasMetric = false;
+            return;
+        }
         if(collectionName || this.collectionId){
             
             
