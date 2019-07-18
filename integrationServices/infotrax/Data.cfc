@@ -162,7 +162,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				iceResponse = createTransaction(arguments.data.DTSArguments);
 				break;
 				
-			case 'afterOrderProcess_cancelOrder':
+			case 'afterOrderProcess_cancelOrderSuccess':
 				iceResponse = deleteTransaction(arguments.data.DTSArguments);
 				break
 			default:
