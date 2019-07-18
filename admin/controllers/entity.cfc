@@ -422,7 +422,6 @@ private void function populateWithAddressVerification(required struct rc){
 	public void function deleteWishList(required struct rc) {
 		param name="rc.orderTemplateID" default="";
 		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
-		// genericDeleteMethod(entityName="OrderTemplate", rc=arguments.rc);
 		getOrderService().deleteOrderTemplate(rc.orderTemplate);
 		
 		getFW().redirect(action="admin:entity.listwishlist");
