@@ -67,6 +67,7 @@ class SWListingReportController {
         }else{
             this.getPeriodColumns();
             this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
+            $("#get-started-report").removeClass("hide");
         }
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
