@@ -237,21 +237,24 @@ class SWListingReportController {
             
             this.endDate = new Date(this.endDate);
             this.endDate.setHours(23,59,59,999);
-            //if date is in the wrong format then update those dates
-            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
-                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
-                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
-            }
+            
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
             //if the interval is an hour than we should only be able to show data for one day
             if(this.selectedPeriodInterval.value=='hour'){
                 this.tempEndDate = this.endDate;
-                this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.startDate).addDays(1);//.toString('MMM dd, yyyy hh:mm tt');
             }else if(this.tempEndDate){
                 this.endDate = this.tempEndDate;
                 delete this.tempEndDate;
             }
+            
+            //if date is in the wrong format then update those dates
+            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
+            }
+            
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
                 if(column.aggregate && column.aggregate.aggregateFunction && column.aggregate.aggregateFunction.length){
@@ -318,18 +321,18 @@ class SWListingReportController {
         this.endDateCompare = new Date(this.endDateCompare);
         this.endDateCompare.setHours(23,59,59,999);
         
+        if(this.selectedPeriodInterval.value=='hour'){
+            this.tempEndDateCompare= this.endDateCompare
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1);//.toString('MMM dd, yyyy hh:mm tt');
+        }else if (this.tempEndDateCompare){
+            this.endDateCompare = this.tempEndDateCompare;
+            delete this.tempEndDateCompare;
+        }
+        
         //if date is in the wrong format then update those dates
         if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
             this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
             this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
-        }
-        
-        if(this.selectedPeriodInterval.value=='hour'){
-            this.tempEndDateCompare= this.endDateCompare
-            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
-        }else if (this.tempEndDateCompare){
-            this.endDateCompare = this.tempEndDateCompare;
-            delete this.tempEndDateCompare;
         }
         
         this.compareReportCollectionConfig = this.collectionConfig.clone();
