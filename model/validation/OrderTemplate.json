@@ -16,6 +16,6 @@
 		"orderTemplateType":				[{"contexts":"save","required":true}],
 		"shippingAccountAddress":			[{"contexts":"createAndPlaceOrder","required":true}],
 		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
-		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}]
+		"frequencyTerm":					[{"contexts":"save,createAndPlaceOrder","conditions":"activeOrderTemplate", "required":true}]
 	}
 }
