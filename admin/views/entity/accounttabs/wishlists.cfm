@@ -29,7 +29,7 @@
 		processcontext="createwishlist" 
 		class="btn btn-default" 
 		icon="plus" 
-		querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" 
+		querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=createwishlist&newAccountFlag=false" 
 		modal=true 
 	/>
 	
