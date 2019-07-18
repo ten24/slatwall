@@ -108,10 +108,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return left(distributorName, 60);
 	}
 	
-	private string function formatAccountInitials(required any account){
-		return ucase(left(arguments.account.getFirstName(),1) & left(arguments.account.getLastName(),1));
-	}
-	
 	private string function formatDistributorType(required string accountType){
 		var mapping = {
 			'MarketPartner' = 'D',
@@ -122,20 +118,39 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return mapping[accountType];
 	}
 	
-	private string function formatOrderType(required any orderType){
+	private string function formatOrderType(required any order){
+		var orderType = arguments.order.getOrderType().getSystemCode();
+		
+		if(arguments.order.getAccount().getAccountType() == 'Customer' && orderType == 'otSalesOrder'){
+			orderType = 'retail';
+		}
+		
 		var mapping = {
 			'otSalesOrder'  = 'W',
-			'otReturnOrder' = 'C'
-			//'retail' = 'R',
-			//'otExchangeOrder' = 'X',
-			//'replacement' = 'R',
+			'otReturnOrder' = 'C',
+			'otExchangeOrder' = 'X',
+			'otReplacementOrder' = 'R',
+			'retail' = 'D' 
 		};
 		return mapping[orderType];
 	}
 	
+	
+	private string function getTransactionType(required any order){
+		var orderType = arguments.order.getOrderType().getSystemCode();
+		
+		if(orderType == 'otReturnOrder'){
+			
+		}else{
+			
+		}
+		
+	
+	}
+	
 	private string function formatTransactionSource(required any order){
 		if( isNull(arguments.order.getOrderOrigin()) ){
-			return '900';
+			return '903';
 		}
 		
 		var mapping = {
@@ -156,7 +171,15 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		orderCollection.addFilter('orderNumber', 'not null', 'is');
 		orderCollection.addFilter('orderNumber', arguments.order.getOrderNumber(), '!=');
 		
-		return orderCollection.getRecordsCount() == 0;
+		return orderCollection.getRecordsCount() == 0 ? 'Y' : 'N';
+	}
+	
+	public string function getCityStateZipcode(required any address) {
+		var address = "";
+		address = listAppend(address,getCity());
+		address = listAppend(address,getStateCode());
+		address = listAppend(address,getPostalCode());
+		return address;
 	}
 	
 	public any function convertSwAccountToIceDistributor(required any account){
@@ -165,11 +188,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
 			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
-			'entryDate'   = dateFormat(arguments.account.getCreatedDateTime(), 'yyyymmdd'),//Date the member was entered into the system (YYYYMMDD)
-			'entryTime'   = timeFormat(arguments.account.getCreatedDateTime(), 'hhmmss00'),//Time member was entered into the system (HHMMSSNN)
 			'country'     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//Member country(ISO Format) e.g. USA
 			'address1'    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60),//Member Street Address
 			'address2'    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
+			'address3'    = getCityStateZipcode(arguments.account.getPrimaryAddress().getAddress()),
 			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
 			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
@@ -181,7 +203,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		if( len(arguments.account.getGovernmentIdentificationNumber()) ){
 			distributorData['governmentId'] = arguments.account.getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
-			distributorData['governmetIdFormat'] = '1';//A single numerical representation of what type of governmentId is being saved. This will all depend on how the settings are set in ICE. (0-Country Default, 1-Business ID)
 		}
 		
 		if( len(arguments.account.getPhoneNumber()) ){
@@ -197,8 +218,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var transactionData = { 
 			'distId'            = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
 			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymmdd'), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
-			'entryTime'         = timeFormat(arguments.order.getOrderOpenDateTime(), 'hhmmss00'),
+			'recordNumber'      = arguments.order.getOrderNumber(),
 			'transactionNumber' = arguments.order.getOrderNumber(),//Company transaction number.
+			'transactionTime'   = timeFormat(arguments.order.getOrderOpenDateTime(), 'hhmmss00'),
 			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
 			'transactionType'   = 'I',//Type of ICE transactionusually “I” or “C”.
 			'country'           = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
@@ -207,14 +229,18 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'taxableVolume'     = arguments.order.getTaxableAmountTotal(),//Total Taxable Volume of the order
 			'commissionVolume'  = arguments.order.getCommissionableVolumeTotal(),//Total Commissionable Volume of the order
 			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
-			'orderType'         = formatOrderType(arguments.order.getOrderType().getSystemCode())//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
-			//'periodDate' = ''//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'volume5'           = 0,
+			'volume6'           = 0,//PRODUCT PACK?
+			'volume7'           = 0,
+			'volume8'           = 0,
+			'volume9'           = 0,
+			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
+			'periodDate'        = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
 		
-		if( arguments.order.getCreateByAccount().getAccountID() != arguments.order.getAccountID() && arguments.order.getCreateByAccount().getAdminAccountFlag() ){
-			transactionData['salesPersonId'] = arguments.order.getCreateByAccount().getAccountID();//ID of person who sold order to Customer. This is only used on customer related transactions.Commission check–using ID to represent where volume was attributed at time of order entry.
-			transactionData['entryInitials'] = formatAccountInitials(arguments.order.getCreateByAccount());//Initials of user entering the transaction
-		}
+		//transactionData['salesPersonId'] = //ID of person who sold order to Customer. This is only used on customer related transactions.Commission check–using ID to represent where volume was attributed at time of order entry.
+		//transactionData['entryInitials'] = //Initials of user entering the transaction
+		
 		
 		if( transactionData['orderType'] == 'C' ){
 			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getOrderNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned

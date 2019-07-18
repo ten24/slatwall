@@ -66,10 +66,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	property name="accountCreateIPAddress" ormtype="string";
 	
-	property name="governmentIdentificationNumberEncrypted" ormtype="string" hb_auditable="false" column="governmentIdNumberEncrypted";
-	property name="governmentIdentificationLastFour" ormtype="string" column="governmentIdLastFour";
-
-	//calucluated property
+	//calculuated property
 	property name="calculatedAdminIcon" ormtype="string";
 	property name="calculatedFullName" ormtype="string";
 	property name="calculatedGuestAccountFlag" ormtype="boolean";
@@ -99,6 +96,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountPaymentMethods" hb_populateEnabled="public" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountPayments" singularname="accountPayment" cfc="AccountPayment" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all" inverse="true";
 	property name="accountPhoneNumbers" hb_populateEnabled="public" singularname="accountPhoneNumber" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountPhoneNumber" cascade="all-delete-orphan" inverse="true";
+	property name="accountGovernmentIdentifications" hb_populateEnabled="public" singularname="accountGovernmentIdentifications" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountGovernmentIdentification" cascade="all-delete-orphan" inverse="true";
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
   	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="accountID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
   	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
@@ -158,10 +156,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	
-	property name="governmentIdentificationNumber" persistent="false";
-	
 	//CUSTOM PROPERTIES BEGIN
 property name="enrollmentDate" ormtype="timestamp";
+	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 
@@ -863,6 +860,14 @@ property name="enrollmentDate" ormtype="timestamp";
 	public void function removeAccountPhoneNumber(required any accountPhoneNumber) {
 		arguments.accountPhoneNumber.removeAccount( this );
 	}
+	
+	// Account Phone Numbers (one-to-many)
+	public void function addGovernmentIdentification(required any governmentIdentification) {
+		arguments.accountGovernmentIdentification.setAccount( this );
+	}
+	public void function removeGovernmentIdentification(required any governmentIdentification) {
+		arguments.accountGovernmentIdentification.removeAccount( this );
+	}
 
 	// Account Promotions (one-to-many)
 	public void function addAccountPromotion(required any AccountPromotion) {
@@ -1121,17 +1126,7 @@ property name="enrollmentDate" ormtype="timestamp";
 		return 'calculatedFullName';
 	}
 	
-	public void function setGovernmentIdentificationNumber(required string governmentIdentificationNumber) {
-		if(len(arguments.governmentIdentificationNumber)) {
-			variables.governmentIdentificationNumber = arguments.governmentIdentificationNumber;
-			setGovernmentIdentificationNumberLastFour( right(variables.governmentIdentificationNumber, 4) );
-			setupEncryptedProperties();
-		} else {
-			structDelete(variables, "governmentIdentificationNumber");
-			setGovernmentIdentificationNumberLastFour(javaCast("null", ""));
-			setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
-		}
-	}
+	
 
 	// ==================  END:  Overridden Methods ========================
 
