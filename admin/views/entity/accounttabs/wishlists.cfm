@@ -24,8 +24,9 @@
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	<hb:HibachiActionCaller 
-		action="admin:entity.preprocessordertemplate_createwishlist" 
+		action="admin:entity.preprocessordertemplate" 
 		entity="OrderTemplate" 
+		processcontext="createwishlist" 
 		class="btn btn-default" 
 		icon="plus" 
 		querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" 
