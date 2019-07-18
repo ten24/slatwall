@@ -417,6 +417,12 @@ class SWListingReportController {
 		});
 		//used to clear old rendered charts before adding new ones
 		
+		if(ctx.is($("#myChartCompare"))){
+		    var chart_label = `${this.startDateCompare.toDateString ? this.startDateCompare.toDateString():this.startDate} - ${this.endDateCompare.toDateString?this.endDateCompare.toDateString():this.endDateCompare}`;
+		}
+		else{
+		    var chart_label = `${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate}`;
+		}
         chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -428,7 +434,7 @@ class SWListingReportController {
                 responsive: true,
                 title:{
                   display:true,
-                  text:`(${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate})`
+                  text:'('+chart_label+')'
                 },
                 scales: {
                     yAxes: [{
