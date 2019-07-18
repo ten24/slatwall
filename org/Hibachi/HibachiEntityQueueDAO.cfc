@@ -87,7 +87,11 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		sql &= "'#accountID#' as modifiedByAccountID ";
 
 		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
-		sql &= "WHERE #primaryIDPropertyName# in (:primaryIDList)";
+		sql &= "WHERE #primaryIDPropertyName# in ('";
+
+		//not paramatizing because cf query param has in list limit this allows us to do 10000+ insertions
+		//because user can't control IDs this is safe
+		sql &= replaceNoCase(arguments.primaryIDList, ",","','","all")  & "')";
 
 		if(arguments.unique){
 			sql &= " AND #primaryIDPropertyName# not in (";
@@ -97,7 +101,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		} 
 	
 		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
-		queryService.addParam(name='primaryIDList', value=arguments.primaryIDList, CFSQLTYPE="CF_SQL_VARCHAR");
+
 		queryService.execute(sql=sql);
 	} 
 	
