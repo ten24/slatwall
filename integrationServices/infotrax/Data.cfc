@@ -159,7 +159,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break;
 				
 			case 'afterOrderSaveSuccess':
-				iceResponse = createTransaction(arguments.data.DTSArguments);
+				iceResponse = updateTransaction(arguments.data.DTSArguments);
 				break;
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
@@ -167,6 +167,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break
 			default:
 				return;
+		}
+		if(structKeyExists(iceResponse, 'returnserialnumber')){
+			arguments.account.setLastSyncedDateTime(now());
 		}
 	}
 	

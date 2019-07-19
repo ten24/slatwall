@@ -49,7 +49,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.accountGovernmentIdentification" type="any">
 <cfparam name="rc.account" type="any" default="#rc.accountGovernmentIdentification.getAccount()#">
 <cfparam name="rc.edit" type="boolean">
@@ -66,8 +65,8 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.accountGovernmentIdentification#" property="governmentIdentificationLastFour" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.accountGovernmentIdentification.getGovernmentIdentificationType()#" property="typeName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.accountGovernmentIdentification#" property="governmentIdentificationNumber" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.accountGovernmentIdentification#" property="governmentIdentificationType" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>	
 	</hb:HibachiEntityDetailForm>

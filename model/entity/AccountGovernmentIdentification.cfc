@@ -51,11 +51,13 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	// Persistent Properties
 	property name="accountGovernmentIdentificationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="" column="accountGovIdentificationID";
 	property name="governmentIdentificationNumberEncrypted" ormtype="string" hb_auditable="false" column="governmentIdNumberEncrypted";
+	property name="governmentIdentificationNumberEncryptedGenerator" ormtype="string" hb_auditable="false" column="governmentIdNumberEncryptedGen";
+	property name="governmentIdentificationNumberEncryptedDateTime" ormtype="timestamp" hb_auditable="false" column="governmentIdNumberEncryptedDT";
 	property name="governmentIdentificationLastFour" ormtype="string" column="governmentIdLastFour";
 	
 	// Related Object Properties (Many-To-One)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="governmentIdentificationType" hb_populateEnabled="public" cfc="Type" fieldtype="many-to-one" fkcolumn="governmentIdType" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=governmentIdType";
+	property name="governmentIdentificationType" hb_populateEnabled="public" cfc="Type" fieldtype="many-to-one" fkcolumn="governmentIdType" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountGovernmentIdType";
 	// Remote properties
 	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	
@@ -100,15 +102,15 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	public string function getSimpleRepresentationPropertyName() {
 		return "governmentIdentificationLastFour";
 	}
-	
+
 	public void function setGovernmentIdentificationNumber(required string governmentIdentificationNumber) {
 		if(len(arguments.governmentIdentificationNumber)) {
 			variables.governmentIdentificationNumber = arguments.governmentIdentificationNumber;
-			setGovernmentIdentificationNumberLastFour( right(variables.governmentIdentificationNumber, 4) );
-			setupEncryptedProperties();
+			setGovernmentIdentificationLastFour( right(variables.governmentIdentificationNumber, 4) );
+			encryptProperty('governmentIdentificationNumber');
 		} else {
 			structDelete(variables, "governmentIdentificationNumber");
-			setGovernmentIdentificationNumberLastFour(javaCast("null", ""));
+			setGovernmentIdentificationLastFour(javaCast("null", ""));
 			setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
 		}
 	}
