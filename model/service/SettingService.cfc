@@ -161,7 +161,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
 			brandMetaDescriptionString = {fieldType="textarea", defaultValue="${brandName}"},
 			brandMetaKeywordsString = {fieldType="textarea", defaultValue="${brandName}"},
-
+			
 			// Content
 			contentRestrictAccessFlag = {fieldType="yesno",defaultValue=0},
 			contentRequirePurchaseFlag = {fieldType="yesno",defaultValue=0},
@@ -846,7 +846,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
 			}
 		}
+		
 		var globalSettingPrefix = 'global';
+
+
 		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
 		if(
