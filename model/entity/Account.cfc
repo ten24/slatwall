@@ -470,10 +470,11 @@ property name="enrollmentDate" ormtype="timestamp";
 	}
 	
 	public string function getPermissionGroupNameList() {
+		
 		if(!getNewFlag()){
-			if(!structKeyExists(variables,'permissionGroupNameList')){
+			if(!structKeyExists(variables,'permissionGroupNameList') && !len(trim((variables,'permissionGroupNameList'))){
+				var permissionGroupNameList = "";
 				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-				var permissionGroupNameList = '';
 				
 				if(arraylen(records) && records[1]['permissionGroupsCount']){
 					
@@ -489,11 +490,11 @@ property name="enrollmentDate" ormtype="timestamp";
 					permissionGroupNameList = '( #permissionGroupNameList# )';
 				}
 				variables.permissionGroupNameList = permissionGroupNameList;
-			}else{
-				variables.permissionGroupNameList = "";
 			}
-			return variables.permissionGroupNameList;
+		}else{
+			return "";
 		}
+		return variables.permissionGroupNameList;
 	}
 
 	public string function getFullNameWithPermissionGroups() {
