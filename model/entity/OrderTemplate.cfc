@@ -218,17 +218,20 @@ property name="customerCanCreateFlag" persistent="false";
 	} 
 
 	public string function getLastOrderPlacedDateTime(){
-		var orderCollectionList = getService('OrderService').getOrderCollectionList();
-		orderCollectionList.addDisplayProperty('createdDateTime');  
-		orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
-		orderCollectionList.addOrderBy('createdDateTime|DESC');
-		var records = orderCollectionList.getPageRecords();
-
-		if(!arrayIsEmpty(records)){
-			return records[1]['createdDateTime'];
-		} else { 
-			return '';
-		}
+		if(!structKeyExists(variables, 'getLastOrderPlacedDateTime') || !len(variables.getLastOrderPlacedDateTime)){
+			var orderCollectionList = getService('OrderService').getOrderCollectionList();
+			orderCollectionList.addDisplayProperty('createdDateTime');  
+			orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
+			orderCollectionList.addOrderBy('createdDateTime|DESC');
+			var records = orderCollectionList.getPageRecords();
+	
+			if(!arrayIsEmpty(records)){
+				variables.getLastOrderPlacedDateTime = records[1]['createdDateTime'];
+			} else { 
+				variables.getLastOrderPlacedDateTime = '';
+			}
+		} 
+		return variables.orderTemplateCancellationReasonTypeOptions;
 	}
 
 	public string function getScheduledOrderDates(numeric iterations = 5){

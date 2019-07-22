@@ -130,11 +130,12 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		switch ( arguments.data.event ) {
 			
 			case 'afterAccountEnrollSuccess':
-				iceResponse = createDistributor(arguments.data.DTSArguments);
-				break;
-			
 			case 'afterAccountSaveSuccess':
-				iceResponse = updateDistributor(arguments.data.DTSArguments);
+				if(isNull(arguments.account.getLastSyncedDateTime())){
+					iceResponse = createDistributor(arguments.data.DTSArguments);
+				}else{
+					iceResponse = updateDistributor(arguments.data.DTSArguments);
+				}
 				break;
 				
 			default:
@@ -155,11 +156,12 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		switch ( arguments.data.event ) {
 			
 			case 'afterOrderProcess_placeorderSuccess':
-				iceResponse = createTransaction(arguments.data.DTSArguments);
-				break;
-				
 			case 'afterOrderSaveSuccess':
-				iceResponse = updateTransaction(arguments.data.DTSArguments);
+				if(isNull(arguments.order.getLastSyncedDateTime())){
+					iceResponse = createTransaction(arguments.data.DTSArguments);
+				}else{
+					iceResponse = updateTransaction(arguments.data.DTSArguments);
+				}
 				break;
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
@@ -170,6 +172,32 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			arguments.account.setLastSyncedDateTime(now());
+		}
+	}
+	
+	public void function pushAutoship(required any orderTemplate, struct data ={}){
+		
+		var iceResponse = {};
+		
+		switch ( arguments.data.event ) {
+			
+			case 'afterOrderTemplateProcess_activateSuccess':
+			case 'afterOrderTemplateSaveSuccess':
+				if(isNull(arguments.orderTemplate.getLastSyncedDateTime())){
+					iceResponse = createAutoship(arguments.data.DTSArguments);
+				}else{
+					iceResponse = updateAutoship(arguments.data.DTSArguments);
+				}
+				break;
+				
+			case 'afterOrderTemplateProcess_cancelSuccess':
+				iceResponse = deleteAutoship(arguments.data.DTSArguments);
+				break
+			default:
+				return;
+		}
+		if(structKeyExists(iceResponse, 'returnserialnumber')){
+			arguments.orderTemplate.setLastSyncedDateTime(now());
 		}
 	}
 	
@@ -197,6 +225,18 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	
 	public struct function deleteTransaction(required struct DTSArguments){
 		return postRequest('ICETransaction.delete', arguments.DTSArguments, getSessionToken());
+	}
+	
+	public struct function createAutoship(required struct DTSArguments){
+		return postRequest('ICEAutoship.create', arguments.DTSArguments, getSessionToken());
+	}
+	
+	public struct function updateAutoship(required struct DTSArguments){
+		return postRequest('ICEAutoship.update', arguments.DTSArguments, getSessionToken());
+	}
+	
+	public struct function deleteAutoship(required struct DTSArguments){
+		return postRequest('ICEAutoship.delete', arguments.DTSArguments, getSessionToken());
 	}
 
 }

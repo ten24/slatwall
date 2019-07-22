@@ -22,7 +22,9 @@
 				"logicalOperator":"AND",
 				"value":"null"
 			}
-		]
+		],
+		"validOrder" : [],
+		"validOrderTemplate" : [],
 	},
 	"afterAccountSaveSuccess" : {
 		"filters": "validAccount"
@@ -30,15 +32,26 @@
 	"afterAccountEnrollSuccess" : {
 		"filters": "validAccount"
 	},
+	
+	
 	"afterOrderSaveSuccess" : {
-		"filters" : []
+		"filters" : "validOrder"
 	},
 	"afterOrderProcess_placeOrderSuccess" : {
-		"filters" : []
+		"filters" : "validOrder"
 	},
 	"afterOrderProcess_updateOrderAmountsSuccess" : {
-		"filters" : []
+		"filters" : "validOrder"
 	},
 	
 	
+	"afterOrderTemplateProcess_activateSuccess" : {
+		"filters" : "validOrderTemplate"
+	},
+	"afterOrderTemplateProcess_cancelSuccess" : {
+		"filters" : "validOrderTemplate"
+	},
+	"afterOrderTemplateSaveSuccess" : {
+		"filters" : "validOrderTemplate"
+	}
 }
