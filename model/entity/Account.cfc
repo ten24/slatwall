@@ -489,6 +489,8 @@ property name="enrollmentDate" ormtype="timestamp";
 					permissionGroupNameList = '( #permissionGroupNameList# )';
 				}
 				variables.permissionGroupNameList = permissionGroupNameList;
+			}else{
+				variables.permissionGroupNameList = "";
 			}
 			return variables.permissionGroupNameList;
 		}
