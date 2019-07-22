@@ -64163,33 +64163,76 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
+        this.searchablePropertyIdentifierList = 'skuCode';
+        this.defaultColumnConfig = {
+            isVisible: true,
+            isSearchable: false,
+            isDeletable: true,
+            isEditable: false
+        };
+        this.searchableColumnConfig = {
+            isVisible: true,
+            isSearchable: false,
+            isDeletable: true,
+            isEditable: false
+        };
+        this.nonVisibleColumnConfig = {
+            isVisible: false,
+            isSearchable: false,
+            isDeletable: false,
+            isEditable: false
+        };
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
-            var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
+            var orderTemplateDisplayProperties = ['sku.skuCode', 'sku.skuDefinition', 'sku.product.productName', 'sku.price', 'total'];
+            var skuDisplayProperties = ['skuCode', 'skuDefinition', 'product.productName', 'price'];
+            var originalOrderTemplatePropertyLength = orderTemplateDisplayProperties.length;
+            var originalSkuDisplayPropertyLength = skuDisplayProperties.length;
+            _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
+            _this.editOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
+            _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             if (_this.skuPropertiesToDisplay != null) {
                 var properties = _this.skuPropertiesToDisplay.split(',');
                 for (var i = 0; i < properties.length; i++) {
-                    orderTemplateDisplayProperties += ",sku." + properties[i];
-                    skuDisplayProperties += ',' + properties[i];
+                    orderTemplateDisplayProperties.push("sku." + properties[i]);
+                    skuDisplayProperties.push(properties[i]);
                 }
             }
             if (_this.additionalOrderTemplateItemPropertiesToDisplay != null) {
-                orderTemplateDisplayProperties += "," + _this.additionalOrderTemplateItemPropertiesToDisplay;
+                orderTemplateDisplayProperties.concat(_this.additionalOrderTemplateItemPropertiesToDisplay.split(','));
             }
-            _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            _this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity', '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
-            _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
+            for (var i = 0; i < orderTemplateDisplayProperties.length; i++) {
+                if (_this.searchablePropertyIdentifierList.indexOf(orderTemplateDisplayProperties[i]) !== -1) {
+                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.searchableColumnConfig);
+                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.searchableColumnConfig);
+                }
+                else if (i + 1 > originalOrderTemplatePropertyLength && (i - originalOrderTemplatePropertyLength) < _this.skuPropertyColumnConfigs.length) {
+                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.skuPropertyColumnConfigs[i - originalOrderTemplatePropertyLength]);
+                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.skuPropertyColumnConfigs[i - originalOrderTemplatePropertyLength]);
+                }
+                else {
+                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
+                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
+                }
+            }
+            for (var j = 0; j < skuDisplayProperties.length; j++) {
+                if (_this.searchablePropertyIdentifierList.indexOf(skuDisplayProperties[j]) !== -1) {
+                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.searchableColumnConfig);
+                }
+                else if (j + 1 > originalSkuDisplayPropertyLength && (j - originalSkuDisplayPropertyLength) < _this.skuPropertyColumnConfigs.length) {
+                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.skuPropertyColumnConfigs[j - originalSkuDisplayPropertyLength]);
+                }
+                else {
+                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.defaultColumnConfig);
+                }
+            }
+            _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', _this.nonVisibleColumnConfig);
             _this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
-            _this.editOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-            _this.editOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
-            _this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.editOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), { isVisible: true, isSearchable: false, isDeletable: false, isEditable: true });
+            _this.viewOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), _this.defaultColumnConfig);
+            _this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', _this.nonVisibleColumnConfig);
+            _this.editOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), { isVisible: true, isEditable: true, isSearchable: false });
             _this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
-            _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
-            _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
+            _this.addSkuCollection.addDisplayProperty('skuID', '', _this.nonVisibleColumnConfig);
             _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
@@ -64204,6 +64247,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                 'isEditable': true,
                 'isVisible': true
             });
+            console.log('columns configs', _this.skuColumns, _this.editOrderTemplateColumns, _this.viewOrderTemplateColumns);
         };
         this.setEdit = function (payload) {
             _this.edit = payload.edit;
@@ -64225,6 +64269,7 @@ var SWOrderTemplateItems = /** @class */ (function () {
         this.bindToController = {
             orderTemplate: '<?',
             skuPropertiesToDisplay: '@?',
+            skuPropertyColumnConfigs: '<?',
             additionalOrderTemplateItemPropertiesToDisplay: '@?',
             edit: "=?"
         };

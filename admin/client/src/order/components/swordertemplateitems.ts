@@ -10,9 +10,36 @@ class SWOrderTemplateItemsController{
     
     public orderTemplate;
     
+    public viewOrderTemplateColumns;
+    public editOrderTemplateColumns;
     public skuColumns; 
     
+    public searchablePropertyIdentifierList = 'skuCode';
+    
     public skuPropertiesToDisplay:string;
+    public skuPropertyColumnConfigs:any[];
+    
+    public defaultColumnConfig = {
+    	isVisible:true,
+    	isSearchable:false,
+    	isDeletable:true,
+    	isEditable:false
+    };
+    
+    public searchableColumnConfig = {
+    	isVisible:true,
+    	isSearchable:false,
+    	isDeletable:true,
+    	isEditable:false
+    };
+    
+    public nonVisibleColumnConfig = {
+    	isVisible:false,
+    	isSearchable:false,
+    	isDeletable:false,
+    	isEditable:false
+    };
+    
     public additionalOrderTemplateItemPropertiesToDisplay:string;
 
 	constructor(public $hibachi,
@@ -30,43 +57,70 @@ class SWOrderTemplateItemsController{
 			    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
-		var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
-		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
+		var orderTemplateDisplayProperties = ['sku.skuCode','sku.skuDefinition','sku.product.productName','sku.price','total'];
+		var skuDisplayProperties = ['skuCode','skuDefinition','product.productName','price'];
+		
+		var originalOrderTemplatePropertyLength = orderTemplateDisplayProperties.length;
+		var originalSkuDisplayPropertyLength = skuDisplayProperties.length;
+		
+		this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
+        this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
+		this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
 		
 		if(this.skuPropertiesToDisplay != null){
 			var properties = this.skuPropertiesToDisplay.split(',');
 			for(var i=0; i<properties.length; i++){
-				orderTemplateDisplayProperties += ",sku." + properties[i]; 
-				skuDisplayProperties += ',' + properties[i];
+				orderTemplateDisplayProperties.push("sku." + properties[i]);
+				skuDisplayProperties.push(properties[i]);
 			}
 		}
 		
 		if(this.additionalOrderTemplateItemPropertiesToDisplay != null){
-			orderTemplateDisplayProperties += "," + this.additionalOrderTemplateItemPropertiesToDisplay;
+			orderTemplateDisplayProperties.concat(this.additionalOrderTemplateItemPropertiesToDisplay.split(','));
 		}
-	    
-        this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
+		
+		for(var i=0; i<orderTemplateDisplayProperties.length; i++){
+			
+			if(this.searchablePropertyIdentifierList.indexOf(orderTemplateDisplayProperties[i]) !== -1){
+				this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.searchableColumnConfig);
+				this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.searchableColumnConfig);
+			} else if(i+1 > originalOrderTemplatePropertyLength && (i - originalOrderTemplatePropertyLength) < this.skuPropertyColumnConfigs.length){
+				this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.skuPropertyColumnConfigs[i - originalOrderTemplatePropertyLength]);
+				this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.skuPropertyColumnConfigs[i - originalOrderTemplatePropertyLength]);
+			} else {
+				this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.defaultColumnConfig);
+				this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.defaultColumnConfig);
+			} 
+		}
+		
+		for(var j=0; j<skuDisplayProperties.length; j++){
+			
+			if(this.searchablePropertyIdentifierList.indexOf(skuDisplayProperties[j]) !== -1){
+				this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '',this.searchableColumnConfig);
+			} else if(j+1 > originalSkuDisplayPropertyLength && (j - originalSkuDisplayPropertyLength) < this.skuPropertyColumnConfigs.length){
+				this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', this.skuPropertyColumnConfigs[j - originalSkuDisplayPropertyLength]);
+			} else { 
+				this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', this.defaultColumnConfig);
+			} 
+		}
+
+        this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',this.nonVisibleColumnConfig);
         this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
+        this.viewOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),this.defaultColumnConfig);
         
-        this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.editOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true,isSearchable:false,isDeletable:false,isEditable:true});
+        this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',this.nonVisibleColumnConfig);
+        this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true, isEditable:true, isSearchable:false});
         this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-        
-        this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
-        this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
+
+        this.addSkuCollection.addDisplayProperty('skuID','',this.nonVisibleColumnConfig);
+
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
 
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
-	    
+
 	    this.skuColumns.push(
 	        {
 	            'title': this.rbkeyService.rbKey('define.quantity'),
@@ -77,7 +131,9 @@ class SWOrderTemplateItemsController{
             	'isEditable':true,
             	'isVisible':true
 	        }    
-	    )
+	    );
+	    	    
+	    console.log('columns configs', this.skuColumns, this.editOrderTemplateColumns, this.viewOrderTemplateColumns);
 	}
 	
 	public setEdit = (payload)=>{
@@ -94,6 +150,7 @@ class SWOrderTemplateItems implements ng.IDirective {
 	public bindToController = {
         orderTemplate: '<?', 
         skuPropertiesToDisplay: '@?',
+        skuPropertyColumnConfigs: '<?',//array of column configs
         additionalOrderTemplateItemPropertiesToDisplay: '@?',
         edit:"=?"
 	};

@@ -89,7 +89,7 @@ property name="commissionableVolumeTotal" persistent="false";
 		structDelete(variables, "orderTemplate");
 	}		//CUSTOM FUNCTIONS BEGIN
 
-public numeric function getCommissionVolumeTotal(){
+public numeric function getCommissionVolumeTotal(string currencyCode, string accountID){
 		if(!structKeyExists(variables, 'commissionVolumeTotal')){
 			variables.commissionVolumeTotal = 0; 
 			
@@ -97,13 +97,13 @@ public numeric function getCommissionVolumeTotal(){
 				!isNull(this.getSku().getcommissionVolume()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.commissionVolumeTotal += (this.getSku().getCommissionVolume() * this.getQuantity()); 
+				variables.commissionVolumeTotal += (this.getSku().getCommissionVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
 			}	
 		}
 		return variables.commissionVolumeTotal; 	
 	}	
 
-	public numeric function getPersonalVolumeTotal(){
+	public numeric function getPersonalVolumeTotal(string currencyCode, string accountID){
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
 			variables.personalVolumeTotal = 0; 
 			
@@ -111,7 +111,7 @@ public numeric function getCommissionVolumeTotal(){
 				!isNull(this.getSku().getPersonalVolume()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.personalVolumeTotal += (this.getSku().getPersonalVolume() * this.getQuantity()); 
+				variables.personalVolumeTotal += (this.getSku().getPersonalVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
 			}	
 		}
 		return variables.personalVolumeTotal; 	

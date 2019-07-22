@@ -321,7 +321,7 @@ public boolean function getCustomerCanCreateFlag(){
 			var orderTemplateItems = this.getOrderTemplateItems();
 
 			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal();
+				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
 			}
 		}	
 		return variables.personalVolumeTotal; 	
@@ -334,7 +334,7 @@ public boolean function getCustomerCanCreateFlag(){
 			var orderTemplateItems = this.getOrderTemplateItems();
 
 			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal();
+				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
 			}
 		}	
 		return variables.commissionableVolumeTotal;
