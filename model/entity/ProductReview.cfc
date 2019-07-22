@@ -55,16 +55,16 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	property name="review" hb_populateEnabled="public" ormtype="string" length="4000" hint="HTML Formated review of the Product";
 	property name="reviewTitle" hb_populateEnabled="public" ormtype="string";
 	property name="rating" hb_populateEnabled="public" ormtype="int";
-
+ 
 	// Related Object Properties (many-to-one)
-	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_formFieldType="textautocomplete";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID"; 
 	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="productReviewsStatus" cfc="Type" fieldtype="many-to-one" fkcolumn="productReviewsStatusTypeID" hb_formFieldType="select" hb_optionsSmartListData="f:parentType.systemCode=productReviewsStatusType&orderBy=sortOrder";
 	
 	// Related Object Properties (one-to-many)
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
-
+ 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -76,7 +76,6 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	
 	// Non-Persistent Properties
 	property name="ratingOptions" type="array" persistent="false";
-	property name="productReviewProductName" persistent="false" type="string";
 	
 	public any function init() {
 		setActiveFlag(0);
@@ -91,7 +90,13 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 		return super.init();
 	}
 	
-	
+	public any function getProductTypeAheadCollectionList(){
+		var productCollectionList=getHibachiScope().getService('productService').getProductCollectionList();
+		productCollectionList.setDisplayProperties('productID',{isVisible=false,isSearchable=false});
+		productCollectionList.addDisplayProperties('productName',{isVisible=true,isSearchable=true});
+		productCollectionList.addFilter('activeFlag',1);
+		return productCollectionList;
+	}
 
 	public string function getReviewerGravatarURL(numeric size=80) {
 		var server = "http://www.gravatar.com";
@@ -218,8 +223,9 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	
 	public string function getProductReviewProductName()
 	{
-		return getProduct().getProductName();
-
+		if(!isNull(getProduct())){
+			return getProduct().getProductName();	
+		}
 	}
 
 

@@ -928,7 +928,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					return getPropertySmartList( propertyName=propertyName );
 				}
 			}
-			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
+			// getXXXTypeAheadCollectionList similar to Options but instead of returning data it will return a collectionlist to get data lazily
+			if ( len(arguments.missingMethodName) > 23 && right(arguments.missingMethodName, 23) == "TypeAheadCollectionList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-26);
+				if(hasProperty(propertyName)){
+					//condition to choose between new and cached collectionList
+					if( structKeyExists(arguments.missingMethodArguments, 'isNew') && arguments.missingMethodArguments["isNew"]){
+						return getPropertyCollectionList( propertyName=propertyName, isNew=true);
+					}else{
+					return getPropertyCollectionList( propertyName=propertyName );
+					}
+				}
+			}
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){

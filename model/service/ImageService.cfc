@@ -262,7 +262,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 				var originalFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
 				var resizedFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
 
-				if(originalFileObject.lastModified > resizedFileObject.lastModified {
+				if(originalFileObject.lastModified > resizedFileObject.lastModified) {
 					fileDelete(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
 				}
 			}

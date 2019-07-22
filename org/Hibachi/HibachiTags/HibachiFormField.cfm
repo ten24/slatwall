@@ -282,7 +282,7 @@
 					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
 				</cfscript>
 				<!---location type ahead collection--->
-				<cfset entityCollectionList=attributes.hibachiScope.getService('hibachiService').invokeMethod('get#propertyMetaData.cfc#CollectionList')/>
+				<cfset entityCollectionList=attributes.object.invokeMethod('get#propertyMetaData.cfc#TypeAheadCollectionList')/>
 				<cfset entityCollectionList.setDisplayProperties('#primaryIDName#',{isVisible=false,isSearchable=false})/>
 				<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
 				<hb:HibachiTypeahead 
