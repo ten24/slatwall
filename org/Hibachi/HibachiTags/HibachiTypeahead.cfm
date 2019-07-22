@@ -45,35 +45,28 @@
 		<span ng-init="
 			#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#JSON#);
 		"></span>
-		<div ng-show="'#attributes.edit#' == 'true'" ng-cloak class="form-group">
-			<label for="#attributes.propertyName#" class="control-label col-sm-4">
-				<span class="s-title">#attributes.labelText#</span>
-			</label>
-			<div class="col-sm-12" style="padding-left:10px;padding-right:0px">
-				<!--- Generic Configured product --->
-				<sw-typeahead-input-field
-						data-entity-name="#attributes.entityName#"
-				        data-property-to-save="#attributes.propertyToSave#"
-				        data-property-to-show="#attributes.propertyToShow#"
-				        data-properties-to-load="#attributes.propertyToLoad#"
-				        data-show-add-button="true"
-				        data-show-view-button="true"
-				        data-placeholder-rb-key="#attributes.rbKey#"
-				        data-placeholder-text="Search #attributes.placeholder#"
-				        data-multiselect-mode="false"
-				        data-filter-flag="true"
-				        data-selected-format-string="#attributes.selectedFormatString#"
-				        data-field-name="#attributes.fieldName#"
-			        	data-initial-entity-id="#attributes.initialEntityID#"
-				        data-max-records="#attributes.maxrecords#"
-				        data-order-by-list="#attributes.orderbylist#"
-						data-typeaheadCollectionConfig="#scopeVariableID#.collectionConfigString"       
-				 >
+			<!--- Generic Configured product --->
+			<sw-typeahead-input-field
+					data-entity-name="#attributes.entityName#"
+			        data-property-to-save="#attributes.propertyToSave#"
+			        data-property-to-show="#attributes.propertyToShow#"
+			        data-properties-to-load="#attributes.propertyToLoad#"
+			        data-show-add-button="true"
+			        data-show-view-button="true"
+			        data-placeholder-rb-key="#attributes.rbKey#"
+			        data-placeholder-text="Search #attributes.placeholder#"
+			        data-multiselect-mode="false"
+			        data-filter-flag="true"
+			        data-selected-format-string="#attributes.selectedFormatString#"
+			        data-field-name="#attributes.fieldName#"
+		        	data-initial-entity-id="#attributes.initialEntityID#"
+			        data-max-records="#attributes.maxrecords#"
+			        data-order-by-list="#attributes.orderbylist#"
+					data-typeahead-collection-config="#scopeVariableID#"       
+			 >
 
-					<span sw-typeahead-search-line-item data-property-identifier="#attributes.propertyToShow#" dropdownOpen="false" is-searchable="true"></span><br>
+				<span sw-typeahead-search-line-item data-property-identifier="#attributes.propertyToShow#" dropdownOpen="false" is-searchable="true"></span><br>
 
-				</sw-typeahead-input-field>
-			</div>
-		</div>
+			</sw-typeahead-input-field>
 	</cfoutput>
 </cfif>

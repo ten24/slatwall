@@ -618,10 +618,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 
 	// @hint returns a collection list or records that can be used as options for a many-to-one property
-	public any function getPropertyOptionsCollectionList( required string propertyName ) {
+	public any function getPropertyOptionsCollectionList( required string propertyName, refresh=false ) {
 		var cacheKey = "#arguments.propertyName#OptionsCollectionList";
 
-		if(!structKeyExists(variables, cacheKey)) {
+		if(!structKeyExists(variables, cacheKey) || arguments.refresh) {
 
 			var propertyMeta = getPropertyMetaData( arguments.propertyName );
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
@@ -931,14 +931,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// getXXXTypeAheadCollectionList similar to Options but instead of returning data it will return a collectionlist to get data lazily
 			if ( len(arguments.missingMethodName) > 23 && right(arguments.missingMethodName, 23) == "TypeAheadCollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-26);
-				if(hasProperty(propertyName)){
-					//condition to choose between new and cached collectionList
-					if( structKeyExists(arguments.missingMethodArguments, 'isNew') && arguments.missingMethodArguments["isNew"]){
-						return getPropertyCollectionList( propertyName=propertyName, isNew=true);
-					}else{
-					return getPropertyCollectionList( propertyName=propertyName );
-					}
-				}
+				return getPropertyOptionsCollectionList(propertyName,true);
 			}
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);

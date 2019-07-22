@@ -34,7 +34,6 @@ class SWTypeaheadInputFieldController {
                 private observerService
     ){
         this.$root = $rootScope;
-
         if( angular.isUndefined(this.typeaheadCollectionConfig)){
             if(angular.isDefined(this.entityName)){
                 this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName);
