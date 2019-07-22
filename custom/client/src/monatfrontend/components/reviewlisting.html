@@ -1,0 +1,37 @@
+<div class="reviews">
+	<div class="container">
+		<ul class="list">
+			<li ng-repeat="review in swfReviewListing.reviewList">
+				<div class="review-top">
+					<div class="rating">
+						<i class="fas fa-star" ng-repeat="i in [].constructor(swfReviewListing.getWholeStarCount(review.rating)) track by $index"></i>
+						<i class="fas fa-star-half" ng-repeat="i in [].constructor(swfReviewListing.getHalfStarCount(review.rating)) track by $index"></i>
+						<i class="far fa-star" ng-repeat="i in [].constructor(swfReviewListing.getEmptyStarCount(review.rating)) track by $index"></i>
+					</div>
+					<span class="date">{{review.createdDateTime}}</span>
+				</div>
+				<h4>{{review.reviewerName}}</h4>
+				<p>{{review.review}}</p>
+			</li>
+		</ul>
+		<nav class="reviews-pagination" aria-label="Reviews Pagination">
+			<ul class="pagination justify-content-center">
+				<li class="page-item" ng-show="swfReviewListing.numPages > 1 && !swfReviewListing.currentPageIsMin()">
+					<a class="page-link" ng-click="swfReviewListing.previousPage()" tabindex="-1" aria-disabled="true">
+						<i class="fas fa-chevron-left"></i>
+					</a>
+				</li>
+				<li class="page-item" ng-show=><a class="page-link" href="##">...</a></li>
+				<li class="page-item" ng-class="{active:swfReviewListing.currentPage == page.value}" ng-repeat="page in swfReviewListing.pageNumberArray">
+					<a class="page-link" ng-click="swfReviewListing.getPage(page.value)">{{page.name}}<span class="sr-only" ng-if="swfReviewListing.currentPage == page.value">(current)</span>
+					</a>
+				</li>
+				<li class="page-item" ng-show="swfReviewListing.numPages > 1 && !swfReviewListing.currentPageIsMax()">
+					<a class="page-link" ng-click="swfReviewListing.nextPage()">
+						<i class="fas fa-chevron-right"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</div>

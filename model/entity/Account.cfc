@@ -176,6 +176,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseDriverLicense" ormtype="string";
  property name="governmentIDNumber" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
