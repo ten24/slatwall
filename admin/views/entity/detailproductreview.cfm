@@ -59,25 +59,9 @@ Notes:
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<!---<cfif rc.edit eq true AND rc.productReview.isNew() >
-					<!---product type ahead collection--->
-					<!---<cfset productCollectionList=getHibachiScope().getService('productService').getProductCollectionList()/>
-					<cfset productCollectionList.setDisplayProperties('productID',{isVisible=false,isSearchable=false})/>
-					<cfset productCollectionList.addDisplayProperties('productName',{isVisible=true,isSearchable=true})/>
-					<cfset productCollectionList.addFilter('activeFlag',1)/>
-					<hb:HibachiTypeahead 
-						edit="#rc.edit#" 
-						collectionList="#productCollectionList#"
-						fieldName="product.productID"
-					></hb:HibachiTypeahead>--->
-				<cfelse>
-					
-				</cfif>--->
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="product" 
 					edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"
 				/>
-					
-			
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">

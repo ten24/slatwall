@@ -249,8 +249,7 @@ Notes:
 										<cfif not isNull(rc.processObject.getPickupLocationID())>
 											<cfset selectedLocationID = rc.processObject.getPickupLocationID() />
 										</cfif>
-										
-										<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="pickupLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
+										<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#">
 										
 									</hb:HibachiDisplayToggle>
 
@@ -270,7 +269,7 @@ Notes:
 											</cfif>
 
 											<!--- Display typeahead if options exist --->
-											<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="locationID"  locationLabelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" edit="#rc.edit#" showActiveLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
+											<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" object="#rc.processObject#" property="locationID" edit="#rc.edit#">
 											<!---
 											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" />  
 											--->
