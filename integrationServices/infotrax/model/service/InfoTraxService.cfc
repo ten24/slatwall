@@ -175,12 +175,14 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 	
 	public string function getCityStateZipcode(required any address) {
-		var address = "";
-		address = listAppend(address,getCity());
-		address = listAppend(address,getStateCode());
-		address = listAppend(address,getPostalCode());
-		return address;
+		var cityStateZipcode = "";
+		cityStateZipcode = listAppend(cityStateZipcode,address.getCity());
+		cityStateZipcode = listAppend(cityStateZipcode,address.getStateCode());
+		cityStateZipcode = listAppend(cityStateZipcode,address.getPostalCode());
+		return cityStateZipcode;
 	}
+	
+
 	
 	public any function convertSwAccountToIceDistributor(required any account){
 		var distributorData = { 
@@ -197,12 +199,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'birthDate'   = dateFormat(arguments.account.getDOB(), 'yyyymmdd'),//Member Birthday YYYYMMDD
-			'renewalDate' = dateFormat(arguments.account.getRenewDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
+			'renewalDate' = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
 			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
 		
-		if( len(arguments.account.getGovernmentIdentificationNumber()) ){
-			distributorData['governmentId'] = arguments.account.getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
+		if( arguments.account.getAccountGovernmentIdentificationsCount() ){
+			distributorData['governmentId'] = arguments.account.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
 		}
 		
 		if( len(arguments.account.getPhoneNumber()) ){
@@ -292,6 +294,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			
 			case 'Account':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);
+				
 				break;
 				
 			case 'Order':
@@ -301,12 +304,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			case 'OrderTemplate':
 				arguments.data.DTSArguments = convertSwOrderTemplateToIceAutoship(arguments.entity);
 				break;
-			
+				
 			default:
 				return;
 		}
 		
-		getIntegration().getIntegrationCFC('data').pushDistributor(argumentCollection=arguments);
+		getIntegration().getIntegrationCFC('data').pushData(argumentCollection=arguments);
 	
 	}
 

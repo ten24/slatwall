@@ -107,6 +107,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 				successFlag = true;
 			} catch (any e){
+				rethrow;
 				successFlag = false;
 				if (!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
@@ -294,6 +295,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 	
 			} catch(any e){
+				rethrow;
 				if(!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
 					workflowTriggerHistory.setSuccessFlag(false);
@@ -380,10 +382,15 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
-					var processData = {'1'=arguments.entity};
-					
+					var processData = {
+						'1'=arguments.entity,
+						
+					};
 					if(arguments.entity.hasProcessObject(processContext)){
 						processData['2'] = arguments.entity.getProcessObject(processContext);
+						processData['3'] = arguments.data
+					}else{
+						processData['2'] = arguments.data	
 					}
 					var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
 					

@@ -123,7 +123,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		return variables.sessionToken;
 	}
 	
-	public void function pushDistributor(required any account, struct data ={}){
+	public void function pushData(required any entity, struct data ={}){
 	
 		var iceResponse = {};
 		
@@ -131,30 +131,13 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			
 			case 'afterAccountEnrollSuccess':
 			case 'afterAccountSaveSuccess':
-				if(isNull(arguments.account.getLastSyncedDateTime())){
+				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
 				}else{
 					iceResponse = updateDistributor(arguments.data.DTSArguments);
 				}
 				break;
 				
-			default:
-				return;
-		}
-		
-		if(structKeyExists(iceResponse, 'returnserialnumber')){
-			arguments.account.setLastSyncedDateTime(now());
-			arguments.account.setGovernmentIdentificationNumberEncrypted(javaCast('null', ''));
-		}
-		
-	}
-	
-	public void function pushTransaction(required any order, struct data ={}){
-		
-		var iceResponse = {};
-		
-		switch ( arguments.data.event ) {
-			
 			case 'afterOrderProcess_placeorderSuccess':
 			case 'afterOrderSaveSuccess':
 				if(isNull(arguments.order.getLastSyncedDateTime())){
@@ -166,21 +149,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
 				iceResponse = deleteTransaction(arguments.data.DTSArguments);
-				break
-			default:
-				return;
-		}
-		if(structKeyExists(iceResponse, 'returnserialnumber')){
-			arguments.account.setLastSyncedDateTime(now());
-		}
-	}
-	
-	public void function pushAutoship(required any orderTemplate, struct data ={}){
-		
-		var iceResponse = {};
-		
-		switch ( arguments.data.event ) {
-			
+				break;
+				
 			case 'afterOrderTemplateProcess_activateSuccess':
 			case 'afterOrderTemplateSaveSuccess':
 				if(isNull(arguments.orderTemplate.getLastSyncedDateTime())){
@@ -192,14 +162,19 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 			case 'afterOrderTemplateProcess_cancelSuccess':
 				iceResponse = deleteAutoship(arguments.data.DTSArguments);
-				break
+				break;
+				
 			default:
 				return;
 		}
+		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
-			arguments.orderTemplate.setLastSyncedDateTime(now());
+			arguments.entity.setLastSyncedDateTime(now());
 		}
+		
 	}
+	
+
 	
 	
 	public struct function createDistributor(required struct DTSArguments){
