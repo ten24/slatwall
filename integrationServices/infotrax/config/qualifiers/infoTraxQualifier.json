@@ -23,16 +23,46 @@
 				"value":"null"
 			}
 		],
-		"validOrder" : [],
-		"validOrderTemplate" : [],
+		
+		"validOrder" : [
+			{
+				"propertyIdentifier": "orderNumber",
+				"comparisonOperator": "is not",
+				"value": "null",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "orderStatusType.systemCode",
+				"comparisonOperator": "<>",
+				"logicalOperator": "AND",
+				"value": "ostNotPlaced",
+				"ormtype": "string"
+			}
+		],
+		
+		"validOrderTemplate" : [
+			{
+				"propertyIdentifier": "orderTemplateStatusType.systemCode",
+				"comparisonOperator": "=",
+				"value": "otstActive",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "orderTemplateType.systemCode",
+				"comparisonOperator": "=",
+				"logicalOperator": "AND",
+				"value": "ottSchedule",
+				"ormtype": "string"
+			}
+		]
 	},
+	
 	"afterAccountSaveSuccess" : {
 		"filters": "validAccount"
 	},
 	"afterAccountEnrollSuccess" : {
 		"filters": "validAccount"
 	},
-	
 	
 	"afterOrderSaveSuccess" : {
 		"filters" : "validOrder"
@@ -44,14 +74,22 @@
 		"filters" : "validOrder"
 	},
 	
-	
 	"afterOrderTemplateProcess_activateSuccess" : {
-		"filters" : "validOrderTemplate"
-	},
-	"afterOrderTemplateProcess_cancelSuccess" : {
 		"filters" : "validOrderTemplate"
 	},
 	"afterOrderTemplateSaveSuccess" : {
 		"filters" : "validOrderTemplate"
+	},
+	"afterOrderTemplateProcess_cancelSuccess" : {
+		"filters" : [
+			{
+				"propertyIdentifier": "orderTemplateType.systemCode",
+				"comparisonOperator": "=",
+				"logicalOperator": "AND",
+				"value": "ottSchedule",
+				"ormtype": "string"
+			}
+		]
 	}
+	
 }
