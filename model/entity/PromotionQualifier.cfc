@@ -167,25 +167,26 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	}
 	
 	public any function getSkuCollection(){
-		if(isNull(variables.skuCollection)){
-			if(isNull(getExcludedSkusCollectionConfig())){
-				if(isNull(getIncludedSkusCollectionConfig())){
-					return;
-				}
-				return getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+
+		if(isNull(getExcludedSkusCollectionConfig())){
+			if(isNull(getIncludedSkusCollectionConfig())){
+				return;
 			}
-			
-			if(!isNull(getIncludedSkusCollectionConfig())){
-				var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
-			}else{
-				var skuCollection = getService('hibachiCollectionService').getSkuCollectionList();
-			}
-			var excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
-			
-			skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
-			variables.skuCollection = skuCollection;
+			return getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
 		}
-		return variables.skuCollection;
+		
+		if(!isNull(getIncludedSkusCollectionConfig())){
+			var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+		}else{
+			var skuCollection = getService('hibachiCollectionService').getSkuCollectionList();
+		}
+		
+		if(isNull(variables.excludedSkuIDs)){
+			variables.excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
+		}
+		
+		skuCollection.addFilter('skuID',variables.excludedSkuIDs,'not in');
+		return skuCollection;
 	}
 	
 	public any function getIncludedOrdersCollection(){
@@ -247,25 +248,24 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	}
 	
 	public any function getOrderCollection(){
-		if(isNull(variables.orderCollection)){
-			if(isNull(getExcludedOrdersCollectionConfig())){
-				if(isNull(getIncludedOrdersCollectionConfig())){
-					return;
-				}
-				return getIncludedOrdersCollection();
+		if(isNull(getExcludedOrdersCollectionConfig())){
+			if(isNull(getIncludedOrdersCollectionConfig())){
+				return;
 			}
-			
-			if(!isNull(getIncludedOrdersCollectionConfig())){
-				var orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
-			}else{
-				var orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
-			}
-			var excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
-			
-			orderCollection.addFilter('orderID',excludedOrderIDs,'not in');
-			variables.orderCollection = orderCollection;
+			return getIncludedOrdersCollection();
 		}
-		return variables.orderCollection;
+			
+		if(!isNull(getIncludedOrdersCollectionConfig())){
+			var orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
+		}else{
+			var orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
+		}
+		if(isNull(variables.excludedOrderIDs)){
+			variables.excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
+		}
+		
+		orderCollection.addFilter('orderID',variables.excludedOrderIDs,'not in');
+		return orderCollection;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -297,9 +297,9 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(skuCollection)){
 			return false;
 		}
-		skuCollection.addFilter('skuID',arguments.skuID,'=');
-		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
-		skuCollection.removeFilter('skuID',arguments.skuID);
+		skuCollection.setPageRecordsShow(1);
+		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
+		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(refresh=true));
 		return hasSku;
 	}
 	
@@ -313,9 +313,9 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(orderCollection)){
 			return false;
 		}
-		orderCollection.addFilter('orderID',arguments.orderID,'=');
-		var hasOrder = arrayLen(orderCollection.getRecords(refresh=true));
-		orderCollection.removeFilter('orderID',arguments.orderID);
+		orderCollection.setPageRecordsShow(1); 
+		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
+		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
 		return hasOrder;
 	}
 	

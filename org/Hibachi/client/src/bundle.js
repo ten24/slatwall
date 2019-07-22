@@ -61405,6 +61405,16 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Not Defined",
                                 comparisonOperator: "is",
                                 value: "null"
+                            },
+                            {
+                                display: "Past",
+                                comparisonOperator: "<=",
+                                value: "now()"
+                            },
+                            {
+                                display: "Future",
+                                comparisonOperator: ">=",
+                                value: "now()"
                             }
                         ];
                     }
@@ -64191,6 +64201,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -64203,7 +64214,6 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -65317,7 +65327,20 @@ var SWActionCallerController = /** @class */ (function () {
             }
             if (_this.eventListeners) {
                 for (var key in _this.eventListeners) {
-                    _this.observerService.attach(_this.eventListeners[key], key);
+                    var callback = _this.eventListeners[key];
+                    // if you want to use an internal method passed into this directive as a string
+                    if (typeof callback !== "function") {
+                        callback = _this[_this.eventListeners[key]];
+                    }
+                    // in case you want to attach by id
+                    if (_this.eventListenerId) {
+                        _this.observerService.attach(callback, key, _this.eventListenerId);
+                        _this.$scope.$on('$destroy', function () {
+                            _this.observerService.detachById(_this.eventListenerId);
+                        });
+                        continue;
+                    }
+                    _this.observerService.attach(callback, key);
                 }
             }
         };
@@ -65436,6 +65459,15 @@ var SWActionCallerController = /** @class */ (function () {
                 return false;
             }
         };
+        this.setDisabled = function (disableFlag) {
+            _this.disabled = disableFlag;
+        };
+        this.setDisplayTrue = function () {
+            _this.display = true;
+        };
+        this.setDisplayFalse = function () {
+            _this.display = false;
+        };
         this.getDisabledText = function () {
             if (_this.getDisabled()) {
                 //and no disabled text specified
@@ -65504,7 +65536,7 @@ var SWActionCaller = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             action: "@?",
-            display: "=?",
+            display: "<?",
             displayConfirm: "=?",
             event: "@?",
             payload: "=",
@@ -65525,7 +65557,8 @@ var SWActionCaller = /** @class */ (function () {
             modalFullWidth: "=",
             id: "@",
             isAngularRoute: "=?",
-            eventListeners: '=?'
+            eventListeners: '=?',
+            eventListenerId: '@?'
         };
         this.require = { formController: "^?swForm", form: "^?form" };
         this.controller = SWActionCallerController;
@@ -71763,6 +71796,21 @@ var HibachiService = /** @class */ (function () {
             }
             return metaData.$$getRBKey('object.' + metaData.className.toLowerCase() + '.' + propertyName.toLowerCase());
         };
+        //this cannot live in rbkeyService because it creates a circular dependency
+        this.getRBKeyFromPropertyIdentifier = function (baseEntityName, propertyIdentifier) {
+            //strip alias if it exists and convert everything to be periods
+            if (propertyIdentifier.charAt(0) === '_') {
+                propertyIdentifier = _this.utilityService.listRest(propertyIdentifier.replace(/_/g, '.'), '.');
+            }
+            //if we're dealing with collection response property identfier sku_skuCode
+            if (propertyIdentifier.split('_').length > 0) {
+                propertyIdentifier = propertyIdentifier.replace('_', '.');
+            }
+            var lastEntityName = _this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier);
+            var propertyIdentfierParts = propertyIdentifier.split('.');
+            var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length - 1];
+            return 'entity.' + lastEntityName + '.' + lastProperty;
+        };
         this.saveEntity = function (entityName, id, params, context) {
             var urlString = _this.getUrlWithActionPrefix() + 'api:main.post';
             if (angular.isDefined(entityName)) {
@@ -74915,29 +74963,6 @@ var RbKeyService = /** @class */ (function () {
         this.getRBLoaded = function () {
             return _this._loadedResourceBundle;
         };
-        /*
-        public $hibachi,
-        public utilityService
-        
-        getRBKeyForPropertyIdentifier = (baseEntityName, propertyIdentifier) =>{
-            //strip alias if it exists and convert everything to be periods
-            if(propertyIdentifier.charAt(0) === '_'){
-                propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.');
-            }
-            
-            //if we're dealing with collection response property identfier sku_skuCode
-            if(propertyIdentifier.split('_').length > 0){
-                propertyIdentifier = propertyIdentifier.replace('_','.');
-            }
-            
-            var lastEntityName = this.$hibachi.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier)
-        
-            var propertyIdentfierParts = propertyIdentifier.split('.');
-            
-            var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length-1];
-            
-            return 'entity.' + lastEntityName + '.' + lastProperty;
-        }*/
         this.rbKey = function (key, replaceStringData) {
             ////$log.debug('rbkey');
             ////$log.debug(key);
@@ -79338,6 +79363,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SWListingDisplayController = /** @class */ (function () {
     //@ngInject
     function SWListingDisplayController($scope, $rootScope, $transclude, $timeout, $q, $hibachi, utilityService, collectionConfigService, listingService, paginationService, selectionService, observerService, rbkeyService, localStorageService) {
+        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
+        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
+        //     return;
+        // }
         var _this = this;
         this.$scope = $scope;
         this.$rootScope = $rootScope;
@@ -79832,13 +79861,6 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.persistedReportCollections = data.records;
             });
         };
-        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
-        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
-        //     return;
-        // }
-        if (angular.isUndefined(this.personalCollectionKey)) {
-            this.personalCollectionKey = this.baseEntityName.toLowerCase();
-        }
         if (angular.isUndefined(this.usingPersonalCollection)) {
             this.usingPersonalCollection = false;
         }
@@ -79870,6 +79892,9 @@ var SWListingDisplayController = /** @class */ (function () {
             && (angular.isUndefined(this.personalCollectionIdentifier)
                 || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'])
                     && this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))) {
+            if (angular.isUndefined(this.personalCollectionKey)) {
+                this.personalCollectionKey = this.baseEntityName.toLowerCase();
+            }
             var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
             // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
@@ -79904,7 +79929,7 @@ var SWListingDisplayController = /** @class */ (function () {
         },
         set: function (newArray) {
             this._columns = newArray;
-            this.columnCount = this._columns.length;
+            this.columnCount = this._columns ? this._columns.length : 0;
         },
         enumerable: true,
         configurable: true
@@ -80094,13 +80119,14 @@ exports.SWListingDisplay = SWListingDisplay;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWListingDisplayCellController = /** @class */ (function () {
     //@ngInject
-    function SWListingDisplayCellController(listingPartialPath, hibachiPathBuilder, listingService, utilityService, $scope) {
+    function SWListingDisplayCellController(listingPartialPath, hibachiPathBuilder, listingService, utilityService, $scope, observerService) {
         var _this = this;
         this.listingPartialPath = listingPartialPath;
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.listingService = listingService;
         this.utilityService = utilityService;
         this.$scope = $scope;
+        this.observerService = observerService;
         this.expandable = false;
         this.hasAggregate = function () {
             return _this.column.aggregate && _this.column.aggregate.aggregateFunction && _this.column.aggregate.aggregateFunction.length;
@@ -80155,6 +80181,11 @@ var SWListingDisplayCellController = /** @class */ (function () {
                 keyEvent.preventDefault();
                 keyEvent.stopPropagation();
             }
+            _this.cellModified();
+        };
+        // announce cell has been modified
+        this.cellModified = function () {
+            _this.observerService.notifyById("cellModified", _this.pageRecord.$$hashKey, _this.pageRecord);
         };
         if (!this.pageRecordKey && this.column) {
             this.pageRecordKey = this.listingService.getPageRecordKey(this.column.propertyIdentifier);

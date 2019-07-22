@@ -116,7 +116,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="includedSkusCollection" persistent="false";
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
-    
+
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -269,23 +269,26 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	}
 	
 	public any function getSkuCollection(){
-		if(isNull(variables.skuCollection)){
-			if(isNull(getExcludedSkusCollectionConfig())){
-				if(isNull(getIncludedSkusCollectionConfig())){
-					return;
-				}
-				return getIncludedSkusCollection();
+
+		if(isNull(getExcludedSkusCollectionConfig())){
+			if(isNull(getIncludedSkusCollectionConfig())){
+				return;
 			}
-			
-			if(!isNull(getIncludedSkusCollection())){
-				var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
-				var excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
-				
-				skuCollection.addFilter('skuID',excludedSkuIDs,'not in');
-			}
-			variables.skuCollection = skuCollection;
+			return getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
 		}
-		return variables.skuCollection;
+		
+		if(!isNull(getIncludedSkusCollectionConfig())){
+			var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
+		}else{
+			var skuCollection = getService('hibachiCollectionService').getSkuCollectionList();
+		}
+		
+		if(isNull(variables.excludedSkuIDs)){
+			variables.excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
+		}
+		
+		skuCollection.addFilter('skuID',variables.excludedSkuIDs,'not in');
+		return skuCollection;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -357,9 +360,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		if(isNull(skuCollection)){
 			return false;
 		}
-		skuCollection.addFilter('skuID',arguments.skuID,'=');
-		var hasSku = arrayLen(skuCollection.getRecords(refresh=true));
-		skuCollection.removeFilter('skuID',arguments.skuID);
+		skuCollection.setPageRecordsShow(1);
+		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
+		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(refresh=true));
 		return hasSku;
 	}
 	
@@ -614,5 +617,5 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	}
 	
 	// =================  END: Deprecated Methods   ========================	
-
+	
 }
