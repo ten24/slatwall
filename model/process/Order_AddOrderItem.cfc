@@ -134,7 +134,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var locationCollectionList = getService('locationService').getLocationCollectionList();
 		locationCollectionList.addFilter('activeFlag',1);
 		if(!isNull(getOrder().getDefaultStockLocation())){
-			locationCollectionList.addFilter('locationIDPath','%#getOrder().getDefaultStockLocation()#%','LIKE');
+			locationCollectionList.addFilter('locationIDPath','%#getOrder().getDefaultStockLocation().getLocationID()#%','LIKE');
 		}
 		return locationCollectionList;
 	}
