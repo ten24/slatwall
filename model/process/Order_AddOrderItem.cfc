@@ -129,13 +129,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 		return variables.childOrderItems;
 	}
+	
+	public any function getPickupLocationIDTypeAheadCollectionList(){
+		var locationCollectionList = getService('locationService').getLocationCollectionList();
+		locationCollectionList.addFilter('activeFlag',1);
+		if(!isNull(getOrder().getDefaultStockLocation())){
+			locationCollectionList.addFilter('locationIDPath','%#getOrder().getDefaultStockLocation()#%','LIKE');
+		}
+		return locationCollectionList;
+	}
+	
+	public any function getLocationIDTypeAheadCollectionList(){
+		var locationCollectionList = getService('locationService').getLocationCollectionList();
+		locationCollectionList.addFilter('activeFlag',1);
+		if(!isNull(getOrder().getDefaultStockLocation())){
+			locationCollectionList.addFilter('locationIDPath','%#getOrder().getDefaultStockLocation()#%','LIKE');
+		}
+		return locationCollectionList;
+	}
 
 	public any function getRegistrantAccounts() {
 		if(structKeyExists(variables, "registrantAccounts")) {
 			return variables.registrantAccounts;
 		}
 		variables.registrantAccounts = [];
-		for(i=1;i<=variables.quantity;i++) {
+		for(var i=1;i<=variables.quantity;i++) {
 			var account = getService("accountService").newAccount();
 			arrayAppend(variables.registrantAccounts,account);
 		}
