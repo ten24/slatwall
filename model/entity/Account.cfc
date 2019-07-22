@@ -468,8 +468,8 @@ property name="enrollmentDate" ormtype="timestamp";
 	public string function getPasswordResetID() {
 		return getService("accountService").getPasswordResetID(account=this);
 	}
-
-	public string function getFullNameWithPermissionGroups() {
+	
+	public string function getPermissionGroupNameList() {
 		if(!getNewFlag()){
 			if(!structKeyExists(variables,'permissionGroupNameList')){
 				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
@@ -490,8 +490,12 @@ property name="enrollmentDate" ormtype="timestamp";
 				}
 				variables.permissionGroupNameList = permissionGroupNameList;
 			}
+			return variables.permissionGroupNameList;
 		}
-		return hibachiHtmlEditFormat(getFullname()) & variables.permissionGroupNameList;
+	}
+
+	public string function getFullNameWithPermissionGroups() {
+		return hibachiHtmlEditFormat(getFullname()) & getPermissionGroupNameList();
 	}
 	
 	public string function getPermissionGroupCacheKey(){
