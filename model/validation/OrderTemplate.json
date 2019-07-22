@@ -12,6 +12,7 @@
 		"canPlaceOrderFlag" :				[{"contexts":"save","conditions":"activeOrderTemplate", "eq":true}],
 		"canPlaceFutureScheduleOrderFlag":  [{"contexts":"createAndPlaceOrder","eq":true }],	
 		"orderTemplateType":				[{"contexts":"save","required":true}],
-		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}]
+		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
+		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}]
 	}
 }

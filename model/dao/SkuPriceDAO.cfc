@@ -93,7 +93,7 @@ component extends="HibachiDAO" accessors="true" output="false" {
 	}
 
 	public function getBaseSkuPriceForSkuByCurrencyCode (required string skuID, required string currencyCode){
-		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode AND sp.promotionReward is null AND sp.priceGroup is NULL;";
+		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode AND sp.promotionReward is null AND sp.priceGroup is NULL";
 
 		return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 		
