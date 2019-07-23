@@ -171,12 +171,8 @@ property name="enrollmentDate" ormtype="timestamp";
  property name="userName" ormtype="string";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
- property name="ssn" ormtype="string";
- property name="sin" ormtype="string";
  property name="spouseName" ormtype="string";
- property name="driverLicense" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
- property name="governmentIDNumber" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="productPack" ormtype="string";
@@ -472,7 +468,11 @@ property name="enrollmentDate" ormtype="timestamp";
 	public string function getPermissionGroupNameList() {
 		
 		if(!getNewFlag()){
-			if(!structKeyExists(variables,'permissionGroupNameList') && !len(trim((variables,'permissionGroupNameList'))){
+			if( !structKeyExists(variables,'permissionGroupNameList') ||
+				(!isNull(variables.permissionGroupNameList) &&
+				!len(trim(variables.permissionGroupNameList))
+				)
+			){
 				var permissionGroupNameList = "";
 				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
 				
@@ -498,7 +498,9 @@ property name="enrollmentDate" ormtype="timestamp";
 	}
 
 	public string function getFullNameWithPermissionGroups() {
-		return hibachiHtmlEditFormat(getFullname()) & getPermissionGroupNameList();
+		if(!isNull(getFullName()) && !isNull(getPermissionGroupNameList())){
+			return hibachiHtmlEditFormat(getFullName()) & getPermissionGroupNameList();
+		}
 	}
 	
 	public string function getPermissionGroupCacheKey(){
