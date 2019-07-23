@@ -92038,7 +92038,14 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
-                    console.log('currency?', _this.value, _this.pageRecord, _this.column);
+                    if (_this.pageRecord['currencyCode'] != null &&
+                        _this.pageRecord['currencyCode'].trim().length) {
+                        _this.currencyCode = _this.pageRecord['currencyCode'];
+                    }
+                    else if (_this.column.arguments != null &&
+                        _this.column.arguments.currencyCode) {
+                        _this.currencyCode = _this.column.arguments.currencyCode;
+                    }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
                 else if ([
