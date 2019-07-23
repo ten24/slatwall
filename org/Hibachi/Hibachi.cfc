@@ -338,20 +338,24 @@ component extends="framework.one" {
 
 		if(!variables.framework.hibachi.isApplicationStart && 
 			variables.framework.hibachi.useServerInstanceCacheControl &&
-			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
 		){
+				//lock the server instance check per server so two sibling requests do not concurrently check expired state
+				lock scope="server" timeout="20" {	
+					if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress()){
 
-			verifyApplicationSetup(reloadByServerInstance=true);
+						verifyApplicationSetup(reloadByServerInstance=true);
 
-		}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
+					}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 
-			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
-			serverInstance.setSettingsExpired(false);
-			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
-		}
-		
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
+						serverInstance.setSettingsExpired(false);
+						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+					}
+				}
+		}	
+	
 		// Verify that the session is setup
 		if(isAPIGetRequest()){
 			getHibachiScope().setStateless(true);
