@@ -64164,6 +64164,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
+            _this.orderTemplateService.setOrderTemplateID(_this.orderTemplate.orderTemplateID);
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
             var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
@@ -64477,7 +64478,6 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
         //rb key properties
         this.title = "Update Schedule";
         this.$onInit = function () {
-            _this.orderTemplateService.setOrderTemplateID(_this.orderTemplate.orderTemplateID);
             if (_this.scheduleOrderNextPlaceDateTimeString != null) {
                 var date = Date.parse(_this.scheduleOrderNextPlaceDateTimeString);
                 _this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
@@ -76262,6 +76262,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -76274,7 +76275,6 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
