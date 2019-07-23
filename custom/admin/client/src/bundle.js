@@ -63514,6 +63514,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
+        this.editablePropertyIdentifierList = '';
         this.searchablePropertyIdentifierList = 'skuCode';
         this.pricePropertyIdentfierList = 'priceByCurrencyCode,total';
         this.defaultColumnConfig = {
@@ -63521,6 +63522,12 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             isSearchable: false,
             isDeletable: true,
             isEditable: false
+        };
+        this.editColumnConfig = {
+            isVisible: true,
+            isSearchable: false,
+            isDeletable: true,
+            isEditable: true
         };
         this.searchableColumnConfig = {
             isVisible: true,
@@ -63562,8 +63569,9 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             }
             for (var i = 0; i < orderTemplateDisplayProperties.length; i++) {
                 var columnConfig = _this.getColumnConfigForPropertyIdentifier(orderTemplateDisplayProperties[i], i, originalOrderTemplatePropertyLength);
-                _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
-                _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
+                _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', columnConfig);
+                columnConfig.isEditable = false; //we never need editable columns in the view config
+                _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', columnConfig);
             }
             for (var j = 0; j < skuDisplayProperties.length; j++) {
                 var columnConfig = _this.getColumnConfigForPropertyIdentifier(skuDisplayProperties[j], j, originalSkuDisplayPropertyLength);
@@ -63571,9 +63579,9 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             }
             _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', _this.nonVisibleColumnConfig);
             _this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
-            _this.viewOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), _this.defaultColumnConfig);
+            _this.viewOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), _this.editColumnConfig);
             _this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', _this.nonVisibleColumnConfig);
-            _this.editOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), { isVisible: true, isEditable: true, isSearchable: false });
+            _this.editOrderTemplateItemsCollection.addDisplayProperty('quantity', _this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'), _this.defaultColumnConfig);
             _this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
             _this.addSkuCollection.addDisplayProperty('skuID', '', _this.nonVisibleColumnConfig);
             _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
@@ -63592,21 +63600,23 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                 'isEditable': true,
                 'isVisible': true
             });
-            console.log('columns configs', _this.skuColumns, _this.editOrderTemplateColumns, _this.viewOrderTemplateColumns);
         };
         this.getColumnConfigForPropertyIdentifier = function (propertyIdentifier, index, originalLength) {
             var lastProperty = _this.$hibachi.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
-            if (_this.pricePropertyIdentfierList.indexOf(lastProperty) !== -1) {
-                return _this.priceColumnConfig;
+            if (_this.editablePropertyIdentifierList.indexOf(lastProperty) !== -1) {
+                return angular.copy(_this.editColumnConfig);
+            }
+            else if (_this.pricePropertyIdentfierList.indexOf(lastProperty) !== -1) {
+                return angular.copy(_this.priceColumnConfig);
             }
             else if (_this.searchablePropertyIdentifierList.indexOf(lastProperty) !== -1) {
-                return _this.searchableColumnConfig;
+                return angular.copy(_this.searchableColumnConfig);
             }
             else if (index + 1 > originalLength && (index - originalLength) < _this.skuPropertyColumnConfigs.length) {
-                return _this.skuPropertyColumnConfigs[index - originalLength];
+                return angular.copy(_this.skuPropertyColumnConfigs[index - originalLength]);
             }
             else {
-                return _this.defaultColumnConfig;
+                return angular.copy(_this.defaultColumnConfig);
             }
         };
         this.setEdit = function (payload) {

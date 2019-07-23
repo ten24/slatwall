@@ -14,6 +14,7 @@ class SWOrderTemplateItemsController{
     public editOrderTemplateColumns;
     public skuColumns; 
     
+    public editablePropertyIdentifierList = '';
     public searchablePropertyIdentifierList = 'skuCode';
     public pricePropertyIdentfierList = 'priceByCurrencyCode,total';
     
@@ -25,6 +26,13 @@ class SWOrderTemplateItemsController{
     	isSearchable:false,
     	isDeletable:true,
     	isEditable:false
+    };
+    
+    public editColumnConfig = {
+    	isVisible:true,
+    	isSearchable:false,
+    	isDeletable:true,
+    	isEditable:true
     };
     
     public searchableColumnConfig = {
@@ -96,8 +104,10 @@ class SWOrderTemplateItemsController{
 		for(var i=0; i<orderTemplateDisplayProperties.length; i++){
 			
 			var columnConfig = this.getColumnConfigForPropertyIdentifier(orderTemplateDisplayProperties[i],i,originalOrderTemplatePropertyLength);
-			this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.defaultColumnConfig);
-			this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.defaultColumnConfig);
+			this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',columnConfig);
+			
+			columnConfig.isEditable = false;//we never need editable columns in the view config
+			this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',columnConfig);
 		}
 		
 		for(var j=0; j<skuDisplayProperties.length; j++){
@@ -109,10 +119,10 @@ class SWOrderTemplateItemsController{
 
         this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',this.nonVisibleColumnConfig);
         this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-        this.viewOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),this.defaultColumnConfig);
+        this.viewOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),this.editColumnConfig);
         
         this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',this.nonVisibleColumnConfig);
-        this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true, isEditable:true, isSearchable:false});
+        this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),this.defaultColumnConfig);
         this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
 
         this.addSkuCollection.addDisplayProperty('skuID','',this.nonVisibleColumnConfig);
@@ -137,21 +147,20 @@ class SWOrderTemplateItemsController{
             	'isVisible':true
 	        }    
 	    );
-	    	    
-	    console.log('columns configs', this.skuColumns, this.editOrderTemplateColumns, this.viewOrderTemplateColumns);
 	}
 	
 	public getColumnConfigForPropertyIdentifier = (propertyIdentifier, index, originalLength) =>{
 		var lastProperty = this.$hibachi.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
-		
-		if(this.pricePropertyIdentfierList.indexOf(lastProperty) !== -1){
-			return this.priceColumnConfig;
+		if(this.editablePropertyIdentifierList.indexOf(lastProperty) !== -1){
+			return angular.copy(this.editColumnConfig);
+		} else if(this.pricePropertyIdentfierList.indexOf(lastProperty) !== -1){
+			return angular.copy(this.priceColumnConfig);
 		} else if(this.searchablePropertyIdentifierList.indexOf(lastProperty) !== -1){
-			return this.searchableColumnConfig;
+			return angular.copy(this.searchableColumnConfig);
 		} else if(index+1 > originalLength && (index - originalLength) < this.skuPropertyColumnConfigs.length){
-			return this.skuPropertyColumnConfigs[index - originalLength];
+			return angular.copy(this.skuPropertyColumnConfigs[index - originalLength]);
 		} else { 
-			return this.defaultColumnConfig; 
+			return angular.copy(this.defaultColumnConfig); 
 		} 
 	}
 	
