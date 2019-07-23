@@ -112,7 +112,6 @@ class SWListingDisplayCellController{
                 templateUrl = basePartialPath + 'listingdisplaycelldate.html';
             }else if(this.column.type === 'currency'){
                 if(this.hasAggregate() && this.pageRecord){
-                    console.log('aggregateCase 123')
                     var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
                     this.value = this.pageRecord[pageRecordKey];
                 }
@@ -127,6 +126,8 @@ class SWListingDisplayCellController{
                           this.column.arguments.currencyCode
                 ){
                     this.currencyCode = this.column.arguments.currencyCode;
+                } else {
+                    this.currencyCode = 'USD';
                 }
                 
                 templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';

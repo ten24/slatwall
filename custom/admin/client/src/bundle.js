@@ -63515,6 +63515,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.searchablePropertyIdentifierList = 'skuCode';
+        this.pricePropertyIdentfierList = 'priceByCurrencyCode,total';
         this.defaultColumnConfig = {
             isVisible: true,
             isSearchable: false,
@@ -63560,36 +63561,13 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                 orderTemplateDisplayProperties.concat(_this.additionalOrderTemplateItemPropertiesToDisplay.split(','));
             }
             for (var i = 0; i < orderTemplateDisplayProperties.length; i++) {
-                if (orderTemplateDisplayProperties[i].indexOf('priceByCurrencyCode') !== -1) {
-                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.priceColumnConfig);
-                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.priceColumnConfig);
-                }
-                else if (_this.searchablePropertyIdentifierList.indexOf(orderTemplateDisplayProperties[i]) !== -1) {
-                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.searchableColumnConfig);
-                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.searchableColumnConfig);
-                }
-                else if (i + 1 > originalOrderTemplatePropertyLength && (i - originalOrderTemplatePropertyLength) < _this.skuPropertyColumnConfigs.length) {
-                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.skuPropertyColumnConfigs[i - originalOrderTemplatePropertyLength]);
-                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.skuPropertyColumnConfigs[i - originalOrderTemplatePropertyLength]);
-                }
-                else {
-                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
-                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
-                }
+                var columnConfig = _this.getColumnConfigForPropertyIdentifier(orderTemplateDisplayProperties[i], i, originalOrderTemplatePropertyLength);
+                _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
+                _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.defaultColumnConfig);
             }
             for (var j = 0; j < skuDisplayProperties.length; j++) {
-                if (orderTemplateDisplayProperties[j].indexOf('priceByCurrencyCode') !== -1) {
-                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.priceColumnConfig);
-                }
-                else if (_this.searchablePropertyIdentifierList.indexOf(skuDisplayProperties[j]) !== -1) {
-                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.searchableColumnConfig);
-                }
-                else if (j + 1 > originalSkuDisplayPropertyLength && (j - originalSkuDisplayPropertyLength) < _this.skuPropertyColumnConfigs.length) {
-                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.skuPropertyColumnConfigs[j - originalSkuDisplayPropertyLength]);
-                }
-                else {
-                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.defaultColumnConfig);
-                }
+                var columnConfig = _this.getColumnConfigForPropertyIdentifier(skuDisplayProperties[j], j, originalSkuDisplayPropertyLength);
+                _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', columnConfig);
             }
             _this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID', '', _this.nonVisibleColumnConfig);
             _this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', _this.orderTemplate.orderTemplateID, '=', undefined, true);
@@ -63615,6 +63593,21 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                 'isVisible': true
             });
             console.log('columns configs', _this.skuColumns, _this.editOrderTemplateColumns, _this.viewOrderTemplateColumns);
+        };
+        this.getColumnConfigForPropertyIdentifier = function (propertyIdentifier, index, originalLength) {
+            var lastProperty = _this.$hibachi.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
+            if (_this.pricePropertyIdentfierList.indexOf(lastProperty) !== -1) {
+                return _this.priceColumnConfig;
+            }
+            else if (_this.searchablePropertyIdentifierList.indexOf(lastProperty) !== -1) {
+                return _this.searchableColumnConfig;
+            }
+            else if (index + 1 > originalLength && (index - originalLength) < _this.skuPropertyColumnConfigs.length) {
+                return _this.skuPropertyColumnConfigs[index - originalLength];
+            }
+            else {
+                return _this.defaultColumnConfig;
+            }
         };
         this.setEdit = function (payload) {
             _this.edit = payload.edit;
@@ -83474,6 +83467,10 @@ var HibachiService = /** @class */ (function () {
             }
             return entityName;
         };
+        this.getLastPropertyNameInPropertyIdentifier = function (propertyIdentifier) {
+            var propertyIdentifierParts = propertyIdentifier.split('.');
+            return propertyIdentifierParts[propertyIdentifierParts.length - 1];
+        };
         //helper method to inflate a new entity with data
         this.populateEntity = function (entityName, data) {
             var newEntity = _this.newEntity(entityName);
@@ -83768,8 +83765,7 @@ var HibachiService = /** @class */ (function () {
                 propertyIdentifier = propertyIdentifier.replace('_', '.');
             }
             var lastEntityName = _this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier);
-            var propertyIdentfierParts = propertyIdentifier.split('.');
-            var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length - 1];
+            var lastProperty = _this.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
             return 'entity.' + lastEntityName + '.' + lastProperty;
         };
         this.saveEntity = function (entityName, id, params, context) {
@@ -92034,7 +92030,6 @@ var SWListingDisplayCellController = /** @class */ (function () {
                 }
                 else if (_this.column.type === 'currency') {
                     if (_this.hasAggregate() && _this.pageRecord) {
-                        console.log('aggregateCase 123');
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
@@ -92045,6 +92040,9 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     else if (_this.column.arguments != null &&
                         _this.column.arguments.currencyCode) {
                         _this.currencyCode = _this.column.arguments.currencyCode;
+                    }
+                    else {
+                        _this.currencyCode = 'USD';
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
