@@ -419,6 +419,16 @@ private void function populateWithAddressVerification(required struct rc){
 		getFW().setView("admin:entity.detailwishlist");
 	}
 	
+	public void function deleteWishList(required struct rc) {
+		param name="rc.orderTemplateID" default="";
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+		getOrderService().deleteOrderTemplate(rc.orderTemplate);
+		
+		getFW().redirect(action="admin:entity.listwishlist");
+
+	}
+	
+	
 	// Order Payment
 	public any function createorderpayment( required struct rc ) {
 		param name="rc.orderID" type="string" default="";
