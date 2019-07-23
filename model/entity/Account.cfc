@@ -471,7 +471,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		if(!getNewFlag()){
 			if( !structKeyExists(variables,'permissionGroupNameList') ||
 				(!isNull(variables.permissionGroupNameList) &&
-				 !len(trim(variables.permissionGroupNameList))
+				!len(trim(variables.permissionGroupNameList))
 				)
 			){
 				var permissionGroupNameList = "";
@@ -499,7 +499,9 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	public string function getFullNameWithPermissionGroups() {
-		return hibachiHtmlEditFormat(getFullname()) & getPermissionGroupNameList();
+		if(!isNull(getFullName()) && !isNull(getPermissionGroupNameList())){
+			return hibachiHtmlEditFormat(getFullName()) & getPermissionGroupNameList();
+		}
 	}
 	
 	public string function getPermissionGroupCacheKey(){
