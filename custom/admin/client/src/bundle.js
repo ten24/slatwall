@@ -63533,11 +63533,17 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             isDeletable: false,
             isEditable: false
         };
+        this.priceColumnConfig = {
+            isVisible: true,
+            isSearchable: false,
+            isDeletable: false,
+            isEditable: false
+        };
         this.$onInit = function () {
             _this.orderTemplateService.setOrderTemplateID(_this.orderTemplate.orderTemplateID);
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var orderTemplateDisplayProperties = ['sku.skuCode', 'sku.skuDefinition', 'sku.product.productName', 'sku.price', 'total'];
-            var skuDisplayProperties = ['skuCode', 'skuDefinition', 'product.productName', 'price'];
+            var orderTemplateDisplayProperties = ['sku.skuCode', 'sku.skuDefinition', 'sku.product.productName', 'sku.priceByCurrencyCode', 'total'];
+            var skuDisplayProperties = ['skuCode', 'skuDefinition', 'product.productName', 'priceByCurrencyCode'];
             var originalOrderTemplatePropertyLength = orderTemplateDisplayProperties.length;
             var originalSkuDisplayPropertyLength = skuDisplayProperties.length;
             _this.viewOrderTemplateItemsCollection = _this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
@@ -63554,7 +63560,11 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                 orderTemplateDisplayProperties.concat(_this.additionalOrderTemplateItemPropertiesToDisplay.split(','));
             }
             for (var i = 0; i < orderTemplateDisplayProperties.length; i++) {
-                if (_this.searchablePropertyIdentifierList.indexOf(orderTemplateDisplayProperties[i]) !== -1) {
+                if (orderTemplateDisplayProperties[i].indexOf('priceByCurrencyCode') !== -1) {
+                    _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.priceColumnConfig);
+                    _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.priceColumnConfig);
+                }
+                else if (_this.searchablePropertyIdentifierList.indexOf(orderTemplateDisplayProperties[i]) !== -1) {
                     _this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.searchableColumnConfig);
                     _this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i], '', _this.searchableColumnConfig);
                 }
@@ -63568,7 +63578,10 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
                 }
             }
             for (var j = 0; j < skuDisplayProperties.length; j++) {
-                if (_this.searchablePropertyIdentifierList.indexOf(skuDisplayProperties[j]) !== -1) {
+                if (orderTemplateDisplayProperties[j].indexOf('priceByCurrencyCode') !== -1) {
+                    _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.priceColumnConfig);
+                }
+                else if (_this.searchablePropertyIdentifierList.indexOf(skuDisplayProperties[j]) !== -1) {
                     _this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', _this.searchableColumnConfig);
                 }
                 else if (j + 1 > originalSkuDisplayPropertyLength && (j - originalSkuDisplayPropertyLength) < _this.skuPropertyColumnConfigs.length) {
@@ -63590,6 +63603,8 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
+            _this.editOrderTemplateColumns = angular.copy(_this.viewOrderTemplateItemsCollection.getCollectionConfig().columns);
+            _this.viewOrderTemplateColumns = angular.copy(_this.editOrderTemplateItemsCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
                 'propertyIdentifier': 'quantity',
@@ -63607,6 +63622,10 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         if (this.edit == null) {
             this.edit = false;
         }
+        this.priceColumnConfig['arguments'] = {
+            'currencyCode': this.orderTemplate.currencyCode,
+            'accountID': this.orderTemplate.account_accountID
+        };
     }
     return SWOrderTemplateItemsController;
 }());
@@ -81542,12 +81561,15 @@ var SWCurrency = /** @class */ (function () {
     //@ngInject
     SWCurrency.Factory = function ($sce, $log, $hibachi, $filter) {
         var data = null, serviceInvoked = false;
-        function realFilter(value, decimalPlace, returnStringFlag) {
+        function realFilter(value, currencyCode, decimalPlace, returnStringFlag) {
             if (returnStringFlag === void 0) { returnStringFlag = true; }
             // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if (!angular.isDefined(data)) {
+            var currencySymbol = "$";
+            if (angular.isDefined(data)) {
+                currencySymbol = data[currencyCode];
+            }
+            else {
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-                data = "$";
             }
             if (!value || value.toString().trim() == '') {
                 value = 0;
@@ -81559,7 +81581,7 @@ var SWCurrency = /** @class */ (function () {
                 value = $filter('number')(value.toString(), 2);
             }
             if (returnStringFlag) {
-                return data + value;
+                return currencySymbol + value;
             }
             else {
                 return value;
@@ -81572,14 +81594,13 @@ var SWCurrency = /** @class */ (function () {
                 if (!serviceInvoked) {
                     serviceInvoked = true;
                     $hibachi.getCurrencies().then(function (currencies) {
-                        var result = currencies.data;
-                        data = result[currencyCode];
+                        data = currencies.data;
                     });
                 }
                 return "-";
             }
             else
-                return realFilter(value, decimalPlace, returnStringFlag);
+                return realFilter(value, currencyCode, decimalPlace, returnStringFlag);
         };
         filterStub.$stateful = true;
         return filterStub;
@@ -92013,9 +92034,11 @@ var SWListingDisplayCellController = /** @class */ (function () {
                 }
                 else if (_this.column.type === 'currency') {
                     if (_this.hasAggregate() && _this.pageRecord) {
+                        console.log('aggregateCase 123');
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
+                    console.log('currency?', _this.value, _this.pageRecord, _this.column);
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
                 else if ([

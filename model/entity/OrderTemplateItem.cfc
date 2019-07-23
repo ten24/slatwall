@@ -65,7 +65,7 @@ property name="commissionableVolumeTotal" persistent="false";
 			variables.total = 0; 
 			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
-				variables.total += getSku().getLivePriceByCurrencyCode(getOrderTemplate().getCurrencyCode())*getQuantity();
+				variables.total += getSku().getPriceByCurrencyCode(currencyCode=getOrderTemplate().getCurrencyCode(),accountID=getOrderTemplate().getAccount().getAccountID())*getQuantity();
 			} 	
 		}
 		

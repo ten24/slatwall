@@ -40,6 +40,13 @@ class SWOrderTemplateItemsController{
     	isEditable:false
     };
     
+    public priceColumnConfig = {
+    	isVisible:true,
+    	isSearchable:false,
+    	isDeletable:false,
+    	isEditable:false
+    }
+    
     public additionalOrderTemplateItemPropertiesToDisplay:string;
 
 	constructor(public $hibachi,
@@ -51,14 +58,20 @@ class SWOrderTemplateItemsController{
 		if(this.edit == null){
 			this.edit = false;
 		}
+		
+		this.priceColumnConfig['arguments'] = {
+			'currencyCode': this.orderTemplate.currencyCode,
+			'accountID': this.orderTemplate.account_accountID
+		}
+		
 	}
 	
 	public $onInit = () =>{
 		this.orderTemplateService.setOrderTemplateID(this.orderTemplate.orderTemplateID);
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
-		var orderTemplateDisplayProperties = ['sku.skuCode','sku.skuDefinition','sku.product.productName','sku.price','total'];
-		var skuDisplayProperties = ['skuCode','skuDefinition','product.productName','price'];
+		var orderTemplateDisplayProperties = ['sku.skuCode','sku.skuDefinition','sku.product.productName','sku.priceByCurrencyCode','total'];
+		var skuDisplayProperties = ['skuCode','skuDefinition','product.productName','priceByCurrencyCode'];
 		
 		var originalOrderTemplatePropertyLength = orderTemplateDisplayProperties.length;
 		var originalSkuDisplayPropertyLength = skuDisplayProperties.length;
@@ -81,7 +94,10 @@ class SWOrderTemplateItemsController{
 		
 		for(var i=0; i<orderTemplateDisplayProperties.length; i++){
 			
-			if(this.searchablePropertyIdentifierList.indexOf(orderTemplateDisplayProperties[i]) !== -1){
+			if(orderTemplateDisplayProperties[i].indexOf('priceByCurrencyCode') !== -1){
+				this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.priceColumnConfig);
+				this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.priceColumnConfig);
+			} else if(this.searchablePropertyIdentifierList.indexOf(orderTemplateDisplayProperties[i]) !== -1){
 				this.viewOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.searchableColumnConfig);
 				this.editOrderTemplateItemsCollection.addDisplayProperty(orderTemplateDisplayProperties[i],'',this.searchableColumnConfig);
 			} else if(i+1 > originalOrderTemplatePropertyLength && (i - originalOrderTemplatePropertyLength) < this.skuPropertyColumnConfigs.length){
@@ -95,7 +111,9 @@ class SWOrderTemplateItemsController{
 		
 		for(var j=0; j<skuDisplayProperties.length; j++){
 			
-			if(this.searchablePropertyIdentifierList.indexOf(skuDisplayProperties[j]) !== -1){
+			if(orderTemplateDisplayProperties[j].indexOf('priceByCurrencyCode') !== -1){
+				this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '',this.priceColumnConfig);
+			} else if(this.searchablePropertyIdentifierList.indexOf(skuDisplayProperties[j]) !== -1){
 				this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '',this.searchableColumnConfig);
 			} else if(j+1 > originalSkuDisplayPropertyLength && (j - originalSkuDisplayPropertyLength) < this.skuPropertyColumnConfigs.length){
 				this.addSkuCollection.addDisplayProperty(skuDisplayProperties[j], '', this.skuPropertyColumnConfigs[j - originalSkuDisplayPropertyLength]);
@@ -120,6 +138,8 @@ class SWOrderTemplateItemsController{
         this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
 
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
+	    this.editOrderTemplateColumns = angular.copy( this.viewOrderTemplateItemsCollection.getCollectionConfig().columns);
+	    this.viewOrderTemplateColumns = angular.copy( this.editOrderTemplateItemsCollection.getCollectionConfig().columns); 
 
 	    this.skuColumns.push(
 	        {

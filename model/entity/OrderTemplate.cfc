@@ -134,10 +134,10 @@ property name="customerCanCreateFlag" persistent="false";
 			return getOrderTemplateStatusType().getSystemCode();
 		}
 	}
-	
+
+
 	public string function getTypeCode() {
 		if(!isNull(getOrderTemplateType()) 
-		&& !structKeyExists(getOrderTemplateType().getTypeCode()) 
 		&& isNull(getOrderTemplateType().getTypeCode())
 		&& !len(trim(getOrderTemplateType().getTypeCode()))){
 			return getOrderTemplateType().getSystemCode();
@@ -195,7 +195,7 @@ property name="customerCanCreateFlag" persistent="false";
 		return this.getSubtotal() + this.getFulfillmentTotal(); 
 	} 
 
-	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}

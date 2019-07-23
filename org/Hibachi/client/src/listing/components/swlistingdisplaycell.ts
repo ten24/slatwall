@@ -111,9 +111,11 @@ class SWListingDisplayCellController{
                 templateUrl = basePartialPath + 'listingdisplaycelldate.html';
             }else if(this.column.type === 'currency'){
                 if(this.hasAggregate() && this.pageRecord){
+                    console.log('aggregateCase 123')
                     var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
                     this.value = this.pageRecord[pageRecordKey];
                 }
+                console.log('currency?', this.value, this.pageRecord, this.column)
                 templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
             }else if([
                 "double", 

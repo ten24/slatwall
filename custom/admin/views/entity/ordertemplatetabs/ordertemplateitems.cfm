@@ -15,7 +15,7 @@
 				'currencyCode':rc.orderTemplate.getCurrencyCode(), 
 				'accountID': rc.orderTemplate.getAccount().getAccountID()
 			}
-		}
+		}	
 	]
 />
 
