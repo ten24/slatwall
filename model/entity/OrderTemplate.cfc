@@ -137,7 +137,7 @@ property name="customerCanCreateFlag" persistent="false";
 	
 	public string function getTypeCode() {
 		if(!isNull(getOrderTemplateType())){
-			if(isNull(getOrderTemplateType().getTypeCode()) && !len(trim(getOrderTemplateType().getTypeCode()))){
+			if(!isNull(getOrderTemplateType().getTypeCode()) && !len(trim(getOrderTemplateType().getTypeCode()))){
 				return getOrderTemplateType().getSystemCode();
 			}else{
 				return getOrderTemplateType().getTypeCode();
