@@ -329,8 +329,11 @@ component extends="framework.one" {
 			server[variables.framework.applicationKey] = {};
 		}
 
-		if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
-			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
+		//ensure that we don't generate to different server instance keys concurrently
+		lock scope="Application" timeout="20"  {
+			if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
+				server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
+			}
 		}
 
 		// Verify that the application is setup
@@ -340,7 +343,7 @@ component extends="framework.one" {
 			variables.framework.hibachi.useServerInstanceCacheControl
 		){
 				//lock the server instance check per server so two sibling requests do not concurrently check expired state
-				lock scope="server" timeout="20" {	
+				lock name="serverInstance_#server[variables.framework.applicationKey].serverInstanceKey#" timeout="20" {	
 					if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 
 						verifyApplicationSetup(reloadByServerInstance=true);
