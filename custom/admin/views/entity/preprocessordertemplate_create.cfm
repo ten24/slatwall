@@ -54,6 +54,9 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<!--- Default to ottSchedule --->
+<cfset rc.processObject.setOrderTemplateTypeID('2c948084697d51bd01697d5725650006') />
+
 <cfoutput>
 <hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editordertemplate">
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
@@ -82,32 +85,19 @@ Notes:
 				<swa:SlatwallAccountTypeahead /> 	
 			</hb:HibachiDisplayToggle>
 
-			<hr> 
+			<hr>
 
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="ng-model='orderTemplateTypeID'">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" edit="#rc.edit#">
+			<!--- Always use schedule order template type for flexship ---> 
+			<input type="hidden" name="orderTemplateTypeID" value="2c948084697d51bd01697d5725650006" />	
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="disabled='true'">
+
+			<sw-site-and-currency-select data-site-and-currency-options="#rc.processObject.getEncodedSiteAndCurrencyOptions()#">
+			</sw-site-and-currency-select> 
 
 			<hr>
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
 			
-			<!--- Not Visible for Wish Lists --->
-			
-			<!--- <hb:HibachiDisplayToggle selector="select[name=orderTemplateTypeID]" showValues="ottSchedule" loadVisable="#!isNull(rc.processObject.getOrderTemplate().getOrderTemplateType()) and (rc.processObject.getOrderTemplate().getOrderTemplateType().getSystemCode() neq 'ottWishList')#">
-				<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" 
-											property="scheduleOrderNextPlaceDateTime" 
-											edit="#rc.edit#" 
-											fieldType="text" 
-											fieldAttributes="sw-date-picker 
-															ng-model=""scheduleOrderNextPlaceDateTime""
-															data-end-day-of-the-month=""26""
-															data-end-date=""endDate""
-															autocomplete=""off""">
-	
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
-			</hb:HibachiDisplayToggle> --->
 			
 			<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
@@ -116,7 +106,6 @@ Notes:
 										fieldType="text" 
 										fieldAttributes="sw-date-picker 
 														ng-model=""scheduleOrderNextPlaceDateTime""
-														ng-if="orderTemplateTypeID === "Wish List""
 														data-end-day-of-the-month=""26""
 														data-end-date=""endDate""
 														autocomplete=""off""">
@@ -124,9 +113,7 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="frequencyTermID" 
 										fieldtype="select" 
-										edit="#rc.edit#" 
-										fieldAttributes="ng-if="orderTemplateType.value === "2c948084697d51bd01697d5725650006""">
-			<!--- Not Visible for Wish Lists --->
+										edit="#rc.edit#">
 			
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

@@ -70107,12 +70107,12 @@ var defaultskuservice_1 = __webpack_require__(694);
 var skupriceservice_1 = __webpack_require__(695);
 //controllers
 //directives
-var swpricingmanager_1 = __webpack_require__(707);
+var swpricingmanager_1 = __webpack_require__(298);
 var swimagedetailmodallauncher_1 = __webpack_require__(685);
 var swaddskupricemodallauncher_1 = __webpack_require__(682);
 var swdeleteskupricemodallauncher_1 = __webpack_require__(684);
-var sweditskupricemodallauncher_1 = __webpack_require__(706);
-var swskupricemodal_1 = __webpack_require__(708);
+var sweditskupricemodallauncher_1 = __webpack_require__(297);
+var swskupricemodal_1 = __webpack_require__(299);
 var swskustockadjustmentmodallauncher_1 = __webpack_require__(692);
 var swdefaultskuradio_1 = __webpack_require__(683);
 var swskuimage_1 = __webpack_require__(688);
@@ -70209,6 +70209,7 @@ var orderdeliverydetail_module_1 = __webpack_require__(660);
 var order_module_1 = __webpack_require__(657);
 var product_module_1 = __webpack_require__(674);
 var productbundle_module_1 = __webpack_require__(680);
+var site_module_1 = __webpack_require__(924);
 var sku_module_1 = __webpack_require__(696);
 var subscriptionusage_module_1 = __webpack_require__(700);
 var term_module_1 = __webpack_require__(703);
@@ -70231,6 +70232,7 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
     order_module_1.ordermodule.name,
     product_module_1.productmodule.name,
     productbundle_module_1.productbundlemodule.name,
+    site_module_1.sitemodule.name,
     sku_module_1.skumodule.name,
     subscriptionusage_module_1.subscriptionusagemodule.name,
     term_module_1.termmodule.name,
@@ -70766,259 +70768,9 @@ exports.monatadminmodule = monatadminmodule;
 
 
 /***/ }),
-/* 706 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-// var swEditSkuPriceModalLauncherHTML = require("html-loader!sku/components/editskupricemodallauncher");
-var sweditskupricemodallauncher_1 = __webpack_require__(297);
-var sweditskupricemodallauncher_2 = __webpack_require__(297);
-var SWEditSkuPriceModalLauncherController = /** @class */ (function (_super) {
-    __extends(SWEditSkuPriceModalLauncherController, _super);
-    //@ngInject
-    function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
-        var _this = _super.call(this, $hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) || this;
-        _this.$hibachi = $hibachi;
-        _this.entityService = entityService;
-        _this.formService = formService;
-        _this.listingService = listingService;
-        _this.observerService = observerService;
-        _this.skuPriceService = skuPriceService;
-        _this.utilityService = utilityService;
-        _this.scopeService = scopeService;
-        _this.$scope = $scope;
-        _this.initData = function (pageRecord) {
-            if (angular.isDefined(_this.pageRecord)) {
-                if (angular.isDefined(_this.pageRecord.skuPriceID) && _this.pageRecord.skuPriceID.length) {
-                    _this.skuPrice.personalVolume = _this.pageRecord.personalVolume;
-                    _this.skuPrice.taxableAmount = _this.pageRecord.taxableAmount;
-                    _this.skuPrice.commissionableVolume = _this.pageRecord.commissionableVolume;
-                    _this.skuPrice.retailCommission = _this.pageRecord.retailCommission;
-                    _this.skuPrice.productPackVolume = _this.pageRecord.productPackVolume;
-                    _this.skuPrice.retailValueVolume = _this.pageRecord.retailValueVolume;
-                    _this.skuPrice.handlingFee = _this.pageRecord.handlingFee;
-                }
-                else {
-                    return;
-                }
-            }
-            else {
-                throw ("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-            }
-        };
-        _this.observerService.attach(_this.initData, "EDIT_SKUPRICE");
-        return _this;
-    }
-    return SWEditSkuPriceModalLauncherController;
-}(sweditskupricemodallauncher_2.SWEditSkuPriceModalLauncherController));
-exports.SWEditSkuPriceModalLauncherController = SWEditSkuPriceModalLauncherController;
-var SWEditSkuPriceModalLauncher = /** @class */ (function (_super) {
-    __extends(SWEditSkuPriceModalLauncher, _super);
-    function SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
-        var _this = _super.call(this, $hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) || this;
-        _this.$hibachi = $hibachi;
-        _this.entityService = entityService;
-        _this.observerService = observerService;
-        _this.scopeService = scopeService;
-        _this.collectionConfigService = collectionConfigService;
-        _this.skuPartialsPath = skuPartialsPath;
-        _this.slatwallPathBuilder = slatwallPathBuilder;
-        _this.controller = SWEditSkuPriceModalLauncherController;
-        return _this;
-    }
-    SWEditSkuPriceModalLauncher.Factory = function () {
-        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
-        directive.$inject = [
-            '$hibachi',
-            'entityService',
-            'observerService',
-            'scopeService',
-            'collectionConfigService',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    };
-    return SWEditSkuPriceModalLauncher;
-}(sweditskupricemodallauncher_1.SWEditSkuPriceModalLauncher));
-exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
-
-
-/***/ }),
-/* 707 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var swpricingmanager_1 = __webpack_require__(298);
-var swpricingmanager_2 = __webpack_require__(298);
-var SWPricingManagerController = /** @class */ (function (_super) {
-    __extends(SWPricingManagerController, _super);
-    function SWPricingManagerController(collectionConfigService) {
-        var _this = _super.call(this, collectionConfigService) || this;
-        _this.collectionConfigService = collectionConfigService;
-        if (_this.skuPriceCollectionConfig) {
-            _this.skuPriceCollectionConfig.addDisplayProperty("personalVolume", "", { isEditable: true });
-            _this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount", "", { isEditable: true });
-            _this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume", "", { isEditable: true });
-            _this.skuPriceCollectionConfig.addDisplayProperty("retailCommission", "", { isEditable: true });
-            _this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume", "", { isEditable: true });
-            _this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume", "", { isEditable: true });
-        }
-        return _this;
-    }
-    return SWPricingManagerController;
-}(swpricingmanager_1.SWPricingManagerController));
-exports.SWPricingManagerController = SWPricingManagerController;
-var SWPricingManager = /** @class */ (function (_super) {
-    __extends(SWPricingManager, _super);
-    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
-        var _this = _super.call(this, $hibachi, skuPartialsPath, slatwallPathBuilder) || this;
-        _this.$hibachi = $hibachi;
-        _this.skuPartialsPath = skuPartialsPath;
-        _this.slatwallPathBuilder = slatwallPathBuilder;
-        _this.controller = SWPricingManagerController;
-        return _this;
-    }
-    SWPricingManager.Factory = function () {
-        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
-        directive.$inject = [
-            '$hibachi',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    };
-    return SWPricingManager;
-}(swpricingmanager_2.SWPricingManager));
-exports.SWPricingManager = SWPricingManager;
-
-
-/***/ }),
-/* 708 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-// var swEditSkuPriceModalLauncherHTML = require("html-loader!sku/components/editskupricemodallauncher");
-var swskupricemodal_1 = __webpack_require__(299);
-var swskupricemodal_2 = __webpack_require__(299);
-var SWSkuPriceModalController = /** @class */ (function (_super) {
-    __extends(SWSkuPriceModalController, _super);
-    //@ngInject
-    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) {
-        var _this = _super.call(this, $hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) || this;
-        _this.$hibachi = $hibachi;
-        _this.entityService = entityService;
-        _this.formService = formService;
-        _this.listingService = listingService;
-        _this.observerService = observerService;
-        _this.skuPriceService = skuPriceService;
-        _this.utilityService = utilityService;
-        _this.collectionConfigService = collectionConfigService;
-        _this.scopeService = scopeService;
-        _this.$scope = $scope;
-        _this.$timeout = $timeout;
-        _this.requestService = requestService;
-        _this.initData = function (pageRecord) {
-            _super.prototype.initData.call(_this, pageRecord);
-            if (angular.isDefined(_this.pageRecord) && angular.isDefined(_this.pageRecord.skuPriceID) && _this.pageRecord.skuPriceID.length) {
-                _this.skuPrice.personalVolume = _this.pageRecord.personalVolume;
-                _this.skuPrice.taxableAmount = _this.pageRecord.taxableAmount;
-                _this.skuPrice.commissionableVolume = _this.pageRecord.commissionableVolume;
-                _this.skuPrice.retailCommission = _this.pageRecord.retailCommission;
-                _this.skuPrice.productPackVolume = _this.pageRecord.productPackVolume;
-                _this.skuPrice.retailValueVolume = _this.pageRecord.retailValueVolume;
-                _this.skuPrice.handlingFee = _this.pageRecord.handlingFee;
-                _this.skuPrice.activeFlag = _this.pageRecord.activeFlag;
-            }
-        };
-        _this.$onDestroy = function () {
-            _this.observerService.detachByEvent('EDIT_SKUPRICE');
-        };
-        _this.observerService.detachByEvent('EDIT_SKUPRICE'); // Detach core event
-        _this.observerService.attach(_this.initData, "EDIT_SKUPRICE"); // Attach custom event
-        return _this;
-    }
-    return SWSkuPriceModalController;
-}(swskupricemodal_2.SWSkuPriceModalController));
-exports.SWSkuPriceModalController = SWSkuPriceModalController;
-var SWSkuPriceModal = /** @class */ (function (_super) {
-    __extends(SWSkuPriceModal, _super);
-    function SWSkuPriceModal($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
-        var _this = _super.call(this, $hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) || this;
-        _this.$hibachi = $hibachi;
-        _this.entityService = entityService;
-        _this.observerService = observerService;
-        _this.scopeService = scopeService;
-        _this.collectionConfigService = collectionConfigService;
-        _this.skuPartialsPath = skuPartialsPath;
-        _this.slatwallPathBuilder = slatwallPathBuilder;
-        _this.controller = SWSkuPriceModalController;
-        return _this;
-    }
-    SWSkuPriceModal.Factory = function () {
-        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuPriceModal($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
-        directive.$inject = [
-            '$hibachi',
-            'entityService',
-            'observerService',
-            'scopeService',
-            'collectionConfigService',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    };
-    return SWSkuPriceModal;
-}(swskupricemodal_1.SWSkuPriceModal));
-exports.SWSkuPriceModal = SWSkuPriceModal;
-
-
-/***/ }),
+/* 706 */,
+/* 707 */,
+/* 708 */,
 /* 709 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -97257,6 +97009,94 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(308);
+
+
+/***/ }),
+/* 924 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+//modules
+var core_module_1 = __webpack_require__(6);
+//services
+//controllers
+//directives
+var swsiteandcurrencyselect_1 = __webpack_require__(926);
+//filters
+var sitemodule = angular.module('hibachi.site', [core_module_1.coremodule.name]).config(function () {
+})
+    //constants
+    .constant('sitePartialsPath', 'site/components/')
+    //services
+    //controllers
+    //directives
+    .directive('swSiteAndCurrencySelect', swsiteandcurrencyselect_1.SWSiteAndCurrencySelect.Factory());
+exports.sitemodule = sitemodule;
+
+
+/***/ }),
+/* 925 */,
+/* 926 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var SWSiteAndCurrencySelectController = /** @class */ (function () {
+    //@ngInject
+    function SWSiteAndCurrencySelectController($hibachi) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.currencyCodeOptions = [];
+        this.$ngOnInit = function () {
+        };
+        this.updateSite = function () {
+            console.log('getSiteCurrencyCodeOptions', _this.site);
+            _this.currencyCodeOptions = _this.site.eligibleCurrencyCodes.split(',');
+            if (_this.currencyCodeOptions.length === 1) {
+                _this.currencyCode = _this.currencyCodeOptions[0];
+            }
+        };
+        this.site = this.siteAndCurrencyOptions[0];
+    }
+    return SWSiteAndCurrencySelectController;
+}());
+var SWSiteAndCurrencySelect = /** @class */ (function () {
+    function SWSiteAndCurrencySelect(skuPartialsPath, slatwallPathBuilder) {
+        this.restrict = 'EA';
+        this.scope = {};
+        this.bindToController = {
+            siteAndCurrencyOptions: '<?'
+        };
+        this.controller = SWSiteAndCurrencySelectController;
+        this.controllerAs = "swSiteAndCurrencySelect";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "siteandcurrencyselect.html";
+    }
+    SWSiteAndCurrencySelect.Factory = function () {
+        var directive = function (sitePartialsPath, slatwallPathBuilder) { return new SWSiteAndCurrencySelect(sitePartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            'sitePartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWSiteAndCurrencySelect;
+}());
+exports.SWSiteAndCurrencySelect = SWSiteAndCurrencySelect;
 
 
 /***/ })
