@@ -473,7 +473,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public string function getPermissionGroupNameList() {
 		
 		if(!getNewFlag()){
-			if(!structKeyExists(variables,'permissionGroupNameList') && !len(trim((variables,'permissionGroupNameList'))){
+			if(!structKeyExists(variables,'permissionGroupNameList') && !len(trim((variables,'permissionGroupNameList')))){
 				var permissionGroupNameList = "";
 				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
 				
