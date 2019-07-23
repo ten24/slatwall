@@ -337,11 +337,11 @@ component extends="framework.one" {
 		verifyApplicationSetup(noredirect=arguments.noredirect);
 
 		if(!variables.framework.hibachi.isApplicationStart && 
-			variables.framework.hibachi.useServerInstanceCacheControl &&
+			variables.framework.hibachi.useServerInstanceCacheControl
 		){
 				//lock the server instance check per server so two sibling requests do not concurrently check expired state
 				lock scope="server" timeout="20" {	
-					if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress()){
+					if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 
 						verifyApplicationSetup(reloadByServerInstance=true);
 
