@@ -599,8 +599,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processSku_move(required any sku, any processObject){
 		var originalProduct = arguments.sku.getProduct(); 
 		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID(); 	
-		
-		arguments.sku.setProduct(processObject.getProduct());
+		arguments.sku.setProduct(arguments.processObject.getProduct());
 		arguments.sku = this.saveSku(arguments.sku);		
 	
 		if(originalProduct.getSkusCount() == 1){

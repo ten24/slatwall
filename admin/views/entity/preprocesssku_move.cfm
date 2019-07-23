@@ -65,7 +65,8 @@ Notes:
 					<div class="alert alert-info" role="alert">	
 						<span data-sw-rbkey="'entity.sku.process.move.warning'"></span>
 					</div>
-					<sw-typeahead-input-field data-field-name="productID"
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="product" fieldName="productID" edit="true" labelText="#$.slatwall.rbkey('entity.Sku.process.move.placeholder')#">
+					<!---<sw-typeahead-input-field data-field-name="productID"
 											  data-entity-name="Product"
 											  data-validate-required="true"
 											  data-properties-to-load="productID,productName,productCode"
@@ -74,7 +75,7 @@ Notes:
 											  data-property-to-show="productName"
 											  data-property-to-save="productID">
 						<sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
-					</sw-typeahead-input-field>
+					</sw-typeahead-input-field>--->
 
 							
 				</hb:HibachiPropertyList>
