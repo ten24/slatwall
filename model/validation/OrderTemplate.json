@@ -3,6 +3,9 @@
 		"activeScheduleOrderTemplate": {
 			"statusCode": { "eq":"otstActive" },
 			"typeCode": { "eq":"ottSchedule" }
+		},
+		"isWishList": {
+			"typeCode": { "eq":"ottWishList" }
 		}
 	},
 	"properties":{
@@ -14,6 +17,7 @@
 		"orderTemplateType":				[{"contexts":"save","required":true}],
 		"shippingAccountAddress":			[{"contexts":"createAndPlaceOrder","required":true}],
 		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
-		"frequencyTerm":					[{"contexts":"save,createAndPlaceOrder","conditions":"activeScheduleOrderTemplate", "required":true}]
+		"frequencyTerm":					[{"contexts":"save,createAndPlaceOrder","conditions":"activeScheduleOrderTemplate", "required":true}],
+		"typeCode":							[{"contexts":"delete","eq":"ottWishList"}]
 	}
 }

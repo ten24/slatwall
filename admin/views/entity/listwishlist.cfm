@@ -60,7 +60,14 @@ Notes:
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessordertemplate" entity="OrderTemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		    <hb:HibachiProcessCaller 
+			    action="admin:entity.preprocessordertemplate" 
+			    entity="OrderTemplate" 
+			    processContext="createwishlist" 
+			    class="btn btn-primary" 
+			    icon="plus icon-white" 
+			    modal="true" 
+		    />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 

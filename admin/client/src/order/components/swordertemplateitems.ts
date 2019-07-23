@@ -54,7 +54,7 @@ class SWOrderTemplateItemsController{
 	}
 	
 	public $onInit = () =>{
-			    
+		this.orderTemplateService.setOrderTemplateID(this.orderTemplate.orderTemplateID);
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
 		var orderTemplateDisplayProperties = ['sku.skuCode','sku.skuDefinition','sku.product.productName','sku.price','total'];

@@ -63534,6 +63534,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             isEditable: false
         };
         this.$onInit = function () {
+            _this.orderTemplateService.setOrderTemplateID(_this.orderTemplate.orderTemplateID);
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             var orderTemplateDisplayProperties = ['sku.skuCode', 'sku.skuDefinition', 'sku.product.productName', 'sku.price', 'total'];
             var skuDisplayProperties = ['skuCode', 'skuDefinition', 'product.productName', 'price'];
@@ -63873,7 +63874,6 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
         //rb key properties
         this.title = "Update Schedule";
         this.$onInit = function () {
-            _this.orderTemplateService.setOrderTemplateID(_this.orderTemplate.orderTemplateID);
             if (_this.scheduleOrderNextPlaceDateTimeString != null) {
                 var date = Date.parse(_this.scheduleOrderNextPlaceDateTimeString);
                 _this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
