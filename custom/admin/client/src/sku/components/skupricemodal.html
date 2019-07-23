@@ -72,14 +72,32 @@
                                         sw-rbKey="'entity.Sku'">
                                         
                                 </label>
-                                <sw-typeahead-search    data-collection-config="swSkuPriceModal.skuCollectionConfig"
+                                <!--<sw-typeahead-search    data-collection-config="swSkuPriceModal.skuCollectionConfig"
                                                         data-disabled="swSkuPriceModal.isDefaultSkuPrice()"
                                                         data-placeholder-text="Select Sku"
                                                         data-search-text="swSkuPriceModal.selectedSku['skuCode']"
                                                         data-add-function="swSkuPriceModal.setSelectedSku"
                                                         data-property-to-show="skuCode">
-                                    <span sw-typeahead-search-line-item data-property-identifier="skuCode" ng-bind="item.skuCode"></span>
-                                </sw-typeahead-search>
+                                    <span sw-typeahead-search-line-item data-property-identifier="skuCode" data-bind-html="item.skuCode" ng-bind="item.skuCode"></span>
+                                </sw-typeahead-search>-->
+                                
+                                <sw-typeahead-input-field 
+                                            data-entity-name="Sku"
+                                            data-property-to-save=""
+                                            data-property-to-show="{{swSkuPriceModal.selectedSku['skuCode']}}"
+                                            data-properties-to-load="#attributes.autocompletePropertyIdentifiers#"
+                                            data-show-add-button="true"
+                                            data-show-view-button="true"
+                                            data-placeholder-rb-key=""
+                                            data-placeholder-text="Search #attributes.autocompleteDataEntity#"
+                                            data-multiselect-mode="false"
+                                            data-filter-flag="true"
+                                            data-field-name="#attributes.fieldName#"
+                                            data-initial-entity-id="#attributes.value#"
+                                            data-max-records="#attributes.maxrecords#"
+                                            data-order-by-list="#attributes.autocompleteNameProperty#|ASC">
+                                    
+                                </sw-typeahead-input-field>
                                 <input type="hidden" readonly style="display:none" name="sku" ng-model="swSkuPriceModal.submittedSku" />
                             </div>
                             <div class="col-sm-6">
