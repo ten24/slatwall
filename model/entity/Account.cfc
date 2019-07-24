@@ -154,8 +154,16 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
+	property name="fullNameWithPermissionGroups" persistent="false";
+    property name="permissionGroupNameList" persistent="false";
 
-			//CUSTOM PROPERTIES BEGIN
+	//CUSTOM PROPERTIES BEGIN
+property name="enrollmentDate" ormtype="timestamp";
+	property name="sponsorIDNumber" ormtype="string";
+	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
+
+	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
+
 
  property name="hyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
@@ -168,9 +176,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
  property name="spouseName" ormtype="string";
  property name="driverLicense" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
- property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="governmentIDNumber" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
@@ -460,7 +468,45 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public string function getPasswordResetID() {
 		return getService("accountService").getPasswordResetID(account=this);
 	}
+	
+	public string function getPermissionGroupNameList() {
+		
+		if(!getNewFlag()){
+			if( !structKeyExists(variables,'permissionGroupNameList') ||
+				(!isNull(variables.permissionGroupNameList) &&
+				!len(trim(variables.permissionGroupNameList))
+				)
+			){
+				var permissionGroupNameList = "";
+				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
+				
+				if(arraylen(records) && records[1]['permissionGroupsCount']){
+					
+					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+					permissionGroupCollectionList.setEnforceAuthorization(false);
+					permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
+					permissionGroupCollectionList.setPermissionAppliedFlag(true);
+					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+					for(var permissionGroupRecord in permissiongroupRecords){
+						permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
+					}
+					
+					permissionGroupNameList = '( #permissionGroupNameList# )';
+				}
+				variables.permissionGroupNameList = permissionGroupNameList;
+			}
+		}else{
+			return "";
+		}
+		return variables.permissionGroupNameList;
+	}
 
+	public string function getFullNameWithPermissionGroups() {
+		if(!isNull(getFullName()) && !isNull(getPermissionGroupNameList())){
+			return hibachiHtmlEditFormat(getFullName()) & getPermissionGroupNameList();
+		}
+	}
+	
 	public string function getPermissionGroupCacheKey(){
 		if(!getNewFlag()){
 			if(!structKeyExists(variables,'permissionGroupCacheKey')){
@@ -1134,5 +1180,19 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 
 		//CUSTOM FUNCTIONS BEGIN
-		//CUSTOM FUNCTIONS END
+
+public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
+		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
+			var orderCollection = getService('OrderService').getOrderCollectionList(); 
+			orderCollection.addFilter('account.accountID', getAccountID());
+			orderCollection.addFilter('orderTemplate.orderTemplateID','NULL','is not');
+			//not cancelled, using ID because it's a faster query than systemCode
+			orderCollection.addFilter('orderStatusType.typeID','444df2b90f62f72711eb5b3c90848e7e','!=');
+			orderCollection.addFilter('orderOpenDateTime','1/1/' & year(now()),'>='); 
+			orderCollection.addFilter('orderOpenDateTime','12/31/' & year(now()),'<=');
+			variables.successfulFlexshipOrdersThisYearCount = orderCollection.getRecordsCount();  
+		} 
+		return variables.successfulFlexshipOrdersThisYearCount; 
+	}  
+//CUSTOM FUNCTIONS END
 }

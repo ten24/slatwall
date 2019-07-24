@@ -56,7 +56,8 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.currencyCode = :currencyCode AND sp.promotionReward is null", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 	}
 	
-	public function getPromotionRewardSkuPriceForSkuByCurrencyCode( required string skuID, required string promotionRewardID, required string currencyCode, numeric quantity, priceGroups=getHibachiScope().getAccount().getPriceGroups() ){
+	public function getPromotionRewardSkuPriceForSkuByCurrencyCode( required string skuID, required string promotionRewardID, required string currencyCode, numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ){
+
 		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND currencyCode = :currencyCode AND sp.promotionReward.promotionRewardID = :promotionRewardID";
 		var params = { 
 			skuID=arguments.skuID, 
@@ -76,7 +77,7 @@ component extends="HibachiDAO" accessors="true" output="false" {
 				priceGroupIDs = listAppend(priceGroupIDs,priceGroup.getPriceGroupID());
 			}
 			//get the best price
-			hql &= ' AND sp.priceGroup.priceGroupID IN (:priceGroupIDs)';
+			hql &= ' AND (sp.priceGroup.priceGroupID IN (:priceGroupIDs) OR sp.priceGroup.priceGroupID IS NULL)';
 			params['priceGroupIDs'] = priceGroupIDs;
 		}else{
 			hql &= ' AND sp.priceGroup is NULL';
@@ -91,21 +92,10 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND sp.promotionReward is null", { skuID=arguments.skuID }, true );
 	}
 
-	public function getBaseSkuPriceForSkuByCurrencyCode (required string skuID, required string currencyCode, priceGroups=getHibachiScope().getAccount().getPriceGroups()){
-		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode AND sp.promotionReward is null";
-		
-		if(arraylen(arguments.priceGroups)){
-			var priceGroupIDs = "";
-			for(var priceGroup in arguments.priceGroups){
-				priceGroupIDs = listAppend(priceGroupIDs,priceGroup.getPriceGroupID());
-			}
-			//get the best price
-			hql &= ' AND sp.priceGroup.priceGroupID IN (:priceGroupIDs) ORDER BY sp.price ASC';
-			return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode, priceGroupIDs=priceGroupIDs }, true,{maxresults=1} );
-		}else{
-			hql &= ' AND sp.priceGroup is NULL';
-			return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
-		}
+	public function getBaseSkuPriceForSkuByCurrencyCode (required string skuID, required string currencyCode){
+		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode AND sp.promotionReward is null AND sp.priceGroup is NULL";
+
+		return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 		
 	}
 
@@ -127,8 +117,8 @@ component extends="HibachiDAO" accessors="true" output="false" {
 			left join _skuPrice.priceGroup as _priceGroup
 			WHERE _skuPrice.activeFlag = 1
 			AND _sku.skuID = :skuID 
-			AND _skuPrice.minQuantity <= :quantity 
-			AND _skuPrice.maxQuantity >= :quantity 
+			AND (_skuPrice.minQuantity <= :quantity OR _skuPrice.minQuantity IS NULL)
+			AND (_skuPrice.maxQuantity >= :quantity  OR _skuPrice.maxQuantity IS NULL)
 			AND _skuPrice.currencyCode = :currencyCode
 			AND (
 				_skuPrice.priceGroup IS NULL

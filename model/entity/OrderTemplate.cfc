@@ -57,8 +57,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="currencyCode" ormtype="string" length="3";
 
-	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
-	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID";
+	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateTypeID";
+	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateStatusTypeID";
 	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID" hb_formFieldType="select";
 
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -98,15 +98,19 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
+	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
 	property name="subtotal" persistent="false";
-	property name="total" persistent="false";
+	property name="statusCode" persistent="false";
+	property name="typeCode" persistent="false";
+	property name="total" persistent="false" hb_formatType="currency";
 	//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeTotal" persistent="false"; 
-
+property name="customerCanCreateFlag" persistent="false";
+	property name="commissionableVolumeTotal" persistent="false"; 
+	property name="personalVolumeTotal" persistent="false"; 
 
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
@@ -126,15 +130,41 @@ property name="personalVolumeTotal" persistent="false";
 	} 
 
 	public string function getStatusCode() {
-		return getOrderTemplateStatusType().getSystemCode();
+		if(!isNull(getOrderTemplateStatusType())){
+			return getOrderTemplateStatusType().getSystemCode();
+		}
 	}
-
+	
+	public string function getTypeCode() {
+		if(!isNull(getOrderTemplateType())){
+			if(!isNull(getOrderTemplateType().getTypeCode()) && !len(trim(getOrderTemplateType().getTypeCode()))){
+				return getOrderTemplateType().getSystemCode();
+			}else{
+				return getOrderTemplateType().getTypeCode();
+			}
+		}
+	}
+	
 	public boolean function getCanPlaceOrderFlag(){
 		if(!structKeyExists(variables, 'canPlaceOrderFlag')){
-			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this); 
+			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this);
 		} 
 		return variables.canPlaceOrderFlag;
-	} 
+	}
+	
+	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
+		if(!structKeyExists(variables, 'canPlaceFutureScheduleOrderFlag')){
+			variables.canPlaceFutureScheduleOrderFlag = true;
+			if(
+				!setting('orderTemplateCanPlaceFutureScheduleDateFlag') && 
+				!isNull(getHibachiScope().getAccount()) && 
+				getHibachiScope().getAccount().getAdminAccountFlag()	
+			){
+				variables.canPlaceFutureScheduleOrderFlag = dateCompare(now(), getScheduleOrderNextPlaceDateTime()) > -1; 
+			} 
+		}
+		return variables.canPlaceFutureScheduleOrderFlag;
+	}  
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
@@ -154,7 +184,7 @@ property name="personalVolumeTotal" persistent="false";
 
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
 				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
-				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode(), orderTemplateItem['quantity']); 	
+				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode())*orderTemplateItem['quantity']; 	
 			} 
 		}
 		return variables.subtotal; 
@@ -164,7 +194,7 @@ property name="personalVolumeTotal" persistent="false";
 		return this.getSubtotal() + this.getFulfillmentTotal(); 
 	} 
 
-	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
@@ -274,7 +304,20 @@ property name="personalVolumeTotal" persistent="false";
 	}	
 	//CUSTOM FUNCTIONS BEGIN
 
-public numeric function getPersonalVolumeTotal(){
+public boolean function getCustomerCanCreateFlag(){
+			
+		if(!structKeyExists(variables, "customerCanCreateFlag")){
+			variables.customerCanCreateFlag = true;
+			if(!isNull(getSite()) && !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner'){
+				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
+				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
+			} 
+		}
+
+		return variables.customerCanCreateFlag; 
+	} 
+
+	public numeric function getPersonalVolumeTotal(){
 	
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
 			variables.personalVolumeTotal = 0; 
@@ -286,5 +329,18 @@ public numeric function getPersonalVolumeTotal(){
 			}
 		}	
 		return variables.personalVolumeTotal; 	
-	} //CUSTOM FUNCTIONS END
+	}
+
+	public numeric function getCommissionableVolumeTotal(){
+		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
+			variables.commissionableVolumeTotal = 0; 
+
+			var orderTemplateItems = this.getOrderTemplateItems();
+
+			for(var orderTemplateItem in orderTemplateItems){ 
+				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal();
+			}
+		}	
+		return variables.commissionableVolumeTotal;
+	}  //CUSTOM FUNCTIONS END
 }

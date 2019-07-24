@@ -260,6 +260,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
+			globalCollectionKeywordWildcardConfig={fieldType='select', defaultValue="both", valueOptions=[{name="wildcard on both sides %example%",value="both"}, {name="wildcard on left sides %example",value="left"}, {name="wildcard on right sides example%",value="right"}]},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalTranslateEntities = {fieldType="multiselect",defaultValue="Product,Sku"},
 			globalTranslateLocales = {fieldType="multiselect",defaultValue="en_us"},
@@ -274,6 +275,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
+			globalShippingIntegrationForAddressVerification = {fieldtype="select"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalS3Bucket = {fieldtype="text"},
@@ -281,7 +283,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -304,6 +309,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
 
 			//Order Template
+			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateEligibleTerms = {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="Term"
@@ -353,6 +359,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Site
 			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
+			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
@@ -360,7 +367,7 @@ component extends="HibachiService" output="false" accessors="true" {
             siteRecaptchaSiteKey = {fieldType="text"},
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
-
+			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
@@ -579,6 +586,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
+			case "globalShippingIntegrationForAddressVerification":
+				var options = getShippingIntegrationOptions();
+				arrayPrepend(options, {name='Internal', value='internal'});
+				return options;
 			case "globalLocale":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalTranslateEntities":
@@ -597,6 +608,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return ['-','_'];
 			case "siteAvailableLocales":
 				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDefaultAccountPaymentMethod":
+				return getPaymentService().getActivePaymentMethodOptions();
 			case "siteForgotPasswordEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
@@ -674,6 +687,17 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 		return sl;
+	}
+
+
+	public array function getShippingIntegrationOptions() {
+		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
+		integrationCollectionList.addFilter('activeFlag', '1');
+		integrationCollectionList.addFilter('installedFlag', '1');
+		integrationCollectionList.addFilter('integrationTypeList', 'shipping',"in");
+		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
+		var options = integrationCollectionList.getRecords();
+		return options;
 	}
 
 	public array function getCustomIntegrationOptions() {

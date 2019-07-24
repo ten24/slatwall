@@ -48,6 +48,10 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
+
+	property name="siteDAO"; 
+	property name="hibachiCacheService"; 
+	
 	variables.skeletonSitePath = expandPath('/#getApplicationValue('applicationKey')#')&'/integrationServices/slatwallcms/skeletonsite';
 	variables.sharedAssetsPath = expandPath('/#getApplicationValue('applicationKey')#')&'/custom/assets';
 
@@ -63,6 +67,27 @@ component  extends="HibachiService" accessors="true" {
 	public any function getCurrentDomain() {
 		return getHibachiScope().getCurrentDomain();
 	}
+
+	public any function getSiteByDomainName(required string siteName) {
+		var cacheKey = 'site' & replaceNoCase(arguments.siteName,' ','','all') & 'ID'; 
+		if(!getHibachiCacheService().hasCachedValue(cacheKey)){
+			var site = getSiteDAO().getSiteByDomainName(arguments.siteName);
+			
+			if(isNull(site)){
+				getHibachiCacheService().setCachedValue(cacheKey, '');  
+			} else { 
+				getHibachiCacheService().setCachedValue(cacheKey, site.getSiteID());  
+			} 	
+
+		} 
+		var cachedSiteID = getHibachiCacheService().getCachedValue(cacheKey);
+
+		if(len(cachedSiteID) == 0){
+			return; 
+		}   
+
+		return getSite(cachedSiteID);  
+	}  
 
 	public string function getSkeletonSitePath(){
 		return variables.skeletonSitePath;
@@ -125,13 +150,6 @@ component  extends="HibachiService" accessors="true" {
 				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBrand"),
 				settingName='brand',
 				contentTemplateFile='slatwall-brand.cfm'
-			},
-			{
-				title='Category Template Page',
-				urlTitle="category-template-page",
-				contentTemplateType=getService("typeService").getTypeBySystemCode("cttCategory"),
-				settingName='category',
-				contentTemplateFile='slatwall-category.cfm'
 			}
 		];
 
@@ -142,7 +160,7 @@ component  extends="HibachiService" accessors="true" {
 				activeFlag=true,
 				title=slatwallTemplatesChild.title,
 				urlTitle=slatwallTemplatesChild.urlTitle,
-				contentTemplateType=slatwallTemplatesChild.contentTemplateType,
+				contentTemplateTypeID=slatwallTemplatesChild.contentTemplateType.getTypeID(),
 				siteID=arguments.site.getSiteID(),
 				parentContentID=arguments.slatwallTemplatesContent.getContentID(),
 				allowPurchaseFlag=false,

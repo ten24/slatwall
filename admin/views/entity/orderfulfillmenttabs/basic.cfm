@@ -12,6 +12,7 @@
  				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="orderFulfillmentStatusType">
 			</cfif>
 			
+			<!--- Estimated Shipping Date --->
 			<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="estimatedShippingDate" edit="#rc.edit#">
 				
 			<!--- Email --->
@@ -21,17 +22,18 @@
 			<!--- Pickup --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupDate" edit="#rc.edit#">
 
 			<!--- Shipping --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 				<cfif rc.edit eq "true">
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingAddress" hint="#$.slatwall.rbkey('entity.orderfulfillment.shippingaddress.hint')#" edit="false">
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
 					<hr>
-					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="accountAddress" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="accountAddress" edit="#rc.edit#" >
 					
 				<cfelse>
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingAddress" edit="#rc.edit#">	
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
 				</cfif>
 				
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">

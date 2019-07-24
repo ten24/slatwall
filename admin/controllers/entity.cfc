@@ -263,6 +263,54 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
+private void function populateWithAddressVerification(required struct rc){
+		
+		if(
+			len(getHibachiScope().setting('globalShippingIntegrationForAddressVerification')) &&
+			getHibachiScope().setting('globalShippingIntegrationForAddressVerification') != 'internal' &&
+			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
+			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
+		){
+
+			rc.addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.orderFulfillment.getShippingAddress().getAddressID());
+
+			if(structKeyExists(rc,'addressVerificationStruct') && structKeyExists(rc.addressVerificationStruct,"suggestedAddress")){
+				rc.suggestedAddressName = getService("AddressService").getAddressName(rc.addressVerificationStruct.suggestedAddress);
+				rc.addressVerificationStruct.message = rc.$.slatwall.rbKey('admin.entity.cannotVerifyAddress');
+			}
+
+		}
+	}
+
+	//Order Fulfillment
+
+	public void function detailOrderFulfillment(required struct rc) {
+		genericDetailMethod(entityName="OrderFulfillment", rc=arguments.rc);
+		this.populateWithAddressVerification(arguments.rc);
+	}
+
+	public void function editOrderFulfillment(required struct rc) {
+		genericEditMethod(entityName="OrderFulfillment", rc=arguments.rc);
+		this.populateWithAddressVerification(arguments.rc);
+	}
+
+	public void function updateAddressWithSuggestedAddress(required struct rc){
+		var addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.addressID);
+		var address = getService("AddressService").getAddress(rc.addressID);
+		var orderFulfillment = getService("FulfillmentService").getOrderFulfillment(rc.orderFulfillmentID);
+
+		address.populate(addressVerificationStruct.suggestedAddress);
+		address.setVerifiedByIntegrationFlag(true);
+
+		orderFulfillment.setverifiedShippingAddressFlag(true);
+
+		getService("AddressService").saveAddress(address);
+		getService("FulfillmentService").saveOrderFulfillment(orderFulfillment);
+
+		getFW().redirect( action="admin:entity.detailorderfulfillment", preserve="rc",queryString="orderFulfillmentID=#rc.orderFulfillmentID#" );
+
+	}
+	
 	public void function before(required struct rc){
 		var sites = getService('siteService').getSiteSmartList();
 		sites.addFilter('activeFlag', 1);
@@ -276,7 +324,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getFW().setView("admin:entity.ajax");
 
 			rc.templatePath = "./#rc.viewPath#.cfm";
-
+			if( fileExists('/Slatwall/custom/admin/views/entity/#rc.viewPath#.cfm')){ 
+				//relative path from admin/entity/ajax.cfm
+				rc.templatePath = '../../../custom/admin/views/entity/#rc.viewPath#.cfm'; 
+			}
 		}
 	}
 	
@@ -336,7 +387,48 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.entityActionDetails.createAction="admin:entity.createOrder";
 		getFW().setView("admin:entity.listorder");
 	}
+	
+	// Order (Wish Lists)
+	public void function listWishList(required struct rc) {
+		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
 
+		arguments.rc.orderTemplateCollectionList.addFilter('orderTemplateType.systemCode','ottWishList','IN');
+		arguments.rc.orderTemplateCollectionList.addOrderBy('createdDateTime|DESC');
+
+		getFW().setView("admin:entity.listwishlist");
+	}
+	
+	public void function accountWishListsTab(required struct rc){
+		genericDetailMethod(entityName="OrderTemplate", rc=arguments.rc);
+		if(!isNull(rc.orderTemplate) && rc.orderTemplate.orderTemplateType.getSystemCode() eq "ottWishList") {
+			rc.entityActionDetails.listAction = "admin:entity.listwishlist";
+			rc.entityActionDetails.backAction = "admin:entity.listwishlist";
+		}
+		
+		getFW().setView("admin:entity.listordertemplate");
+	}
+	
+	public void function detailWishList(required struct rc) {
+		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
+		
+		param name="rc.orderTemplateID" type="string" default="";
+	
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+		rc.edit = true;
+		
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
+	public void function deleteWishList(required struct rc) {
+		param name="rc.orderTemplateID" default="";
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+		getOrderService().deleteOrderTemplate(rc.orderTemplate);
+		
+		getFW().redirect(action="admin:entity.listwishlist");
+
+	}
+	
+	
 	// Order Payment
 	public any function createorderpayment( required struct rc ) {
 		param name="rc.orderID" type="string" default="";

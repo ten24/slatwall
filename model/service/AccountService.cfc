@@ -1793,7 +1793,40 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function savePermissionGroup(required any permissionGroup, struct data={}, string context="save") {
 
 		arguments.permissionGroup.setPermissionGroupName( arguments.data.permissionGroupName );
+		//transform namespaced permissions into a single array
+		if(!structKeyExists(arguments.data,'permissions')){
+			arguments.data.permissions=[];
+		}
+		if(structKeyExists(arguments.data,'entitypermission')){
+			for(var entityPermission in arguments.data.entitypermission.permissions){
+				arrayAppend(arguments.data.permissions,entityPermission);
+			}
+		}
 
+		if(structKeyExists(arguments.data,'actionpermission')){
+			for(var actionPermission in arguments.data.actionpermission.permissions){
+				arrayAppend(arguments.data.permissions,actionPermission);
+			}
+		}
+		if(structKeyExists(arguments.data,'propertypermission')){
+			//property permission array starts at index 2 which causes issues with lucee if it isn't removed first
+			arguments.data.propertypermission.permissions=arrayFilter(arguments.data.propertypermission.permissions,function(value){
+				return !isNull(value);
+			});
+			for(var propertyPermission in arguments.data.propertypermission.permissions){
+				
+				arrayAppend(arguments.data.permissions,propertyPermission);
+			}
+		}
+		
+		if(structKeyExists(arguments.data,'processpermission')){
+			arguments.data.processpermission.permissions=arrayFilter(arguments.data.processpermission.permissions,function(value){
+				return !isNull(value);
+			});
+			for(var processPermission in arguments.data.processpermission.permissions){
+				arrayAppend(arguments.data.permissions,processPermission);
+			}
+		}
 		// As long as permissions were passed in we can set those up
 		if(structKeyExists(arguments.data, "permissions")) {
 			
@@ -2003,8 +2036,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromSubscriptionUsages( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromAccountPaymentMethods(accountAddressID = arguments.accountAddress.getAccountAddressID());
 		   
-		    arguments.accountAddress.removeAccount();
-            arguments.accountAddress.setAddress(javaCast("null","")); 
+		    getAccountDAO().removeAccountFromAccountAddress(arguments.accountAddress.getAccountAddressID());
+            arguments.accountAddress.setAddress(javaCast("null",""));  
 
 		}
 

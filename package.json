@@ -91,9 +91,8 @@
     "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css",
     "buildCustomAdmin": "node custom/client/customAdmin.js",
     "buildCustomAdmin:prod": "node custom/client/customAdminProd.js",
-    "buildCustomFrontend": "custom/client/customFrontend.js",
-    "buildCustomFrontend:prod": "custom/client/customFrontendProd.js"
-  },
+    "buildCustomFrontend": "cd custom/client && webpack --config webpack.config.js",
+    "buildCustomFrontend:prod": "cd custom/client && webpack --config webpack-production.config.js"  },
   "jshintConfig": {
     "predef": [
       "angular"

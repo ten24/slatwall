@@ -12,6 +12,7 @@ class SWTypeaheadInputFieldController {
     public columns = []; 
     public filters;
     public propertiesToLoad; 
+    public propertiesToSearch;
     public placeholderRbKey;
     public propertyToSave;
     public propertyToShow;
@@ -56,7 +57,14 @@ class SWTypeaheadInputFieldController {
         }
 
         if(angular.isDefined(this.propertiesToLoad)){
-            this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            if(this.propertiesToSearch && this.propertiesToSearch.length){
+                var propertiesToLoad = this.propertiesToLoad.split(',');
+                for(var propertyToLoad of propertiesToLoad){
+                    this.typeaheadCollectionConfig.addDisplayProperty(propertyToLoad,undefined,{isSearchable:this.propertiesToSearch.split(',').indexOf(propertyToLoad)>-1});
+                }
+            }else{
+                this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            }
         }
         
         angular.forEach(this.columns, (column)=>{
@@ -112,6 +120,7 @@ class SWTypeaheadInputField implements ng.IDirective{
         typeaheadCollectionConfig:"=?",
         filters:"=?",
         propertiesToLoad:"@?",
+        propertiesToSearch:"@?",
         placeholderRbKey:"@?",
         propertyToShow:"@",
         propertyToSave:"@",

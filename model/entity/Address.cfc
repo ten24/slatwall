@@ -69,6 +69,11 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="urlTitle" hb_populateEnabled="public" ormtype="string";
+
+	property name="verifiedByIntegrationFlag" hb_populateEnabled="false" ormtype="boolean";
+	property name="IntegrationVerificationErrorMessage" hb_populateEnabled="public" ormtype="string";
+	property name="verificationCacheKey" ormtype="string" hb_auditable="false";
+	property name="verificationJson" ormtype="string" hb_auditable="false";
 	
 	//Calculated Properties
 	property name="calculatedAddressName" ormtype="string" length="1024"; 
@@ -125,6 +130,10 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public any function copyAddress( saveNewAddress=true ) {
 		return getService("addressService").copyAddress( this, arguments.saveNewAddress );
+	}
+	
+	public boolean function getVerifiedByIntegrationFlag(){
+		return !isNull(variables.verifiedByIntegrationFlag) ? variables.verifiedByIntegrationFlag : false;
 	}
 	
 	public string function getFullAddress(string delimiter = ", ") {

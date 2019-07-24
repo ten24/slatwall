@@ -2,9 +2,21 @@
 	"conditions":{
 		"activeOrderTemplate": {
 			"statusCode": { "eq":"otstActive" }
+		},
+		"scheduleOrderTemplate": {
+			"typeCode": { "eq":"ottSchedule" }
+		},
+		"isWishList": {
+			"typeCode": { "eq":"ottWishList" }
 		}
 	},
 	"properties":{
-		"canPlaceOrderFlag" : [{"contexts":"save", "conditions":"activeOrderTemplate", "eq":true}]
+		"account":							[{"contexts":"save","required":true}],
+		"canPlaceOrderFlag" :				[{"contexts":"save","conditions":"activeOrderTemplate", "eq":true}],
+		"canPlaceFutureScheduleOrderFlag":  [{"contexts":"createAndPlaceOrder","eq":true }],	
+		"orderTemplateType":				[{"contexts":"save","required":true}],
+		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
+		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}],
+		"typeCode":							[{"contexts":"delete","eq":"ottWishList"}]
 	}
 }

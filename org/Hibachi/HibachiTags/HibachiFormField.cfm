@@ -256,7 +256,7 @@
 				</cfif>
 			</cfoutput>
 		</cfcase>
-		<cfcase value="text">
+		<cfcase value="text,email">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
 				<cfif isStruct(attributes.translateAttributes)>

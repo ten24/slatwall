@@ -61,7 +61,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quotePriceExpiration" ormtype="timestamp";
 	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
+	property name="paymentLastRetryDateTime" ormtype="timestamp";
 	property name="paymentProcessingInProgressFlag" ormtype="boolean" default="false";
+	property name="paymentTryCount" ormtype="integer" default="0";
 	property name="orderCanceledDateTime" ormtype="timestamp";
 	property name="orderNotes" ormtype="text";
 	
@@ -1184,7 +1186,8 @@ property name="personalVolumeSubtotal" persistent="false";
 	}
 
  	public boolean function hasDepositItemsOnOrder(){
- 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+		var orderItemsCount = arrayLen(getOrderItems());  
+ 		for(var i=1; i<=orderItemsCount; i++) {
  			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
  				
  				return true;

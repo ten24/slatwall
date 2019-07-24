@@ -2,12 +2,6 @@ component {
     property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
-    property name="personalVolume" ormtype="big_decimal";
-    property name="taxableAmount" ormtype="big_decimal";
-    property name="commissionableVolume" ormtype="big_decimal";
-    property name="retailCommission" ormtype="big_decimal";
-    property name="productPackVolume" ormtype="big_decimal";
-    property name="retailValueVolume" ormtype="big_decimal";
     
     public any function getPersonalVolumeByCurrencyCode(required string currencyCode){
         return this.getCustomPriceByCurrencyCode('personalVolume',this.getCurrencyCode());
@@ -47,23 +41,20 @@ component {
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-				var prices = [];
-				for(var i=1; i <= arrayLen(skuPriceResults); i++){
-					ArrayAppend(prices, {price=skuPriceResults[i].price,'#customPriceField#'=skuPriceResults[i][customPriceField]});
-				}
+				
 				var sortFunction = function(a,b){
-				    if(a.price < b.price){ return -1;}
-				    else if (a.price > b.price){ return 1; }
+				    if(a['price'] < b['price']){ return -1;}
+				    else if (a['price'] > b['price']){ return 1; }
 				    else{ return 0; }
 					
 				};
-				ArraySort(prices, 
+				ArraySort(skuPriceResults, 
 				sortFunction
 				);
-				variables[cacheKey]= prices[1];
+				variables[cacheKey]= skuPriceResults[1];
 			} 
 
-			if(structKeyExists(variables,cacheKey)){
+			if(structKeyExists(variables,cacheKey) && structKeyExists(variables[cacheKey],customPriceField)){
 				return variables[cacheKey][customPriceField];
 			}
 			
@@ -75,7 +66,7 @@ component {
 		}
         
 		if(structKeyExists(variables,cacheKey)){
-		    if(isStruct(variables[cacheKey])){
+		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
 		        return variables[cacheKey][customPriceField];
 		    }
 			return variables[cacheKey];

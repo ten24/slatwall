@@ -97,14 +97,23 @@ component {
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku, numeric quantity){
+    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku, numeric quantity, any account){
 		var amountParams = {
 		    'customPriceField':arguments.customPriceField
 		};
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
 		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
+		}
 		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
+		    //Check for explicity defined promotion reward currencies
+			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
+				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
+					return variables.promotionRewardCurrencies[i].invokeMethod('get#customPriceField#Amount');
+				}
+			}
 			//Check for defined conversion rate 
 			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
 			if(!isNull(currencyRate)) {
@@ -118,7 +127,7 @@ component {
 		return getCustomAmount(argumentCollection=amountParams);
 	}
 	
-	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode, numeric quantity){
+	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode, numeric quantity, any account){
 
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){

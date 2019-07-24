@@ -43,8 +43,6 @@
     <cfset currentMonth = Month(rc.maxDate)/>
     
     <!--apply filters-->
-    
-    
     <cfif structKeyExists(rc,'productType') and len(rc.productType)>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
         <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>

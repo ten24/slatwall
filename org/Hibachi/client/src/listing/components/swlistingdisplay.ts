@@ -31,7 +31,7 @@ class SWListingDisplayController{
     }
     set columns(newArray: Array<any>) {
         this._columns = newArray;
-        this.columnCount = this._columns.length;
+        this.columnCount = this._columns ? this._columns.length : 0;
     }
     
     public columnCount;
@@ -124,8 +124,10 @@ class SWListingDisplayController{
     public name;
     public usingPersonalCollection:boolean;
     public personalCollectionIdentifier:string;
+    public personalCollectionKey:string;
     public persistedReportCollections:any;
     public customEndpoint: string;
+    public hideUnfilteredResults:boolean;
     //@ngInject
     constructor(
         public $scope,
@@ -147,6 +149,7 @@ class SWListingDisplayController{
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
+        
         if(angular.isUndefined(this.usingPersonalCollection)){
             this.usingPersonalCollection=false;
         }
@@ -183,17 +186,21 @@ class SWListingDisplayController{
              (this.baseEntityName) 
              && (
                  this.usingPersonalCollection 
-                 && this.listingService.hasPersonalCollectionSelected(this.baseEntityName)
+                 && this.listingService.hasPersonalCollectionSelected(this.personalCollectionKey)
              )
              && (
                 angular.isUndefined(this.personalCollectionIdentifier) 
                 || (
-                    angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) 
-                    && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier
+                    angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription']) 
+                    && this.localStorageService.getItem('selectedPersonalCollection')[this.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier
                 )
             )
         ){
-            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.baseEntityName);
+            if(angular.isUndefined(this.personalCollectionKey)){
+                this.personalCollectionKey = this.baseEntityName.toLowerCase();
+            }
+            
+            var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
            
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
@@ -283,6 +290,8 @@ class SWListingDisplayController{
                 this.collectionConfig.columns = this.columns;
             } else if (this.listingColumns && this.listingColumns.length){
                 this.columns = this.listingColumns;
+            } else if (this.collectionConfig.columns && this.collectionConfig.columns.length){
+                this.columns = this.collectionConfig.columns;
             }
             
             //setup selectable
@@ -304,34 +313,39 @@ class SWListingDisplayController{
     }
     
     public getCollectionByPagination = (state) =>{
-        if(state.type){
-            switch(state.type){
-                case 'setCurrentPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'nextPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'prevPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'setPageShow':
-                    this.collectionConfig.currentPage = 1;
-                    this.collectionConfig.setPageShow(state.payload);
-                    break;
-            }
-            if(this.collectionId){
-            
-                this.collectionConfig.baseEntityNameType = 'Collection';
-                this.collectionConfig.id = this.collectionId;
-            }
-            this.getCollection = this.collectionConfig.getEntity().then((data)=>{
-                this.collectionData = data;
-                this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
-            });
+        
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            if(state.type){
+                switch(state.type){
+                    case 'setCurrentPage':
+                        this.collectionConfig.currentPage = state.payload;
+                        break;
+                    case 'nextPage':
+                        this.collectionConfig.currentPage = state.payload;
+                        break;
+                    case 'prevPage':
+                        this.collectionConfig.currentPage = state.payload;
+                        break;
+                    case 'setPageShow':
+                        this.collectionConfig.currentPage = 1;
+                        this.collectionConfig.setPageShow(state.payload);
+                        break;
+                }
+                if(this.collectionId){
+                
+                    this.collectionConfig.baseEntityNameType = 'Collection';
+                    this.collectionConfig.id = this.collectionId;
+                }
 
+                this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+                    this.collectionData = data;
+                    this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
+                });
+    
+            }
+        }else{
+            this.collectionData = null;
         }
-
     }
 
     private setupCollectionPromise=()=>{
@@ -345,8 +359,11 @@ class SWListingDisplayController{
         var getCollectionEventID = this.tableID;
 
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
-
-        this.listingService.getCollection(this.tableID);
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            this.listingService.getCollection(this.tableID);
+        }else{
+            this.collectionData = null;
+        }
     }
 
     private getCollectionObserver=(param)=> {
@@ -357,11 +374,16 @@ class SWListingDisplayController{
         }
         
         this.collectionData = undefined;
-        this.$timeout(
-            ()=>{
-                this.getCollection();
-            }
-        );
+        
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            this.$timeout(
+                ()=>{
+                    this.getCollection();
+                }
+            );
+        }else{
+            this.collectionData = null;
+        }
     };
 
     private initializeState = () =>{
@@ -588,11 +610,20 @@ class SWListingDisplayController{
         
         // Iterate over columns, find out if we have any numericals and return
         if(this.columns != null && this.columns.length){
+            
             return this.columns.reduce((totalNumericalCols, col) => {
+            
                 return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-            });    
+            }, 0);    
         }
         return false;
+    }
+    
+    private configHasFilters = (collectionConfig) =>{
+        return collectionConfig.filterGroups 
+            && collectionConfig.filterGroups.length
+            && collectionConfig.filterGroups[0].filterGroup
+            && collectionConfig.filterGroups[0].filterGroup.length
     }
 
     public columnOrderByIndex = (column) =>{
@@ -767,6 +798,7 @@ class SWListingDisplay implements ng.IDirective{
     public bindToController={
             usingPersonalCollection:"<?",
             personalCollectionIdentifier:'@?',
+            personalCollectionKey:"@?",
             isRadio:"<?",
             angularLinks:"<?",
             isAngularRoute:"<?",
@@ -894,7 +926,8 @@ class SWListingDisplay implements ng.IDirective{
             hasSearch:"<?",
             hasActionBar:"<?",
             multiSlot:"=?",
-            customListingControls:"<?"
+            customListingControls:"<?",
+            hideUnfilteredResults:"<?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";

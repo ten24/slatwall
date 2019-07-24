@@ -2,6 +2,7 @@
     <sw-listing-display data-name="orderTemplateDetailOrderItems"
                         data-has-action-bar="false"
                         data-has-search="true"
+                        data-base-entity-name="OrderTemplateItem"
                         data-collection-config='swOrderTemplateItems.viewOrderTemplateItemsCollection'
                         data-using-personel-collection='false'
                         data-record-delete-event="deleteOrderTemplateItem"
@@ -13,6 +14,7 @@
 
 <div ng-if="swOrderTemplateItems.edit">
     <sw-listing-display data-name="orderTemplateDetailOrderItems"
+                        data-base-entity-name="OrderTemplateItem"
                         data-collection-config='swOrderTemplateItems.editOrderTemplateItemsCollection'
                         data-has-action-bar="false"
                         data-has-search="true"
@@ -24,7 +26,8 @@
                         data-show-simple-listing-controls="true"
     ></sw-listing-display>
     
-    <sw-listing-display data-collection-config='swOrderTemplateItems.addSkuCollection'
+    <sw-listing-display data-base-entity-name="Sku"
+                        data-collection-config='swOrderTemplateItems.addSkuCollection'
                         data-has-action-bar="false"
                         data-using-personel-collection='false'
                         data-record-add-event="addOrderTemplateItem"

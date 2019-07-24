@@ -229,11 +229,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
 							if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
 								// Calculate based on price, which could be a priceGroup price
-								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku());
+								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku(), arguments.order.getAccount());
 
 							} else {
 								// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
-								var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku());
+								var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku(), arguments.order.getAccount());
 
 								// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
 								var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())));
@@ -359,7 +359,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
 		arguments.order.updateCalculatedProperties(true);
+		//Save before flushing 
+		if(arguments.order.getNewFlag()){
+			getService('hibachiService').saveOrder(arguments.order);
+		}
+
 		getHibachiScope().flushOrmSession();
+
 		if(arguments.order.isOrderPaidFor()){
 			return;
 		}
@@ -390,8 +396,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getPickupLocation().getLocationID());
  			}
  		}
- 		
- 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity(),'md5');
+ 		var accountID = '';
+ 		if(!isNull(arguments.order.getAccount())){
+ 			accountID = arguments.order.getAccount().getAccountID();
+ 		}
+ 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
  		
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
@@ -861,7 +870,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return reward.hasOrderItemSku(arguments.orderItem);
 	}
 
-	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, any sku) {
+	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, any sku, any account) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));
@@ -878,8 +887,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments,'sku')){
 			amountParams['sku'] = arguments.sku;
 		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
+		}
 		
 		var rewardAmount = arguments.reward.invokeMethod(amountMethod,amountParams);
+
 		if(!isNull(rewardAmount)){
 			switch(reward.getAmountType()) {
 				case "percentageOff" :

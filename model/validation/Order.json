@@ -8,6 +8,7 @@
 		"account":							[{"contexts":"addOrderPayment,placeOrder","required":true}],
 		"orderType":						[{"contexts":"save","required":true}],
 		"orderStatusType":					[{"contexts":"save","required":true}],
+		"paymentAmountDue":					[{"contexts":"retryPayment","gt":0}],
 		"statusCode":						[
 		    									{"contexts":"placeOrder","inList":"ostNotPlaced"},
 												{"conditions":"isNotTestOrder","contexts":"delete","inList":"ostNotPlaced"},
