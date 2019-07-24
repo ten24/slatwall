@@ -87,8 +87,8 @@ component {
     // return true if the factory (or a parent factory) knows about the requested bean
     public boolean function containsBean( string beanName ) {
         discoverBeans();
-        return structKeyExists( variables.beanInfo, beanName ) ||
-            ( hasParent() && variables.parent.containsBean( beanName ) );
+        return structKeyExists( variables.beanInfo, arguments.beanName ) ||
+            ( hasParent() && variables.parent.containsBean( arguments.beanName ) );
     }
 
 
@@ -198,20 +198,20 @@ component {
     // return the requested bean, fully populated
     public any function getBean( string beanName, struct constructorArgs = { } ) {
         discoverBeans();
-        if ( structKeyExists( variables.beanInfo, beanName ) ) {
-            if ( structKeyExists( variables.getBeanCache, beanName ) ) {
-                return variables.getBeanCache[ beanName ];
+        if ( structKeyExists( variables.beanInfo, arguments.beanName ) ) {
+            if ( structKeyExists( variables.getBeanCache, arguments.beanName ) ) {
+                return variables.getBeanCache[ arguments.beanName ];
             }
-            var bean = resolveBean( beanName, constructorArgs );
-            if ( isSingleton( beanName ) ) variables.getBeanCache[ beanName ] = bean;
+            var bean = resolveBean( arguments.beanName, arguments.constructorArgs );
+            if ( isSingleton( arguments.beanName ) ) variables.getBeanCache[ arguments.beanName ] = bean;
             return bean;
         } else if ( hasParent() ) {
             // ideally throw an exception for non-DI/1 parent when args passed
             // WireBox adapter can do that since we control it but we can't do
             // anything for other bean factories - will revisit before release
-            return variables.parent.getBean( beanName, constructorArgs );
+            return variables.parent.getBean( arguments.beanName, constructorArgs );
         } else {
-            return missingBean( beanName = beanName, dependency = false );
+            return missingBean( beanName = arguments.beanName, dependency = false );
         }
     }
 

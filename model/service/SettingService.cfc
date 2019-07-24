@@ -1157,7 +1157,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 
-		if(!disableFormatting) {
+		if(!arguments.disableFormatting) {
 			// First we look for a formatType in the meta data
 			if( structKeyExists(settingMetaData, "formatType") ) {
 				settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingMetaData.formatType);

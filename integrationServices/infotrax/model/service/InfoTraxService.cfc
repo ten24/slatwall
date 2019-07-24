@@ -74,7 +74,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var filters = [];
 		
-		if( isSimpleValue( qualifiers[event]['filters'] && structKeyExists( qualifiers['filters'], qualifiers[event]['filters'] ) ) ){
+		if( isSimpleValue( qualifiers[event]['filters'] ) && structKeyExists( qualifiers['filters'], qualifiers[event]['filters'] ) ){
 			filters = qualifiers['filters'][qualifiers[event]['filters']];
 		}else if( isArray( qualifiers[event]['filters'] ) ){
 			filters = qualifiers[event]['filters'];
