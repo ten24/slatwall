@@ -622,8 +622,10 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 			var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
 			priceGroupCollection.addFilter('accounts.accountID', arguments.accountID); 
 			arguments.priceGroups = priceGroupCollection.getRecords(); 	
-		} 
-
+		} else if (!structKeyExists(arguments, 'priceGroups')){
+			arguments.priceGroups = getHibachiScope().getAccount().getPriceGroups();
+		}
+			
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup['priceGroupID']#';
 		}
