@@ -186,7 +186,7 @@ property name="customerCanCreateFlag" persistent="false";
 
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
 				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
-				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode())*orderTemplateItem['quantity']; 	
+				variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
 			} 
 		}
 		return variables.subtotal; 

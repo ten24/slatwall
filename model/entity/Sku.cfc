@@ -615,11 +615,17 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 
-	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
+	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 		
+		if(structKeyExists(arguments, 'accountID')){ 
+			var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
+			priceGroupCollection.addFilter('accounts.accountID', arguments.accountID); 
+			arguments.priceGroups = priceGroupCollection.getRecords(); 	
+		} 
+
 		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_#priceGroup.getPriceGroupID()#';
+			cacheKey &= '_#priceGroup['priceGroupID']#';
 		}
 
 		if(structKeyExists(arguments, "quantity")){
