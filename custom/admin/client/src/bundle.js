@@ -64039,7 +64039,7 @@ var OrderTemplateService = /** @class */ (function () {
         this.observerService = observerService;
         this.requestService = requestService;
         this.utilityService = utilityService;
-        this.orderTemplatePropertyIdentifierList = 'fulfillmentTotal,subtotal,total';
+        this.orderTemplatePropertyIdentifierList = 'subtotal,total,fulfillmentTotal';
         this.orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
         this.setOrderTemplateID = function (orderTemplateID) {
             _this.orderTemplateID = orderTemplateID;
@@ -64064,7 +64064,7 @@ var OrderTemplateService = /** @class */ (function () {
             var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
             _this.orderTemplateItemPropertyIdentifierList = '';
             for (var i = 0; i < propsToAdd.length; i++) {
-                _this.orderTemplateItemPropertyIdentifierList += propsToAdd[i];
+                _this.orderTemplateItemPropertyIdentifierList += 'orderTemplate.' + propsToAdd[i];
                 if (i + 1 !== propsToAdd.length)
                     _this.orderTemplateItemPropertyIdentifierList += ',';
             }
@@ -67643,14 +67643,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWSiteAndCurrencySelectController = /** @class */ (function () {
     //@ngInject
-    function SWSiteAndCurrencySelectController($hibachi) {
+    function SWSiteAndCurrencySelectController($hibachi, observerService) {
         var _this = this;
         this.$hibachi = $hibachi;
+        this.observerService = observerService;
         this.currencyCodeOptions = [];
-        this.$ngOnInit = function () {
+        this.disabled = false;
+        this.$onInit = function () {
+            if (_this.accountTypeaheadId != null) {
+                _this.observerService.attach(_this.updateSite, 'typeahead_add_item', _this.accountTypeaheadId);
+            }
         };
-        this.updateSite = function () {
-            console.log('getSiteCurrencyCodeOptions', _this.site);
+        this.updateSite = function (data) {
+            if (data != null && data.accountCreatedSite_siteID != null) {
+                for (var i = 0; i < _this.siteAndCurrencyOptions.length; i++) {
+                    if (_this.siteAndCurrencyOptions[i].value === data.accountCreatedSite_siteID) {
+                        _this.site = _this.siteAndCurrencyOptions[i];
+                        _this.disabled = true;
+                        break;
+                    }
+                }
+            }
             _this.currencyCodeOptions = _this.site.eligibleCurrencyCodes.split(',');
             if (_this.currencyCodeOptions.length === 1) {
                 _this.currencyCode = _this.currencyCodeOptions[0];
@@ -67665,6 +67678,7 @@ var SWSiteAndCurrencySelect = /** @class */ (function () {
         this.restrict = 'EA';
         this.scope = {};
         this.bindToController = {
+            accountTypeaheadId: '@?',
             siteAndCurrencyOptions: '<?'
         };
         this.controller = SWSiteAndCurrencySelectController;
@@ -76165,7 +76179,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -76178,6 +76191,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -80586,7 +80600,8 @@ var SWTypeaheadInputField = /** @class */ (function () {
             eventListeners: '=?',
             placeholderText: '@?',
             searchEndpoint: '@?',
-            titleText: '@?'
+            titleText: '@?',
+            typeaheadDataKey: '@?'
         };
         this.controller = SWTypeaheadInputFieldController;
         this.controllerAs = "swTypeaheadInputField";
@@ -80973,9 +80988,11 @@ var SWTypeaheadSearchController = /** @class */ (function () {
                 }
             }
             if (!remove && angular.isDefined(_this.addFunction)) {
+                _this.observerService.notifyById('typeahead_add_item', _this.typeaheadDataKey, item);
                 _this.addFunction()(item);
             }
             if (remove && angular.isDefined(_this.removeFunction)) {
+                _this.observerService.notifyById('typeahead_remove_item', _this.typeaheadDataKey, item);
                 _this.removeFunction()(item.selectedIndex);
                 item.selected = false;
                 item.selectedIndex = undefined;
@@ -81010,7 +81027,8 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.$transclude($scope, function () { });
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
-        if (angular.isUndefined(this.typeaheadDataKey)) {
+        if (this.typeaheadDataKey == null ||
+            this.typeaheadDataKey.trim().length === 0) {
             this.typeaheadDataKey = this.utilityService.createID(32);
         }
         if (angular.isUndefined(this.disabled)) {
