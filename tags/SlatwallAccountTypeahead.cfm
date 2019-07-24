@@ -49,10 +49,12 @@ Notes:
 <cfparam name="attributes.fieldName" type="string" default="accountID" />
 <cfparam name="attributes.edit" type="boolean" default="false"/>
 <cfparam name="attributes.placeholderText" type="string" default="Search Accounts" />
+<cfparam name="attributes.typeaheadID" type="string" default=""/>
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
-			<sw-typeahead-input-field
+		<sw-typeahead-input-field
+				data-typeahead-data-key="#attributes.typeaheadID#"
 				data-entity-name="Account"
 				data-field-name="#attributes.fieldName#"
 				data-property-to-save="accountID"
