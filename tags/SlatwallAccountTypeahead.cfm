@@ -57,16 +57,17 @@ Notes:
 				data-field-name="#attributes.fieldName#"
 				data-property-to-save="accountID"
 				data-property-to-show="calculatedFullName"
-				data-properties-to-search="calculatedFullName,company,primaryEmailAddress.emailAddress"
-				data-properties-to-load="accountID,calculatedFullName,company,calculatedAdminIcon,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber"
+				data-properties-to-search="firstName,lastName,company"
+				data-properties-to-load="accountID,firstName,lastName,calculatedFullName,company,calculatedAdminIcon,accountCreatedSite.siteID,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber"
 				data-show-add-button="false"
 				data-show-view-button="false"
 				data-placeholder-text="#attributes.placeholderText#"
 				data-multiselect-mode="false"
-				data-order-by-list="calculatedFullName|ASC" >
+				data-order-by-list="firstName|ASC" >
 
 				<span class="adminIcon" sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon"></span>
-				<span class="fullName first" sw-typeahead-search-line-item data-property-identifier="calculatedFullName" is-searchable="true"></span>
+				<span class="fullName first" sw-typeahead-search-line-item data-property-identifier="firstName" is-searchable="true"></span>
+				<span class="fullName first" sw-typeahead-search-line-item data-property-identifier="lastName" is-searchable="true"></span>
 				<span class="company" sw-typeahead-search-line-item data-property-identifier="company"></span>
 				<span class="emailAddress" sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress.emailAddress"></span>
 				<span class="phoneNumber" sw-typeahead-search-line-item data-property-identifier="primaryPhoneNumber.phoneNumber"></span>
