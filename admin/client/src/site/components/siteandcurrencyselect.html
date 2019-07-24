@@ -7,10 +7,16 @@
         <select name="siteID" 
                 class="form-control"
                 required
+                ng-disabled="swSiteAndCurrencySelect.disabled"
                 ng-change="swSiteAndCurrencySelect.updateSite()"
                 ng-model="swSiteAndCurrencySelect.site"
                 ng-options="site.name for site in swSiteAndCurrencySelect.siteAndCurrencyOptions track by site.value">
         </select>
+        <input ng-show="false" 
+               ng-if="swSiteAndCurrencySelect.disabled" 
+               name="siteID" 
+               type="hidden" 
+               ng-value="swSiteAndCurrencySelect.site.value" />
     </div>
 </div>
 

@@ -51,6 +51,7 @@ Notes:
 
 <!--- Default to ottSchedule --->
 <cfset rc.processObject.setOrderTemplateTypeID('2c948084697d51bd01697d5725650006') />
+<cfset rc.typeaheadID = 'otAccount' & createUUID() />
 
 <cfoutput>
 <hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editordertemplate">
@@ -77,7 +78,7 @@ Notes:
 			</hb:HibachiDisplayToggle>
 			
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-				<swa:SlatwallAccountTypeahead /> 	
+				<swa:SlatwallAccountTypeahead typeaheadID="#rc.typeaheadID#" /> 	
 			</hb:HibachiDisplayToggle>
 
 			<hr>
@@ -86,7 +87,8 @@ Notes:
 			<input type="hidden" name="orderTemplateTypeID" value="2c948084697d51bd01697d5725650006" />	
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="disabled='true'">
 
-			<sw-site-and-currency-select data-site-and-currency-options="#rc.processObject.getEncodedSiteAndCurrencyOptions()#">
+			<sw-site-and-currency-select data-site-and-currency-options="#rc.processObject.getEncodedSiteAndCurrencyOptions()#"
+										 data-account-typeahead-id='#rc.typeaheadID#'>
 			</sw-site-and-currency-select> 
 
 

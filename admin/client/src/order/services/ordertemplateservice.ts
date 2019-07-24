@@ -3,7 +3,7 @@
 export class OrderTemplateService { 
 
     public orderTemplateID:string; 
-	public orderTemplatePropertyIdentifierList = 'fulfillmentTotal,subtotal,total';
+	public orderTemplatePropertyIdentifierList = 'subtotal,total,fulfillmentTotal';
 	public orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
 
     //@ngInject
@@ -56,7 +56,7 @@ export class OrderTemplateService {
     	var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
     	this.orderTemplateItemPropertyIdentifierList = '';
     	for(var i=0; i<propsToAdd.length; i++){
-    		this.orderTemplateItemPropertyIdentifierList += propsToAdd[i];
+    		this.orderTemplateItemPropertyIdentifierList += 'orderTemplate.' + propsToAdd[i];
     		if(i + 1 !== propsToAdd.length) this.orderTemplateItemPropertyIdentifierList += ',';
     	}
     	return orderTemplatePropertyIdentifierList; 

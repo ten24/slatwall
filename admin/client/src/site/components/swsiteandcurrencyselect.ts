@@ -2,25 +2,42 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSiteAndCurrencySelectController{
     
+    public accountTypeaheadId;
+    
     public site; 
     public currencyCode; 
     
     public siteAndCurrencyOptions; 
     public currencyCodeOptions = [];
     
+    public disabled = false; 
+    
     //@ngInject
     constructor(
-        private $hibachi
+        private $hibachi,
+        private observerService
     ){
        this.site = this.siteAndCurrencyOptions[0];
     }    
     
-    public $ngOnInit = () =>{
-        
+    public $onInit = () =>{
+        if(this.accountTypeaheadId != null){
+            this.observerService.attach( this.updateSite, 'typeahead_add_item', this.accountTypeaheadId);
+        }
     }
     
-    public updateSite = () =>{
-        console.log('getSiteCurrencyCodeOptions', this.site);
+    public updateSite = (data?) =>{
+        
+        if(data != null && data.accountCreatedSite_siteID != null){
+            for(var i=0; i<this.siteAndCurrencyOptions.length; i++){
+                if(this.siteAndCurrencyOptions[i].value ===  data.accountCreatedSite_siteID){
+                    this.site = this.siteAndCurrencyOptions[i];
+                    this.disabled = true; 
+                    break;
+                }
+            }
+        }
+        
         this.currencyCodeOptions = this.site.eligibleCurrencyCodes.split(',');
         if(this.currencyCodeOptions.length === 1){
             this.currencyCode = this.currencyCodeOptions[0];
@@ -33,6 +50,7 @@ class SWSiteAndCurrencySelect implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
+        accountTypeaheadId:'@?',
         siteAndCurrencyOptions:'<?'
     };
     public controller = SWSiteAndCurrencySelectController;
