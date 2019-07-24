@@ -1168,8 +1168,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 
-		local.ormSession = ormGetSessionFactory().openSession();
-	    local.tx = local.ormSession.beginTransaction();
+		var ormSession = ormGetSessionFactory().openSession();
+	    var tx = local.ormSession.beginTransaction();
 
 		try{
 			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
@@ -1177,8 +1177,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//if we have any error we probably don't have the required data for returning the total
 			var fulfillmentCharge = 0; 
 		} finally { 
-			local.tx.commit();
-			local.ormSession.close();
+			tx.commit();
+			ormSession.close();
 		} 
 
 		return fulfillmentCharge; 
