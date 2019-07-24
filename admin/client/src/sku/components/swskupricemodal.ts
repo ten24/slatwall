@@ -68,6 +68,7 @@ class SWSkuPriceModalController{
         this.listingID = 'pricingListing';
         this.observerService.attach(this.initData, "EDIT_SKUPRICE");
         this.observerService.attach(this.inlineSave, "SAVE_SKUPRICE");
+        this.observerService.attach(this.deleteSkuPrice, "DELETE_SKUPRICE");
     }
     
     
@@ -324,6 +325,33 @@ class SWSkuPriceModalController{
     public $onDestroy = ()=>{
 		this.observerService.detachByEvent('EDIT_SKUPRICE');
 		this.observerService.detachByEvent('SAVE_SKUPRICE');
+	}
+	
+	public deleteSkuPrice = (pageRecord:any)=>{
+        
+        var skuPriceData = {
+            skuPriceID : pageRecord.skuPriceID,
+            minQuantity : pageRecord.minQuantity,
+            maxQuantity : pageRecord.maxQuantity,
+            currencyCode : pageRecord.currencyCode, 
+            price : pageRecord.price
+        }
+        
+        var skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+        
+        var deletePromise = skuPrice.$$delete();
+        
+        deletePromise.then(
+            (resolve)=>{
+                //hack, for whatever reason is not responding to getCollection event
+                this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
+            },
+            (reason)=>{
+                console.log("Could not delete Sku Price Because: ", reason);
+            }
+        );
+        
+        return deletePromise;
 	}
     
     public save = () => {
