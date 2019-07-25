@@ -16,7 +16,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if( !setting("globalDisableRecordLevelPermissions")
+		if( !getHibachiScope().setting("globalDisableRecordLevelPermissions")
 			&& !this.getNewFlag() 
 			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
@@ -102,7 +102,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	public string function getUploadDirectoryByPropertyName(required string propertyName){
-		var uploadDirectory = setting('globalAssetsFileFolderPath') & "/";
+		var uploadDirectory = getHibachiScope().setting('globalAssetsFileFolderPath') & "/";
 
 		uploadDirectory &= "#lcase(arguments.propertyName)#/";
 
@@ -388,7 +388,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint public method to determine if this entity is audited
 	public any function getAuditableFlag() {
 		var metaData = getThisMetaData();
-		if(isPersistent() && (setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
+		if(isPersistent() && (getHibachiScope().setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
 			return true;
 		}
 		return false;
