@@ -2146,7 +2146,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Used to apply filter based on record level permissions of the user
 	public void function applyPermissions(){
 		//this is used for record level permissions
-		if (setting('globalDisableRecordLevelPermissions')){
+		if (setting("globalDisableRecordLevelPermissions")){
 			setPermissionAppliedFlag(true);
 		}else if(!getPermissionAppliedFlag()){
 
