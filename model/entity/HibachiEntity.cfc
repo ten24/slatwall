@@ -178,9 +178,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if(!isNull(cachedSettingDetails)){
 			return cachedSettingDetails.settingValue;
 		}
-
-		//never should reach this point but just to prevent errors 
-		return false; 
 	}
 	
 	
