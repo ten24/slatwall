@@ -52,18 +52,19 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		
 	public void function postLoad(){
-		
-		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
-			variables.disableRecordLevelPermissions = super.setting("globalDisableRecordLevelPermissions");	
-		}	
-	
-		if(!variables.disableRecordLevelPermissions){
+		if(!this.getDisableRecordLevelPermissions()){
 			return; 
 		}
 
 		super.postLoad();
 	}
 	
+	public any function getDisableRecordLevelPermissions(){
+		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
+			variables.disableRecordLevelPermissions = super.setting("globalDisableRecordLevelPermissions");	
+		}	
+		return variables.disableRecordLevelPermissions; 
+	}
 
 	// @hint Override the populate method to look for custom attributes
 	public any function populate( required struct data={} ) {
