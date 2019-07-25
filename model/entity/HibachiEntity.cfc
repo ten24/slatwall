@@ -156,13 +156,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 
-		arguments.object = this;  
+		var settingService = getService('settingService'); 
+
+		if( settingService.isGlobalSetting(arguments.settingName)){
+			arguments.object = this;  
+		}
 
 		var cacheArguments = {
-			key=getService('settingService').getSettingCacheKey(argumentCollection=arguments), 
-			fallbackObject=getService('settingService'), 
-			fallbackFunction="getSettingDetails", 
-			fallbackArguments=arguments	
+			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
+			fallbackObject = arguments.object, 
+			fallbackFunction = "getSettingDetails", 
+			fallbackArguments = arguments	
 		};
 
 		//delegate everything to setting service
