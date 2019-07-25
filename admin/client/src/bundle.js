@@ -70805,6 +70805,15 @@ var SWCriteriaBoolean = /** @class */ (function () {
                         }
                     }
                 });
+                scope.booleanfilterPropertyChanged = function (selectedFilterProperty) {
+                    scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+                };
+                scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
+                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+                    }
+                    scope.filterItem.value = selectedFilterProperty.criteriaValue;
+                };
             }
         };
     }
@@ -79005,6 +79014,7 @@ var DateReporting = /** @class */ (function () {
             if (date.trim && date.trim().length === 0) {
                 return '';
             }
+            periodInterval = periodInterval.toLowerCase(); //to avoid case sensitivity
             switch (periodInterval) {
                 case 'hour':
                     var dateArray = date.split('-');
@@ -88899,7 +88909,7 @@ var SWListingDisplayController = /** @class */ (function () {
             // Iterate over columns, find out if we have any numericals and return
             if (_this.columns != null && _this.columns.length) {
                 return _this.columns.reduce(function (totalNumericalCols, col) {
-                    return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+                    return totalNumericalCols + (col.ormtype && col.isVisible === true && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
                 }, 0);
             }
             return false;
@@ -89712,6 +89722,11 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.saveReportCollection = function (collectionName) {
+            //Prevent saving report if no aggregate column is selected
+            if (!_this.hasMetric) {
+                _this.hasMetric = false;
+                return;
+            }
             if (collectionName || _this.collectionId) {
                 var serializedJSONData = {
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
@@ -89837,21 +89852,21 @@ var SWListingReportController = /** @class */ (function () {
                 _this.startDate.setHours(0, 0, 0, 0);
                 _this.endDate = new Date(_this.endDate);
                 _this.endDate.setHours(23, 59, 59, 999);
-                //if date is in the wrong format then update those dates
-                if (_this.startDate.indexOf && _this.startDate.indexOf('000Z') != -1) {
-                    _this.startDate = new Date(_this.startDate).toString('MMM dd, yyyy hh:mm tt');
-                    _this.endDate = new Date(_this.endDate).toString('MMM dd, yyyy hh:mm tt');
-                }
                 _this.hasMetric = false;
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
                 //if the interval is an hour than we should only be able to show data for one day
                 if (_this.selectedPeriodInterval.value == 'hour') {
                     _this.tempEndDate = _this.endDate;
-                    _this.endDate = new Date(_this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                    _this.endDate = new Date(_this.startDate).addDays(1); //.toString('MMM dd, yyyy hh:mm tt');
                 }
                 else if (_this.tempEndDate) {
                     _this.endDate = _this.tempEndDate;
                     delete _this.tempEndDate;
+                }
+                //if date is in the wrong format then update those dates
+                if (_this.startDate.indexOf && _this.startDate.indexOf('000Z') != -1) {
+                    _this.startDate = new Date(_this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                    _this.endDate = new Date(_this.endDate).toString('MMM dd, yyyy hh:mm tt');
                 }
                 for (var i = _this.reportCollectionConfig.columns.length - 1; i >= 0; i--) {
                     var column = _this.reportCollectionConfig.columns[i];
@@ -89907,18 +89922,18 @@ var SWListingReportController = /** @class */ (function () {
             _this.startDateCompare.setHours(0, 0, 0, 0);
             _this.endDateCompare = new Date(_this.endDateCompare);
             _this.endDateCompare.setHours(23, 59, 59, 999);
-            //if date is in the wrong format then update those dates
-            if (_this.startDateCompare.indexOf && _this.startDateCompare.indexOf('000Z') != -1) {
-                _this.startDateCompare = new Date(_this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
-                _this.endDateCompare = new Date(_this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
-            }
             if (_this.selectedPeriodInterval.value == 'hour') {
                 _this.tempEndDateCompare = _this.endDateCompare;
-                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1); //.toString('MMM dd, yyyy hh:mm tt');
             }
             else if (_this.tempEndDateCompare) {
                 _this.endDateCompare = _this.tempEndDateCompare;
                 delete _this.tempEndDateCompare;
+            }
+            //if date is in the wrong format then update those dates
+            if (_this.startDateCompare.indexOf && _this.startDateCompare.indexOf('000Z') != -1) {
+                _this.startDateCompare = new Date(_this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+                _this.endDateCompare = new Date(_this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
             }
             _this.compareReportCollectionConfig = _this.collectionConfig.clone();
             for (var i in _this.compareReportCollectionConfig.columns) {
@@ -89990,6 +90005,12 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             //used to clear old rendered charts before adding new ones
+            if (ctx.is($("#myChartCompare"))) {
+                var chart_label = (_this.startDateCompare.toDateString ? _this.startDateCompare.toDateString() : _this.startDate) + " - " + (_this.endDateCompare.toDateString ? _this.endDateCompare.toDateString() : _this.endDateCompare);
+            }
+            else {
+                var chart_label = (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate);
+            }
             chart = new chart_js_1.Chart(ctx, {
                 type: 'line',
                 data: {
@@ -90001,7 +90022,7 @@ var SWListingReportController = /** @class */ (function () {
                     responsive: true,
                     title: {
                         display: true,
-                        text: "(" + (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate) + ")"
+                        text: '(' + chart_label + ')'
                     },
                     scales: {
                         yAxes: [{
@@ -90138,6 +90159,7 @@ var SWListingReportController = /** @class */ (function () {
         else {
             this.getPeriodColumns();
             this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
+            $("#get-started-report").removeClass("hide");
         }
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
         this.observerService.attach(this.updateReportFromListing, 'displayOptionsAction', this.tableId);

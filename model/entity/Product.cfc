@@ -70,7 +70,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
 
 	// Related Object Properties (many-to-one)
-	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
+	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_formFieldType="typeahead" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
@@ -152,10 +152,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-		//CUSTOM PROPERTIES BEGIN
-	
- property name="extensionColor" ormtype="string" hb_formFieldType="select";
- property name="pantsStyle" ormtype="string" hb_formFieldType="select";	//CUSTOM PROPERTIES END
+		
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
