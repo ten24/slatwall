@@ -47,7 +47,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	public any function getDisableRecordLevelPermissions(){
 		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
-			variables.disableRecordLevelPermissions = super.setting(settingName="globalDisableRecordLevelPermissions");	
+			variables.disableRecordLevelPermissions = this.setting(settingName="globalDisableRecordLevelPermissions");	
 		}	
 		return variables.disableRecordLevelPermissions; 
 	}	
@@ -87,6 +87,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 
 		return super.init();
+	}
+
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+
+		var settingService = getService('settingService'); 
+
+		if( !settingService.isGlobalSetting(arguments.settingName)){
+			arguments.object = this;  
+		} else {
+			arguments.object = settingService;	
+		} 
+
+		var cacheArguments = {
+			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
+			fallbackObject = arguments.object, 
+			fallbackFunction = "getSettingValue", 
+			fallbackArguments = arguments	
+		};
+
+		//delegate everything to setting service
+		var cachedSettingValue = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
+
+		//we must have this setting value if we don't maybe we should throw an error
+		if(!isNull(cachedSettingValue)){
+			return cachedSettingValue;
+		} 
 	}
 
 	public any function getEntityService(){ 

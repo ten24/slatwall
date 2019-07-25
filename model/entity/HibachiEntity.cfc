@@ -136,32 +136,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.filesSmartList;
 	}
 	
-	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 
-		var settingService = getService('settingService'); 
-
-		if( !settingService.isGlobalSetting(arguments.settingName)){
-			arguments.object = this;  
-		} else {
-			arguments.object = settingService;	
-		} 
-
-		var cacheArguments = {
-			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
-			fallbackObject = arguments.object, 
-			fallbackFunction = "getSettingValue", 
-			fallbackArguments = arguments	
-		};
-
-		//delegate everything to setting service
-		var cachedSettingValue = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
-
-		//we must have this setting value if we don't maybe we should throw an error
-		if(!isNull(cachedSettingValue)){
-			return cachedSettingValue;
-		} 
-	}
 	
 	
 
