@@ -114,6 +114,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
 	property name="requiredShippingInfoExistsFlag" persistent="false";
+	property name="fulfillmentChargeAndHandleFee" persistent="false";
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxLiabilityAmount" persistent="false" hb_formatType="currency";

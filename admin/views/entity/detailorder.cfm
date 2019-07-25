@@ -79,6 +79,14 @@ Notes:
 					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeOrder" type="list" hideDisabled="false" />
 				</cfif>
 			</cfif>
+			
+			<cfif listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', rc.order.getTypeCode())>
+				<li class="divider"></li>
+				<hb:HibachiActionCaller action="admin:entity.preProcessOrder" querystring="processContext=receive&orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" text="Receive" modal="true" type="list" />
+				<hb:HibachiActionCaller action="admin:entity.preProcessOrder" querystring="processContext=approve&orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" text="Approve" modal="true" type="list" />
+				<hb:HibachiActionCaller action="admin:entity.preProcessOrder" querystring="processContext=release&orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" text="Release & Refund" modal="true" type="list" />
+				<li class="divider"></li>
+			</cfif>
 
 			<!--- Change Status (onHold, close, cancel, offHold) --->
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOnHold" type="list" modal="true" />

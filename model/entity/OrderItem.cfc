@@ -141,6 +141,13 @@ property name="personalVolume" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
     
+    property name="manualPersonalVolume" ormtype="big_decimal";
+    property name="manualTaxableAmount" ormtype="big_decimal";
+    property name="manualCommissionableVolume" ormtype="big_decimal";
+    property name="manualRetailCommission" ormtype="big_decimal";
+    property name="manualProductPackVolume" ormtype="big_decimal";
+    property name="manualRetailValueVolume" ormtype="big_decimal";
+    
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";
     property name="extendedCommissionableVolume" persistent="false";
@@ -1119,8 +1126,6 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================	
-
-
 	//CUSTOM FUNCTIONS BEGIN
 
 public any function getPersonalVolume(){
@@ -1265,8 +1270,12 @@ public any function getPersonalVolume(){
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#priceField#')){
 			var price = 0;
-		
-			if(!isNull(this.invokeMethod('get#priceField#'))){
+			
+			// Check if there is a manual override (should not be used to standard sales orders, only applies to referencing order types: returns, refund, etc.)
+			var manualPrice = this.invokeMethod('getManual#priceField#');
+		    if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', getOrder().getTypeCode()) && !isNull(manualPrice) && manualPrice > 0){
+				price = this.invokeMethod('getManual#priceField#');
+			} else if(!isNull(this.invokeMethod('get#priceField#'))){
 				price = this.invokeMethod('get#priceField#');
 			}
 			variables['extended#priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));

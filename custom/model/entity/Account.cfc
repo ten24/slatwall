@@ -1,4 +1,5 @@
 component {
+	propery name="distributorID" ormtype="string";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";

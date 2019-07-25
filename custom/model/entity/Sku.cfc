@@ -72,6 +72,5 @@ component {
 			return variables[cacheKey];
 		}
     }
-    }
     
 }

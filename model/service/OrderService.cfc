@@ -473,7 +473,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		// If this is a return order item, then we need to setup or find the orderReturn
-		} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
+		} else if (listFindNoCase("oitReturn",arguments.processObject.getOrderItemTypeSystemCode())) {
 
 			// First see if we can use an existing order return
 			var orderReturn = processObject.getOrderReturn();
@@ -533,10 +533,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Setup the Sku / Quantity / Price details
-			newOrderItem.setSku( arguments.processObject.getSku() );
-			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
-			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
+			addNewOrderItemSetup(newOrderItem, arguments.processObject);
 
 			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
 			if(
@@ -4678,6 +4675,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
+	}
+	
+	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject)
+	{
+		// Setup the Sku / Quantity / Price details
+		arguments.newOrderItem.setSku( arguments.processObject.getSku() );
+		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
+		arguments.newOrderItem.setQuantity( arguments.processObject.getQuantity() );
+		arguments.newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode(), arguments.processObject.getQuantity() ) );
+		
+		return arguments.newOrderItem;
 	}
 
 	// ==================  END:  Private Helper Functions =====================

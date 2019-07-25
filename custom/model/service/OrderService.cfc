@@ -1,19 +1,17 @@
 component extends="Slatwall.model.service.OrderService" {
     
-    public any function processOrder_addOrderItem(required any order, required any processObject){
+    public any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
+        super.addNewOrderItemSetup(argumentCollection=arguments);
+        
+        var sku = arguments.newOrderItem.getSku();
         var customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
-        arguments.order = super.processOrder_addOrderItem(argumentCollection=arguments);
-        var orderItems = arguments.order.getOrderItems();
-        for(var orderItem in orderItems){
-            var sku = orderItem.getSku();
-            for(var priceField in customPriceFields){
-                if(isNull(orderItem.invokeMethod('get#priceField#'))){
-                    orderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode( priceField, arguments.order.getCurrencyCode() )});
-                }
+        for(var priceField in customPriceFields){
+            if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
+                arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode( priceField, arguments.newOrderItem.getOrder().getCurrencyCode() )});
             }
         }
-
-        return order;
+        
+        return arguments.newOrderItem;
     }
 
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {

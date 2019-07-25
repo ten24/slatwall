@@ -112,7 +112,7 @@ Notes:
 						<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="company" edit="true" fieldAttributes="disabled">
 					</hb:HibachiPropertyList>
 					<hb:HibachiPropertyList divclass="col-md-6">
-						<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="distributorID" edit="true" fieldAttributes="disabled">
+						<!---<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="distributorID" edit="true" fieldAttributes="disabled">--->
 					</hb:HibachiPropertyList>
 				</hb:HibachiPropertyRow>
 			</hb:HibachiPropertyList>
@@ -163,14 +163,22 @@ Notes:
 						<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
 						<th>#$.slatwall.rbKey('entity.product.title')#</th>
 						<th>#$.slatwall.rbKey('entity.sku.skuDefinition')#</th>
-						<th>#$.slatwall.rbKey('entity.orderItem.quantity')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantity')# Ordered</th>
 						<th>#$.slatwall.rbKey('entity.orderItem.quantityDelivered')#</th>
-						<th>#$.slatwall.rbKey('entity.orderItem.price')#</th>
-						<th>#$.slatwall.rbKey('entity.orderItem.quantity')#</th>
+						<th>Return #$.slatwall.rbKey('entity.orderItem.quantity')#</th>
+						
+						<th>#$.slatwall.rbKey('entity.orderItem.discountAmount')#</th>
+						<th>#$.slatwall.rbKey('entity.orderitem.extendedPriceAfterDiscount')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.extendedPersonalVolumeAfterDiscount')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.extendedCommissionableVolumeAfterDiscount')#</th>
+						
+						<th>Unit Price</th>
+						<th>Refund Unit Price</th>
+						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPriceAfterDiscount')#</th>
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.order.getOrderItems()#" index="orderItem">
-						<tr>
+						<tr class="orderItem">
 							<cfset orderItemIndex++ />
 							
 							<input type="hidden" name="orderItems[#orderItemIndex#].orderItemID" value="" />
@@ -180,14 +188,40 @@ Notes:
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							<td>#orderItem.getSku().getSkuDefinition()#</td>
 							<td>#orderItem.getQuantity()#</td>
-							<td>#orderItem.getQuantityDelivered()#</td>
-							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity())#" class="span1 number" /></td>
-							<td><input type="text" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number" /></td>
+							<td class="returnQuantityMaximum">#orderItem.getQuantityDelivered()#</td>
+							<td><input type="text" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number returnQuantity" /></td>
+							
+							<td>#orderItem.getDiscountAmount()#</td>
+							<td>#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</td>
+							<td>#orderItem.getExtendedPersonalVolumeAfterDiscount()#</td>
+							<td>#orderItem.getExtendedCommissionableVolumeAfterDiscount()#</td>
+							
+							<td>#getHibachiScope().getService("hibachiUtilityService").formatValue(value=orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity(), formatType='currency', formatDetails={currency=rc.order.getCurrencyCode()})#</td>
+							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#numberFormat(getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity()), '0.00')#" class="span1 number refundUnitPrice" /></td>
+							<td class="refundTotal">$#numberFormat(0, '0.00')#</td>
 							<!--- IF THIS IS AN EVENT ORDER ITEM
 								ADD CHECKBOX THAT SAYS CANCEL REGISTRATION
+								
+								// if getAllocatedPVAmount
+								// discount PV
+								// discount CV
+								// refund unit PV
+								// refund unit CV
+								// total PV
+								// total CV
+								// total return amount
+								// payment methods and amount allocation
 							--->
 						</tr>
 					</cfloop>
+					
+					<tr>
+					<cfloop array="#arraySlice(rc.processObject.getRefundOrderPaymentIDOptions(), 1, arrayLen(rc.processObject.getRefundOrderPaymentIDOptions())-1)#" index="op">
+						<td colspan="11"></td>
+						<td>#op.name#</td>
+						<td class="total">$0.00</td>
+					</cfloop>
+					</tr>
 				</table>
 				
 			</hb:HibachiPropertyList>
@@ -195,3 +229,5 @@ Notes:
 		
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
+
+<script src="/Slatwall/custom/assets/js/rma.js"></script>
