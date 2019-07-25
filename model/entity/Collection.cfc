@@ -2500,7 +2500,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
-				rethrow; 
 				if(isNull(HQL)){ 
 					var HQL = '';
 				}
