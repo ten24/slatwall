@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" hb_processContexts="clone" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="hibachiCollectionService" hb_processContexts="clone" {
 
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -2146,7 +2146,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Used to apply filter based on record level permissions of the user
 	public void function applyPermissions(){
 		//this is used for record level permissions
-		if (setting("globalDisableRecordLevelPermissions")){
+		if (setting('globalDisableRecordLevelPermissions')){
 			setPermissionAppliedFlag(true);
 		}else if(!getPermissionAppliedFlag()){
 
@@ -2500,6 +2500,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				rethrow; 
 				if(isNull(HQL)){ 
 					var HQL = '';
 				}

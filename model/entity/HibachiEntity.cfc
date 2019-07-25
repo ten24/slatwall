@@ -48,6 +48,22 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
 	property name="settingValueFormatted" type="any" persistent="false";
+	property name="disableRecordLevelPermissions" persistent="false"; 
+
+		
+	public void function postLoad(){
+		
+		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
+			variables.disableRecordLevelPermissions = super.setting("globalDisableRecordLevelPermissions");	
+		}	
+	
+		if(!variables.disableRecordLevelPermissions){
+			return; 
+		}
+
+		super.postLoad();
+	}
+	
 
 	// @hint Override the populate method to look for custom attributes
 	public any function populate( required struct data={} ) {
@@ -146,10 +162,18 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		var cacheKey = settingService.getSettingCacheKey(argumentCollection=arguments);  
 	
 		//delegate everytthing to setting service
-		return getService('HibachiCacheService').getOrCacheFunctionValue(key=cacheKey, 
-																		 fallbackObject=settingService, 
-																		 fallbackFunction="getSettingDetailsFromDatabase", 
-																		 fallbackArguments=arguments); 
+		var cachedSettingDetails = getService('HibachiCacheService').getOrCacheFunctionValue(key=cacheKey, 
+																							 fallbackObject=settingService, 
+																							 fallbackFunction="getSettingDetails", 
+																							 fallbackArguments=arguments); 
+
+		//we should absolutely have the settings we were looking for
+		if(!isNull(cachedSettingDetails) && structKeyExists(cachedSettingDetails, 'settingValue')){
+			return cachedSettingDetails.settingValue;
+		}
+
+		//never should reach this point but just to prevent errors 
+		return false; 
 	}
 	
 	

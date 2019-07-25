@@ -148,7 +148,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 	
-	public any function setCachedValue( required string key, required any value, date expirationDateTime ) {
+	
+																		 public any function setCachedValue( required string key, required any value, date expirationDateTime ) {
 		// If using the internal cache, then set value there
 		
 		verifyCacheKey(arguments.key);

@@ -856,6 +856,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[]){
 		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
+
+		if(this.isGlobalSetting(arguments.settingName)){
+			return cacheKey; 
+		} 
+
 		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
 		}
