@@ -8825,3 +8825,7 @@ table.s-detail-content-table tbody tr.s-done {
   background: #ffffff;
   margin: 2.5em 0;
 }
+
+.customtimeline {
+  margin-bottom:15px !important;
+}
