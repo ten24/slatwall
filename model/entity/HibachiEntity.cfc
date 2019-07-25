@@ -61,7 +61,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public any function getDisableRecordLevelPermissions(){
 		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
-			variables.disableRecordLevelPermissions = super.setting("globalDisableRecordLevelPermissions");	
+			variables.disableRecordLevelPermissions = super.setting(settingName="globalDisableRecordLevelPermissions");	
 		}	
 		return variables.disableRecordLevelPermissions; 
 	}
@@ -158,9 +158,11 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		var settingService = getService('settingService'); 
 
-		if( settingService.isGlobalSetting(arguments.settingName)){
+		if( !settingService.isGlobalSetting(arguments.settingName)){
 			arguments.object = this;  
-		}
+		} else {
+			arguments.object = settingService;	
+		} 
 
 		var cacheArguments = {
 			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
