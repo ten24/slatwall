@@ -52,7 +52,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		
 	public void function postLoad(){
-		if(!this.getDisableRecordLevelPermissions()){
+		if(this.getDisableRecordLevelPermissions()){
 			return; 
 		}
 
