@@ -62958,7 +62958,9 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
             }
-            formDataToPost.shippingMethod = _this.baseEntity.shippingMethod;
+            formDataToPost.shippingMethod = {
+                shippingMethodID: _this.baseEntity.shippingMethod.value
+            };
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -64057,6 +64059,9 @@ var OrderTemplateService = /** @class */ (function () {
         this.refreshOrderTemplatePromotionListing = function () {
             _this.refreshListing('orderTemplatePromotions');
         };
+        this.refreshOrderTemplateGiftCardListing = function () {
+            _this.refreshListing('orderTemplateGiftCards');
+        };
         this.setOrderTemplatePropertyIdentifierList = function (orderTemplatePropertyIdentifierList) {
             _this.orderTemplatePropertyIdentifierList = _this.setOrderTemplateItemPropertyIdentifierList(orderTemplatePropertyIdentifierList);
         };
@@ -64113,6 +64118,20 @@ var OrderTemplateService = /** @class */ (function () {
             }, function (reason) {
             });
         };
+        this.removeOrderTemplateGiftCard = function (state) {
+            var formDataToPost = {
+                entityID: _this.orderTemplateID,
+                entityName: 'OrderTemplate',
+                context: 'removeAppliedGiftCard',
+                propertyIdentifiersList: _this.orderTemplatePropertyIdentifierList,
+                orderTemplateAppliedGiftCardID: state.orderTemplateAppliedGiftCardID
+            };
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            adminRequest.promise.then(function (response) {
+            }, function (reason) {
+            });
+        };
         this.deleteOrderTemplateItem = function (state) {
             var formDataToPost = {
                 entityID: _this.orderTemplateID,
@@ -64131,11 +64150,14 @@ var OrderTemplateService = /** @class */ (function () {
         this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
         this.observerService.attach(this.deleteOrderTemplateItem, 'deleteOrderTemplateItem');
         this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode');
+        this.observerService.attach(this.removeOrderTemplateGiftCard, 'OrderTemplateRemoveGiftCard');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateAddOrderTemplateItemSuccess');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateItemDeleteSuccess');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateRemoveOrderTemplateItemSuccess');
         this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateAddPromotionCodeSuccess');
         this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateRemovePromotionCodeSuccess');
+        this.observerService.attach(this.refreshOrderTemplateGiftCardListing, 'OrderTemplateApplyGiftCardSuccess');
+        this.observerService.attach(this.refreshOrderTemplateGiftCardListing, 'OrderTemplateRemoveAppliedGiftCardSuccess');
     }
     return OrderTemplateService;
 }());

@@ -21,11 +21,14 @@ export class OrderTemplateService {
         this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
         this.observerService.attach(this.deleteOrderTemplateItem, 'deleteOrderTemplateItem');
         this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode');
+        this.observerService.attach(this.removeOrderTemplateGiftCard, 'OrderTemplateRemoveGiftCard');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateAddOrderTemplateItemSuccess');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateItemDeleteSuccess');
         this.observerService.attach(this.refreshOrderTemplateItemListing, 'OrderTemplateRemoveOrderTemplateItemSuccess');
         this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateAddPromotionCodeSuccess');
         this.observerService.attach(this.refreshOrderTemplatePromotionListing, 'OrderTemplateRemovePromotionCodeSuccess');
+        this.observerService.attach(this.refreshOrderTemplateGiftCardListing, 'OrderTemplateApplyGiftCardSuccess');
+        this.observerService.attach(this.refreshOrderTemplateGiftCardListing, 'OrderTemplateRemoveAppliedGiftCardSuccess');
     }
     
     public setOrderTemplateID = (orderTemplateID) =>{
@@ -46,6 +49,10 @@ export class OrderTemplateService {
     
     public refreshOrderTemplatePromotionListing = () =>{
     	this.refreshListing('orderTemplatePromotions');
+    }
+    
+    public refreshOrderTemplateGiftCardListing = () =>{
+    	this.refreshListing('orderTemplateGiftCards');
     }
     
     public setOrderTemplatePropertyIdentifierList = (orderTemplatePropertyIdentifierList:string) =>{
@@ -117,6 +124,29 @@ export class OrderTemplateService {
 			context: 'removePromotionCode',
 			propertyIdentifiersList: this.orderTemplatePropertyIdentifierList,
 			promotionCodeID: state.promotionCodeID
+		};
+		
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		adminRequest.promise.then(
+		    (response)=>{
+		        
+		    }, 
+		    (reason)=>{
+		        
+		    }
+		);
+    }
+    
+    public removeOrderTemplateGiftCard = (state) =>{
+    		var formDataToPost:any = {
+			entityID: this.orderTemplateID,
+			entityName: 'OrderTemplate',
+			context: 'removeAppliedGiftCard',
+			propertyIdentifiersList: this.orderTemplatePropertyIdentifierList,
+			orderTemplateAppliedGiftCardID: state.orderTemplateAppliedGiftCardID
 		};
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');

@@ -1759,6 +1759,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return arguments.orderTemplate; 	
 	}
+	
+	public any function processOrderTemplate_removeAppliedGiftCard (required any orderTemplate, any processObject, struct data={}){
+		
+		arguments.orderTemplate.removeOrderTemplateAppliedGiftCard(arguments.processObject.getOrderTemplateAppliedGiftCard()); 
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate;
+	}
 
 	public any function processOrderTemplate_removeAppliedGiftCards (required any orderTemplate, any processObject, struct data={}){
 	

@@ -103,12 +103,14 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="scheduledOrderDates" persistent="false";
+	property name="shippingMethodOptions" persistent="false"; 
 	property name="subtotal" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="typeCode" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
+	
 	//CUSTOM PROPERTIES BEGIN
-property name="customerCanCreateFlag" persistent="false";
+	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 
@@ -135,6 +137,12 @@ property name="customerCanCreateFlag" persistent="false";
 		}
 	}
 
+	public any function getShippingMethodOptions(){
+		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
+		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
+		shippingMethodCollection.addFilter('shippingMethodID',setting('orderTemplateEligibleShippingMethods'),'in'); 
+		return shippingMethodCollection.getRecords();
+	}
 
 	public string function getTypeCode() {
 		if(!isNull(getOrderTemplateType()) 
