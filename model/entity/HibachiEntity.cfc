@@ -48,23 +48,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
 	property name="settingValueFormatted" type="any" persistent="false";
-	property name="disableRecordLevelPermissions" persistent="false"; 
-
-		
-	public void function postLoad(){
-		if(this.getDisableRecordLevelPermissions()){
-			return; 
-		}
-
-		super.postLoad();
-	}
-	
-	public any function getDisableRecordLevelPermissions(){
-		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
-			variables.disableRecordLevelPermissions = super.setting(settingName="globalDisableRecordLevelPermissions");	
-		}	
-		return variables.disableRecordLevelPermissions; 
-	}
 
 	// @hint Override the populate method to look for custom attributes
 	public any function populate( required struct data={} ) {
@@ -175,9 +158,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		var cachedSettingValue = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
 
 		//we must have this setting value if we don't maybe we should throw an error
-		if(!isNull(cachedSettingDetails)){
-			return cachedSettingDetails.settingValue;
-		}
+		if(!isNull(cachedSettingValue)){
+			return cachedSettingValue;
+		} 
 	}
 	
 	

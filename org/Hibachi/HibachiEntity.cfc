@@ -10,12 +10,17 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
 	property name="dataCacheProperties" type="array" persistent="false";
+	property name="disableRecordLevelPermissions" persistent="false"; 
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
+		
+		if(this.getDisableRecordLevelPermissions()){
+			return; 
+		}
 
 		if( !this.getNewFlag() 
 			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
@@ -39,7 +44,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
  			}
 		}
 	}
-	
+
+	public any function getDisableRecordLevelPermissions(){
+		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
+			variables.disableRecordLevelPermissions = super.setting(settingName="globalDisableRecordLevelPermissions");	
+		}	
+		return variables.disableRecordLevelPermissions; 
+	}	
+
 	private void function throwNoAccess(){
 		var context = getPageContext();
 		status = 403;
