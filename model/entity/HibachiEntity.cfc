@@ -160,7 +160,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		var cacheArguments = {
 			key=getService('settingService').getSettingCacheKey(argumentCollection=arguments), 
-			fallbackObject=settingService, 
+			fallbackObject=getService('settingService'), 
 			fallbackFunction="getSettingDetails", 
 			fallbackArguments=arguments	
 		};
