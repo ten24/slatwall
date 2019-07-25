@@ -139,10 +139,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 
+		var settingService = getService('settingService'); 
+
 		arguments.object = this;  
+
+		var cacheKey = settingService.getSettingCacheKey(argumentCollection=arguments);  
 	
 		//delegate everytthing to setting service
-		return getService('HibachiCacheService').getOrCacheFunctionValue(cacheKey, getService('settingService'), "getSettingDetailsFromDatabase", arguments); 
+		return getService('HibachiCacheService').getOrCacheFunctionValue(key=cacheKey, 
+																		 fallbackObject=settingService, 
+																		 fallbackFunction="getSettingDetailsFromDatabase", 
+																		 fallbackArguments=arguments); 
 	}
 	
 	
