@@ -32932,6 +32932,677 @@ exports.OrderFulfillmentService = OrderFulfillmentService;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
+=======
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swEditSkuPriceModalLauncherHTML = __webpack_require__(312);
+var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
+    //@ngInject
+    function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.formService = formService;
+        this.listingService = listingService;
+        this.observerService = observerService;
+        this.skuPriceService = skuPriceService;
+        this.utilityService = utilityService;
+        this.scopeService = scopeService;
+        this.$scope = $scope;
+        this.baseName = "j-add-sku-item-";
+        this.currencyCodeEditable = false;
+        this.priceGroupEditable = false;
+        this.currencyCodeOptions = [];
+        this.saveSuccess = true;
+        this.updateCurrencyCodeSelector = function (args) {
+            if (args != 'All') {
+                _this.skuPrice.data.currencyCode = args;
+                _this.currencyCodeEditable = false;
+            }
+            else {
+                _this.currencyCodeEditable = true;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.initData = function (pageRecord) {
+            _this.pageRecord = pageRecord;
+            if (angular.isDefined(pageRecord)) {
+                var skuPriceData = {
+                    skuPriceID: pageRecord.skuPriceID,
+                    minQuantity: pageRecord.minQuantity,
+                    maxQuantity: pageRecord.maxQuantity,
+                    currencyCode: pageRecord.currencyCode,
+                    price: pageRecord.price
+                };
+                var skuData = {
+                    skuID: pageRecord["sku_skuID"],
+                    skuCode: pageRecord["sku_skuCode"],
+                    calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+                };
+                var priceGroupData = {
+                    priceGroupID: pageRecord["priceGroup_priceGroupID"],
+                    priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
+                };
+                //reference to form is being wiped
+                if (_this.skuPrice) {
+                    var skuPriceForms = _this.skuPrice.forms;
+                }
+                _this.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+                if (skuPriceForms) {
+                    _this.skuPrice.forms = skuPriceForms;
+                }
+                if (_this.sku) {
+                    var skuForms = _this.sku.forms;
+                }
+                _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+                if (skuForms) {
+                    _this.skuPrice.forms = skuForms;
+                }
+                if (_this.priceGroup) {
+                    var priceGroupForms = _this.priceGroup.forms;
+                }
+                _this.priceGroup = _this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+                if (priceGroupForms) {
+                    _this.priceGroup.forms = priceGroupForms;
+                }
+                _this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                    _this.priceGroupOptions = response.records;
+                    _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+                }).finally(function () {
+                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                    for (var i = 0; i < _this.priceGroupOptions.length; i++) {
+                        if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
+                            _this.selectedPriceGroup = _this.priceGroupOptions[i];
+                        }
+                    }
+                    if (!_this.selectedPriceGroup['priceGroupID']) {
+                        _this.priceGroupEditable = true;
+                    }
+                });
+                _this.skuPriceService.getCurrencyOptions().then(function (response) {
+                    if (response.records.length) {
+                        _this.currencyCodeOptions = [];
+                        for (var i = 0; i < response.records.length; i++) {
+                            _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                        }
+                        _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                        _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                        for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
+                            if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
+                                _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
+                            }
+                        }
+                    }
+                });
+                _this.skuPrice.$$setPriceGroup(_this.priceGroup);
+                _this.skuPrice.$$setSku(_this.sku);
+            }
+            else {
+                return;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.setSelectedPriceGroup = function (priceGroupData) {
+            if (!priceGroupData.priceGroupID) {
+                _this.submittedPriceGroup = {};
+                return;
+            }
+            _this.submittedPriceGroup = { priceGroupID: priceGroupData['priceGroupID'] };
+        };
+        this.$onDestroy = function () {
+            console.log("$onDestroy called");
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+        };
+        this.save = function () {
+            _this.observerService.notify("updateBindings");
+            var firstSkuPriceForSku = !_this.skuPriceService.hasSkuPrices(_this.sku.data.skuID);
+            if (_this.submittedPriceGroup) {
+                _this.priceGroup.priceGroupID = _this.submittedPriceGroup.priceGroupID;
+                _this.priceGroup.priceGroupCode = _this.submittedPriceGroup.priceGroupCode;
+            }
+            var savePromise = _this.skuPrice.$$save();
+            savePromise.then(function (response) {
+                _this.saveSuccess = true;
+                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+                var form = _this.formService.getForm(_this.formName);
+                _this.formService.resetForm(form);
+            }, function (reason) {
+                //error callback
+                console.log("validation failed because: ", reason);
+                _this.saveSuccess = false;
+            }).finally(function () {
+                if (_this.saveSuccess) {
+                    for (var key in _this.skuPrice.data) {
+                        if (key != 'sku' && key != 'currencyCode') {
+                            _this.skuPrice.data[key] = null;
+                        }
+                    }
+                    _this.formService.resetForm(_this.formService.getForm(_this.formName));
+                    _this.listingService.getCollection(_this.listingID);
+                    _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                }
+            });
+            return savePromise;
+        };
+        this.uniqueName = this.baseName + this.utilityService.createID(16);
+        this.formName = "editSkuPrice" + this.utilityService.createID(16);
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+    }
+    return SWEditSkuPriceModalLauncherController;
+}());
+exports.SWEditSkuPriceModalLauncherController = SWEditSkuPriceModalLauncherController;
+var SWEditSkuPriceModalLauncher = /** @class */ (function () {
+    function SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.observerService = observerService;
+        this.scopeService = scopeService;
+        this.collectionConfigService = collectionConfigService;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.scope = {};
+        this.skuData = {};
+        this.transclude = true;
+        this.bindToController = {
+            sku: "=?",
+            pageRecord: "=?",
+            minQuantity: "@?",
+            maxQuantity: "@?",
+            priceGroupId: "@?",
+            currencyCode: "@?",
+            eligibleCurrencyCodeList: "@?",
+            defaultCurrencyOnly: "=?",
+            disableAllFieldsButPrice: "=?"
+        };
+        this.controller = SWEditSkuPriceModalLauncherController;
+        this.controllerAs = "swEditSkuPriceModalLauncher";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = swEditSkuPriceModalLauncherHTML;
+    }
+    SWEditSkuPriceModalLauncher.Factory = function () {
+        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWEditSkuPriceModalLauncher($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'entityService',
+            'observerService',
+            'scopeService',
+            'collectionConfigService',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWEditSkuPriceModalLauncher;
+}());
+exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
+
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swPricingManagerHTML = __webpack_require__(313);
+var SWPricingManagerController = /** @class */ (function () {
+    //@ngInject
+    function SWPricingManagerController(collectionConfigService) {
+        var _this = this;
+        this.collectionConfigService = collectionConfigService;
+        this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product");
+        this.productCollectionConfig.addFilter("productID", this.productId, "=", 'AND', true);
+        this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
+        this.productCollectionConfig.getEntity().then(function (response) {
+            _this.product = response.pageRecords[0];
+        }, function (reason) {
+        });
+        this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,activeFlag,priceGroup.priceGroupName,currencyCode");
+        this.skuPriceCollectionConfig.addDisplayProperty("price", "", { isEditable: true });
+        this.skuPriceCollectionConfig.addDisplayProperty("minQuantity", "", { isEditable: true });
+        this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "", { isEditable: true });
+        this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
+        this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
+    }
+    return SWPricingManagerController;
+}());
+exports.SWPricingManagerController = SWPricingManagerController;
+var SWPricingManager = /** @class */ (function () {
+    // @ngInject
+    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.priority = 1000;
+        this.scope = {};
+        this.bindToController = {
+            productId: "@",
+            trackInventory: "=?"
+        };
+        this.controller = SWPricingManagerController;
+        this.controllerAs = "swPricingManager";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = swPricingManagerHTML;
+    }
+    SWPricingManager.Factory = function () {
+        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWPricingManager;
+}());
+exports.SWPricingManager = SWPricingManager;
+
+
+/***/ }),
+/* 299 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swSkuPriceModalHTML = __webpack_require__(314);
+var SWSkuPriceModalController = /** @class */ (function () {
+    //@ngInject
+    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.formService = formService;
+        this.listingService = listingService;
+        this.observerService = observerService;
+        this.skuPriceService = skuPriceService;
+        this.utilityService = utilityService;
+        this.collectionConfigService = collectionConfigService;
+        this.scopeService = scopeService;
+        this.$scope = $scope;
+        this.$timeout = $timeout;
+        this.requestService = requestService;
+        this.baseName = "j-add-sku-item-";
+        this.currencyCodeEditable = false;
+        this.priceGroupEditable = false;
+        this.currencyCodeOptions = [];
+        this.saveSuccess = true;
+        this.updateCurrencyCodeSelector = function (args) {
+            if (args != 'All') {
+                _this.skuPrice.data.currencyCode = args;
+                _this.currencyCodeEditable = false;
+            }
+            else {
+                _this.currencyCodeEditable = true;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.inlineSave = function (pageRecord) {
+            _this.initData(pageRecord);
+            var formDataToPost = {
+                entityName: 'SkuPrice',
+                entityID: pageRecord['skuPriceID'],
+                context: 'save',
+                propertyIdentifiersList: ''
+            };
+            for (var key in pageRecord) {
+                if (key.indexOf("$") > -1 || key.indexOf("skuPriceID") > -1) {
+                    continue;
+                }
+                else if (key.indexOf("_") > -1) {
+                    if (key.indexOf("ID") == -1) {
+                        continue;
+                    }
+                    var property = key.split("_");
+                    formDataToPost[property[0]] = {};
+                    formDataToPost[property[0]][property[1]] = pageRecord[key];
+                }
+                else {
+                    formDataToPost[key] = pageRecord[key];
+                }
+            }
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            return adminRequest.promise.then(function (response) {
+                _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                _this.observerService.notifyById("rowSaved", _this.pageRecord.$$hashKey, _this.pageRecord);
+            });
+        };
+        this.setSelectedPriceGroup = function (priceGroupData) {
+            if (!priceGroupData.priceGroupID) {
+                _this.submittedPriceGroup = {};
+                return;
+            }
+            _this.submittedPriceGroup = { priceGroupID: priceGroupData['priceGroupID'] };
+        };
+        this.setSelectedSku = function (skuData) {
+            if (!angular.isDefined(skuData['skuID'])) {
+                return;
+            }
+            _this.selectedSku = { skuCode: skuData['skuCode'], skuID: skuData['skuID'] };
+            _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+            _this.submittedSku = { skuID: skuData['skuID'] };
+        };
+        this.isDefaultSkuPrice = function () {
+            if (_this.pageRecord) {
+                if ((_this.skuPrice.sku.currencyCode == _this.skuPrice.currencyCode) &&
+                    !_this.skuPrice.minQuantity.trim() &&
+                    !_this.skuPrice.maxQuantity.trim() &&
+                    (!_this.skuPrice.priceGroup.priceGroupID || !_this.skuPrice.priceGroup.priceGroupID.trim()) &&
+                    _this.skuPrice.price) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        this.$onDestroy = function () {
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+            _this.observerService.detachByEvent('SAVE_SKUPRICE');
+        };
+        this.deleteSkuPrice = function (pageRecord) {
+            var skuPriceData = {
+                skuPriceID: pageRecord.skuPriceID,
+                minQuantity: pageRecord.minQuantity,
+                maxQuantity: pageRecord.maxQuantity,
+                currencyCode: pageRecord.currencyCode,
+                price: pageRecord.price
+            };
+            var skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+            var deletePromise = skuPrice.$$delete();
+            deletePromise.then(function (resolve) {
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+            }, function (reason) {
+                console.log("Could not delete Sku Price Because: ", reason);
+            });
+            return deletePromise;
+        };
+        this.save = function () {
+            _this.observerService.notify("updateBindings");
+            if (_this.pageRecord && _this.submittedPriceGroup) {
+                _this.priceGroup.priceGroupID = _this.submittedPriceGroup.priceGroupID;
+                _this.priceGroup.priceGroupCode = _this.submittedPriceGroup.priceGroupCode;
+            }
+            var form = _this.formService.getForm(_this.formName);
+            var savePromise = _this.skuPrice.$$save();
+            savePromise.then(function (response) {
+                _this.saveSuccess = true;
+                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+                _this.formService.resetForm(form);
+            }, function (reason) {
+                //error callback
+                console.log("validation failed because: ", reason);
+                _this.saveSuccess = false;
+            }).finally(function () {
+                if (_this.saveSuccess) {
+                    for (var key in _this.skuPrice.data) {
+                        if (key != 'sku' && key != 'currencyCode') {
+                            _this.skuPrice.data[key] = null;
+                        }
+                    }
+                    _this.formService.resetForm(form);
+                    _this.listingService.getCollection(_this.listingID);
+                    _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                }
+            });
+            return savePromise;
+        };
+        this.uniqueName = this.baseName + this.utilityService.createID(16);
+        this.formName = "skuPriceForm" + this.utilityService.createID(16);
+        if (angular.isDefined(this.productId)) {
+            this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        }
+        else if (angular.isDefined(this.promotionRewardId)) {
+            var collectionConfigStruct = angular.fromJson(this.skuCollectionConfig);
+            $timeout(function () {
+                _this.skuCollectionConfig = _this.collectionConfigService.newCollectionConfig().loadJson(collectionConfigStruct);
+            });
+        }
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        this.observerService.attach(this.inlineSave, "SAVE_SKUPRICE");
+        this.observerService.attach(this.deleteSkuPrice, "DELETE_SKUPRICE");
+    }
+    SWSkuPriceModalController.prototype.initData = function (pageRecord) {
+        var _this = this;
+        this.pageRecord = pageRecord;
+        if (pageRecord) {
+            var skuPriceData = {
+                skuPriceID: pageRecord.skuPriceID,
+                minQuantity: pageRecord.minQuantity,
+                maxQuantity: pageRecord.maxQuantity,
+                currencyCode: pageRecord.currencyCode,
+                price: pageRecord.price
+            };
+            var skuData = {
+                skuID: pageRecord["sku_skuID"],
+                skuCode: pageRecord["sku_skuCode"],
+                calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+            };
+            var promotionRewardData = {
+                promotionRewardID: pageRecord['promotionRewardID']
+            };
+            var priceGroupData = {
+                priceGroupID: pageRecord["priceGroup_priceGroupID"],
+                priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
+            };
+            //reference to form is being wiped
+            if (this.skuPrice) {
+                var skuPriceForms = this.skuPrice.forms;
+            }
+            this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+            if (skuPriceForms) {
+                this.skuPrice.forms = skuPriceForms;
+            }
+            if (this.sku) {
+                var skuForms = this.sku.forms;
+            }
+            this.sku = this.$hibachi.populateEntity('Sku', skuData);
+            if (skuForms) {
+                this.skuPrice.forms = skuForms;
+            }
+            if (this.promotionReward) {
+                var promotionRewardForms = this.promotionReward.forms;
+            }
+            this.promotionReward = this.$hibachi.populateEntity('PromotionReward', promotionRewardData);
+            if (promotionRewardForms) {
+                this.promotionReward.forms = promotionRewardForms;
+            }
+            if (this.priceGroup) {
+                var priceGroupForms = this.priceGroup.forms;
+            }
+            this.priceGroup = this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+            if (priceGroupForms) {
+                this.priceGroup.forms = priceGroupForms;
+            }
+            this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                _this.priceGroupOptions = response.records;
+                _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+            }).finally(function () {
+                _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                for (var i = 0; i < _this.priceGroupOptions.length; i++) {
+                    if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
+                        _this.selectedPriceGroup = _this.priceGroupOptions[i];
+                        console.log(_this.selectedPriceGroup);
+                    }
+                }
+                _this.priceGroupEditable = false;
+                if (!_this.selectedPriceGroup['priceGroupID']) {
+                    _this.priceGroupEditable = true;
+                }
+            });
+            this.skuPriceService.getCurrencyOptions().then(function (response) {
+                if (response.records.length) {
+                    _this.currencyCodeOptions = [];
+                    for (var i = 0; i < response.records.length; i++) {
+                        _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                    }
+                    _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                    _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                    for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
+                        if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
+                            _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
+                        }
+                    }
+                }
+            });
+            this.skuPrice.$$setPriceGroup(this.priceGroup);
+            this.skuPrice.$$setSku(this.sku);
+            this.skuPrice.$$setPromotionReward(this.promotionReward);
+        }
+        else {
+            //reference to form is being wiped
+            if (this.skuPrice) {
+                var skuPriceForms = this.skuPrice.forms;
+            }
+            this.skuPrice = this.skuPriceService.newSkuPrice();
+            if (skuPriceForms) {
+                this.skuPrice.forms = skuPriceForms;
+            }
+            if (this.promotionRewardId) {
+                if (this.promotionReward) {
+                    var promotionRewardForms = this.promotionReward.forms;
+                }
+                this.promotionReward = this.$hibachi.populateEntity('PromotionReward', { promotionRewardID: this.promotionRewardId });
+                if (promotionRewardForms) {
+                    this.promotionReward.forms = promotionRewardForms;
+                }
+                this.skuPrice.$$setPromotionReward(this.promotionReward);
+            }
+            this.skuPriceService.getSkuOptions(this.productId).then(function (response) {
+                _this.skuOptions = [];
+                for (var i = 0; i < response.records.length; i++) {
+                    _this.skuOptions.push({ skuCode: response.records[i]['skuCode'], skuID: response.records[i]['skuID'] });
+                }
+            }).finally(function () {
+                if (angular.isDefined(_this.skuOptions) && _this.skuOptions.length == 1) {
+                    _this.setSelectedSku(_this.skuOptions[0]);
+                }
+            });
+            this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                _this.priceGroupOptions = response.records;
+                _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+            }).finally(function () {
+                if (angular.isDefined(_this.priceGroupOptions) && _this.priceGroupOptions.length) {
+                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                    _this.priceGroupEditable = true;
+                }
+            });
+            this.skuPriceService.getCurrencyOptions().then(function (response) {
+                if (response.records.length) {
+                    _this.currencyCodeOptions = [];
+                    for (var i = 0; i < response.records.length; i++) {
+                        _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                    }
+                    _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                    _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                }
+            });
+        }
+    };
+    return SWSkuPriceModalController;
+}());
+exports.SWSkuPriceModalController = SWSkuPriceModalController;
+var SWSkuPriceModal = /** @class */ (function () {
+    function SWSkuPriceModal($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.observerService = observerService;
+        this.scopeService = scopeService;
+        this.collectionConfigService = collectionConfigService;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.require = {
+            ngForm: '?ngForm'
+        };
+        this.scope = {};
+        this.skuData = {};
+        this.transclude = true;
+        this.bindToController = {
+            sku: "=?",
+            pageRecord: "=?",
+            productId: "@?",
+            promotionRewardId: "@?",
+            minQuantity: "@?",
+            maxQuantity: "@?",
+            priceGroupId: "@?",
+            currencyCode: "@?",
+            eligibleCurrencyCodeList: "@?",
+            defaultCurrencyOnly: "=?",
+            skuCollectionConfig: "@?",
+            disableAllFieldsButPrice: "=?"
+        };
+        this.controller = SWSkuPriceModalController;
+        this.controllerAs = "swSkuPriceModal";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = swSkuPriceModalHTML;
+    }
+    SWSkuPriceModal.Factory = function () {
+        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuPriceModal($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'entityService',
+            'observerService',
+            'scopeService',
+            'collectionConfigService',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWSkuPriceModal;
+}());
+exports.SWSkuPriceModal = SWSkuPriceModal;
+
+
+/***/ }),
+/* 300 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+>>>>>>> f45f0fdc980ee6d80eb9ccc34cbc935340fd1afc
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
@@ -48522,7 +49193,7 @@ module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n 
 /* 310 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <div class=\"pull-right\">\n                    <sw-action-caller\n                            data-event=\"EDIT_SKUPRICE\"\n                            data-payload=\"undefined\"\n                            data-class=\"btn btn-primary btn-md\"\n                            data-icon=\"plus\"\n                            data-text=\"Add Sku Price\"\n                            data-iconOnly=\"false\">\n                        \n                    </sw-action-caller>\n                </div>\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <sw-listing-display\n                            data-has-search=\"true\"\n                            data-is-angular-route=\"false\"\n                            data-angular-links=\"false\"\n                            data-has-action-bar=\"false\"\n                            data-base-entity-name=\"SkuPrice\"\n                            data-actions=\"[{\n                                'event' : 'SAVE_SKUPRICE',\n                                'icon' : 'floppy-disk',\n                                'iconOnly' : true,\n                                'display' : false,\n                                'eventListeners' : {\n                                    'cellModified' : 'setDisplayTrue',\n                                    'rowSaved' : 'setDisplayFalse'\n                                },\n                                'useEventListenerId' : true\n                            }]\"\n                            data-record-edit-event=\"EDIT_SKUPRICE\"\n                            data-record-delete-event=\"DELETE_SKUPRICE\"\n                            data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                            data-name=\"pricingListing\"\n                            data-using-personal-collection=\"true\"\n                            data-show-report=\"false\"\n                    >\n                            \n                    </sw-listing-display>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n                \n                <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>\n                \n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
+module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <div class=\"pull-right\">\n                    <sw-action-caller\n                            data-event=\"EDIT_SKUPRICE\"\n                            data-payload=\"undefined\"\n                            data-class=\"btn btn-primary btn-md\"\n                            data-icon=\"plus\"\n                            data-text=\"Add Sku Price\"\n                            data-iconOnly=\"false\">\n                        \n                    </sw-action-caller>\n                </div>\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <sw-listing-display\n                            data-has-search=\"true\"\n                            data-is-angular-route=\"false\"\n                            data-angular-links=\"false\"\n                            data-has-action-bar=\"false\"\n                            data-base-entity-name=\"SkuPrice\"\n                            data-actions=\"[{\n                                'event' : 'SAVE_SKUPRICE',\n                                'icon' : 'floppy-disk',\n                                'iconOnly' : true,\n                                'display' : false,\n                                'eventListeners' : {\n                                    'cellModified' : 'setDisplayTrue',\n                                    'rowSaved' : 'setDisplayFalse'\n                                },\n                                'useEventListenerId' : true\n                            }]\"\n                            data-record-edit-event=\"EDIT_SKUPRICE\"\n                            data-record-delete-event=\"DELETE_SKUPRICE\"\n                            data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                            data-name=\"pricingListing\"\n                            data-using-personal-collection=\"true\"\n                            data-show-report=\"false\"\n                    >\n                            \n                    </sw-listing-display>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
 
 /***/ }),
 /* 311 */
