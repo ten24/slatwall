@@ -138,18 +138,11 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		var hibachiCacheService = getService('HibachiCacheService'); 
-		//preventing multiple look ups on the external cache look up
-		var cacheKey = "#arguments.settingName##arguments.formatValue#";
-		for(var filterEntity in arguments.filterEntities){
-			cacheKey &= filterEntity.getPrimaryIDValue();
-		}
-		if(!hibachiCacheService.hasCachedValue(cacheKey)){
-			var settingValue = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue); 
-			hibachiCacheService.setCachedValue(cacheKey, settingValue);
-		}
-		
-		return hibachiCacheService.getCachedValue(cacheKey);
+
+		arguments.object = this;  
+	
+		//delegate everytthing to setting service
+		return getService('HibachiCacheService').getOrCacheFunctionValue(cacheKey, getService('settingService'), "getSettingDetailsFromDatabase", arguments); 
 	}
 	
 	
