@@ -166,10 +166,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			fallbackArguments=arguments	
 		};
 
-		//delegate everytthing to setting service
+		//delegate everything to setting service
 		var cachedSettingDetails = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
 
-		//we should absolutely have the settings we were looking for
+		//we must have this setting value if we don't maybe we should throw an error
 		if(!isNull(cachedSettingDetails) && structKeyExists(cachedSettingDetails, 'settingValue')){
 			return cachedSettingDetails.settingValue;
 		}
