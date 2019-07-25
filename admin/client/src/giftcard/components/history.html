@@ -17,6 +17,7 @@
 								<th>Info</th>
 								<th>Transaction</th>
 								<th>Balance</th>
+								<th>Reason</th>
 							</tr>
 						</thead>
 						<tbody class="s-status-table">
@@ -84,6 +85,9 @@
 									<span class="s-bold" ng-if-end ng-bind-html="transaction.debitAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
 								</td>
 								<td class="s-bold" ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
+								<td>
+									<span ng-bind="transaction.reasonForAdjustment"></span>
+								</td>
 							</tr>
 							<!--
 							<tr class="s-purchase">

@@ -1,4 +1,5 @@
-/*
+<!---
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 
@@ -25,6 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
+
 	- You also meet the terms and conditions of the license of each
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
@@ -32,6 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
+
 	You may copy and distribute the modified version of this program that meets
 	the above guidelines as a combined work under the terms of GPL for this program,
 	provided that you include the source code of that other code when and as the
@@ -39,25 +42,19 @@
 
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
+
 Notes:
-*/
-component output="false" accessors="true" extends="HibachiProcess"{
 
-	 // Injected Entity
-	 property name="giftCard";
-	 property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one";
-	 property name="orderItems" cfc="OrderItem" fieldtype="one-to-many" singularname="orderItem";
-	 property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one";
+--->
+<cfcomponent extends="HibachiDAO">
+	<cffunction name="removeAccruementCurrencies">
+		<cfargument name="loyaltyAccruementID" required="true" type="string" />
 
-	 property name="creditAmount";
-	 property name="reasonForAdjustment" ormtype="string";
-
-	 public any function getCreditAmount(){
-	 	if(isNull(variables.creditAmount)){
-	 		return variables.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount();
-	 	} else {
-	 		return variables.creditAmount;
-	 	}
-	 }
-}
-
+		<cfquery name="local.removeAccruementCurrencies" maxrows="1">
+			DELETE FROM swAccruementCurrency 
+			WHERE loyaltyAccruementID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.loyaltyAccruementID#" />
+		</cfquery>
+		
+	</cffunction>
+	
+</cfcomponent>
