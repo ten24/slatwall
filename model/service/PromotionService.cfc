@@ -1150,6 +1150,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return rewardSkus;
 	}
 
+	public struct function getQualifiedPromotionRewardSkuCollectionConfigForOrder( required any order ){ 
+		var masterSkuCollection = getSkuService().getSkuCollectionList(); 
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		
+		for(var promotionReward in qualifiedPromotionRewards){
+			var skuCollectionConfig = promotionReward.getSkuCollection().getCollectionConfigStruct();
+			
+			var filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
+			var innerFiltersOrFilterGroups = skuCollectionConfig['filterGroups'][1]['filterGroup'];
+	
+			for(var innerFilterOrFilterGroup in innerFiltersOrFilterGroups){
+				arrayAppend(masterSkuCollection.getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'], innerFilterOrFilterGroup);
+			} 
+		} 
+
+		return masterSkuCollection.getCollectionConfigStruct();
+	}  
+
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================

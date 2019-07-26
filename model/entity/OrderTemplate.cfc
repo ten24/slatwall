@@ -102,6 +102,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
+	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="encodedPromotionalRewardSkuCollectionConfig" persistent="false"; 
 	property name="scheduledOrderDates" persistent="false";
 	property name="shippingMethodOptions" persistent="false"; 
 	property name="subtotal" persistent="false";
@@ -110,7 +112,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="total" persistent="false" hb_formatType="currency";
 	
 	//CUSTOM PROPERTIES BEGIN
-	property name="customerCanCreateFlag" persistent="false";
+property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 
@@ -160,6 +162,21 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this);
 		} 
 		return variables.canPlaceOrderFlag;
+	}
+
+	public struct function getPromotionalRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'promotionalRewardSkuCollectionConfig')){
+			variables.promotionalRewardSkuCollectionConfig = getService('OrderService').getPromotionalRewardSkuCollectionConfigForOrderTemplate(this);	
+		} 
+		return variables.promotionalRewardSkuCollectionConfig; 	
+	}
+
+	public string function getEncodedPromotionalRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'encodedPromotionalRewardSkuCollectionConfig')){
+			variables.encodedPromotionalRewardSkuCollectionConfig = getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getPromotionalRewardSkuCollectionConfig()));  
+		} 
+		return variables.encodedPromotionalRewardSkuCollectionConfig; 	
+		
 	}
 	
 	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 

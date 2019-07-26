@@ -1169,7 +1169,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 
 		var ormSession = ormGetSessionFactory().openSession();
-	    var tx = local.ormSession.beginTransaction();
+	    var tx = ormSession.beginTransaction();
 
 		try{
 			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
@@ -1182,6 +1182,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 
 		return fulfillmentCharge; 
+	}
+
+	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
+		
+		var ormSession = ormGetSessionFactory().openSession();
+	    var tx = ormSession.beginTransaction();
+		
+		try{
+			var order = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate); 
+			var promotionalRewardSkuCollectionConfig = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(order);
+		} catch (any e) {
+			var skuCollection = getSkuService().getSkuCollectionList();
+			skuCollection.addFilter('skuID','null','is'); 
+			var promotionalRewardSkuCollectionConfig = skuCollection.getCollectionConfigStruct(); 
+		} finally { 
+			tx.commit();
+			ormSession.close();
+		} 
+
+		return promotionalRewardSkuCollectionConfig; 
+
 	}
 
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
@@ -1411,9 +1432,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//do we need location
 	
 		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
-	
+		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate; 
 		} 
@@ -1453,7 +1474,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderTemplate.clearHibachiErrors();
 				return arguments.orderTemplate; 
 			}
-		} 		
+		} 	
 
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1496,9 +1517,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate;
 		}
 
+		ormFlush();//flush so that the order exists
+
 		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
 		newOrder = this.processOrder_placeOrder(newOrder);
-	
+
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when placing order', true);
 			arguments.orderTemplate.clearHibachiErrors();
@@ -1543,9 +1566,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} 
 			}
 		}
-
+		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
-
 		newOrder = this.saveOrder(newOrder); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
@@ -1557,6 +1579,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
+
 
 		return arguments.orderTemplate; 
 	}
@@ -1583,6 +1606,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 		}
+
 
 		return arguments.orderTemplate; 	
 	} 
