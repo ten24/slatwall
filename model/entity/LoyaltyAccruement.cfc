@@ -47,8 +47,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	property name="pointType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="pointQuantity" ormType="integer";
 	property name="activeFlag" ormtype="boolean" default="1";
-	property name="currencyCode" ormtype="string" length="3";
-	
+
 	// Related Object Properties (many-to-one)
 	property name="loyalty" cfc="Loyalty" fieldtype="many-to-one" fkcolumn="loyaltyID";
 	property name="expirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="expirationTermID" hb_optionsNullRBKey="define.never";
@@ -82,7 +81,10 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	// Non-Persistent Properties
 
-
+	//CUSTOM PROPERTIES BEGIN
+property name="refereeFlag" ormtype="boolean" default="0";
+	
+//CUSTOM PROPERTIES END
 	public string function getSimpleRepresentation() {
 		return getLoyalty().getLoyaltyName() & " - " & getAccruementType();
 	}
@@ -100,13 +102,13 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 		return this.getService("LoyaltyService").getPointTypeOptions();
 	}
 	
-	public string function getOptionalTargetAccountConfig(encodeForHTML=false){
-		
-		if(encodeForHTML){
-			return getService("HibachiUtilityService").hibachiHTMLEditFormat(variables.optionalTargetAccountConfig);
+	public string function getOptionalTargetAccountConfig(encodeForHTMLFlag=false){
+		if(structKeyExists(variables,"optionalTargetAccountConfig")){
+			if(encodeForHTMLFlag){
+				return getService("HibachiUtilityService").hibachiHTMLEditFormat(variables.optionalTargetAccountConfig);
+			}
+			return variables.optionalTargetAccountConfig;
 		}
-		
-		return variables.optionalTargetAccountConfig;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -341,5 +343,13 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	// ================== START: Deprecated Methods ========================
 	
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
+
+public boolean function getRefereeFlag(){
+	    if(!structKeyExists(variables,"refereeFlag")){
+	        variables.refereeFlag = false;
+	    }
+	    return variables.refereeFlag;
+	}
+//CUSTOM FUNCTIONS END
 }

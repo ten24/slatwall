@@ -6,6 +6,6 @@
     },
     "properties":{
         "amount" : [{"dataType":"numeric", "gt":0},
-                    {"conditions":"debit", "lteProperty":"giftCardBalanceAmount"}]
+                    {"conditions":"debit"}]
     }
 }
