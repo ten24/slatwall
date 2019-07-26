@@ -150,10 +150,8 @@ class SWListingSearchController {
         this.$hibachi.saveEntity(
             'Collection',
             personalCollection.collectionID,
-            {
-                'softDeleteFlag':true
-            },
-            'save'
+            {},
+            'softDelete'
         ).then((data)=>{
             if(this.localStorageService.hasItem('selectedPersonalCollection')){
                 const selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
@@ -241,11 +239,11 @@ class SWListingSearchController {
     public getPersonalCollections = ()=>{
         if(!this.hasPersonalCollections){
             var personalCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
+            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription,softDeleteFlag');
             personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
             personalCollectionList.addFilter('reportFlag',0);
-            personalCollectionList.addFilter('softDeleteFlag',true,"!=");
+            personalCollectionList.addFilter('softDeleteFlag',false);
             if(angular.isDefined(this.personalCollectionIdentifier)){
                 personalCollectionList.addFilter('collectionDescription',this.personalCollectionIdentifier);
             }
