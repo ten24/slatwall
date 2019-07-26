@@ -922,8 +922,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
 
+		if( arguments.missingMethodName == 'setting' ) {
+			return setting(argumentCollection=arguments.missingMethodArguments);
+	
 		// hasUniqueOrNullXXX() 		Where XXX is a property to check if that property value is currenly unique in the DB
-		if( left(arguments.missingMethodName, 15) == "hasUniqueOrNull") {
+		} else if( left(arguments.missingMethodName, 15) == "hasUniqueOrNull") {
 
 			return hasUniqueOrNullProperty( right(arguments.missingMethodName, len(arguments.missingMethodName) - 15) );
 
