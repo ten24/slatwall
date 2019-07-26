@@ -67,6 +67,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
 	property name="validationService" type="any";
+	property name="hibachiEventService" type="any";
 
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -1084,7 +1085,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// If loyaltyAccruement eq 'orderClosed' as the type
 			if (loyaltyAccruement.getAccruementEvent() eq 'orderClosed') {
 
-				// If order satus is closed
+				// If order status is closed
 				if ( listFindNoCase("ostClosed",arguments.data.order.getorderStatusType().getSystemCode()) ){
 
 					// Create a new transaction
@@ -1105,8 +1106,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 		}
-
-
 
 		return arguments.accountLoyalty;
 	}
@@ -1343,10 +1342,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function createPromotionLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
-		
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			promo = arguments.data.loyaltyAccruement.getPromotion();
-			promoCode = getService("PromotionService").NewPromotionCode();
+			var promo = arguments.data.loyaltyAccruement.getPromotion();
+			var promoCode = getService("PromotionService").NewPromotionCode();
 			promoCode.setPromotionCode(createUUID());
 			promoCode.setPromotion(promo);
 			promoCode.addAccount(arguments.data.account);
@@ -1354,31 +1352,57 @@ component extends="HibachiService" accessors="true" output="false" {
 			promoCode = getService("PromotionService").savePromotionCode(promoCode);
 			promoCode.setStartDateTime(Now());
 			promo = getService("PromotionService").savePromotion(promo);
-			getHibachiEventService().announceEvent("Promotion Code Assigned to Account", promoCode);
+			arguments.accountLoyaltyTransaction.setPromotionCode(promoCode);
+			getHibachiEventService().announceEvent("LoyaltyTransaction_PromotionCodeAssigned", promoCode);
 			arrayAppend(arguments.accountLoyaltyTransaction.getErrors(),promoCode.getErrors());
 		}
 		
 		return arguments.accountLoyaltyTransaction;
 	}
 	
+	private any function getExistingGiftCardBySkuAndAccount(required any sku,required any account,required string currencyCode){
+		var giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
+		giftCardCollectionList.addFilter("ownerAccount.accountID",arguments.account.getAccountID());
+		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.getSkuID());
+		giftCardCollectionList.addFilter("currencyCode",arguments.currencyCode);
+		giftCardCollectionList.setPageRecordsShow(1);
+		giftCardCollectionList.setDisplayProperties("giftCardID");
+		giftCards = giftCardCollectionList.getPageRecords();
+		if(arrayLen(giftCards)){
+			return getService("GiftCardService").getGiftCard(giftCards[1]['giftCardID']);
+		}
+	}
+	
 	public any function createGiftCardLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			var newGiftCard = getService("GiftCardService").newGiftCard(); 
-			var createGiftCardProcessObject = newGiftCard.getProcessObject('create'); 
+			
 			var currencyCode = arguments.data.currencyCode;
+			var sku = arguments.data.loyaltyAccruement.getGiftCardSku();
 			
-			createGiftCardProcessObject.setCurrencyCode(currencyCode);
+			var giftCard = getExistingGiftCardBySkuAndAccount(sku,arguments.data.account,currencyCode);
 			
-			createGiftCardProcessObject.setSku(arguments.data.loyaltyAccruement.getGiftCardSku());
+			if(isNull(giftCard)){
+
+				giftCard = getService("GiftCardService").newGiftCard();
+
+				var createGiftCardProcessObject = giftCard.getProcessObject('create'); 
+				
+				createGiftCardProcessObject.setCurrencyCode(currencyCode);
+				
+				createGiftCardProcessObject.setSku(sku);
+				
+				createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
+
+				createGiftCardProcessObject.setOwnerEmailAddress(arguments.data.account.getEmailAddress()); 
+
+				createGiftCardProcessObject.setCreditGiftCardFlag(false);
+		
+				giftCard = getService("GiftCardService").processGiftCard_Create(giftCard,createGiftCardProcessObject);  
+				
+			}
 			
-			createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
-			
-			createGiftCardProcessObject.setCreditGiftCardFlag(false);
-	
-			newGiftCard = getService("GiftCardService").processGiftCard_Create(newGiftCard,createGiftCardProcessObject);  
-	
-			var creditGiftCardProcessObject = newGiftCard.getProcessObject('addCredit');
+			var creditGiftCardProcessObject = giftCard.getProcessObject('addCredit');
 		
 			var accruementCurrency = arguments.data.loyaltyAccruement.getAccruementCurrency(currencyCode);
 			
@@ -1388,11 +1412,15 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 			creditGiftCardProcessObject.setCreditAmount(accruementCurrency.getGiftCardValue());
 	
-			newGiftCard = getService("GiftCardService").processGiftCard_addCredit(newGiftCard, creditGiftCardProcessObject);
+			giftCard = getService("GiftCardService").processGiftCard_addCredit(giftCard, creditGiftCardProcessObject);
 	
-			if(newGiftCard.hasErrors()){
-				arguments.accountLoyaltyTransaction.addErrors(newGiftCard.getErrors());
-			} 
+			if(giftCard.hasErrors()){
+				arguments.accountLoyaltyTransaction.addErrors(giftCard.getErrors());
+			}
+			
+			getHibachiEventService().announceEvent("LoyaltyTransaction_GiftCardCredited", giftCard);
+			
+			arguments.accountLoyaltyTransaction.setGiftCard(giftCard);
 	
 			return arguments.accountLoyaltyTransaction;
 		}
@@ -1438,7 +1466,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		this.RedeemLoyaltyRedemptions(arguments.data.accountLoyalty);
 		
 		arguments.data.account = arguments.data.accountLoyalty.getAccount();
-		
+
 		switch(arguments.data.loyaltyAccruement.getAccruementType()){
 			case "points":
 				arguments.accountLoyaltyTransaction = this.createPointsLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);

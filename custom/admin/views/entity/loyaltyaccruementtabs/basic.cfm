@@ -1,5 +1,5 @@
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.loyaltyAccruement" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -13,6 +13,10 @@
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="expirationTerm" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementEvent" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="false">
+
+            <cfif rc.loyaltyAccruement.getLoyalty().getReferAFriendFlag() >
+                <hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="refereeFlag" edit="#rc.edit#" >
+            </cfif>
 
 			<!--- TYPE - POINTS --->
 			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'points' >

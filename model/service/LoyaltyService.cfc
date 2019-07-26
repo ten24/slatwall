@@ -73,10 +73,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
 		
 		if(accruementCurrency.hasErrors()){
-			arguments.loyaltyAccruement.setErrors(accruementCurrency.getErrors());
+			arguments.loyaltyAccruement.addErrors(accruementCurrency.getErrors());
 		}
 		
 		return arguments.loyaltyAccruement;	
+	}
+	
+	public any function processLoyaltyAccruement_addPromotionEligibleCurrency(required any loyaltyAccruement, required struct data) {
+		
+		var accruementCurrency = this.newAccruementCurrency();
+		
+		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		accruementCurrency.setLoyaltyAccruement(arguments.loyaltyAccruement);
+
+		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
+		
+		if(accruementCurrency.hasErrors()){
+			arguments.loyaltyAccruement.addErrors(accruementCurrency.getErrors());
+		}
+		
+		return arguments.loyaltyAccruement;	
+	}
+	
+	public any function deleteLoyalty(required any loyalty){
+		var accruements = loyalty.getLoyaltyAccruements();
+		for (var accruement in accruements){
+			getDAO("LoyaltyDAO").removeAccruementCurrencies(accruement.getLoyaltyAccruementID());
+		}
+		return delete(arguments.loyalty);	
 	}
 	
 	public any function processLoyaltyAccruement_addPointsPerCurrencyUnit(required any loyaltyAccruement, required struct data) {

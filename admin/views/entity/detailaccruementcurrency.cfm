@@ -50,58 +50,25 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.loyaltyAccruement" type="any">
-<cfparam name="rc.loyalty" type="any" default="#rc.loyaltyAccruement.getLoyalty()#">
+<cfparam name="rc.accruementCurrency" type="any">
+<cfparam name="rc.loyaltyAccruement" type="any" default="#rc.accruementCurrency.getLoyaltyAccruement()#">
 <cfparam name="rc.edit" type="boolean">
-
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.loyaltyAccruement#" edit="#rc.edit#"  
-								saveActionQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#">
-								
-		<hb:HibachiEntityActionBar type="detail" object="#rc.loyaltyAccruement#" edit="#rc.edit#"
-								   backAction="admin:entity.detailloyalty"
-								   backQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#"
-								   cancelAction="admin:entity.detailloyalty"
-								   cancelQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#" 
-							  	   deleteQueryString="redirectAction=admin:entity.detailloyalty&loyaltyID=#rc.loyalty.getLoyaltyID()#" />
-		
-		<input type="hidden" name="loyalty.loyaltyID" value="#rc.loyalty.getLoyaltyID()#" />
-		
-		
-		
-			<hb:HibachiEntityDetailGroup object="#rc.loyaltyAccruement#">
-			
-				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" lazyLoad="false" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-
-				<cfif rc.loyaltyAccruement.getPointType() == 'pointsPerCurrencyUnit' >
-					
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/pointspercurrencyunit" />
-							
-				</cfif>
-				
-							
-				<cfif rc.loyaltyAccruement.getAccruementType() == 'giftCard' >
-					
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/giftcardvaluebycurrency" />
-			
-				</cfif>
-				
-				<cfif rc.loyaltyAccruement.getAccruementType() == 'promotion' >
-					
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/promotionEligibleCurrencies" />
-			
-				</cfif>
-
-
-				<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/optionalTargetAccountConfig" />
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />
-					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/brands" />
-				</cfif>
-			
-			</hb:HibachiEntityDetailGroup>
-		
+	<hb:HibachiEntityDetailForm object="#rc.accruementCurrency#" edit="#rc.edit#"
+								saveActionQueryString="accruementCurrency=#rc.accruementCurrency.getAccruementCurrencyID()#">
+		<hb:HibachiEntityActionBar 
+		    type="detail" 
+		    object="#rc.accruementCurrency#"
+		    showDelete="false"
+		    backAction="admin:entity.detailLoyaltyAccruement" 
+		    backQueryString="loyaltyAccruementID=#rc.loyaltyAccruement.getLoyaltyAccruementID()#"
+		    cancelAction="admin:entity.detailLoyaltyAccruement"
+		    cancelQueryString="loyaltyAccruementID=#rc.loyaltyAccruement.getLoyaltyAccruementID()#"
+		>
+		</hb:HibachiEntityActionBar>
+        <hb:HibachiPropertyList>
+            <hb:HibachiPropertyDisplay object="#rc.accruementCurrency#" property="currencyCode" edit="#rc.edit#" fieldType="select" valueOptions="#rc.accruementCurrency.getCurrencyCodeOptions()#" />
+            <hb:HibachiPropertyDisplay object="#rc.accruementCurrency#" property="giftCardValue" edit="#rc.edit#" />
+        </hb:HibachiPropertyList>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

@@ -41,6 +41,7 @@
 				<div class="form-group s-required">
 					<label for="giftCardSku" class="control-label col-sm-4">
 						<span class="s-title">Gift Card Sku</span>
+						
 					</label>
 					<div class="col-sm-8">
 						<sw-typeahead-input-field
@@ -88,7 +89,6 @@
 						</sw-typeahead-input-field>
 					</div>
 				</div>
-
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </hb:HibachiEntityDetailForm>
