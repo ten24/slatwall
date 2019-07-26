@@ -17,7 +17,6 @@
 								<th>Info</th>
 								<th>Transaction</th>
 								<th>Balance</th>
-								<th>Reason</th>
 							</tr>
 						</thead>
 						<tbody class="s-status-table">
@@ -72,10 +71,13 @@
 								    <span ng-if="transaction.orderPayment_order_orderOpenDateTime.trim().length"  ng-bind="transaction.orderPayment_order_orderOpenDateTime"></span>
 								    <span ng-if="!transaction.orderPayment_order_orderOpenDateTime.trim().length" ng-bind="transaction.createdDateTime"></span> 
 								</td>
-								<td><span ng-if="transaction.orderPayment_order_orderNumber !== undefined">Order: 
+								<td><span ng-if="transaction.orderPayment_order_orderNumber">Order: 
 									    <a href="{{transaction.detailOrderLink}}">
 										    <span ng-bind="transaction.orderPayment_order_orderNumber"></span>
 									    </a>
+									</span>
+									<span ng-if="transaction.reasonForAdjustment"><br>Reason:
+										<span ng-bind="transaction.reasonForAdjustment"></span>
 									</span>
 								</td>
 								<td>
@@ -85,9 +87,6 @@
 									<span class="s-bold" ng-if-end ng-bind-html="transaction.debitAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
 								</td>
 								<td class="s-bold" ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
-								<td>
-									<span ng-bind="transaction.reasonForAdjustment"></span>
-								</td>
 							</tr>
 							<!--
 							<tr class="s-purchase">
