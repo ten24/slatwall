@@ -1186,21 +1186,49 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
 		
-		var ormSession = ormGetSessionFactory().openSession();
-	    var tx = ormSession.beginTransaction();
+		//return a sku collection that will never have records if this process fails
+		var skuCollection = getSkuService().getSkuCollectionList();
+		skuCollection.addFilter('skuID','null','is'); 
+		var promotionalRewardSkuCollectionConfig = skuCollection.getCollectionConfigStruct(); 
 		
-		try{
-			var order = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate); 
-			var promotionalRewardSkuCollectionConfig = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(order);
-		} catch (any e) {
-			var skuCollection = getSkuService().getSkuCollectionList();
-			skuCollection.addFilter('skuID','null','is'); 
-			var promotionalRewardSkuCollectionConfig = skuCollection.getCollectionConfigStruct(); 
-		} finally { 
-			tx.commit();
-			ormSession.close();
-		} 
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+	
+		/* We create a soft reference here because we can't reinflate the orderTemplate on the other side of the thread 
+		 * because this object contains unpersisted changes that this method seeks to validate. 
+		 */
+		var orderTemplateSoftReference = createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate);
+	
+		
+		/* Because we need to flush and then delete the order we run this logic in a thread so the flush does not persist 
+		 * unvalidated changes in the order template.
+		 */
+		thread name="#threadName#"
+			   orderTemplateSoftReference="#orderTemplateSoftReference#"
+			   action="run" 
+		{	
 
+
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplateSoftReference.get(), false);  
+			transientOrder = this.saveOrder(transientOrder);
+			
+			ormFlush();
+ 
+			thread.promotionalRewardSkuCollectionConfig = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+
+			var deleteOk = this.deleteOrder(transientOrder); 
+
+			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
+
+			ormFlush();	
+		}
+		
+		threadJoin(threadName);
+	
+		if(!structKeyExists(evaluate(threadName), "ERROR")){
+			promotionalRewardSkuCollectionConfig = evaluate(threadName).promotionalRewardSkuCollectionConfig; 
+		} else {
+			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		}
 		return promotionalRewardSkuCollectionConfig; 
 
 	}
@@ -1265,7 +1293,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		arguments.transientOrder.setAccount(arguments.orderTemplate.getAccount()); 
+		arguments.transientOrder.setAccount(arguments.orderTemplate.getAccount(),true); 
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
