@@ -10,6 +10,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	
 	public void function onEvent(required any eventName, required struct eventData={}){
+		//TODO: Uncomment this before going live
 		//try{
 			//Only focus on entity events
 			if(!structKeyExists(arguments,'entity')){

@@ -136,19 +136,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return mapping[orderType];
 	}
 	
-	
-	private string function getTransactionType(required any order){
-		var orderType = arguments.order.getOrderType().getSystemCode();
-		
-		if(orderType == 'otReturnOrder'){
-			
-		}else{
-			
-		}
-		
-	
-	}
-	
 	private string function formatTransactionSource(required any order){
 		if( isNull(arguments.order.getOrderOrigin()) ){
 			return '903';
