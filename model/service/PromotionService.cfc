@@ -1156,8 +1156,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
 		
 		for(var promotionReward in qualifiedPromotionRewards){
-			if(isNull(skuCollection)){
-				this.logHibachi('skipping promo reward #promotionReward.getPromotionRewardID()#',true);
+			if(isNull(promotionReward.getSkuCollection())){
 				continue; 
 			} 
 
