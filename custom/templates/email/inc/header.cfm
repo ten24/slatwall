@@ -17,9 +17,11 @@
 <cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
 	<cfset accountLink = "http://monat.ten24dev.com/my-account" />
 	<cfset siteLink = "http://monat.ten24dev.com" />
+	<cfset storeLink = "http://monat.ten24dev.com/store" />
 <cfelse>
 	<cfset accountLink = "https://www.monat.com/my-account" />
 	<cfset siteLink = "https://www.monat.com" />
+	<cfset storeLink = "https://www.monat.com/store" />
 </cfif>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
