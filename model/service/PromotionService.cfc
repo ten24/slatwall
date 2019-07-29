@@ -45,6 +45,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="promotionDAO" type="any";
 	property name="addressService" type="any";
 	property name="roundingRuleService" type="any";
+	property name="skuService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
 		// Clear all previously applied promotions for order items
@@ -1155,6 +1156,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
 		
 		for(var promotionReward in qualifiedPromotionRewards){
+			if(isNull(skuCollection)){
+				this.logHibachi('skipping promo reward #promotionReward.getPromotionRewardID()#',true);
+				continue; 
+			} 
+
 			var skuCollectionConfig = promotionReward.getSkuCollection().getCollectionConfigStruct();
 			
 			var filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
